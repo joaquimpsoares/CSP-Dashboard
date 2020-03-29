@@ -1,0 +1,44 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+use App\Status;
+use Webpatser\Countries\Countries;
+
+class Provider extends Model
+{
+    public function resellers() {
+		return $this->hasMany('App\Reseller');
+	}
+
+	public function getMyCustomersId() {
+		$customers = [];
+		
+		$resellers = $this->resellers()->whereNull('main_office')->get(['id']);
+		foreach ($resellers as $reseller) {
+			foreach ($reseller->customers()->get(['id']) as $customer) {
+				$customers[] = $customer->id;
+			}
+		}
+
+		return $customers;
+	}
+
+	public function path() {
+        return url("/provider/{$this->id}-" . Str::slug($this->company_name, ' '));
+    }
+
+    public function country() {
+    	return $this->belongsTo(Countries::class);
+    }
+
+    public function status() {
+    	return $this->belongsTo(Status::class);
+    }
+
+    public function priceList() {
+    	return $this->morphToMany('App\PriceList', 'price_listables');
+    }
+}

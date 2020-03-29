@@ -1,0 +1,33 @@
+
+Em carrinho
+
+QUando o acesso é do cliente final ele poderá ver o preço para os demais níveis nao será mostrado  o preço até o momento de identificaçao do cliente.
+
+A atualizaçao de quantidade de subscriptions em um item do carrinho será realizada ao clicar em checkout
+
+	-> Processo Checkout
+
+	* Um provider pode alterar o valor final do produto manualmente.
+
+	1 - Identificar/Criar customer
+	2 - Identificar/Criar tenant do customer
+	3 - Posso comprar ou nao
+		a - limites relacionados a min e max licenses
+		b - limites relacionados a max subscription
+	4 - Validado tudo ir para a compra
+
+
+
+/********************************************************************************************************************************************/	
+
+1 - Product
+2 - Price
+3 - PriceList
+4 - Clientes Tagydes
+5 - priceList_product
+
+
+
+Um produto tem um preço (sku) [1-2]
+Um Cliente tem uma price list (pricelist_id) [4-3]
+Uma price list tem produtos com um markup [(5) 1-3]
