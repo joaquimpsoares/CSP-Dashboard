@@ -11,7 +11,7 @@ Route::get('/', function() {
 
 
 Route::group(['middleware' => 'auth'], function () {
-	
+
 	// Every authenticated user can access routes here
 
 	Route::get('/home', 'HomeController@index')->name('home');
@@ -19,7 +19,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/cart/remove/product/{product}', 'CartController@removeProduct')->name('cart.remove_product');
 	Route::get('/cart/clear', 'CartController@destroy')->name('cart.clear');
 	Route::resource('/cart', 'CartController');
-	Route::resource('products', 'ProductController');
+    Route::resource('products', 'ProductController');
+    Route::post('/submit', 'HomeController@submit');
 
 	// End of every authenticated user can access routes here
 
@@ -27,18 +28,18 @@ Route::group(['middleware' => 'auth'], function () {
 
 	// Routes that only platform managers can access
 	Route::group(['middleware' => ['role:Super Admin']], function () {
-		
+
 		Route::resource('roles', 'RoleController');
 		Route::post('roles/update/all', 'RoleController@updateAll')->name('roles.update.all');
 		Route::resource('permissions', 'PermissionController');
 
 		Route::get('/products/import', 'ProductController@import')->name('products.import');
-		
+
 
 		Route::resource('instances', 'InstanceController');
-		
+
 	});
-	
+
 	/*****************************************************************************************************************/
 
 	// Routes that platform managers and administrators can access
@@ -52,7 +53,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 	// Routes that platform managers and providers can access
 	Route::group(['middleware' => ['role:Super Admin|Admin|Provider']], function () {
-		
+
 		Route::group(['middleware' => ['check_provider']], function () {
 
 			Route::get('/resellers', 'ResellerController@index')

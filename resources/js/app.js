@@ -21,6 +21,7 @@ window.$ = window.jQuery = require('jquery');
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+// Vue.component('sidebar-component', require('./components/SideBar.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
