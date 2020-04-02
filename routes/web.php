@@ -76,7 +76,10 @@ Route::group(['middleware' => 'auth'], function () {
 		->middleware('permission:' . config('app.reseller_index'))->name('resellers.index');
 
 		Route::get('/customers', 'CustomerController@index')
-		->middleware('permission:' . config('app.customer_index'))->name('customers.index');
+        ->middleware('permission:' . config('app.customer_index'))->name('customers.index');
+
+        Route::get('/customers/create', 'CustomerController@create')
+		->middleware('permission:' . config('app.customer_create'))->name('customers.create');
 
 
 		Route::group(['middleware' => ['check_reseller']], function () {

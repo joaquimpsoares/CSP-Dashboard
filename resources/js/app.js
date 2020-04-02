@@ -6,8 +6,11 @@
 
 require('./bootstrap');
 
+import Form from './Form';
 window.Vue = require('vue');
 window.$ = window.jQuery = require('jquery');
+window.form = Form;
+
 
 /**
  * The following block of code may be used to automatically register your
@@ -22,6 +25,7 @@ window.$ = window.jQuery = require('jquery');
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 // Vue.component('sidebar-component', require('./components/SideBar.vue').default);
+Vue.component('customer-create', require('./components/Customers/CustomerCreateComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

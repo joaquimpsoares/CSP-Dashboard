@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Web;
 
 use App\Customer;
-use App\DataTables\CustomerDataTable;
-use App\Http\Controllers\Controller;
 use App\Reseller;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\DataTables\CustomerDataTable;
 
 
 class CustomerController extends Controller
@@ -21,18 +22,18 @@ class CustomerController extends Controller
         */
 
         $user = \Auth::user();
-        
+
         switch ($user->userLevel->name) {
             case config('app.super_admin'):
 
                 $customers = Customer::with(['country', 'status'])->orderBy('company_name')->get();
                 break;
-            
+
             case config('app.admin'):
                 $customers = Customer::with(['country', 'status'])->orderBy('company_name')->get();
 
                 break;
-            
+
             case config('app.provider'):
                 $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
                 $customers = Customer::whereHas('resellers', function($query) use  ($resellers) {
@@ -40,28 +41,28 @@ class CustomerController extends Controller
                 })->with(['country', 'status'])->orderBy('company_name')->get();
 
                 break;
-            
+
             case config('app.reseller'):
                 $reseller = $user->reseller;
                 $customers = $reseller->customers;
 
                 break;
-            
+
             case config('app.subreseller'):
                 $reseller = $user->reseller;
                 $customers = $reseller->customers;
                 break;
-            
+
             default:
                 return abort(403, __('errors.unauthorized_action'));
-                
+
                 break;
         }
 
         /**
         * End of User Level Validation
         */
-        
+
         return view('customer.index', compact('customers'));
     }
 
@@ -70,8 +71,15 @@ class CustomerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create() { }
+    public function create() {
 
+        $customers = Customer::get();
+
+        return view('customer.create', [
+            'customers' => json_encode($customers, JSON_NUMERIC_CHECK),
+        ]);
+
+        }
     /**
      * Store a newly created resource in storage.
      *

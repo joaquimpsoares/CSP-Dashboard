@@ -17,6 +17,7 @@
         "laravel/helpers": "^1.2",
         "laravel/tinker": "^2.0",
         "spatie/laravel-permission": "^3.11",
+        "tymon/jwt-auth": "^1.0",
         "webpatser/laravel-countries": "^1.5",
         "yajra/laravel-datatables": "^1.5"
     },

@@ -17347,17 +17347,6 @@ body .container .half.bg {
   background-repeat: no-repeat;
 }
 
-body .container h1 {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 23px;
-  text-align: center;
-  text-indent: 6px;
-  letter-spacing: 7px;
-  text-transform: uppercase;
-  color: #263238;
-}
-
 body .container .tabs {
   width: 100%;
   margin-bottom: 29px;
