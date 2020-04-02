@@ -11,6 +11,10 @@ window.Vue = require('vue');
 window.$ = window.jQuery = require('jquery');
 window.form = Form;
 
+import Buefy from 'buefy';
+import 'buefy/dist/buefy.css';
+
+Vue.use(Buefy);
 
 /**
  * The following block of code may be used to automatically register your
