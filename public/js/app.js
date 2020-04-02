@@ -55047,7 +55047,7 @@ var render = function() {
     "div",
     { staticClass: "box col-xs-12" },
     [
-      _c("h2", [_vm._v("Company Information")]),
+      _c("h2", [_vm._v("Company Information hola")]),
       _vm._v(" "),
       _c("hr"),
       _vm._v(" "),
@@ -55055,9 +55055,9 @@ var render = function() {
         return _c("div", { staticClass: "row" }, [
           _c("div", { staticClass: "col-md-6" }, [
             _c("div", { staticClass: "form-group" }, [
-              _c("label", {
-                attrs: { for: "company_name", Company: "", Name: "" }
-              }),
+              _c("label", { attrs: { for: "company_name" } }, [
+                _vm._v("Company Name")
+              ]),
               _vm._v(" "),
               _c("input", {
                 staticClass: "input",
