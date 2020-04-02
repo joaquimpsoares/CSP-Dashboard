@@ -2038,6 +2038,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['customers']
 });
@@ -55042,73 +55043,166 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "box col-xs-12" }, [
-    _c("h2", [_vm._v("Company Information")]),
-    _vm._v(" "),
-    _c("hr"),
-    _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _c(
-        "div",
-        { staticClass: "col-md-6" },
-        _vm._l(_vm.customers, function(customer) {
-          return _c("div", { staticClass: "form-group" }, [
-            _c("label", {
-              attrs: { for: "company_name" },
-              domProps: { textContent: _vm._s(customer.company_name) }
-            }),
-            _vm._v(" "),
-            _c("input", {
-              staticClass: "input",
-              attrs: {
-                type: "text",
-                id: "company_name",
-                name: "company_name",
-                required: "",
-                placeholder: "Company Name",
-                "data-parsley-required": "true"
-              },
-              domProps: { value: customer.company_name }
-            })
-          ])
-        }),
-        0
-      ),
+  return _c(
+    "div",
+    { staticClass: "box col-xs-12" },
+    [
+      _c("h2", [_vm._v("Company Information")]),
       _vm._v(" "),
-      _vm._m(0)
-    ]),
-    _vm._v(" "),
-    _vm._m(1),
-    _vm._v(" "),
-    _c("hr"),
-    _vm._v(" "),
-    _vm._m(2)
-  ])
+      _c("hr"),
+      _vm._v(" "),
+      _vm._l(_vm.customers, function(customer) {
+        return _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-md-6" }, [
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", {
+                attrs: { for: "company_name", Company: "", Name: "" }
+              }),
+              _vm._v(" "),
+              _c("input", {
+                staticClass: "input",
+                attrs: {
+                  type: "text",
+                  id: "company_name",
+                  name: "company_name",
+                  required: "",
+                  placeholder: "Company Name",
+                  "data-parsley-required": "true"
+                },
+                domProps: { value: customer.company_name }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-6" }, [
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", { attrs: { for: "nif" } }, [_vm._v("NIF")]),
+              _vm._v(" "),
+              _c("input", {
+                staticClass: "input",
+                attrs: {
+                  type: "text",
+                  id: "nif",
+                  name: "nif",
+                  placeholder: "NIF",
+                  "data-parsley-required": "true",
+                  minlength: "5"
+                },
+                domProps: { value: customer.nif }
+              })
+            ])
+          ])
+        ])
+      }),
+      _vm._v(" "),
+      _vm._m(0),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _vm._l(_vm.customers, function(customer) {
+        return _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-md-4" }, [
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", { attrs: { for: "address_1" } }, [
+                _vm._v("Address 1")
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                staticClass: "input",
+                attrs: {
+                  type: "text",
+                  id: "address_1",
+                  name: "address_1",
+                  placeholder: "Address 1"
+                },
+                domProps: { value: customer.address_1 }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-4" }, [
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", { attrs: { for: "address_2" } }, [
+                _vm._v("Address 2")
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                staticClass: "input",
+                attrs: {
+                  type: "text",
+                  id: "address_2",
+                  name: "address_2",
+                  placeholder: "Address 2"
+                },
+                domProps: { value: customer.address_2 }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-4" }, [
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", { attrs: { for: "city" } }, [_vm._v("City")]),
+              _vm._v(" "),
+              _c("input", {
+                staticClass: "input",
+                attrs: {
+                  type: "text",
+                  id: "city",
+                  name: "city",
+                  placeholder: "City"
+                },
+                domProps: { value: customer.city }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-4" }, [
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", { attrs: { for: "postal_code" } }, [
+                _vm._v("Postal Code")
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                staticClass: "input",
+                attrs: {
+                  type: "text",
+                  id: "postal_code",
+                  name: "postal_code",
+                  placeholder: "Postal Code"
+                },
+                domProps: { value: customer.postal_code }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-4" }, [
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", { attrs: { for: "state" } }, [_vm._v("State")]),
+              _vm._v(" "),
+              _c("input", {
+                staticClass: "input",
+                attrs: {
+                  type: "text",
+                  id: "state",
+                  name: "state",
+                  required: "",
+                  placeholder: "State"
+                },
+                domProps: { value: customer.state }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _vm._m(1, true),
+          _vm._v(" "),
+          _vm._m(2, true)
+        ])
+      })
+    ],
+    2
+  )
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-6" }, [
-      _c("div", { staticClass: "form-group" }, [
-        _c("label", { attrs: { for: "nif" } }, [_vm._v("NIF")]),
-        _vm._v(" "),
-        _c("input", {
-          staticClass: "input",
-          attrs: {
-            type: "text",
-            id: "nif",
-            name: "nif",
-            placeholder: "NIF",
-            value: "",
-            "data-parsley-required": "true",
-            minlength: "5"
-          }
-        })
-      ])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -55119,117 +55213,31 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-4" }, [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "address_1" } }, [_vm._v("Address 1")]),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "input",
-            attrs: {
-              type: "text",
-              id: "address_1",
-              name: "address_1",
-              placeholder: "Address 1",
-              value: ""
-            }
-          })
-        ])
-      ]),
+    return _c("div", { staticClass: "col-md-4" }, [
+      _c("label", { attrs: { for: "country" } }, [_vm._v("Country")]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-md-4" }, [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "address_2" } }, [_vm._v("Address 2")]),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "input",
-            attrs: {
-              type: "text",
-              id: "address_2",
-              name: "address_2",
-              placeholder: "Address 2",
-              value: ""
-            }
-          })
-        ])
-      ]),
+      _c("select", { attrs: { name: "country", id: "country" } })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-4" }, [
+      _c("label", { attrs: { for: "Tenant_name" } }, [_vm._v("Tenant name")]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-md-4" }, [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "city" } }, [_vm._v("City")]),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "input",
-            attrs: {
-              type: "text",
-              id: "city",
-              name: "city",
-              placeholder: "City",
-              value: ""
-            }
-          })
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-4" }, [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "postal_code" } }, [
-            _vm._v("Postal Code")
-          ]),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "input",
-            attrs: {
-              type: "text",
-              id: "postal_code",
-              name: "postal_code",
-              placeholder: "Postal Code",
-              value: ""
-            }
-          })
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-4" }, [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "state" } }, [_vm._v("State")]),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "input",
-            attrs: {
-              type: "text",
-              id: "state",
-              name: "state",
-              required: "",
-              placeholder: "State",
-              value: ""
-            }
-          })
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-4" }, [
-        _c("label", { attrs: { for: "country" } }, [_vm._v("Country")]),
-        _vm._v(" "),
-        _c("select", { attrs: { name: "country", id: "country" } })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-4" }, [
-        _c("label", { attrs: { for: "Tenant_name" } }, [_vm._v("Tenant name")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-group" }, [
-          _c("input", {
-            staticClass: "input",
-            attrs: {
-              type: "text",
-              id: "Tenant_name",
-              name: "Tenant_name",
-              disabled: "",
-              placeholder: "Tenant name",
-              value: "Tenant name"
-            }
-          })
-        ])
+      _c("div", { staticClass: "form-group" }, [
+        _c("input", {
+          staticClass: "input",
+          attrs: {
+            type: "text",
+            id: "Tenant_name",
+            name: "Tenant_name",
+            disabled: "",
+            placeholder: "Tenant name",
+            value: "Tenant name"
+          }
+        })
       ])
     ])
   }

@@ -18,7 +18,7 @@
 		@if($customer->status->name === 'message.active')
 		<tr>
 			<td>
-				<a href="{{ $customer->path() }}">{{ $customer->company_name }}</a>
+				<a href="{{ $customer->pathEdit() }}">{{ $customer->company_name }}</a>
 			</td>
 			<td>{{ $customer->country->name }}</td>
 			<td>{{ $customer->state }}</td>

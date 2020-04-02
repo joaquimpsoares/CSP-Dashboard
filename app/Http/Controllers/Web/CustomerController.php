@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Web;
 
 use App\Customer;
 use App\Reseller;
+use App\Subscription;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\DataTables\CustomerDataTable;
+use Symfony\Component\Console\Input\Input;
 
 
 class CustomerController extends Controller
@@ -94,7 +96,15 @@ class CustomerController extends Controller
      * @param  \App\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function show(Customer $customer) { }
+    public function show(Customer $customer) {
+
+
+         $customers = Customer::all()->where('id', $customer->id);
+
+        //  dd($customer);
+
+         return view('customer.show', compact('customers'));
+     }
 
     /**
      * Show the form for editing the specified resource.

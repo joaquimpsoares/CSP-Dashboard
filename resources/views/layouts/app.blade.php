@@ -38,10 +38,10 @@
 			</div>
         </div>
 
-        @include('layouts.sidebar')
+        {{-- @include('layouts.sidebar') --}}
 
 
-		{{-- @include('partials.messages') --}}
+		@include('partials.messages')
 
 		<main class="py-4">
 			@yield('content')

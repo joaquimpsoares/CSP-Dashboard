@@ -14,14 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
 Route::get('udpateUserBranch', 'ApiController@udpateUserBranch');
 
 Route::get('udpateUserBranch', 'ApiController@udpateUserBranch');
-Route::get('mytest', 'Api\ApiController@udpateUserBranch');
+Route::get('mytest', 'ApiController@udpateUserBranch');
 
 
 Route::post('login', 'Auth\AuthController@login');

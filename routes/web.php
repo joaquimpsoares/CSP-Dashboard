@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Auth::routes(['register' => false]);
@@ -110,13 +111,13 @@ Route::group(['middleware' => 'auth'], function () {
 
 		Route::group(['middleware' => ['check_customer']], function () {
 
-			Route::get('/customers/{customer}-{slug}', 'CustomerController@show')
-			->middleware('permission:' . config('app.customer_show'), 'check_customer')
-			->name('customers.show');
+			// Route::get('/customers/{customer}-{slug}', 'CustomerController@show')
+			// ->middleware('permission:' . config('app.customer_show'), 'check_customer')
+			// ->name('customers.show');
 
 			Route::get('customers/{customer}-{slug}/edit', 'CustomerController@show')
 			->middleware('permission:' . config('app.customer_edit'))
-			->name('customers.edit');
+			->name('customer.edit');
 
 		});
 
