@@ -19,6 +19,7 @@ return [
     'product' => 'product|products',
     'order' => 'order|orders',
     'add_to_cart' => 'add to cart',
+    'add' => 'add',
     'product_name' => 'product name',
     'vendor' => 'vendor|vendors',
     'all' => 'all',

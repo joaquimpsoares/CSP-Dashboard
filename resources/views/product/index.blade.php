@@ -84,13 +84,47 @@
 					<div class="card-footer text-muted text-center">
 						<div class="row">
 							<div class="col-6">
-								<b><span class="align-middle">+ {{ $product->addons->count() }} {{ ucwords(trans_choice('messages.addon', 2)) }}</span></b>
+
+								<a class="btn btn-outline-dark" data-toggle="modal" data-target="#modal_product_{{$product->id}}">+ {{ $product->addons->count() }} {{ ucwords(trans_choice('messages.addon', 2)) }}</a>
 							</div>
 							<div class="col-6">
 								<a href="{{ route('cart.add_product', $product->id) }}" class="btn btn-outline-success">{{ ucwords(__('messages.add_to_cart')) }}</a>
 							</div>
 						</div>
 					</div>
+
+
+
+					<!-- Modal -->
+					<div class="modal fade" id="modal_product_{{$product->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">{{ $product->name }} - {{ ucwords(trans_choice('messages.addon', 2)) }}</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<table class="table table-striped">
+										@foreach($product->getAddons() as $addon)
+										<tr>
+											<td class="align-middle"><small>{{ $addon->name }}</small></td>
+											<td><button class="btn btn-sm btn-info"><i class="fa fa-plus"></i>{{ ucwords(__('messages.add')) }}</button></td>
+										</tr>
+										@endforeach
+									</table>
+									
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
 				</div>
 			</div>
 			@php

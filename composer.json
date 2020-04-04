@@ -24,8 +24,7 @@
         "laravel/tinker": "^2.0",
         "spatie/laravel-permission": "^3.11",
         "tagydes/microsoft-connection": "dev-master",
-        "webpatser/laravel-countries": "^1.5",
-        "yajra/laravel-datatables": "^1.5"
+        "webpatser/laravel-countries": "^1.5"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

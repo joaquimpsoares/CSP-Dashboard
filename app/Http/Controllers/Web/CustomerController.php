@@ -15,7 +15,7 @@ class CustomerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(CustomerDataTable $dataTable) {
+    public function index(Customer $customer) {
         /**
         * Begin of User Level Validation
         */

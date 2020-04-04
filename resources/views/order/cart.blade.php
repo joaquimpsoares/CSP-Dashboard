@@ -23,24 +23,24 @@
             </thead>
             <tbody>
                 @php
-                    $products = Session::get('cart')->items;
+                $products = Session::get('cart')->items;
                 @endphp
                 @foreach($products as $product)
-                    <tr>
-                        <td>
-                            {{ $product['item']->name }}
-                        </td>
-                        <td>
-                            <input type="number" value="{{ $product['quantity'] }}" name="quantity" id="quantity" class="form-control" step="1" min="{{$product['item']['minimum_quantity']}}" max="{{$product['item']['maximum_quantity']}}" style="max-width: 10em;" required />
-                        </td>
-                        <td>
-                            <div class="row">
-                                <div class="col">
-                                    <a href="{{ route('cart.remove_product', $product['item']->id) }}"><span class="icon is-small text-danger"><i class="fas fa-trash-restore-alt"></i></span></a>
-                                </div>
+                <tr>
+                    <td>
+                        {{ $product['item']->name }}
+                    </td>
+                    <td>
+                        <input type="number" value="{{ $product['quantity'] }}" name="quantity" id="quantity" class="form-control" step="1" min="{{$product['item']['minimum_quantity']}}" max="{{$product['item']['maximum_quantity']}}" style="max-width: 10em;" required />
+                    </td>
+                    <td>
+                        <div class="row">
+                            <div class="col">
+                                <a href="{{ route('cart.remove_product', $product['item']->id) }}"><span class="icon is-small text-danger"><i class="fas fa-trash-restore-alt"></i></span></a>
                             </div>
-                        </td>
-                    </tr>
+                        </div>
+                    </td>
+                </tr>
                 @endforeach        
             </tbody>
             <tfoot>

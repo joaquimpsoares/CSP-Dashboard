@@ -17,36 +17,36 @@ class CreateProductsTable extends Migration
             $table->bigIncrements('id');
 
             $table->string('vendor')->nullable();
-            $table->unsignedBigInteger('instance_id')->nullable();
+            $table->unsignedBigInteger('instance_id');
             $table->string('sku')->nullable(false);
 
-            $table->string('name');
-            $table->string('description');
-            $table->string('uri');
+            $table->string('name')->nullable();
+            $table->longText('description')->nullable();
+            $table->string('uri')->nullable();
+            $table->integer('minimum_quantity')->nullable();
+            $table->integer('maximum_quantity')->nullable();
+            $table->integer('limit')->nullable();
 
-            $table->integer('minimum_quantity');
-            $table->integer('maximum_quantity');
-            $table->integer('limit');
-
-            $table->text('term');
+            $table->text('term')->nullable();
             $table->boolean('is_available_for_purchase')->nullable();
 
-            $table->string('locale');
-            $table->string('country');
+            $table->string('locale')->nullable();
+            $table->string('country')->nullable();
 
-            $table->boolean('has_addons');
-            $table->boolean('is_trial');
-            $table->boolean('is_autorenewable');
+            $table->boolean('has_addons')->nullable();
+            $table->boolean('is_trial')->nullable();
+            $table->boolean('is_autorenewable')->nullable();
 
-            $table->string('billing');
-            $table->string('acquisition_type');
+            $table->string('billing')->nullable();
+            $table->string('acquisition_type')->nullable();
 
-            $table->text('addons');
-            $table->string('category');
-            $table->string('upgrade_target_offers');
-            $table->text('supported_billing_cycles');
-            $table->text('conversion_target_offers');
-            $table->text('reseller_qualifications');
+            $table->text('addons')->nullable();
+            $table->string('category')->nullable();
+            $table->string('upgrade_target_offers')->nullable();
+            $table->text('supported_billing_cycles')->nullable();
+            $table->text('conversion_target_offers')->nullable();
+            $table->text('resellee_qualifications')->nullable();
+            $table->text('reseller_qualifications')->nullable();
 
             $table->timestamps();
 

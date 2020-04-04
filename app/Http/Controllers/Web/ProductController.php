@@ -168,6 +168,7 @@ class ProductController extends Controller
 
             $products->each(function($importedProduct)use($instance){
                 Product::updateOrCreate([
+                    'vendor' => 'microsoft',
                     'sku' => $importedProduct->id,
                     'instance_id' => $instance->id
                 ],[
