@@ -80,12 +80,11 @@ class RoleController extends Controller
     public function updateAll(Request $request) {
 
 
-        
+
 
         /*foreach ($request->permission as $key => $value) {
                 $permissions[$key] = 'boolean';
         }*/
-        //dd($request->permission);
 
         $arrayPermissions = $request->validate([
             "permission" => "array",
@@ -93,7 +92,7 @@ class RoleController extends Controller
             "permission.*.*" => "accepted",
         ]);
 
-        
+
         foreach ($arrayPermissions as $permissions) {
             foreach ($permissions as $key => $roles) {
                 echo "{$key}<br>";

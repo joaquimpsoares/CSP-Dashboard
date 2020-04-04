@@ -7,7 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Instance;
 use App\Jobs\ImportProductsMicrosoft;
 use App\Jobs\ImportProductsMicrosoftJob;
-use App\MicrosoftConnection\Facades\Product as MicrosoftProduct;
+use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
+
 use App\MicrosoftConnection\Repositories\AbstractRestV1Repository;
 use App\Product;
 use App\Vendor;
@@ -20,8 +21,8 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-        
-        
+
+
         $filters = $request->validate([
             'name' => 'string|nullable',
             'vendor' => 'nullable|exists:App\Vendor,name',
@@ -42,7 +43,7 @@ class ProductController extends Controller
 
         $vendors = Vendor::orderBy('name')->get();
         $quantity = $this->quantity;
-        
+
         //$products = Product::all();
         return view('product.index', compact('products', 'vendors', 'filters', 'quantity'));
     }
@@ -50,19 +51,19 @@ class ProductController extends Controller
     public function create()
     {}
 
-    
+
     public function store(Request $request)
     {}
 
-    
+
     public function show(Product $product)
     {}
 
-    
+
     public function edit(Product $product)
     {}
 
-    
+
     public function update(Request $request, Product $product)
     {
         $product = Product::findOrFail($id);
@@ -113,7 +114,7 @@ class ProductController extends Controller
         return redirect()->route('products.list')->with('success', 'Instance updated succesfully');
     }
 
-    
+
     public function destroy(Product $product)
     {}
 
@@ -140,11 +141,11 @@ class ProductController extends Controller
         }
         return redirect()->route('dashboard')->with('success', 'Instance updated succesfully');
     }
-    
+
     public function import()
     {
-        /*
-        
+
+
         $instance = Instance::first();
         if( ! $instance){
             return redirect()->route('products.index')->with('success', 'The account has no assigned instance');
@@ -164,8 +165,7 @@ class ProductController extends Controller
             }
 
             $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)->all();
-            dd($products);
-            
+
             $products->each(function($importedProduct)use($instance){
                 Product::updateOrCreate([
                     'sku' => $importedProduct->id,
@@ -205,7 +205,6 @@ class ProductController extends Controller
 
         // ImportProductsMicrosoftJob::dispatch()
         //         ->delay(now()->addSeconds(10));
-        */
 
         return redirect()->route('products.index')->with(['alert' => 'success', 'message' => trans('messages.example')]);
     }
