@@ -4,6 +4,9 @@ return [
 
     'example' => 'Example message.',
 
+    
+    'importproducts' => 'Import Microsoft products, scheduled',
+
     'provider' => 'provider|providers',
     'manage_role' => 'manage role|manage roles',
     'reseller' => 'reseller|resellers',

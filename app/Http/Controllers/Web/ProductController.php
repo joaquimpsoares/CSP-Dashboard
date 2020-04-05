@@ -141,72 +141,40 @@ public function getMasterToken()
         }
         return redirect()->route('dashboard')->with('success', 'Instance updated succesfully');
     }
-
-public function import()
-{
-
-    ImportProductsMicrosoftJob::dispatch()
-    ->delay(now()->addSeconds(10));
-
-        // $instance = Instance::first();
-        // if( ! $instance){
-        //     return redirect()->route('products.index')->with('success', 'The account has no assigned instance');
-        // }
-
-        // if($instance->provider === 'microsoft'){
-        //     if( ! $instance->external_id){
-        //         return redirect()->route('products.index')->with('success', 'There is no client_id set up on the Microsoft instance');
-        //     }
-
-        //     if( ! $instance->external_token){
-        //         $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->external_id);
-        //         $instance->update([
-        //             'external_token' => $externalToken,
-        //             'external_token_updated_at' => now()
-        //         ]);
-        //     }
-
-        //     $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)->all();
-
-        //     $products->each(function($importedProduct)use($instance){
-        //         Product::updateOrCreate([
-        //             'vendor' => 'microsoft',
-        //             'sku' => $importedProduct->id,
-        //             'instance_id' => $instance->id
-        //         ],[
-        //             'name' => $importedProduct->name,
-        //             'description' => $importedProduct->description,
-        //             'uri' => $importedProduct->uri,
-
-        //             'minimum_quantity' => $importedProduct->minimumQuantity,
-        //             'maximum_quantity' => $importedProduct->maximumQuantity,
-        //             'limit' => $importedProduct->limit,
-        //             'term' => $importedProduct->term,
-        //             'category' => $importedProduct->category,
-
-        //             'locale' => $importedProduct->locale,
-        //             'country' => $importedProduct->country,
-
-        //             'is_trial' => $importedProduct->isTrial,
-        //             'has_addons' => $importedProduct->hasAddOns,
-        //             'is_autorenewable' => $importedProduct->isAutoRenewable,
-
-        //             'billing' => $importedProduct->billing,
-        //             'acquisition_type' => $importedProduct->acquisitionType,
-
-        //             'addons' => $importedProduct->addons->map(function($item){
-        //                 return serialize($item);
-        //             }),
-        //             'supported_billing_cycles' => $importedProduct->supportedBillingCycles,
-        //             'conversion_target_offers' => $importedProduct->conversionTargetOffers,
-        //             'resellee_qualifications' => $importedProduct->reselleeQualifications,
-        //             'reseller_qualifications' => $importedProduct->resellerQualifications,
-        //             ]);
-        //         });
-        //     }
-
-        // return redirect()->route('products.index')->with(['alert' => 'success', 'message' => trans('messages.example')]);
+    
+    /**
+     * Import Products from Microsoft
+     *
+     * @return void
+     */
+    public function import()
+    {
+        
+        $instance = Instance::first();
+        if( ! $instance){
+            return redirect()->route('products.index')->with('success', 'The account has no assigned instance');
+        }
+        
+        if($instance->provider === 'microsoft'){
+            if( ! $instance->external_id){
+                return redirect()->route('products.index')->with('success', 'There is no client_id set up on the Microsoft instance');
+            }
+            
+            if( ! $instance->external_token){
+                $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->external_id);
+                $instance->update([
+                    'external_token' => $externalToken,
+                    'external_token_updated_at' => now()
+                    ]);
+                }
+                
+                ImportProductsMicrosoftJob::dispatch()
+                ->delay(now()->addSeconds(10));            
+            }
+            
+        return redirect()->route('products.index')->with(['alert' => 'success', 'message' => trans('messages.importproducts')]);
     }
+
 
     private static function searchFilter(Request $filters, $quantity) {
 
