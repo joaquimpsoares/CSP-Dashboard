@@ -66,7 +66,7 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::findOrFail($request);
 
         $this->validate($request, [
             'name' => 'String',
@@ -202,10 +202,6 @@ class ProductController extends Controller
                     ]);
                 });
             }
-
-
-        // ImportProductsMicrosoftJob::dispatch()
-        //         ->delay(now()->addSeconds(10));
 
         return redirect()->route('products.index')->with(['alert' => 'success', 'message' => trans('messages.example')]);
     }

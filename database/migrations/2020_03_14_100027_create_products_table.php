@@ -50,7 +50,7 @@ class CreateProductsTable extends Migration
 
             $table->timestamps();
 
-            $table->unique(['sku', 'instance_id']);
+            $table->index(['sku', 'instance_id']);
         });
     }
 
