@@ -57,6 +57,8 @@
         @forelse($failedJobs as $failedJob)
         {{-- @if($customer->status->name === 'message.active') --}}
         <tr>
+            <col width="13">
+            <col width="80">
             <td>
                 <a href="·">{{ $failedJob->id }}</a>
             </td>

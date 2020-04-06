@@ -28,7 +28,7 @@ class JobsController extends Controller
     public function retryJob($id){
        $tt = Artisan::call('queue:retry ' . $id);
         
-        return redirect()->route('job.index')->with(['alert' => 'success', 'message' => trans('messages.importproducts')]);
+        return redirect()->route('jobs')->with(['alert' => 'success', 'message' => trans('messages.jobrescheduled')]);
 
     }
 
@@ -115,7 +115,7 @@ class JobsController extends Controller
     {
         DB::table('failed_jobs')->where('id', $id)->delete();
     
-        return redirect()->route('job.index')->with(['alert' => 'success', 'message' => trans('messages.importproducts')]);
+        return redirect()->route('job')->with(['alert' => 'success', 'message' => trans('messages.importproducts')]);
 
     }
 }

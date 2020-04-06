@@ -6,6 +6,7 @@ return [
 
     
     'importproducts' => 'Import Microsoft products, scheduled',
+    'jobrescheduled' => 'Job rescheduled',
 
     'provider' => 'provider|providers',
     'manage_role' => 'manage role|manage roles',
