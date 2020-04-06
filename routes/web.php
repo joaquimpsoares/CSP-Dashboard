@@ -1,10 +1,12 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 //Marco verifica aqui esta linha... para a importação dos productos!
 
 Route::get('/products/import', 'ProductController@import')->name('products.import');
+Route::get('/jobs', 'JobsController@index')->name('jobs');
 
 
 Auth::routes(['register' => false]);
