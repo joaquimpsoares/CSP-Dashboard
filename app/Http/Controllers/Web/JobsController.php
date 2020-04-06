@@ -5,24 +5,49 @@ namespace App\Http\Controllers\web;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Artisan;
 
 class JobsController extends Controller
 {
+
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    * Display a listing of the resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
     public function index()
     {
         $jobs =  DB::table('jobs')->get();
         // dd($jobs);
         $failedJobs = DB::table('failed_jobs')->get();
         // dd($failedJobs);
-
         return view('job.index', compact('jobs','failedJobs'));
+        
+    }
 
+    public function retryJob($id){
+       $tt = Artisan::call('queue:retry ' . $id);
+        
+        return redirect()->route('job.index')->with(['alert' => 'success', 'message' => trans('messages.importproducts')]);
 
+    }
+
+        /**
+     * Decode the given job.
+     *
+     * @param  object  $job
+     * @return object
+     */
+    protected function decode($job)
+    {
+        $job->payload = json_decode($job->payload);
+        return $job;
+    }
+
+    public function getAddons($jobs){
+        return $this->$jobs->map(function($job){
+            return unserialize($job);
+        });
     }
 
     /**
@@ -88,6 +113,9 @@ class JobsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DB::table('failed_jobs')->where('id', $id)->delete();
+    
+        return redirect()->route('job.index')->with(['alert' => 'success', 'message' => trans('messages.importproducts')]);
+
     }
 }

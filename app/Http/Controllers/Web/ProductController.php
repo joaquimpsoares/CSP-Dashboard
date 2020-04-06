@@ -168,7 +168,7 @@ public function getMasterToken()
                     ]);
                 }
                 
-                ImportProductsMicrosoftJob::dispatch()
+                ImportProductsMicrosoftJob::dispatch()->onQueue('SyncProducts')
                 ->delay(now()->addSeconds(10));            
             }
             
