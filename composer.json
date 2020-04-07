@@ -24,6 +24,7 @@
         "laravel/tinker": "^2.0",
         "spatie/laravel-permission": "^3.11",
         "tagydes/microsoft-connection": "dev-master",
+        "talvbansal/laravel-ms-teams-notification-channel": "^1.1",
         "webpatser/laravel-countries": "^1.5"
     },
     "require-dev": {

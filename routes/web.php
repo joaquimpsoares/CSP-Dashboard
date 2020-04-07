@@ -1,5 +1,7 @@
 <?php
 
+use App\User;
+use App\Notifications\FailedJob;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -9,6 +11,11 @@ Route::get('/products/import', 'ProductController@import')->name('products.impor
 Route::get('/jobs', 'JobsController@index')->name('jobs');
 Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
 Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
+
+Route::get('/sendnoti', function() {
+	User::first()->notify(new FailedJob);
+})->name('sendnoti');
+
 
 
 
