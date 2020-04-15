@@ -3,8 +3,8 @@
 namespace App\Services\Logging\UserActivity;
 
 use Illuminate\Contracts\Auth\Factory;
-useApp\Repositories\Activity\ActivityRepository;
-useApp\User;
+use App\Repositories\Activity\ActivityRepository;
+use App\User;
 use Illuminate\Http\Request;
 
 class Logger

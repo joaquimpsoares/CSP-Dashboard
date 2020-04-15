@@ -2,7 +2,7 @@
 
 namespace App\Services\Logging\UserActivity;
 
-useApp\User;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Activity extends Model

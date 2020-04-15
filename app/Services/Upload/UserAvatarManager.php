@@ -3,7 +3,7 @@
 namespace App\Services\Upload;
 
 use Illuminate\Http\UploadedFile;
-useApp\User;
+use App\User;
 use Illuminate\Filesystem\Filesystem;
 use Intervention\Image\ImageManager;
 use Symfony\Component\HttpFoundation\File\File;

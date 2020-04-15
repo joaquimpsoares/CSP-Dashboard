@@ -3,9 +3,9 @@
 namespace App\Services\Auth\Social;
 
 use Laravel\Socialite\Contracts\User as SocialUser;
-useApp\Repositories\Role\RoleRepository;
-useApp\Repositories\User\UserRepository;
-useApp\Support\Enum\UserStatus;
+use App\Repositories\Role\RoleRepository;
+use App\Repositories\User\UserRepository;
+use App\Support\Enum\UserStatus;
 
 class SocialManager
 {

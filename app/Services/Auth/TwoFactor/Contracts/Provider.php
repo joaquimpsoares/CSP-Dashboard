@@ -2,7 +2,7 @@
 
 namespace App\Services\Auth\TwoFactor\Contracts;
 
-useApp\Services\Auth\TwoFactor\Contracts\Authenticatable as TwoFactorAuthenticatable;
+use App\Services\Auth\TwoFactor\Contracts\Authenticatable as TwoFactorAuthenticatable;
 
 interface Provider
 {

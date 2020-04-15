@@ -4,8 +4,8 @@ namespace App\Services\Auth\TwoFactor;
 
 use Exception;
 use GuzzleHttp\Client as HttpClient;
-useApp\Services\Auth\TwoFactor\Contracts\Provider;
-useApp\Services\Auth\TwoFactor\Contracts\Authenticatable as TwoFactorAuthenticatable;
+use App\Services\Auth\TwoFactor\Contracts\Provider;
+use App\Services\Auth\TwoFactor\Contracts\Authenticatable as TwoFactorAuthenticatable;
 
 class Authy implements Provider
 {

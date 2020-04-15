@@ -1,33 +1,9 @@
 <?php
 
-<<<<<<< Updated upstream
-=======
-use App\User;
->>>>>>> Stashed changes
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Notifications\Notification;
-use App\Notifications\FailedJob;
-
-<<<<<<< Updated upstream
-=======
-//Marco verifica aqui esta linha... para a importação dos productos!
-
-Route::get('/products/import', 'ProductController@import')->name('products.import');
-Route::get('/jobs', 'JobsController@index')->name('jobs');
-Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
-Route::get('jobs/pending', 'JobsController@pending')->name('jobs.pending');
-Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
 
 
-Route::get('/sendnoti', function() {
-	User::first()->notify(new FailedJob());
-})->name('sendnoti');
-
-
-
-
->>>>>>> Stashed changes
 Auth::routes(['register' => false]);
 Route::impersonate();
 
