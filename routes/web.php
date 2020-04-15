@@ -1,7 +1,25 @@
 <?php
 
+use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Notifications\Notification;
+use App\Notifications\FailedJob;
+
+//Marco verifica aqui esta linha... para a importação dos productos!
+
+Route::get('/products/import', 'ProductController@import')->name('products.import');
+Route::get('/jobs', 'JobsController@index')->name('jobs');
+Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
+Route::get('jobs/pending', 'JobsController@pending')->name('jobs.pending');
+Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
+
+
+Route::get('/sendnoti', function() {
+	User::first()->notify(new FailedJob());
+})->name('sendnoti');
+
+
 
 
 Auth::routes(['register' => false]);
@@ -19,10 +37,11 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('/cart/add/product/{product}', 'CartController@addProduct')->name('cart.add_product');
 	Route::get('/cart/remove/product/{product}', 'CartController@removeProduct')->name('cart.remove_product');
-	Route::get('/cart/clear', 'CartController@destroy')->name('cart.clear');
+    Route::get('/cart/clear', 'CartController@destroy')->name('cart.clear');
+
+
 	Route::resource('/cart', 'CartController');
-    Route::resource('products', 'ProductController');
-    Route::post('/submit', 'HomeController@submit');
+	Route::resource('products', 'ProductController');
 
 	// End of every authenticated user can access routes here
 
@@ -31,11 +50,11 @@ Route::group(['middleware' => 'auth'], function () {
 	// Routes that only platform managers can access
 	Route::group(['middleware' => ['role:Super Admin']], function () {
 
-		Route::resource('roles', 'RoleController');
+        Route::resource('roles', 'RoleController');
 		Route::post('roles/update/all', 'RoleController@updateAll')->name('roles.update.all');
-		Route::resource('permissions', 'PermissionController');
+        Route::resource('permissions', 'PermissionController');
 
-		Route::get('/products/import', 'ProductController@import')->name('products.import');
+
 
 
 		Route::resource('instances', 'InstanceController');
@@ -78,10 +97,7 @@ Route::group(['middleware' => 'auth'], function () {
 		->middleware('permission:' . config('app.reseller_index'))->name('resellers.index');
 
 		Route::get('/customers', 'CustomerController@index')
-        ->middleware('permission:' . config('app.customer_index'))->name('customers.index');
-
-        Route::get('/customers/create', 'CustomerController@create')
-		->middleware('permission:' . config('app.customer_create'))->name('customers.create');
+		->middleware('permission:' . config('app.customer_index'))->name('customers.index');
 
 
 		Route::group(['middleware' => ['check_reseller']], function () {
@@ -112,13 +128,13 @@ Route::group(['middleware' => 'auth'], function () {
 
 		Route::group(['middleware' => ['check_customer']], function () {
 
-			// Route::get('/customers/{customer}-{slug}', 'CustomerController@show')
-			// ->middleware('permission:' . config('app.customer_show'), 'check_customer')
-			// ->name('customers.show');
+			Route::get('/customers/{customer}-{slug}', 'CustomerController@show')
+			->middleware('permission:' . config('app.customer_show'), 'check_customer')
+			->name('customers.show');
 
 			Route::get('customers/{customer}-{slug}/edit', 'CustomerController@show')
 			->middleware('permission:' . config('app.customer_edit'))
-			->name('customer.edit');
+			->name('customers.edit');
 
 		});
 

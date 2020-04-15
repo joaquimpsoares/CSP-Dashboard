@@ -63,6 +63,7 @@
 					<a class="dropdown-item" href="{{ route('roles.index') }}">{{ ucwords(trans_choice('messages.manage_role', 2)) }}</a>
 					<a class="dropdown-item" href="{{ route('priceLists.index') }}">{{ ucwords(trans_choice('messages.price_list', 2)) }}</a>
 					<a class="dropdown-item" href="{{ route('products.import') }}">Import Products</a>
+					<a class="dropdown-item" href="{{ route('jobs') }}">Tasks</a>
 					<div class="dropdown-divider"></div>
 					<a class="dropdown-item" href="#">Something else here</a>
 				</div>
