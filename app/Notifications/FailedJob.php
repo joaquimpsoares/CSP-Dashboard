@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use NotificationChannels\MsTeams\MsTeamsChannel;
 use NotificationChannels\MsTeams\MsTeamsMessage;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Mail;
 
 class FailedJob extends Notification
 {
@@ -37,7 +38,7 @@ class FailedJob extends Notification
      */
     public function via($notifiable)
     {
-        return [MsTeamsChannel::class];
+        return [MsTeamsChannel::class, 'mail', 'database'];
     }
 
     public function toMsTeams($notifiable)
@@ -64,7 +65,11 @@ class FailedJob extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
+                    ->line('Job failed with id  '.$this->event->job->getJobId())
+                    ->line('**Job UUID:**       ' . $this->event->job->uuid())
+                    ->line('**Job ID:**         ' . $this->event->job->getJobId())
+                    ->line('**Job Name:**       '. $this->event->job->resolveName())
+                    ->line('**Message Body:**   '. $this->event->exception->getMessage())
                     ->action('Notification Action', url('/'))
                     ->line('Thank you for using our application!');
     }
@@ -81,4 +86,21 @@ class FailedJob extends Notification
             //
         ];
     }
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toDatabase($notifiable)
+    {
+        return [
+            'Job UUID' => $this->event->job->uuid(),
+            'job ID' => $this->event->job->getJobId(),
+            'Job Name' => $this->event->job->resolveName(),
+            'Message Body' => $this->event->exception->getMessage(),
+        ];
+    }
+
 }

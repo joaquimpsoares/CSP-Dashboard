@@ -16,7 +16,11 @@ Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
 
 
 Route::get('/sendnoti', function() {
-	User::first()->notify(new FailedJob());
+    // User::first()->notify(new FailedJob());
+    $user = User::first();
+    $user->notifications;
+    dd($user->notifications);
+
 })->name('sendnoti');
 
 

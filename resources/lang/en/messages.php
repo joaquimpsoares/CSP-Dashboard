@@ -4,6 +4,10 @@ return [
 
     'example' => 'Example message.',
 
+    
+    'importproducts' => 'Import Microsoft products, scheduled',
+    'jobrescheduled' => 'Job rescheduled',
+
     'provider' => 'provider|providers',
     'manage_role' => 'manage role|manage roles',
     'reseller' => 'reseller|resellers',
@@ -19,6 +23,7 @@ return [
     'product' => 'product|products',
     'order' => 'order|orders',
     'add_to_cart' => 'add to cart',
+    'add' => 'add',
     'product_name' => 'product name',
     'vendor' => 'vendor|vendors',
     'all' => 'all',
