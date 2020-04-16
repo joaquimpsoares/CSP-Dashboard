@@ -20,8 +20,6 @@ Route::get('/sendnoti', function() {
 })->name('sendnoti');
 
 
-
-
 Auth::routes(['register' => false]);
 Route::impersonate();
 

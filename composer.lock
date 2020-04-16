@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4cd3e3c92da80d8ef64d810b80dae892",
+    "content-hash": "b2449e868f4fcef8a6b51f81c720c2f6",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -6765,6 +6765,62 @@
                 "tagydes"
             ],
             "time": "2020-04-04T14:53:44+00:00"
+        },
+        {
+            "name": "talvbansal/laravel-ms-teams-notification-channel",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/talvbansal/laravel-ms-teams-notification-channel.git",
+                "reference": "85302bf0e6607b12a5fdcd5eba4ab64281dfe7c8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/talvbansal/laravel-ms-teams-notification-channel/zipball/85302bf0e6607b12a5fdcd5eba4ab64281dfe7c8",
+                "reference": "85302bf0e6607b12a5fdcd5eba4ab64281dfe7c8",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.2",
+                "illuminate/notifications": "^6.0 || ^7.0",
+                "illuminate/support": "^6. || ^7.0",
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "ext-json": "*",
+                "mockery/mockery": "^1.0",
+                "orchestra/database": "^4.0 || ^5.0",
+                "orchestra/testbench": "^4.0 || ^5.0",
+                "phpunit/phpunit": "^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "NotificationChannels\\MsTeams\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Talv Bansal",
+                    "email": "talvbansal@outlook.com",
+                    "homepage": "https://www.talvbansal.me/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Basic MS Teams Notifications Channel for Laravel",
+            "homepage": "https://github.com/talvbansal/laravel-ms-teams-notification-channel",
+            "keywords": [
+                "laravel",
+                "ms teams",
+                "ms teams notification",
+                "ms teams notifications channel",
+                "notification"
+            ],
+            "time": "2020-03-05T15:41:26+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",

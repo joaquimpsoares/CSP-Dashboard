@@ -38,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
         * Job dispatched & processing
         */
         Queue::before(function ( JobProcessing $event ) {
-            
+
             Log::info('Job UUID: ' . $event->job->uuid());
             Log::info('Job ID: ' . $event->job->getJobId());
             Log::info('Job ready: ' . $event->job->resolveName());
@@ -65,7 +65,7 @@ class AppServiceProvider extends ServiceProvider
         * Job failed
         */
         Queue::failing(function ( JobFailed $event ) {
-                
+
             Log::error('Job failed: ' . $event->job->resolveName() . '(' . $event->exception->getMessage() . ')');
             User::first()->notify(new FailedJob($event));
 

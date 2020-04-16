@@ -13,9 +13,9 @@ use Illuminate\Notifications\Messages\MailMessage;
 class FailedJob extends Notification
 {
 
-    
+
     use Queueable;
-    
+
     public $event;
 
 
