@@ -143,7 +143,7 @@
 		<div class="row">
 			<div class="col">
 				<span class="float-right">
-					@include('partials.paginator', ['paginator' => $products])
+					@include('partials.paginator', ['paginator' => $prices])
 				</span>
 			</div>
 		</div>

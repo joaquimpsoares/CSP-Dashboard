@@ -55,8 +55,5 @@ class Provider extends Model
     public function status() {
     	return $this->belongsTo(Status::class);
     }
-
-    /*public function priceList() {
-    	return $this->morphToMany('App\PriceList', 'price_listables');
-    }*/
+    
 }

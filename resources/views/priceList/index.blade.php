@@ -7,7 +7,6 @@
 		<tr>
 			<th>Name</th>
 			<th>Description</th>
-			<th>Markup</th>
 			<th>Actions</th>
 		</tr>
 	</thead>
@@ -20,9 +19,6 @@
 			</td>
 			<td>
 				{{ $priceList['description'] }}
-			</td>
-			<td>
-				{{ $priceList['markup'] }}
 			</td>
 			<td>
 				<a href="{{ route('priceList.prices', $priceList['id']) }}"><i class="fa fa-list"></i></a>

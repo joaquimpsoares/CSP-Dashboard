@@ -19,6 +19,7 @@ class UserSeeder extends Seeder
     {
         
         $reseller = Reseller::first();
+        $reseller2 = Reseller::where('company_name', 'Reseller 2')->first();
         $subReseller = $reseller->subResellers()->first();
         $customer = Customer::first();
 
@@ -90,6 +91,19 @@ class UserSeeder extends Seeder
             'status' => 'Active'
         ]);
 
+        $userReseller2 = User::create([
+            'first_name' => 'Reseller 2 User',
+            'email' => 'reseller2@admin.com',
+            'username' => 'Reseller2',
+            'password' => Hash::make('admin123'),
+            'avatar' => null,
+            'country_id' => null,
+            'provider_id' => 1,
+            'reseller_id' => $reseller2->id,
+            'user_level_id' => $resellerLevel->id, // Manager
+            'status' => 'Active'
+        ]);
+
         $userSubReseller = User::create([
             'first_name' => 'Sub Reseller User',
             'email' => 'subreseller@admin.com',
@@ -121,6 +135,7 @@ class UserSeeder extends Seeder
         $userProvider->assignRole(config('app.provider'));
         $userProvider2->assignRole(config('app.provider'));
         $userReseller->assignRole(config('app.reseller'));
+        $userReseller2->assignRole(config('app.reseller'));
         $userSubReseller->assignRole(config('app.subreseller'));
         $userCustomer->assignRole(config('app.customer'));
 

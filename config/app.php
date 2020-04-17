@@ -187,7 +187,7 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         Webpatser\Countries\CountriesServiceProvider::class,
         Lab404\Impersonate\ImpersonateServiceProvider::class,
-        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+        //Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
     ],
 
     /*

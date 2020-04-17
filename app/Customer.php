@@ -64,9 +64,9 @@ class Customer extends Model
     }
 
     public function priceList() {
-        return $this->morphOne('App\PriceList', 'pricelistable');
+        return $this->belongsTo('App\PriceList');
     }
-
+    
     public function status() {
         return $this->belongsTo(Status::class);
     }

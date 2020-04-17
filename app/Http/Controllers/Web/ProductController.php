@@ -147,20 +147,7 @@ class ProductController extends Controller
     //     // $instance->update($request->all());
 
     //     return redirect()->route('products.list')->with('success', 'Instance updated succesfully');
-    // }
-
-
-public function destroy(Product $product)
-{}
-
-public function getMasterToken()
-{
-    $instance = Instance::first();
-    
-    if( !$instance){
-        return redirect()->route('products.list')->with('success', 'The account has no assigned instance');
     }
-}
 
 
     public function destroy(Product $product)
@@ -179,12 +166,12 @@ public function getMasterToken()
             $instance->update([
                 'external_token' => $externalToken,
                 'external_token_updated_at' => now()
-                ]);
-            }
-            return redirect()->route('dashboard')->with('success', 'Instance updated succesfully');
+            ]);
         }
+        return redirect()->route('dashboard')->with('success', 'Instance updated succesfully');
     }
-    
+
+
     /**
      * Import Products from Microsoft
      *
@@ -218,5 +205,5 @@ public function getMasterToken()
     }
 
 
-
+}
 
