@@ -15,14 +15,14 @@
 	</thead>
 	<tbody>
 		@forelse($customers as $customer)
-		@if($customer->status->name === 'message.active')
+		@if($customer['status'] === 'message.active')
 		<tr>
 			<td>
-				<a href="{{ $customer->path() }}">{{ $customer->company_name }}</a>
+				<a href="{{ $customer['path'] }}">{{ $customer['company_name'] }}</a>
 			</td>
-			<td>{{ $customer->country->name }}</td>
-			<td>{{ $customer->state }}</td>
-			<td>{{ $customer->city }}</td>
+			<td>{{ $customer['country'] }}</td>
+			<td>{{ $customer['state'] }}</td>
+			<td>{{ $customer['city'] }}</td>
 			<td style="width: 150px">
 				@include('partials.actions', ['model' => $customer, 'modelo' => 'customer'])
 			</td>

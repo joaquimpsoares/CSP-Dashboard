@@ -6,7 +6,9 @@
 	<thead>
 		<tr>
 			<th>Name</th>
-			<th>Name</th>
+			<th>Description</th>
+			<th>Markup</th>
+			<th>Actions</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -14,10 +16,16 @@
 		
 		<tr>
 			<td>
-				<a href="{{ route('priceLists.edit', $priceList->id) }}">{{ $priceList->name }}</a>
+				<a href="{{ route('priceList.edit', $priceList['id']) }}">{{ $priceList['name'] }}</a>
 			</td>
 			<td>
-				{{ $priceList->pricelistable['company_name'] }}
+				{{ $priceList['description'] }}
+			</td>
+			<td>
+				{{ $priceList['markup'] }}
+			</td>
+			<td>
+				<a href="{{ route('priceList.prices', $priceList['id']) }}"><i class="fa fa-list"></i></a>
 			</td>
 		</tr>
 		

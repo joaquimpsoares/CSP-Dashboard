@@ -42,6 +42,11 @@ return [
     'cart' => 'cart',
     'continue_shopping' => 'continue shopping',
     'price_list' => 'price list|price lists',
+    'price' => 'price|prices',
+    'product_sku' => 'product SKU',
+    'product_name' => 'product name',
+    'price' => 'price|prices',
+    'msrp' => 'msrp',
 
 
 ];

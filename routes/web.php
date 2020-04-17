@@ -27,17 +27,51 @@ Route::get('/', function() {
 })->name('home');
 
 
+/**********************************************************************************
+Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
+
+**********************************************************************************/
+
+Route::get('reseller/{reseller}/priceList', 'ResellerController@getPriceList')->name('reseller.pricelist');
+Route::get('priceList/{priceList}/prices', 'PriceListController@getPrices')->name('priceList.prices');
+
+
+/**********************************************************************************
+Fim Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
+
+**********************************************************************************/
+
+
 Route::group(['middleware' => 'auth'], function () {
+
+	Route::get('/test', function() {
+		
+		/*$reseller = App\Reseller::first();
+		$reseller->price_list_id = 1;
+
+		$reseller->save();
+		dd($reseller);*/
+
+		$price = App\Price::all()->map->format();
+		//dd($price[0]['product']);
+		foreach ($price as $key => $value) {
+			echo $price[$key]['price'];
+			dump($value);
+		}
+		
+	});
 
 	// Every authenticated user can access routes here
 
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('/cart/add/product/{product}', 'CartController@addProduct')->name('cart.add_product');
 	Route::get('/cart/remove/product/{product}', 'CartController@removeProduct')->name('cart.remove_product');
-    Route::get('/cart/clear', 'CartController@destroy')->name('cart.clear');
+	Route::get('/cart/clear', 'CartController@destroy')->name('cart.clear');
 
 
 	Route::resource('/cart', 'CartController');
+	Route::resource('/store', 'StoreController');
+	Route::get('products/test', 'ProductController@index2');
 	Route::resource('products', 'ProductController');
 
 	// End of every authenticated user can access routes here
@@ -47,9 +81,9 @@ Route::group(['middleware' => 'auth'], function () {
 	// Routes that only platform managers can access
 	Route::group(['middleware' => ['role:Super Admin']], function () {
 
-        Route::resource('roles', 'RoleController');
+		Route::resource('roles', 'RoleController');
 		Route::post('roles/update/all', 'RoleController@updateAll')->name('roles.update.all');
-        Route::resource('permissions', 'PermissionController');
+		Route::resource('permissions', 'PermissionController');
 
 
 
@@ -74,13 +108,13 @@ Route::group(['middleware' => 'auth'], function () {
 
 		Route::group(['middleware' => ['check_provider']], function () {
 
-			Route::get('/resellers', 'ResellerController@index')
-			->middleware('permission:' . config('app.reseller_create'))->name('resellers.create');
+			Route::get('/reseller', 'ResellerController@index')
+			->middleware('permission:' . config('app.reseller_create'))->name('reseller.create');
 
-			Route::get('/priceLists/provider/{provider}', 'PriceListController@getProviderPriceList')
+			Route::get('/priceList/provider/{provider}', 'PriceListController@getProviderPriceList')
 			->middleware('permission:' . config('app.price_list_show'))->name('priceLists.provider_price_list');
 
-			Route::resource('/priceLists', 'PriceListController');
+			Route::resource('/priceList', 'PriceListController');
 		});
 
 	});
@@ -90,8 +124,8 @@ Route::group(['middleware' => 'auth'], function () {
 	// Routes that platform managers, providers and resellers can access
 	Route::group(['middleware' => ['role:' . config('app.super_admin') . '|' . config('app.admin' ) . '|' . config('app.provider' ) . '|' . config('app.reseller') . '|' . config('app.subreseller')]], function () {
 
-		Route::get('/resellers', 'ResellerController@index')
-		->middleware('permission:' . config('app.reseller_index'))->name('resellers.index');
+		Route::get('/reseller', 'ResellerController@index')
+		->middleware('permission:' . config('app.reseller_index'))->name('reseller.index');
 
 		Route::get('/customers', 'CustomerController@index')
 		->middleware('permission:' . config('app.customer_index'))->name('customers.index');
@@ -99,21 +133,21 @@ Route::group(['middleware' => 'auth'], function () {
 
 		Route::group(['middleware' => ['check_reseller']], function () {
 
-			Route::get('/resellers/{reseller}-{slug}', 'ResellerController@show')
-			->middleware('permission:' . config('app.reseller_show'))->name('resellers.show');
+			Route::get('/reseller/{reseller}-{slug}', 'ResellerController@show')
+			->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
 
-			Route::get('resellers/{reseller}-{slug}/edit', 'ResellerController@show')
-			->middleware('permission:' . config('app.reseller_edit'))->name('resellers.edit');
+			Route::get('reseller/{reseller}-{slug}/edit', 'ResellerController@show')
+			->middleware('permission:' . config('app.reseller_edit'))->name('reseller.edit');
 
-			Route::get('resellers/{reseller}-{slug}/customers', 'ResellerController@getCustomersFromReseller')
-			->middleware('permission:' . config('app.customer_index'))->name('resellers.customers');
+			Route::get('reseller/{reseller}-{slug}/customers', 'ResellerController@getCustomersFromReseller')
+			->middleware('permission:' . config('app.customer_index'))->name('reseller.customers');
 
-			Route::get('/priceLists/reseller/{reseller}', 'PriceListController@getResellerPriceList')->name('priceLists.reseller_price_list');
+			
 
 		});
 
 		Route::group(['middleware' => ['check_customer']], function () {
-			Route::get('/priceLists/customer/{customer}', 'PriceListController@getCustomerPriceList')->name('priceLists.customer_price_list');
+			//Route::get('/priceList/customer/{customer}', 'PriceListController@getCustomerPriceList')->name('priceLists.customer_price_list');
 		});
 
 	});

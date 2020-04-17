@@ -18,17 +18,17 @@
 	</thead>
 	<tbody>
 		@forelse($resellers as $reseller)
-		@if($reseller->status->name === 'message.active')
+		@if($reseller['status'] === 'message.active')
 		<tr>
 			<td>
-				<a href="{{ $reseller->path() }}">{{ $reseller->company_name }}</a>
+				<a href="{{ $reseller['path'] }}">{{ $reseller['company_name'] }}</a>
 			</td>
 			<td>
-				{{ $reseller->country->name }}
+				{{ $reseller['country'] }}
 				
 			</td>
-			<td>{{ $reseller->state }}</td>
-			<td>{{ $reseller->city }}</td>
+			<td>{{ $reseller['state'] }}</td>
+			<td>{{ $reseller['city'] }}</td>
 			<td style="width: 150px">
 				@include('partials.actions', ['model' => $reseller, 'modelo' => 'reseller'])
 			</td>

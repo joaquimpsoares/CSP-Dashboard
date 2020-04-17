@@ -16,6 +16,37 @@ class Product extends Model
         'reseller_qualifications' => 'collection',
     ];
 
+    public function format()
+    {
+        return [
+            'vendor' => $this->vendor,
+            'instance_id' => $this->instance_id,
+            'sku' => $this->sku,
+            'name' => $this->name,
+            'description' => $this->description,
+            'uri' => $this->uri,
+            'minimum_quantity' => $this->minimum_quantity,
+            'minimum_quantity' => $this->minimum_quantity,
+            'limit' => $this->limit,
+            'term' => $this->term,
+            'is_available_for_purchase' => $this->is_available_for_purchase,
+            'locale' => $this->locale,
+            'country' => $this->country,
+            'has_addons' => $this->has_addons,
+            'is_trial' => $this->is_trial,
+            'is_autorenewable' => $this->is_autorenewable,
+            'billing' => $this->billing,
+            'acquisition_type' => $this->acquisition_type,
+            'addons' => $this->addons,
+            'category' => $this->category,
+            'upgrade_target_offers' => $this->upgrade_target_offers,
+            'supported_billing_cycles' => $this->supported_billing_cycles,
+            'conversion_target_offers' => $this->conversion_target_offers,
+            'resellee_qualifications' => $this->resellee_qualifications,
+            'reseller_qualifications' => $this->reseller_qualifications,
+            'price' => $this->price
+        ];
+    }
 
     public function getAddons(){
         return $this->addons->map(function($item){
@@ -23,8 +54,7 @@ class Product extends Model
         });
     }
 
-    public function priceLists()
-    {
-        return $this->belongsToMany('App\PriceList', 'price_list_product', 'price_list_id', 'product_sku');
+    public function price() {
+        return $this->hasOne('App\Price', 'product_sku', 'sku')->where('product_vendor', $this->vendor);
     }
 }

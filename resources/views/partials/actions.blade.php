@@ -7,7 +7,7 @@
 	@endif
 	@if(Auth::user()->can($modelo . '.edit'))
 	<div class="col-2">
-		<i class="fas {{ $model->status === 'Active' ? 'fa-eye-slash text-primary' : 'fa-eye text-info' }}"></i>		
+		<i class="fas {{ $model['status'] === 'Active' ? 'fa-eye-slash text-primary' : 'fa-eye text-info' }}"></i>		
 	</div>
 	@endif
 	@if(Auth::user()->can($modelo . '.delete'))
@@ -17,7 +17,7 @@
 	@endif
 	@if ($modelo === "reseller") 
 	<div class="col-2">
-		<a href="{{ route('resellers.customers', [$model->id, Str::slug($model->company_name, ' ')]) }}" 
+		<a href="{{ route('reseller.customers', [$model['id'], Str::slug($model['company_name'], ' ')]) }}" 
 			data-toggle="tooltip" 
 			data-placement="left" 
 			title="{{ ucwords(trans_choice('messages.customer', 2)) }}" 
@@ -30,7 +30,7 @@
 	@endif
 	@if ($modelo !== "provider") 
 	<div class="col-2">
-		<a href="{{ route('priceLists.' . $modelo . '_price_list', $model->id) }}" 
+		<a href="{{ route($modelo . '.pricelist', $model['id']) }}" 
 			data-toggle="tooltip" 
 			data-placement="left" 
 			title="{{ ucwords(trans_choice('messages.price_list', 1)) }}" 

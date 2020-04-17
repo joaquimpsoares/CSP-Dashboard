@@ -16,7 +16,7 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->string('vendor')->nullable();
+            $table->string('vendor')->default('microsoft');
             $table->unsignedBigInteger('instance_id');
             $table->string('sku')->nullable(false);
 

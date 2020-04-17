@@ -27,7 +27,7 @@ class CreateCustomersTable extends Migration
             $table->string('postal_code', 15)->nullable();
             $table->double('markup', 6,2)->nullable();
             $table->unsignedSmallInteger('status_id');
-            $table->unsignedBigInteger('price_list_id')->nullable();
+            $table->unsignedBigInteger('price_list_id')->default(1);
             $table->timestamps();
             $table->softDeletes();
 

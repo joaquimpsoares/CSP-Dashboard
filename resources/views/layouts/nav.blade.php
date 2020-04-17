@@ -25,7 +25,7 @@
 			@endcan
 			@can(config('app.reseller_index'))
 			<li class="nav-item">
-				<a class="nav-link" href="{{ route('resellers.index') }}">
+				<a class="nav-link" href="{{ route('reseller.index') }}">
 					{{ ucwords(trans_choice('messages.reseller', 2)) }}
 				</a>
 			</li>
@@ -47,7 +47,7 @@
 					{{ ucwords(__('messages.maketplace')) }}
 				</a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-					<a class="dropdown-item" href="{{ route('products.index') }}">{{ ucwords(trans_choice('messages.product', 2)) }}</a>
+					<a class="dropdown-item" href="{{ route('store.index') }}">{{ ucwords(trans_choice('messages.product', 2)) }}</a>
 					<a class="dropdown-item" href="{{ route('cart.index') }}">{{ ucwords(__('messages.cart')) }}</a>
 					<div class="dropdown-divider"></div>
 					<a class="dropdown-item" href="#">{{ ucwords(trans_choice('messages.order', 2)) }}</a>
@@ -61,8 +61,9 @@
 				</a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 					<a class="dropdown-item" href="{{ route('roles.index') }}">{{ ucwords(trans_choice('messages.manage_role', 2)) }}</a>
-					<a class="dropdown-item" href="{{ route('priceLists.index') }}">{{ ucwords(trans_choice('messages.price_list', 2)) }}</a>
+					<a class="dropdown-item" href="{{ route('priceList.index') }}">{{ ucwords(trans_choice('messages.price_list', 2)) }}</a>
 					<a class="dropdown-item" href="{{ route('products.import') }}">Import Products</a>
+					<a class="dropdown-item" href="{{ route('products.index') }}">Products</a>
 					<a class="dropdown-item" href="{{ route('jobs') }}">Tasks</a>
 					<div class="dropdown-divider"></div>
 					<a class="dropdown-item" href="#">Something else here</a>

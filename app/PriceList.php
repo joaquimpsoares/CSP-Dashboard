@@ -17,21 +17,32 @@ class PriceList extends Model
 	
 	protected $guarded = [];
 
-    public function providers() {
+    public function format()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'markup' => $this->markup,
+            'prices' => $this->prices
+        ];
+    }
+
+    /*public function providers() {
     	return $this->morphedByMany('App\Provider', 'price_listables');
     }
 
     public function resellers() {
     	return $this->morphedByMany('App\Reseller', 'price_listables');
-    }
+    }*/
 
-    public function products()
-    {
-    	return $this->belongsToMany('App\Product', 'price_list_product', 'price_list_id', 'product_sku');
+    public function pricelistable() {
+        return $this->morphTo();
     }
 
     public function prices()
     {
         return $this->hasMany('App\Price');
     }
+
 }

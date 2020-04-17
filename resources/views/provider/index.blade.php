@@ -18,19 +18,19 @@
 	</thead>
 	<tbody>
 		@forelse($providers as $provider)
-		@if($provider->status->name === 'message.active')
+		@if($provider['status'] === 'message.active')
 		<tr>
 			<td>
-				<a href="{{ $provider->path() }}">{{ $provider->company_name }}</a>
+				<a href="{{ $provider['path'] }}">{{ $provider['company_name'] }}</a>
 			</td>
 			<td>
-				{{ $provider->country->name }}
+				{{ $provider['country'] }}
 				
 			</td>
-			<td>{{ $provider->state }}</td>
-			<td>{{ $provider->city }}</td>
+			<td>{{ $provider['state'] }}</td>
+			<td>{{ $provider['city'] }}</td>
 			<td style="width: 150px">
-				@include('partials.actions', ['model' => $provider, 'modelo' => 'provider'])
+				 @include('partials.actions', ['model' => $provider, 'modelo' => 'provider'])
 			</td>
 		</tr>
 		
@@ -40,6 +40,7 @@
 			<td colspan="5">Empty</td>
 		</tr>
 		@endforelse
+		
 	</tbody>
 </table>
 
