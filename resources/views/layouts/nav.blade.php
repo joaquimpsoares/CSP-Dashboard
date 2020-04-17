@@ -76,8 +76,11 @@
 
 			@endauth
 		</ul>
+        @auth
+        <a class="nav-link" href="jobs">Notifications <span class="sr-only">(current)</span>
+            <span class="badge badge-pill badge-primary" style="float:right;margin-bottom:-10px;">{{ Auth::user()->notifications->count() }}</span> <!-- your badge -->
+        </a>
 		<div class="buttons">
-			@auth
 			<a class="btn btn-primary">
 				{{ Auth::user()->username }}
 			</a>
