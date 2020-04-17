@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Artisan;
 class JobsController extends Controller
 {
 
+    public $jobs;
+
     /**
     * Display a listing of the resource.
     *
@@ -26,11 +28,30 @@ class JobsController extends Controller
     }
 
     public function retryJob($id){
-       $tt = Artisan::call('queue:retry ' . $id);
+       
+       Artisan::call('queue:retry ' . $id);
         
-        return redirect()->route('jobs')->with(['alert' => 'success', 'message' => trans('messages.jobrescheduled')]);
+       return redirect()->route('jobs')->with(['alert' => 'success', 'message' => trans('messages.jobrescheduled')]);
 
     }
+
+
+    public function pending(Request $request)
+    {
+        $jobs = $this->jobs->getPending($request->query('starting_at', -1))->map(function ($job) {
+            $job->payload = json_decode($job->payload);
+
+            return $job;
+        })->values();
+
+            dd($jobs);
+        return [
+            'jobs' => $jobs,
+            'total' => $this->jobs->countRecent(),
+        ];
+    }
+
+
 
         /**
      * Decode the given job.

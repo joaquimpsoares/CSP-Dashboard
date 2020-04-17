@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Web;
 
 use App\Customer;
-use App\DataTables\CustomerDataTable;
-use App\Http\Controllers\Controller;
 use App\Reseller;
+use App\Http\Requests\Request;
 use App\Repositories\CustomerRepositoryInterface;
 
 

@@ -1,9 +1,28 @@
 <?php
 
 use App\User;
-use App\Notifications\FailedJob;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Notifications\Notification;
+use App\Notifications\FailedJob;
+
+//Marco verifica aqui esta linha... para a importação dos productos!
+
+Route::get('/products/import', 'ProductController@import')->name('products.import');
+Route::get('/jobs', 'JobsController@index')->name('jobs');
+Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
+Route::get('jobs/pending', 'JobsController@pending')->name('jobs.pending');
+Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
+
+
+Route::get('/sendnoti', function() {
+    // User::first()->notify(new FailedJob());
+    $user = User::first();
+    $user->notifications;
+    dd($user->notifications);
+
+})->name('sendnoti');
+
 
 //Marco verifica aqui esta linha... para a importação dos productos!
 
@@ -66,7 +85,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/home', 'HomeController@index')->name('home');
 	Route::get('/cart/add/product/{product}', 'CartController@addProduct')->name('cart.add_product');
 	Route::get('/cart/remove/product/{product}', 'CartController@removeProduct')->name('cart.remove_product');
-	Route::get('/cart/clear', 'CartController@destroy')->name('cart.clear');
+    Route::get('/cart/clear', 'CartController@destroy')->name('cart.clear');
 
 
 	Route::resource('/cart', 'CartController');
@@ -81,9 +100,9 @@ Route::group(['middleware' => 'auth'], function () {
 	// Routes that only platform managers can access
 	Route::group(['middleware' => ['role:Super Admin']], function () {
 
-		Route::resource('roles', 'RoleController');
+        Route::resource('roles', 'RoleController');
 		Route::post('roles/update/all', 'RoleController@updateAll')->name('roles.update.all');
-		Route::resource('permissions', 'PermissionController');
+        Route::resource('permissions', 'PermissionController');
 
 
 

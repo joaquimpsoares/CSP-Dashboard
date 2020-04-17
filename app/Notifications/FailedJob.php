@@ -2,24 +2,32 @@
 
 namespace App\Notifications;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use NotificationChannels\MsTeams\MsTeamsChannel;
 use NotificationChannels\MsTeams\MsTeamsMessage;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Mail;
 
 class FailedJob extends Notification
 {
+
+
     use Queueable;
+
+    public $event;
+
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(JobFailed $event)
     {
-        //
+        $this->event = $event;
     }
 
     /**
@@ -30,22 +38,22 @@ class FailedJob extends Notification
      */
     public function via($notifiable)
     {
-        return [MsTeamsChannel::class];
+        return [MsTeamsChannel::class, 'mail', 'database'];
     }
 
     public function toMsTeams($notifiable)
     {
-        // $url = url('/invoice/' . $this->invoice->id);
-
         return MsTeamsMessage::create()
             ->to(config('services.ms-teams.webhook_url'))
-            ->title('Here is a test notification sent from the '.ucfirst(app()->environment()).' environment')
-            ->content("Here is some content for the notification.
-                > That also supports markdown formatting in the body too!
-                Below are optional buttons and images.
-            ")
-            ->button('And some clickable buttons', 'https://nx-technology.com')
-            ->image('https://source.unsplash.com/random/800x800?animals,nature&q='.now());
+            ->title('Job failed with id '.$this->event->job->getJobId())
+            ->content(  ">**Job UUID:** " . $this->event->job->uuid()."<br/>".
+                        "**Job ID:**    " . $this->event->job->getJobId()."<br/>".
+                        "**Job Name:**  ". $this->event->job->resolveName()."<br/>".
+                        "**Attempts:**  ". $this->event->job->attempts()."<br/>".
+                        "**Message Body:**  ". $this->event->exception->getMessage())
+            ->button('Please check it' ,'app()->environment()');
+            // ->image('https://source.unsplash.com/random/800x800?animals,nature&q='.now()
+        ;
     }
 
     /**
@@ -57,7 +65,11 @@ class FailedJob extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
+                    ->line('Job failed with id  '.$this->event->job->getJobId())
+                    ->line('**Job UUID:**       ' . $this->event->job->uuid())
+                    ->line('**Job ID:**         ' . $this->event->job->getJobId())
+                    ->line('**Job Name:**       '. $this->event->job->resolveName())
+                    ->line('**Message Body:**   '. $this->event->exception->getMessage())
                     ->action('Notification Action', url('/'))
                     ->line('Thank you for using our application!');
     }
@@ -74,4 +86,21 @@ class FailedJob extends Notification
             //
         ];
     }
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toDatabase($notifiable)
+    {
+        return [
+            'Job UUID' => $this->event->job->uuid(),
+            'job ID' => $this->event->job->getJobId(),
+            'Job Name' => $this->event->job->resolveName(),
+            'Message Body' => $this->event->exception->getMessage(),
+        ];
+    }
+
 }

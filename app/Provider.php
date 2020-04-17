@@ -33,7 +33,7 @@ class Provider extends Model
 
 	public function getMyCustomersId() {
 		$customers = [];
-		
+
 		$resellers = $this->resellers()->whereNull('main_office')->get(['id']);
 		foreach ($resellers as $reseller) {
 			foreach ($reseller->customers()->get(['id']) as $customer) {
@@ -45,7 +45,7 @@ class Provider extends Model
 	}
 
 	public function path() {
-        return url("/provider/{$this->id}-" . Str::slug($this->company_name, ' '));
+        return url("/provider/{$this->id}-" . Str::slug($this->company_name, '-'));
     }
 
     public function country() {

@@ -12,7 +12,7 @@
 	<!-- Scripts -->
 	<script src="{{ asset('jquery/jquery.js') }}"></script>
 	<script src="{{ asset('js/app.js') }}" defer></script>
-	
+
 	<!-- Styles -->
 	<link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
@@ -26,15 +26,15 @@
 			</div>
 		</div>
 
-		
+
 		@include('partials.messages')
-		
+
 		<main class="py-4">
 			@yield('content')
 		</main>
-		
+
 	</div>
-	
+
 
 	<script type="text/javascript">
 		$(function () {

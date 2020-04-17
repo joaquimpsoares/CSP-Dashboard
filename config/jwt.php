@@ -27,6 +27,19 @@ return [
 
     'secret' => env('JWT_SECRET'),
 
+        /*
+    |--------------------------------------------------------------------------
+    | Tokens Sweeping Lottery
+    |--------------------------------------------------------------------------
+    |
+    | Expired api tokens (used as "jti" claim inside JWT tokens) must be
+    | manually removed from storage. Here are the chances that it will
+    | happen whenever new token is generated. By default, the odds are 5 out of 100.
+    |
+    */
+
+    'lottery' => [5, 100],
+
     /*
     |--------------------------------------------------------------------------
     | JWT Authentication Keys
