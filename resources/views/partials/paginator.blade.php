@@ -66,7 +66,7 @@ $additionalLink = "&search=1&name=" . $name . "&vendor=" . $vendor . "&quantity=
         {{-- Next Page Link --}}
         @if ($paginator->hasMorePages())
         <a href="{{ $paginator->nextPageUrl() }}{{ $additionalLink }}" rel="next" class="page-item"><li class="page-link">&raquo;</li></a>
-        <a href="?page={{$products->lastPage()}}{{ $additionalLink }}"  class="page-item"><li class="page-link right">{{ ucwords(__('messages.last_page')) }}</li></a>
+        <a href="?page={{$paginator->lastPage()}}{{ $additionalLink }}"  class="page-item"><li class="page-link right">{{ ucwords(__('messages.last_page')) }}</li></a>
         @else
         <li class="disabled page-link"><span>&raquo;</span></li>
 

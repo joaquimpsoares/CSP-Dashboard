@@ -52,6 +52,7 @@ Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlew
 **********************************************************************************/
 
 Route::get('reseller/{reseller}/priceList', 'ResellerController@getPriceList')->name('reseller.pricelist');
+Route::get('customer/{customer}/priceList', 'CustomerController@getPriceList')->name('customer.pricelist');
 Route::get('priceList/{priceList}/prices', 'PriceListController@getPrices')->name('priceList.prices');
 
 

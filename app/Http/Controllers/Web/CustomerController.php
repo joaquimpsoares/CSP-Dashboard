@@ -40,4 +40,11 @@ class CustomerController extends Controller
 
     
     public function destroy(Customer $customer) { }
+
+    public function getPriceList($customer)
+    {
+
+        $customer = Customer::with('priceList')->where('id', $customer)->first();
+        dd($customer);
+    }
 }

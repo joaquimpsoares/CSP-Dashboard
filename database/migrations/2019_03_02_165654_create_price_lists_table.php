@@ -17,8 +17,8 @@ class CreatePriceListsTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('description');
-            $table->decimal('markup', 8, 2);
-            /*$table->unsignedBigInteger('pricelistable_id');
+            /*$table->decimal('markup', 8, 2);
+            $table->unsignedBigInteger('pricelistable_id');
             $table->string('pricelistable_type')->nullable();*/
             $table->timestamps();
             $table->softDeletes();

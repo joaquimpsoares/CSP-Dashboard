@@ -27,7 +27,7 @@ class Price extends Model
 			'price' => $this->price,
 			'msrp' => $this->msrp,
 			'currency' => $this->currency,
-			// 'product' => $this->product()->first()
+			// 'product' => $this->product()->get()
 		];
 	}
 
@@ -37,5 +37,8 @@ class Price extends Model
 
 	public function product() {
 		return $this->belongsTo('App\Product', 'product_sku', 'sku')->where('vendor', $this->product_vendor);
+		//return $this->belongsToMany('App\Product', 'prices', 'product_sku', 'sku')->where('vendor', $this->product_vendor);
 	}
+
+
 }

@@ -29,6 +29,7 @@ class CreateResellersTable extends Migration
             // Every not null main_office means a branch_office
             $table->unsignedBigInteger('main_office')->nullable();
             $table->unsignedBigInteger('price_list_id')->default(1);
+            $table->decimal('markup', 8, 2)->nullable();
             $table->unsignedSmallInteger('status_id');
             $table->timestamps();
             $table->softDeletes();

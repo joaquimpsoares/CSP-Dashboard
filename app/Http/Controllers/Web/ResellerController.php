@@ -47,10 +47,10 @@ class ResellerController extends Controller
     
     public function destroy(Reseller $reseller) { }
 
-    public function getPriceList(Reseller $reseller)
+    public function getPriceList($reseller)
     {
 
-        $reseller = $reseller->with('priceList')->where('id', $reseller->id)->first();
+        $reseller = Reseller::with('priceList')->where('id', $reseller)->first();
         dd($reseller);
     }
 }

@@ -18,8 +18,7 @@ class PriceListSeeder extends Seeder
     	
         $priceList1 = PriceList::create([
             'name' => 'Default',
-            'description' => 'Default Price List.',
-            'markup' => 0
+            'description' => 'Default Price List.'
         ]);
 
     }

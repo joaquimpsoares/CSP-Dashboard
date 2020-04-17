@@ -17,6 +17,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
 	public function all()
 	{
+        $user = $this->getUser();
 
 		switch ($this->getUserLevel()) {
             case config('app.super_admin'):
@@ -51,7 +52,7 @@ class CustomerRepository implements CustomerRepositoryInterface
             
             case config('app.reseller'):
                 $reseller = $user->reseller;
-                $customers = $reseller->customers->format();
+                $customers = $reseller->customers->map->format();
 
                 break;
             
