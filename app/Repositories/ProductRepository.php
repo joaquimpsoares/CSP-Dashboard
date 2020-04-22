@@ -43,4 +43,11 @@ class ProductRepository implements ProductRepositoryInterface
         return $products->where('addons', '<>', '[]')->paginate($quantity);
 
     }
+
+    public function verifyQuantities(Product $product, $quantity) {
+        if ($product->minimum_quantity <= $quantity && $product->maximum_quantity >= $quantity)
+            return true;
+
+        return false;
+    }
 }

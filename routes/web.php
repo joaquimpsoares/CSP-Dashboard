@@ -8,7 +8,7 @@ use App\Notifications\FailedJob;
 
 //Marco verifica aqui esta linha... para a importação dos productos!
 
-Route::get('/products/import', 'ProductController@import')->name('products.import');
+
 Route::get('/jobs', 'JobsController@index')->name('jobs');
 Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
 Route::get('jobs/pending', 'JobsController@pending')->name('jobs.pending');
@@ -17,45 +17,21 @@ Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
 
 Route::get('/sendnoti', function() {
     // User::first()->notify(new FailedJob());
-    $user = User::first();
-    $user->notifications;
-    dd($user->notifications);
+	$user = User::first();
+	$user->notifications;
+	dd($user->notifications);
 
 })->name('sendnoti');
-
-
-//Marco verifica aqui esta linha... para a importação dos productos!
-
-Route::get('/products/import', 'ProductController@import')->name('products.import');
-Route::get('/jobs', 'JobsController@index')->name('jobs');
-Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
-Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
-
-Route::get('/sendnoti', function() {
-	User::first()->notify(new FailedJob);
-})->name('sendnoti');
-
-
-
-
-Auth::routes(['register' => false]);
-Route::impersonate();
-
-Route::get('/', function() {
-	return view('home');
-})->name('home');
-
 
 /**********************************************************************************
 Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
 **********************************************************************************/
-
-Route::get('reseller/{reseller}/priceList', 'ResellerController@getPriceList')->name('reseller.pricelist');
-Route::get('customer/{customer}/priceList', 'CustomerController@getPriceList')->name('customer.pricelist');
-Route::get('priceList/{priceList}/prices', 'PriceListController@getPrices')->name('priceList.prices');
-
-
+Route::get('test', function() {
+	$oldCart = \Session::get('cart');
+	$cart = new App\Cart($oldCart);
+	dd($cart->items);
+});
 /**********************************************************************************
 Fim Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
@@ -64,47 +40,16 @@ Fim Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares
 
 Route::group(['middleware' => 'auth'], function () {
 
-	Route::get('/test', function() {
-		
-		/*$reseller = App\Reseller::first();
-		$reseller->price_list_id = 1;
-
-		$reseller->save();
-		dd($reseller);*/
-
-		$price = App\Price::all()->map->format();
-		//dd($price[0]['product']);
-		foreach ($price as $key => $value) {
-			echo $price[$key]['price'];
-			dump($value);
-		}
-		
-	});
-
-	// Every authenticated user can access routes here
-
-	Route::get('/home', 'HomeController@index')->name('home');
-	Route::get('/cart/add/product/{product}', 'CartController@addProduct')->name('cart.add_product');
-	Route::get('/cart/remove/product/{product}', 'CartController@removeProduct')->name('cart.remove_product');
-    Route::get('/cart/clear', 'CartController@destroy')->name('cart.clear');
-
-
-	Route::resource('/cart', 'CartController');
-	Route::resource('/store', 'StoreController');
-	Route::get('products/test', 'ProductController@index2');
-	Route::resource('products', 'ProductController');
-
-	// End of every authenticated user can access routes here
 
 	/*****************************************************************************************************************/
 
 	// Routes that only platform managers can access
 	Route::group(['middleware' => ['role:Super Admin']], function () {
 
-        Route::resource('roles', 'RoleController');
+		Route::resource('roles', 'RoleController');
 		Route::post('roles/update/all', 'RoleController@updateAll')->name('roles.update.all');
-        Route::resource('permissions', 'PermissionController');
-
+		Route::resource('permissions', 'PermissionController');
+		Route::get('/products/import', 'ProductController@import')->name('products.import');
 
 
 
@@ -135,6 +80,16 @@ Route::group(['middleware' => 'auth'], function () {
 			->middleware('permission:' . config('app.price_list_show'))->name('priceLists.provider_price_list');
 
 			Route::resource('/priceList', 'PriceListController');
+
+			/*
+			Inicio Confirmar nivel de acesso reseller->provider
+			*/
+
+			Route::get('priceList/{priceList}/prices', 'PriceListController@getPrices')->name('priceList.prices');
+
+			/*
+			Fim Confirmar nivel de acesso reseller->provider
+			*/
 		});
 
 	});
@@ -162,7 +117,22 @@ Route::group(['middleware' => 'auth'], function () {
 			Route::get('reseller/{reseller}-{slug}/customers', 'ResellerController@getCustomersFromReseller')
 			->middleware('permission:' . config('app.customer_index'))->name('reseller.customers');
 
+
+			/*
+			Inicio Confirmar nivel de acesso reseller->provider
+			*/
+			Route::get('reseller/{reseller}/priceList', 'ResellerController@getPriceList')->name('reseller.pricelist');
+
 			
+
+			Route::get('/jobs', 'JobsController@index')->name('jobs');
+			Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
+			Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
+
+			/*
+			Fim Confirmar nivel de acesso reseller->provider
+			*/
+
 
 		});
 
@@ -187,13 +157,46 @@ Route::group(['middleware' => 'auth'], function () {
 			->middleware('permission:' . config('app.customer_edit'))
 			->name('customers.edit');
 
+			/*
+			Inicio Confirmar nivel de acesso reseller->provider
+			*/
+
+			Route::get('customer/{customer}/priceList', 'CustomerController@getPriceList')->name('customer.pricelist');
+
+			/*
+			fim Confirmar nivel de acesso reseller->provider
+			*/
 		});
 
 	});
 
 	/*****************************************************************************************************************/
 
+	// Every authenticated user can access routes here
+	
+	Route::get('/order/product/{product}/quantity/{quantity}', 'OrderController@changeProductQuantity');
+	Route::post('/order/product/add', 'OrderController@addProductToCart')->name('order.add_to_cart');
+	Route::get('/order/shoppingcart', 'OrderController@getCart')->name('order.shoppingcart');
+
+	Route::get('/home', 'HomeController@index')->name('home');
+	Route::get('/cart/add/product/{product}', 'CartController@addProduct')->name('cart.add_product');
+	Route::get('/cart/remove/product/{product}', 'CartController@removeProduct')->name('cart.remove_product');
+	Route::get('/cart/clear', 'CartController@destroy')->name('cart.clear');
+
+
+	Route::resource('/cart', 'CartController');
+	Route::resource('/store', 'StoreController');
+	Route::get('products/test', 'ProductController@index2');
+	Route::resource('products', 'ProductController');
+
+	// End of every authenticated user can access routes here
 });
-Auth::routes();
 
+//Auth::routes();
 
+Auth::routes(['register' => false]);
+Route::impersonate();
+
+Route::get('/', function() {
+	return view('home');
+})->name('home');

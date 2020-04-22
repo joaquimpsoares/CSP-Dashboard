@@ -47,6 +47,8 @@ return [
     'product_name' => 'product name',
     'price' => 'price|prices',
     'msrp' => 'msrp',
+    'subtotal' => 'subtotal',
+    'customer_price' => 'customer price'
 
 
 ];

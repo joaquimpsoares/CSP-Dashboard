@@ -18,6 +18,11 @@
                 <tr>
                     <th>{{ ucwords(trans_choice('messages.product_name', 2)) }}</th>
                     <th>{{ ucwords(trans_choice('messages.quantity', 2)) }}</th>
+                    @if(Auth::user()->userLevel->name == "Reseller")
+                    <th>{{ ucwords(trans_choice('messages.price', 1)) }}</th>
+                    @endif
+                    <th>{{ ucwords(trans_choice('messages.customer_price', 1)) }}</th>
+                    <th>{{ ucwords(__('messages.subtotal')) }}</th>
                     <th>{{ ucwords(trans_choice('messages.action', 2)) }}</th>
                 </tr>
             </thead>
@@ -26,12 +31,26 @@
                 $products = Session::get('cart')->items;
                 @endphp
                 @foreach($products as $product)
-                <tr>
+                <tr class="product">
                     <td>
                         {{ $product['item']->name }}
                     </td>
                     <td>
-                        <input type="number" value="{{ $product['quantity'] }}" name="quantity" id="quantity" class="form-control" step="1" min="{{$product['item']['minimum_quantity']}}" max="{{$product['item']['maximum_quantity']}}" style="max-width: 10em;" required />
+
+                        <div class="col">
+                            <div class="product-quantity">
+                                <input type="number" value="{{ $product['quantity'] }}" name="{{ $product['item']->id }}" id="quantity" class="form-control" step="1" min="{{$product['item']['minimum_quantity']}}" max="{{$product['item']['maximum_quantity']}}" style="max-width: 10em;" required />
+                            </div>
+                        </div>
+                    </td>
+                    @if(Auth::user()->userLevel->name == "Reseller")
+                    <td>{{ $product['price']->price }}</td>
+                    @endif
+                    <td class="product-price">{{ $product['price']->msrp }}</td>
+                    <td class="product-line-price">
+                        
+                            {{ number_format(floatval($product['price']->msrp * $product['quantity']), 2) }}
+                        
                     </td>
                     <td>
                         <div class="row">
@@ -40,19 +59,17 @@
                             </div>
                         </div>
                     </td>
+
                 </tr>
                 @endforeach        
             </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="3" align="right">
-                        <a href="{{ route('products.index') }}" class="btn btn-primary">{{ ucwords(__('messages.continue_shopping')) }}</a>
-                        <a href="{{ route('cart.clear') }}" class="btn btn-danger">{{ ucwords(__('messages.clear_cart')) }}</a>
-                        <button class="btn btn-success">{{ ucwords(__('messages.checkout')) }}</button>
-                    </td>
-                </tr>
-            </tfoot>
+            
         </table>
+        <div class="row">
+            <a href="{{ route('products.index') }}" class="btn btn-primary">{{ ucwords(__('messages.continue_shopping')) }}</a>
+            <a href="{{ route('cart.clear') }}" class="btn btn-danger">{{ ucwords(__('messages.clear_cart')) }}</a>
+            <button class="btn btn-success">{{ ucwords(__('messages.checkout')) }}</button>
+        </div>
     </div>
 </div>
 
@@ -65,4 +82,48 @@
 </div>
 
 @endif
+@endsection
+
+@section('scripts')
+<script>
+    $(document).ready(function() { 
+        $('.product-quantity input').change( function() {
+            updateProductQuantity(this);
+
+        });
+
+    });
+
+    function updateProductQuantity(item) {
+        $.get( "/order/product/" + item.name + "/quantity/" + item.value, function() {
+            //action begining
+        })
+        .done(function(data) {
+            updateProductSubTotal(item);
+        })
+        .fail(function(data) {
+            console.log(data);
+            // some error
+        });
+    }
+
+    function updateProductSubTotal(item) {
+        var productRow = $(item).parent().parent().parent().parent();
+        var price = parseFloat(productRow.children('.product-price').text());
+        var quantity = item.value;
+        var linePrice = price * quantity;
+                
+        productRow.children('.product-line-price').each(function () {
+            
+            $(this).text(linePrice.toFixed(2));
+            
+        });
+
+    }
+
+    function recalculateCart()
+    {
+        return true;
+    }
+</script>
 @endsection
