@@ -11,17 +11,18 @@
 		</tr>
 	</thead>
 	<tbody>
+		
 		@forelse($priceLists as $priceList)
 		
 		<tr>
 			<td>
-				<a href="{{ route('priceList.edit', $priceList['id']) }}">{{ $priceList['name'] }}</a>
+				<a href="#">{{ $priceList['name'] }}</a>
 			</td>
 			<td>
 				{{ $priceList['description'] }}
 			</td>
 			<td>
-				<a href="{{ route('priceList.prices', $priceList['id']) }}"><i class="fa fa-list"></i></a>
+				<a href="{#"><i class="fa fa-list"></i></a>
 			</td>
 		</tr>
 		

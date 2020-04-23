@@ -17,6 +17,19 @@ class ProviderController extends Controller
         $this->providerRepository = $providerRepository;
     }
 
+    public function getPriceList(Provider $provider)
+    {
+        $resellers = $provider->resellers()->with('priceList')->get();
+
+        $priceLists = [];
+        foreach ($resellers as $reseller) {
+            if (!in_array($reseller->priceList, $priceLists))
+                $priceLists[] = $reseller->priceList;
+        }
+
+        return view('priceList.index', compact('priceLists'));
+
+    }
 
     public function index()
     {

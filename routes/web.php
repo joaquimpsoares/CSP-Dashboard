@@ -1,6 +1,5 @@
 <?php
 
-use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Notifications\Notification;
@@ -15,23 +14,12 @@ Route::get('jobs/pending', 'JobsController@pending')->name('jobs.pending');
 Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
 
 
-Route::get('/sendnoti', function() {
-    // User::first()->notify(new FailedJob());
-	$user = User::first();
-	$user->notifications;
-	dd($user->notifications);
-
-})->name('sendnoti');
 
 /**********************************************************************************
 Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
 **********************************************************************************/
-Route::get('test', function() {
-	$oldCart = \Session::get('cart');
-	$cart = new App\Cart($oldCart);
-	dd($cart->items);
-});
+
 /**********************************************************************************
 Fim Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
@@ -63,6 +51,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::group(['middleware' => ['role:Super Admin|Admin']], function () {
 
 		Route::resource('providers', 'ProviderController');
+		Route::get('priceList/{priceList}/prices', 'PriceListController@getPrices')->name('priceList.prices');
 
 	});
 
@@ -85,7 +74,7 @@ Route::group(['middleware' => 'auth'], function () {
 			Inicio Confirmar nivel de acesso reseller->provider
 			*/
 
-			Route::get('priceList/{priceList}/prices', 'PriceListController@getPrices')->name('priceList.prices');
+			Route::get('provider/{provider}/priceList', 'ProviderController@getPriceList')->name('provider.price_lists');
 
 			/*
 			Fim Confirmar nivel de acesso reseller->provider
@@ -121,7 +110,7 @@ Route::group(['middleware' => 'auth'], function () {
 			/*
 			Inicio Confirmar nivel de acesso reseller->provider
 			*/
-			Route::get('reseller/{reseller}/priceList', 'ResellerController@getPriceList')->name('reseller.pricelist');
+			Route::get('reseller/{reseller}/priceList', 'ResellerController@getPriceList')->name('reseller.price_lists');
 
 			
 

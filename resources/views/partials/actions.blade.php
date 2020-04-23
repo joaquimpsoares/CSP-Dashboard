@@ -28,9 +28,9 @@
 		</a>	
 	</div>
 	@endif
-	@if ($modelo !== "provider") 
+	
 	<div class="col-2">
-		<a href="{{ route($modelo . '.pricelist', $model['id']) }}" 
+		<a href="{{ route($modelo . '.price_lists', $model['id']) }}" 
 			data-toggle="tooltip" 
 			data-placement="left" 
 			title="{{ ucwords(trans_choice('messages.price_list', 1)) }}" 
@@ -40,7 +40,7 @@
 
 		</a>	
 	</div>
-	@endif
+	
 	@canImpersonate
 	<div class="col-2">
 		<i class="fas fa-user-secret text-muted"></i>
