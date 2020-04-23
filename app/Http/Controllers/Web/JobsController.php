@@ -5,6 +5,7 @@ namespace App\Http\Controllers\web;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Artisan;
 
 class JobsController extends Controller
@@ -27,9 +28,19 @@ class JobsController extends Controller
         
     }
 
+
+    public function notifications()
+    {
+        $data = Auth::user()->unreadnotifications->data();
+        dd($data);        
+        return view('layouts.nav', compact('data'));
+    }
+
     public function retryJob($id){
        
        Artisan::call('queue:retry ' . $id);
+
+       Auth::User()->notifications->first()->markasread();
         
        return redirect()->route('jobs')->with(['alert' => 'success', 'message' => trans('messages.jobrescheduled')]);
 

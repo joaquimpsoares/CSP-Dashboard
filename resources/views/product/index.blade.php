@@ -5,8 +5,9 @@
 
 <div class="row table-responsive">
 	<div class="col-12">
-		<table class="table" id="products">
+		<table class="table table-striped table-bordered" id="resellers">
 			<thead>
+				<th>{{ ucwords(trans_choice('messages.product_sku', 2)) }}</th>
 				<th>{{ ucwords(trans_choice('messages.product_name', 2)) }}</th>
 				<th class="text-center">{{ ucwords(trans_choice('messages.vendor', 1)) }}</th>
 				<th class="text-center">{{ ucwords(trans_choice('messages.price', 1)) }}</th>
@@ -15,6 +16,9 @@
 			<tbody>
 				@forelse($products as $product)
 				<tr>
+					<td style="width: 1px; white-space: nowrap;">
+						{{$product['sku']}}
+					</td>
 					<td style="width: 1px; white-space: nowrap;">
 						{{$product['name']}}
 					</td>
@@ -35,7 +39,7 @@
 			</tbody>
 		</table>
 	</div>
-	<div class="col-md-10">
+	{{-- <div class="col-md-10">
 		<div class="row">
 			<div class="col-3">
 				<form method="GET" action="{{ route('products.index') }}" style="padding-top: 15px;">
@@ -55,7 +59,7 @@
 							<button class="input-group-text" type="submit" for="quantity">{{ ucwords(__('messages.apply_filter')) }}</button>
 						</div>
 					</div>
-
+					
 					<input type="hidden" name="search" value="1" />
 					
 				</form>
@@ -86,7 +90,7 @@
 					<div class="card-footer text-muted text-center">
 						<div class="row">
 							<div class="col-6">
-
+								
 								<a class="btn btn-outline-dark" data-toggle="modal" data-target="#modal_product_{{$product->id}}">+ {{ $product->addons->count() }} {{ ucwords(trans_choice('messages.addon', 2)) }}</a>
 							</div>
 							<div class="col-6">
@@ -94,9 +98,9 @@
 							</div>
 						</div>
 					</div>
-
-
-
+					
+					
+					
 					<!-- Modal -->
 					<div class="modal fade" id="modal_product_{{$product->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 						<div class="modal-dialog" role="document">
@@ -124,9 +128,9 @@
 							</div>
 						</div>
 					</div>
-
-
-
+					
+					
+					
 				</div>
 			</div>
 			@php
@@ -149,7 +153,7 @@
 				</span>
 			</div>
 		</div>
-	</div>
+	</div> --}}
 </div>
 @endsection
 
@@ -164,7 +168,15 @@
 			"info": false
 		});
 	} );
-
+	
+</script>
+<script type="text/javascript">
+	$(document).ready( function () {
+		$('#resellers').DataTable({
+			"pagingType": "full_numbers",
+			"order": [[ 0, "asc" ]]
+		});
+	} );
 </script>
 @endsection
 
