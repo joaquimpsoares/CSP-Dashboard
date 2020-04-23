@@ -24,7 +24,9 @@ class CustomerController extends Controller
     }
 
     
-    public function create() { }
+    public function create() { 
+        return view('customer.create');
+    }
 
     
     public function store(Request $request) { }
