@@ -18,7 +18,7 @@
             
             @can(config('app.provider_index'))
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('providers.index') }}">
+                <a class="nav-link" href="{{ route('provider.index') }}">
                     {{ ucwords(trans_choice('messages.provider', 2)) }}
                 </a>
             </li>
@@ -33,7 +33,7 @@
             @can(config('app.customer_index'))
             <li class="nav-item">
                 
-                <a class="nav-link" href="{{ route('customers.index') }}">
+                <a class="nav-link" href="{{ route('customer.index') }}">
                     {{ ucwords(trans_choice('messages.customer', 2)) }}
                 </a>
                 
@@ -60,8 +60,8 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="{{ route('roles.index') }}">{{ ucwords(trans_choice('messages.manage_role', 2)) }}</a>
                     <a class="dropdown-item" href="{{ route('priceList.index') }}">{{ ucwords(trans_choice('messages.price_list', 2)) }}</a>
-                    <a class="dropdown-item" href="{{ route('products.import') }}">Import Products</a>
-                    <a class="dropdown-item" href="{{ route('products.index') }}">Products</a>
+                    <a class="dropdown-item" href="{{ route('product.import') }}">Import Products</a>
+                    <a class="dropdown-item" href="{{ route('product.index') }}">Products</a>
                     <a class="dropdown-item" href="{{ route('jobs') }}">Tasks</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#">Something else here</a>

@@ -37,7 +37,7 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('roles', 'RoleController');
 		Route::post('roles/update/all', 'RoleController@updateAll')->name('roles.update.all');
 		Route::resource('permissions', 'PermissionController');
-		Route::get('/products/import', 'ProductController@import')->name('products.import');
+		Route::get('/product/import', 'ProductController@import')->name('product.import');
 
 
 
@@ -50,7 +50,7 @@ Route::group(['middleware' => 'auth'], function () {
 	// Routes that platform managers and administrators can access
 	Route::group(['middleware' => ['role:Super Admin|Admin']], function () {
 
-		Route::resource('providers', 'ProviderController');
+		Route::resource('provider', 'ProviderController');
 		Route::get('priceList/{priceList}/prices', 'PriceListController@getPrices')->name('priceList.prices');
 
 	});
@@ -65,8 +65,8 @@ Route::group(['middleware' => 'auth'], function () {
 			Route::get('/reseller', 'ResellerController@index')
 			->middleware('permission:' . config('app.reseller_create'))->name('reseller.create');
 
-			Route::get('/priceList/provider/{provider}', 'PriceListController@getProviderPriceList')
-			->middleware('permission:' . config('app.price_list_show'))->name('priceLists.provider_price_list');
+			/*Route::get('/priceList/provider/{provider}', 'PriceListController@getProviderPriceList')
+			->middleware('permission:' . config('app.price_list_show'))->name('priceLists.provider_price_list');*/
 
 			Route::resource('/priceList', 'PriceListController');
 
@@ -91,8 +91,8 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::get('/reseller', 'ResellerController@index')
 		->middleware('permission:' . config('app.reseller_index'))->name('reseller.index');
 
-		Route::get('/customers', 'CustomerController@index')
-		->middleware('permission:' . config('app.customer_index'))->name('customers.index');
+		Route::get('/customer', 'CustomerController@index')
+		->middleware('permission:' . config('app.customer_index'))->name('customer.index');
 
 
 		Route::group(['middleware' => ['check_reseller']], function () {
@@ -138,13 +138,13 @@ Route::group(['middleware' => 'auth'], function () {
 
 		Route::group(['middleware' => ['check_customer']], function () {
 
-			Route::get('/customers/{customer}-{slug}', 'CustomerController@show')
+			Route::get('/customer/{customer}-{slug}', 'CustomerController@show')
 			->middleware('permission:' . config('app.customer_show'), 'check_customer')
-			->name('customers.show');
+			->name('customer.show');
 
-			Route::get('customers/{customer}-{slug}/edit', 'CustomerController@show')
+			Route::get('customer/{customer}-{slug}/edit', 'CustomerController@show')
 			->middleware('permission:' . config('app.customer_edit'))
-			->name('customers.edit');
+			->name('customer.edit');
 
 			/*
 			Inicio Confirmar nivel de acesso reseller->provider
@@ -176,7 +176,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::resource('/cart', 'CartController');
 	Route::resource('/store', 'StoreController');
 	Route::get('products/test', 'ProductController@index2');
-	Route::resource('products', 'ProductController');
+	Route::resource('product', 'ProductController');
 
 	// End of every authenticated user can access routes here
 });
