@@ -19,7 +19,7 @@ Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
 Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
 **********************************************************************************/
-
+Route::get('/test/{domain}', 'CartController@checkDomain');
 /**********************************************************************************
 Fim Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
@@ -171,6 +171,9 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/cart/add/product/{product}', 'CartController@addProduct')->name('cart.add_product');
 	Route::get('/cart/remove/product/{product}', 'CartController@removeProduct')->name('cart.remove_product');
 	Route::get('/cart/clear', 'CartController@destroy')->name('cart.clear');
+	Route::get('/cart/checkout', 'CartController@checkout')->name('cart.checkout');
+	Route::get('/cart/customer/{customer}/add', 'CartController@addCustomer')->name('cart.add_customer');
+	Route::get('/cart/checkDomainAvailability/{domain}', 'CartController@checkDomainAvailability')->name('cart.check_domain_availability');
 
 
 	Route::resource('/cart', 'CartController');

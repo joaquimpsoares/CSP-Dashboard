@@ -65,10 +65,10 @@
             </tbody>
             
         </table>
-        <div class="row">
-            <a href="{{ route('products.index') }}" class="btn btn-primary">{{ ucwords(__('messages.continue_shopping')) }}</a>
+        <div class="row float-right">
+            <a href="{{ route('product.index') }}" class="btn btn-primary">{{ ucwords(__('messages.continue_shopping')) }}</a>
             <a href="{{ route('cart.clear') }}" class="btn btn-danger">{{ ucwords(__('messages.clear_cart')) }}</a>
-            <button class="btn btn-success">{{ ucwords(__('messages.checkout')) }}</button>
+            <a href="{{ route('cart.checkout') }}" class="btn btn-success">{{ ucwords(__('messages.checkout')) }}</a>
         </div>
     </div>
 </div>

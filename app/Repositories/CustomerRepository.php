@@ -69,4 +69,38 @@ class CustomerRepository implements CustomerRepositoryInterface
 
         return $customers;
     }
+
+    public function canInteractWithCustomer(Customer $customer)
+    {
+
+        $user = $this->getUser();
+        
+        switch ($this->getUserLevel()) {
+            case config('app.super_admin'):
+                return true;
+                break;
+            
+            case config('app.admin'):
+                return true;
+                break;
+            
+            case config('app.provider'):
+
+                break;
+            
+            case config('app.reseller'):
+                $reseller = $user->reseller;
+                return $reseller->customers->contains($customer->id);
+                break;
+            
+            case config('app.subreseller'):
+                
+                break;
+            
+            default:
+                return false;
+                
+                break;
+        }
+    }
 }
