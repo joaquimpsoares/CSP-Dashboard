@@ -45,7 +45,7 @@ class Provider extends Model
 	}
 
 	public function path() {
-        return url("/provider/{$this->id}-" . Str::slug($this->company_name, '-'));
+        return url("/providers/{$this->id}-" . Str::slug($this->company_name, '-'));
     }
 
     public function country() {

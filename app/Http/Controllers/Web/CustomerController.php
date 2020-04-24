@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Web;
 use App\Customer;
 use App\Reseller;
 use App\Http\Requests\Request;
+use App\Support\Enum\CustomerStatus;
 use App\Repositories\CustomerRepositoryInterface;
+use App\Repositories\Country\CountryRepository;
 
 
 class CustomerController extends Controller
@@ -24,8 +26,23 @@ class CustomerController extends Controller
     }
 
     
-    public function create() { 
-        return view('customer.create');
+    public function create(Customer $customer){
+        
+        // $countries = $this->parseCountries($countryRepository);
+        // $statuses = $this->getStatuses();
+
+        return view('customer.create', compact('customer'));
+
+    }
+
+    private function parseCountries(CountryRepository $countryRepository)
+    {
+        return [0 => 'Select a Country'] + $countryRepository->lists()->toArray();
+    }
+
+    private function getStatuses()
+    {
+        return CustomerStatus::lists();
     }
 
     

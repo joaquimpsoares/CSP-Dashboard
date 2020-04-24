@@ -21,6 +21,7 @@
 
 
 <!-- Main container -->
+<div></div>
 <nav class="level">
     <!-- Left side -->
     <div class="level-left">

@@ -40,7 +40,7 @@ class ProviderController extends Controller
     
     public function create()
     {
-        //
+        return view('provider.create');
     }
 
     
@@ -52,7 +52,8 @@ class ProviderController extends Controller
     
     public function show(Provider $provider)
     {
-        //
+        // dd($provider);
+        return view('provider.show', compact('provider'));
     }
 
     

@@ -74,9 +74,10 @@
             
             @endauth
         </ul>
-        <ul class="navbar-nav ">
+        <ul class="navbar-nav ml-auto nav-flex-icons">
             @auth
             <li class="nav-item dropdown">
+                
                 <a class="nav-link " href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span class="badge badge-pill badge-primary" style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span> <!-- your badge -->
                     Notifications
@@ -85,8 +86,7 @@
                     {{ $tt = Auth::user()->unreadnotifications}}
                 </div>
             </li>
-            {{-- <a class="nav-link" href="jobs">Notifications <span class="sr-only">(current)</span>
-            </a> --}}
+            
             <div class="buttons">
                 <a class="btn btn-primary">
                     {{ Auth::user()->username }}
@@ -95,16 +95,26 @@
                     {{ ucwords(__('messages.logout')) }}
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    
                     @csrf
-                </ul>
-            </form>
-            @endauth
-            @guest
-            <a class="btn btn-secondary" href="{{ route('login') }}">
-                {{ ucwords(__('messages.login')) }}
-            </a>
-            @endguest
+                    
+                </form>
+                
+                <li class="nav-item avatar">
+                    <a class="nav-link p-0" href="#">
+                    <img src="{{Auth::user()->avatar}}" class="rounded-circle z-depth-0"
+                        alt="avatar image" height="15">
+                    </a>
+                  </li>
+        
+            </ul>
+                @endauth
+                @guest
+                <a class="btn btn-secondary" href="{{ route('login') }}">
+                    {{ ucwords(__('messages.login')) }}
+                </a>
+                @endguest
+            </div>
         </div>
-    </div>
     
 </nav>
