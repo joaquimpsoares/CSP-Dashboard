@@ -16,11 +16,11 @@
 					<table class="table table-striped table-bordered" id="providers">
 						<thead>
 							<tr>
-								<th>Company Name</th>
-								<th>County</th>
-								<th>State</th>
-								<th>City</th>
-								<th>Actions</th>
+								<th>{{ ucwords(trans_choice('messages.company_name', 1)) }}</th>
+								<th>{{ ucwords(trans_choice('messages.country', 1)) }}</th>
+								<th>{{ ucwords(trans_choice('messages.state', 1)) }}</th>
+								<th>{{ ucwords(trans_choice('messages.city', 1)) }}</th>
+								<th>{{ ucwords(trans_choice('messages.action', 1)) }}</th>
 							</tr>
 						</thead>
 						<tbody>

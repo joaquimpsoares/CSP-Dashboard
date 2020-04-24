@@ -43,11 +43,11 @@ class Customer extends Model
     }
 
     public function path() {
-        return url("/customers/{$this->id}-" . Str::slug($this->company_name, '-'));
+        return url("/customer/{$this->id}-" . Str::slug($this->company_name, '-'));
     }
 
     public function pathEdit() {
-        return url("/customers/{$this->id}-" . Str::slug($this->company_name, '-')."/edit");
+        return url("/customer/{$this->id}-" . Str::slug($this->company_name, '-')."/edit");
     }
 
     public function getMyResellersId() {

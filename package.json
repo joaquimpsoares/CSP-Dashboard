@@ -24,10 +24,10 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "@amcharts/amcharts4": "^4.9.17",
         "@fortawesome/fontawesome-free": "^5.12.1",
         "datatables.net-bs4": "^1.10.20",
         "datatables.net-buttons-bs4": "^1.6.1",
         "mdbootstrap": "^4.16.0"
     }
 }
-

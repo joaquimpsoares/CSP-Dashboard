@@ -46,7 +46,7 @@ class Reseller extends Model
     }
 
     public function path() {
-        return url("/resellers/{$this->id}-" . Str::slug($this->company_name, '-'));
+        return url("/reseller/{$this->id}-" . Str::slug($this->company_name, '-'));
     }
 
     public function subResellers() {

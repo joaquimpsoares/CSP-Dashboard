@@ -15,8 +15,10 @@
                             aria-controls="pills-home" aria-selected="true">Active Tasks</a>
                         </li>
                         <li class="nav-item">
+
                             <a class="nav-link btn peach-gradient" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab"
-                            aria-controls="pills-profile" aria-selected="false">Failed Tasks</a>
+                            aria-controls="pills-profile" aria-selected="false" ><span class="badge badge-pill badge-primary" style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span>
+                            Failed Tasks</a>
                         </li>
                     </ul>
                     <div class="tab-content pt-2 pl-1" id="pills-tabContent">
@@ -25,11 +27,11 @@
                             <table class="table table-striped table-bordered" id="customers">
                                 <thead>
                                     <tr>
-                                        <th>id</th>
-                                        <th>Queue Name</th>
-                                        <th>Payload</th>
-                                        <th>Attemps</th>
-                                        <th>Reserved At</th>
+                                        <th>{{ ucwords(trans_choice('messages.id', 2)) }}</th>
+                                        <th>{{ ucwords(trans_choice('messages.queue_name', 1)) }}</th>
+                                        <th>{{ ucwords(trans_choice('messages.payload', 1)) }}</th>
+                                        <th>{{ ucwords(trans_choice('messages.attempts', 1)) }}</th>
+                                        <th>{{ ucwords(trans_choice('messages.started_at', 1)) }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -55,15 +57,15 @@
                         </div>
                         <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                             <h4 class="card-title"><a>  </a></h4>
-                            <h4 class="card-title"><a>Failed Tasks</a></h4>
+                            <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.failed_tasks', 1)) }}</a></h4>
                             <table class="table table-striped table-bordered" id="customers">
                                 <thead>
                                     <tr>
-                                        <th>id</th>
-                                        <th>Queue Name</th>
-                                        <th>Payload</th>
-                                        <th>Exception</th>
-                                        <th>Actions</th>
+                                        <th>{{ ucwords(trans_choice('messages.id', 2)) }}</th>
+                                        <th>{{ ucwords(trans_choice('messages.queue_name', 1)) }}</th>
+                                        <th>{{ ucwords(trans_choice('messages.payload', 1)) }}</th>
+                                        <th>{{ ucwords(trans_choice('messages.exception', 1)) }}</th>
+                                        <th>{{ ucwords(trans_choice('messages.action', 2)) }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>

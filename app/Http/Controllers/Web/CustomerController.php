@@ -27,29 +27,20 @@ class CustomerController extends Controller
 
     
     public function create(Customer $customer){
-        
-        // $countries = $this->parseCountries($countryRepository);
-        // $statuses = $this->getStatuses();
+    
 
         return view('customer.create', compact('customer'));
 
     }
-
-    private function parseCountries(CountryRepository $countryRepository)
-    {
-        return [0 => 'Select a Country'] + $countryRepository->lists()->toArray();
-    }
-
-    private function getStatuses()
-    {
-        return CustomerStatus::lists();
-    }
-
     
     public function store(Request $request) { }
 
     
-    public function show(Customer $customer) { }
+    public function show(Customer $customer) {
+
+        return view('customer.show', compact('customer'));
+        
+    }
 
     
     public function edit(Customer $customer) { }

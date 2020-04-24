@@ -8,17 +8,16 @@
 			<div class="">
 				<i class="fas fa-user fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
 				{{-- <div class="float-right text-right p-12"> --}}
-					
 					<div class="card-body">
-						<h4 class="card-title"><a>Customer Table</a></h4>
+						<h4 class="card-title"><a>{{ ucwords(trans_choice('messages.customer_table', 1)) }}</a></h4>
 						<table class="table table-striped table-bordered" id="customers">
 							<thead>
 								<tr>
-									<th>Company Name</th>
-									<th>County</th>
-									<th>State</th>
-									<th>City</th>
-									<th>Actions</th>
+									<th>{{ ucwords(trans_choice('messages.company_name', 1)) }}</th>
+									<th>{{ ucwords(trans_choice('messages.country', 1)) }}</th>
+									<th>{{ ucwords(trans_choice('messages.state', 1)) }}</th>
+									<th>{{ ucwords(trans_choice('messages.city', 1)) }}</th>
+									<th>{{ ucwords(trans_choice('messages.action', 1)) }}</th>
 								</tr>
 							</thead>
 							<tbody>

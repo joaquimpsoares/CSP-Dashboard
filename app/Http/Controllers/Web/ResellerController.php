@@ -36,7 +36,9 @@ class ResellerController extends Controller
     public function store(Request $request) { }
 
     
-    public function show(Reseller $reseller) { }
+    public function show(Reseller $reseller) { 
+        return view('reseller.show', compact('reseller'));
+    }
 
     
     public function edit(Reseller $reseller) { }

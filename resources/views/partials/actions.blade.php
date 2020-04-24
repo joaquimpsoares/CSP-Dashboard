@@ -30,7 +30,7 @@
 	@endif
 	
 	<div class="col-2">
-		<a href="{{ route($modelo . '.price_lists', $model['id']) }}" 
+		{{-- <a href="{{ route($modelo . '.price_lists', $model['id']) }}" 
 			data-toggle="tooltip" 
 			data-placement="left" 
 			title="{{ ucwords(trans_choice('messages.price_list', 1)) }}" 
@@ -38,7 +38,7 @@
 
 			<i class="fas fa-dollar-sign"></i>
 
-		</a>	
+		</a>	 --}}
 	</div>
 	
 	@canImpersonate
