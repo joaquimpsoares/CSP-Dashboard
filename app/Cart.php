@@ -9,6 +9,8 @@ class Cart extends Model
     public $items = null;
     public $totalQty = 0;
     public $totalPrice = 0;
+    public $customer = null;
+    public $domain = null;
     
 
     public function __construct($oldCart)
@@ -51,5 +53,13 @@ class Cart extends Model
         $this->totalQty -= $this->items[$id]['quantity'];
         $this->totalPrice -= $this->items[$id]['price'];
         unset($this->items[$id]);
+    }
+
+    public function addCustomer($customer) {
+        $this->customer = $customer;
+    }
+
+    public function addDomain($domain) {
+        $this->domain = $domain;
     }
 }

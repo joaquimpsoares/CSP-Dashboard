@@ -99,55 +99,6 @@ class ProductController extends Controller
         ]);
 
         $instance->update($request->all());
-
-    // public function update(Request $request, Product $product)
-    // {
-    //     $product = Product::findOrFail($request);
-
-    //     $this->validate($request, [
-    //         'name' => 'String',
-    //         'minimum_quantity' => 'Integer',
-    //         'maximumQuantity' => 'Integer',
-    //         'limit' => 'Integer',
-    //         'term' => 'String',
-    //         'isAvailableForPurchase' => 'Integer',
-    //         'locale' => 'String',
-    //         'country' => 'String',
-    //         'isTrial' => 'String',
-    //         'hasAddOns' => 'String',
-    //         'isAutoRenewable' => 'String',
-    //         'billing' => 'String',
-    //         'acquisitionType' => 'String',
-    //         'supportedBillingCycles' => 'String',
-    //         'conversionTargetOffers' => 'String',
-    //         'reselleeQualifications' => 'String',
-    //         'resellerQualifications' => 'String'
-    //     ]);
-
-    //     $product->update([
-
-    //         'name' => $product->name,
-    //         'description' => $product->description,
-    //         'uri' => $product->uri,
-    //         'minimum_quantity' => $product->minimum_quantity,
-    //         'maximum_quantity' => $product->maximum_quantity,
-    //         'limit' => $product->limit,
-    //         'term' => $product->term,
-    //         'is_available_for_purchase' => $product->is_available_for_purchase,
-    //         'locale' => $product->locale,
-    //         'country' => $product->country,
-    //         'is_trial' => $product->is_trial,
-    //         'has_addons' => $product->has_addons,
-    //         'is_autoRenewable' => $product->is_autoRenewable,
-    //         'billing' => $product->billing,
-    //         'acquisition_type' => $product->acquisition_type,
-    //         'supported_billing_cycles' => $product->supported_billing_cycles,
-
-    //     ]);
-
-    //     // $instance->update($request->all());
-
-    //     return redirect()->route('products.list')->with('success', 'Instance updated succesfully');
     }
 
 
