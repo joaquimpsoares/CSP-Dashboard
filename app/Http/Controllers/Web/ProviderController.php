@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
+use App\Customer;
 use App\Provider;
-use App\Repositories\ProviderRepositoryInterface;
+use App\Reseller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Repositories\ProviderRepositoryInterface;
 
 class ProviderController extends Controller
 {
@@ -52,8 +54,10 @@ class ProviderController extends Controller
     
     public function show(Provider $provider)
     {
-        // dd($provider);
-        return view('provider.show', compact('provider'));
+        $resellers = Reseller::get()->all();
+        $customers = Customer::get()->all();
+
+        return view('provider.show', compact('provider', 'resellers', 'customers'));
     }
 
     

@@ -94,6 +94,11 @@
             </ul>
             @endauth
             @guest
+            @if (Route::has('register'))
+            <a class="btn btn-primary" href="{{ route('register') }}">
+                {{ ucwords(__('messages.register')) }}
+            </a>
+            @endif
             <a class="btn btn-secondary" href="{{ route('login') }}">
                 {{ ucwords(__('messages.login')) }}
             </a>

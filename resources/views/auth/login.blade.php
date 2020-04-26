@@ -11,7 +11,6 @@
                     <div class="card-body">
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
-                            
                             <div class="md-form">
                                 <label for="materialLoginFormEmail">E-mail</label>
                                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="superadmin@admin.com" required autocomplete="email" autofocus>
@@ -47,7 +46,7 @@
                                         {{ __('Login') }}
                                     </button>
                                     @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
+                                    <a class="btn btn-link align-items-center" href="{{ route('password.request') }}">
                                         {{ __('Forgot Your Password?') }}
                                     </a>
                                     @endif
@@ -62,25 +61,5 @@
     @endsection
     
     @section('scripts')
-    <script>
-        $('.tabs .tab').click(function(){
-            if ($(this).hasClass('signin')) {
-                $('.tabs .tab').removeClass('active');
-                $(this).addClass('active');
-                $('.cont').hide();
-                $('.signin-cont').show();
-            }
-            if ($(this).hasClass('signup')) {
-                $('.tabs .tab').removeClass('active');
-                $(this).addClass('active');
-                $('.cont').hide();
-                $('.signup-cont').show();
-            }
-        });
-        $('.container .bg').mousemove(function(e){
-            var amountMovedX = (e.pageX * -1 / 30);
-            var amountMovedY = (e.pageY * -1 / 9);
-            $(this).css('background-position', amountMovedX + 'px ' + amountMovedY + 'px');
-        });
-    </script>
+    
     @endsection

@@ -2,127 +2,65 @@
 
 
 @section('content')
-
-
 <div class="box col-xm-12">
-    <ul class="nav nav-tabs md-tabs" id="myTabMD" role="tablist">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" id="home-tab-md" data-toggle="tab" href="#home-md" role="tab" aria-controls="home-md"
+            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
             aria-selected="true">Home</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="contact-tab-md" data-toggle="tab" href="#contact-md" role="tab" aria-controls="contact-md"
+            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
             aria-selected="false">{{ ucwords(trans_choice('messages.reseller', 2)) }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="contact-tab-md" data-toggle="tab" href="#contact-md" role="tab" aria-controls="contact-md"
+            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
             aria-selected="false">{{ ucwords(trans_choice('messages.customer', 2)) }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="contact-tab-md" data-toggle="tab" href="#contact-md" role="tab" aria-controls="contact-md"
+            <a class="nav-link" id="subscription-tab" data-toggle="tab" href="#subscription" role="tab" aria-controls="subscription"
             aria-selected="false">{{ ucwords(trans_choice('messages.subscription', 2)) }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="profile-tab-md" data-toggle="tab" href="#profile-md" role="tab" aria-controls="profile-md"
-            aria-selected="false">{{ ucwords(trans_choice('messages.account', 1)) }}</a>
+            <a class="nav-link" id="account-tab" data-toggle="tab" href="#account" role="tab" aria-controls="account"
+            aria-selected="false">{{ ucwords(trans_choice('messages.account', 2)) }}</a>
         </li>
     </ul>
-    <div class="tab-content card pt-5" id="myTabContentMD">
-        <div class="tab-pane fade show active" id="home-md" role="tabpanel" aria-labelledby="home-tab-md">
-            <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua,
-                retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica.
-                Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry
-                richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american
-                apparel, butcher voluptate nisi qui.</p>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <div class="box col-xm-12">
+            wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack
+            lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard
+            locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify
+            squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie
+            etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog
+            stumptown. Pitchfork sustainable tofu synth chambray yr.
             </div>
-            <div class="tab-pane fade" id="profile-md" role="tabpanel" aria-labelledby="profile-tab-md">
-                <div class="box col-xm-12">
-                    <h2 class="h1-responsive f  ont-weight-bold text-center my-4">Customer Form</h2>
-                    <div class="row">
-                        <div class="col-md-9 mb-md-0 mb-5">
-                            <form id="contact-form" name="contact-form" action="mail.php" method="POST">
-                                <h2>Legal information</h2>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="md-form mb-0">
-                                            <input value="{{$provider->company_name}}" type="text" id="name" name="company_name" class="form-control">
-                                            <label for="company_name" class="">Company Name</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="md-form mb-0">
-                                            <input value="{{$provider->nif}}" type="text" id="nif" name="email" class="form-control">
-                                            <label for="nif" class="">NIF</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <h2>Address information</h2>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="md-form mb-0">
-                                            <input value="{{$provider->address_1}}" type="text" id="address1" name="address1" class="form-control">
-                                            <label for="address1" class="">Address 1</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="md-form mb-0">
-                                            <input value="{{$provider->address_2}}" type="text" id="address2" name="address2" class="form-control">
-                                            <label for="address2" class="">Address 2</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="md-form mb-0">
-                                            <input value="{{$provider->city}}" type="text" id="city" name="city" class="form-control">
-                                            <label for="city" class="">City</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="md-form">
-                                            <input value="{{$provider->postal_code}}" type="text" id="postalcode" name="postalcode" class="form-control">
-                                            <label for="postalcode">Postal Code</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="md-form">
-                                            <select class="browser-default custom-select">
-                                                <option selected>{{$provider->country->name}}</option>
-                                                <option value="1">{{$provider->country->name}}</option>
-                                                <option value="2">Two</option>
-                                                <option value="3">Three</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                            <div class="text-center text-md-left">
-                                <a class="btn btn-primary" onclick="document.getElementById('contact-form').submit();">Send</a>
-                            </div>
-                            <div class="status"></div>
-                        </div>
-                        <div class="col-md-3 text-center">
-                            <img src="https://media2.giphy.com/media/s9TcMBb7FfJ7y/source.gif" alt="Twitter 11" />
-                            <p class="text-center w-responsive mx-auto mb-5">Do you have any questions? Please do not hesitate to contact us directly. Our team will come back to you within
-                                a matter of hours to help you.</p>
-                            </div>        
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="contact-md" role="tabpanel" aria-labelledby="contact-tab-md">
-                    <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo
-                        retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer,
-                        iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony.
-                        Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles
-                        pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of
-                        them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.</p>
-                    </div>
-                </div>
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <div class="box col-xm-12">
+            @include('reseller.partials.table', ['resellers' => $resellers])
             </div>
-            
-            
-            @endsection
-            
-            
+        </div>
+        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+            <div class="box col-xm-12">
+            @include('customer.partials.table', ['customers' => $customers])
+            </div>
+        </div>
+        <div class="tab-pane fade" id="subscription" role="tabpanel" aria-labelledby="subscription-tab">
+            wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack
+            lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard
+            locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify
+            squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie
+            etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog
+            stumptown. Pitchfork sustainable tofu synth chambray yr.
+        </div>
+        <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="account-tab">
+            <div class="box col-xm-12">
+            @include('provider.partials.details')
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+    
+    

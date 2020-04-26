@@ -13,6 +13,7 @@ Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
 Route::get('jobs/pending', 'JobsController@pending')->name('jobs.pending');
 Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
 
+Route::get('register', 'auth\RegisterController@registerform')->name('register');
 
 
 /**********************************************************************************
@@ -38,8 +39,6 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::post('roles/update/all', 'RoleController@updateAll')->name('roles.update.all');
 		Route::resource('permissions', 'PermissionController');
 		Route::get('/product/import', 'ProductController@import')->name('product.import');
-
-
 
 		Route::resource('instances', 'InstanceController');
 

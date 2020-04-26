@@ -24,10 +24,14 @@ class PriceListController extends Controller
 
 	public function index()
 	{
-		$priceLists = $this->priceListRepository->all();
+        $priceLists = $this->priceListRepository->all();
+
+        $result = PriceList::where('id', $priceLists )->with('prices')->first();
+        
+        $prices = $result->prices->map->format();
         
 
-		return view('priceList.index', compact('priceLists'));
+		return view('priceList.index', compact('priceLists', 'prices'));
 	}
 
     public function getPrices($priceList)

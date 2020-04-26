@@ -27,7 +27,8 @@
 								</li></ul>
 								<div class="tab-content pt-4">
 									<div class="tab-pane fade in show active" id="selectCustomer" role="tabpanel">
-										@include('order.partials.customer', ['customers' => $customers, 'test' => 'test'])</div>
+										@include('order.partials.customer', ['customers' => $customers])
+									</div>
 										<div class="tab-pane fade" id="selectTenant" role="tabpanel">
 											@include('order.partials.tenant')
 										</div><div class="tab-pane fade" id="tabreview" role="tabpanel">

@@ -114,6 +114,8 @@ return [
     'customer' => 'customer|customers',
     'logout' => 'logout',
     'login' => 'log in',
+    'register' => 'register',
+
     'home' => 'home',
     'active' => 'active',
     'inactive' => 'inactive',

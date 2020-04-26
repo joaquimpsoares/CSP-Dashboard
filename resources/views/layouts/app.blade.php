@@ -40,7 +40,7 @@
 <body>
 	
 	
-	<div id="app" class="container-fluid">
+	<div id="app">
 		<div class="row">
 			<div class="col">
 				@include('layouts.nav')
@@ -53,11 +53,9 @@
 			@yield('content')
 		</main>
 	</div>
-	@include('layouts.footer')
 	
 	
-	
-	
+		@include('layouts.footer')
 	
 	
 	<script type="text/javascript">

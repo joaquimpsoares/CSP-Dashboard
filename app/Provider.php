@@ -2,10 +2,10 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use App\Status;
+use Illuminate\Support\Str;
 use Webpatser\Countries\Countries;
+use Illuminate\Database\Eloquent\Model;
 
 class Provider extends Model
 {
