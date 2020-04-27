@@ -13,7 +13,7 @@ Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
 Route::get('jobs/pending', 'JobsController@pending')->name('jobs.pending');
 Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
 
-Route::get('register', 'auth\RegisterController@registerform')->name('register');
+Route::get('register', 'Auth\RegisterController@registerform')->name('register');
 
 
 /**********************************************************************************
