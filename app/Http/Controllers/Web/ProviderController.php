@@ -71,6 +71,7 @@ class ProviderController extends Controller
             'email' => $request['email'],
             'username' => $request['email'],
             'user_level_id' => '3',
+            'status' => 'Unconfirmed',
             'password' => Hash::make($request['password']),
             ]);
                 
