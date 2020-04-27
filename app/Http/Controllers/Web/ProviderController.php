@@ -60,7 +60,7 @@ class ProviderController extends Controller
     
     public function store(Request $request)
     {
-        //  dd($request['username']);
+        //  dd($request->all());
         
         $this->validator($request->all())->validate();
 
@@ -74,6 +74,8 @@ class ProviderController extends Controller
             'status' => 'Unconfirmed',
             'password' => Hash::make($request['password']),
             ]);
+
+            dd($user);
                 
             return redirect()->route('home')->with(['alert' => 'success', 'message' => trans('messages.User Created successfully    ')]);
                 

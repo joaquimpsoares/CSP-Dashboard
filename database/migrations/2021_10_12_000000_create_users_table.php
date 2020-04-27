@@ -32,7 +32,7 @@ class CreateUsersTable extends Migration
             $table->date('birthday')->nullable();
             $table->timestamp('last_login')->nullable();
             $table->string('confirmation_token', 60)->nullable();
-            $table->string('status', 20)->index();
+            $table->string('status', 20)->index()->default('Active');
             $table->string('template')->default('transparent');
             $table->integer('two_factor_country_code')->nullable();
             $table->integer('two_factor_phone')->nullable();
