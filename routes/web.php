@@ -13,7 +13,7 @@ Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
 Route::get('jobs/pending', 'JobsController@pending')->name('jobs.pending');
 Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
 
-Route::get('register', 'Auth\RegisterController@registerform')->name('register');
+Route::post('provider/register', 'ProviderController@store')->name('provider.register');
 
 
 /**********************************************************************************
@@ -185,9 +185,13 @@ Route::group(['middleware' => 'auth'], function () {
 
 //Auth::routes();
 
-Auth::routes(['register' => false]);
+// Auth::routes(['register' => false]);
 Route::impersonate();
 
 Route::get('/', function() {
 	return view('home');
 })->name('home');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
