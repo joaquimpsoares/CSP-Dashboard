@@ -28,6 +28,7 @@ class ProviderController extends Controller
         $this->customerRepository = $customerRepository;
 
     }
+
     
     public function getPriceList(Provider $provider)
     {
