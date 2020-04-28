@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Auth;
 
 use App\User;
 use App\Provider;
+use App\Http\Requests\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Providers\RouteServiceProvider;
@@ -72,31 +73,20 @@ class RegisterController extends Controller
         */
         protected function create(array $data)
         {
-
-            // dd($data);
             
-            // $provider= new Provider([
-            //     'company_name' => $data['company_name'],
-            //     'nif' => $data['nif'],
-            //     ]);
-            //     $user =  User::create([
-            //             'first_name' => $data['first_name'],
-            //             'last_name' => $data['last_name'],
-            //             'username' => $data['username'],
-            //             'email' => $data['email'],
-            //             'user_level_id' => '3',
-            //             'password' => Hash::make($data['password']),
-            //             ]);
+            
+        }
+
+        /**
+        * Create a new user instance after a valid registration.
+        *
+        * @param  array  $data
+        * @return \App\User
+        */
+        protected function store(array $data)
+        {
+            
+        }
 
 
-                // $user = new User([
-                //     'first_name' => $data['first_name'],
-                //     'last_name' => $data['last_name'],
-                //     'login' => $data['login'],
-                //     'email' => $data['email'],
-                //     'password' => Hash::make($data['password']),
-                //     ]);
-                //     dd($user);
-                }
-
-            }
+    }

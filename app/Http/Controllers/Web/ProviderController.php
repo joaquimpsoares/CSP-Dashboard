@@ -10,16 +10,23 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProviderRepositoryInterface;
+use App\Repositories\ResellerRepositoryInterface;
 
 class ProviderController extends Controller
 {
     
     private $providerRepository;
-    
-    public function __construct(ProviderRepositoryInterface $providerRepository)
+    private $resellerRepository;
+    private $customerRepository;
+
+    public function __construct(ProviderRepositoryInterface $providerRepository, ResellerRepositoryInterface $resellerRepository, CustomerRepositoryInterface $customerRepository)
     {
         $this->providerRepository = $providerRepository;
+        $this->resellerRepository = $resellerRepository;
+        $this->customerRepository = $customerRepository;
+
     }
     
     public function getPriceList(Provider $provider)
@@ -45,7 +52,7 @@ class ProviderController extends Controller
     
     public function create()
     {
-        return view('provider.create');
+        return view('provider.register');
     }
     
     protected function validator(array $data)

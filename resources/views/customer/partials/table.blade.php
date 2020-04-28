@@ -9,7 +9,8 @@
         </tr>
     </thead>
     <tbody>
-        @forelse($customers as $customer)
+        {{var_dump($customers)}}
+        {{-- @forelse($customers as $customer)
         @if($customer['status'] === 'message.active')
         <tr>
             <td>
@@ -27,6 +28,6 @@
         <tr>
             <td colspan="5">Empty</td>
         </tr>
-        @endforelse
+        @endforelse --}}
     </tbody>
 </table>

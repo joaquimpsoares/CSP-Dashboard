@@ -103,4 +103,12 @@ class CustomerRepository implements CustomerRepositoryInterface
                 break;
         }
     }
+
+    public function customersOfReseller(Reseller $reseller){
+
+        $customers = $reseller->customers->map->format();
+
+        return $customers;
+    }
+
 }

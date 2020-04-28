@@ -2,9 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Provider;
+use App\Reseller;
 use App\Http\Traits\UserTrait;
 use App\Repositories\ResellerRepositoryInterface;
-use App\Reseller;
 
 /**
  * 
@@ -53,6 +54,18 @@ class ResellerRepository implements ResellerRepositoryInterface
 		return $resellers;
 	}
 
+	public function resellersOfProvider(Provider $provider){
+
+		$resellers = [];
+
+		foreach($provider->resellers as $reseller){
+			$resellers[]=$reseller->format();
+			// var_dump($reseller);
+		}
+
+		return $resellers;
+
+	}
 
 
 }
