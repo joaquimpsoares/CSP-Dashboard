@@ -54,6 +54,30 @@ class ProviderController extends Controller
     public function create()
     {
         return view('provider.register');
+    }    
+    
+    public function show(Provider $provider)
+    {
+        // dd($provider->resellers);
+        $resellers = $this->resellerRepository->resellersOfProvider($provider);
+        // dd($resellers);
+        
+        $customers = [];
+
+        foreach ($resellers as $reseller){
+            $reseller = Reseller::find($reseller['id']);
+            $customers[] = $this->customerRepository->customersOfReseller($reseller);
+
+        }
+
+        // dd($customers); 
+
+        return view('provider.show', compact('provider', 'resellers', 'customers'));
+    }
+    
+    public function edit(Provider $provider)
+    {
+        return view('provider.register');
     }
     
     protected function validator(array $data)
@@ -90,19 +114,6 @@ class ProviderController extends Controller
             }
             
             
-            public function show(Provider $provider)
-            {
-                $resellers = Reseller::get()->all();
-                $customers = Customer::get()->all();
-                
-                return view('provider.show', compact('provider', 'resellers', 'customers'));
-            }
-            
-            
-            public function edit(Provider $provider)
-            {
-                //
-            }
             
             
             public function update(Request $request, Provider $provider)
