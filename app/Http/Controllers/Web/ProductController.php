@@ -153,7 +153,7 @@ class ProductController extends Controller
             ->delay(now()->addSeconds(10));            
         }
 
-        return redirect()->route('product.index')->with(['alert' => 'success', 'message' => trans('messages.importproducts')]);
+        return redirect()->route('jobs')->with(['alert' => 'success', 'message' => trans('messages.importproducts')]);
     }
 
 
