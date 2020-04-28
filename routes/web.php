@@ -195,10 +195,7 @@ Route::get('/', function() {
 Auth::routes();
 
 
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
