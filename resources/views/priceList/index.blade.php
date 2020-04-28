@@ -59,7 +59,7 @@
 		</section>
 	</div></div>
 	<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-		<table class="table table-striped table-bordered" id="prices">
+		<table class="table table-striped table-responsive table-bordered" id="prices">
 			<thead>
 				<tr>
 					<th>{{ ucwords(__('messages.product_sku')) }}</th>

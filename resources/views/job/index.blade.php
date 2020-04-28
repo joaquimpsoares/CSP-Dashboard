@@ -12,18 +12,18 @@
                     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active btn blue-gradient" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab"
-                            aria-controls="pills-home" aria-selected="true">Active Tasks</a>
+                            aria-controls="pills-home" aria-selected="true"><span class="badge badge-pill badge-success" style="float:right;margin-bottom:-10px;">{{ $running }}</span>Active Tasks</a>
                         </li>
                         <li class="nav-item">
 
                             <a class="nav-link btn peach-gradient" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab"
-                            aria-controls="pills-profile" aria-selected="false" ><span class="badge badge-pill badge-primary" style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span>
-                            Failed Tasks</a>
+                            aria-controls="pills-profile" aria-selected="false" ><span class="badge badge-pill badge-warning" style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span>
+                            {{ ucwords(trans_choice('messages.failed_task', 2)) }}</a>
                         </li>
                     </ul>
                     <div class="tab-content pt-2 pl-1" id="pills-tabContent">
                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                            <h4 class="card-title"><a>Active Tasks</a></h4>
+                            <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.active_task', 2)) }}</a></h4>
                             <table class="table table-striped table-bordered" id="customers">
                                 <thead>
                                     <tr>
@@ -45,7 +45,8 @@
                                         <td>{{ $job->queue }}</td>            
                                         <td style="width: 15px">{{ Str::limit($job->payload, 100, $end='[...]') }}</td>
                                         <td>{{ $job->attempts }}</td>
-                                        <td>{{ date('d, m , Y', strtotime($job->reserved_at))}}</td>
+                                        {{-- {{$job_date->format('Y-m-d H:i:s')}} --}}
+                                        <td>{{ date('d-M-Y', strtotime($job->available_at)) }}</td>
                                     </tr>
                                     @empty
                                     <tr>

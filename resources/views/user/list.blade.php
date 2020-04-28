@@ -8,32 +8,38 @@
 			<div class="">
 				<i class="fab fa-product-hunt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
 				<div class="card-body">
-					<h4 class="card-title"><a>Products Table</a></h4>
+					<h4 class="card-title"><a>{{ ucwords(trans_choice('messages.username', 2)) }}</a></h4>
 					<table class="table table-striped table-responsive table-bordered" id="resellers">
 						<thead>
-							<th>{{ ucwords(trans_choice('messages.product_sku', 2)) }}</th>
-							<th>{{ ucwords(trans_choice('messages.product_name', 2)) }}</th>
-							<th class="text-center">{{ ucwords(trans_choice('messages.vendor', 1)) }}</th>
-							<th class="text-center">{{ ucwords(trans_choice('messages.price', 1)) }}</th>
-							<th class="text-center">{{ ucwords(trans_choice('messages.action', 2)) }}</th>
+							<th>{{ ucwords(trans_choice('messages.username', 2)) }}</th>
+							<th>{{ ucwords(trans_choice('messages.first_name', 2)) }}</th>
+							<th class="text-center">{{ ucwords(trans_choice('messages.last_name', 1)) }}</th>
+							<th class="text-center">{{ ucwords(trans_choice('messages.owner', 1)) }}</th>
+							<th class="text-center">{{ ucwords(trans_choice('messages.status', 1)) }}</th>
+							{{-- <th class="text-center">{{ ucwords(trans_choice('messages.action', 2)) }}</th> --}}
 						</thead>
 						<tbody>
-							@forelse($products as $product)
+							@forelse($users as $user)
 							<tr>
 								<td style="width: 1px; white-space: nowrap;">
-									{{$product['sku']}}
+									{{$user['username']}}
 								</td>
 								<td style="width: 1px; white-space: nowrap;">
-									{{$product['name']}}
+									{{$user['first_name']}}
 								</td>
 								<td class="text-center">
-									{{$product['vendor']}}
+									{{$user['last_name']}}
 								</td>
 								<td class="text-center">
-									{{$product['price']['price'] ?? '-'}}
+                                    {{$user['provider']['company_name'] }}
+                                    {{$user['reseller']['company_name'] }}
+                                    {{$user['customer']['company_name'] }}
+                                </td>
+                                <td class="text-center">
+									{{$user['status']}}
 								</td>
-								<td>
-								</td>
+								{{-- <td>
+								</td> --}}
 							</tr>
 							@empty
 							<tr>

@@ -181,7 +181,7 @@ return [
         App\Providers\CustomerRepositoryServiceProvider::class,
         App\Providers\ProductRepositoryServiceProvider::class,
         App\Providers\PriceListRepositoryServiceProvider::class,
-
+        App\Providers\UserRepositoryServiceProvider::class,
 
 
         Spatie\Permission\PermissionServiceProvider::class,

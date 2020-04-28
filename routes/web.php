@@ -15,6 +15,8 @@ Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
 
 Route::post('provider/register', 'ProviderController@store')->name('provider.register');
 
+Route::resource('/user', 'UsersController');
+
 
 /**********************************************************************************
 Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups

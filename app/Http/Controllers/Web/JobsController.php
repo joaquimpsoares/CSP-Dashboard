@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\web;
 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -21,11 +22,33 @@ class JobsController extends Controller
     public function index()
     {
         $jobs =  DB::table('jobs')->get();
-        // dd($jobs);
-        $failedJobs = DB::table('failed_jobs')->get();
-        // dd($failedJobs);
-        return view('job.index', compact('jobs','failedJobs'));
+
+//         $jobs->getPayload();
+
+//         $payload = json_decode($jobs->payload);
+//         dd($payload->data->command);
+//         $obj = unserialize($payload->data->command);
+
+// dd($obj);
+
+
+//         foreach($jobs as $job){
+//             dd($job->getPayload());
+
+//     }
+
+        $running =$jobs->count();
         
+        $failedJobs = DB::table('failed_jobs')->get();
+
+        return view('job.index', compact('jobs','failedJobs','running'));
+        
+    }
+
+    public function getPayload(){
+        return $this->payload->map(function($item){
+            return unserialize($item);
+        });
     }
 
 

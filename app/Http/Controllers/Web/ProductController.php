@@ -2,16 +2,12 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Events\Product\MicrosoftImportProductsEvent;
-use App\Http\Controllers\Controller;
-use App\Instance;
-use App\Jobs\ImportProductsMicrosoft;
-use App\Jobs\ImportProductsMicrosoftJob;
-use App\MicrosoftConnection\Repositories\AbstractRestV1Repository;
 use App\Product;
-use App\Repositories\ProductRepositoryInterface;
-use App\Vendor;
+use App\Instance;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Jobs\ImportProductsMicrosoftJob;
+use App\Repositories\ProductRepositoryInterface;
 use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
 
 
