@@ -3,25 +3,27 @@
 
 @section('content')
 <div class="box col-xm-12">
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+            {{-- <a class="nav-link btn peach-gradient" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" --}}
+
+            <a class="nav-link btn teal lighten-2 active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
             aria-selected="true">Home</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+            <a class="nav-link btn teal lighten-2" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
             aria-selected="false">{{ ucwords(trans_choice('messages.reseller', 2)) }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
+            <a class="nav-link btn teal lighten-2" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
             aria-selected="false">{{ ucwords(trans_choice('messages.customer', 2)) }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="subscription-tab" data-toggle="tab" href="#subscription" role="tab" aria-controls="subscription"
+            <a class="nav-link btn teal lighten-2" id="subscription-tab" data-toggle="tab" href="#subscription" role="tab" aria-controls="subscription"
             aria-selected="false">{{ ucwords(trans_choice('messages.subscription', 2)) }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="account-tab" data-toggle="tab" href="#account" role="tab" aria-controls="account"
+            <a class="nav-link btn teal lighten-2" id="account-tab" data-toggle="tab" href="#account" role="tab" aria-controls="account"
             aria-selected="false">{{ ucwords(trans_choice('messages.account', 2)) }}</a>
         </li>
     </ul>

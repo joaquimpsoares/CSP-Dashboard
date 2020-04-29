@@ -11,7 +11,7 @@
 			<div class="">
 				<i class="fas fa-users fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
 				<div class="card-body">
-					<h4 class="card-title"><a>Resellers Table</a></h4>
+					<h4 class="card-title"><a>{{ ucwords(trans_choice('messages.reseller_table', 2)) }}</a></h4>
 					@include('reseller.partials.table', ['resellers' => $resellers])
 				</div>
 			</div>
@@ -22,7 +22,7 @@
 
 @section('scripts')
 <script type="text/javascript">
-	$(document).ready( function () {
+	$(document).ready( function () {	
 		$('#resellers').DataTable({
 			"pagingType": "full_numbers",
 			"order": [[ 0, "asc" ]]

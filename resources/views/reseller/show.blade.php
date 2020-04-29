@@ -5,7 +5,8 @@
 
 
 <div class="box col-xm-12">
-    <ul class="nav nav-tabs md-tabs" id="myTabMD" role="tablist">
+    
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item">
             <a class="nav-link active" id="home-tab-md" data-toggle="tab" href="#home-md" role="tab" aria-controls="home-md"
             aria-selected="true">Home</a>

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
@@ -44,7 +45,8 @@ class Product extends Model
             'conversion_target_offers' => $this->conversion_target_offers,
             'resellee_qualifications' => $this->resellee_qualifications,
             'reseller_qualifications' => $this->reseller_qualifications,
-            'price' => $this->price
+            'price' => $this->price,
+            'path' => $this->path()
         ];
     }
 
@@ -56,5 +58,9 @@ class Product extends Model
 
     public function price() {
         return $this->hasOne('App\Price', 'product_sku', 'sku')->where('product_vendor', $this->vendor);
+    }
+
+    public function path() {
+        return url("/product/{$this->id}-" . Str::slug($this->socket_shutdown, '-'));
     }
 }
