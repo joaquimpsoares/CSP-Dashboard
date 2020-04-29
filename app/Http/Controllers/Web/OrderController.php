@@ -127,9 +127,9 @@ class OrderController extends Controller
                 $tagydescart->addProduct($TagydesProduct, $product['quantity'], "monthly");
             }
 
-            dd($tagydescart);
+            // dd($tagydescart);
 
-            /*$tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->create($tagydescart);
+            $tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->create($tagydescart);
 
             $orderConfirm = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($tagydesorder);
 
@@ -154,7 +154,7 @@ class OrderController extends Controller
             $order1->cart = serialize($cart);
             $order1->company_id = $cart->customer['id'];
             $order1->order_id = $orderConfirm->subscriptions()->first()->id;
-            $user->orders()->save($order1);*/
+            $user->orders()->save($order1);
 
 
         /*} catch (\Exception $e) {
