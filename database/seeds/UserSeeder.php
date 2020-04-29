@@ -32,6 +32,7 @@ class UserSeeder extends Seeder
 
         $userSuperAdmin = User::create([
             'first_name' => 'Super Admin',
+            'last_name' => 'User',
             'email' => 'superadmin@admin.com',
             'username' => 'SuperAdmin',
             'password' => Hash::make('admin123'),
@@ -44,6 +45,7 @@ class UserSeeder extends Seeder
 
         $userAdmin = User::create([
             'first_name' => 'Admin',
+            'last_name' => 'User',
             'email' => 'admin@admin.com',
             'username' => 'admin',
             'password' => Hash::make('admin123'),
@@ -55,7 +57,8 @@ class UserSeeder extends Seeder
         ]);
 
         $userProvider = User::create([
-            'first_name' => 'Provider User',
+            'first_name' => 'Provider',
+            'last_name' => 'User',
             'email' => 'provider@admin.com',
             'username' => 'Provider',
             'password' => Hash::make('admin123'),
@@ -67,7 +70,8 @@ class UserSeeder extends Seeder
         ]);
 
         $userProvider2 = User::create([
-            'first_name' => 'Provider User 2',
+            'first_name' => 'Provider',
+            'last_name' => 'User 2',
             'email' => 'provider2@admin.com',
             'username' => 'Provider',
             'password' => Hash::make('admin123'),
@@ -79,7 +83,8 @@ class UserSeeder extends Seeder
         ]);
 
         $userReseller = User::create([
-            'first_name' => 'Reseller User',
+            'first_name' => 'Reseller',
+            'last_name' => 'User',
             'email' => 'reseller@admin.com',
             'username' => 'Reseller',
             'password' => Hash::make('admin123'),
@@ -92,7 +97,8 @@ class UserSeeder extends Seeder
         ]);
 
         $userReseller2 = User::create([
-            'first_name' => 'Reseller 2 User',
+            'first_name' => 'Reseller 2',
+            'last_name' => 'User',
             'email' => 'reseller2@admin.com',
             'username' => 'Reseller2',
             'password' => Hash::make('admin123'),
@@ -105,7 +111,8 @@ class UserSeeder extends Seeder
         ]);
 
         $userSubReseller = User::create([
-            'first_name' => 'Sub Reseller User',
+            'first_name' => 'Sub Reseller',
+            'last_name' => 'User',
             'email' => 'subreseller@admin.com',
             'username' => 'SubReseller',
             'password' => Hash::make('admin123'),
@@ -119,6 +126,7 @@ class UserSeeder extends Seeder
 
         $userCustomer = User::create([
             'first_name' => 'Customer User',
+            'last_name' => 'User',
             'email' => 'customer@admin.com',
             'username' => 'Customer',
             'password' => Hash::make('admin123'),

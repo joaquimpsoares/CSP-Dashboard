@@ -57,4 +57,17 @@ class CustomerController extends Controller
         $customer = Customer::with('priceList')->where('id', $customer)->first();
         dd($customer);
     }
+
+    public function getMainUser(Customer $customer)
+    {
+        /* Check if can buy to this customer */
+        if (!$this->customerRepository->canInteractWithCustomer($customer)) {
+            return abort(500);
+        }
+        /* End Check */
+
+        $user = $customer->users()->first()->format();
+
+        return $user;
+    }
 }

@@ -3,25 +3,29 @@
 
 <h3>{{ ucwords(trans_choice('messages.customer_selected', 1)) }}</h3>
 
-<p>Reseller 1</p>
+<p>
+    @php
+    $cart = Session::get('cart');
+    echo $cart->customer['company_name'];
+    @endphp
+</p>
 
 <h3>{{ ucwords(trans_choice('messages.agreement_signed', 1)) }}</h3>
+
 <div class="md-form mb-0">
-    <label for="firstName">{{ ucwords(trans_choice('messages.first_name', 1)) }}</label>
-    <input type="text" name="firstName" id="firstName" class="form-control" required="required" />
+    <p id="firstName">{{ $cart->mcaUser["firstName"] }}</p>
 </div>
 
 <div class="md-form mb-0">
-    <label for="lastName">{{ ucwords(trans_choice('messages.last_name', 1)) }}</label>
-    <input type="text" name="lastName" id="lastName" class="form-control" required="required" />
+    <p id="lastName">{{ $cart->mcaUser["lastName"] }}</p>
 </div>
+
 <div class="md-form mb-0">
-    <label for="email">{{ ucwords(trans_choice('messages.email', 1)) }}</label>
-    <input type="email" name="email" id="email" class="form-control" required="required" />
+    <p id="email">{{ $cart->mcaUser["email"] }}</p>
 </div>
+
 <div class="md-form mb-0">
-    <label for="phoneNumber">{{ ucwords(trans_choice('messages.phone_number', 1)) }}</label>
-    <input type="text" name="phoneNumber" id="phoneNumber" class="form-control" />
+    <p id="phoneNumber">{{ $cart->mcaUser["phoneNumber"] }}</p>
 </div>
 
 <!-- Default disabled -->
@@ -33,6 +37,10 @@
 <button type="button" class="btn btn-warning" id="test" >{{ ucwords(trans_choice('messages.back', 1)) }}</button>
 
 <button type="button" class="btn btn-primary" id="test" >{{ ucwords(trans_choice('messages.next', 1)) }}</button>
+
+<pre>
+
+</pre>
 
 
 

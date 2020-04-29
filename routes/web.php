@@ -150,8 +150,8 @@ Route::group(['middleware' => 'auth'], function () {
 			/*
 			Inicio Confirmar nivel de acesso reseller->provider
 			*/
-
-			Route::get('customer/{customer}/priceList', 'CustomerController@getPriceList')->name('customer.pricelist');
+			Route::get('/customer/{customer}/mainUser', 'CustomerController@getMainUser')->name('customer.main_user');
+			Route::get('/customer/{customer}/priceList', 'CustomerController@getPriceList')->name('customer.pricelist');
 
 			/*
 			fim Confirmar nivel de acesso reseller->provider
@@ -164,6 +164,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 	// Every authenticated user can access routes here
 	
+	Route::get('/order/placeOrder', 'OrderController@placeOrder')->name('store.place_order');
 	Route::get('/order/product/{product}/quantity/{quantity}', 'OrderController@changeProductQuantity');
 	Route::post('/order/product/add', 'OrderController@addProductToCart')->name('order.add_to_cart');
 	Route::get('/order/shoppingcart', 'OrderController@getCart')->name('order.shoppingcart');
@@ -175,6 +176,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/cart/checkout', 'CartController@checkout')->name('cart.checkout');
 	Route::get('/cart/customer/{customer}/add', 'CartController@addCustomer')->name('cart.add_customer');
 	Route::get('/cart/checkDomainAvailability/{domain}', 'CartController@checkDomainAvailability')->name('cart.check_domain_availability');
+	Route::post('/cart/addMCAUser', 'CartController@addMCAUser')->name('cart.add_mca_user');
 
 
 	Route::resource('/cart', 'CartController');

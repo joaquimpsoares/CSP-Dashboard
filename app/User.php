@@ -25,7 +25,7 @@ class User extends Authenticatable implements  JWTSubject
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'username', 'email', 'password', 'status', 'provider_id', 'reseller_id', 'user_level_id'
+        'first_name', 'last_name', 'phone', 'username', 'email', 'password', 'status', 'provider_id', 'reseller_id', 'user_level_id'
     ];
 
     /**
@@ -46,6 +46,16 @@ class User extends Authenticatable implements  JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
+    public function format() 
+    {
+        return [
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'phone' => $this->phone,
+            'email' => $this->email
+        ];
+    }
+
     public function country()
     {
         return $this->belongsTo('Webpatser\Countries\Countries');
@@ -61,6 +71,10 @@ class User extends Authenticatable implements  JWTSubject
 
     public function userLevel() {
         return $this->belongsTo('App\UserLevel');
+    }
+
+    public function orders() {
+        return $this->hasMany('App\Order');
     }
 
    /**

@@ -96,6 +96,25 @@ class CartController extends Controller
         }
     }
 
+    public function addMCAUser(Request $request)
+    {
+        $validate = $request->validate([
+            'firstName' => 'required|string',
+            'lastName' => 'required|string',
+            'email' => 'required|email:rfc,dns',
+            'phoneNumber' => 'string|nullable'
+        ]);
+
+
+        $oldCart = Session::get('cart');
+        $cart = new Cart($oldCart);
+        $request->session()->put('cart', $cart);
+
+        $cart->addMCAUser($validate);
+
+        return true;
+    }
+
     public function removeProduct(Request $request, Product $product)
     {
 

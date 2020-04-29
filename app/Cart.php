@@ -11,6 +11,7 @@ class Cart extends Model
     public $totalPrice = 0;
     public $customer = null;
     public $domain = null;
+    public $mcaUser = null;
     
 
     public function __construct($oldCart)
@@ -19,6 +20,9 @@ class Cart extends Model
             $this->items = $oldCart->items;
             $this->totalQty = $oldCart->totalQty;
             $this->totalPrice = $oldCart->totalPrice;
+            $this->customer = $oldCart->customer;
+            $this->domain = $oldCart->domain;
+            $this->mcaUser = $oldCart->mcaUser;
         }
     }
 
@@ -61,5 +65,9 @@ class Cart extends Model
 
     public function addDomain($domain) {
         $this->domain = $domain;
+    }
+
+    public function addMCAUser($mcaUser) {
+        $this->mcaUser = $mcaUser;
     }
 }

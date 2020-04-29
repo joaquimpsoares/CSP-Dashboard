@@ -29,68 +29,114 @@
 									<div class="tab-pane fade in show active" id="selectCustomer" role="tabpanel">
 										@include('order.partials.customer', ['customers' => $customers])
 									</div>
-										<div class="tab-pane fade" id="selectTenant" role="tabpanel">
-											@include('order.partials.tenant')
-										</div><div class="tab-pane fade" id="tabreview" role="tabpanel">
-											@include('order.partials.review')
-										</div>
+									<div class="tab-pane fade" id="selectTenant" role="tabpanel">
+										@include('order.partials.tenant')
+									</div><div class="tab-pane fade" id="tabreview" role="tabpanel">
+										@include('order.partials.review')
 									</div>
 								</div>
-								@include('order.partials.side')
 							</div>
+							@include('order.partials.side')
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		@else
-		
-		@endif
-		
-		
-		
-		
-		@endsection
-		
-		@section('scripts')
-		<script>
-			
-			function verifyCustomer() {
-				//var customer = $('#customers').val();
-				var customer =  $( "#customers option:selected" ).val();
+	</div>
+	@else
+
+	@endif
+
+
+
+
+	@endsection
+
+	@section('scripts')
+	<script>
+		var customer = null;
+
+		$( document ).ready(function() {
+
+		});
+
+		function verifyCustomer() {
+
+			customer =  $( "#customers option:selected" ).val();
+
+			$.get( "/cart/customer/" + customer + "/add/", function() {
 				
-				$.get( "/cart/customer/" + customer + "/add/", function() {
-					//action begining
-				})
-				.done(function(data) {
-					console.log('success');
-				})
-				.fail(function(data) {
-					console.log(data);
-					// some error
-				});
-			}
-			
-			function checkDomainAvailability() {
-				var domain = $("#tenant").val();
+			})
+			.done(function(data) {
+				console.log('success');
+			})
+			.fail(function(data) {
+				console.log(data);
 				
-				$("#validateButton").prop('disabled', true);
-				
-				$.get( "/cart/checkDomainAvailability/" + domain, function() {
+			});
+		}
+
+		function checkDomainAvailability() {
+			var domain = $("#tenant").val();
+
+			$("#validateButton").prop('disabled', true);
+
+			$.get( "/cart/checkDomainAvailability/" + domain, function() {
+
+			})
+			.done(function(data) {
+
+				getMainUserFromCustomer();
+				$("#validateButton").hide();
+				$("#agreement").show();
+			})
+			.fail(function(data) {
+				console.log(data);
+				$("#validateButton").prop('disabled', false);
+
+			});
+		}
+
+		function getMainUserFromCustomer() {
+
+			$.get( "/customer/" + customer + "/mainUser", function() {
 					//action begining            
 				})
-				.done(function(data) {
-					// console.log('success');
-					$("#validateButton").hide();
-					$("#agreement").show();
-				})
-				.fail(function(data) {
-					//console.log(data);
-					$("#validateButton").prop('disabled', false);
-					// some error
-				});
-			}
+			.done(function(data) {
+				console.log('success');
+
+				$('#firstName').val(data['first_name']);
+				$('#lastName').val(data['last_name']);
+				$('#email').val(data['email']);
+				$('#phoneNumber').val(data['phone']);
+
+			})
+			.fail(function(data) {
+				console.log("erro");
+				console.log(data);
+			});
+		}
+
+		function sendMCAUser() {
+			var form = $("#mca_user");
+
+			$.ajax({
+				type: "POST",
+				url: "{{ route('cart.add_mca_user') }}",
+				data: form.serialize(),
+				success: function (data) {
+					console.log("success");
+					console.log(data);
+					$('[href="#tabreview"]').tab('show');
+				},
+				error: function (data) {
+					console.log("error");
+					console.log(data);
+				}
+			})
 			
-			
-		</script>
-		@endsection
+		}
+
+
+	</script>
+	@endsection
