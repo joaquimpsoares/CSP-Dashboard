@@ -8,19 +8,20 @@
     
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" id="home-tab-md" data-toggle="tab" href="#home-md" role="tab" aria-controls="home-md"
+
+            <a class="nav-link btn rgba-blue-light btn rgba-blue-light active" id="home-tab-md" data-toggle="tab" href="#home-md" role="tab" aria-controls="home-md"
             aria-selected="true">Home</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="contact-tab-md" data-toggle="tab" href="#contact-md" role="tab" aria-controls="contact-md"
+            <a class="nav-link btn rgba-blue-light" id="contact-tab-md" data-toggle="tab" href="#contact-md" role="tab" aria-controls="contact-md"
             aria-selected="false">{{ ucwords(trans_choice('messages.customer', 2)) }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="contact-tab-md" data-toggle="tab" href="#contact-md" role="tab" aria-controls="contact-md"
+            <a class="nav-link btn rgba-blue-light" id="contact-tab-md" data-toggle="tab" href="#contact-md" role="tab" aria-controls="contact-md"
             aria-selected="false">{{ ucwords(trans_choice('messages.subscription', 2)) }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="profile-tab-md" data-toggle="tab" href="#profile-md" role="tab" aria-controls="profile-md"
+            <a class="nav-link btn rgba-blue-light" id="profile-tab-md" data-toggle="tab" href="#profile-md" role="tab" aria-controls="profile-md"
             aria-selected="false">{{ ucwords(trans_choice('messages.account', 1)) }}</a>
         </li>
     </ul>

@@ -5,26 +5,28 @@
 <div class="box col-xm-12">
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item">
-            {{-- <a class="nav-link btn peach-gradient" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" --}}
-
-            <a class="nav-link btn teal lighten-2 active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+            <a class="nav-link btn rgba-blue-light active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
             aria-selected="true">Home</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link btn teal lighten-2" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+            <a class="nav-link btn rgba-blue-light" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
             aria-selected="false">{{ ucwords(trans_choice('messages.reseller', 2)) }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link btn teal lighten-2" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
+            <a class="nav-link btn rgba-blue-light" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
             aria-selected="false">{{ ucwords(trans_choice('messages.customer', 2)) }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link btn teal lighten-2" id="subscription-tab" data-toggle="tab" href="#subscription" role="tab" aria-controls="subscription"
+            <a class="nav-link btn rgba-blue-light" id="subscription-tab" data-toggle="tab" href="#subscription" role="tab" aria-controls="subscription"
             aria-selected="false">{{ ucwords(trans_choice('messages.subscription', 2)) }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link btn teal lighten-2" id="account-tab" data-toggle="tab" href="#account" role="tab" aria-controls="account"
+            <a class="nav-link btn rgba-blue-light" id="account-tab" data-toggle="tab" href="#account" role="tab" aria-controls="account"
             aria-selected="false">{{ ucwords(trans_choice('messages.account', 2)) }}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link btn rgba-blue-light" id="instance-tab" data-toggle="tab" href="#instance" role="tab" aria-controls="instance"
+            aria-selected="false">{{ ucwords(trans_choice('messages.instance', 2)) }}</a>
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
@@ -59,6 +61,25 @@
         <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="account-tab">
             <div class="box col-xm-12">
             @include('provider.partials.details')
+            </div>
+        </div>
+        <div class="tab-pane fade" id="instance" role="tabpanel" aria-labelledby="instance-tab">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="card">
+                        <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap">
+                        <div class="card-body">
+                            <h2 class="card-title">
+                                <a href="{{ "instance/" . $instance->id}}">{{$instance->provider}}</a></h2>
+                            <p class="card-text">
+                               <strong>Instance Name:</strong> {{$instance->name}}
+                            </p>
+                            <a href=" {{ "instance/" . $instance->id}}" class="button is-info is-outlined">
+                                View
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
