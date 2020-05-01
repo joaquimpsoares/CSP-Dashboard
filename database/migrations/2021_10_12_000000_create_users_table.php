@@ -32,7 +32,7 @@ class CreateUsersTable extends Migration
             $table->date('birthday')->nullable();
             $table->timestamp('last_login')->nullable();
             $table->string('confirmation_token', 60)->nullable();
-            $table->string('status', 20)->index()->default('Active');
+            $table->unsignedSmallInteger('status_id')->index()->default(5);
             $table->string('template')->default('transparent');
             $table->integer('two_factor_country_code')->nullable();
             $table->integer('two_factor_phone')->nullable();
@@ -41,6 +41,8 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('user_level_id')->nullable(false);
             $table->unsignedInteger('created_by')->default('0');
             $table->unsignedInteger('associated_id')->default('0');
+            $table->boolean('notify')->default(false);
+            $table->boolean('notified')->default(false);
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
@@ -50,6 +52,7 @@ class CreateUsersTable extends Migration
             $table->foreign('reseller_id')->references('id')->on('resellers');
             $table->foreign('customer_id')->references('id')->on('customers');
             $table->foreign('user_level_id')->references('id')->on('user_levels');
+            $table->foreign('status_id')->references('id')->on('statuses');
 
         });
 

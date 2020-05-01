@@ -23,6 +23,7 @@ class Provider extends Model
 
     public function format()
 	{
+
 		return [
 			'id' => $this->id,
 			'company_name' => $this->company_name,

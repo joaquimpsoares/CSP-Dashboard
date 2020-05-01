@@ -2,24 +2,27 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\User;
-use App\Status;
 use App\Country;
 use App\Customer;
+use App\Http\Controllers\Controller;
 use App\Instance;
 use App\Provider;
-use App\Reseller;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProviderRepositoryInterface;
 use App\Repositories\ResellerRepositoryInterface;
+use App\Reseller;
+use App\Status;
+use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class ProviderController extends Controller
 {
-    
+
     private $providerRepository;
     private $resellerRepository;
     private $customerRepository;
@@ -40,7 +43,7 @@ class ProviderController extends Controller
         $priceLists = [];
         foreach ($resellers as $reseller) {
             if (!in_array($reseller->priceList, $priceLists))
-            $priceLists[] = $reseller->priceList;
+                $priceLists[] = $reseller->priceList;
         }
         
         return view('priceList.index', compact('priceLists'));
@@ -49,6 +52,7 @@ class ProviderController extends Controller
     
     public function index()
     {
+
         $providers = $this->providerRepository->all();
         return view('provider.index', compact('providers'));
     }
@@ -57,9 +61,9 @@ class ProviderController extends Controller
     public function create()
     {
         $countries = Country::get();
-        $status = Status::get();
+        $statuses = Status::get();
         
-        return view('provider.create', compact('countries', 'status'));
+        return view('provider.create', compact('countries', 'statuses'));
     }    
     
     public function register()
@@ -73,11 +77,11 @@ class ProviderController extends Controller
         
         $instance = Instance::first();
         
-        $customers = [];
+        $customers = new Collection();
         
         foreach ($resellers as $reseller){
             $reseller = Reseller::find($reseller['id']);
-            $customers[] = $this->customerRepository->customersOfReseller($reseller);
+            $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
             
         }
         
@@ -94,25 +98,30 @@ class ProviderController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'company_name' => ['required', 'string', 'max:255'],
-            'nif' => ['required', 'string', 'max:255'],
+            'company_name' => ['required', 'string', 'regex:/^[a-zA-Z]+$/u', 'max:255'],
+            'nif' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
             'address_1' => ['required', 'string', 'max:255'],
-            'country_id' => ['required', 'string', 'max:255'],
+            'country_id' => ['required', 'integer', 'min:1'],
             'city' => ['required', 'string', 'max:255'],
             'state' => ['required', 'string', 'max:255'],
-            'postal_code' => ['required', 'string', 'max:255'],
-            'status' => ['required', 'string', 'max:255'],
+            'postal_code' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
+            'status' => ['required', 'integer', 'exists:statuses,id'],
+            'sendInvitation' => ['nullable', 'integer'],
             
             
             
-            ]);
-        }     
-        
-        public function store(Request $request)
-        {
-            //  dd($request->all());
-            
-            $this->validator($request->all())->validate();
+        ]);
+    }     
+
+    public function store(Request $request)
+    {
+
+        $this->validator($request->all())->validate();
+
+
+
+        try {
+            DB::beginTransaction();
 
             $provider =  Provider::create([
                 'company_name' => $request['company_name'],
@@ -124,43 +133,48 @@ class ProviderController extends Controller
                 'state' => $request['state'],
                 'postal_code' => $request['postal_code'],
                 'status_id' => $request['status']
-                ]);
-                
-                if ($request->email != null){
-                
-                    $provider = $provider->id;
+            ]);
 
-                    return view('invitation.invite', compact('provider'));
-                    
-                }
-                // 'first_name' => ['required', 'string', 'max:255'],
-                // 'last_name' => ['required', 'string', 'max:255'],
-                // 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                // 'password' => ['required', 'string', 'min:8', 'confirmed'],
-                // $user =  User::create([
-                    //     'first_name' => $request['first_name'],
-                    //     'last_name' => $request['last_name'],
-                    //     'email' => $request['email'],
-                    //     'username' => $request['email'],
-                    //     'user_level_id' => '3',
-                    //     'status' => 'Unconfirmed',
-                    //     'password' => Hash::make($request['password']),
-                    //     ]);
-                    
-                    // dd($user);
-                    
-                    return redirect()->route('home')->with(['alert' => 'success', 'message' => trans('messages.Provider Created successfully')]);
-                    
-                }
-                
-                public function update(Request $request, Provider $provider)
-                {
-                    //
-                }
-                
-                
-                public function destroy(Provider $provider)
-                {
-                    //
-                }
+            User::create([
+                'provider_id' => $provider->id,
+                'email' => $request['email'],
+                'user_level_id' => 3,
+                'password' => Hash::make(Str::random(20)),
+                'status_id' => $request->status,
+                'notify' => $request['sendInvitation'] ?? false,
+            ]);
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            if ($e->errorInfo[1] == 1062) {
+                $errorMessage = "message.userAlreadExists";
+            } else {
+                $errorMessage = "message.error";
             }
+            return redirect()->route('provider.index')
+            ->with([
+                'alert' => 'danger', 
+                'message' => trans('messages.Provider Created unsuccessfully') . " (" . trans($errorMessage) . ")."
+            ]);
+        }
+
+
+
+
+
+        return redirect()->route('provider.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Created successfully')]);
+
+    }
+
+    public function update(Request $request, Provider $provider)
+    {
+                    //
+    }
+
+
+    public function destroy(Provider $provider)
+    {
+                    //
+    }
+}

@@ -27,5 +27,9 @@ class StatusSeeder extends Seeder
         Status::create([
             'name' => 'message.expired',
         ]);
+
+        Status::create([
+            'name' => 'message.pending',
+        ]);
     }
 }
