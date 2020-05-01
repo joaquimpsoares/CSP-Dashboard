@@ -6,14 +6,12 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <section>
-
-                {{dd($provider)}}
                 <div class="card-body">
                     <div class="card">
                         <div class="">
                             <i class="fas fa-unlock fa-lg blue-gradient  p-4 ml-2 mt-n3 py-2 mx-4 d-flex justify-content-between align-items-center rounded text-white">{{ __(' Register') }}</i>
                             <div class="card-body">
-                                <form method="POST" action="{{ route('provider.register') }}">
+                                <form method="POST" action="{{ route('registerInvitation') }}">
                                     @csrf
                                     {{-- <div class="row">
                                         <div class="md-form col-md-6">
@@ -35,6 +33,9 @@
                                             @enderror
                                         </div>
                                     </div> --}}
+                                    <p>Your now filling the information for company : {{$provider->company_name}}</p>
+
+                                    <input type="text" hidden="hiden" name="provider_id" value="{{$provider->id}}">
                                     <div class="row">
                                         <div class="md-form col-md-6">
                                             <label for="first_name" class="col-md-4">{{ __('First Name') }}</label>
