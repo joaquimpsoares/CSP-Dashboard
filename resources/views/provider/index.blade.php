@@ -26,6 +26,7 @@
 							</thead>
 							<tbody>
 								@forelse($providers as $provider)
+								
 								@if($provider['status'] === 'message.active')
 								<tr>
 									<td><a href="{{ $provider['path'] }}">{{ $provider['company_name'] }}</a></td>

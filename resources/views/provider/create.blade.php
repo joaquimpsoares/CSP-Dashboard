@@ -164,19 +164,27 @@
                                     </div>
                                     <div class="row">
                                         <div class="input-field col s4">
-                                            <label for="status">{{ ucwords(trans_choice('messages.country', 1)) }}</label>
+                                            <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
                                             <select name="status" class="browser-default custom-select">
                                                 <option selected></option>
-                                                @foreach ($status as $statu)    
-                                                <option value="{{$statu->id}}">{{ucwords(trans_choice($statu->name, 1))}}</option>
+                                                @foreach ($statuses as $status)    
+                                                <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
                                     <hr>
-                                    <div class="input-field col s4">
-                                        <h3>Invite Provider</h3>
+                                    <div class="row">
+                                        <div class="input-field col s4">
+                                            <h3>Invite Provider</h3>
                                             <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col s4">
+                                            <h3>Send Notification?</h3>
+                                            <input type="checkbox" name="sendInvitation" value="1" class="form-control" value="{{ old('sendInvitation') }}" checked="checked">
+                                        </div>
                                     </div>
                                 </div>
                                 <button type="submit" class="button is-rounded is-primary is-outlined">Create</button>

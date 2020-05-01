@@ -11,26 +11,25 @@
             </tr>
         </thead>
         <tbody>
-            {{var_dump($customers)}}
-            {{-- @forelse($customers as $customer)
-                @if($customer['status'] === 'message.active')
-                <tr>
-                    <td>
-                        <a href="{{ $customer['path'] }}">{{ $customer['company_name'] }}</a>
-                    </td>
-                    <td>{{ $customer['country'] }}</td>
-                    <td>{{ $customer['state'] }}</td>
-                    <td>{{ $customer['city'] }}</td>
-                    <td style="width: 150px">
-                        @include('partials.actions', ['model' => $customer, 'modelo' => 'customer'])
-                    </td>
-                </tr>
-                @endif
-                @empty
-                <tr>
-                    <td colspan="5">Empty</td>
-                </tr>
-                @endforelse --}}
-            </tbody>
-        </table>
-    </div>
+            @forelse($customers as $customer)
+            @if($customer['status'] === 'message.active')
+            <tr>
+                <td>
+                    <a href="{{ $customer['path'] }}">{{ $customer['company_name'] }}</a>
+                </td>
+                <td>{{ $customer['country'] }}</td>
+                <td>{{ $customer['state'] }}</td>
+                <td>{{ $customer['city'] }}</td>
+                <td style="width: 150px">
+                    @include('partials.actions', ['model' => $customer, 'modelo' => 'customer'])
+                </td>
+            </tr>
+            @endif
+            @empty
+            <tr>
+                <td colspan="5">Empty</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
