@@ -2,9 +2,9 @@
 
 @section('content')
 
-<div class="container"> 
-    <div class="row justify-content-center">
-        <div class="col-md-8"><div class="card-body">
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <div class="card-body">
             <div class="card">
                 <div class="">
                     <i class="fas fa-lock fa-lg blue-gradient  p-4 ml-2 mt-n3 py-2 mx-4 d-flex justify-content-between align-items-center rounded text-white">{{ __(' Login') }}</i>
@@ -58,8 +58,9 @@
             </div>
         </div>
     </div>
-    @endsection
-    
-    @section('scripts')
-    
-    @endsection
+</div>
+@endsection
+
+@section('scripts')
+
+@endsection
