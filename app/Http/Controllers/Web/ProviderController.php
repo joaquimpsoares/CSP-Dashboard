@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Web;
 
 use App\User;
+use App\Status;
+use App\Country;
 use App\Customer;
+use App\Instance;
 use App\Provider;
 use App\Reseller;
 use Illuminate\Http\Request;
@@ -50,17 +53,25 @@ class ProviderController extends Controller
         return view('provider.index', compact('providers'));
     }
     
-    
+
     public function create()
+    {
+        $countries = Country::get();
+        $status = Status::get();
+
+        return view('provider.create', compact('countries', 'status'));
+    }    
+    
+    public function register()
     {
         return view('provider.register');
     }    
     
     public function show(Provider $provider)
     {
-        // dd($provider->resellers);
         $resellers = $this->resellerRepository->resellersOfProvider($provider);
-        // dd($resellers);
+
+        $instance = Instance::first();
         
         $customers = [];
 
@@ -72,7 +83,7 @@ class ProviderController extends Controller
 
         // dd($customers); 
 
-        return view('provider.show', compact('provider', 'resellers', 'customers'));
+    return view('provider.show', compact('provider', 'resellers', 'customers', 'instance'));
     }
     
     public function edit(Provider $provider)
@@ -83,33 +94,61 @@ class ProviderController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'company_name' => ['required', 'string', 'max:255'],
+            'nif' => ['required', 'string', 'max:255'],
+            'address_1' => ['required', 'string', 'max:255'],
+            'country' => ['required', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:255'],
+            'state' => ['required', 'string', 'max:255'],
+            'postal_code' => ['required', 'string', 'max:255'],
+            'status' => ['required', 'string', 'max:255'],
+
+
+
             ]);
         }     
     
     public function store(Request $request)
     {
+
+        // dd($request['country']);
         //  dd($request->all());
         
         $this->validator($request->all())->validate();
 
- 
-        $user =  User::create([
-            'first_name' => $request['first_name'],
-            'last_name' => $request['last_name'],
-            'email' => $request['email'],
-            'username' => $request['email'],
-            'user_level_id' => '3',
-            'status' => 'Unconfirmed',
-            'password' => Hash::make($request['password']),
+
+        $provider =  Provider::create([
+            'company_name' => $request['company_name'],
+            'nif' => $request['nif'],
+            'country_id' => $request['country'],
+            'address_1' => $request['address_1'],
+            'address_2' => $request['address_2'],
+            'city' => $request['city'],
+            'state' => $request['state'],
+            'postal_code' => $request['postal_code'],
+            'status_id' => $request['status']
             ]);
 
-            dd($user);
+
+            // 'first_name' => ['required', 'string', 'max:255'],
+            // 'last_name' => ['required', 'string', 'max:255'],
+            // 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            // 'password' => ['required', 'string', 'min:8', 'confirmed'],
+        // $user =  User::create([
+        //     'first_name' => $request['first_name'],
+        //     'last_name' => $request['last_name'],
+        //     'email' => $request['email'],
+        //     'username' => $request['email'],
+        //     'user_level_id' => '3',
+        //     'status' => 'Unconfirmed',
+        //     'password' => Hash::make($request['password']),
+        //     ]);
+
+ 
+
+            // dd($user);
                 
-            return redirect()->route('home')->with(['alert' => 'success', 'message' => trans('messages.User Created successfully    ')]);
+            return redirect()->route('home')->with(['alert' => 'success', 'message' => trans('messages.Provider Created successfully    ')]);
                 
             }
             

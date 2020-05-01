@@ -10,7 +10,15 @@ use Illuminate\Database\Eloquent\Model;
 class Provider extends Model
 {
 
-	protected $fillable = ['company_name', 'nif'];
+	protected $fillable = ['company_name',
+							'nif',
+							'country_id',
+							'address_1',
+							'address_2',
+							'city',
+							'state',
+							'postal_code',
+							'status_id'];
 
 
     public function format()

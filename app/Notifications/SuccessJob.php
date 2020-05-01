@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Customer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Notifications\Notification;
@@ -25,6 +26,7 @@ class SuccessJob extends Notification
     public function __construct(JobProcessed $event)
     {
         $this->event = $event;
+    
     }
 
     /**
@@ -35,22 +37,27 @@ class SuccessJob extends Notification
      */
     public function via($notifiable)
     {
-        return [MsTeamsChannel::class];
+        
+        return [MsTeamsChannel::class, 'mail', 'database'];
     }
 
     public function toMsTeams($notifiable)
     {
+
+        $customer = Customer::get();
         return MsTeamsMessage::create()
             ->to(config('services.ms-teams.webhook_url'))
-            ->title('Job with id '.$this->event->job->getJobId(). 'was successfully run')
+            ->title('Job with id ' . $this->event->job->getJobId().  ' was successfully run')
             ->content(  ">**Job UUID:** " . $this->event->job->uuid()."<br/>".
                         "**Job ID:**    " . $this->event->job->getJobId()."<br/>".
                         "**Job Name:**  ". $this->event->job->resolveName()."<br/>".
                         "**Attempts:**  ". $this->event->job->attempts()."<br/>".
                         "**Message Body:**  ". $this->event->job->getRawBody())
+                        // "teste" .$this->customer() ."<br/>".
             ->button('Please check it' ,'app()->environment()');
             // ->image('https://source.unsplash.com/random/800x800?animals,nature&q='.now()
-        ;
+
+
     }
 
     /**

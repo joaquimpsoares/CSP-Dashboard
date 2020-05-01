@@ -1,9 +1,12 @@
 <?php
 
+use App\Customer;
+use App\Notifications\FailedJob;
+use App\Jobs\PlaceOrderMicrosoft;
 use Illuminate\Support\Facades\Auth;
+use App\Jobs\CreateCustomerMicrosoft;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Notifications\Notification;
-use App\Notifications\FailedJob;
 
 //Marco verifica aqui esta linha... para a importação dos productos!
 
@@ -16,6 +19,19 @@ Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
 Route::post('provider/register', 'ProviderController@store')->name('provider.register');
 
 Route::resource('/user', 'UsersController');
+
+Route::get('/sendnoti', function() {
+
+	// $cust = Customer::where('id', "310000")->first();
+	// // dd($cust);
+	// $cust->tenant_id  =  'a3bcd293-ca47-4b54-b794-c2afabd4bc5e';
+	// $cust->tenant_user = "admin@tagydessssssftbhgb.onmicrosoft.com";
+	// $cust->save();
+
+	PlaceOrderMicrosoft::dispatch()->onQueue('OrderCustomer')
+	->delay(now()->addSeconds(10));            
+})->name('sendnoti');
+
 
 
 /**********************************************************************************
@@ -187,18 +203,14 @@ Route::group(['middleware' => 'auth'], function () {
 	// End of every authenticated user can access routes here
 });
 
-//Auth::routes();
 
-// Auth::routes(['register' => false]);
+Auth::routes(['register' => false]);
+
 Route::impersonate();
 
 Route::get('/', function() {
 	return view('home');
 })->name('home');
-
-Auth::routes();
-
-
 
 Auth::routes();
 

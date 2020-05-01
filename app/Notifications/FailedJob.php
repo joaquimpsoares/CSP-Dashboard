@@ -45,7 +45,7 @@ class FailedJob extends Notification
     {
         return MsTeamsMessage::create()
             ->to(config('services.ms-teams.webhook_url'))
-            ->title('Job failed with id '.$this->event->job->getJobId())
+            ->title('Job failed with id ' . $this->event->job->getJobId())
             ->content(  ">**Job UUID:** " . $this->event->job->uuid()."<br/>".
                         "**Job ID:**    " . $this->event->job->getJobId()."<br/>".
                         "**Job Name:**  ". $this->event->job->resolveName()."<br/>".

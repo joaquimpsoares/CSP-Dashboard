@@ -129,7 +129,7 @@ class OrderController extends Controller
                 $tagydescart->addProduct($TagydesProduct, $product['quantity'], "monthly");
             }
 
-            // dd($tagydescart);
+            dd($tagydescart);
 
             $tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->create($tagydescart);
 
@@ -151,7 +151,7 @@ class OrderController extends Controller
                 $subscriptions->tenant_name=$cart->domain;
                 $subscriptions->save();
             }
-
+            
             $order1 = new Order();
             $order1->cart = serialize($cart);
             $order1->company_id = $cart->customer['id'];
