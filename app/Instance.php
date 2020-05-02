@@ -13,4 +13,11 @@ class Instance extends Model
         'updated_at',
         'external_token_updated_at'
     ];
+
+
+    public function provider()
+    {
+    	return $this->belongsTo('App\Provider');
+    }
+
 }
