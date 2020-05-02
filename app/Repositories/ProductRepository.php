@@ -2,10 +2,14 @@
 
 namespace App\Repositories;
 
+use App\Http\Traits\UserTrait;
+use App\Price;
 use App\Product;
 
 class ProductRepository implements ProductRepositoryInterface
 {
+
+    use UserTrait;
 	
 	public function all($filters = null, $quantity = null)
 	{
@@ -49,5 +53,31 @@ class ProductRepository implements ProductRepositoryInterface
             return true;
 
         return false;
+    }
+
+    public function getPriceOf($product_id) {
+        $user = $this->getUser();
+        $product = Product::find($product_id);
+
+        switch ($this->getUserLevel()) {
+            case 'Provider':
+                # code...
+                break;
+            
+            case 'Reseller':
+                $priceList = $user->reseller->priceList;
+                $prices = Price::where('price_list_id', $priceList->id)->where('product_sku', $product->sku)->where('product_vendor', $product->vendor)->first();
+                break;
+
+            case 'Sub Reseller':
+                # code...
+                break;
+
+            default:
+                # code...
+                break;
+        }
+
+        return $prices;
     }
 }

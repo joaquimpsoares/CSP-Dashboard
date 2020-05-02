@@ -189,13 +189,13 @@ Route::group(['middleware' => 'auth'], function () {
 	// Every authenticated user can access routes here
 	
 	Route::get('/order/placeOrder', 'OrderController@placeOrder')->name('store.place_order');
-	Route::get('/order/product/{product}/quantity/{quantity}', 'OrderController@changeProductQuantity');
-	Route::post('/order/product/add', 'OrderController@addProductToCart')->name('order.add_to_cart');
-	Route::get('/order/shoppingcart', 'OrderController@getCart')->name('order.shoppingcart');
 	
 	Route::get('/home', 'HomeController@index')->name('home');
+	
+	Route::post('/cart/product/add', 'CartController@addProductToCart')->name('cart.add_to_cart');
+	Route::get('/cart/item/{id}/quantity/{quantity}', 'CartController@changeProductQuantity');
 	Route::get('/cart/add/product/{product}', 'CartController@addProduct')->name('cart.add_product');
-	Route::get('/cart/remove/product/{product}', 'CartController@removeProduct')->name('cart.remove_product');
+	Route::get('/cart/remove/item/{item}', 'CartController@removeItem')->name('cart.remove_product');
 	Route::get('/cart/clear', 'CartController@destroy')->name('cart.clear');
 	Route::get('/cart/checkout', 'CartController@checkout')->name('cart.checkout');
 	Route::get('/cart/customer/{customer}/add', 'CartController@addCustomer')->name('cart.add_customer');

@@ -9,7 +9,7 @@
     </div>
 </div>
 
-@if(Session::has('cart'))
+
 
 <div class="row">
     <div class="col table-responsive">
@@ -27,61 +27,59 @@
                 </tr>
             </thead>
             <tbody>
-                @php
-                $products = Session::get('cart')->items;
-                @endphp
-                @foreach($products as $product)
+                @forelse($cart->products as $product)
+                
                 <tr class="product">
                     <td>
-                        {{ $product['item']->name }}
+                        {{ $product->name }}
                     </td>
+                    
                     <td>
 
                         <div class="col">
                             <div class="product-quantity">
-                                <input type="number" value="{{ $product['quantity'] }}" name="{{ $product['item']->id }}" id="quantity" class="form-control" step="1" min="{{$product['item']['minimum_quantity']}}" max="{{$product['item']['maximum_quantity']}}" style="max-width: 10em;" required />
+                                <input type="number" value="{{ $product->pivot->quantity }}" name="{{ $product->pivot->id }}" id="quantity" class="form-control" step="1" min="{{ $product->minimum_quantity }}" max="{{ $product->maximum_quantity }}" style="max-width: 10em;" required />
                             </div>
                         </div>
                     </td>
+                    
                     @if(Auth::user()->userLevel->name == "Reseller")
-                    <td>{{ $product['price']->price }}</td>
+                    <td>{{ $product->pivot->price }}</td>
                     @endif
-                    <td class="product-price">{{ $product['price']->msrp }}</td>
+                    <td class="product-price">{{ $product->pivot->retail_price }}</td>
                     <td class="product-line-price">
                         
-                            {{ number_format(floatval($product['price']->msrp * $product['quantity']), 2) }}
+                            {{ number_format(floatval($product->pivot->retail_price * $product->pivot->quantity), 2) }}
                         
                     </td>
                     <td>
                         <div class="row">
                             <div class="col">
-                                <a href="{{ route('cart.remove_product', $product['item']->id) }}"><span class="icon is-small text-danger"><i class="fas fa-trash-restore-alt"></i></span></a>
+                                <a href="{{ route('cart.remove_product', $product->pivot->id) }}"><span class="icon is-small text-danger"><i class="fas fa-trash-restore-alt"></i></span></a>
                             </div>
                         </div>
                     </td>
-
+                    
                 </tr>
-                @endforeach        
+                @empty
+                <tr>
+                    <td colspan="6">
+                        {{  ucwords(__('messages.empty_cart')) }}
+                    </td>
+                </tr>
+                @endforelse        
             </tbody>
             
         </table>
         <div class="row float-right">
-            <a href="{{ route('product.index') }}" class="btn btn-primary">{{ ucwords(__('messages.continue_shopping')) }}</a>
+            <a href="{{ route('store.index') }}" class="btn btn-primary">{{ ucwords(__('messages.continue_shopping')) }}</a>
             <a href="{{ route('cart.clear') }}" class="btn btn-danger">{{ ucwords(__('messages.clear_cart')) }}</a>
             <a href="{{ route('cart.checkout') }}" class="btn btn-success">{{ ucwords(__('messages.checkout')) }}</a>
         </div>
     </div>
 </div>
 
-@else
 
-<div class="row">
-    <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
-        <h2>No Items in Cart!</h2>
-    </div>
-</div>
-
-@endif
 @endsection
 
 @section('scripts')
@@ -95,7 +93,7 @@
     });
 
     function updateProductQuantity(item) {
-        $.get( "/order/product/" + item.name + "/quantity/" + item.value, function() {
+        $.get( "/cart/item/" + item.name + "/quantity/" + item.value, function() {
             //action begining
         })
         .done(function(data) {

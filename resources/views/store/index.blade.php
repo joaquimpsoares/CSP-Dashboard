@@ -83,7 +83,7 @@
 										<a class="btn btn-outline-dark" data-toggle="modal" data-target="#modal_product_{{$product->id}}">+ {{ $product->addons->count() }} {{ ucwords(trans_choice('messages.addon', 2)) }}</a>
 									</div>
 									<div class="col-6">
-										<form method="POST" action="{{ route('order.add_to_cart') }}">
+										<form method="POST" action="{{ route('cart.add_to_cart') }}">
 											@csrf
 											<input type="hidden" name="product_id" value="{{$product->id}}">
 											<button type="submit" class="btn btn-outline-success">

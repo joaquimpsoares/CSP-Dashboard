@@ -5,39 +5,99 @@ namespace App\Http\Controllers\Web;
 use App\Cart;
 use App\Customer;
 use App\Http\Controllers\Controller;
+use App\Http\Traits\UserTrait;
 use App\Instance;
 use App\Product;
 use App\Repositories\CustomerRepositoryInterface;
+use App\Repositories\ProductRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Session;
 use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 
 class CartController extends Controller
 {
 
+    use UserTrait;
     private $customerRepository;
+    private $productRepository;
 
-    public function __construct(CustomerRepositoryInterface $customerRepository)
+    public function __construct(CustomerRepositoryInterface $customerRepository, ProductRepositoryInterface $productRepository)
     {
         $this->customerRepository = $customerRepository;
+        $this->productRepository = $productRepository;
     }
 
     public function index() {
-        $cart = [];
-        $oldCart = Session::get('cart');
-        $cart = new Cart($oldCart);
+        $user = $this->getUser();
+        $cart = Cart::where('user_id', $user->id)->whereNull('customer_id')->with('products')->first();
 
-        return view('order.cart', ['products' => $cart]);
+        return view('order.cart', compact('cart'));
     }
 
-    public function addProduct(Request $request, Product $product)
+    public function addProductToCart(Request $request)
     {
-    	
-    	$oldCart = Session::has('cart') ? Session::get('cart') : null;
-        $cart = new Cart($oldCart);
-        $cart->add($product);
-        ($cart->items[$product->id]['quantity']);
-        $request->session()->put('cart', $cart);
+
+        $validate = $request->validate([
+            'product_id' => 'required|exists:products,id'
+        ]);
+
+        // if product aren't on the prices table doesn't add to the cart and continue
+        if ($prices = $this->productRepository->getPriceOf($validate['product_id'])) {
+
+            $user = $this->getUser();
+
+            $cart = Cart::where('user_id', $user->id)->first();
+
+            if (! $cart) {
+                $cart = new Cart($user->id);
+            }
+
+            $cart->save();
+
+            $cart->products()->attach($validate['product_id'], [
+                'price' => $prices->price,
+                'retail_price' => $prices->msrp,
+                'id' => Str::uuid()
+            ]);
+        }
+        
+
+        return redirect()->route('cart.index');
+    }
+
+    public function changeProductQuantity(Request $request, $item_id, $quantity) {
+        $user = $this->getUser();
+
+        $cart = Cart::where('user_id', $user->id)->first();
+
+        $product = $cart->products->first(function ($value) use ($item_id) {    
+            return $value->pivot->id == $item_id;
+        });
+
+        if ($this->productRepository->verifyQuantities($product, $quantity)) {
+            $product->pivot->quantity = $quantity;
+            $product->pivot->save();
+            return true;
+        }        
+
+        return false;
+
+    }
+
+    public function removeItem(Request $request, $item_id)
+    {
+
+        $user = $this->getUser();
+
+        $cart = Cart::where('user_id', $user->id)->first();
+
+        $product = $cart->products->first(function ($value) use ($item_id) {    
+            return $value->pivot->id == $item_id;                
+        });
+
+        $cart->products()->wherePivot('id', $item_id)->detach();
+
         return redirect()->route('cart.index');
     }
 
@@ -115,17 +175,7 @@ class CartController extends Controller
         return true;
     }
 
-    public function removeProduct(Request $request, Product $product)
-    {
-
-        $cart = Session::has('cart') ? Session::get('cart') : null;
-
-        if (!empty($cart)) {
-            unset($cart->items[$product->id]);
-        }
-
-        return redirect()->route('cart.index');
-    }
+    
 
     public function destroy()
     {

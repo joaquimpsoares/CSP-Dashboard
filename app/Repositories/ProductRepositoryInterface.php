@@ -11,4 +11,6 @@ interface ProductRepositoryInterface
 	public function searchFilter($filters, $quantity);
 
 	public function verifyQuantities(Product $product, $quantity);
+
+	public function getPriceOf($product);
 }
