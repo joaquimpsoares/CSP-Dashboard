@@ -1,3 +1,4 @@
+
 <nav class="navbar navbar-expand-lg navbar-dark primary-color">
     <a class="navbar-brand" href="/">
         <img src="{{ asset('images/small_logo.png') }}" width="30" height="30" class="d-inline-block " alt="">    
@@ -16,7 +17,7 @@
                 <a class="nav-link" href="{{ route('provider.index') }}">
                     {{ ucwords(trans_choice('messages.provider', 2)) }}
                 </a>
-            </li>
+            </li>   
             @endcan
             @can(config('app.reseller_index'))
             <li class="nav-item">

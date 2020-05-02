@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
 use App\Instance;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class InstanceController extends Controller
 {
@@ -17,7 +18,7 @@ class InstanceController extends Controller
     {
         $instances = Instance::all();
 
-        return view('packages.microsoft.instance', compact('instances'));
+        return view('packages.microsoft', compact('instances'));
 
         // return view('packages.microsoft.conf', compact('instances'));
     }
@@ -50,10 +51,11 @@ class InstanceController extends Controller
 
         ]);
 
+        $user = Auth::user();
         Instance::create([
             'name' => $request->name,
             'provider' => 'microsoft',
-
+            'user_id' => $user->id,
             'external_id' => $request->external_id,
             'external_type' => $request->external_type,
             'external_url' => $request->external_url
@@ -70,7 +72,10 @@ class InstanceController extends Controller
      */
     public function show($id)
     {
-        //
+        
+        $instances = Instance::findOrFail($id);
+// dd($instances);
+        return view('packages.show', compact('instances'));
     }
 
     /**

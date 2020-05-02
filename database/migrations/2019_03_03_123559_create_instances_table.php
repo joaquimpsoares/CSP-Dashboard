@@ -20,7 +20,7 @@ class CreateInstancesTable extends Migration
             $table->unsignedBigInteger('user_id');
 
             $table->string('name');
-            $table->string('provider');
+            $table->unsignedBigInteger('provider_id');
             
             $table->string('external_id')->nullable();
             $table->string('external_type')->nullable();
@@ -28,6 +28,9 @@ class CreateInstancesTable extends Migration
             
             $table->text('external_token')->nullable();
             $table->timestamp('external_token_updated_at')->nullable();
+
+            $table->foreign('provider_id')->references('id')->on('providers');
+
 
         });
     }

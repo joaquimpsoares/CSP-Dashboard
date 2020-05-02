@@ -127,12 +127,22 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="contact-md" role="tabpanel" aria-labelledby="contact-tab-md">
-                    <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo
-                        retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer,
-                        iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony.
-                        Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles
-                        pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of
-                        them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.</p>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="card">
+                                <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap">
+                                <div class="card-body">
+                                    <h2 class="card-title">
+                                        {{-- <a href="{{ "instance/" . $instance->id}}">{{$instance->provider}}</a></h2> --}}
+                                    <p class="card-text">
+                                       {{-- <strong>Instance Name:</strong> {{$instance->name}} --}}
+                                    </p>
+                                    {{-- <a href=" {{ "instance/" . $instance->id}}" class="button is-info is-outlined"> --}}
+                                        View
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
