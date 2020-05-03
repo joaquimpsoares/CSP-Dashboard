@@ -20,8 +20,10 @@ class CreateCartProductTable extends Migration
             $table->integer('quantity')->default(1);
             $table->decimal('price', 8, 2)->nullable();
             $table->decimal('retail_price', 8, 2)->nullable();
-            $table->foreign('product_id')->references('id')->on('products');
-            $table->foreign('cart_id')->references('id')->on('carts');
+            $table->text('billing_cycle')->nullable();
+
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreign('cart_id')->references('id')->on('carts')->onDelete('cascade');
 
             $table->primary('id');
         });

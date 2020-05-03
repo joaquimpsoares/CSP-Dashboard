@@ -1,6 +1,6 @@
 @php
-$products = Session::get('cart')->items;
-$totalPrice = 0;
+//dd($cart);
+$totalPrice = null;
 @endphp
 <div class="col-lg-4 mb-4">
 
@@ -12,16 +12,17 @@ $totalPrice = 0;
 			<h4 class="mb-4 mt-1 h5 text-center font-weight-bold">Summary</h4>
 			<hr>
 
-			@foreach($products as $product)
+			@foreach($cart->products as $product)
 			<dl class="row">
 				<dd class="col-sm-8">
-					{{ $product['item']->name }}
+					{{ $product->name }}
 				</dd>
 				<dd class="col-sm-4">
 					@php
-					$price = number_format(floatval($product['price']->msrp * $product['quantity']), 2);
-					echo "$ " . $price;
-					$totalPrice+= $price;
+					$price = floatval($product->pivot->retail_price * $product->pivot->quantity);
+					echo "$ " . number_format($price, 2);
+					
+					$totalPrice+=$price;
 					@endphp
 					
 				</dd>

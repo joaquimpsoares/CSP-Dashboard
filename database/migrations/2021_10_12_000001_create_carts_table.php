@@ -21,6 +21,10 @@ class CreateCartsTable extends Migration
             $table->uuid('token')->unique();
             $table->boolean('verify')->nullable();
             $table->boolean('verified')->nullable();
+            $table->string('agreement_firstname')->nullable();
+            $table->string('agreement_lastname')->nullable();
+            $table->string('agreement_email')->nullable();
+            $table->string('agreement_phone')->nullable();
             $table->text('comments')->nullable();
             $table->timestamps();
 

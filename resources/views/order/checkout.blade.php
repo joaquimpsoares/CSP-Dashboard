@@ -3,10 +3,7 @@
 
 @section('content')
 
-
-
-
-@if(Session::has('cart'))
+@if($cart)
 
 <div class="box col-12 align-self-center">
 	<div class="row justify-content-center">
@@ -58,6 +55,22 @@
 
 		$( document ).ready(function() {
 
+			@if (! $cart->customer)
+			console.log('customer');
+			$('[href="#selectCustomer"]').tab('show');
+			@elseif (empty($cart->domain))
+			console.log('tenant');
+			$('[href="#selectTenant"]').tab('show');
+			@elseif (empty($cart->agreement_firstname))
+			console.log('review');
+			$("#validateButton").hide();
+			getMainUserFromCustomer();
+			$('[href="#selectTenant"]').tab('show');
+			$("#agreement").show();
+			@else
+			$('[href="#tabreview"]').tab('show');
+			@endif
+
 		});
 
 		function verifyCustomer() {
@@ -68,7 +81,8 @@
 				
 			})
 			.done(function(data) {
-				console.log('success');
+				//console.log('success');
+				$('[href="#selectTenant"]').tab('show');
 			})
 			.fail(function(data) {
 				console.log(data);
@@ -81,7 +95,7 @@
 
 			$("#validateButton").prop('disabled', true);
 
-			$.get( "/cart/checkDomainAvailability/" + domain, function() {
+			$.get( "/cart/checkDomainAvailability/?token={{ urlencode($cart->token) }}&domain=" + domain, function() {
 
 			})
 			.done(function(data) {
@@ -89,6 +103,7 @@
 				getMainUserFromCustomer();
 				$("#validateButton").hide();
 				$("#agreement").show();
+
 			})
 			.fail(function(data) {
 				console.log(data);
@@ -99,7 +114,7 @@
 
 		function getMainUserFromCustomer() {
 
-			$.get( "/customer/" + customer + "/mainUser", function() {
+			$.get( "/cart/customer/mainUser?token={{ $cart->token }}", function() {
 					//action begining            
 				})
 			.done(function(data) {

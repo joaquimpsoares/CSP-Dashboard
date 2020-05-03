@@ -4,28 +4,25 @@
 <h3>{{ ucwords(trans_choice('messages.customer_selected', 1)) }}</h3>
 
 <p>
-    @php
-    $cart = Session::get('cart');
-    echo $cart->customer['company_name'];
-    @endphp
+    {{ $cart->customer->company_name ?? __('messages.select_customer') }}
 </p>
 
 <h3>{{ ucwords(trans_choice('messages.agreement_signed', 1)) }}</h3>
 
 <div class="md-form mb-0">
-    <p id="firstName">{{ $cart->mcaUser["firstName"] }}</p>
+    <p id="firstName">{{ $cart->agreement_firstname }}</p>
 </div>
 
 <div class="md-form mb-0">
-    <p id="lastName">{{ $cart->mcaUser["lastName"] }}</p>
+    <p id="lastName">{{ $cart->agreement_lastname }}</p>
 </div>
 
 <div class="md-form mb-0">
-    <p id="email">{{ $cart->mcaUser["email"] }}</p>
+    <p id="email">{{ $cart->agreement_email }}</p>
 </div>
 
 <div class="md-form mb-0">
-    <p id="phoneNumber">{{ $cart->mcaUser["phoneNumber"] }}</p>
+    <p id="phoneNumber">{{ $cart->agreement_phone }}</p>
 </div>
 
 <!-- Default disabled -->

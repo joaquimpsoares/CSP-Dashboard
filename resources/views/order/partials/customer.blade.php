@@ -1,3 +1,4 @@
+
 <form method="post" action="#">
 	<div class="row">
 		
@@ -12,7 +13,7 @@
 		
 	</div>	
 	<div class="row float-right">
-		<a class="btn btn-primary" onclick="return verifyCustomer()" data-toggle="tab" href="#selectTenant" role="tab">{{ ucwords(trans_choice('messages.tenant', 1)) }}</a>
+		<a class="btn btn-primary" onclick="verifyCustomer()">{{ ucwords(trans_choice('messages.tenant', 1)) }}</a>
 	</div>
 
 	

@@ -20,6 +20,7 @@ class CreateInstancesTable extends Migration
             $table->unsignedBigInteger('user_id');
 
             $table->string('name');
+            $table->string('type');
             $table->unsignedBigInteger('provider_id');
             
             $table->string('external_id')->nullable();

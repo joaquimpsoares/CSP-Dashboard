@@ -70,14 +70,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
-                        <a class="nav-link " href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link " href="{{ route('cart.pending') }}" >
                             <span class="badge badge-pill badge-primary aqua-gradient" style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span> <!-- your badge -->
-                            <i class="fas fa-shopping-cart"></i>                        </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            {{-- @foreach ($cart->products as $item)
-                            {{$item->name}}
-                            @endforeach --}}
-                        </div>
+                            <i class="fas fa-shopping-cart"></i>
+                        </a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link " href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

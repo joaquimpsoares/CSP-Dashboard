@@ -174,7 +174,7 @@ Route::group(['middleware' => 'auth'], function () {
 			/*
 			Inicio Confirmar nivel de acesso reseller->provider
 			*/
-			Route::get('/customer/{customer}/mainUser', 'CustomerController@getMainUser')->name('customer.main_user');
+			
 			Route::get('/customer/{customer}/priceList', 'CustomerController@getPriceList')->name('customer.pricelist');
 			
 			/*
@@ -192,14 +192,18 @@ Route::group(['middleware' => 'auth'], function () {
 	
 	Route::get('/home', 'HomeController@index')->name('home');
 	
+	Route::get('cart/pending', 'CartController@getPending')->name('cart.pending');
+	Route::get('cart/item/changeBillingCycle', 'CartController@changeBillingCycle')->name('cart.main_user');
+	Route::get('/cart/customer/mainUser', 'CartController@getMainUser')->name('cart.main_user');
 	Route::post('/cart/product/add', 'CartController@addProductToCart')->name('cart.add_to_cart');
 	Route::get('/cart/item/{id}/quantity/{quantity}', 'CartController@changeProductQuantity');
 	Route::get('/cart/add/product/{product}', 'CartController@addProduct')->name('cart.add_product');
 	Route::get('/cart/remove/item/{item}', 'CartController@removeItem')->name('cart.remove_product');
 	Route::get('/cart/clear', 'CartController@destroy')->name('cart.clear');
-	Route::get('/cart/checkout', 'CartController@checkout')->name('cart.checkout');
+	Route::post('/cart/checkout', 'CartController@checkout')->name('cart.checkout');
+	Route::post('/cart/pending/checkout', 'CartController@pendingCheckout')->name('cart.pending_checkout');
 	Route::get('/cart/customer/{customer}/add', 'CartController@addCustomer')->name('cart.add_customer');
-	Route::get('/cart/checkDomainAvailability/{domain}', 'CartController@checkDomainAvailability')->name('cart.check_domain_availability');
+	Route::get('/cart/checkDomainAvailability', 'CartController@checkDomainAvailability')->name('cart.check_domain_availability');
 	Route::post('/cart/addMCAUser', 'CartController@addMCAUser')->name('cart.add_mca_user');
 	
 	
