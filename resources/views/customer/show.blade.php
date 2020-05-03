@@ -88,8 +88,10 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="md-form">
-                                            <input value="{{ $customer}}" type="text" id="postalcode" name="postalcode" class="form-control">
-                                            <label for="postalcode">{{ ucwords(trans_choice('messages.user_name', 1)) }}</label>
+                                            @foreach ($customer->users as $user)
+                                            <input value="{{ $user->username }}" type="text" id="postalcode" name="name" class="form-control">
+                                            <label for="name">{{ ucwords(trans_choice('messages.user_name', 1)) }}</label>
+                                            @endforeach
                                         </div>
                                     </div>
                                 </div>
@@ -122,20 +124,20 @@
                         <div class="col-md-3 text-center">
                             <img src="https://media2.giphy.com/media/s9TcMBb7FfJ7y/source.gif" alt="Twitter 11" />
                             <p class="text-center w-responsive mx-auto mb-5">{{ ucwords(trans_choice('messages.do_you_have_any_question_text', 1)) }}</p>
-                            </div>        
-                        </div>
+                        </div>        
                     </div>
                 </div>
-                <div class="tab-pane fade" id="contact-md" role="tabpanel" aria-labelledby="contact-tab-md">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <div class="card">
-                                <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap">
-                                <div class="card-body">
-                                    <h2 class="card-title">
-                                        {{-- <a href="{{ "instance/" . $instance->id}}">{{$instance->provider}}</a></h2> --}}
+            </div>
+            <div class="tab-pane fade" id="contact-md" role="tabpanel" aria-labelledby="contact-tab-md">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="card">
+                            <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap">
+                            <div class="card-body">
+                                <h2 class="card-title">
+                                    {{-- <a href="{{ "instance/" . $instance->id}}">{{$instance->provider}}</a></h2> --}}
                                     <p class="card-text">
-                                       {{-- <strong>Instance Name:</strong> {{$instance->name}} --}}
+                                        {{-- <strong>Instance Name:</strong> {{$instance->name}} --}}
                                     </p>
                                     {{-- <a href=" {{ "instance/" . $instance->id}}" class="button is-info is-outlined"> --}}
                                         View

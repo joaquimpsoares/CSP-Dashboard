@@ -75,7 +75,7 @@ class InstanceController extends Controller
         
         $instances = Instance::findOrFail($id);
 // dd($instances);
-        return view('packages.show', compact('instances'));
+        return view('packages.microsoft', compact('instances'));
     }
 
     /**

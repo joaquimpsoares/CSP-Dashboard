@@ -90,12 +90,12 @@
     <section class="section">
         <div class="card">
             <div class="">
-                <i class="fab fa-product-hunt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
-                <div class="card-body">
-                    <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.product_card', 2)) }}</a></h4>
-                    <div class="row">
-                        <div class="col-md-3"></div>
-                        <div class="col-md-6">
+                    <i class="fab fa-product-hunt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
+                    <div class="card-body">
+                        <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.product_card', 2)) }}</a></h4>
+                        <div class="row">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-6">
                             <div class="row">
                                 <form method="POST" action="{{ route('instances.store') }}" class="col s12">
                                     @csrf

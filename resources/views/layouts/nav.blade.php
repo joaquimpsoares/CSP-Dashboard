@@ -35,7 +35,7 @@
             @endcan
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ ucwords(__('messages.maketplace')) }}
+                    {{ ucwords(__('messages.marketplace')) }}
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="{{ route('store.index') }}">{{ ucwords(trans_choice('messages.product', 2)) }}</a>
@@ -67,15 +67,29 @@
         </ul>
         <ul class="navbar-nav ml-auto nav-flex-icons">
             @auth
-            <li class="nav-item dropdown">
-                <a class="nav-link " href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="badge badge-pill badge-primary" style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span> <!-- your badge -->
-                    {{ ucwords(trans_choice('messages.notification', 2)) }}
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    {{ $tt = Auth::user()->unreadnotifications}}
-                </div>
-            </li>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link " href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="badge badge-pill badge-primary aqua-gradient" style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span> <!-- your badge -->
+                            <i class="fas fa-shopping-cart"></i>                        </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {{-- @foreach ($cart->products as $item)
+                            {{$item->name}}
+                            @endforeach --}}
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link " href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="badge badge-pill badge-primary aqua-gradient   " style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span> <!-- your badge -->
+                            {{ ucwords(trans_choice('messages.notification', 2)) }}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {{ $tt = Auth::user()->unreadnotifications}}
+                        </div>
+                    </li>
+                </ul>
+            </div>
             <div class="buttons">
                 <a class="btn btn-primary">
                     {{ Auth::user()->username }}

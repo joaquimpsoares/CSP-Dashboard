@@ -44,6 +44,7 @@
 		<div class="row">
 			<div class="col">
 				@include('layouts.nav')
+				{{-- @include('layouts.nav', ['cart' => $cart]) --}}
 			</div>
 		</div>
 		{{-- @include('layouts.sidebar') --}}

@@ -70,9 +70,9 @@
                         <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap">
                         <div class="card-body">
                             <h2 class="card-title">
-                                <a href="{{ "instance/" . $instance->id}}">{{$instance->provider}}</a></h2>
+                                <a href="{{ "/instance/".$instance->id}}">{{$instance['name']}}</a></h2>
                             <p class="card-text">
-                               <strong>Instance Name:</strong> {{$instance->name}}
+                               <strong>Instance Name:</strong> {{$instance['name']}}
                             </p>
                             <a href=" {{ "instance/" . $instance->id}}" class="button is-info is-outlined">
                                 View
