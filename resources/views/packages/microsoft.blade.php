@@ -96,7 +96,7 @@
             <div class="">
                 <i class="fab fa-product-hunt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
                 <div class="card-body">
-                    <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.product_card', 2)) }}</a></h4>
+                    <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.instance', 1)) }}</a></h4>
                     <div class="row">
                         <div class="col-md-3"></div>
                         <div class="col-md-6">
@@ -177,7 +177,7 @@
                                         </div>
                                     </div> --}}
                                 </div>
-                                <button type="submit" class="button is-rounded is-primary is-outlined">Create</button>
+                                <button type="submit" class="button is-rounded is-primary is-outlined">{{ ucwords(trans_choice('messages.create', 1)) }}</button>
                             </form>
                         </div>
                     </div>

@@ -78,6 +78,8 @@ class ProviderController extends Controller
         $instance = Instance::first();
         
         $customers = new Collection();
+
+        $users = User::where('provider_id', $provider->id)->get();
         
         foreach ($resellers as $reseller){
             $reseller = Reseller::find($reseller['id']);
@@ -87,7 +89,7 @@ class ProviderController extends Controller
         
         // dd($customers); 
         
-        return view('provider.show', compact('provider', 'resellers', 'customers', 'instance'));
+        return view('provider.show', compact('provider', 'resellers', 'customers', 'instance', 'users'));
     }
     
     public function edit(Provider $provider)

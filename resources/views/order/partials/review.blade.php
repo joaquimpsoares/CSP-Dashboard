@@ -31,13 +31,13 @@
     <input type="checkbox" class="custom-control-input" id="customSwitch1" checked>
     <label class="custom-control-label" for="customSwitch1">{{ ucwords(trans_choice('messages.send_email_to_customer', 1)) }}</label>
 </div>
-<button type="button" class="btn btn-warning" id="test" >{{ ucwords(trans_choice('messages.back', 1)) }}</button>
 
-<button type="button" class="btn btn-primary" id="test" >{{ ucwords(trans_choice('messages.next', 1)) }}</button>
+<div class="row float-right">
+    <button type="button" class="btn btn-warning" id="test" >{{ ucwords(trans_choice('messages.back', 1)) }}</button>    
+    <button type="button" class="btn btn-primary" id="test" >{{ ucwords(trans_choice('messages.next', 1)) }}</button>
+</div>
 
-<pre>
 
-</pre>
 
 
 

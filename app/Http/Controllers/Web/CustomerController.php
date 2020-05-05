@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Country;
 use App\Customer;
 use App\Reseller;
 use App\Http\Requests\Request;
 use App\Support\Enum\CustomerStatus;
-use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\Country\CountryRepository;
+use App\Repositories\CustomerRepositoryInterface;
 
 
 class CustomerController extends Controller
@@ -38,7 +39,9 @@ class CustomerController extends Controller
     
     public function show(Customer $customer) {
 
-        return view('customer.show', compact('customer'));
+        $countries = Country::get();
+
+        return view('customer.show', compact('customer','countries'));
         
     }
 

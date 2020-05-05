@@ -12,7 +12,7 @@
 				<div class="card-body">
 					<div class="row">
 						<div class="col-lg-8">
-							<ul class="nav md-pills nav-justified pills-primary font-weight-bold">
+							<ul class="nav nav-pills md-tabs nav-justified pills-primary " id="myTabMD" role="tablist">
 								<li class="nav-item">
 									<a class="nav-link active" data-toggle="tab" href="#selectCustomer" role="tab">{{ ucwords(trans_choice('messages.select_customer', 1)) }}</a>
 								</li>

@@ -38,8 +38,8 @@
 	@yield('styles')
 </head>
 <body>
-	
-	
+	<livewire:styles>
+
 	<div id="app">
 		<div class="row">
 			<div class="col">
@@ -66,5 +66,6 @@
 		})
 	</script>
 	
+	<livewire:scripts>	
 </body>
 </html>

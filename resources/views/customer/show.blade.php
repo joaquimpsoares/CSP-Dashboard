@@ -5,27 +5,148 @@
 
 
 <div class="box col-xm-12">
-    <ul class="nav nav-tabs md-tabs" id="myTabMD" role="tablist">
+    <ul class="nav nav-pills md-tabs" id="myTabMD" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" id="home-tab-md" data-toggle="tab" href="#home-md" role="tab" aria-controls="home-md"
+            <a class="nav-link btn rgba-blue-light active" id="home-tab-md" data-toggle="tab" href="#home-md" role="tab" aria-controls="home-md"
             aria-selected="true">Home</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="contact-tab-md" data-toggle="tab" href="#contact-md" role="tab" aria-controls="contact-md"
+            <a class="nav-link btn rgba-blue-light" id="contact-tab-md" data-toggle="tab" href="#contact-md" role="tab" aria-controls="contact-md"
             aria-selected="false">{{ ucwords(trans_choice('messages.subscription', 2)) }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="profile-tab-md" data-toggle="tab" href="#profile-md" role="tab" aria-controls="profile-md"
+            <a class="nav-link btn rgba-blue-light" id="profile-tab-md" data-toggle="tab" href="#profile-md" role="tab" aria-controls="profile-md"
             aria-selected="false">{{ ucwords(trans_choice('messages.account', 1)) }}</a>
         </li>
     </ul>
     <div class="tab-content card pt-5" id="myTabContentMD">
         <div class="tab-pane fade show active" id="home-md" role="tabpanel" aria-labelledby="home-tab-md">
-            <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua,
-                retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica.
-                Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry
-                richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american
-                apparel, butcher voluptate nisi qui.</p>
+            <div class="section">
+                <div class="columns">
+                    <main class="column">
+                        <div class="level">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <div class="title">Dashboard</div>
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <div class="level-item">
+                                    <button type="button" class="button is-small">
+                                        March 8, 2017 - April 6, 2017
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="columns is-multiline">
+                            <div class="column">
+                                <div class="box">
+                                    <div class="heading">Top Seller Total</div>
+                                    <div class="title">56,950</div>
+                                    <div class="level">
+                                        <div class="level-item">
+                                            <div class="">
+                                                <div class="heading">Sales $</div>
+                                                <div class="title is-5">250,000</div>
+                                            </div>
+                                        </div>
+                                        <div class="level-item">
+                                            <div class="">
+                                                <div class="heading">Overall $</div>
+                                                <div class="title is-5">750,000</div>
+                                            </div>
+                                        </div>
+                                        <div class="level-item">
+                                            <div class="">
+                                                <div class="heading">Sales %</div>
+                                                <div class="title is-5">25%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="box">
+                                    <div class="heading">Revenue / Expenses</div>
+                                    <div class="title">55% / 45%</div>
+                                    <div class="level">
+                                        <div class="level-item">
+                                            <div class="">
+                                                <div class="heading">Rev Prod $</div>
+                                                <div class="title is-5">30%</div>
+                                            </div>
+                                        </div>
+                                        <div class="level-item">
+                                            <div class="">
+                                                <div class="heading">Rev Serv $</div>
+                                                <div class="title is-5">25%</div>
+                                            </div>
+                                        </div>
+                                        <div class="level-item">
+                                            <div class="">
+                                                <div class="heading">Exp %</div>
+                                                <div class="title is-5">45%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="box">
+                                    <div class="heading">Feedback Activity</div>
+                                    <div class="title">78% &uarr;</div>
+                                    <div class="level">
+                                        <div class="level-item">
+                                            <div class="">
+                                                <div class="heading">Positive</div>
+                                                <div class="title is-5">1560</div>
+                                            </div>
+                                        </div>
+                                        <div class="level-item">
+                                            <div class="">
+                                                <div class="heading">Negative</div>
+                                                <div class="title is-5">368</div>
+                                            </div>
+                                        </div>
+                                        <div class="level-item">
+                                            <div class="">
+                                                <div class="heading">Pos/Neg %</div>
+                                                <div class="title is-5">77% / 23%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="box">
+                                    <div class="heading">Orders / Returns</div>
+                                    <div class="title">75% / 25%</div>
+                                    <div class="level">
+                                        <div class="level-item">
+                                            <div class="">
+                                                <div class="heading">Orders $</div>
+                                                <div class="title is-5">425,000</div>
+                                            </div>
+                                        </div>
+                                        <div class="level-item">
+                                            <div class="">
+                                                <div class="heading">Returns $</div>
+                                                <div class="title is-5">106,250</div>
+                                            </div>
+                                        </div>
+                                        <div class="level-item">
+                                            <div class="">
+                                                <div class="heading">Success %</div>
+                                                <div class="title is-5">+ 28,5%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="tab-pane fade" id="profile-md" role="tabpanel" aria-labelledby="profile-tab-md">
                 <div class="box col-xm-12">
@@ -74,44 +195,65 @@
                                         </div>
                                     </div>
                                 </div>
-                                
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="md-form">
                                             <select class="browser-default custom-select">
                                                 <option selected>{{$customer->country->name}}</option>
+                                                @foreach ($countries as $item)
+                                                <option>{{$item->name}}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
                                 </div>
-                                <h2>{{ ucwords(trans_choice('messages.user_info', 1)) }}</h2>
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-12">
                                         <div class="md-form">
-                                            @foreach ($customer->users as $user)
-                                            <input value="{{ $user->username }}" type="text" id="postalcode" name="name" class="form-control">
-                                            <label for="name">{{ ucwords(trans_choice('messages.user_name', 1)) }}</label>
-                                            @endforeach
+                                            <hr>
+                                            <p>{{ ucwords(trans_choice('messages.user_info', 1)) }}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="md-form">
-                                            <input value="{{ $customer}}" type="text" id="postalcode" name="postalcode" class="form-control">
-                                            <label for="postalcode">{{ ucwords(trans_choice('messages.first_name', 1)) }}</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="md-form">
-                                            <input value="{{ $customer}}" type="text" id="postalcode" name="postalcode" class="form-control">
-                                            <label for="postalcode">{{ ucwords(trans_choice('messages.last_name', 1)) }}</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="md-form">
-                                            <input value="{{ $customer}}" type="text" id="postalcode" name="postalcode" class="form-control">
-                                            <label for="postalcode">{{ ucwords(trans_choice('messages.phone_number', 1)) }}</label>
+                                <div class="card">
+                                    <div class="">
+                                        <i class="fas fa-user fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
+                                        <div class="card-body">
+                                            <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.user_table', 1)) }}</a></h4>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="md-form">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-striped table-bordered" id="customers">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>{{ ucwords(trans_choice('messages.username', 1)) }}</th>
+                                                                        <th>{{ ucwords(trans_choice('messages.first_name', 1)) }}</th>
+                                                                        <th>{{ ucwords(trans_choice('messages.last_name', 1)) }}</th>
+                                                                        <th>{{ ucwords(trans_choice('messages.status', 1)) }}</th>
+                                                                        {{-- <th>{{ ucwords(trans_choice('messages.action', 1)) }}</th> --}}
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach ($customer->users as $user)
+                                                                    <tr>
+                                                                        <td>
+                                                                            <a href="/user/{{$user->id }}">    {{ $user['username'] }}</a>
+                                                                        </td>
+                                                                        <td>{{ $user['first_name'] }}</td>
+                                                                        <td>{{ $user['last_name'] }}</td>
+                                                                        <td>{{ ucwords(trans_choice($user->status->name, 1)) }}</td>
+                                                                        {{-- <td style="width: 150px">
+                                                                            @include('partials.actions', ['model' => $customer, 'modelo' => 'customer'])
+                                                                        </td> --}}
+                                                                    </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -135,21 +277,20 @@
                             <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap">
                             <div class="card-body">
                                 <h2 class="card-title">
-                                    {{-- <a href="{{ "instance/" . $instance->id}}">{{$instance->provider}}</a></h2> --}}
                                     <p class="card-text">
-                                        {{-- <strong>Instance Name:</strong> {{$instance->name}} --}}
                                     </p>
-                                    {{-- <a href=" {{ "instance/" . $instance->id}}" class="button is-info is-outlined"> --}}
-                                        View
-                                    </a>
-                                </div>
+                                    View
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            
-            @endsection
-            
-            
+        </div>
+    </div>
+    
+    
+    
+    @endsection
+    
+    

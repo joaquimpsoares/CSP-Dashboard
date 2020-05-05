@@ -69,6 +69,10 @@ class Provider extends Model
     	return $this->belongsTo(Status::class);
 	}
 	
+	public function users() {
+    	return $this->hasMany('App\User');
+    }
+
 
 	public function instances()
     {

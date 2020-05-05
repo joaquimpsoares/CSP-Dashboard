@@ -190,7 +190,7 @@ Route::group(['middleware' => 'auth'], function () {
 	
 	Route::get('/order/placeOrder/{cart}', 'OrderController@placeOrder')->name('order.place_order');
 	
-	Route::get('/home', 'HomeController@index')->name('home');
+	Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
 	
 	Route::get('cart/pending', 'CartController@getPending')->name('cart.pending');
 	Route::get('cart/item/changeBillingCycle', 'CartController@changeBillingCycle')->name('cart.main_user');
@@ -216,13 +216,13 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 
-Auth::routes(['register' => false]);
+Auth::routes(['register' => true]);
 
 Route::impersonate();
 
 Route::get('/', function() {
 	return view('home');
-})->name('home');
+})->name('dashboard');
 
 Auth::routes();
 
