@@ -31,38 +31,63 @@ class OrderController extends Controller
         $this->productRepository = $productRepository;
     }
 
-    public function getCart() {
-        if (!Session::has('cart')) {
-            return view('store.shoppingcart');
-        }
+    public function index()
+    {
 
-        $oldCart = Session::get('cart');
-        $cart = new Cart($oldCart);
+        $orders = Order::first();
+        $cart = $orders;
+        // $cart = json_decode($cart);
+        
+        $rr = unserialize($cart->cart);
+        dd($cart);
+        
+dd($rr);
+        var_dump(unserialize($cart));
 
-        return view('order.cart', ['products' => $cart->items]);
+        return view('order.index', compact('orders'));
     }
+
+    // public function getCart() {
+    //     if (!Session::has('cart')) {
+    //         return view('store.shoppingcart');
+    //     }
+
+    //     $oldCart = Session::get('cart');
+    //     $cart = new Cart($oldCart);
+
+    //     return view('order.cart', ['products' => $cart->items]);
+    // }
+
 
     public function placeOrder(Cart $cart)
     {
 
 
-
-
-        $instance = Instance::first();
+   
 
         $cart = Cart::with(['products'])->where('id', $cart->id)->first();
 
+        dd($cart->products()->pivot->price);
+
         $order = new Order;
-        $order->user_id = $this->getUser()->id;
-        $order->cart = serialize($cart);
-        $order->customer_id = $cart->customer_id;
-        $order->order_id = $cart->id;
+        $order->user_id         = $this->getUser()->id;
+        // $order->cart            = serialize($cart);
+        $order->product_id      = $cart->product_id;
+        $order->quantity        = $cart->quantity;
+        $order->price           = $cart->price;
+        $order->msrp            = $cart->msrp;
+        $order->customer_id     = $cart->customer_id;
+        
         $order->order_status_id = 1;
         $order->save();
 
 
         return redirect()->route('home')->with('success', 'Successfully purchased products!');
     }
+
+
+
+
 
 
 }

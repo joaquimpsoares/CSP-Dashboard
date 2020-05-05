@@ -187,8 +187,10 @@ Route::group(['middleware' => 'auth'], function () {
 	/*****************************************************************************************************************/
 	
 	// Every authenticated user can access routes here
-	
+	Route::resource('order', 'OrderController');
 	Route::get('/order/placeOrder/{cart}', 'OrderController@placeOrder')->name('order.place_order');
+
+
 	
 	Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
 	

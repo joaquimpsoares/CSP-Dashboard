@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class CreateSubscriptionsTable extends Migration
 {
@@ -19,8 +20,7 @@ class CreateSubscriptionsTable extends Migration
             
             $table->bigIncrements('id');
             $table->string('name');
-            // Para que serve isso
-            // $table->string('subscription_id');
+            $table->string('subscription_id')->nullable();
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('order_id');
