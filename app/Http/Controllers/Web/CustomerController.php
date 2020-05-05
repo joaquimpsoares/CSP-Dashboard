@@ -62,7 +62,7 @@ class CustomerController extends Controller
     {
         /* Check if can buy to this customer */
         if (!$this->customerRepository->canInteractWithCustomer($customer)) {
-            return abort(500);
+            return abort(401);
         }
         /* End Check */
 

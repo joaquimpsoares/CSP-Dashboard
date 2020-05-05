@@ -9,6 +9,12 @@ use Illuminate\Support\Str;
 class Cart extends Model
 {
 	use UserTrait;
+
+	protected $fillables = [
+		'customer_id', 'domain', 'user_id', 'token', 'verify', 'verified', 'agreement_firstname', 'agreement_lastname', 'agreement_email', 'agreement_phone', 'comments'
+	];
+
+
 	public function __construct($user_id = null)
 	{
 		if (empty($this->user_id))
@@ -32,4 +38,6 @@ class Cart extends Model
 	{
 		return $this->belongsTo('App\User');
 	}
+
+	
 }

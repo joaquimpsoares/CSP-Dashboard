@@ -42,102 +42,26 @@ class OrderController extends Controller
         return view('order.cart', ['products' => $cart->items]);
     }
 
-    public function placeOrder(Request $request)
+    public function placeOrder(Cart $cart)
     {
-        if (!Session::has('cart')) {
-            return redirect()->route('store.index');
-        }
 
-        $user = $this->getUser();
+
+
 
         $instance = Instance::first();
-        $oldCart = Session::get('cart');
-        $cart = new Cart($oldCart);
-        
-        $products = [];
-        
-        dd($cart);
 
-        
-        //try {
+        $cart = Cart::with(['products'])->where('id', $cart->id)->first();
 
-        $tagydescart = new TagydesCart();
-
-        $searchCustomer = Customer::where('id', $cart->customer['id'])->with('country')->first();
-
-        $customer = TagydesCustomer::withCredentials($instance->external_id, $instance->external_token)->create([
-            'company' => $searchCustomer->company_name,
-            'domain' => $cart->domain,
-            'culture' => 'EN-US',
-            'email' => $cart->mcaUser['email'],
-            'language' => 'en',
-            'firstName' => $cart->mcaUser['firstName'],
-            'lastName' => $cart->mcaUser['lastName'],
-            'address' => $searchCustomer->address_1,
-            'city' => $searchCustomer->city,
-            'province' => $searchCustomer->state,
-            'postalCode' => $searchCustomer->postal_code,
-                'country' => 'ma' //$searchCustomer->country->iso_3166_2,
-            ]);
-
-        $tagydescart->setCustomer($customer);
-
-        foreach ($cart->items as $key => $product) {
-            $TagydesProduct = new TagydesProduct([
-                'id' => $product['item']['sku'],
-                'name' => $product['item']['name'],
-                'description' => $product['item']['description'],
-                'minimumQuantity' => $product['item']['minimum_quantity'],
-                'maximumQuantity' => $product['item']['maximum_quantity'],
-                'term' => $product['item']['term'],
-                'limit' => $product['item']['limit'],
-                'isTrial' => $product['item']['is_trial'],
-                'uri' => $product['item']['uri'],
-                'supportedBillingCycles' => ['anual','monthly'],
-            ]);
-
-            $tagydescart->addProduct($TagydesProduct, $product['quantity'], "monthly");
-        }
-
-        dd($tagydescart);
-
-        $tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->create($tagydescart);
-
-        $orderConfirm = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($tagydesorder);
-
-        foreach ($orderConfirm->subscriptions() as $subscription)
-        {
-            $subscriptions = new Subscription();
-            $subscriptions->subscriptionid = $subscription->id;
-            $subscriptions->orderId = $subscription->orderId;
-            $subscriptions->productid = $subscription->offerId;
-            $subscriptions->customerId = $subscription->customerId;
-            $subscriptions->name = $subscription->name;
-            $subscriptions->amount = $subscription->quantity;
-            $subscriptions->currency = $subscription->currency;
-            $subscriptions->billing_period = $subscription->billingCycle;
-            $subscriptions->customer_id=$id;
-            $subscriptions->expiration_data=Carbon::now()->addYear()->toDateTimeString();
-            $subscriptions->tenant_name=$cart->domain;
-            $subscriptions->save();
-        }
-
-        $order1 = new Order();
-        $order1->cart = serialize($cart);
-        $order1->company_id = $cart->customer['id'];
-        $order1->order_id = $orderConfirm->subscriptions()->first()->id;
-        $user->orders()->save($order1);
+        $order = new Order;
+        $order->user_id = $this->getUser()->id;
+        $order->cart = serialize($cart);
+        $order->customer_id = $cart->customer_id;
+        $order->order_id = $cart->id;
+        $order->order_status_id = 1;
+        $order->save();
 
 
-        /*} catch (\Exception $e) {
-            // return redirect()->route('checkout')->with('error', $e->getMessage());
-        }*/
-        
-        // Session::forget('cart');
-
-        dd($cart);
-
-        return redirect()->route('dashboard')->with('success', 'Successfully purchased products!');
+        return redirect()->route('home')->with('success', 'Successfully purchased products!');
     }
 
 

@@ -12,10 +12,13 @@ class Order extends Model
         'cart' => 'collection',
     ];
 
+    public function cart()
+    {
+    	return $this->belongsTo('App\Cart', 'cart_id', 'cart');
+    }
 
-    public function getCart(){
-        return $this->cart->map(function($item){
-            return unserialize($item);
-        });
+    public function status()
+    {
+    	return $this->belongsTo('App\Cart');
     }
 }

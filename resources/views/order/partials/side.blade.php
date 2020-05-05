@@ -4,7 +4,7 @@ $totalPrice = null;
 @endphp
 <div class="col-lg-4 mb-4">
 
-	<a href="{{ route('store.place_order') }}" class="btn btn-primary btn-lg btn-block">Place order</a>
+	<a href="{{ route('order.place_order', $cart->id) }}" class="btn btn-primary btn-lg btn-block">Place order</a>
 
 	<div class="card z-depth-0 border border-light rounded-0">
 

@@ -108,7 +108,7 @@ class CartController extends Controller
 
         /* Check if can buy to this customer */
         if (!$this->customerRepository->canInteractWithCustomer($customer)) {
-            return abort(500);
+            return abort(401);
         }
         /* End Check */
 
@@ -154,14 +154,14 @@ class CartController extends Controller
 
                 return true;
             } else {
-                return abort(500);
+                return abort(401);
             }
 
             
             
         }
 
-        return abort(500);
+        return abort(401);
     }
 
     public function getMainUser(Request $request)
@@ -277,7 +277,7 @@ class CartController extends Controller
         $cart = Cart::where('token', $token)->first();
 
         if ($user->id !== $cart->user_id)
-            return abort(500);
+            return abort(401);
 
         return $cart;
     }
