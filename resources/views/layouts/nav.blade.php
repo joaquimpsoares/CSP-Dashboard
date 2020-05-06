@@ -70,7 +70,8 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
-                        <a class="nav-link " href="{{ route('cart.pending') }}" >
+                        <a class ="nav-link" data-toggle="modal" data-target="#modalCart" href="{{ route('cart.pending') }}" >
+                            
                             <span class="badge badge-pill badge-primary aqua-gradient" style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span> <!-- your badge -->
                             <i class="fas fa-shopping-cart"></i>
                         </a>
@@ -96,12 +97,14 @@
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                     @csrf
                 </form>
-                <li class="nav-item avatar">
-                    <a class="nav-link p-0" href="#">
-                        <img src="{{Auth::user()->avatar}}" class="rounded-circle z-depth-0"
-                        alt="avatar image" height="15">
-                    </a>
-                </li>
+                <ul class="navbar-nav ml-auto nav-flex-icons">
+                    
+                    <li class="nav-item avatar">
+                        <a class="nav-link p-0" href="#">
+                            <img src="{{Auth::user()->avatar}}" class="rounded-circle z-depth-0" alt="avatar image"  width='50' Height ='auto'>
+                        </a>
+                    </li>
+                </ul>
             </ul>
             @endauth
             @guest
@@ -117,3 +120,44 @@
         </div>
     </div>
 </nav>
+
+
+
+<!-- Modal: modalCart -->
+<div class="modal fade" id="modalCart" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+aria-hidden="true"  data-backdrop="false">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Your cart</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            {{-- <table class="table table-hover">
+                @foreach($cart->products as $product)
+                <dl class="row">
+                    <dd class="col-sm-8">
+                        {{ $product->name }}
+                    </dd>
+                    <dd class="col-sm-4">
+                        @php
+                        $price = floatval($product->pivot->retail_price * $product->pivot->quantity);
+                        echo "$ " . number_format($price, 2);
+                        
+                        $totalPrice+=$price;
+                        @endphp
+                        
+                    </dd>
+                </dl>
+                <hr>
+                @endforeach --}}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                <button class="btn btn-primary">Checkout</button>
+            </div>
+        </div>
+    </div>
+</div>

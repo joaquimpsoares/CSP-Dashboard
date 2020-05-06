@@ -22,7 +22,7 @@ class CreateInstancesTable extends Migration
             $table->string('name');
             $table->string('type');
             $table->unsignedBigInteger('provider_id');
-            
+            $table->string('tenant_id')->nullable();
             $table->string('external_id')->nullable();
             $table->string('external_type')->nullable();
             $table->string('external_url')->nullable();

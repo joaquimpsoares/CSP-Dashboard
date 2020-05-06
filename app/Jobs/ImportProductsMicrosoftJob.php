@@ -33,19 +33,21 @@ class ImportProductsMicrosoftJob implements ShouldQueue
     */
     public function handle()
     {
+
         
-    $instance = Instance::first();
+        $instance = Instance::first();
+        dd($instance->tenant_id);
     if( ! $instance){
         return redirect()->route('products.list')->with('success', 'The account has no assigned instance');
     }
     
-    if($instance->provider === 'microsoft'){
-        if( ! $instance->external_id){
+    if($instance->type === 'microsoft'){
+        if( ! $instance->tenant_id){
             return redirect()->route('products.list')->with('success', 'There is no client_id set up on the Microsoft instance');
         }
         
         if( ! $instance->external_token){
-            $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->external_id);
+            $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
             $instance->update([
                 'external_token' => $externalToken,
                 'external_token_updated_at' => now()

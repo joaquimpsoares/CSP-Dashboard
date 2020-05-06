@@ -52,7 +52,7 @@ body {
 <!-- Footer -->
 
 <footer class="footer page-footer font-small blue">
-  <div class="responsive text-center py-3">© 2020 Copyright:
+  <div class="responsive text-center py-3">Powered by:
     <a href="https://www.tagydes.com/">Tagydes Limited</a>
   </div>
   <!-- Copyright -->

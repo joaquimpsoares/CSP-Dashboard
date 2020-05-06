@@ -105,22 +105,22 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {}
 
-    public function getMasterToken()
+    public function getMasterToken($id)
     {
-        $instance = Instance::first();
+        $instance = Instance::findorFail($id);
 
         if( !$instance){
-            return redirect()->route('products.list')->with('success', 'The account has no assigned instance');
+            return redirect()->back()->with('warning', 'The account has no assigned tenant');
         }
         
         if( ! $instance->external_token){
-            $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->external_id);
+            $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
             $instance->update([
                 'external_token' => $externalToken,
                 'external_token_updated_at' => now()
             ]);
         }
-        return redirect()->route('dashboard')->with('success', 'Instance updated succesfully');
+        return redirect()->back()->with('success', 'Instance updated succesfully');
     }
 
 
@@ -136,13 +136,13 @@ class ProductController extends Controller
             return redirect()->route('products.index')->with('success', 'The account has no assigned instance');
         }
         
-        if($instance->provider === 'microsoft'){
-            if( ! $instance->external_id){
+        if($instance->type === 'microsoft'){
+            if( ! $instance->tenant_id){
                 return redirect()->route('products.index')->with('success', 'There is no client_id set up on the Microsoft instance');
             }
             
             if( ! $instance->external_token){
-                $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->external_id);
+                $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
                 $instance->update([
                     'external_token' => $externalToken,
                     'external_token_updated_at' => now()

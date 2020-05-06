@@ -62,10 +62,26 @@ dd($rr);
     public function placeOrder(Cart $cart)
     {
 
+        $cart = Cart::with(['products'])->where('id', $cart->id)->first();
 
+        foreach ($orderConfirm->subscriptions() as $subscription)
+            {
+                $subscriptions = new Subscription();
+                $subscriptions->subscriptionid = $subscription->id;
+                $subscriptions->orderId = $subscription->orderId;
+                $subscriptions->productid = $subscription->offerId;
+                $subscriptions->customerId = $subscription->customerId;
+                $subscriptions->name = $subscription->name;
+                $subscriptions->amount = $subscription->quantity;
+                $subscriptions->currency = $subscription->currency;
+                $subscriptions->billing_period = $subscription->billingCycle;
+                $subscriptions->customer_id=$id;
+                $subscriptions->expiration_data=Carbon::now()->addYear()->toDateTimeString();
+                $subscriptions->tenant_name=$cart->domain;
+                $subscriptions->save();
+            }
    
 
-        $cart = Cart::with(['products'])->where('id', $cart->id)->first();
 
         dd($cart->products()->pivot->price);
 

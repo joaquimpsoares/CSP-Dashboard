@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
-use App\Repositories\ResellerRepositoryInterface;
+use App\Country;
 use App\Reseller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
+use App\Repositories\ResellerRepositoryInterface;
 
 class ResellerController extends Controller
 {
@@ -25,8 +27,11 @@ class ResellerController extends Controller
 
     public function index()
     {
+
         $resellers = $this->resellerRepository->all();        
+        
         return view('reseller.index', compact('resellers'));
+
     }
 
     
@@ -37,14 +42,42 @@ class ResellerController extends Controller
 
     
     public function show(Reseller $reseller) { 
-        return view('reseller.show', compact('reseller'));
+                
+        $countries = Country::get();
+
+        return view('reseller.show', compact('reseller', 'countries'));
     }
 
     
-    public function edit(Reseller $reseller) { }
+    public function edit(Reseller $reseller) { 
+
+    }
 
     
-    public function update(Request $request, Reseller $reseller) { }
+    public function update(Request $request, Reseller $reseller) 
+    {
+        $this->validator($request->all())->validate();
+        
+        
+        
+
+        $reseller = Reseller::findOrFail($reseller->id);
+        
+
+        $reseller->company_name         = $request->input('company_name');
+        $reseller->nif                  = $request->input('nif');
+        $reseller->country_id           = $request->input('country_id');
+        $reseller->address_1            = $request->input('address_1');
+        $reseller->address_2            = $request->input('address_2');
+        $reseller->city                 = $request->input('city');
+        $reseller->state                = $request->input('state');
+        $reseller->postal_code          = $request->input('postal_code');
+
+        $reseller->save();
+
+        return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
+
+     }
 
     
     public function destroy(Reseller $reseller) { }
@@ -65,4 +98,17 @@ class ResellerController extends Controller
 
         return view('priceList.index', compact('priceLists'));
     }
+
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'company_name' => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
+            'nif' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
+            'address_1' => ['required', 'string', 'max:255'],
+            'country_id' => ['required', 'integer', 'min:1'],
+            'city' => ['required', 'string', 'max:255'],
+            'state' => ['required', 'string', 'max:255'],
+            'postal_code' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
+            ]);
+        }  
 }

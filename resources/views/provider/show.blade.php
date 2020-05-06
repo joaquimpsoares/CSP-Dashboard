@@ -119,7 +119,6 @@
         <div class="tab-pane fade" id="instance" role="tabpanel" aria-labelledby="instance-tab">
             <div class="row">
                 <div class="col-md-2">
-                    {{-- {{dd($provider->instances->name)}} --}}
                     @if ($provider->instances->count() > 0)
                     @foreach ($provider->instances as $instance)
                     <div class="card">
@@ -129,13 +128,27 @@
                                 <strong>{{ ucwords(trans_choice('messages.name', 1)) }}:</strong> {{$instance['name']}}
                                 <p class="card-text">
                                 </p>
-                                <a href=" {{ "/instances/" . $instance->id}}" class="button is-info is-outlined">
+                                <a href=" {{ route('instances.edit', $instance->id) }}" class="button is-info is-outlined">
                                     {{ ucwords(trans_choice('messages.edit', 1)) }}
                                 </a>
                             </div>
                         </div>
                     </div>
                     @endforeach
+                    @else   
+                    <div class="card">
+                        <img class="card-img-top" src="https://img.pngio.com/microsoft-corporate-logo-guidelines-trademarks-microsoft-logo-png-2008_900.jpg" alt="Card image cap">
+                        <div class="card-body">
+                            <h2 class="card-title">
+                                <strong>{{ ucwords(trans_choice('messages.name', 1)) }}:</strong> Microsoft Instance
+                                <p class="card-text">
+                                </p>
+                                <a href=" {{ route('instances.create', $provider->id) }}" class="button is-info is-outlined">
+                                    {{ ucwords(trans_choice('messages.create', 1)) }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     @endif
                 </div>
             </div>

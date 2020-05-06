@@ -34,7 +34,7 @@
                 apparel, butcher voluptate nisi qui.</p>
             </div>
             <div class="tab-pane fade" id="profile-md" role="tabpanel" aria-labelledby="profile-tab-md">
-                <div class="box col-xm-12">
+                {{-- <div class="box col-xm-12">
                     <h2>{{ ucwords(trans_choice('messages.legal_information', 1)) }}</h2>
                     <div class="row">
                         <div class="col-md-9 mb-md-0 mb-5">
@@ -122,15 +122,16 @@
                             </form>
                             <div class="text-center text-md-left">
                                 <a class="btn btn-primary" onclick="document.getElementById('contact-form').submit();">Send</a>
-                            </div>
-                            <div class="status"></div>
+                            </div> --}}
+                            {{-- <div class="status"></div>
                         </div>
                         <div class="col-md-3 text-center">
                             <img src="https://media2.giphy.com/media/s9TcMBb7FfJ7y/source.gif" alt="Twitter 11" />
                             <p class="text-center w-responsive mx-auto mb-5">{{ ucwords(trans_choice('messages.do_you_have_any_question_text', 1)) }}</p>
                             </div>        
                         </div>
-                    </div>
+                    </div> --}}
+                    @include('reseller.partials.details')
                 </div>
                 <div class="tab-pane fade" id="contact-md" role="tabpanel" aria-labelledby="contact-tab-md">
                     <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo

@@ -67,6 +67,7 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::get('/product/import', 'ProductController@import')->name('product.import');
 		
 		Route::resource('instances', 'InstanceController');
+		Route::get('/instances/getMasterToken/{provider_id}', 'InstanceController@getMasterToken')->name('instances.getMasterToken');
 		
 	});
 	
@@ -124,6 +125,9 @@ Route::group(['middleware' => 'auth'], function () {
 			
 			Route::get('/reseller/{reseller}-{slug}', 'ResellerController@show')
 			->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
+			
+			Route::patch('/reseller/update/{reseller}', 'ResellerController@update')
+			->name('reseller.update');
 			
 			Route::get('reseller/{reseller}-{slug}/edit', 'ResellerController@show')
 			->middleware('permission:' . config('app.reseller_edit'))->name('reseller.edit');
