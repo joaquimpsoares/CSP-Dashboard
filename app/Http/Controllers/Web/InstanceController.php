@@ -105,11 +105,13 @@ class InstanceController extends Controller
         $instances = Instance::findOrFail($id);
 
         // dd($instances->external_token_updated_at );
-        // if ($instances->external_token_updated_at!= null);
-
-        $expiration = $instances->external_token_updated_at->addDays(90);
-
+        if ($instances->external_token_updated_at == null)
         
+            $expiration = $instances->external_token_updated_at;
+
+        else
+
+            $expiration = $instances->external_token_updated_at->addDays(90);
 
         return view('packages.microsoft.microsoft', compact('instances', 'expiration'));
     }
@@ -158,20 +160,21 @@ class InstanceController extends Controller
         {
             $instance = Instance::findorFail($id);
 
+            
             if( !$instance){
                 return redirect()->back()->with('warning', 'The account has no assigned tenant');
             }
             
             if( ! $instance->external_token){
                 $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
-
+                
                 $expire = date("d/m/Y", $externalToken['expiration']);
                 $external_token = $externalToken['token'];
-
-                $instance->update([
+                
+                $update = $instance->update([
                     'external_token' => $external_token,
                     'external_token_updated_at' => $expire
-                ]);
+                    ]);
             }
             
             return redirect()->back()->with('success', 'Instance updated succesfully');
