@@ -103,8 +103,15 @@ class InstanceController extends Controller
     public function edit($id)
     {
         $instances = Instance::findOrFail($id);
+
+        // dd($instances->external_token_updated_at );
+        // if ($instances->external_token_updated_at!= null);
+
+        $expiration = $instances->external_token_updated_at->addDays(90);
+
         
-        return view('packages.microsoft.microsoft', compact('instances'));
+
+        return view('packages.microsoft.microsoft', compact('instances', 'expiration'));
     }
         
     /**
@@ -157,11 +164,16 @@ class InstanceController extends Controller
             
             if( ! $instance->external_token){
                 $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
+
+                $expire = date("d/m/Y", $externalToken['expiration']);
+                $external_token = $externalToken['token'];
+
                 $instance->update([
-                    'external_token' => $externalToken,
-                    'external_token_updated_at' => now()
+                    'external_token' => $external_token,
+                    'external_token_updated_at' => $expire
                 ]);
             }
+            
             return redirect()->back()->with('success', 'Instance updated succesfully');
         }   
         
