@@ -79,6 +79,7 @@
                                         <table class="table table-striped table-bordered" id="customers">
                                             <thead>
                                                 <tr>
+                                                    <th>{{ ucwords(trans_choice('messages.avatar', 1)) }}</th>
                                                     <th>{{ ucwords(trans_choice('messages.username', 1)) }}</th>
                                                     <th>{{ ucwords(trans_choice('messages.first_name', 1)) }}</th>
                                                     <th>{{ ucwords(trans_choice('messages.last_name', 1)) }}</th>
@@ -89,6 +90,13 @@
                                             <tbody>
                                                 @foreach ($users as $user)
                                                 <tr>
+                                                    <td>
+                                                        <ul>
+                                                            <li class="nav-item avatar">
+                                                                <img src="{{$user->avatar}}" class="rounded-circle z-depth-0" alt="avatar image"  width='50' Height ='auto'>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
                                                     <td>
                                                         <a href="/user/{{$user->id }}">    {{ $user['username'] }}</a>
                                                     </td>

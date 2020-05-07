@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
             'username' => 'SuperAdmin',
             'password' => Hash::make('admin123'),
             'avatar' => '\images\profile\profile.png',
-            'country_id' => null,
+            'country_id' => 10,
             'user_level_id' => $superAdminLevel->id, // Manager
             'provider_id' => 1,
             'status_id' => 1
@@ -50,7 +50,7 @@ class UserSeeder extends Seeder
             'username' => 'admin',
             'password' => Hash::make('admin123'),
             'avatar' => '\images\profile\profile.png',
-            'country_id' => null,
+            'country_id' => 10,
             'user_level_id' => $adminLevel->id, // Manager
             'provider_id' => 1,
             'status_id' => 1
@@ -63,7 +63,7 @@ class UserSeeder extends Seeder
             'username' => 'Provider',
             'password' => Hash::make('admin123'),
             'avatar' => '\images\profile\profile.png',
-            'country_id' => null,
+            'country_id' => 10,
             'user_level_id' => $providerLevel->id, // Manager
             'provider_id' => 1,
             'status_id' => 1
@@ -76,7 +76,7 @@ class UserSeeder extends Seeder
             'username' => 'Provider',
             'password' => Hash::make('admin123'),
             'avatar' => '\images\profile\profile.png',
-            'country_id' => null,
+            'country_id' => 10,
             'user_level_id' => $providerLevel->id, // Manager
             'provider_id' => 2,
             'status_id' => 1
@@ -89,7 +89,7 @@ class UserSeeder extends Seeder
             'username' => 'Reseller',
             'password' => Hash::make('admin123'),
             'avatar' => '\images\profile\profile.png',
-            'country_id' => null,
+            'country_id' => 10,
             'provider_id' => 1,
             'reseller_id' => $reseller->id,
             'user_level_id' => $resellerLevel->id, // Manager
@@ -103,7 +103,7 @@ class UserSeeder extends Seeder
             'username' => 'Reseller2',
             'password' => Hash::make('admin123'),
             'avatar' => '\images\profile\profile.png',
-            'country_id' => null,
+            'country_id' => 10,
             'provider_id' => 1,
             'reseller_id' => $reseller2->id,
             'user_level_id' => $resellerLevel->id, // Manager
@@ -117,7 +117,7 @@ class UserSeeder extends Seeder
             'username' => 'SubReseller',
             'password' => Hash::make('admin123'),
             'avatar' => '\images\profile\profile.png',
-            'country_id' => null,
+            'country_id' => 10,
             'provider_id' => 1,
             'reseller_id' => $subReseller->id,
             'user_level_id' => $subResellerLevel->id, // Manager
@@ -131,7 +131,7 @@ class UserSeeder extends Seeder
             'username' => 'Customer',
             'password' => Hash::make('admin123'),
             'avatar' => '\images\profile\profile.png',
-            'country_id' => null,
+            'country_id' => 10,
             'provider_id' => 1,
             'customer_id' => $customer->id,
             'user_level_id' => $customerLevel->id, // Manager

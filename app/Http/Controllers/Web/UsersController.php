@@ -84,8 +84,6 @@ class UsersController extends Controller
 
         $countries = Country::get();
 
-        // dd($users->country->name);
-
         return view('user.profile', compact('users', 'countries'));
     }
 
