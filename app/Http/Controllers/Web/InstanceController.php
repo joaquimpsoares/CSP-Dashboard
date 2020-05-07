@@ -143,7 +143,7 @@ class InstanceController extends Controller
             
             $instance->save();
             
-            return redirect()->route('instances.index')->with('success', 'Instance updated succesfully');
+            return redirect()->back()->with('success', 'Instance updated succesfully');
         }
 
 

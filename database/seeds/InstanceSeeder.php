@@ -14,7 +14,7 @@ class InstanceSeeder extends Seeder
     {
         Instance::create([
         	'user_id' => '0',
-            'name' => 'Microsoft Instance 1',
+            'name' => 'Tagydes TIPS',
             'type' => 'microsoft',
             'provider_id' => '1',
             'tenant_id' => '3ba0b5ee-443a-4350-9b2b-34bde19a0a49',
