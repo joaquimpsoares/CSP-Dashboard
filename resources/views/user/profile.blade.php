@@ -70,7 +70,7 @@
                                 <div class="col-lg-4 col-md-6">
                                     <div class="md-form">
                                         <select name='country_id' class="browser-default custom-select">
-                                            <option value="{{$users->country->id}}" selected>{{$users->country->name}}</option>
+                                            <option value="" selected>{{$users->country->name}}</option>
                                             @foreach ($countries as $country)
                                             <option value="{{$country->id}}">{{$country->name}}</option>
                                             @endforeach
