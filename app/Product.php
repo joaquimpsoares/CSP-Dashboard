@@ -60,6 +60,10 @@ class Product extends Model
         return $this->hasOne('App\Price', 'product_sku', 'sku')->where('product_vendor', $this->vendor);
     }
 
+    public function instance() {
+        return $this->hasOne('App\Instance', 'id', 'instance_id');
+    }
+
     public function path() {
         return url("/product/{$this->id}-" . Str::slug($this->socket_shutdown, '-'));
     }

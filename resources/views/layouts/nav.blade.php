@@ -100,7 +100,7 @@
                 <ul class="navbar-nav ml-auto nav-flex-icons">
                     
                     <li class="nav-item avatar">
-                        <a class="nav-link p-0" href="#">
+                        <a class="nav-link p-0" href="{{'user/profile/' .auth::user()->id}}">
                             <img src="{{Auth::user()->avatar}}" class="rounded-circle z-depth-0" alt="avatar image"  width='50' Height ='auto'>
                         </a>
                     </li>

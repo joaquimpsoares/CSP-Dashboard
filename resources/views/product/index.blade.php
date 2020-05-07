@@ -26,7 +26,7 @@
 								<tr>
 									<td></td>
 									<td style="width: 1px;">
-										<a href="{{ "instance/" .$instance->id }}">{{$product['sku']}}</a>
+										<a href="{{ "product/" .$product->id }}">{{$product['sku']}}</a>
 									</td>
 									<td style="width: 1px; ; white-space: nowrap;">
 										{{$product['name']}}

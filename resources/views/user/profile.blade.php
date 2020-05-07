@@ -1,111 +1,124 @@
-@extends('dashboard.partials.layouts')
-
-<style>
-    body {padding:30px;}
+@extends('layouts.app')
 
 
-    .Hide
-    {
-        display:none;
-    }
-</style>
-
-@section('breadcrumbs')
-@stop
 @section('content')
-@include('partials.messages')
 
-
-<div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-body">
-                <ul class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active"
-                           id="details-tab"
-                           data-toggle="tab"
-                           href="#details"
-                           role="tab"
-                           aria-controls="home"
-                           aria-selected="true">
-                            @lang('app.user_details')
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           id="authentication-tab"
-                           data-toggle="tab"
-                           href="#login-details"
-                           role="tab"
-                           aria-controls="home"
-                           aria-selected="true">
-                            @lang('app.login_details')
-                        </a>
-                    </li>
-                    @if (settings('2fa.enabled'))
-                        <li class="nav-item">
-                            <a class="nav-link"
-                               id="authentication-tab"
-                               data-toggle="tab"
-                               href="#2fa"
-                               role="tab"
-                               aria-controls="home"
-                               aria-selected="true">
-                                @lang('app.two_factor_authentication')
-                            </a>
-                        </li>
-                    @endif
-                </ul>
-
-                <div class="tab-content mt-4" id="nav-tabContent">
-                    <div class="tab-pane fade show active px-2" id="details" role="tabpanel" aria-labelledby="nav-home-tab">
-                        {!! Form::open(['route' => 'profile.update.details', 'method' => 'PUT', 'id' => 'details-form']) !!}
-                            @include('user.partials.details', ['profile' => true])
-                        {!! Form::close() !!}
-                    </div>
-
-                    <div class="tab-pane fade px-2" id="login-details" role="tabpanel" aria-labelledby="nav-profile-tab">
-                        {!! Form::open(['route' => 'profile.update.login-details', 'method' => 'PUT', 'id' => 'login-details-form']) !!}
-                            @include('user.partials.auth')
-                        {!! Form::close() !!}
-                    </div>
-
-                    @if (settings('2fa.enabled'))
-                        <div class="tab-pane fade px-2" id="2fa" role="tabpanel" aria-labelledby="nav-profile-tab">
-                            <?php $route = Authy::isEnabled($user) ? 'disable' : 'enable'; ?>
-
-                            {!! Form::open(['route' => "two-factor.{$route}", 'id' => 'two-factor-form']) !!}
-                                @include('user.partials.two-factor')
-                            {!! Form::close() !!}
+<section class="section team-section">
+    <form  method="POST" action="{{ route('user.update', $users->id) }}" class="col s12" enctype="multipart/form-data">
+        @method('patch')
+        @csrf
+        <div class="row text-center">
+            <div class="col-md-8 mb-4">
+                <div class="card card-cascade cascading-admin-card user-card">
+                    <div class="admin-up d-flex justify-content-start">
+                        <i class="fas fa-user fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
+                        <div class="data float-right">
+                            <h5 class="font-weight-bold dark-grey-text">Edit Profile - <span class="text-muted">Complete your
+                                profile</span></h5>
+                            </div>
                         </div>
-                    @endif
+                        <div class="card-body card-body-cascade">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="md-form form-sm mb-0">
+                                        <input type="text" id="username" name="username" class="form-control form-control-sm" value="{{$users->username}}">
+                                        <label for="username" class="">{{ ucwords(trans_choice('messages.username', 1)) }}</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="md-form form-sm mb-0">
+                                        <input type="text" id="email" name="email" class="form-control form-control-sm" value="{{$users->email}}">
+                                        <label for="email" class="">{{ ucwords(trans_choice('messages.email', 1)) }}</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="md-form form-sm mb-0">
+                                        <input type="text" id="company_name" name="company_name" class="form-control form-control-sm" disabled value="{{$users->company}}">
+                                        <label for="company_name" class="disabled">{{ ucwords(trans_choice('messages.company_name', 1)) }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="md-form form-sm mb-0">
+                                        <input type="text" id="first_name       " name="first_name" class="form-control form-control-sm" value="{{$users->first_name}}">
+                                        <label for="first_name" class="">{{ ucwords(trans_choice('messages.first_name', 1)) }}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="md-form form-sm mb-0">
+                                        <input type="text" id="last_name" name="last_name" class="form-control form-control-sm" value="{{$users->last_name}}">
+                                        <label for="last_name" class="">{{ ucwords(trans_choice('messages.last_name', 1)) }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="md-form form-sm mb-0">
+                                        <input type="text" id="address" name="address" class="form-control form-control-sm" value="{{$users->address}}">
+                                        <label for="address" class="">{{ ucwords(trans_choice('messages.address_1', 1)) }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="md-form form-sm mb-0">
+                                        <input type="text" id="city" name="city" class="form-control form-control-sm" value="{{$users->city}}">
+                                        <label for="city" class="">{{ ucwords(trans_choice('messages.city', 1)) }}</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="md-form">
+                                        <select name='country_id' class="browser-default custom-select">
+                                            <option value="{{$users->country->id}}" selected>{{$users->country->name}}</option>
+                                            @foreach ($countries as $country)
+                                            <option value="{{$country->id}}">{{$country->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="md-form form-sm mb-0">
+                                        <input type="text" id="postal_code" name="postal_code" class="form-control form-control-sm" value="{{$users->postal_code}}">
+                                        <label for="postal_code" class="">{{ ucwords(trans_choice('messages.postal_code', 1)) }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="float-right">
+                            <button type="submit" class="button is-rounded is-primary is-outlined">{{ ucwords(trans_choice('messages.update', 1)) }}</button>
+                        </div>
+                    </div>
                 </div>
-
+            </div>  
+            <div class="col-md-4 mb-4">
+                <div class="card profile-card">
+                    <div class="avatar z-depth-1-half mb-4">
+                        <img src=" {{$users->avatar}} " class="rounded-circle" alt="First sample avatar image" height="250" width="250">
+                    </div>
+                    <div class="card-body pt-0 mt-0">
+                        <div class="custom-file">
+                            <input type="file" name="avatar" class="custom-file-input" id="customFileLang">
+                            <label class="custom-file-label" for="customFileLang">Select file</label>
+                        </div>
+                        <div class="row">
+                            <div class=" col-xs-12">
+                                <h6 class="font-weight-bold cyan-text mb-4"></h6>
+                            </div>
+                        </div>
+                        <label for="notificastions" class="font-weight-bold cyan-text mb-4">Notifications Settings</label>
+                            <select name="notificastions" class="custom-select" multiple>
+                                <option value="1">Email</option>
+                                <option value="2">Teams</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                {!! Form::open(['route' => 'profile.update.avatar', 'files' => true, 'id' => 'avatar-form']) !!}
-                    @include('user.partials.avatar', ['updateUrl' => route('profile.update.avatar-external')])
-                {!! Form::close() !!}
-            </div>
-        </div>
-    </div>
-</div>
-
-@stop
-
-@section('scripts')
-    {!! HTML::script('assets/js/as/btn.js') !!}
-    {!! HTML::script('assets/js/as/profile.js') !!}
-    {!! JsValidator::formRequest('Tagydes\Http\Requests\User\UpdateDetailsRequest', '#details-form') !!}
-    {!! JsValidator::formRequest('Tagydes\Http\Requests\User\UpdateProfileLoginDetailsRequest', '#login-details-form') !!}
-
-    @if (settings('2fa.enabled'))
-        {!! JsValidator::formRequest('Tagydes\Http\Requests\TwoFactor\EnableTwoFactorRequest', '#two-factor-form') !!}
-    @endif
-@stop
+        </section>
+        
+        
+        
+        @endsection
+        
+        

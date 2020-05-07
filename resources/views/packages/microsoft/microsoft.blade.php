@@ -70,7 +70,7 @@
                                                 <div class="input-group-prepend">
                                                 </div>
                                                 @if($instances->external_token_updated_at == null)
-                                                <a href=" {{('/instances/getMasterToken/'. $instances->provider_id )}} " class="text-danger">Please update token</a>
+                                                <a href=" {{('/instances/getMasterToken/'. $instances->id )}} " class="text-danger">Please update token</a>
                                                 @else
                                                 <input disabled type="text" name="external_url" class="form-control" id="basic-url" aria-describedby="basic-addon3" value="{{ $expiration }} ">
                                                 @endif
@@ -99,6 +99,13 @@
 
 
 @section('scripts')
+
+<script>
+    //redirect to specific tab
+    $(document).ready(function () {
+        $('#tabMenu a[href="#{{ old('tab') }}"]').tab('show')
+    });
+</script>
 
 @endsection
 

@@ -89,34 +89,6 @@
 
 @section('content')
 
-{{-- 'vendor' => $this->vendor,
-'instance_id' => $this->instance_id,
-'sku' => $this->sku,
-'name' => $this->name,
-'description' => $this->description,
-'uri' => $this->uri,
-'minimum_quantity' => $this->minimum_quantity,
-'minimum_quantity' => $this->minimum_quantity,
-'limit' => $this->limit,
-'term' => $this->term,
-'is_available_for_purchase' => $this->is_available_for_purchase,
-'locale' => $this->locale,
-'country' => $this->country,
-'has_addons' => $this->has_addons,
-'is_trial' => $this->is_trial,
-'is_autorenewable' => $this->is_autorenewable,
-'billing' => $this->billing,
-'acquisition_type' => $this->acquisition_type,
-'addons' => $this->addons,
-'category' => $this->category,
-'upgrade_target_offers' => $this->upgrade_target_offers,
-'supported_billing_cycles' => $this->supported_billing_cycles,
-'conversion_target_offers' => $this->conversion_target_offers,
-'resellee_qualifications' => $this->resellee_qualifications,
-'reseller_qualifications' => $this->reseller_qualifications,
-'path' => $this->path() --}}
-
-
 <div class="box">
     <section class="section">
         <div class="card">
@@ -129,6 +101,20 @@
                         <div class="col-md-6">
                             <div class="row">
                                 <form class="col s12">
+                                    <div class="row">
+                                        <div class="input-field col s4">
+                                            <div class="md-form">
+                                                <input type="text" id="form1" class="form-control" value="{{$product->id}}">
+                                                <label for="form1">{{ ucwords(trans_choice('messages.instance_id', 1)) }}</label>
+                                            </div>
+                                        </div>
+                                        <div class="input-field col s4">
+                                            <div class="md-form">
+                                                <input type="text" id="instance_name" class="form-control" value="{{$product->instance->name}}">
+                                                <label for="instance_name">{{ ucwords(trans_choice('messages.instance_name', 1)) }}</label>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="input-field col s4">
                                             <div class="md-form">
@@ -156,7 +142,6 @@
                                     <div class="row">
                                         <div class="input-field col s4">
                                             <div class="md-form">
-                                                <!-- Default textarea message -->
                                                 <textarea type="text" id="defaultFormMessageModalEx" class="md-textarea form-control">{{$product->description}}</textarea>
                                                 <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.product_description', 1)) }}</label>
                                             </div>
@@ -190,19 +175,16 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
                                     @if ($product->price->price != null)
                                     <div class="row">
                                         <div class="input-field col s4">
                                             <div class="md-form">
-                                                <!-- Default textarea message -->
                                                 <input type="text" id="form1" class="form-control" value="{{$product->price->price}}">
                                                 <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.product_msrp_price', 1)) }}</label>
                                             </div>
                                         </div>
                                         <div class="input-field col s4">
                                             <div class="md-form">
-                                                <!-- Default textarea message -->
                                                 <input type="text" id="form1" class="form-control" value="{{$product->price->msrp}}">
                                                 <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.product_retail_price', 1)) }}</label>
                                             </div>

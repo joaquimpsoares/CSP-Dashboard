@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\web;
 
 use App\User;
+use App\Country;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\UserRepositoryInterface;
@@ -67,11 +69,25 @@ class UsersController extends Controller
 
 
                 return view('home');
-
-
-
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function profile(User $user)
+    {
+
+        $id = Auth::user()->id;
+        $users = User::find($id);
+
+        $countries = Country::get();
+
+        // dd($users->country->name);
+
+        return view('user.profile', compact('users', 'countries'));
+    }
 
 
     /**
@@ -122,11 +138,68 @@ class UsersController extends Controller
      *
      * @param  \Illuminate\Http\Request  $userequest
      * @param  \App\User  $user
-     * @return \Illuminate\Http\Response
+     * @returttn \Illuminate\Http\Response
      */
-    public function update(Request $userequest, User $user)
+    public function update(Request $request, User $user)
     {
-        //
+
+        // dd($request->all());
+
+        $user = User::findOrFail($user->id);
+        
+        // dd($user);
+
+        $this->validate($request, [
+
+            'username' => 'String',
+            'email' => 'String',
+            'first_name' => 'String',
+            'last_name' => 'String',
+            'address' => 'String',
+            'city' => 'String',
+            'country' => 'String',
+            'postal_code' => 'String',
+            'avatar' => ['sometimes', 'image' => 'mimes:jpg,jpeg,bmp,svg,png,gif', 'max:5000' ]    
+        ]);
+        
+        
+        if(request()->has('avatar')){
+            $avataruploaded = request()->file('avatar');
+            $avatarname = time() . '.' . $avataruploaded->getClientOriginalExtension() ;
+            $avatarpath = public_path('/images/profile/');
+            $avataruploaded->move($avatarpath, $avatarname);
+            
+            $user->username             = $request->input('username');
+            $user->email                = $request->input('email');
+            $user->first_name           = $request->input('first_name');
+            $user->last_name            = $request->input('last_name');
+            $user->address              = $request->input('address');
+            $user->city                 = $request->input('city');
+            $user->state                = $request->input('state');
+            $user->country_id           = $request->input('country_id');
+            $user->postal_code          = $request->input('postal_code');
+            $user->avatar               = '/images/profile/' . $avatarname;
+            
+            $user->save();
+            
+            return redirect()->back()->with('success', 'Instance created succesfully');
+            
+        }
+                $user->username             = $request->input('username');
+                $user->email                = $request->input('email');
+                $user->first_name           = $request->input('first_name');
+                $user->last_name            = $request->input('last_name');
+                $user->address              = $request->input('address');
+                $user->city                 = $request->input('city');
+                $user->state                = $request->input('state');
+                $user->country_id           = $request->input('country_id');
+                $user->postal_code          = $request->input('postal_code');
+            
+            $user->save();
+            
+            return redirect()->back()->with('success', 'Instance created succesfully');
+
+
     }
 
     /**

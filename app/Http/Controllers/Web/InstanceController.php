@@ -33,7 +33,7 @@ class InstanceController extends Controller
     */
     public function create()
     {   
-
+        
         return view('packages.microsoft.create');
     }
     
@@ -46,152 +46,146 @@ class InstanceController extends Controller
     public function store(Request $request)
     {
         
-        // dd($request->all());
-        
         if($request->direct_reseller === 'on' )
         $external_type = 'direct';
         else
         $external_type = 'indirect';  
         
-        // dd($external_type);
-        
-      $this->validate($request, [
+        $this->validate($request, [
             'name' => 'required|String',
             'tenant_id' => 'required|String',
             'external_url' => 'String'
             ]);
-        
-        
-    $user = Auth::user();
-        
-    $create = Instance::create([
-        'name' => $request->name,
-        'user_id' => $user->id,
-        'provider_id' => $request->provider,
-        'tenant_id' => $request->tenant_id,
-        'type' => 'microsoft',
-        'external_type' => $external_type,
-        'external_id' => '66127fdf-8259-429c-9899-6ec066ff8915',
-        'external_url' => $request->external_url
-        ]);
-
-        dd($create);
-        
-        return redirect()->back()->with('success', 'Instance created succesfully');
-    }   
             
-    /**
-    * Display the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-    public function show($id)
-    {
-        
-        $instances = Instance::findOrFail($id);
-        // dd($instances);
-        return view('packages.microsoft', compact('instances'));
-    }
-        
-    /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-    public function edit($id)
-    {
-        $instances = Instance::findOrFail($id);
-
-        // dd($instances->external_token_updated_at );
-        if ($instances->external_token_updated_at == null)
-        
-            $expiration = $instances->external_token_updated_at;
-
-        else
-
-            $expiration = $instances->external_token_updated_at->addDays(90);
-
-        return view('packages.microsoft.microsoft', compact('instances', 'expiration'));
-    }
-        
-    /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-    public function update(Request $request, $id)
-    {
-        
-        // dd($request->all());
-        
-        if($request->direct_reseller === 'on' )
-        $external_type = 'direct';
-        else
-        $external_type = 'indirect';            
-        
-        $user = Auth::user();
-        
-        $this->validate($request, [
-            'name' => 'String',
-            'tenant_id' => 'String',
-            'external_type' => 'String|in:direct,indirect',
-            'external_url' => 'String'
-            ]);
             
-            $instance = Instance::findOrFail($id);
+            $user = Auth::user();
             
-            $instance->name             = $request->input('name');
-            $instance->tenant_id        = $request->input('tenant_id');
-            $instance->user_id          = $user->id;
-            $instance->external_type    = $external_type;
-            $instance->external_url     = $request->input('external_url');
+            $create = Instance::create([
+                'name' => $request->name,
+                'user_id' => $user->id,
+                'provider_id' => $request->provider,
+                'tenant_id' => $request->tenant_id,
+                'type' => 'microsoft',
+                'external_type' => $external_type,
+                'external_id' => '66127fdf-8259-429c-9899-6ec066ff8915',
+                'external_url' => $request->external_url
+                ]);
+                
+                return redirect()->route('provider.index')->with('success', 'Instance created succesfully');
+            }   
             
-            $instance->save();
-            
-            return redirect()->back()->with('success', 'Instance updated succesfully');
-        }
-
-
-        public function getMasterToken($id)
-        {
-            $instance = Instance::findorFail($id);
-
-            
-            if( !$instance){
-                return redirect()->back()->with('warning', 'The account has no assigned tenant');
+            /**
+            * Display the specified resource.
+            *
+            * @param  int  $id
+            * @return \Illuminate\Http\Response
+            */
+            public function show($id)
+            {
+                
+                $instances = Instance::findOrFail($id);
+                
+                return view('packages.microsoft', compact('instances'));
             }
             
-            if( ! $instance->external_token){
-                $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
+            /**
+            * Show the form for editing the specified resource.
+            *
+            * @param  int  $id
+            * @return \Illuminate\Http\Response
+            */
+            public function edit($id)
+            {
+                $instances = Instance::findOrFail($id);
                 
-                $expire = date("d/m/Y", $externalToken['expiration']);
-                $external_token = $externalToken['token'];
+                if ($instances->external_token_updated_at == null)
                 
-                $update = $instance->update([
-                    'external_token' => $external_token,
-                    'external_token_updated_at' => $expire
+                $expiration = $instances->external_token_updated_at;
+                
+                else
+                
+                $expiration = $instances->external_token_updated_at->addDays(90);
+                
+                return view('packages.microsoft.microsoft', compact('instances', 'expiration'));
+            }
+            
+            /**
+            * Update the specified resource in storage.
+            *
+            * @param  \Illuminate\Http\Request  $request
+            * @param  int  $id
+            * @return \Illuminate\Http\Response
+            */
+            public function update(Request $request, $id)
+            {
+                
+                if($request->direct_reseller === 'on' )
+                $external_type = 'direct';
+                else
+                $external_type = 'indirect';            
+                
+                $user = Auth::user();
+                
+                $this->validate($request, [
+                    'name' => 'String',
+                    'tenant_id' => 'String',
+                    'external_type' => 'String|in:direct,indirect',
+                    'external_url' => 'String'
                     ]);
-            }
-            
-            return redirect()->back()->with('success', 'Instance updated succesfully');
-        }   
-        
-        /**
-        * Remove the specified resource from storage.
-        *
-        * @param  int  $id
-        * @return \Illuminate\Http\Response
-        */
-        public function destroy($id)
-        {
-            $instance = Instance::findOrFail($id);
-            
-            $instance->delete();
-            
-            return redirect()->route('url()->previous()')->with('success', 'Instance deleted succesfully');
-        }
-    }
+                    
+                    $instance = Instance::findOrFail($id);
+                    
+                    $instance->name             = $request->input('name');
+                    $instance->tenant_id        = $request->input('tenant_id');
+                    $instance->user_id          = $user->id;
+                    $instance->external_type    = $external_type;
+                    $instance->external_url     = $request->input('external_url');
+                    
+                    $instance->save();
+
+
+                    
+                    return redirect()->back()->with('success', 'Instance updated succesfully')->withInput(['tab'=>'tabPageID']);;
+                }
+                
+                
+                public function getMasterToken($id)
+                {
+
+                    $instance = Instance::findorFail($id);
+                    
+                    
+                    if( !$instance){
+                        return redirect()->back()->with('warning', 'The account has no assigned tenant');
+                    }
+                    
+                    if( ! $instance->external_token){
+                        $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
+                        
+                        $expire = date("d/m/Y", $externalToken['expiration']);
+                        $external_token = $externalToken['token'];
+                        
+                        $update = $instance->update([
+                            'external_token' => $external_token,
+                            'external_token_updated_at' => $expire
+                            ]);
+                        }
+                        
+                        return redirect()->back()->with('success', 'Instance updated succesfully');
+                    }   
+                    
+                    /**
+                    * Remove the specified resource from storage.
+                    *
+                    * @param  int  $id
+                    * @return \Illuminate\Http\Response
+                    */
+                    public function destroy($id)
+                    {
+                        $instance = Instance::findOrFail($id);
+                        
+                        $instance->delete();
+                        
+                        return redirect()->route('url()->previous()')->with('success', 'Instance deleted succesfully');
+                    }
+                }
