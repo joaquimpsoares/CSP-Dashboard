@@ -8,28 +8,22 @@
 <div class="box col-xm-12">
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item">
-            <a class="nav-link btn rgba-blue-light active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
-            aria-selected="true">Home</a>
+            <a class="nav-link btn rgba-blue-light active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link btn rgba-blue-light" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
-            aria-selected="false">{{ ucwords(trans_choice('messages.reseller', 2)) }}</a>
+            <a class="nav-link btn rgba-blue-light" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">{{ ucwords(trans_choice('messages.reseller', 2)) }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link btn rgba-blue-light" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
-            aria-selected="false">{{ ucwords(trans_choice('messages.customer', 2)) }}</a>
+            <a class="nav-link btn rgba-blue-light" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">{{ ucwords(trans_choice('messages.customer', 2)) }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link btn rgba-blue-light" id="subscription-tab" data-toggle="tab" href="#subscription" role="tab" aria-controls="subscription"
-            aria-selected="false">{{ ucwords(trans_choice('messages.subscription', 2)) }}</a>
+            <a class="nav-link btn rgba-blue-light" id="subscription-tab" data-toggle="tab" href="#subscription" role="tab" aria-controls="subscription" aria-selected="false">{{ ucwords(trans_choice('messages.subscription', 2)) }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link btn rgba-blue-light" id="account-tab" data-toggle="tab" href="#account" role="tab" aria-controls="account"
-            aria-selected="false">{{ ucwords(trans_choice('messages.account', 2)) }}</a>
+            <a class="nav-link btn rgba-blue-light" id="account-tab" data-toggle="tab" href="#account" role="tab" aria-controls="account" aria-selected="false">{{ ucwords(trans_choice('messages.account', 2)) }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link btn rgba-blue-light" id="instance-tab" data-toggle="tab" href="#instance" role="tab" aria-controls="instance"
-            aria-selected="false">{{ ucwords(trans_choice('messages.packages', 2)) }}</a>
+            <a class="nav-link btn rgba-blue-light" id="instance-tab" data-toggle="tab" href="#instance" role="tab" aria-controls="instance"  aria-selected="false">{{ ucwords(trans_choice('messages.packages', 2)) }}</a>
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
@@ -101,9 +95,6 @@
                                                     <td>{{ $user['first_name'] }}</td>
                                                     <td>{{ $user['last_name'] }}</td>
                                                     <td>{{ ucwords(trans_choice($user->status->name, 1)) }}</td>
-                                                    {{-- <td style="width: 150px">
-                                                        @include('partials.actions', ['model' => $customer, 'modelo' => 'customer'])
-                                                    </td> --}}
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -124,36 +115,28 @@
                     <div class="card">
                         <img class="card-img-top" src="https://img.pngio.com/microsoft-corporate-logo-guidelines-trademarks-microsoft-logo-png-2008_900.jpg" alt="Card image cap">
                         <div class="card-body">
-                            <h2 class="card-title">
-                                <strong>{{ ucwords(trans_choice('messages.name', 1)) }}:</strong> {{$instance['name']}}
-                                <p class="card-text">
-                                </p>
-                                <a href=" {{ route('instances.edit', $instance->id) }}" class="button is-info is-outlined">
-                                    {{ ucwords(trans_choice('messages.edit', 1)) }}
-                                </a>
-                            </div>
+                            <h2 class="card-title"> <strong>{{ ucwords(trans_choice('messages.name', 1)) }}:</strong> {{$instance['name']}}</h2>
+                            <p class="card-text"></p>
+                            <a href=" {{ route('instances.edit', $instance->id) }}" class="button is-info is-outlined"> {{ ucwords(trans_choice('messages.edit', 1)) }}</a>
                         </div>
                     </div>
-                    @endforeach
-                    @else   
-                    <div class="card">
-                        <img class="card-img-top" src="https://img.pngio.com/microsoft-corporate-logo-guidelines-trademarks-microsoft-logo-png-2008_900.jpg" alt="Card image cap">
-                        <div class="card-body">
-                            <h2 class="card-title">
-                                <strong>{{ ucwords(trans_choice('messages.name', 1)) }}:</strong> Microsoft Instance
-                                <p class="card-text">
-                                </p>
-                                <a href=" {{ route('instances.create', $provider->id) }}" class="button is-info is-outlined">
-                                    {{ ucwords(trans_choice('messages.create', 1)) }}
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
                 </div>
+                @endforeach
+                @else   
+                <div class="card">
+                    <img class="card-img-top" src="https://img.pngio.com/microsoft-corporate-logo-guidelines-trademarks-microsoft-logo-png-2008_900.jpg" alt="Card image cap">
+                    <div class="card-body">
+                        <h2 class="card-title"><strong>{{ ucwords(trans_choice('messages.name', 1)) }}:</strong> Microsoft Instance</h2>
+                        <p class="card-text"></p>
+                        <a href=" {{ route('instances.create', $provider->id) }}" class="button is-info is-outlined">{{ ucwords(trans_choice('messages.create', 1)) }}</a>
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
     </div>
-    @endsection
-    
-    
+</div>
+
+@endsection
+
+
