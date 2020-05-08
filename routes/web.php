@@ -19,7 +19,7 @@ Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
 Route::post('provider/register', 'ProviderController@store')->name('provider.register');
 
 Route::resource('/user', 'UsersController');
-Route::get('/user/profile/{id}', 'UsersController@profile')->name('user.profile');
+Route::get('/user/profile/{user}', 'UsersController@profile')->name('user.profile');
 
 Route::post('registerInvitation', 'UsersController@registerInvitation')->name('registerInvitation');
 

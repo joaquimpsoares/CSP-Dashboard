@@ -1,5 +1,4 @@
 <div class="table-responsive">
-    
     <table class="table table-striped table-bordered" id="customers">
         <thead>
             <tr>

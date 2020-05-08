@@ -18,16 +18,14 @@
         "popper.js": "^1.12",
         "resolve-url-loader": "^2.3.1",
         "sass": "^1.26.5",
-        "sass-loader": "^8.0.0",
+        "sass-loader": "^8.0.2",
         "vue": "^2.5.17",
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
         "@amcharts/amcharts4": "^4.9.19",
         "@fortawesome/fontawesome-free": "^5.12.1",
-        "datatables.net-bs4": "^1.10.20",
-        "datatables.net-buttons-bs4": "^1.6.1",
-        "jquery": "^3.4.1",
+        "jquery": "^3.5.1",
         "mdbootstrap": "^4.17.0",
         "node-sass": "^4.14.1"
     }

@@ -2,14 +2,15 @@
 
 namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Tymon\JWTAuth\Contracts\JWTSubject;
+use Webpatser\Countries\Countries;
+use Spatie\Permission\Traits\HasRoles;
 use App\Services\Auth\Api\TokenFactory;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate;
-use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements  JWTSubject
 {
@@ -58,7 +59,7 @@ class User extends Authenticatable implements  JWTSubject
 
     public function country()
     {
-        return $this->belongsTo('Webpatser\Countries\Countries');
+    	return $this->belongsTo(Countries::class);
     }
 
     public function provider() {

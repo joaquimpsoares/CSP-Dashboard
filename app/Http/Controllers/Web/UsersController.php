@@ -79,12 +79,14 @@ class UsersController extends Controller
     public function profile(User $user)
     {
 
-        $id = Auth::user()->id;
-        $users = User::find($id);
+        // $id = Auth::user()->id;
+        $user= User::where('id', $user->id)->with('country')->first();
+        // dd($user->country);
+
 
         $countries = Country::get();
 
-        return view('user.profile', compact('users', 'countries'));
+        return view('user.profile', compact('user', 'countries'));
     }
 
 
