@@ -51,6 +51,8 @@ class CreateProductsTable extends Migration
             $table->timestamps();
 
             $table->index(['sku', 'instance_id']);
+
+            $table->foreign('instance_id')->references('id')->on('instances');
         });
     }
 

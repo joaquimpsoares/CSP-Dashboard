@@ -136,7 +136,7 @@
                     <div class="card-body">
                         <h2 class="card-title"><strong>{{ ucwords(trans_choice('messages.name', 1)) }}:</strong> Microsoft Instance</h2>
                         <p class="card-text"></p>
-                        <a href=" {{ route('instances.create', $provider->id) }}" class="button is-info is-outlined">{{ ucwords(trans_choice('messages.create', 1)) }}</a>
+                        <a href=" {{ route('instances.create') }}" class="button is-info is-outlined">{{ ucwords(trans_choice('messages.create', 1)) }}</a>
                     </div>
                 </div>
                 @endif

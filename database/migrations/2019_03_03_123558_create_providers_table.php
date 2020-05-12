@@ -30,13 +30,13 @@ class CreateProvidersTable extends Migration
             // Every not null main_office means a branch_office
             $table->integer('main_office')->nullable();
             $table->unsignedSmallInteger('status_id')->index();
-            //$table->unsignedBigInteger('price_list_id')->nullable();
+            $table->unsignedBigInteger('price_list_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('country_id')->references('id')->on('countries');
             $table->foreign('status_id')->references('id')->on('statuses');
-            //$table->foreign('price_list_id')->references('id')->on('price_lists');
+            $table->foreign('price_list_id')->references('id')->on('price_lists');
         });
     }
 

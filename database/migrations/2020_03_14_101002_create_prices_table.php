@@ -28,8 +28,8 @@ class CreatePricesTable extends Migration
             $table->unique(['product_sku', 'product_vendor', 'price_list_id']);
 
             $table->foreign('product_sku')->references('sku')->on('products');
-            //$table->foreign('product_vendor')->references('vendor')->on('products');
             $table->foreign('price_list_id')->references('id')->on('price_lists');
+            //$table->foreign('product_vendor')->references('vendor')->on('products');
         });
     }
 

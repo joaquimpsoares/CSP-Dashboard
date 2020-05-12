@@ -78,5 +78,9 @@ class Provider extends Model
     {
     	return $this->hasMany('App\Instance');
     }
+
+    public function priceList() {
+        return $this->belongsTo('App\PriceList');
+    }
     
 }

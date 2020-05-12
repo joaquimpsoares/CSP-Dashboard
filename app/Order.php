@@ -8,17 +8,24 @@ class Order extends Model
 {
     protected $guarded = [];
 
-    protected $casts = [
-        'cart' => 'collection',
-    ];
-
-    public function cart()
-    {
-    	return $this->belongsTo('App\Cart', 'cart_id', 'cart');
-    }
 
     public function status()
     {
-    	return $this->belongsTo('App\Cart');
+    	return $this->belongsTo('App\OrderStatus');
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany('App\Product')->withPivot('id', 'quantity', 'price', 'retail_price', 'billing_cycle');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo('App\Customer');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
     }
 }

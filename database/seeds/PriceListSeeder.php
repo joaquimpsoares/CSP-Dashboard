@@ -1,9 +1,7 @@
 <?php
 
 use App\PriceList;
-use App\Product;
-use App\Reseller;
-use App\provider;
+use App\Provider;
 use Illuminate\Database\Seeder;
 
 class PriceListSeeder extends Seeder
@@ -16,10 +14,16 @@ class PriceListSeeder extends Seeder
     public function run()
     {
     	
-        $priceList1 = PriceList::create([
+        PriceList::create([
             'name' => 'Default',
-            'description' => 'Default Price List.'
+            'description' => 'Default Price List Provider 1.'
         ]);
+
+        PriceList::create([
+            'name' => 'Default',
+            'description' => 'Default Price List Provider 2.'
+        ]);
+
 
     }
 }

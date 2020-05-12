@@ -17,7 +17,7 @@ class CreateInstancesTable extends Migration
             $table->bigIncrements('id');
             $table->timestamps();
 
-            $table->unsignedBigInteger('user_id');
+            //$table->unsignedBigInteger('user_id');
 
             $table->string('name');
             $table->string('type');

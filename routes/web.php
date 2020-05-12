@@ -47,7 +47,7 @@ Route::get('accept/{token}', 'InviteController@accept')->name('accept');
 Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
 **********************************************************************************/
-Route::get('/test/{domain}', 'CartController@checkDomain');
+//Route::get('/test', 'CartController@remover');
 /**********************************************************************************
 Fim Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
@@ -67,7 +67,7 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('permissions', 'PermissionController');
 		Route::get('/product/import', 'ProductController@import')->name('product.import');
 		
-		Route::resource('instances', 'InstanceController');
+		Route::resource('/instances', 'InstanceController');
 		Route::get('/instances/getMasterToken/{provider_id}', 'InstanceController@getMasterToken')->name('instances.getMasterToken');
 		
 	});
@@ -192,10 +192,8 @@ Route::group(['middleware' => 'auth'], function () {
 	/*****************************************************************************************************************/
 	
 	// Every authenticated user can access routes here
+	Route::get('/order/placeOrder', 'OrderController@placeOrder')->name('order.place_order');
 	Route::resource('order', 'OrderController');
-	Route::get('/order/placeOrder/{cart}', 'OrderController@placeOrder')->name('order.place_order');
-
-
 	
 	Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
 	

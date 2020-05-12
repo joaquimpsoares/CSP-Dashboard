@@ -10,6 +10,7 @@ use App\Instance;
 use App\Product;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Session;
@@ -135,18 +136,7 @@ class CartController extends Controller
         $instance = Instance::first();
         
         if($instance->type === 'microsoft'){
-            if( ! $instance->external_id){
-                return redirect()->route('products.list')->with('success', 'There is no client_id set up on the Microsoft instance');
-            }
-
-            if( ! $instance->external_token){
-                $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->external_id);
-                $instance->update([
-                    'external_token' => $externalToken,
-                    'external_token_updated_at' => now()
-                ]);
-            }
-            
+                        
             if (MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->getDomainAvailability($domain)){
 
                 $cart->domain = $domain;
@@ -155,9 +145,7 @@ class CartController extends Controller
                 return true;
             } else {
                 return abort(401);
-            }
-
-            
+            }            
             
         }
 
