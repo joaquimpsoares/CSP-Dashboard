@@ -2,9 +2,7 @@
 
 namespace App\Providers;
 
-use App\Cart;
 use App\User;
-use Illuminate\Support\Facades\View;
 use App\Notifications\FailedJob;
 use App\Notifications\SuccessJob;
 use Illuminate\Support\Facades\Log;

@@ -1,5 +1,5 @@
-<div class="table-responsive">
-    <table class="table table-striped table-bordered" id="resellers">
+<div class="table-responsive nowrap">
+    <table id="paginationNumbers" class="table" width="100%">
         <thead>
             <tr>
                 <th>{{ ucwords(trans_choice('messages.company_name', 1)) }}</th>
@@ -34,3 +34,4 @@
         </tbody>
     </table>
 </div>
+

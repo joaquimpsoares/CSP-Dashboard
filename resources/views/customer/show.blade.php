@@ -272,25 +272,35 @@
             </div>
             <div class="tab-pane fade" id="contact-md" role="tabpanel" aria-labelledby="contact-tab-md">
                 <div class="row">
-                    <div class="col-md-2">
+                    @foreach ($subscriptions as $item)
+                    <div class="col-md-3">
                         <div class="card">
-                            <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap">
+                            <img class="card-img-top" src="https://img.pngio.com/microsoft-corporate-logo-guidelines-trademarks-microsoft-logo-png-2008_900.jpg" alt="Card image cap">
                             <div class="card-body">
                                 <h2 class="card-title">
+                                    <a href="#">{{ ucwords(trans_choice('messages.name', 1)) }}: {{$item->name}}</a>  </h2> 
+                                    <p class="card-text"> <a href="#"> {{$item->amount}}  {{ ucwords(trans_choice('messages.licenses', 1)) }}</a> </p>
+                                    status:
                                     <p class="card-text">
+                                        {{ ucwords(trans_choice( $item->status->name, 1)) }} 
                                     </p>
-                                    View
-                                </a>
+                                    
+                                    {{-- <h2 class="card-title"> <strong>{{ ucwords(trans_choice('messages.name', 1)) }}:</strong> {{$instance['name']}}</h2>
+                                    <p class="card-text"></p>
+                                    <a href=" {{ route('instances.edit', $instance->id) }}" class="button is-info is-outlined"> {{ ucwords(trans_choice('messages.edit', 1)) }}</a> --}}
+                                </div>
                             </div>
                         </div>
+                        @endforeach
                     </div>
                 </div>
-            </div>
+            </div>            
         </div>
     </div>
-    
-    
-    
-    @endsection
-    
-    
+</div>
+
+
+
+@endsection
+
+

@@ -60,6 +60,29 @@
                 </div>
             </li>
             @endcan
+
+            @can(config('app.settings.general'))
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Settings
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{{ route('roles.index') }}">{{ ucwords(trans_choice('messages.account', 2)) }}</a>
+                    <a class="dropdown-item" href="{{ route('priceList.index') }}">{{ ucwords(trans_choice('messages.instance', 2)) }}</a>
+                    {{-- <a class="dropdown-item" href="{{ route('product.import') }}">{{ ucwords(trans_choice('messages.import_product', 2)) }}</a>
+                    <a class="dropdown-item" href="{{ route('product.index') }}">{{ ucwords(trans_choice('messages.product', 2)) }}</a>
+                    <a class="dropdown-item" href="{{ route('jobs') }}">{{ ucwords(trans_choice('messages.job', 2)) }}</a> --}}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+            </li>
+            @endcan
+
+
+
+
+
+
             <li class="nav-item">
                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
             </li>

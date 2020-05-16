@@ -35,6 +35,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('last_login')->nullable();
             $table->string('confirmation_token', 60)->nullable();
             $table->unsignedSmallInteger('status_id')->index()->default(5);
+
             $table->integer('two_factor_country_code')->nullable();
             $table->integer('two_factor_phone')->nullable();
             $table->text('two_factor_options')->nullable();

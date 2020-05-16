@@ -1,17 +1,22 @@
 @extends('layouts.app')
 
 
+
+
 @section('content')
 <div class="box">
 	<section class="section">
 		<div class="card">
 			<div class="">
 				<i class="fab fa-product-hunt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
+				<div class="float-right">
+					<a href="{{route('invite')}}" class="btn btn-success float-right ">{{ ucwords(trans_choice('messages.invite', 2)) }}</a>
+					{{-- <a type="submit" class="btn btn-success">{{ ucwords(__('messages.new_customer')) }}</a> --}}
+				</div>
 				<div class="card-body">
-					<div class="card-header">
+					{{-- <div class="card-header">
 						List of users
-						<a href="{{route('invite')}}"    class="btn btn-success float-right ">Invite</a>
-					</div>
+					</div> --}}
 					<h4 class="card-title"><a>{{ ucwords(trans_choice('messages.username', 2)) }}</a></h4>
 					<table class="table table-striped table-responsive table-bordered" id="resellers">
 						<thead>

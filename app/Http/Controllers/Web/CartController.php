@@ -137,6 +137,10 @@ class CartController extends Controller
         
         if($instance->type === 'microsoft'){
                         
+            if( ! $instance->external_id){
+                return redirect()->route('products.list')->with('success', 'There is no client_id set up on the Microsoft instance');
+            }
+            
             if (MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->getDomainAvailability($domain)){
 
                 $cart->domain = $domain;

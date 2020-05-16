@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('styles')
-<link href="{{ asset('css/datatables_bootstrap.css') }}" rel="stylesheet" />
+{{-- <link href="{{ asset('css/datatables_bootstrap.css') }}" rel="stylesheet" /> --}}
 @endsection
 
 @section('content')
@@ -24,12 +24,10 @@
 @endsection
 
 @section('scripts')
-<script type="text/javascript">
-	$(document).ready( function () {	
-		$('#resellers').DataTable({
-			"pagingType": "full_numbers",
-			"order": [[ 0, "asc" ]]
-		});
-	} );
+
+<script>
+	$(document).ready(function () {
+		$('#dtBasicExample').DataTable();
+		$('.dataTables_length').addClass('bs-select');
+	});
 </script>
-@endsection

@@ -52,8 +52,8 @@ body {
 <!-- Footer -->
 
 <footer class="footer page-footer font-small blue">
-  <div class="responsive text-center py-3">Powered by:
-    <a href="https://www.tagydes.com/">Tagydes Limited</a>
+  <div class="responsive text-center py-3">
+    <a href="https://www.tagydes.com/"> Powered by: <img src="images/tagydes_logo.png" height="auto" width="110" alt=""></a> 
   </div>
   <!-- Copyright -->
 

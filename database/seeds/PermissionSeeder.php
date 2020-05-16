@@ -100,6 +100,10 @@ class PermissionSeeder extends Seeder
             'name' => config('app.reseller_index'),
         ]);
 
+        // $providerPermissions[] = Permission::create([
+        //     'name' => config('app.settings.general'),
+        // ]);
+
         $permissions[] = Permission::create([
             'name' => config('app.provider_index'),
         ]);
@@ -145,6 +149,10 @@ class PermissionSeeder extends Seeder
         ]);
 
         // End of PriceList Permissions
+
+        
+
+
 
         $superAdminRole->givePermissionTo([$superPermissions, $permissions, $customerPermissions, $resellerPermissions, $providerPermissions], $priceListPermissions);
         $adminRole->givePermissionTo([$permissions, $customerPermissions, $resellerPermissions, $providerPermissions, $priceListPermissions]);

@@ -56,6 +56,7 @@ class OrderRepository implements OrderRepositoryInterface
 
     private function createOrderFromCart($cart)
     {
+
         $order = new Order();
 
         $order->customer_id = $cart->customer_id;

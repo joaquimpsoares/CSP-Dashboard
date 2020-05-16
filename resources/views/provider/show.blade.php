@@ -116,10 +116,10 @@
             </div>
         </div>
         <div class="tab-pane fade" id="instance" role="tabpanel" aria-labelledby="instance-tab">
+            {{-- @if ($provider->instances->count() > 0) --}}
             <div class="row">
+                @foreach ($provider->instances as $instance)
                 <div class="col-md-2">
-                    @if ($provider->instances->count() > 0)
-                    @foreach ($provider->instances as $instance)
                     <div class="card">
                         <img class="card-img-top" src="https://img.pngio.com/microsoft-corporate-logo-guidelines-trademarks-microsoft-logo-png-2008_900.jpg" alt="Card image cap">
                         <div class="card-body">
@@ -130,16 +130,18 @@
                     </div>
                 </div>
                 @endforeach
-                @else   
+                {{-- @else    --}}
+                <div class="col-md-2">
                 <div class="card">
                     <img class="card-img-top" src="https://img.pngio.com/microsoft-corporate-logo-guidelines-trademarks-microsoft-logo-png-2008_900.jpg" alt="Card image cap">
                     <div class="card-body">
-                        <h2 class="card-title"><strong>{{ ucwords(trans_choice('messages.name', 1)) }}:</strong> Microsoft Instance</h2>
+                        <h2 class="card-title"><strong>{{ ucwords(trans_choice('messages.name', 1)) }}:</strong> {{ ucwords(trans_choice('messages.microsoft_instance', 1)) }}</h2>
                         <p class="card-text"></p>
-                        <a href=" {{ route('instances.create') }}" class="button is-info is-outlined">{{ ucwords(trans_choice('messages.create', 1)) }}</a>
+                        {{-- <a href=" {{ route('instances.create') }}" class="button is-info is-outlined">{{ ucwords(trans_choice('messages.create', 1)) }}</a> --}}
+                        <a href=" {{ route('instances.create', $provider->id) }}" class="button is-info is-outlined">{{ ucwords(trans_choice('messages.add_new_instance', 1)) }}</a>
                     </div>
                 </div>
-                @endif
+                {{-- @endif --}}
             </div>
         </div>
     </div>

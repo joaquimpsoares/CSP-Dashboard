@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Web;
 
 use App\Instance;
-use App\Provider;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -144,14 +143,16 @@ class InstanceController extends Controller
                 
                 if( ! $instance->external_token){
                     $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
+
                     
-                    $expire = date("d/m/Y", $externalToken['expiration']);
+                    $expire = date("Y/d/m h:m:s", $externalToken['expiration']);
                     $external_token = $externalToken['token'];
+
                     
                     $update = $instance->update([
                         'external_token' => $external_token,
                         'external_token_updated_at' => $expire
-                    ]);
+                        ]);
                 }
                 
                 return redirect()->back()->with('success', 'Instance updated succesfully');

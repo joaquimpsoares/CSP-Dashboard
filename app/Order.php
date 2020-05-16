@@ -2,12 +2,16 @@
 
 namespace App;
 
+use App\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
     protected $guarded = [];
 
+    // public function status() {
+    //     return $this->belongsTo(OrderStatus::class);
+    // }
 
     public function status()
     {

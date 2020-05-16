@@ -58,11 +58,7 @@ class ResellerController extends Controller
     {
         $this->validator($request->all())->validate();
         
-        
-        
-
         $reseller = Reseller::findOrFail($reseller->id);
-        
 
         $reseller->company_name         = $request->input('company_name');
         $reseller->nif                  = $request->input('nif');

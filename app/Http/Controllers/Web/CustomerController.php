@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Country;
 use App\Customer;
 use App\Reseller;
+use App\Subscription;
 use App\Http\Requests\Request;
 use App\Support\Enum\CustomerStatus;
 use App\Repositories\Country\CountryRepository;
@@ -22,8 +23,12 @@ class CustomerController extends Controller
     }
 
     public function index(Customer $customer) {
+
         $customers = $this->customerRepository->all();
-        return view('customer.index', compact('customers'));
+        
+        $reseller = Customer::where('id', $customers)->get();  
+        
+        return view('customer.index', compact('customers','reseller'));
     }
 
     
@@ -41,7 +46,9 @@ class CustomerController extends Controller
 
         $countries = Country::get();
 
-        return view('customer.show', compact('customer','countries'));
+        $subscriptions = Subscription::get();
+
+        return view('customer.show', compact('customer','countries','subscriptions'));
         
     }
 
