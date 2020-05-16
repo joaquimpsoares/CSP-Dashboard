@@ -36,16 +36,10 @@ class OrderController extends Controller
     public function index()
     {
 
-        $orders = Order::with('status')->with('customer')->get();
+        $orders = Order::with('status', 'customer')->get();
+    
 
-
-        dd($orders->customers->company_name);
-        $customers = Customer::where('id', $orders->customer_id)->get();
-        // dd($customers);
-
-        // dd($orders->status());
-
-        return view('order.index', compact('orders', 'customers'));
+        return view('order.index', compact('orders'));
     }
 
     public function placeOrder(Request $request)

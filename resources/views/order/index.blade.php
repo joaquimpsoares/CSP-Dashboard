@@ -13,10 +13,8 @@
             </thead>
             @foreach ($orders as $order)  
             <tbody>
-                @foreach ($customers as $customer)
-                <td> {{$customer->company_name}} </td>
-                @endforeach
-                <td> {{$order->status['name']}} </td>
+                <td>{{ $order->customer->company_name }}</td>
+                <td>{{ $order->status->name }}</td>
             </tbody>
             @endforeach
         </table>

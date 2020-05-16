@@ -145,7 +145,7 @@ class InstanceController extends Controller
                     $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
 
                     
-                    $expire = date("Y/d/m h:m:s", $externalToken['expiration']);
+                    $expire = date("Y-m-d h:i:s", $externalToken['expiration']);
                     $external_token = $externalToken['token'];
 
                     

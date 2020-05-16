@@ -1,12 +1,13 @@
 <?php
 
 use App\Customer;
-use App\Notifications\FailedJob;
-use App\Jobs\PlaceOrderMicrosoft;
-use Illuminate\Support\Facades\Auth;
 use App\Jobs\CreateCustomerMicrosoft;
-use Illuminate\Support\Facades\Route;
+use App\Jobs\PlaceOrderMicrosoft;
+use App\MicrosoftTenantInfo;
+use App\Notifications\FailedJob;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 //Marco verifica aqui esta linha... para a importação dos productos!
 
@@ -47,7 +48,10 @@ Route::get('accept/{token}', 'InviteController@accept')->name('accept');
 Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
 **********************************************************************************/
-//Route::get('/test', 'CartController@remover');
+Route::get('/test', function() {
+	$customers = App\Customer::all();
+	dump($customers);
+});
 /**********************************************************************************
 Fim Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
