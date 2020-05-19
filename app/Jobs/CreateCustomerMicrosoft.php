@@ -35,8 +35,6 @@ class CreateCustomerMicrosoft implements ShouldQueue
         
         $instance = Instance::first();
         
-        // $searchCustomer = Customer::where('id', $this->order->customer_id)->first();
-
         $customer = $this->order->customer;
         
         try {
@@ -64,8 +62,6 @@ class CreateCustomerMicrosoft implements ShouldQueue
                 'customer_id' => $customer->id
             ]);
 
-            $this->order->order_status_id = 4;
-            $this->order->save();
 
         } catch (Exception $e) {
             $this->order->order_status_id = 3; 

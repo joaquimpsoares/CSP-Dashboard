@@ -22,8 +22,8 @@ class CreateSubscriptionsTable extends Migration
             $table->string('name');
             $table->string('subscription_id')->nullable();
             $table->unsignedBigInteger('customer_id');
-            $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('order_id');
+            $table->string('product_id');
+            $table->string('order_id');
             $table->string('amount');
             $table->string('msrpid')->nullable();
             $table->date('expiration_data')->nullable();
@@ -34,8 +34,6 @@ class CreateSubscriptionsTable extends Migration
             $table->timestamps();
 
             $table->foreign('customer_id')->references('id')->on('customers');
-            $table->foreign('product_id')->references('id')->on('products');
-            $table->foreign('order_id')->references('id')->on('orders');
             $table->foreign('status_id')->references('id')->on('statuses');
 
         });

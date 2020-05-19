@@ -50,8 +50,14 @@ class OrderController extends Controller
 
         $order = $this->orderRepository->newFromCartToken($validate['token']);
 
-        CreateCustomerMicrosoft::dispatch($order)->onQueue('CreateCustomer')
-        ->delay(now()->addSeconds(10));            
+        // dd($order->token);
+
+        CreateCustomerMicrosoft::withChain([
+            new PlaceOrderMicrosoft($order)
+        ])->dispatch($order)->allOnQueue('PlaceordertoMS');
+
+        // CreateCustomerMicrosoft::dispatch($order)->onQueue('PlaceordertoMS')
+        // ->delay(now()->addSeconds(10));            
         
         // dd($$rr);
         
