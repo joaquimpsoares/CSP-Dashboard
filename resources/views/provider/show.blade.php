@@ -170,7 +170,7 @@
             </div>
             <div class="tab-pane fade" id="subscription" role="tabpanel" aria-labelledby="subscription-tab">
                 <div class="box col-xm-12">
-                    @include('subscriptions.partials.row', ['subscriptions' => $subscriptions])
+                    @include('subscriptions.partials.table', ['subscriptions' => $subscriptions])
                 </div>
             </div>
             <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="account-tab">

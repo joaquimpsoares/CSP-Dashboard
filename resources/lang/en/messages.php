@@ -117,7 +117,7 @@ return [
     'last_updated' => 'last updated',
     'comments' => 'comments',
     'order_details' => 'order details',
-    '' => '',
+    'expiration' => 'expiration date',
     '' => '',
     '' => '',
     '' => '',
