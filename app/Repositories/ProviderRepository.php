@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Provider;
+use Illuminate\Support\Collection;
 
 class ProviderRepository implements ProviderRepositoryInterface
 {
@@ -14,6 +15,22 @@ class ProviderRepository implements ProviderRepositoryInterface
 		->get()
 		->map->format();
 	}
-
+	
+	public function getSubscriptions(Provider $provider){
+		
+		$resellers= $provider->resellers;
+		
+		$subscriptions = new Collection();
+		
+		foreach ($resellers as $reseller){
+			$customers=$reseller->customers;
+			foreach($customers as $customer)
+			{
+				$subscriptions = $subscriptions->merge($customer->subscriptions);
+			}
+		}
+		return $subscriptions;
+	}
+	
 	
 }

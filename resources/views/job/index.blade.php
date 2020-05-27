@@ -30,7 +30,7 @@
                                         <tr>
                                             <th>{{ ucwords(trans_choice('messages.id', 2)) }}</th>
                                             <th>{{ ucwords(trans_choice('messages.queue_name', 1)) }}</th>
-                                            <th>{{ ucwords(trans_choice('messages.payload', 1)) }}</th>
+                                            <th>{{ ucwords(trans_choice('messages.customer', 1)) }}</th>
                                             <th>{{ ucwords(trans_choice('messages.attempts', 1)) }}</th>
                                             <th>{{ ucwords(trans_choice('messages.started_at', 1)) }}</th>
                                         </tr>
@@ -43,8 +43,10 @@
                                             <td>
                                                 <a href="·">{{ $job->id }}</a>
                                             </td>
-                                            <td>{{ $job->queue }}</td>            
-                                            <td style="width: 15px">{{ Str::limit($job->payload, 100, $end='[...]') }}</td>
+                                            <td>{{ $job->queue }}</td>   
+                                            <td>{{$order[$job->id]->customer->company_name}}</td>
+                                            {{-- <td>{{dd($order[$job->id]->products->product)}}</td> --}}
+                                            <td>{{$order[$job->id]->domain}}</td>
                                             <td>{{ $job->attempts }}</td>
                                             {{-- {{$job_date->format('Y-m-d H:i:s')}} --}}
                                             <td>{{ date('d-M-Y', strtotime($job->available_at)) }}</td>

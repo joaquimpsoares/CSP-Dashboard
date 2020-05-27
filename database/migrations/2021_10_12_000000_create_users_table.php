@@ -27,7 +27,7 @@ class CreateUsersTable extends Migration
             $table->string('city')->nullable();
             $table->string('state')->nullable();
             $table->string('postal_code')->nullable();
-            $table->string('notifications_preferences')->default('mail');
+            $table->unsignedSmallInteger('notifications_preferences')->default(1);;
             $table->unsignedInteger('country_id')->nullable();
             $table->unsignedBigInteger('provider_id')->nullable();
             $table->unsignedBigInteger('reseller_id')->nullable();

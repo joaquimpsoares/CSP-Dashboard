@@ -29,9 +29,7 @@ class UsersController extends Controller
     public function index()
     {
         $users = $this->userRepository->all();
-        // dd($users);
-
-
+        
         return view('user.list', compact('users'));
     }
 
@@ -81,12 +79,13 @@ class UsersController extends Controller
 
         // $id = Auth::user()->id;
         $user= User::where('id', $user->id)->with('country')->first();
-        // dd($user->country);
-
+        
+        dd($user->notifications);
+        $notifications = explode(', ',$user->notifications_preferences);
 
         $countries = Country::get();
 
-        return view('user.profile', compact('user', 'countries'));
+        return view('user.profile', compact('user', 'countries','notifications'));
     }
 
 
@@ -143,7 +142,7 @@ class UsersController extends Controller
     public function update(Request $request, User $user)
     {
 
-        // dd($request->all());
+        dd($request->all());
 
         $user = User::findOrFail($user->id);
         

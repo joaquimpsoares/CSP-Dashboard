@@ -7,13 +7,10 @@ use App\Customer;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\UserTrait;
 use App\Instance;
-use App\Product;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Session;
 use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 
 class CartController extends Controller

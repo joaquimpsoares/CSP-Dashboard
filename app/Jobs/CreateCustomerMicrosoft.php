@@ -2,16 +2,17 @@
 
 namespace App\Jobs;
 
+use App\Order;
+use Exception;
 use App\Customer;
 use App\Instance;
 use App\MicrosoftTenantInfo;
-use App\Order;
-use Exception;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Tagydes\MicrosoftConnection\Facades\Customer as TagydesCustomer;
 
 
@@ -36,6 +37,8 @@ class CreateCustomerMicrosoft implements ShouldQueue
         $instance = Instance::first();
         
         $customer = $this->order->customer;
+
+        Log::info('Confirmation of Result: '.$customer);
         
         try {
             $newCustomer = TagydesCustomer::withCredentials($instance->external_id, $instance->external_token)->create([
@@ -54,7 +57,9 @@ class CreateCustomerMicrosoft implements ShouldQueue
                 'email' => $this->order->agreement_email,
                 'telephone' => $this->order->agreement_phone,
                 //mca agreement
-            ]);            
+            ]);         
+            
+            Log::info('Customer Created: '.$newCustomer);
 
             $result = MicrosoftTenantInfo::create([
                 'tenant_id' => $newCustomer->id,
@@ -62,8 +67,13 @@ class CreateCustomerMicrosoft implements ShouldQueue
                 'customer_id' => $customer->id
             ]);
 
+            Log::info('Tenant Created: '.$result);
+
+            $this->order->ext_company_id = $newCustomer->id; 
+            $this->order->save();
 
         } catch (Exception $e) {
+            Log::info('Error: '.$e->getMessage());
             $this->order->order_status_id = 3; 
             $this->order->save();
         }

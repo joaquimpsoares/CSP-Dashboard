@@ -31,7 +31,7 @@ return [
     ],
 
     'ms-teams' => [
-        'webhook_url' => env('MS_TEAMS_WEBHOOK_URL', 'https://outlook.office.com/webhook/559e722e-716e-4923-b355-c9c6b279c4d0@8ca67df0-0e63-4a05-845d-1067cfccd79d/IncomingWebhook/816bba4df7214300b5a9ede4848fc304/22047d5e-9982-4c68-8a67-f95654e761b8')
+        'webhook_url' => env('MS_TEAMS_WEBHOOK_URL')
     ],
 
 ];

@@ -33,6 +33,13 @@
                 </a> 
             </li>
             @endcan
+            @can(config('app.subscription_index'))
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('subscription.index') }}">
+                    {{ ucwords(trans_choice('messages.subscription', 2)) }}
+                </a>
+            </li>
+            @endcan
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ ucwords(__('messages.marketplace')) }}
@@ -41,7 +48,7 @@
                     <a class="dropdown-item" href="{{ route('store.index') }}">{{ ucwords(trans_choice('messages.product', 2)) }}</a>
                     <a class="dropdown-item" href="{{ route('cart.index') }}">{{ ucwords(__('messages.cart')) }}</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">{{ ucwords(trans_choice('messages.order', 2)) }}</a>
+                    <a class="dropdown-item" href="{{ route('order.index') }}">{{ ucwords(trans_choice('messages.order', 2)) }}</a>
                 </div>
             </li>
             @can(config('app.manage_roles'))
@@ -55,6 +62,7 @@
                     <a class="dropdown-item" href="{{ route('product.import') }}">{{ ucwords(trans_choice('messages.import_product', 2)) }}</a>
                     <a class="dropdown-item" href="{{ route('product.index') }}">{{ ucwords(trans_choice('messages.product', 2)) }}</a>
                     <a class="dropdown-item" href="{{ route('jobs') }}">{{ ucwords(trans_choice('messages.job', 2)) }}</a>
+                    <a class="dropdown-item" href="\order">{{ ucwords(trans_choice('messages.order', 2)) }}</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#">Something else here</a>
                 </div>
@@ -77,15 +85,6 @@
                 </div>
             </li>
             @endcan
-
-
-
-
-
-
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-            </li>
             @endauth
         </ul>
         <ul class="navbar-nav ml-auto nav-flex-icons">

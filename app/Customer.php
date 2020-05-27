@@ -37,6 +37,9 @@ class Customer extends Model
     public function users() {
     	return $this->hasMany('App\User');
     }
+    public function subscriptions() {
+    	return $this->hasMany('App\Subscription');
+    }
 
     public function customer() {
     	return $this->belongsTo('App\Customer');
@@ -74,4 +77,5 @@ class Customer extends Model
     public function microsoftTenantInfo() {
         return $this->hasMany('App\MicrosoftTenantInfo');
     }
+
 }

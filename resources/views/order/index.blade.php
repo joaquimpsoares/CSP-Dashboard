@@ -1,30 +1,29 @@
 @extends('layouts.app')
 
+@section('styles')
+@endsection
 
 @section('content')
-
-
 <div class="box">
-    <section>
-        <table class="table"    >
-            <thead>
-                <th>CustomerId</th>
-                <th>status</th>
-            </thead>
-            @foreach ($orders as $order)  
-            <tbody>
-                <td>{{ $order->customer->company_name }}</td>
-                <td>{{ $order->status->name }}</td>
-            </tbody>
-            @endforeach
-        </table>
-    </section>
-</div>
-
-
-
+	<section class="section">
+		<div class="card">
+			<div class="">
+				<i class="fas fa-file-invoice-dollar fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
+				<div class="card-body">
+                    <h4 class="card-title">{{ ucwords(trans_choice('messages.subscription_table', 2)) }} </h4>
+					@include('order.partials.table', ['orders' => $orders])
+				</div>
+			</div>
+		</div>
+	</section>
+</div>	
 @endsection
 
 @section('scripts')
 
-@endsection
+<script>
+	$(document).ready(function () {
+		$('#dtBasicExample').DataTable();
+		$('.dataTables_length').addClass('bs-select');
+	});
+</script>

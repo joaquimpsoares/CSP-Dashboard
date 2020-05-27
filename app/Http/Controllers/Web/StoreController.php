@@ -40,9 +40,10 @@ class StoreController extends Controller
 
         if (isset($filters['quantity']) && $filters['quantity'] > 0 && $filters['quantity'] !== 12) 
             $this->quantity = $filters['quantity'];
+            
 
-        /*$products = $this->productRepository->all($filters, $this->quantity);
-        dd($products);*/
+        $products = $this->productRepository->all($filters, $this->quantity);
+        // dd($products);
         $products = [];
         $prices = null;
         switch ($userLevel) {

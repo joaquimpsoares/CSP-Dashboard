@@ -70,6 +70,10 @@ class User extends Authenticatable implements  JWTSubject
          return $this->belongsTo('App\Reseller');
     }
 
+    public function customer() {
+        return $this->belongsTo('App\Customer');
+   }
+
     public function userLevel() {
         return $this->belongsTo('App\UserLevel');
     }
@@ -77,6 +81,10 @@ class User extends Authenticatable implements  JWTSubject
     public function orders() {
         return $this->hasMany('App\Order');
     }
+
+    // public function notifications() {
+    //     return $this->hasMany('App\NotificationSettings');
+    // }
 
     public function status() {
         return $this->belongsTo('App\Status');

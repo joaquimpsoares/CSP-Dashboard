@@ -286,7 +286,7 @@
                                   </div>
                                 <div class="card-body">
                                     <h3 class="card-title">{{ ucwords(trans_choice('messages.subscription_name', 1)) }}</h3> 
-                                    <p class="card-text"><a href="#">{{$item->name}}</a></p>
+                                    <p class="card-text"><a href=" {{route('subscription.show', [$item['id']])}} ">{{$item->name}}</a></p>
                                     <h3><p>{{ ucwords(trans_choice('messages.tenant_name', 1)) }}</p></h3>
                                     <p class="card-text"> <a href="#"> {{$item->tenant_name}}  </a></p>
                                     <hr>
@@ -305,7 +305,6 @@
                                     <p class="card-text">
                                         {{ ucwords(trans_choice( $item->status->name, 1)) }} 
                                     </p>
-                                    
                                     {{-- <h2 class="card-title"> <strong>{{ ucwords(trans_choice('messages.name', 1)) }}:</strong> {{$instance['name']}}</h2>
                                     <p class="card-text"></p>
                                     <a href=" {{ route('instances.edit', $instance->id) }}" class="button is-info is-outlined"> {{ ucwords(trans_choice('messages.edit', 1)) }}</a> --}}

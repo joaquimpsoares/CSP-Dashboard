@@ -79,6 +79,7 @@
                                     </div>
                                 </div>
                                 <button type="submit" class="button is-rounded is-primary is-outlined">{{ ucwords(trans_choice('messages.update', 1)) }}</button>
+                                <a href="{{ route('product.import') }}" type="submit"  class="button is-rounded is-primary is-outlined">{{ ucwords(trans_choice('messages.import_product', 2)) }}</a>
                                 <a href="{{url()->previous()}}" type="submit" class="button is-rounded is-danger is-outlined">{{ ucwords(trans_choice('messages.cancel', 1)) }}</a>
                                 <div class="float-right">
                                     <a  target="_blank" href="https://login.microsoftonline.com/common/oauth2/authorize?client_id=66127fdf-8259-429c-9899-6ec066ff8915&response_type=code&redirect_uri=https://partnerconsent.tagydes.com/&prompt=admin_consent" class="button is-rounded is-warning is-outlined">{{ ucwords(__('messages.refresh_token')) }}</a>

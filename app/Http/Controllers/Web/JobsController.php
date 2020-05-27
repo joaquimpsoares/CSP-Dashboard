@@ -3,16 +3,25 @@
 namespace App\Http\Controllers\web;
 
 
+use App\Jobs;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Artisan;
+use Maatwebsite\Excel\Concerns\ToCollection;
 
 class JobsController extends Controller
 {
 
     public $jobs;
+
+    public function __construct(Jobs $jobs)
+    {
+        $this->jobs = $jobs;
+
+    }
 
     /**
     * Display a listing of the resource.
@@ -21,27 +30,20 @@ class JobsController extends Controller
     */
     public function index()
     {
-        $jobs =  DB::table('jobs')->get();
+        $jobs =  $this->jobs->get();
 
-//         $jobs->getPayload();
-
-//         $payload = json_decode($jobs->payload);
-//         dd($payload->data->command);
-//         $obj = unserialize($payload->data->command);
-
-// dd($obj);
-
-
-//         foreach($jobs as $job){
-//             dd($job->getPayload());
-
-//     }
-
+        $order = [];
+        foreach($jobs as $payload){
+            $payload_json = json_decode( $payload->payload );
+            $data = unserialize( $payload_json->data->command );
+            $order[$payload->id] = $data->order;
+        }
+        
         $running =$jobs->count();
         
         $failedJobs = DB::table('failed_jobs')->get();
 
-        return view('job.index', compact('jobs','failedJobs','running'));
+        return view('job.index', compact('jobs','failedJobs','running','order'));
         
     }
 
@@ -97,12 +99,6 @@ class JobsController extends Controller
     {
         $job->payload = json_decode($job->payload);
         return $job;
-    }
-
-    public function getAddons($jobs){
-        return $this->$jobs->map(function($job){
-            return unserialize($job);
-        });
     }
 
     /**

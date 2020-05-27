@@ -109,9 +109,10 @@
                             </div>
                         </div>
                         <label for="notificastions" class="font-weight-bold cyan-text mb-4">Notifications Settings</label>
-                            <select name="notificastions" class="custom-select" multiple>
-                                <option value="1">Email</option>
-                                <option value="2">Teams</option>
+                            <select name="notifications" class="custom-select" multiple>
+                                @foreach ($notifications as $key=> $item)
+                                <option value={{$item}}>{{$item}}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>

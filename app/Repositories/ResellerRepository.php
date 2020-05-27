@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Provider;
 use App\Reseller;
 use App\Http\Traits\UserTrait;
+use Illuminate\Support\Collection;
 use App\Repositories\ResellerRepositoryInterface;
 
 /**
@@ -17,6 +18,7 @@ class ResellerRepository implements ResellerRepositoryInterface
 
 	public function all()
 	{
+		$user = $this->getUser();
 
 		switch ($this->getUserLevel()) {
 			case config('app.super_admin'):
@@ -65,6 +67,20 @@ class ResellerRepository implements ResellerRepositoryInterface
 
 		return $resellers;
 
+	}
+
+	public function getSubscriptions(Reseller $reseller){
+		
+		$customers= $reseller->customers;
+
+		$subscriptions = new Collection();
+
+		foreach($customers as $customer){
+			$subscriptions = $subscriptions->merge($customer->subscriptions);
+		}
+		
+		return $subscriptions;
+		
 	}
 
 

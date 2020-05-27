@@ -119,7 +119,7 @@ class InstanceController extends Controller
                 
                 $instance->name             = $request->input('name');
                 $instance->tenant_id        = $request->input('tenant_id');
-                $instance->user_id          = $user->id;
+                // $instance->user_id          = $user->id;
                 $instance->external_type    = $external_type;
                 $instance->external_url     = $request->input('external_url');
                 

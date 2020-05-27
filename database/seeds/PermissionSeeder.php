@@ -131,7 +131,6 @@ class PermissionSeeder extends Seeder
             'name' => config('app.price_list_index'),
         ]);
 
-
         $priceListPermissions[] = Permission::create([
             'name' => config('app.price_list_show'),
         ]);
@@ -150,16 +149,40 @@ class PermissionSeeder extends Seeder
 
         // End of PriceList Permissions
 
-        
+
+        // Begin of Subscriptions Permissions
+        $subscriptionPermissions[] = Permission::create([
+            'name' => config('app.subscription_index'),
+        ]);
+
+        $subscriptionPermissions[] = Permission::create([
+            'name' => config('app.subscription_show'),
+        ]);
+
+        $subscriptionPermissions[] = Permission::create([
+            'name' => config('app.subscription_create'),
+        ]);
+
+        $subscriptionPermissions[] = Permission::create([
+            'name' => config('app.subscription_edit'),
+        ]);
+
+        $subscriptionPermissions[] = Permission::create([
+            'name' => config('app.subscription_delete'),
+        ]);
+
+        // End of Subscriptions Permissions
+
+ 
 
 
 
-        $superAdminRole->givePermissionTo([$superPermissions, $permissions, $customerPermissions, $resellerPermissions, $providerPermissions], $priceListPermissions);
-        $adminRole->givePermissionTo([$permissions, $customerPermissions, $resellerPermissions, $providerPermissions, $priceListPermissions]);
-        $providerRole->givePermissionTo([$customerPermissions, $resellerPermissions, $providerPermissions, $priceListPermissions]);
-        $resellerRole->givePermissionTo([$customerPermissions, $resellerPermissions, $priceListPermissions]);
-        $subResellerRole->givePermissionTo([$customerPermissions, $resellerPermissions]);
-        $customerRole->givePermissionTo($customerPermissions);
+        $superAdminRole->givePermissionTo([$superPermissions, $permissions, $customerPermissions, $resellerPermissions, $providerPermissions, $priceListPermissions]);
+        $adminRole->givePermissionTo([$permissions, $customerPermissions, $resellerPermissions, $providerPermissions, $priceListPermissions, $subscriptionPermissions]);
+        $providerRole->givePermissionTo([$customerPermissions, $resellerPermissions, $providerPermissions, $priceListPermissions, $subscriptionPermissions]);
+        $resellerRole->givePermissionTo([$customerPermissions, $resellerPermissions, $priceListPermissions, $subscriptionPermissions]);
+        $subResellerRole->givePermissionTo([$customerPermissions, $resellerPermissions, $subscriptionPermissions]);
+        $customerRole->givePermissionTo([$customerPermissions, $subscriptionPermissions]);
         
 
         Permission::create([

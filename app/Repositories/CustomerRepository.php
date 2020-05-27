@@ -70,6 +70,7 @@ class CustomerRepository implements CustomerRepositoryInterface
         return $customers;
     }
 
+    
     public function canInteractWithCustomer(Customer $customer)
     {
 
@@ -111,4 +112,12 @@ class CustomerRepository implements CustomerRepositoryInterface
         return $customers;
     }
 
+
+    public function getSubscriptions(Customer $customer){
+		
+		$subscriptions= $customer->subscriptions;
+		
+		return $subscriptions;
+		
+	}
 }
