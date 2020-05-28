@@ -35,9 +35,15 @@
             @endcan
             @can(config('app.subscription_index'))
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('subscription.index') }}">
-                    {{ ucwords(trans_choice('messages.subscription', 2)) }}
-                </a>
+                @if (Auth::user()->hasRole('Customer')) 
+                    <a class="nav-link" href="{{ route('subscription.card') }}">
+                        {{ ucwords(trans_choice('messages.subscription', 2)) }}
+                    </a>
+                    @else
+                    <a class="nav-link" href="{{ route('subscription.index') }}">
+                        {{ ucwords(trans_choice('messages.subscription', 2)) }}
+                    </a>
+                    @endif
             </li>
             @endcan
             <li class="nav-item dropdown">

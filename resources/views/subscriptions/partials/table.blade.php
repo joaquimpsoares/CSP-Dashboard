@@ -16,7 +16,8 @@
             
             {{-- @foreach ($customerSubscriptions as $subscription) --}}
             <tr class="odd gradeX">
-                <td width="1%" class="f-s-600">{{$subscription['id']}}</td>
+                
+                <td width="1%" class="f-s-600"><a href="{{route('subscription.show', $subscription->id)}}">{{$subscription['id']}}</a></td>
                 <td>{{$subscription->name}}</td>
                 <td>{{$subscription->customer->company_name}}</td>
                 <td>{{$subscription->amount}}</td>

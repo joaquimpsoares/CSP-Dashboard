@@ -25,6 +25,7 @@ class CreateSubscriptionsTable extends Migration
             $table->string('product_id');
             $table->string('order_id');
             $table->string('amount');
+            $table->string('instance_id');
             $table->string('msrpid')->nullable();
             $table->date('expiration_data')->nullable();
             $table->string('billing_period');

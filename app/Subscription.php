@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Subscription extends Model
 {
+    protected $guarded = [];
     public function status() {
         return $this->belongsTo(Status::class);
     }
