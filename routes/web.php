@@ -17,7 +17,8 @@ use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 //Marco verifica aqui esta linha... para a importação dos productos!
 
 
-
+Route::get('/subscription.card', 'SubscriptionController@card')->middleware('permission:' . config('app.subscription_edit'))->name('subscription.card');
+Route::resource('/subscription', 'SubscriptionController');
 
 Route::get('/jobs', 'JobsController@index')->name('jobs');
 Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
@@ -260,13 +261,7 @@ Route::group(['middleware' => 'auth'], function () {
 			->middleware('permission:' . config('app.customer_edit'))
 			->name('customer.edit');
 			
-			Route::get('/subscription.card', 'SubscriptionController@card')->name('subscription.card');
-			
-			Route::resource('/subscription', 'SubscriptionController');
-			
-			
-			
-			
+
 			/*
 			Inicio Confirmar nivel de acesso reseller->provider
 			*/

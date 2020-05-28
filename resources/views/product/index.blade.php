@@ -121,7 +121,7 @@
 										{{$product['vendor']}}
 									</td>
 									<td class="text-center">
-										{{$product['price']['price'] ?? '-'}}
+										{{-- {{$product['price']['price'] ?? '-'}} --}}
 									</td>
 									<td>
 									</td>
@@ -232,6 +232,7 @@ aria-hidden="true" data-backdrop="false">
 													</div>
 												</div>
 											</div>
+											{{dd($product)}}
 											@if ($product->price->price != null)
 											<div class="row">
 												<div class="input-field col s4">

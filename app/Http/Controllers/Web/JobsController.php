@@ -31,10 +31,11 @@ class JobsController extends Controller
     public function index()
     {
         $jobs =  $this->jobs->get();
-
+        
         $order = [];
         foreach($jobs as $payload){
             $payload_json = json_decode( $payload->payload );
+            // dd($payload_json);
             $data = unserialize( $payload_json->data->command );
             $order[$payload->id] = $data->order;
         }

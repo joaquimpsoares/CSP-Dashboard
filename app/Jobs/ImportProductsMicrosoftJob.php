@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Order;
 use App\Product;
 use App\Instance;
 use Illuminate\Bus\Queueable;
@@ -14,6 +15,8 @@ use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
 
 class ImportProductsMicrosoftJob implements ShouldQueue
 {
+    public $order;
+
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     
     /**
@@ -21,9 +24,9 @@ class ImportProductsMicrosoftJob implements ShouldQueue
     *
     * @return void
     */
-    public function __construct()
+    public function __construct(Order $order)
     {
-        //
+        $this->order = $order;
     }
     
     /**
@@ -33,6 +36,9 @@ class ImportProductsMicrosoftJob implements ShouldQueue
     */
     public function handle()
     {
+
+        $this->order->order_status_id = 2; //Order running state
+        $this->order->save();
         
         $instance = Instance::first();
         if( ! $instance){

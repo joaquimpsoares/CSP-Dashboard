@@ -194,6 +194,7 @@ class SubscriptionController extends Controller
                 Log::info('License changed: '.$request->amount);
             } catch (Exception $e) {
                 Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+                return redirect()->back()->with(['alert' => 'error', 'message' => ucwords(trans_choice('messages.something_went_wrong_try_again', 1))]);
             }
         }else if ($request->billing_period != $subscriptions->billing_period){
             try{
@@ -203,6 +204,7 @@ class SubscriptionController extends Controller
 
         } catch (Exception $e) {
             Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+            return redirect()->back()->with(['alert' => 'error', 'message' => ucwords(trans_choice('messages.something_went_wrong_try_again', 1))]);
         }
         }else{
             try{
@@ -219,11 +221,10 @@ class SubscriptionController extends Controller
 
             } catch (Exception $e) {
                 Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+                return redirect()->back()->with(['alert' => 'error', 'message' => ucwords(trans_choice('messages.something_went_wrong_try_again', 1))]);
             }
         }
-        
-        return redirect()->route('subscription.card')->with('success', 'Subscription updated succesfully');
-            
+        return redirect()->back()->with(['alert' => 'success', 'message' => ucwords(trans_choice('messages.subscription_updated_successfully', 1))]);
     }
                     
     /**

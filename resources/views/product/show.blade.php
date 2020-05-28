@@ -175,6 +175,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    {{dd($product)}}
                                     @if ($product->price->price != null)
                                     <div class="row">
                                         <div class="input-field col s4">

@@ -6,7 +6,7 @@
 
 <div class="box col-xm-12">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-8">
             <div class="card">
                 <div class="view overlay">
                     <div class="panel-block">
@@ -15,13 +15,13 @@
                             @csrf
                             <div class="field-group">
                                 <div class="field is-inline-block-desktop">
-                                    <div class="field is-inline-block-desktop">
-                                        <p> <strong> Tenant Name: </strong>{{ $subscriptions->tenant_name }}</p>
-                                        <hr>
-                                    </div>
                                     <label class="label">Subscription Name</label>
                                     <div class="control">
                                         <input readonly="readonly" class="input" name="name" type="text" placeholder="Text input" value="{{ $subscriptions->name }}">
+                                    </div>
+                                    <hr>
+                                    <div class="field is-inline-block-desktop">
+                                        <p> <strong> Tenant Name: </strong>{{ $subscriptions->tenant_name }}</p>
                                     </div>
                                 </div>
                                 <hr>
@@ -62,9 +62,10 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-md-4 col-form-label">Set Expiration date</label>
+                                        {{-- <label class="col-md-4 col-form-label">Expiration date</label> --}}
                                         <div class="col-md-8">
-                                            <input type="text" class="form-control" id="datepicker-default" placeholder="Select Date" value="04/1/2014" />
+                                        <p><strong>Expiration Date</strong> {{
+                                            date('d-M-Y', strtotime($subscriptions->expiration_data ))}}</p>
                                         </div>
                                     </div>
                                     {{-- @if ($products->getAddons()->all() != null)
@@ -93,7 +94,7 @@
                                                     <div class="modal-dialog modal-notify modal-info" role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <p class="heading lead">Modal Info</p>
+                                                                <p class="heading lead">Update Subscription</p>
                                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                     <span aria-hidden="true" class="white-text">&times;</span>
                                                                 </button>
@@ -114,7 +115,7 @@
                                                 </div>
                                                 <a href="{{ URL::previous() }}">
                                                     <span class="button is-warning is-outlined" id="update-details-btn">
-                                                        @lang('app.cancel')
+                                                        {{ ucwords(trans_choice('messages.cancel', 1)) }}
                                                     </span>
                                                 </a>
                                             </div>
