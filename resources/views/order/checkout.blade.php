@@ -83,6 +83,7 @@
 			.done(function(data) {
 				//console.log('success');
 				$('[href="#selectTenant"]').tab('show');
+
 			})
 			.fail(function(data) {
 				console.log(data);

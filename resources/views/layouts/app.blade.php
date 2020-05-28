@@ -48,7 +48,7 @@
 				{{-- @include('layouts.nav', ['cart' => $cart]) --}}
 			</div>
 		</div>
-		@include('layouts.bread')
+		
 		@include('partials.messages')
 		
 		<main class="py-4">
