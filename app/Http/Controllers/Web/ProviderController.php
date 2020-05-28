@@ -93,6 +93,13 @@ class ProviderController extends Controller
             $reseller = Reseller::find($reseller['id']);
             $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
         }
+
+        // foreach ($customers as $customer){
+        //     $customer = Customer::find($customer['id']);
+        //     $reseller = $this->customerRepository->ResellerOfcustomer($customer);
+        // }
+        // dump($reseller);
+
         
         $instance = Instance::first();
         

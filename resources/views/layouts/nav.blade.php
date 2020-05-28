@@ -115,6 +115,14 @@
                     </li>
                 </ul>
             </div>
+            <div class="navbar-item">
+                @if (app('impersonate')->isImpersonating())
+                    <a class="navbar-item" href="{{ route('impersonate.leave') }}" class="text-danger hidden-md">
+                    <i class="fas fa-user-secret"></i>
+                    <span>@lang('app.stop_impersonating')</span>
+                    </a>
+                @endif
+            </div>
             <div class="buttons">
                 <a class="btn btn-primary">
                     {{ Auth::user()->username }}

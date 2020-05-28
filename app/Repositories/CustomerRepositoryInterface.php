@@ -15,4 +15,6 @@ interface CustomerRepositoryInterface
 
 	public function getSubscriptions(Customer $customer);
 
+	public function ResellerOfcustomer(Customer $customer);
+
 }

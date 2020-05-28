@@ -114,6 +114,10 @@ class CartController extends Controller
 
         $cart->customer()->associate($customer);
 
+        if(!empty($domain = $customer->microsoftTenantInfo->first())){
+            $cart->domain=$domain->tenant_domain;
+        }
+
         $cart->save();
         
         return true;

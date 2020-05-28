@@ -112,6 +112,13 @@ class CustomerRepository implements CustomerRepositoryInterface
         return $customers;
     }
 
+    public function ResellerOfcustomer(Customer $customer){
+
+        $reseller = $customer->resellers;
+        
+        return $reseller;
+    }
+
 
     public function getSubscriptions(Customer $customer){
 		

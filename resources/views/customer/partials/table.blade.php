@@ -18,9 +18,10 @@
                 </td>
                 <td>{{ $customer['country'] }}</td>
                 <td>{{ $customer['state'] }}</td>
-                {{-- @if ()
-                <td>{{ $reseller['company_name'] }} </td>
-                @endif --}}
+                {{-- @foreach ($reseller as $item)
+                <td>{{ $item->company_name }} </td>
+                @endforeach --}}
+                {{-- @endif --}}
                 <td style="width: 150px">
                     @include('partials.actions', ['model' => $customer, 'modelo' => 'customer'])
                 </td>

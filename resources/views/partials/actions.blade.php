@@ -1,5 +1,5 @@
 <div class="row text-nowrap">
-
+	
 	@if(Auth::user()->can($modelo . '.edit'))
 	<div class="col-2">
 		<i class="fas fa-edit text-success"></i>
@@ -18,32 +18,20 @@
 	@if ($modelo === "reseller") 
 	<div class="col-2">
 		<a href="{{ route('reseller.customers', [$model['id'], Str::slug($model['company_name'], ' ')]) }}" 
-			data-toggle="tooltip" 
-			data-placement="left" 
-			title="{{ ucwords(trans_choice('messages.customer', 2)) }}" 
-			class="text-primary">
+		data-toggle="tooltip" 
+		data-placement="left" 
+		title="{{ ucwords(trans_choice('messages.customer', 2)) }}" 
+		class="text-primary">
+		
+		
+		
+	</a>	
+</div>
+@endif
 
-			<i class="fas fa-user-friends text-primary"></i>
-
-		</a>	
-	</div>
-	@endif
-	
-	<div class="col-2">
-		{{-- <a href="{{ route($modelo . '.price_lists', $model['id']) }}" 
-			data-toggle="tooltip" 
-			data-placement="left" 
-			title="{{ ucwords(trans_choice('messages.price_list', 1)) }}" 
-			class="text-dark">
-
-			<i class="fas fa-dollar-sign"></i>
-
-		</a>	 --}}
-	</div>
-	
-	@canImpersonate
-	<div class="col-2">
-		<i class="fas fa-user-secret text-muted"></i>
-	</div>
-	@endCanImpersonate
+@canImpersonate
+@if(!empty($model['mainUser']))
+<a href="{{ route('impersonate', $model['mainUser']->id) }}"><i class="fas fa-user-secret text-muted"></i></a>
+@endif
+@endCanImpersonate
 </div>

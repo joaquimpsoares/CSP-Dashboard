@@ -66,6 +66,7 @@ class ResellerController extends Controller
                 $subscriptions = $this->subscriptionRepository->subscriptionsOfCustomer($customer);
             }
         }
+        
             
             return view('reseller.show', compact('reseller','customers', 'countries', 'subscriptions'));
         }

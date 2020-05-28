@@ -1,9 +1,15 @@
 
 <div class="input-group mb-3">
-	<input type="text" id="tenant" class="form-control" value="tagydessssss" placeholder="tenant" name="tenant" value="@if($cart->domain) $cart->domain @endif">
+	@if (!empty($cart->domain))
+	{{-- @dump($cart) --}}
+	{{ $cart->domain }}
+	
+	@else
+	<input type="text" id="tenant" class="form-control" value="" placeholder="tenant" name="tenant" value="@if($cart->domain) $cart->domain @endif">
 	<div class="input-group-append">
 		<span class="input-group-text" id="basic-addon2">{{ ucwords(trans_choice('messages.onmicrosoft', 1)) }}</span>
 	</div>
+	@endif
 </div>
 <div class="row float-right">
 	<button type="button" id="validateButton" class="btn btn-success" onclick="checkDomainAvailability()">{{ ucwords(trans_choice('messages.validate', 1)) }}</button>

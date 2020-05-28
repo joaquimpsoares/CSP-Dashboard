@@ -35,7 +35,9 @@ class Provider extends Model
 			'nif' => $this->nif,
 			'postal_code' => $this->postal_code,
 			'status' => $this->status->name,
-            'path' => $this->path()
+			'path' => $this->path(),
+			'mainUser' => $this->users()->first()
+
 		];
 
 	}

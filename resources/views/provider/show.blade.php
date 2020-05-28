@@ -202,7 +202,7 @@
                                                         <th>{{ ucwords(trans_choice('messages.first_name', 1)) }}</th>
                                                         <th>{{ ucwords(trans_choice('messages.last_name', 1)) }}</th>
                                                         <th>{{ ucwords(trans_choice('messages.status', 1)) }}</th>
-                                                        {{-- <th>{{ ucwords(trans_choice('messages.action', 1)) }}</th> --}}
+                                                        <th>{{ ucwords(trans_choice('messages.action', 1)) }}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
