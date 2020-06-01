@@ -9,6 +9,7 @@ use App\Http\Traits\UserTrait;
 use App\Jobs\PlaceOrderMicrosoft;
 use App\Http\Controllers\Controller;
 use App\Jobs\CreateCustomerMicrosoft;
+use App\Jobs\ImportProductsMicrosoftJob;
 use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
 
@@ -48,5 +49,22 @@ class OrderController extends Controller
          
             return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
         }
+
+        public function syncproducts(Request $request)
+    {
+
+        dd($request->all());
+      
+                    
+        ImportProductsMicrosoftJob::dispatch($order)->onQueue('SyncProducts')
+        ->delay(now()->addSeconds(10)); 
+        
+        // CreateCustomerMicrosoft::withChain([
+        //     new PlaceOrderMicrosoft($order)
+        //     ])->dispatch($order)->allOnQueue('PlaceordertoMS');
+         
+            return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
+        }
+        
         
     }

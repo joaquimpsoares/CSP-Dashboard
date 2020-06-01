@@ -6,6 +6,7 @@ use App\Product;
 use App\Instance;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Livewire\Provider;
 use App\Jobs\ImportProductsMicrosoftJob;
 use App\Repositories\ProductRepositoryInterface;
 use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
@@ -13,6 +14,7 @@ use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
 
 class ProductController extends Controller
 {
+    public $id;
     private $productRepository;
 
     public function __construct(ProductRepositoryInterface $productRepository)
@@ -130,9 +132,11 @@ class ProductController extends Controller
      *
      * @return void
      */
-    public function import()
+    public function import($id)
     {
-        $instance = Instance::first();
+
+        $instance = Instance::where('provider_id', $id)->first();
+
         if( ! $instance){
             return redirect()->route('products.index')->with('success', 'The account has no assigned instance');
         }
@@ -150,7 +154,7 @@ class ProductController extends Controller
                 ]);
             }
 
-            ImportProductsMicrosoftJob::dispatch()->onQueue('SyncProducts')
+            ImportProductsMicrosoftJob::dispatch($instance)->onQueue('SyncProducts')
             ->delay(now()->addSeconds(10));            
         }
 

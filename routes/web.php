@@ -16,27 +16,27 @@ use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 
 //Marco verifica aqui esta linha... para a importação dos productos!
 
-Route::resource('/analytics', 'AnalyticController');
+// Route::resource('/analytics', 'AnalyticController');
 
 Route::get('/analytics', [
 	'uses' => 'AnalyticController@index',
 	'as' => 'analytics.list'
 ]);
 
-// Route::get('/analytics/update', [
-// 	'uses' => 'AnalyticController@updateAZURE',
-// 	'as' => 'analytics.update'
-// ]);
+Route::get('/analytics/update', [
+	'uses' => 'AnalyticController@updateAZURE',
+	'as' => 'analytics.update'
+]);
 
-// Route::post('/analytics/edit/', [
-// 	'uses' => 'AnalyticController@edit',
-// 	'as' => 'analytics.edit'
-// ]);
+Route::post('/analytics/edit/', [
+	'uses' => 'AnalyticController@edit',
+	'as' => 'analytics.edit'
+]);
 
-// Route::get('/analytics/show/', [
-// 	'uses' => 'AnalyticController@show',
-// 	'as' => 'analytics.show'
-// ]);
+Route::get('/analytics/show/', [
+	'uses' => 'AnalyticController@show',
+	'as' => 'analytics.show'
+]);
 
 
 Route::get('/subscription.card', 'SubscriptionController@card')->middleware('permission:' . config('app.subscription_edit'))->name('subscription.card');
@@ -171,7 +171,7 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('roles', 'RoleController');
 		Route::post('roles/update/all', 'RoleController@updateAll')->name('roles.update.all');
 		Route::resource('permissions', 'PermissionController');
-		Route::get('/product/import', 'ProductController@import')->name('product.import');
+		Route::get('/product/import/{provider_id}', 'ProductController@import')->name('product.import');
 		
 		Route::resource('/instances', 'InstanceController');
 		Route::get('/instances/getMasterToken/{provider_id}', 'InstanceController@getMasterToken')->name('instances.getMasterToken');
@@ -306,6 +306,7 @@ Route::group(['middleware' => 'auth'], function () {
 	
 	// Every authenticated user can access routes here
 	Route::get('/order/placeOrder', 'OrderController@placeOrder')->name('order.place_order');
+
 	Route::resource('order', 'OrderController');
 	
 	Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');

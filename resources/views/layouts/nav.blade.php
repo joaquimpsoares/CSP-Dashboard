@@ -65,7 +65,7 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="{{ route('roles.index') }}">{{ ucwords(trans_choice('messages.manage_role', 2)) }}</a>
                     <a class="dropdown-item" href="{{ route('priceList.index') }}">{{ ucwords(trans_choice('messages.price_list', 2)) }}</a>
-                    <a class="dropdown-item" href="{{ route('product.import') }}">{{ ucwords(trans_choice('messages.import_product', 2)) }}</a>
+                    {{-- <a class="dropdown-item" href="{{ route('product.import') }}">{{ ucwords(trans_choice('messages.import_product', 2)) }}</a> --}}
                     <a class="dropdown-item" href="{{ route('product.index') }}">{{ ucwords(trans_choice('messages.product', 2)) }}</a>
                     <a class="dropdown-item" href="{{ route('jobs') }}">{{ ucwords(trans_choice('messages.job', 2)) }}</a>
                     <a class="dropdown-item" href="\order">{{ ucwords(trans_choice('messages.order', 2)) }}</a>

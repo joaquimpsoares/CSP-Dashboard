@@ -5,6 +5,9 @@
 <script src="//www.amcharts.com/lib/4/themes/animated.js"></script>
 <script src="//www.amcharts.com/lib/4/themes/kelly.js"></script>
 
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.dataTables.min.css">
+
 <style>
 
     //   chart
@@ -126,6 +129,7 @@
 
 @section('content')
 
+
 <div class="row">
     <div class="col-12">
         <div class="box">
@@ -151,7 +155,7 @@
                                                 <progress class="progress is-primary" value={{$average}} max="100">{{$average}}%</progress>
                                                 @endif
 
-                                                @if($average>=40 && $average<=70 )
+                                                @if($average>=30 && $average<=70 )
                                                 <br /> <br /><font color="#FFBF58" , size="6">${{$budget}}</font>
                                                 <br />
                                                 <i color="#FFBF58" class="fas fa-chart-line"></i>
@@ -168,11 +172,11 @@
                                                 @endif
 
                                                 {{-- <button type="button is-primary is-outlined" value="Edit Budget" id="bt" onclick="toggle(this)"> </button> --}}
-                                                {{-- <a href="{{ route('analytics.update') }}"  id="bt" onclick="toggle(this)">Adjust Budget</a> --}}
+                                                <a href="#"  id="bt" onclick="toggle(this)">Adjust Budget</a>
                                                 <!--The DIV element to toggle visibility. Its "display" property is set as "none". -->
                                                 <div style="border:solid 1px #ddd; padding:10px; display:none;" id="cont">
                                                     <div>
-                                                        {{-- <form action=" {{route('analytics.edit')}}" method="post"> --}}
+                                                        <form action=" {{route('analytics.edit')}}" method="post">
                                                             @csrf
                                                             {{-- <p> <strong>New Budget: </strong></p> --}}
                                                             <div class="field">
@@ -217,7 +221,7 @@
                                                 <div style="overflow-x:auto;">
                                                     <div>
                                                         <br>
-                                                        {{-- <a href="{{ route('analytics.update') }}" class="button is-primary is-outlined">Refresh Manually </a> --}}
+                                                        <a href="{{ route('analytics.update') }}" class="button is-primary is-outlined">Refresh Manually </a>
                                                         <br>
                                                         <br>
                                                         <p>Updated at: {{$dateupdated->updated_at}} </p>
@@ -252,16 +256,6 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="box">
-                            <div class="heading">Top 10 Categoryies</div>
-                            <div class="level">
-                                <div class="level-item">
-                                    <div class="chart__container">
-                                        <canvas id="myChart" width="1000" height="400"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --}}
 
                         <div class="box">
                             <div class="heading">Top 10 Categoryies</div>
@@ -278,7 +272,7 @@
                             <div class="level">
                                 <div class="level-item">
                                     <div class="chart__container" >
-                                        <table id="data-table-buttons" class="table table-striped table-bordered table-td-valign-middle">
+                                        <table id="resources" class="display" style="width:100%">
                                             <thead>
                                                 <tr>
                                                     <th class="min-width-80 text-nowrap">Name</th>
@@ -298,7 +292,6 @@
                                                 @endforeach
                                             </body>
                                         </table>
-                                        {{-- <div id="chartdiv2"></div> --}}
                                     </div>
                                 </div>
                             </div>
@@ -346,158 +339,7 @@
     });
 </script>
 
-{{-- Top10 Category --}}
-{{-- <script>
-    var data_category = {!! $top10C !!};
-    var data_sum = {{ $top10S }};
-    var data = {
-        labels: data_category,
-        datasets: [
-        {
-            data: data_sum,
-            backgroundColor: [
-            "#FF6384",
-            "#36A2EB",
-            "#FFCE56",
-            "#36eb6c",
-            "#36d6eb",
-            "#bbeb36",
-            "#36ebeb",
-            "#eba036",
-            "#FFCE56",
-            "#f2f96c",
-            ],
-            hoverBackgroundColor: [
-            "#FF6384",
-            "#36A2EB",
-            "#FFCE56",
-            "#36eb6c",
-            "#36d6eb",
-            "#bbeb36",
-            "#36ebeb",
-            "#eba036",
-            "#FFCE56",
-            "#f2f96c",
-            ]
-        }]
-    };
-    var promisedDeliveryChart = new Chart(document.getElementById('myChart'), {
-        type: 'doughnut',
-        data: data,
-        options: {
-            responsive: true,
-            cutoutPercentage: 70,
-            legend: {
-                display: true,
-                position: 'right',
-                align: 'end'
-            },
-            plugins: {
-                labels: {
-                    render: 'percentage',
-                    fontSize: 10,
-                    // fontStyle: 'bold',
-                    // position: 'outside',
-                    fontColor: '#000',
-                    fontFamily: '"Lucida Console", Monaco, monospace'
-                }
-            }
-        },
-
-    });
-
-    Chart.pluginService.register({
-        beforeDraw: function(chart) {
-            var width = chart.chart.width,
-            height = chart.chart.height,
-            ctx = chart.chart.ctx;
-
-            ctx.restore();
-            var fontSize = (height / 114).toFixed(2);
-            ctx.font = fontSize + "em sans-serif";
-            ctx.textBaseline = "middle";
-
-        }
-    });
-
-</script> --}}
-
-
-{{-- Bar Chart --}}
-{{-- <script>
-    var data_category = {!! $category !!}
-    var data_sum = {{ $sum }};
-    var data = {
-        labels: data_category,
-        datasets: [{
-            label: "Category",
-            backgroundColor: "#6cb2f9",
-            // borderColor: "rgba(255,99,132,1)",
-            borderWidth: 2,
-            hoverBackgroundColor: "#6cbcf9",
-            hoverBorderColor: "#6cbcf9",
-            data: data_sum
-        }]
-    };
-
-    var option = {
-        plugins: {
-            labels: {
-                render: 'value',
-                fontSize: 10,
-                // fontStyle: 'bold',
-                position: 'outside',
-                fontColor: '#6cb2f9',
-                // fontFamily: '"Lucida Console", Monaco, monospace'
-            }
-        },
-        legend: {
-            display: false,
-            position: 'right',
-            labels: {
-                fontColor: '#6cb2f9'
-            }
-        },
-        responsive: true,
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                },
-                stacked: true,
-                gridLines: {
-                    display: true,
-                    color: "rgba(255,99,132,0.2)"
-                }
-            }],
-            xAxes: [{
-                ticks: {
-                    autoSkip: false
-                },
-                gridLines: {
-                    display: false
-                }
-            }]
-        }
-    };
-    Chart.Bar('chart_0', {
-        options: option,
-        data: data
-    });
-</script> --}}
-
 <script>
-    /**
-    * ---------------------------------------
-    * This demo was created using amCharts 4.
-    *
-    * For more information visit:
-    * https://www.amcharts.com/
-    *
-    * Documentation is available at:
-    * https://www.amcharts.com/docs/v4/
-    * ---------------------------------------
-    */
 
     // Create chart instance
     var data_category = {!! $top10q !!}
@@ -605,20 +447,34 @@
 </script>
 
 
-<script src="assets/plugins/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="assets/plugins/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
-<script src="assets/plugins/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-<script src="assets/plugins/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
-<script src="assets/plugins/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-<script src="assets/plugins/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
-<script src="assets/plugins/datatables.net-buttons/js/buttons.colVis.min.js"></script>
-<script src="assets/plugins/datatables.net-buttons/js/buttons.flash.min.js"></script>
-<script src="assets/plugins/datatables.net-buttons/js/buttons.html5.min.js"></script>
-<script src="assets/plugins/datatables.net-buttons/js/buttons.print.min.js"></script>
-<script src="assets/plugins/pdfmake/build/pdfmake.min.js"></script>
-<script src="assets/plugins/pdfmake/build/vfs_fonts.js"></script>
-<script src="assets/plugins/jszip/dist/jszip.min.js"></script>
-<script src="assets/js/demo/table-manage-buttons.demo.js"></script>
+<script>
+
+$(document).ready(function() {
+    $('#resources').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ]
+    } );
+} );
+   
+</script>
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.html5.min.js"></script>
 
 
 @stop

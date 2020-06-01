@@ -15,7 +15,7 @@ use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
 
 class ImportProductsMicrosoftJob implements ShouldQueue
 {
-    public $order;
+    public $instance;
 
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     
@@ -24,9 +24,9 @@ class ImportProductsMicrosoftJob implements ShouldQueue
     *
     * @return void
     */
-    public function __construct(Order $order)
+    public function __construct(Instance $instance)
     {
-        $this->order = $order;
+        $this->instance = $instance;
     }
     
     /**
@@ -37,10 +37,8 @@ class ImportProductsMicrosoftJob implements ShouldQueue
     public function handle()
     {
 
-        $this->order->order_status_id = 2; //Order running state
-        $this->order->save();
         
-        $instance = Instance::first();
+        $instance = $this->instance;
         if( ! $instance){
             return redirect()->route('products.list')->with('success', 'The account has no assigned instance');
         }
