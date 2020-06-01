@@ -1,6 +1,5 @@
-
 <div class="table-responsive nowrap">
-    <table id="myTable" class="table" width="100%">
+    <table id="resellers" class="table" width="100%">
         <thead>
             <tr>
                 <th>{{ ucwords(trans_choice('messages.#', 1)) }}</th>
@@ -15,35 +14,33 @@
         </thead>
         <tbody>
             @foreach ($subscriptions as $subscription)
-            
-            {{-- @foreach ($customerSubscriptions as $subscription) --}}
             <tr class="odd gradeX">
-                
                 <td width="1%" class="f-s-600"><a href="{{route('subscription.show', $subscription->id)}}">{{$subscription['id']}}</a></td>
                 <td>{{$subscription->name}}</td>
                 <td>{{$subscription->customer->company_name}}</td>
                 <td>{{$subscription->amount}}</td>
                 <td>{{$subscription->expiration_data}}</td>
                 <td>{{$subscription->billing_period}}</td>
-                    <td class="align-middle">
-                        <span class="badge badge-lg {{ $subscription->status->name = '  ' ? 'badge-success' : 'badge-danger' }}">
-                            {{ ucwords(trans_choice('messages.active', 1)) }}
-                        </span>
-                    </td>
+                <td class="align-middle">
+                    <span class="badge badge-lg {{ $subscription->status->name = '  ' ? 'badge-success' : 'badge-danger' }}">
+                        {{ ucwords(trans_choice('messages.active', 1)) }}
+                    </span>
+                </td>
                 <td class="text-nowrap">
-                    {{-- <a href="{{ route('subscriptions.edit', $subscription->id) }}" class="btn btn-icon edit text-warning" title="@lang('app.edit_subscription')" data-toggle="tooltip" data-placement="top">
-                        <i class="fas fa-edit"></i>
-                    </a> --}}
                 </td>
             </tr>
-            {{-- @endforeach --}}
             @endforeach
         </tbody>
     </table>
 </div>
 
-<script>
+@section('scripts')
+<script type="text/javascript">
     $(document).ready( function () {
-    $('#myTable').DataTable();
-} );
+        $('#subscriptions').DataTable({
+            "pagingType": "full_numbers",
+            "order": [[ 0, "asc" ]]
+        });
+    } );
 </script>
+@endsection

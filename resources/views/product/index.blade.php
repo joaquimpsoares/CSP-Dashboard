@@ -97,8 +97,8 @@
 				<i class="fab fa-product-hunt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
 				<div class="card-body">
 					<h4 class="card-title"><a>{{ ucwords(trans_choice('messages.product_table', 2)) }}</a></h4>
-					<div class="table-responsive">
-						<table id="dtBasicExample" class="table table-striped table-bordered" cellspacing="0" width="100%">
+					<div class="table-responsive nowrap">
+						<table id="products" class="table" width="100%">
 							<thead>
 								<th></th>
 								<th class="th-sm">{{ ucwords(trans_choice('messages.product_sku', 2)) }}</th>
@@ -232,7 +232,7 @@ aria-hidden="true" data-backdrop="false">
 													</div>
 												</div>
 											</div>
-											{{dd($product)}}
+											{{-- {{dd($product)}} --}}
 											@if ($product->price->price != null)
 											<div class="row">
 												<div class="input-field col s4">
@@ -329,7 +329,7 @@ aria-hidden="true" data-backdrop="false">
 
 	<script type="text/javascript">
 		$(document).ready( function () {
-			$('#resellers').DataTable({
+			$('#products').DataTable({
 				"pagingType": "full_numbers",
 				"order": [[ 0, "asc" ]]
 			});

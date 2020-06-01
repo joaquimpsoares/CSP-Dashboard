@@ -23,7 +23,10 @@ class Customer extends Model
             'postal_code' => $this->postal_code,
             'status' => $this->status->name,
             'path' => $this->path(),
-			'mainUser' => $this->users()->first()
+            'reseller' => $this->resellers()->first(),
+            'subscriptions' => $this->subscriptions->count(),
+            'mainUser' => $this->users()->first()
+            
         ];
 
     }

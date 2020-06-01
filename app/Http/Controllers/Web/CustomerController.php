@@ -27,10 +27,8 @@ class CustomerController extends Controller
     public function index(Customer $customer) {
         
         $customers = $this->customerRepository->all();
-        
-        $resellers = $customer->resellers;
-        
-        return view('customer.index', compact('customers','resellers'));
+                
+        return view('customer.index', compact('customers'));
     }
     
     

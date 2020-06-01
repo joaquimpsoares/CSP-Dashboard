@@ -16,8 +16,8 @@
 				</div>
 				<div class="card-body">
 					<h4 class="card-title"><a>{{ ucwords(trans_choice('messages.provider_table', 1)) }}</a></h4>
-					<div class="table-responsive">
-						<table class="table table-striped  table-bordered" id="providers">
+					<div class="table-responsive nowrap">
+						<table id="providers" class="table" width="100%">
 							<thead>
 								<tr>
 									<th>{{ ucwords(trans_choice('messages.company_name', 1)) }}</th>

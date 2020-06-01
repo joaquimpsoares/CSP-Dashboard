@@ -25,6 +25,7 @@ class Reseller extends Model
             'postal_code' => $this->postal_code,
             'status' => $this->status->name,
             'path' => $this->path(),
+            'customers' => $this->customers->count(),
             'mainUser' => $this->users()->first()
         ];
 
