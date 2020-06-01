@@ -27,4 +27,4 @@ class SubscriptionRepositoryServiceProvider extends ServiceProvider
     {
         $this->app->bind(SubscriptionRepositoryInterface::class, SubscriptionRepository::class);
     }
-}
+}   

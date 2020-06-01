@@ -32,23 +32,23 @@
                     <!-- Content -->
                     <div class="text-center white-text mx-5 wow fadeIn">
                         <h1 class="mb-4">
-                            <strong>Learn Bootstrap 4 with MDB</strong>
+                            {{-- <strong>Learn Bootstrap 4 with MDB</strong> --}}
                         </h1>
                         
                         <p>
-                            <strong>Best & free guide of responsive web design</strong>
+                            {{-- <strong>Best & free guide of re    sponsive web design</strong> --}}
                         </p>
                         
-                        <p class="mb-4 d-none d-md-block">
+                        {{-- <p class="mb-4 d-none d-md-block">
                             <strong>The most comprehensive tutorial for the Bootstrap 4. Loved by over 500 000 users. Video and
                                 written versions
                                 available. Create your own, stunning website.</strong>
-                            </p>
+                            </p> --}}
                             
-                            <a target="_blank" href="https://mdbootstrap.com/bootstrap-tutorial/" class="btn btn-outline-white btn-lg">Start
+                            {{-- <a target="_blank" href="https://mdbootstrap.com/bootstrap-tutorial/" class="btn btn-outline-white btn-lg">Start
                                 free tutorial
                                 <i class="fas fa-graduation-cap ml-2"></i>
-                            </a>
+                            </a> --}}
                         </div>
                         <!-- Content -->
                         
@@ -67,7 +67,7 @@
                     <div class="mask rgba-black-light d-flex justify-content-center align-items-center">
                         
                         <!-- Content -->
-                        <div class="text-center white-text mx-5 wow fadeIn">
+                        {{-- <div class="text-center white-text mx-5 wow fadeIn">
                             <h1 class="mb-4">
                                 <strong>Learn Bootstrap 4 with MDB</strong>
                             </h1>
@@ -86,7 +86,7 @@
                                     free tutorial
                                     <i class="fas fa-graduation-cap ml-2"></i>
                                 </a>
-                            </div>
+                            </div> --}}
                             <!-- Content -->
                             
                         </div>
@@ -104,7 +104,7 @@
                         <div class="mask rgba-black-light d-flex justify-content-center align-items-center">
                             
                             <!-- Content -->
-                            <div class="text-center white-text mx-5 wow fadeIn">
+                            {{-- <div class="text-center white-text mx-5 wow fadeIn">
                                 <h1 class="mb-4">
                                     <strong>Learn Bootstrap 4 with MDB</strong>
                                 </h1>
@@ -123,7 +123,7 @@
                                         free tutorial
                                         <i class="fas fa-graduation-cap ml-2"></i>
                                     </a>
-                                </div>
+                                </div> --}}
                                 <!-- Content -->
                                 
                             </div>

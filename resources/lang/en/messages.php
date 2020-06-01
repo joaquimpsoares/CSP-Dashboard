@@ -120,6 +120,7 @@ return [
     'expiration' => 'expiration date',
     'subscription_updated_successfully' => 'subscription updated successfully',
     'something_went_wrong_try_again' => 'something went wrong try again',
+    'stop_impersonation' => 'stop impersonation',
     '' => '',
     '' => '',
     '' => '',
@@ -140,8 +141,7 @@ return [
     '' => '',
     '' => '',
     '' => '',
-    '' => '',
-    '' => '',
+    'order_table' => 'order table|orders table',
 
 
 

@@ -16,6 +16,28 @@ use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 
 //Marco verifica aqui esta linha... para a importação dos productos!
 
+Route::resource('/analytics', 'AnalyticController');
+
+Route::get('/analytics', [
+	'uses' => 'AnalyticController@index',
+	'as' => 'analytics.list'
+]);
+
+// Route::get('/analytics/update', [
+// 	'uses' => 'AnalyticController@updateAZURE',
+// 	'as' => 'analytics.update'
+// ]);
+
+// Route::post('/analytics/edit/', [
+// 	'uses' => 'AnalyticController@edit',
+// 	'as' => 'analytics.edit'
+// ]);
+
+// Route::get('/analytics/show/', [
+// 	'uses' => 'AnalyticController@show',
+// 	'as' => 'analytics.show'
+// ]);
+
 
 Route::get('/subscription.card', 'SubscriptionController@card')->middleware('permission:' . config('app.subscription_edit'))->name('subscription.card');
 Route::resource('/subscription', 'SubscriptionController');
@@ -208,6 +230,11 @@ Route::group(['middleware' => 'auth'], function () {
 		
 		Route::group(['middleware' => ['check_reseller']], function () {
 			
+
+			// Route::resource('reseller', 'ResellerController');
+			Route::get('/reseller/create', 'ResellerController@create')
+			->middleware('permission:' . config('app.reseller_show'))->name('reseller.create');
+
 			Route::get('/reseller/{reseller}-{slug}', 'ResellerController@show')
 			->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
 			

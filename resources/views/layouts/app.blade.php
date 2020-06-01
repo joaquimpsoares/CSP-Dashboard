@@ -10,8 +10,13 @@
 	<title>{{ config('app.name', 'Tagydes') }}</title>
 	
 	<!-- Scripts -->
-	<script src="{{ asset('jquery/jquery.js') }}"></script>
 	<script src="{{ asset('js/app.js') }}" defer></script>
+	<script src="{{ asset('jquery/jquery.js') }}"></script>
+	
+	<!-- MDBootstrap Datatables  -->
+	<link href="css/addons/datatables.min.css" rel="stylesheet">
+	<!-- MDBootstrap Datatables  -->
+	<script type="text/javascript" src="js/addons/datatables.min.js"></script>
 	
 	<!-- JQuery -->
 	{{-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> --}}
@@ -21,10 +26,10 @@
 	{{-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script> --}}
 	<!-- MDB core JavaScript -->
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.16.0/js/mdb.min.js"></script>
-
+	
 	
 	<!-- Styles -->
-	<link href="{{ asset('css/app.css') }}" rel="stylesheet">
+	{{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
 	<!-- Font Awesome -->
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
@@ -40,7 +45,7 @@
 </head>
 <body>
 	<livewire:styles>
-
+	
 	<div id="app">
 		<div class="row">
 			<div class="col">
@@ -48,6 +53,7 @@
 				{{-- @include('layouts.nav', ['cart' => $cart]) --}}
 			</div>
 		</div>
+		@include('layouts.bread')
 		
 		@include('partials.messages')
 		
@@ -57,9 +63,8 @@
 	</div>
 	
 	
-		{{-- @include('layouts.footer') --}}
 	
-		@yield('scripts')
+	@yield('scripts')
 	
 	<script type="text/javascript">
 		$(function () {

@@ -35,15 +35,15 @@
             @endcan
             @can(config('app.subscription_index'))
             <li class="nav-item">
-                @if (Auth::user()->hasRole('Customer')) 
-                    <a class="nav-link" href="{{ route('subscription.card') }}">
+                {{-- @if (Auth::user()->hasRole('Customer'))  --}}
+                    {{-- <a class="nav-link" href="{{ route('subscription.card') }}">
                         {{ ucwords(trans_choice('messages.subscription', 2)) }}
-                    </a>
-                    @else
+                    </a> --}}
+                    {{-- @else --}}
                     <a class="nav-link" href="{{ route('subscription.index') }}">
                         {{ ucwords(trans_choice('messages.subscription', 2)) }}
                     </a>
-                    @endif
+                    {{-- @endif --}}
             </li>
             @endcan
             <li class="nav-item dropdown">
@@ -119,7 +119,7 @@
                 @if (app('impersonate')->isImpersonating())
                     <a class="navbar-item" href="{{ route('impersonate.leave') }}" class="text-danger hidden-md">
                     <i class="fas fa-user-secret"></i>
-                    <span>@lang('app.stop_impersonating')</span>
+                    <span>{{ ucwords(trans_choice('messages.stop_impersonation', 2)) }}</span>
                     </a>
                 @endif
             </div>

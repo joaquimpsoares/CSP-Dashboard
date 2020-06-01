@@ -10,7 +10,7 @@
 			<div class="">
 				<i class="fas fa-file-invoice-dollar fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
 				<div class="card-body">
-                    <h4 class="card-title">{{ ucwords(trans_choice('messages.subscription_table', 2)) }} </h4>
+                    <h4 class="card-title">{{ ucwords(trans_choice('messages.order_table', 2)) }} </h4>
 					@include('order.partials.table', ['orders' => $orders])
 				</div>
 			</div>

@@ -1,5 +1,5 @@
-<div class="table-responsive">
-    <table class="table table-striped table-bordered" id="customers">
+<div class="table-responsive nowrap">
+    <table id="myTable" class="table" width="100%">
         <thead>
             <tr>
                 <th>{{ ucwords(trans_choice('messages.company_name', 1)) }}</th>
@@ -18,6 +18,7 @@
                 </td>
                 <td>{{ $customer['country'] }}</td>
                 <td>{{ $customer['state'] }}</td>
+                <td>{{ $customer['city'] }}</td>
                 {{-- @foreach ($reseller as $item)
                 <td>{{ $item->company_name }} </td>
                 @endforeach --}}
@@ -35,3 +36,9 @@
         </tbody>
     </table>
 </div>
+
+<script>
+    $(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+</script>

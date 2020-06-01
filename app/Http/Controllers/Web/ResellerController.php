@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\User;
+use App\Status;
 use App\Country;
 use App\Customer;
 use App\Reseller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ResellerRepositoryInterface;
@@ -47,10 +52,68 @@ class ResellerController extends Controller
     }
     
     
-    public function create() { }
+    public function create() {
+
+        $countries = Country::get();
+        $statuses = Status::get();
+        
+        return view('reseller.create', compact('countries', 'statuses'));
+     }
     
     
-    public function store(Request $request) { }
+    public function store(Request $request) {
+
+    $this->validator($request->all())->validate();
+
+    try {
+    DB::beginTransaction();
+
+    $reseller =  Reseller::create([
+        'company_name' => $request['company_name'],
+        'nif' => $request['nif'],
+        'country_id' => $request['country_id'],
+        'address_1' => $request['address_1'],
+        'address_2' => $request['address_2'],
+        'city' => $request['city'],
+        'state' => $request['state'],
+        'postal_code' => $request['postal_code'],
+        'status_id' => $request['status']
+        ]);
+    
+        User::create([
+        'provider_id' => $reseller->id,
+        'email' => $request['email'],
+        'user_level_id' => 3,
+        'password' => Hash::make(Str::random(20)),
+        'status_id' => $request->status,
+        'notify' => $request['sendInvitation'] ?? false,
+        ]);
+        
+        // $priceList = PriceList::create([
+        //     'name' => 'Price List - ' . $provider->company_name,
+        //     'description' => 'Default Provider Price List'
+        //     ]);
+            
+        //     $provider->priceList()->associate($priceList);
+        //     $provider->save();
+            
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            if ($e->errorInfo[1] == 1062) {
+                $errorMessage = "message.user_already_exists";
+            } else {
+                $errorMessage = "message.error";
+            }
+            return redirect()->route('provider.index')
+            ->with([
+                'alert' => 'danger', 
+                'message' => trans('messages.Provider Created unsuccessfully') . " (" . trans($errorMessage) . ")."
+                ]);
+            }
+            
+            return redirect()->route('provider.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Created successfully')]);
+     }
     
     
     public function show(Reseller $reseller) { 

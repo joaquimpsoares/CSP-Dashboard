@@ -80,7 +80,7 @@ class UsersController extends Controller
         // $id = Auth::user()->id;
         $user= User::where('id', $user->id)->with('country')->first();
         
-        dd($user->notifications);
+        // dd($user->notifications);
         $notifications = explode(', ',$user->notifications_preferences);
 
         $countries = Country::get();
@@ -142,7 +142,7 @@ class UsersController extends Controller
     public function update(Request $request, User $user)
     {
 
-        dd($request->all());
+        // dd($request->all());
 
         $user = User::findOrFail($user->id);
         

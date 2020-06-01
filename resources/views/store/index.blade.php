@@ -79,9 +79,9 @@
 							</div>
 							<div class="card-footer text-muted text-center">
 								<div class="row">
-									<div class="col-6">	
+									{{-- <div class="col-6">	
 										<a class="btn btn-outline-dark" data-toggle="modal" data-target="#modal_product_{{$product->id}}">+ {{ $product->addons->count() }} {{ ucwords(trans_choice('messages.addon', 2)) }}</a>
-									</div>
+									</div> --}}
 									<div class="col-6">
 										<form method="POST" action="{{ route('cart.add_to_cart') }}">
 											@csrf

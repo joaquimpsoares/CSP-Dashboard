@@ -272,7 +272,7 @@
             </div>
             <div class="tab-pane fade" id="contact-md" role="tabpanel" aria-labelledby="contact-tab-md">
                 <div class="box col-xm-12">
-                    @include('subscriptions.partials.card', ['subscriptions' => $subscriptions])
+                    @include('subscriptions.partials.table', ['subscriptions' => $subscriptions])
                 </div>
             </div>            
         </div>

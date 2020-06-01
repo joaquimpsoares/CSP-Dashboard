@@ -134,89 +134,89 @@ class ProviderController extends Controller
             ]);
         }     
         
-        public function store(Request $request)
+    public function store(Request $request)
+    {
+
+    $this->validator($request->all())->validate();
+
+    try {
+    DB::beginTransaction();
+
+    $provider =  Provider::create([
+        'company_name' => $request['company_name'],
+        'nif' => $request['nif'],
+        'country_id' => $request['country_id'],
+        'address_1' => $request['address_1'],
+        'address_2' => $request['address_2'],
+        'city' => $request['city'],
+        'state' => $request['state'],
+        'postal_code' => $request['postal_code'],
+        'status_id' => $request['status']
+        ]);
+    
+    User::create([
+        'provider_id' => $provider->id,
+        'email' => $request['email'],
+        'user_level_id' => 3,
+        'password' => Hash::make(Str::random(20)),
+        'status_id' => $request->status,
+        'notify' => $request['sendInvitation'] ?? false,
+        ]);
+        
+        $priceList = PriceList::create([
+            'name' => 'Price List - ' . $provider->company_name,
+            'description' => 'Default Provider Price List'
+            ]);
+            
+            $provider->priceList()->associate($priceList);
+            $provider->save();
+            
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            if ($e->errorInfo[1] == 1062) {
+                $errorMessage = "message.user_already_exists";
+            } else {
+                $errorMessage = "message.error";
+            }
+            return redirect()->route('provider.index')
+            ->with([
+                'alert' => 'danger', 
+                'message' => trans('messages.Provider Created unsuccessfully') . " (" . trans($errorMessage) . ")."
+                ]);
+            }
+            
+            return redirect()->route('provider.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Created successfully')]);
+            
+        }
+        
+        
+        public function update(Request $request, Provider $provider)
         {
             
             $this->validator($request->all())->validate();
             
-            try {
-                DB::beginTransaction();
-                
-                $provider =  Provider::create([
-                    'company_name' => $request['company_name'],
-                    'nif' => $request['nif'],
-                    'country_id' => $request['country_id'],
-                    'address_1' => $request['address_1'],
-                    'address_2' => $request['address_2'],
-                    'city' => $request['city'],
-                    'state' => $request['state'],
-                    'postal_code' => $request['postal_code'],
-                    'status_id' => $request['status']
-                    ]);
-                    
-                    User::create([
-                        'provider_id' => $provider->id,
-                        'email' => $request['email'],
-                        'user_level_id' => 3,
-                        'password' => Hash::make(Str::random(20)),
-                        'status_id' => $request->status,
-                        'notify' => $request['sendInvitation'] ?? false,
-                        ]);
-                        
-                        $priceList = PriceList::create([
-                            'name' => 'Price List - ' . $provider->company_name,
-                            'description' => 'Default Provider Price List'
-                            ]);
-                            
-                            $provider->priceList()->associate($priceList);
-                            $provider->save();
-                            
-                            DB::commit();
-                        } catch (\PDOException $e) {
-                            DB::rollBack();
-                            if ($e->errorInfo[1] == 1062) {
-                                $errorMessage = "message.user_already_exists";
-                            } else {
-                                $errorMessage = "message.error";
-                            }
-                            return redirect()->route('provider.index')
-                            ->with([
-                                'alert' => 'danger', 
-                                'message' => trans('messages.Provider Created unsuccessfully') . " (" . trans($errorMessage) . ")."
-                                ]);
-                            }
-                            
-                            return redirect()->route('provider.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Created successfully')]);
-                            
-                        }
-                        
-                        
-                        public function update(Request $request, Provider $provider)
-                        {
-                            
-                            $this->validator($request->all())->validate();
-                            
-                            $provider = Provider::findOrFail($provider->id);
-                            
-                            $provider->company_name         = $request->input('company_name');
-                            $provider->nif                  = $request->input('nif');
-                            $provider->country_id           = $request->input('country_id');
-                            $provider->address_1            = $request->input('address_1');
-                            $provider->address_2            = $request->input('address_2');
-                            $provider->city                 = $request->input('city');
-                            $provider->state                = $request->input('state');
-                            $provider->postal_code          = $request->input('postal_code');
-                            
-                            $provider->save();
-                            
-                            return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
-                            
-                            
-                        }
-                        
-                        
-                        public function destroy(Provider $provider)
-                        {
-                            //
-                        }
-                    }
+            $provider = Provider::findOrFail($provider->id);
+            
+            $provider->company_name         = $request->input('company_name');
+            $provider->nif                  = $request->input('nif');
+            $provider->country_id           = $request->input('country_id');
+            $provider->address_1            = $request->input('address_1');
+            $provider->address_2            = $request->input('address_2');
+            $provider->city                 = $request->input('city');
+            $provider->state                = $request->input('state');
+            $provider->postal_code          = $request->input('postal_code');
+            
+            $provider->save();
+            
+            return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
+            
+            
+        }
+        
+        
+        public function destroy(Provider $provider)
+        {
+            //
+        }
+    }

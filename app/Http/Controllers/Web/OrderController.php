@@ -2,21 +2,13 @@
 
 namespace App\Http\Controllers\Web;
 
-use Session;
-use App\Cart;
+
 use App\Order;
-use App\Product;
-use App\Customer;
-use App\Instance;
-use Carbon\Carbon;
-use App\Subscription;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
 use App\Jobs\PlaceOrderMicrosoft;
 use App\Http\Controllers\Controller;
 use App\Jobs\CreateCustomerMicrosoft;
-use App\MicrosoftTenantInfo;
-use App\OrderProducts;
 use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
 
@@ -37,7 +29,7 @@ class OrderController extends Controller
     
     public function index()
     {
-        $orders = Order::with('status', 'customer')->get();
+        $orders = Order::with('status', 'customer')->get()->sortByDesc('id');;
         
         return view('order.index', compact('orders'));
     }
@@ -53,7 +45,8 @@ class OrderController extends Controller
         CreateCustomerMicrosoft::withChain([
             new PlaceOrderMicrosoft($order)
             ])->dispatch($order)->allOnQueue('PlaceordertoMS');
-            
+         
+            return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
         }
         
     }

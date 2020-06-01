@@ -1,5 +1,6 @@
+
 <div class="table-responsive nowrap">
-    <table id="paginationNumbers" class="table" width="100%">
+    <table id="myTable" class="table" width="100%">
         <thead>
             <tr>
                 <th>{{ ucwords(trans_choice('messages.#', 1)) }}</th>
@@ -8,6 +9,7 @@
                 <th>{{ ucwords(trans_choice('messages.quantity', 1)) }}</th>
                 <th>{{ ucwords(trans_choice('messages.expiration', 1)) }}</th>
                 <th>{{ ucwords(trans_choice('messages.billing_cycle', 1)) }}</th>
+                <th>{{ ucwords(trans_choice('messages.status    ', 1)) }}</th>
                 <th>{{ ucwords(trans_choice('messages.action', 1)) }}</th>
             </tr>
         </thead>
@@ -24,9 +26,9 @@
                 <td>{{$subscription->expiration_data}}</td>
                 <td>{{$subscription->billing_period}}</td>
                     <td class="align-middle">
-                        {{-- <span class="badge badge-lg {{ $subscription->isActive() ? 'badge-success' : 'badge-danger' }}">
-                            {{ trans("app.{$subscription->status}") }}
-                        </span> --}}
+                        <span class="badge badge-lg {{ $subscription->status->name = '  ' ? 'badge-success' : 'badge-danger' }}">
+                            {{ ucwords(trans_choice('messages.active', 1)) }}
+                        </span>
                     </td>
                 <td class="text-nowrap">
                     {{-- <a href="{{ route('subscriptions.edit', $subscription->id) }}" class="btn btn-icon edit text-warning" title="@lang('app.edit_subscription')" data-toggle="tooltip" data-placement="top">
@@ -39,3 +41,9 @@
         </tbody>
     </table>
 </div>
+
+<script>
+    $(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+</script>
