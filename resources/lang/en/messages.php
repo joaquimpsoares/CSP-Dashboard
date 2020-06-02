@@ -125,7 +125,7 @@ return [
     'budget' => 'budget',
     'current_cost' => 'current cost',
     'percentage' => 'percentage',
-    '' => '',
+    'pricelist_name' => 'pricelist name',
     '' => '',
     '' => '',
     '' => '',

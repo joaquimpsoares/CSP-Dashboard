@@ -43,7 +43,8 @@
 										{{ $priceList['description'] }}
 									</td>
 									<td>
-										<a href="{#"><i class="fa fa-list"></i></a>
+									<a href="{{route('priceList.clone', $priceList['id'])}}"><i class="fa fa-clone"></i></a>
+										<a href="#"><i class="fa fa-list"></i></a>
 									</td>
 								</tr>
 								@empty
@@ -64,6 +65,7 @@
 				<tr>
 					<th>{{ ucwords(__('messages.product_sku')) }}</th>
 					<th>{{ ucwords(__('messages.product_name')) }}</th>
+					<th>{{ ucwords(__('messages.pricelist_name')) }}</th>
 					<th>{{ ucwords(trans_choice('messages.price', 1)) }}</th>
 					<th>{{ ucwords(__('messages.msrp')) }}</th>
 					<th>{{ ucwords(trans_choice('messages.action', 2)) }}</th>
@@ -72,18 +74,11 @@
 			<tbody>
 				@forelse($prices as $price)
 				<tr>
-					<td>
-						{{ $price['product_sku'] }}
-					</td>
-					<td>
-						{{ $price['name'] }}
-					</td>
-					<td>
-						{{ $price['price'] }}
-					</td>
-					<td>
-						{{ $price['msrp'] }}
-					</td>
+					<td>{{ $price['product_sku'] }}</td>
+					<td>{{ $price['name'] }}</td>
+					<td>{{$price['pricelist']['name']}}</td>
+					<td>{{ $price['price'] }}</td>
+					<td>{{ $price['msrp'] }}</td>
 					<td></td>
 				</tr>
 				@empty

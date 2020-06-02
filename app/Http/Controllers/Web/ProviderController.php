@@ -91,8 +91,8 @@ class ProviderController extends Controller
     
     public function show(Provider $provider)
     {
-        
-        $budget = cache()->remember('azure.budget', 0, function(){
+
+        $budget = cache()->remember('azure.budget', 60, function(){
             
             $customer = new TagydesCustomer([
                 'id' => 'd9b842d6-aa51-44ca-a77c-f7d20411b942',

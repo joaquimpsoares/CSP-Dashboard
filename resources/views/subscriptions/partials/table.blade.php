@@ -1,4 +1,12 @@
-    <table id="resellers" class="table" width="100%">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
+
+
+<table id="subscriptions" class="table display responsive nowrap" width="100%">
         <thead>
             <tr>
                 <th>{{ ucwords(trans_choice('messages.#', 1)) }}</th>
@@ -7,7 +15,7 @@
                 <th>{{ ucwords(trans_choice('messages.quantity', 1)) }}</th>
                 <th>{{ ucwords(trans_choice('messages.expiration', 1)) }}</th>
                 <th>{{ ucwords(trans_choice('messages.billing_cycle', 1)) }}</th>
-                <th>{{ ucwords(trans_choice('messages.status    ', 1)) }}</th>
+                <th>{{ ucwords(trans_choice('messages.status', 1)) }}</th>
                 <th>{{ ucwords(trans_choice('messages.action', 1)) }}</th>
             </tr>
         </thead>
@@ -32,7 +40,6 @@
         </tbody>
     </table>
     
-    @section('scripts')
     <script type="text/javascript">
         $(document).ready( function () {
             $('#subscriptions').DataTable({
@@ -41,4 +48,3 @@
             });
         } );
     </script>
-    @endsection

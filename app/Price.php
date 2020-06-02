@@ -27,12 +27,13 @@ class Price extends Model
 			'price' => $this->price,
 			'msrp' => $this->msrp,
 			'currency' => $this->currency,
+			'pricelist' => $this->pricelist,
 			// 'product' => $this->product()->get()
 		];
 	}
 
-	public function priceList() {
-		return $this->belongsTo('App\PriceList');
+	public function pricelist() {
+		return $this->belongsTo('App\PriceList', 'price_list_id', 'id');
 	}
 
 	public function product() {

@@ -6,7 +6,7 @@
             <th class="text-nowrap">{{ ucwords(trans_choice('messages.company_name', 2)) }}</th>
             <th class="text-nowrap">{{ ucwords(trans_choice('messages.quantity', 1)) }}</th>
             <th class="text-nowrap">{{ ucwords(trans_choice('messages.expiration_date', 2)) }}</th>
-            <th class="text-nowrap">{{ ucwords(trans_choice('messages.status', 2)) }}</th>
+            <th class="text-nowrap">{{ ucwords(trans_choice('messages.status', 1)) }}</th>
             <th class="text-nowrap">{{ ucwords(trans_choice('messages.billing_cycle', 2)) }}</th>
             <th class="text-center min-width-150">{{ ucwords(trans_choice('messages.action', 2)) }}</th>
         </tr>

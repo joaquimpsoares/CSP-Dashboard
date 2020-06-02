@@ -185,7 +185,8 @@ Route::group(['middleware' => 'auth'], function () {
 		
 		Route::resource('provider', 'ProviderController');
 		Route::get('priceList/{priceList}/prices', 'PriceListController@getPrices')->name('priceList.prices');
-		
+		Route::get('priceList/clone/{id}', 'PriceListController@clone')->name('priceList.clone');
+
 	});
 	
 	/*****************************************************************************************************************/

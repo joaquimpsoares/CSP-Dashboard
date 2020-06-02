@@ -18,6 +18,19 @@ class PriceController extends Controller
         //
     }
 
+    public function clone($id)
+    {
+
+        $prices = Price::find($id);
+        $newprices = $prices->replicate();
+        dd($newprices);
+            // $newpricelist->id = $new_id;
+            // $newpricelist->data = $new_data;
+        $newprices->save();
+
+        return view('priceList.index', compact('prices'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *

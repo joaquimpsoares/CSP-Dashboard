@@ -12,8 +12,6 @@
 	<!-- Scripts -->
 	<script src="{{ asset('jquery/jquery.js') }}"></script>
 	<script src="{{ asset('js/app.js') }}" defer></script>
-	<!-- MDBootstrap Datatables  -->
-	<script type="text/javascript" src="js/addons/datatables.min.js"></script>
 	<!-- MDB core JavaScript -->
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.16.0/js/mdb.min.js"></script>
 	
@@ -22,7 +20,6 @@
 	<!-- Styles -->
 	<link href="{{ asset('css/app.css') }}" rel="stylesheet">
 	<!-- MDBootstrap Datatables  -->
-	<link href="css/addons/datatables.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
 	<!-- Font Awesome -->
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">

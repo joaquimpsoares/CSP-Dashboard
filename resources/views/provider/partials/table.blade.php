@@ -6,26 +6,27 @@
 <script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
 
 
-<table id="reseller" class="table display responsive nowrap"  width="100%">
+<table id="providers" class="table display responsive nowrap"  width="100%">
     <thead>
         <tr>
             <th>{{ ucwords(trans_choice('messages.company_name', 1)) }}</th>
-            <th>{{ ucwords(trans_choice('messages.customer', 2)) }}</th>
             <th>{{ ucwords(trans_choice('messages.country', 1)) }}</th>
+            <th>{{ ucwords(trans_choice('messages.state', 1)) }}</th>
             <th>{{ ucwords(trans_choice('messages.city', 1)) }}</th>
             <th>{{ ucwords(trans_choice('messages.action', 1)) }}</th>
         </tr>
     </thead>
     <tbody>
-        @forelse($resellers as $reseller)
-        @if($reseller['status'] === 'message.active')
+        @forelse($providers as $provider)
+        
+        @if($provider['status'] === 'message.active')
         <tr>
-            <td><a href="{{ $reseller['path'] }}">{{ $reseller['company_name'] }}</a></td>
-            <td>{{ $reseller['customers'] }}</td>
-            <td>{{ $reseller['country'] }}</td>
-            <td>{{ $reseller['city'] }}</td>
+            <td><a href="{{ $provider['path'] }}">{{ $provider['company_name'] }}</a></td>
+            <td>{{ $provider['country'] }}</td>
+            <td>{{ $provider['state'] }}</td>
+            <td>{{ $provider['city'] }}</td>
             <td style="width: 150px">
-                @include('partials.actions', ['model' => $reseller, 'modelo' => 'reseller'])
+                @include('partials.actions', ['model' => $provider, 'modelo' => 'provider'])
             </td>
         </tr>
         @endif
@@ -39,7 +40,7 @@
 
 <script type="text/javascript">
     $(document).ready( function () {
-        $('#reseller').DataTable({
+        $('#providers').DataTable({
             "pagingType": "full_numbers",
             "order": [[ 0, "asc" ]]
         });
