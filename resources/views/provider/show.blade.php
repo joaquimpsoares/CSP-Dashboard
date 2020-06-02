@@ -156,6 +156,38 @@
                         </div>
                     </div>
                 </div>
+                <div class="level">
+                    <div class="level-left">
+                        <div class="title">Azure</div>
+                    </div>
+                </div>
+                <table id="myTable" class="table" width="100%">
+                    <thead>
+                        <tr>
+                            <th>{{ ucwords(trans_choice('messages.subscription', 1)) }}</th>
+                            <th>{{ ucwords(trans_choice('messages.customer', 1)) }}</th>                      
+                            <th>{{ ucwords(trans_choice('messages.current_cost', 1)) }}</th>
+                            <th>{{ ucwords(trans_choice('messages.percentage', 1)) }}</th>
+                            <th>{{ ucwords(trans_choice('messages.budget', 1)) }}</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr> 
+                        <td style="width: 150px"> <a href="{{route("analytics.list")}}"> Microsoft Azure</a> </td>
+                            <td> CASA PRESTATIONS </td>
+                            <td>${{ $costSum }}</td>
+                            <td><font color="green" , size="3">{{ (int)$average}}% Used</font></td>
+                            <td>${{ $budget }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <script>
+                    $(document).ready( function () {
+                        $('#myTable').DataTable();
+                    } );
+                </script>
             </div>
             
             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">

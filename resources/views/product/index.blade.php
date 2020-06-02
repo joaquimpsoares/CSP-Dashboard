@@ -1,5 +1,12 @@
 @extends('layouts.app')
 
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+
 <style>
 	.number-input input[type="number"] {
 		-webkit-appearance: textfield;
@@ -97,43 +104,41 @@
 				<i class="fab fa-product-hunt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
 				<div class="card-body">
 					<h4 class="card-title"><a>{{ ucwords(trans_choice('messages.product_table', 2)) }}</a></h4>
-					<div class="table-responsive nowrap">
-						<table id="products" class="table" width="100%">
-							<thead>
-								<th></th>
-								<th class="th-sm">{{ ucwords(trans_choice('messages.product_sku', 2)) }}</th>
-								<th class="th-sm">{{ ucwords(trans_choice('messages.product_name', 2)) }}</th>
-								<th class="th-sm">{{ ucwords(trans_choice('messages.vendor', 1)) }}</th>
-								<th class="th-sm">{{ ucwords(trans_choice('messages.price', 1)) }}</th>
-								<th class="th-sm">{{ ucwords(trans_choice('messages.action', 2)) }}</th>
-							</thead>
-							<tbody>
-								@forelse($products as $product)
-								<tr>
-									<td></td>
-									<td style="width: 1px;">
-										<a data-toggle="modal" data-target=".bd-example-modal-xl" href="{{ "product/" .$product->id }}">{{$product['sku']}}</a>
-									</td>
-									<td style="width: 1px; ; white-space: nowrap;">
-										{{$product['name']}}
-									</td>
-									<td class="text-center">
-										{{$product['vendor']}}
-									</td>
-									<td class="text-center">
-										{{-- {{$product['price']['price'] ?? '-'}} --}}
-									</td>
-									<td>
-									</td>
-								</tr>
-								@empty
-								<tr>
-									<td></td>
-								</tr>
-								@endforelse
-							</tbody>
-						</table>
-					</div>
+					<table id="products" class="display" width="100%">
+						<thead>
+							<th></th>
+							<th class="th-sm">{{ ucwords(trans_choice('messages.product_sku', 2)) }}</th>
+							<th class="th-sm">{{ ucwords(trans_choice('messages.product_name', 2)) }}</th>
+							<th class="th-sm">{{ ucwords(trans_choice('messages.vendor', 1)) }}</th>
+							<th class="th-sm">{{ ucwords(trans_choice('messages.instance', 1)) }}</th>
+							<th class="th-sm">{{ ucwords(trans_choice('messages.action', 2)) }}</th>
+						</thead>
+						<tbody>
+							@forelse($products as $product)
+							<tr>
+								<td></td>
+								<td style="width: 1px;">
+									<a data-toggle="modal" data-target=".bd-example-modal-xl" href="{{ "product/" .$product->id }}">{{$product['sku']}}</a>
+								</td>
+								<td style="width: 1px; ; white-space: nowrap;">
+									{{$product['name']}}
+								</td>
+								<td class="text-center">
+									{{$product['vendor']}}
+								</td>
+								<td class="text-center">
+									{{$product['instance']['name']}}
+								</td>
+								<td>
+								</td>
+							</tr>
+							@empty
+							<tr>
+								<td></td>
+							</tr>
+							@endforelse
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -326,15 +331,27 @@ aria-hidden="true" data-backdrop="false">
 	
 	
 	@section('scripts')
-
+	
 	<script type="text/javascript">
-		$(document).ready( function () {
-			$('#products').DataTable({
-				"pagingType": "full_numbers",
-				"order": [[ 0, "asc" ]]
-			});
+		$(document).ready(function() {
+			$('#products').DataTable( {
+				columnDefs: [ {
+					orderable: false,
+					data: null,
+					defaultContent: '',
+					className: 'select-checkbox',
+					targets:   0
+				} ],
+				select: {
+					style:    'os',
+					selector: 'td:first-child'
+				},
+				order: [[ 1, 'asc' ]]
+			} );
 		} );
 	</script>
+	
+	
 	
 	{{-- <script>
 		$(document).ready(function () {

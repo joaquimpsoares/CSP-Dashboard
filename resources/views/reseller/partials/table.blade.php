@@ -1,4 +1,3 @@
-<div class="table-responsive nowrap">
     <table id="resellers" class="table" width="100%">
         <thead>
             <tr>
@@ -29,15 +28,14 @@
             @endforelse
         </tbody>
     </table>
-</div>
-
-@section('scripts')
-<script type="text/javascript">
-	$(document).ready( function () {
-		$('#resellers').DataTable({
-			"pagingType": "full_numbers",
-			"order": [[ 0, "asc" ]]
-		});
-	} );
-</script>
-@endsection
+    
+    @section('scripts')
+    <script type="text/javascript">
+        $(document).ready( function () {
+            $('#resellers').DataTable({
+                "pagingType": "full_numbers",
+                "order": [[ 0, "asc" ]]
+            });
+        } );
+    </script>
+    @endsection
