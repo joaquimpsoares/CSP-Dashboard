@@ -4,8 +4,8 @@
 @endsection
 
 @section('content')
-<div class="container">
 
+<div class="container">
 	<section class="section">
 		<div class="card">
 			<div class="">
@@ -14,11 +14,7 @@
 					<a type="submit" href="{{route('provider.create')}}" class="btn btn-success">{{ ucwords(__('messages.new_provider')) }}</a>
 				</div>
 				<div class="card-body">
-					<h4 class="card-title">
-						<a>
-							{{ ucwords(trans_choice('messages.provider_table', 1)) }}
-						</a>
-					</h4>
+					<h4 class="card-title"><a>{{ ucwords(trans_choice('messages.provider_table', 1)) }}</a></h4>
 					@include('provider.partials.table')
 				</div>
 			</div>

@@ -12,7 +12,7 @@
 
 
 
-<div class="box col-xm-12">
+<div class="container col-xm-12">
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item">
             <a class="nav-link btn rgba-blue-light active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>

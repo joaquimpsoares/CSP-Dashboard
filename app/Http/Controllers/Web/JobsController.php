@@ -35,12 +35,11 @@ class JobsController extends Controller
         $order = [];
         foreach($jobs as $payload){
             $payload_json = json_decode( $payload->payload );
-            // dd($payload_json);
             $data = unserialize( $payload_json->data->command );
             $order[$payload->id] = $data->order;
         }
         
-        $running =$jobs->count();
+        $running = $jobs->count();
         
         $failedJobs = DB::table('failed_jobs')->get();
 

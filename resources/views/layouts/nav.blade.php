@@ -4,8 +4,8 @@
     <div class="main_menu">
         <nav class="navbar navbar-expand-lg navbar-light main_box">
             <div class="container">
-                <a class="navbar-brand logo_h" href="index.html">
-                    <img src="{{ asset('images/small_logo.png') }}" width="30" height="30" class="d-inline-block " alt="">
+                <a class="navbar-brand logo_h" href="/">
+                    <img src="{{ asset('images/small_logo.png') }}" width="60" height="auto" class="d-inline-block " alt="">
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="icon-bar"></span>
