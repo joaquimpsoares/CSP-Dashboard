@@ -5,33 +5,30 @@
 		<i class="fas fa-edit text-success"></i>
 	</div>
 	@endif
+
 	@if(Auth::user()->can($modelo . '.edit'))
 	<div class="col-2">
 		<i class="fas {{ $model['status'] === 'Active' ? 'fa-eye-slash text-primary' : 'fa-eye text-info' }}"></i>		
 	</div>
 	@endif
+
 	@if(Auth::user()->can($modelo . '.delete'))
 	<div class="col-2">
 		<i class="fas fa-trash-restore-alt text-danger"></i>
 	</div>
 	@endif
+
 	@if ($modelo === "reseller") 
 	<div class="col-2">
-		<a href="{{ route('reseller.customers', [$model['id'], Str::slug($model['company_name'], ' ')]) }}" 
-		data-toggle="tooltip" 
-		data-placement="left" 
-		title="{{ ucwords(trans_choice('messages.customer', 2)) }}" 
-		class="text-primary">
-		
-		
-		
-	</a>	
-</div>
-@endif
+		<a href="{{ route('reseller.customers', [$model['id'], Str::slug($model['company_name'], ' ')]) }}" data-toggle="tooltip" data-placement="left" title="{{ ucwords(trans_choice('messages.customer', 2)) }}" class="text-primary"></a>	
+	</div>
+	@endif
 
-@canImpersonate
-@if(!empty($model['mainUser']))
-<a href="{{ route('impersonate', $model['mainUser']->id) }}"><i class="fas fa-user-secret text-muted"></i></a>
-@endif
-@endCanImpersonate
+	@canImpersonate
+	@if(!empty($model['mainUser']))
+	<div class="col-2">
+		<a href="{{ route('impersonate', $model['mainUser']->id) }}"><i class="fas fa-user-secret text-muted"></i></a>
+	</div>
+	@endif
+	@endCanImpersonate
 </div>
