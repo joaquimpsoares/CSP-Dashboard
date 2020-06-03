@@ -147,7 +147,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('roles.index') }}">
+                                    <a class="nav-link" href="{{ route('profile.index') }}">
                                         {{ ucwords(trans_choice('messages.account', 2)) }} 
                                     </a>
                                 </li>

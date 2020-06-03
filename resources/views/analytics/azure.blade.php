@@ -132,7 +132,7 @@
 
 <div class="row">
     <div class="col-12">
-        <div class="box">
+        <div class="container">
             <div class="content">
                 <h2>Azure Analytics for customer: </h2>
                 <h4>CASA PRESTATIONS</h4>

@@ -6,10 +6,10 @@
 {{-- @if ($subscriptions->product_id = "MS-AZR-0017G")
 <a href="{{route('analytics.list')}}">Azure Analytics</a>
 @endif --}}
-<div class="box col-xm-12">
+<div class="container col-xm-12">
     <div class="row">
         <div class="col-md-8">
-            <div class="card">
+            <div class="">
                 <div class="view overlay">
                     <div class="panel-block">
                         <form class="form-horizontal form-bordered" method="POST" action="{{ route('subscription.update', $subscriptions->id) }}">
