@@ -16,7 +16,7 @@
 
 
 		<link rel="stylesheet" href="{{ asset('vendors/linericon/style.css') }}">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+		
 
 		<link rel="stylesheet" href="{{ asset('vendors/owl-carousel/owl.carousel.min.css') }}">
 		<link rel="stylesheet" href="{{ asset('vendors/lightbox/simpleLightbox.css') }}">
@@ -25,6 +25,8 @@
 		<link rel="stylesheet" href="{{ asset('vendors/jquery-ui/jquery-ui.css') }}"> 
 		<link rel="stylesheet" href="{{ asset('css/style.css') }}">
 		<link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
+
+		<link rel="stylesheet" href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
 		@yield('styles')
 	</head>
@@ -38,16 +40,17 @@
 			@include('layouts.bread')
 
 			{{-- @include('partials.messages') --}}
-
+			<br/>
 			@yield('content')
-
+			<br/>
 			@include('layouts.footer')
 		</div>
 
 
 		{{-- <script src="{{ asset('jquery/jquery.js') }}"></script> --}}
 		
-		{{-- <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script> --}}
+		<script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
+
 		<script src="{{ asset('js/popper.js') }}"></script>
 		<script src="{{ asset('js/bootstrap.min.js') }}"></script>
 		<script src="{{ asset('js/stellar.js') }}"></script>
@@ -62,6 +65,7 @@
 		{{-- <script src="{{ asset('vendors/counter-up/jquery.counterup.js') }}"></script> --}}
 		<script src="{{ asset('js/mail-script.js') }}"></script>
 		<script src="{{ asset('js/theme.js') }}"></script>
+		<script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 		@yield('scripts')
 
 		<script type="text/javascript">
