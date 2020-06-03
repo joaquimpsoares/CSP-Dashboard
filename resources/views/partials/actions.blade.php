@@ -4,6 +4,7 @@
 	<div class="col-2">
 		<i class="fas fa-edit text-success"></i>
 	</div>
+	@else
 	@endif
 
 	@if(Auth::user()->can($modelo . '.edit'))

@@ -11,6 +11,7 @@
 	
 	<!-- Styles -->
 	<link href="{{ asset('css/app.css') }}" rel="stylesheet">
+	<link href="{{ asset('fontawesome/css/all.css') }}" rel="stylesheet">
 
 
 	<link rel="stylesheet" href="{{ asset('vendors/linericon/style.css') }}">
