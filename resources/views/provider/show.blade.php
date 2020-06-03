@@ -167,22 +167,22 @@
             </div>
             
             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                <div class="box col-xm-12">
+                <div class="container col-xm-12">
                     @include('reseller.partials.table', ['resellers' => $resellers])
                 </div>
             </div>
             <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                <div class="box col-xm-12">
+                <div class="container col-xm-12">
                     @include('customer.partials.table', ['customers' => $customers])
                 </div>
             </div>
             <div class="tab-pane fade" id="subscription" role="tabpanel" aria-labelledby="subscription-tab">
-                <div class="box col-xm-12">
+                <div class="container col-xm-12">
                     @include('subscriptions.partials.table', ['subscriptions' => $subscriptions])
                 </div>
             </div>
             <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="account-tab">
-                <div class="box col-xm-12">
+                <div class="container col-xm-12">
                     @include('provider.partials.details')
                 </div>
                 <div class="row">

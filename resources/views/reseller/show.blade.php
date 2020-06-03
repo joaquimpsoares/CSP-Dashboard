@@ -4,7 +4,7 @@
 @section('content')
 
 
-<div class="box col-xm-12">
+<div class="container col-xm-12">
     
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item">
@@ -25,7 +25,7 @@
             aria-selected="false">{{ ucwords(trans_choice('messages.account', 1)) }}</a>
         </li>
     </ul>
-    <div class="tab-content card pt-5" id="myTabContentMD">
+    <div class="tab-content pt-5" id="myTabContentMD">
         <div class="tab-pane fade show active" id="home-md" role="tabpanel" aria-labelledby="home-tab-md">
             <div class="section">
                 <div class="columns">
@@ -47,7 +47,7 @@
                         
                         <div class="columns is-multiline">
                             <div class="column">
-                                <div class="box">
+                                <div class="container">
                                     <div class="heading">Top Seller Total</div>
                                     <div class="title">56,950</div>
                                     <div class="level">
@@ -155,7 +155,7 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="subscription-md" role="tabpanel" aria-labelledby="subscription-tab-md">
-                <div class="box col-xm-12">
+                <div class="container col-xm-12">
                     @include('subscriptions.partials.row', ['subscriptions' => $subscriptions])
                 </div>
             </div>
@@ -163,7 +163,7 @@
                 @include('reseller.partials.details')
             </div>
             <div class="tab-pane fade" id="customer-md" role="tabpanel" aria-labelledby="customer-tab-md">
-                <div class="box col-xm-12">
+                <div class="container col-xm-12">
                     @include('customer.partials.table', ['customers' => $customers])
                 </div>
             </div>

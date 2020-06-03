@@ -3,7 +3,7 @@
 
 
 @section('content')
-	
+
 <div class="container">
 	<section class="section">
 		<div class="card">
@@ -18,8 +18,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
-</section>
+	</section>
 </div>
 
 

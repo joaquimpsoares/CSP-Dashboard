@@ -4,7 +4,7 @@
 @section('content')
 
 
-<div class="box col-xm-12">
+<div class="container col-xm-12">
     <ul class="nav nav-pills md-tabs" id="myTabMD" role="tablist">
         <li class="nav-item">
             <a class="nav-link btn rgba-blue-light active" id="home-tab-md" data-toggle="tab" href="#home-md" role="tab" aria-controls="home-md"
@@ -19,7 +19,7 @@
             aria-selected="false">{{ ucwords(trans_choice('messages.account', 1)) }}</a>
         </li>
     </ul>
-    <div class="tab-content card pt-5" id="myTabContentMD">
+    <div class="tab-content pt-5" id="myTabContentMD">
         <div class="tab-pane fade show active" id="home-md" role="tabpanel" aria-labelledby="home-tab-md">
             <div class="section">
                 <div class="columns">
@@ -41,7 +41,7 @@
                         
                         <div class="columns is-multiline">
                             <div class="column">
-                                <div class="box">
+                                <div class="contianer">
                                     <div class="heading">Top Seller Total</div>
                                     <div class="title">56,950</div>
                                     <div class="level">
@@ -149,7 +149,7 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="profile-md" role="tabpanel" aria-labelledby="profile-tab-md">
-                <div class="box col-xm-12">
+                <div class="container col-xm-12">
                     <h2>{{ ucwords(trans_choice('messages.legal_information', 1)) }}</h2>
                     <div class="row">
                         <div class="col-md-9 mb-md-0 mb-5">
@@ -271,7 +271,7 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="contact-md" role="tabpanel" aria-labelledby="contact-tab-md">
-                <div class="box col-xm-12">
+                <div class="container col-xm-12">
                     @include('subscriptions.partials.table', ['subscriptions' => $subscriptions])
                 </div>
             </div>            
