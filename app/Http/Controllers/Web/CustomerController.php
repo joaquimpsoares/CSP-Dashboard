@@ -26,7 +26,6 @@ class CustomerController extends Controller
     
     public function index(Customer $customer) {
 
-        
         $customers = $this->customerRepository->all();
                 
         return view('customer.index', compact('customers'));
@@ -34,7 +33,6 @@ class CustomerController extends Controller
     
     
     public function create(Customer $customer){
-        
         
         return view('customer.create', compact('customer'));
         

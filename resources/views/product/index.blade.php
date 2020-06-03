@@ -1,11 +1,6 @@
 @extends('layouts.app')
 
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
 
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
 
 <style>
 	.number-input input[type="number"] {
@@ -96,6 +91,12 @@
 
 @section('content')
 
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
 
 <div class="box">
 	<section class="section">
@@ -104,11 +105,12 @@
 				<i class="fab fa-product-hunt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
 				<div class="card-body">
 					<h4 class="card-title"><a>{{ ucwords(trans_choice('messages.product_table', 2)) }}</a></h4>
-					<table id="products" class="display" width="100%">
+					<table id="example" class="table display" style="width:100%">
 						<thead>
-							<th></th>
+							<th><input name="select_all" value="1" id="example-select-all" type="checkbox" /></th>							
 							<th class="th-sm">{{ ucwords(trans_choice('messages.product_sku', 2)) }}</th>
 							<th class="th-sm">{{ ucwords(trans_choice('messages.product_name', 2)) }}</th>
+							<th class="th-sm">{{ ucwords(trans_choice('messages.category', 2)) }}</th>
 							<th class="th-sm">{{ ucwords(trans_choice('messages.vendor', 1)) }}</th>
 							<th class="th-sm">{{ ucwords(trans_choice('messages.instance', 1)) }}</th>
 							<th class="th-sm">{{ ucwords(trans_choice('messages.action', 2)) }}</th>
@@ -117,24 +119,16 @@
 							@forelse($products as $product)
 							<tr>
 								<td></td>
-								<td style="width: 1px;">
-									<a data-toggle="modal" data-target=".bd-example-modal-xl" href="{{ "product/" .$product->id }}">{{$product['sku']}}</a>
-								</td>
-								<td style="width: 1px; ; white-space: nowrap;">
-									{{$product['name']}}
-								</td>
-								<td class="text-center">
-									{{$product['vendor']}}
-								</td>
-								<td class="text-center">
-									{{$product['instance']['name']}}
-								</td>
-								<td>
-								</td>
+								<td style="width: 1px;"><a data-toggle="modal" data-target=".bd-example-modal-xl" href="{{ "product/" .$product->id }}">{{$product['sku']}}</a></td>
+								<td style="width: 1px;">{{$product['name']}}</td>
+								<td style="width: 1px; ; white-space: nowrap;">{{$product['category']}}</td>
+								<td class="text-center">{{$product['vendor']}}</td>
+								<td class="text-center">{{$product['instance']['name']}}</td>
+								<td>Actions</td>
 							</tr>
 							@empty
 							<tr>
-								<td></td>
+								<td>Empty</td>
 							</tr>
 							@endforelse
 						</tbody>
@@ -332,42 +326,76 @@ aria-hidden="true" data-backdrop="false">
 	
 	@section('scripts')
 	
+	
+	
 	<script type="text/javascript">
-		$(document).ready(function() {
-			$('#products').DataTable( {
-				columnDefs: [ {
-					orderable: false,
-					data: null,
-					defaultContent: '',
-					className: 'select-checkbox',
-					targets:   0
-				} ],
-				select: {
-					style:    'os',
-					selector: 'td:first-child'
-				},
-				order: [[ 1, 'asc' ]]
-			} );
-		} );
+		$(document).ready(function (){   
+			var table = $('#example').DataTable({
+				'columnDefs': [{
+					'targets': 0,
+					'searchable':false,
+					'orderable':false,
+					'className': 'dt-body-center',
+					'render': function (data, type, full, meta){
+						return '<input type="checkbox" name="id[]" value="' 
+						+ $('<div/>').text(data).html() + '">';
+					}
+				}],
+				'order': [1, 'asc']
+			});
+			
+			// Handle click on "Select all" control
+			$('#example-select-all').on('click', function(){
+				// Check/uncheck all checkboxes in the table
+				var rows = table.rows({ 'search': 'applied' }).nodes();
+				$('input[type="checkbox"]', rows).prop('checked', this.checked);
+			});
+			
+			// Handle click on checkbox to set state of "Select all" control
+			$('#example tbody').on('change', 'input[type="checkbox"]', function(){
+				// If checkbox is not checked
+				if(!this.checked){
+					var el = $('#example-select-all').get(0);
+					// If "Select all" control is checked and has 'indeterminate' property
+					if(el && el.checked && ('indeterminate' in el)){
+						// Set visual state of "Select all" control 
+						// as 'indeterminate'
+						el.indeterminate = true;
+					}
+				}
+			});
+			
+			$('#frm-example').on('submit', function(e){
+				var form = this;
+				
+				// Iterate over all checkboxes in the table
+				table.$('input[type="checkbox"]').each(function(){
+					// If checkbox doesn't exist in DOM
+					if(!$.contains(document, this)){
+						// If checkbox is checked
+						if(this.checked){
+							// Create a hidden element 
+							$(form).append(
+							$('<input>')
+							.attr('type', 'hidden')
+							.attr('name', this.name)
+							.val(this.value)
+							);
+						}
+					} 
+				});
+				
+				// FOR TESTING ONLY
+				
+				// Output form data to a console
+				$('#example-console').text($(form).serialize()); 
+				console.log("Form submission", $(form).serialize()); 
+				
+				// Prevent actual form submission
+				e.preventDefault();
+			});
+		});
 	</script>
 	
 	
-	
-	{{-- <script>
-		$(document).ready(function () {
-			$('#dt-basic-checkbox').dataTable({
-				
-				columnDefs: [{
-					orderable: false,
-					className: 'select-checkbox',
-					targets: 0
-				}],
-				select: {
-					style: 'os',
-					selector: 'td:first-child'
-				}
-			});
-		});
-	</script> --}}
 	@endsection
-	

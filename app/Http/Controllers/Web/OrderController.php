@@ -30,7 +30,17 @@ class OrderController extends Controller
     
     public function index()
     {
-        $orders = Order::with('status', 'customer')->get()->sortByDesc('id');;
+        $orders = Order::with('status', 'customer')->get()->sortByDesc('id');
+
+        $products = [];
+        foreach($orders as $order){
+            $order->products[$order['id']] = $order->name;
+        }
+
+        // foreach($order->products as $product){
+        //     $name = $product->name;
+        // }
+        
         
         return view('order.index', compact('orders'));
     }
@@ -41,30 +51,30 @@ class OrderController extends Controller
             'token' => 'required|uuid',
             ]);
             
-        $order = $this->orderRepository->newFromCartToken($validate['token']);
-        
-        CreateCustomerMicrosoft::withChain([
-            new PlaceOrderMicrosoft($order)
-            ])->dispatch($order)->allOnQueue('PlaceordertoMS');
-         
-            return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
-        }
-
-        public function syncproducts(Request $request)
-    {
-
-        dd($request->all());
-      
+            $order = $this->orderRepository->newFromCartToken($validate['token']);
+            
+            CreateCustomerMicrosoft::withChain([
+                new PlaceOrderMicrosoft($order)
+                ])->dispatch($order)->allOnQueue('PlaceordertoMS');
+                
+                return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
+            }
+            
+            public function syncproducts(Request $request)
+            {
+                
+                dd($request->all());
+                
+                
+                ImportProductsMicrosoftJob::dispatch($order)->onQueue('SyncProducts')
+                ->delay(now()->addSeconds(10)); 
+                
+                // CreateCustomerMicrosoft::withChain([
+                    //     new PlaceOrderMicrosoft($order)
+                    //     ])->dispatch($order)->allOnQueue('PlaceordertoMS');
                     
-        ImportProductsMicrosoftJob::dispatch($order)->onQueue('SyncProducts')
-        ->delay(now()->addSeconds(10)); 
-        
-        // CreateCustomerMicrosoft::withChain([
-        //     new PlaceOrderMicrosoft($order)
-        //     ])->dispatch($order)->allOnQueue('PlaceordertoMS');
-         
-            return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
-        }
-        
-        
-    }
+                    return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
+                }
+                
+                
+            }

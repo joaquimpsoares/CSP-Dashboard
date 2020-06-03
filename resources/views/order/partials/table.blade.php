@@ -26,7 +26,9 @@
             <td>
                 @foreach ($order->products as $item)
                 <hr>
-                <strong>Product Name:</strong> {{$order->products[0]->name}} <br>
+                {{-- @foreach($order->products as $name)
+                    <strong>Product Name:</strong> {{$name['name']}} <br>
+                @endforeach --}}
                 <strong>Quantity:</strong> {{$item->pivot->quantity}} <br>
                 <strong>Billing Cycle</strong> {{$item->pivot->billing_cycle}} <br>
                 <strong>Tenant Name</strong> {{$order->domain}} <br>

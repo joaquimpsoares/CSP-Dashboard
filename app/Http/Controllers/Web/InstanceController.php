@@ -41,8 +41,6 @@ class InstanceController extends Controller
         ]);
         
         
-        
-        
         $create = Instance::create([
             'name' => $request->name,
             'provider_id' => $request->provider,

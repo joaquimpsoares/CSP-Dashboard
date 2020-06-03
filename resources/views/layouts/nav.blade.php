@@ -113,7 +113,7 @@
                         </li>
                         @endcan
 
-                        @can(config('app.settings.general'))
+                        {{-- @can(config('app.settings.general'))
                         <li class="nav-item submenu dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                 {{ ucwords(trans_choice('messages.setting', 2)) }}
@@ -131,7 +131,7 @@
                                 </li>
                             </ul>
                         </li>
-                        @endcan
+                        @endcan --}}
 
                         @if (app('impersonate')->isImpersonating())
                         <li class="nav-item submenu dropdown">

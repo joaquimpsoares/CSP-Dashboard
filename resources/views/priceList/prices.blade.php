@@ -16,18 +16,10 @@
 		@forelse($prices as $price)
 		
 		<tr>
-			<td>
-				{{ $price['product_sku'] }}
-			</td>
-			<td>
-				{{ $price['name'] }}
-			</td>
-			<td>
-				{{ $price['price'] }}
-			</td>
-			<td>
-				{{ $price['msrp'] }}
-			</td>
+			<td>{{ $price['product_sku'] }}</td>
+			<td>{{ $price['name'] }}</td>
+			<td>{{ $price['price'] }}</td>
+			<td>{{ $price['msrp'] }}</td>
 			<td></td>
 		</tr>
 		
