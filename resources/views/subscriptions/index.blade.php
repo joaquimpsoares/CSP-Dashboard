@@ -4,7 +4,7 @@
 @endsection
 
 @section('content')
-<div class="box">
+<div class="container">
 	<section class="section">
 		<div class="card">
 			<div class="">
@@ -27,3 +27,5 @@
 		$('.dataTables_length').addClass('bs-select');
 	});
 </script>
+
+@endsection
