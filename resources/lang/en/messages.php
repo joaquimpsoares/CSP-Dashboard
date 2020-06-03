@@ -186,7 +186,9 @@ return [
     'price' => 'Price|Prices',
     'msrp' => 'MSRP',
     'subtotal' => 'subtotal',
-    'customer_price' => 'Customer Price'
+    'customer_price' => 'Customer Price',
+    'manage' => 'manage',
+    'setting' => 'setting|settings',
 
 
 ];
