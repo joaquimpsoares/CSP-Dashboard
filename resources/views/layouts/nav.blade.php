@@ -134,9 +134,8 @@
                         @endcan --}}
 
                         @if (app('impersonate')->isImpersonating())
-                        <li class="nav-item submenu dropdown">
-                            <a href="{{ route('impersonate.leave') }}">
-
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" href="{{ route('impersonate.leave') }}">
                                 <i class="fas fa-user-secret"></i>
                                 <span>{{ ucwords(trans_choice('messages.stop_impersonation', 2)) }}</span>
                             </a>
