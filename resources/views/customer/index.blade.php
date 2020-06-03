@@ -4,7 +4,7 @@
 
 @section('content')
 	
-<div class="customer">
+<div class="container">
 	<section class="section">
 		<div class="card">
 			<div class="">
