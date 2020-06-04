@@ -65,13 +65,12 @@ class Customer extends Model
         foreach ($resellers as $reseller) {
             $resellersList[] = $reseller->id;
         }
-
-
+        
         return $resellersList;
     }
 
     public function priceList() {
-        return $this->belongsTo('App\PriceList');
+        return $this->belongsTo('App\PriceList', 'id', 'price_list_id');
     }
     
     public function status() {

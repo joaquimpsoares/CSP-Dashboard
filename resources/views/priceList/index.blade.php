@@ -2,94 +2,32 @@
 
 @section('content')
 
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.dataTables.min.css">
-
-
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
-
-
-<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-	<li class="nav-item">
-		<a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab"
-		aria-controls="pills-home" aria-selected="true">Price List</a>
-	</li>
-	<li class="nav-item">
-		<a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab"
-		aria-controls="pills-profile" aria-selected="false">Product</a>
-	</li>
-</ul>
-<div class="tab-content pt-2 pl-1" id="pills-tabContent">
-	<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab"><div class="box">
-		<section class="section">
-			<div class="card">
-				<div class="">
-					<i class="fas fa-money-check-alt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
-					<div class="card-body">
-						<h4 class="card-title"><a>Price List Table</a></h4>
-						<table class="table table-striped table-bordered" id="priceLists">
-							<thead>
-								<tr>
-									<th></th>
-									<th>Name</th>
-									<th>Description</th>
-									<th>Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								@forelse($priceLists as $priceList)
-								<tr>
-									<td></td>
-									<td><a href="#">{{ $priceList['name'] }}</a></td>
-									<td>{{ $priceList['description'] }}</td>
-									<td>
-										<a href="{{route('priceList.clone', $priceList['id'])}}"><i class="fa fa-clone"></i></a>
-										<a href="#"><i class="fa fa-list"></i></a>
-									</td>
-								</tr>
-								@empty
-								<tr>
-									<td colspan="5">Empty</td>
-								</tr>
-								@endforelse
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</section>
-	</div>
-</div>
-<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+<div class="container">
 	<section class="section">
 		<div class="card">
 			<div class="">
 				<i class="fas fa-money-check-alt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
 				<div class="card-body">
 					<h4 class="card-title"><a>Price List Table</a></h4>
-					<table id="example" class="table display" style="width:100%">
+					<table class="table table-striped table-bordered" id="priceLists">
 						<thead>
 							<tr>
-								<th><input name="select_all" value="1" id="example-select-all" type="checkbox" /></th>								<th>{{ ucwords(__('messages.product_sku')) }}</th>
-								<th>{{ ucwords(trans_choice('messages.product_name', 1)) }}</th>
-								<th>{{ ucwords(trans_choice('messages.pricelist_name', 1)) }}</th>
-								<th>{{ ucwords(trans_choice('messages.price', 1)) }}</th>
-								<th>{{ ucwords(trans_choice('messages.msrp', 1)) }}</th>
+								<th>Name</th>
+								<th>Description</th>
+								<th>Company Name</th>
+								<th>Actions</th>
 							</tr>
 						</thead>
 						<tbody>
-							@forelse($prices as $price)
+							@forelse($priceLists as $priceList)
 							<tr>
-								<td></td>
-								<td>{{ $price['product_sku'] }}</td>
-								<td>{{ $price['name'] }}</td>
-								<td>{{ $price['pricelist']['name']}}</td>
-								<td>{{ $price['price'] }}</td>
-								<td>{{ $price['msrp'] }}</td>
+								<td><a href=" {{route('priceList.prices', $priceList['id'])}} ">{{ $priceList['name'] }}</a></td>
+								<td>{{ $priceList['description'] }}</td>
+								<td>{{$priceList['providers'][0]['company_name']}}</td>
+								<td>
+									<a href="{{route('priceList.clone', $priceList['id'])}}"><i class="fa fa-clone"></i></a>
+									<a href="{{route('priceList.prices', $priceList['id'])}}"><i class="fa fa-list"></i></a>
+								</td>
 							</tr>
 							@empty
 							<tr>
@@ -103,97 +41,13 @@
 		</div>
 	</section>
 </div>
-
-
 @endsection
 
 @section('scripts')
-
-
-
-<script type="text/javascript">
-	$(document).ready(function (){   
-		var table = $('#example').DataTable({
-			dom: 'Bfrtip',
-			buttons: [
-			{
-				text: 'Clone',
-				action: function ( e, dt, node, config ) {
-					alert( 'Button activated' );
-				}
-			},
-			{
-				text: 'Delete',
-				action: function ( e, dt, node, config ) {
-					alert( 'Button activated' );
-				}
-			}
-			],
-			'columnDefs': [{
-				'targets': 0,
-				'searchable':false,
-				'orderable':false,
-				'className': 'dt-body-center',
-				'render': function (data, type, full, meta){
-					return '<input type="checkbox" name="id[]" value="' 
-					+ $('<div/>').text(data).html() + '">';
-					
-				}
-				
-			}],
-			'order': [2, 'asc']
-		});
-		
-		// Handle click on "Select all" control
-		$('#example-select-all').on('click', function(){
-			// Check/uncheck all checkboxes in the table
-			var rows = table.rows({ 'search': 'applied' }).nodes();
-			$('input[type="checkbox"]', rows).prop('checked', this.checked);
-		});
-		
-		// Handle click on checkbox to set state of "Select all" control
-		$('#example tbody').on('change', 'input[type="checkbox"]', function(){
-			// If checkbox is not checked
-			if(!this.checked){
-				var el = $('#example-select-all').get(0);
-				// If "Select all" control is checked and has 'indeterminate' property
-				if(el && el.checked && ('indeterminate' in el)){
-					// Set visual state of "Select all" control 
-					// as 'indeterminate'
-					el.indeterminate = true;
-				}
-			}
-		});
-		
-		$('#frm-example').on('submit', function(e){
-			var form = this;
-			// Iterate over all checkboxes in the table
-			table.$('input[type="checkbox"]').each(function(){
-				// If checkbox doesn't exist in DOM
-				if(!$.contains(document, this)){
-					// If checkbox is checked
-					if(this.checked){
-						// Create a hidden element 
-						$(form).append(
-						$('<input>')
-						.attr('type', 'hidden')
-						.attr('name', this.name)
-						.val(this.value)
-						);
-					}
-				} 
-			});
-			
-			// FOR TESTING ONLY
-			
-			// Output form data to a console
-			$('#example-console').text($(form).serialize()); 
-			console.log("Form submission", $(form).serialize()); 
-			
-			// Prevent actual form submission
-			e.preventDefault();
-		});
-	});
+<script>
+	$(document).ready(function() {
+		$('#priceLists').DataTable();
+	} );
 </script>
 
 @endsection

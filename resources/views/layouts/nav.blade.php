@@ -1,6 +1,6 @@
 <!--================Header Menu Area =================-->
 <header class="header_area">
-      
+    
     <div class="main_menu">
         <nav class="navbar navbar-expand-lg navbar-light main_box">
             <div class="container">
@@ -12,15 +12,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-
+                
                 <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                     @auth
-
+                    
                     <ul class="nav navbar-nav menu_nav ml-auto">
-
+                        
                         <li class="nav-item active">
                             <a class="nav-link" href="{{ route('home') }}">
-                                Home
+                                {{ ucwords(trans_choice('messages.home', 1)) }}
                             </a>
                         </li>
                         @can(config('app.provider_index'))
@@ -44,7 +44,7 @@
                             </a> 
                         </li>
                         @endcan
-
+                        
                         @can(config('app.subscription_index'))
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('subscription.index') }}">
@@ -52,7 +52,7 @@
                             </a> 
                         </li>
                         @endcan
-
+                        
                         <li class="nav-item submenu dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                 {{ ucwords(__('messages.marketplace')) }}
@@ -73,10 +73,10 @@
                                         {{ ucwords(trans_choice('messages.order', 2)) }}
                                     </a>
                                 </li>
-
+                                
                             </ul>
                         </li>
-
+                        
                         @can(config('app.manage_roles'))
                         <li class="nav-item submenu dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -108,11 +108,11 @@
                                         {{ ucwords(trans_choice('messages.order', 2)) }}
                                     </a>
                                 </li>
-
+                                
                             </ul>
                         </li>
                         @endcan
-
+                        
                         {{-- @can(config('app.settings.general'))
                         <li class="nav-item submenu dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -132,7 +132,7 @@
                             </ul>
                         </li>
                         @endcan --}}
-
+                        
                         @if (app('impersonate')->isImpersonating())
                         <li class="nav-item">
                             <a class="nav-link text-danger" href="{{ route('impersonate.leave') }}">
@@ -141,13 +141,27 @@
                             </a>
                         </li>
                         @endif
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="nav-item">
+                                <a href="{{ route('cart.pending') }}" class="cart">
+                                    <span class="badge badge-pill badge-primary aqua-gradient" style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span>
+                                    <i class="lnr lnr lnr-cart"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="search">
+                                    <span class="badge badge-pill badge-primary aqua-gradient   " style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span>
+                                    <i class="lnr lnr-magnifier"></i>
+                                </a>
+                            </li>
+                        </ul>
                         <li class="nav-item submenu dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                 <img src="{{Auth::user()->avatar}}" class="rounded-circle z-depth-0" alt="avatar image"  width='50' Height ='auto'>
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('profile.index') }}">
+                                    <a class="nav-link" href="{{ '/user/profile/' .auth::user()->id }}">
                                         {{ ucwords(trans_choice('messages.account', 2)) }} 
                                     </a>
                                 </li>
@@ -161,25 +175,12 @@
                                 </li>
                             </ul>
                         </li>
-
+                        
                     </ul>
-
-                    <ul class="nav navbar-nav navbar-right">
-                        <li class="nav-item">
-                            <a href="{{ route('cart.pending') }}" class="cart">
-                                <span class="badge badge-pill badge-primary aqua-gradient" style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span>
-                                <i class="lnr lnr lnr-cart"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="search">
-                                <span class="badge badge-pill badge-primary aqua-gradient   " style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span>
-                                <i class="lnr lnr-magnifier"></i>
-                            </a>
-                        </li>
-                    </ul>
+                    
+                    
                     @endauth
-
+                    
                     @guest
                     <ul class="nav navbar-nav menu_nav ml-auto">
                         <li class="nav-item active">
@@ -213,10 +214,21 @@
                         </li>
                     </ul>
                     @endguest
-
+                    
                 </div> 
             </div>
         </nav>
     </div>
 </header>
 <!--================Header Menu Area =================-->
+
+
+<script>
+   $(document).ready(function(){
+  $('ul li a').click(function(){
+    $('li a').removeClass("active");
+    $(this).addClass("active");
+});
+});
+    
+</script>
