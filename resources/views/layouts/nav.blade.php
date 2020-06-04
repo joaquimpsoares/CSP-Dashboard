@@ -141,13 +141,28 @@
                             </a>
                         </li>
                         @endif
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="nav-item">
+                                <a href="{{ route('cart.pending') }}" class="cart">
+                                    <span class="badge badge-pill badge-primary aqua-gradient" style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span>
+                                    <i class="lnr lnr lnr-cart"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="search">
+                                    <span class="badge badge-pill badge-primary aqua-gradient   " style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span>
+                                    <i class="lnr lnr-magnifier"></i>
+                                </a>
+                            </li>
+                        </ul>
+
                         <li class="nav-item submenu dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                 <img src="{{Auth::user()->avatar}}" class="rounded-circle z-depth-0" alt="avatar image"  width='50' Height ='auto'>
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('profile.index') }}">
+                                    <a class="nav-link" href="{{ route('user.profile', Auth::user()->id) }}">
                                         {{ ucwords(trans_choice('messages.account', 2)) }} 
                                     </a>
                                 </li>
@@ -164,25 +179,12 @@
 
                     </ul>
 
-                    <ul class="nav navbar-nav navbar-right">
-                        <li class="nav-item">
-                            <a href="{{ route('cart.pending') }}" class="cart">
-                                <span class="badge badge-pill badge-primary aqua-gradient" style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span>
-                                <i class="lnr lnr lnr-cart"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="search">
-                                <span class="badge badge-pill badge-primary aqua-gradient   " style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span>
-                                <i class="lnr lnr-magnifier"></i>
-                            </a>
-                        </li>
-                    </ul>
+                    
                     @endauth
 
                     @guest
                     <ul class="nav navbar-nav menu_nav ml-auto">
-                        <li class="nav-item active">
+                        {{-- <li class="nav-item active">
                             <a class="nav-link" href="#">
                                 Menu Guest 1
                             </a>
@@ -196,7 +198,7 @@
                             <a class="nav-link" href="#">
                                 Menu Guest x
                             </a>
-                        </li>
+                        </li> --}}
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         @if (Route::has('register'))

@@ -31,16 +31,6 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::with('status', 'customer')->get()->sortByDesc('id');
-
-        $products = [];
-        foreach($orders as $order){
-            $order->products[$order['id']] = $order->name;
-        }
-
-        // foreach($order->products as $product){
-        //     $name = $product->name;
-        // }
-        
         
         return view('order.index', compact('orders'));
     }

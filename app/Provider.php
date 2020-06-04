@@ -34,6 +34,7 @@ class Provider extends Model
 			'state' => $this->state,
 			'nif' => $this->nif,
 			'postal_code' => $this->postal_code,
+			'resellers' => $this->resellers,
 			'status' => $this->status->name,
 			'path' => $this->path(),
 			'mainUser' => $this->users()->first()

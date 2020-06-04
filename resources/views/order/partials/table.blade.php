@@ -26,13 +26,10 @@
             <td>
                 @foreach ($order->products as $item)
                 <hr>
-                {{-- @foreach($order->products as $name)
-                    <strong>Product Name:</strong> {{$name['name']}} <br>
-                @endforeach --}}
+                <strong>Product Name:</strong> {{$item['name']}} <br>
                 <strong>Quantity:</strong> {{$item->pivot->quantity}} <br>
                 <strong>Billing Cycle</strong> {{$item->pivot->billing_cycle}} <br>
                 <strong>Tenant Name</strong> {{$order->domain}} <br>
-                {{-- <hr> --}}
                 @endforeach
             </td>
             <td>{{ $order->status->comments }}</td>

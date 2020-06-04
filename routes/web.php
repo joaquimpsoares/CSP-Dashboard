@@ -53,6 +53,7 @@ Route::resource('/user', 'UsersController');
 
 Route::get('/user/profile/{user}', 'UsersController@profile')->name('user.profile');
 
+
 Route::post('registerInvitation', 'UsersController@registerInvitation')->name('registerInvitation');
 
 // Route::get('/sendnoti', function() {
