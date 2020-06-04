@@ -184,7 +184,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::group(['middleware' => ['role:Super Admin|Admin']], function () {
 		
 		Route::resource('provider', 'ProviderController');
-		Route::get('priceList/prices/{priceList}', 'PriceListController@getPrices')->name('priceList.prices');
+		Route::get('priceList/{priceList}/prices', 'PriceListController@getPrices')->name('priceList.prices');
 		Route::get('priceList/clone/{id}', 'PriceListController@clone')->name('priceList.clone');
 
 	});
