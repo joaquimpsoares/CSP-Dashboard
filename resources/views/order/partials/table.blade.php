@@ -1,10 +1,3 @@
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> 
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">    
-
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
-
 
 <table id="order" class="display responsive nowrap" width="100%">
     <thead>
@@ -24,6 +17,31 @@
             <td><img src="{{$order->user->avatar}}" alt="" width="50"></td>
             <td>{{ $order->customer->company_name }}</td>
             <td>
+                {{-- <table class="table table-light">
+                    <thead class="thead-light">
+                        <tr>
+                            <th></th>
+                            <th>Product Name:</th>
+                            <th>Quantity</th>
+                            <th>Billing Cycle</th>
+                            <th>Tenant Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>{{$item['name']}}</td>
+                            <td>{{$item->pivot->quantity}}</td>
+                            <td>{{$item->pivot->billing_cycle}}</td>
+                            <td>{{$order->domain}}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>#</th>
+                        </tr>
+                    </tfoot>
+                </table> --}}
                 @foreach ($order->products as $item)
                 <hr>
                 <strong>Product Name:</strong> {{$item['name']}} <br>
@@ -54,7 +72,27 @@
 </table>
 
 <script>
-    $(document).ready(function() {
-        $('#order').DataTable();
+
+$(document).ready(function() {
+    $('#order').DataTable( {
+        responsive: {
+            details: {
+                renderer: function ( api, rowIdx, columns ) {
+                    var data = $.map( columns, function ( col, i ) {
+                        return col.hidden ?
+                            '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
+                                '<td>'+col.title+':'+'</td> '+
+                                '<td>'+col.data+'</td>'+
+                            '</tr>' :
+                            '';
+                    } ).join('');
+ 
+                    return data ?
+                        $('<table/>').append( data ) :
+                        false;
+                }
+            }
+        }
     } );
+} );
 </script>

@@ -4,7 +4,7 @@
 @endsection
 
 @section('content')
-<div class="box">
+<div class="container">
 	<section class="section">
 		<div class="card">
 			<div class="">
@@ -19,11 +19,3 @@
 </div>	
 @endsection
 
-@section('scripts')
-
-<script>
-	$(document).ready(function () {
-		$('#dtBasicExample').DataTable();
-		$('.dataTables_length').addClass('bs-select');
-	});
-</script>

@@ -126,7 +126,7 @@ return [
     'current_cost' => 'current cost',
     'percentage' => 'percentage',
     'pricelist_name' => 'pricelist name',
-    '' => '',
+    'description' => 'description',
     '' => '',
     '' => '',
     '' => '',

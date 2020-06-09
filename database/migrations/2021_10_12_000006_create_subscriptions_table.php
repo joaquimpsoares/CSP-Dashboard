@@ -29,6 +29,7 @@ class CreateSubscriptionsTable extends Migration
             $table->string('msrpid')->nullable();
             $table->date('expiration_data')->nullable();
             $table->string('billing_period');
+            $table->string('billing_type');
             $table->string('currency');
             $table->string('tenant_name');
             $table->unsignedSmallInteger('status_id');

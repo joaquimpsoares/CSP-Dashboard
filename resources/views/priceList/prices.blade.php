@@ -2,13 +2,15 @@
 
 @section('content')
 
-<table class="table table-striped table-bordered" id="prices">
+<div class="container">
+	
+<table id="prices" class="display responsive nowrap" width="100%">
 	<thead>
 		<tr>
-			<th>{{ ucwords(__('messages.product_sku')) }}</th>
-			<th>{{ ucwords(__('messages.product_name')) }}</th>
+			<th>{{ ucwords(trans_choice('messages.product_sku', 1)) }}</th>
+			<th>{{ ucwords(trans_choice('messages.product_name', 1)) }}</th>
 			<th>{{ ucwords(trans_choice('messages.price', 1)) }}</th>
-			<th>{{ ucwords(__('messages.msrp')) }}</th>
+			<th>{{ ucwords(trans_choice('messages.msrp' ,1)) }}</th>
 			<th>{{ ucwords(trans_choice('messages.action', 2)) }}</th>
 		</tr>
 	</thead>
@@ -31,6 +33,8 @@
 		@endforelse
 	</tbody>
 </table>
+</div>
+
 
 @endsection
 

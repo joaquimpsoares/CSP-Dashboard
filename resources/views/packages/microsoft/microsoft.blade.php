@@ -64,22 +64,25 @@
                                         </div>
                                     </div>
                                     <div class="row">
+                                        
                                         <div class="input-field col s4">
                                             <label for="basic-url">{{ ucwords(trans_choice('messages.token_expiration', 1)) }}</label>
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
                                                 </div>
                                                 @if($instances->external_token_updated_at == null)
+                                                {{-- @if (\Carbon\Carbon::parse($expiration) > (Carbon\Carbon::now()) ) --}}
                                                 <a href=" {{('/instances/getMasterToken/'. $instances->id )}} " class="text-danger">Please update token</a>
                                                 @else
                                                 <input disabled type="text" name="external_url" class="form-control" id="basic-url" aria-describedby="basic-addon3" value="{{ $expiration }} ">
                                                 @endif
+                                                {{-- @endif --}}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <button type="submit" class="button is-rounded is-primary is-outlined">{{ ucwords(trans_choice('messages.update', 1)) }}</button>
-                                <a href="{{ route('product.import') }}" type="submit"  class="button is-rounded is-primary is-outlined">{{ ucwords(trans_choice('messages.import_product', 2)) }}</a>
+                                <a href="{{ route('product.import', $instances->provider->id) }}" type="submit"  class="button is-rounded is-primary is-outlined">{{ ucwords(trans_choice('messages.import_product', 2)) }}</a>
                                 <a href="{{url()->previous()}}" type="submit" class="button is-rounded is-danger is-outlined">{{ ucwords(trans_choice('messages.cancel', 1)) }}</a>
                                 <div class="float-right">
                                     <a  target="_blank" href="https://login.microsoftonline.com/common/oauth2/authorize?client_id=66127fdf-8259-429c-9899-6ec066ff8915&response_type=code&redirect_uri=https://partnerconsent.tagydes.com/&prompt=admin_consent" class="button is-rounded is-warning is-outlined">{{ ucwords(__('messages.refresh_token')) }}</a>

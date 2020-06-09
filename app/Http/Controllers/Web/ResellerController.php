@@ -63,6 +63,8 @@ class ResellerController extends Controller
     
     public function store(Request $request) {
 
+        dd($request->all());
+
     $this->validator($request->all())->validate();
 
     try {
@@ -89,13 +91,6 @@ class ResellerController extends Controller
         'notify' => $request['sendInvitation'] ?? false,
         ]);
         
-        // $priceList = PriceList::create([
-        //     'name' => 'Price List - ' . $provider->company_name,
-        //     'description' => 'Default Provider Price List'
-        //     ]);
-            
-        //     $provider->priceList()->associate($priceList);
-        //     $provider->save();
             
             DB::commit();
         } catch (\PDOException $e) {
@@ -105,14 +100,14 @@ class ResellerController extends Controller
             } else {
                 $errorMessage = "message.error";
             }
-            return redirect()->route('provider.index')
+            return redirect()->route('reseller.index')
             ->with([
                 'alert' => 'danger', 
                 'message' => trans('messages.Provider Created unsuccessfully') . " (" . trans($errorMessage) . ")."
                 ]);
             }
             
-            return redirect()->route('provider.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Created successfully')]);
+            return redirect()->route('reseller.index')->with(['alert' => 'success', 'message' => trans('messages.reseller Created successfully')]);
      }
     
     

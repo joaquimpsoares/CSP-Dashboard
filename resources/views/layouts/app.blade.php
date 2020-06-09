@@ -10,13 +10,16 @@
 	<title>{{ config('app.name', 'Tagydes') }}</title>
 	
 	<!-- Styles -->
+	
 	<link href="{{ asset('css/app.css') }}" rel="stylesheet">
 	<link href="{{ asset('fontawesome/css/all.css') }}" rel="stylesheet">
-
-
+	
+	
 	<link rel="stylesheet" href="{{ asset('vendors/linericon/style.css') }}">
-
-
+	
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
+	
 	<link rel="stylesheet" href="{{ asset('vendors/owl-carousel/owl.carousel.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('vendors/lightbox/simpleLightbox.css') }}">
 	<link rel="stylesheet" href="{{ asset('vendors/nice-select/css/nice-select.css') }}">
@@ -26,9 +29,7 @@
 	<link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
 
 
-	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-	<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
-
+	
 	@yield('styles')
 
 	<script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
@@ -42,10 +43,10 @@
 	<div id="app">
 
 		@include('layouts.nav')
-
+		
 		@include('layouts.bread')
+		@include('partials.messages')
 
-		{{-- @include('partials.messages') --}}
 		<br/>
 		@yield('content')
 		<br/>

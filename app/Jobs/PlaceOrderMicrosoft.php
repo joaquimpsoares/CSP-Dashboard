@@ -106,6 +106,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
                             $subscriptions->customer_id = 		$customer->id; //customer id from request recieved from Microsoft
                             $subscriptions->product_id = 		$subscription->offerId;
                             $subscriptions->instance_id =		$instanceid;
+                            $subscriptions->billing_type =      $product->billing;
                             $subscriptions->order_id = 			$subscription->orderId;
                             $subscriptions->amount = 			$subscription->quantity;
                             $subscriptions->expiration_data	=	Carbon::now()->addYear()->toDateTimeString(); //Set subscription expiration date

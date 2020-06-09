@@ -7318,12 +7318,12 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.com:tagydes/microsoft-connection.git",
-                "reference": "249901c7251f5038c7690c61b947c37823edc219"
+                "reference": "24f04b7b2b85fed0779f71f5177020e8d3ef84b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/tagydes%2Fmicrosoft-connection/repository/archive.zip?sha=249901c7251f5038c7690c61b947c37823edc219",
-                "reference": "249901c7251f5038c7690c61b947c37823edc219",
+                "url": "https://gitlab.com/api/v4/projects/tagydes%2Fmicrosoft-connection/repository/archive.zip?sha=24f04b7b2b85fed0779f71f5177020e8d3ef84b0",
+                "reference": "24f04b7b2b85fed0779f71f5177020e8d3ef84b0",
                 "shasum": ""
             },
             "require": {
@@ -7379,7 +7379,7 @@
                 "php7",
                 "tagydes"
             ],
-            "time": "2020-05-22T08:54:33+00:00"
+            "time": "2020-06-05T19:36:40+00:00"
         },
         {
             "name": "talvbansal/laravel-ms-teams-notification-channel",

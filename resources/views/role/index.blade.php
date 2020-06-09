@@ -13,7 +13,7 @@
 
 <form method="post" action="{{ route('roles.update.all') }}">
 	@csrf
-	<div class="box">
+	<div class="container">
 		<section class="section">
 			<div class="card">
 				<div class="">

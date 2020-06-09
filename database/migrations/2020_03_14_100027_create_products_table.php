@@ -40,14 +40,14 @@ class CreateProductsTable extends Migration
             $table->string('billing')->nullable();
             $table->string('acquisition_type')->nullable();
 
-            $table->text('addons')->nullable();
             $table->string('category')->nullable();
             $table->string('upgrade_target_offers')->nullable();
+            
+            $table->text('addons')->nullable();
             $table->text('supported_billing_cycles')->nullable();
             $table->text('conversion_target_offers')->nullable();
             $table->text('resellee_qualifications')->nullable();
             $table->text('reseller_qualifications')->nullable();
-
             $table->timestamps();
 
             $table->index(['sku', 'instance_id']);

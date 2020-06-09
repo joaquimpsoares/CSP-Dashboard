@@ -39,8 +39,6 @@ Route::get('/analytics/show/', [
 ]);
 
 
-Route::get('/subscription.card', 'SubscriptionController@card')->middleware('permission:' . config('app.subscription_edit'))->name('subscription.card');
-Route::resource('/subscription', 'SubscriptionController');
 
 Route::get('/jobs', 'JobsController@index')->name('jobs');
 Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
@@ -290,7 +288,7 @@ Route::group(['middleware' => 'auth'], function () {
 			->middleware('permission:' . config('app.customer_edit'))
 			->name('customer.edit');
 			
-
+			
 			/*
 			Inicio Confirmar nivel de acesso reseller->provider
 			*/
@@ -300,6 +298,7 @@ Route::group(['middleware' => 'auth'], function () {
 			/*
 			fim Confirmar nivel de acesso reseller->provider
 			*/
+			
 		});
 		
 	});
@@ -326,7 +325,10 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/cart/customer/{customer}/add', 'CartController@addCustomer')->name('cart.add_customer');
 	Route::get('/cart/checkDomainAvailability', 'CartController@checkDomainAvailability')->name('cart.check_domain_availability');
 	Route::post('/cart/addMCAUser', 'CartController@addMCAUser')->name('cart.add_mca_user');
-	
+	Route::resource('/subscription', 'SubscriptionController');
+			Route::get('/subscription.card', 'SubscriptionController@card')
+			->middleware('permission:' . config('app.subscription_edit'))
+			->name('subscription.card');
 	
 	Route::resource('/cart', 'CartController');
 	Route::resource('/store', 'StoreController');

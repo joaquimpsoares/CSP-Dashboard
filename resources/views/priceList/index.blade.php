@@ -44,7 +44,7 @@
 								@forelse($priceLists as $priceList)
 								<tr>
 									<td></td>
-									<td><a href="#">{{ $priceList['name'] }}</a></td>
+								<td><a href="{{route('priceList.prices', $priceList['id']) }}">{{ $priceList['name'] }}</a></td>
 									<td>{{ $priceList['description'] }}</td>
 									<td>
 										<a href="{{route('priceList.clone', $priceList['id'])}}"><i class="fa fa-clone"></i></a>

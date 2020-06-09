@@ -1,7 +1,7 @@
 <form  method="POST" action="{{ "update/" . $reseller->id }}" class="col s12">
     @method('patch')
     @csrf
-    <div class="box col-xm-12">
+    <div class="container col-xm-12">
         <h2 class="h1-responsive f  ont-weight-bold text-center my-4">Customer Form</h2>
         <div class="row">
             <div class="col-md-9 mb-md-0 mb-5">

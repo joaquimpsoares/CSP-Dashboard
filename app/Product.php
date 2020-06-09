@@ -10,6 +10,7 @@ class Product extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'has_addons' => 'boolean',
         'addons' => 'collection',
         'supported_billing_cycles' => 'collection',
         'conversion_target_offers' => 'collection',
@@ -19,6 +20,7 @@ class Product extends Model
 
     public function format()
     {
+
         return [
             'vendor' => $this->vendor,
             'instance_id' => $this->instance_id,
@@ -39,6 +41,7 @@ class Product extends Model
             'billing' => $this->billing,
             'acquisition_type' => $this->acquisition_type,
             'addons' => $this->addons,
+            'getproductaddons' => $this->getAddons(),
             'category' => $this->category,
             'upgrade_target_offers' => $this->upgrade_target_offers,
             'supported_billing_cycles' => $this->supported_billing_cycles,
@@ -66,5 +69,9 @@ class Product extends Model
 
     public function path() {
         return url("/product/{$this->id}-" . Str::slug($this->socket_shutdown, '-'));
+    }
+
+    public function subsriptions() {
+        return $this->hasMany('App\Subscription', 'sku', 'product_id');
     }
 }
