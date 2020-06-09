@@ -20,6 +20,7 @@ class CheckProvider
     {
         
         $user = $this->getUser();
+        $userLevel = $this->getUserLevel();
         $provider = $request->route('provider');
 
         if ( $user->userLevel->name !== config('app.super_admin') && $user->userLevel->name !== config('app.super_admin') ) {
@@ -29,6 +30,7 @@ class CheckProvider
                     break;
                 
                 case config('app.provider'):
+                    dd($provider->id)
                     $check = $provider->id === $user->provider->id;
                     
                     if (!$check)

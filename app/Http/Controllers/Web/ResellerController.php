@@ -2,26 +2,29 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\User;
-use App\Status;
 use App\Country;
 use App\Customer;
-use App\Reseller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Traits\UserTrait;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ResellerRepositoryInterface;
 use App\Repositories\SubscriptionRepositoryInterface;
+use App\Reseller;
+use App\Status;
+use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 
 
 class ResellerController extends Controller
 {
+
+    use UserTrait;
     
     private $resellerRepository;
     private $customerRepository;
@@ -62,7 +65,8 @@ class ResellerController extends Controller
     
     
     public function store(Request $request) {
-
+        $user = $this->getUser();
+        dd($user);
         dd($request->all());
 
     $this->validator($request->all())->validate();

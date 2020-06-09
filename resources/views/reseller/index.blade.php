@@ -8,8 +8,9 @@
 			<div class="">
 				<i class="fas fa-dollar-sign fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
 				<div class="float-right">
-					
+					@if(Auth::user()->userLevel->id=== 3)
 					<a type="submit" href="{{route('reseller.create')}}" class="btn btn-success">{{ ucwords(__('messages.new_reseller')) }}</a>
+					@endif
 				</div>
 				<div class="card-body">
 					<h4 class="card-title">

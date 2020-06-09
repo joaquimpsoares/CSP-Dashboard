@@ -4,15 +4,16 @@
 @section('content')
 
 
-<div class="box">
+<div class="container">
     <section class="section">
         <div class="card">
             <div class="row">
-                <div class="col-md-3"></div>
+                <div class="col-md-2"></div>
                 <div class="col-md-8">
                     <div class="row">
+
                         @if($cart)
-                        <form action="{{ route('cart.checkout') }}" method="post" >
+                        <form action="{{ route('cart.checkout') }}" method="POST" >
                             @csrf
                             <input type="hidden" value="{{ $cart->token }}" name="token" />
                             <div class="row">
@@ -83,91 +84,105 @@
                                             @endforelse   
                                         </tbody>
                                     </table>
+
                                     <div class="row float-right">
-                                        <a href="{{ route('store.index') }}" class="btn btn-primary">{{ ucwords(__('messages.continue_shopping')) }}</a>
-                                        <a href="{{ route('cart.clear') }}" class="btn btn-danger">{{ ucwords(__('messages.clear_cart')) }}</a>
-                                        <button type="submit" class="btn btn-success">{{ ucwords(__('messages.checkout')) }}</a>
-                                        </div>
+                                        <a href="{{ route('store.index') }}" class="btn btn-primary">
+                                            {{ ucwords(__('messages.continue_shopping')) }}
+                                        </a>
+                                        <a href="{{ route('cart.clear') }}" class="btn btn-danger">
+                                            {{ ucwords(__('messages.clear_cart')) }}
+                                        </a>
+                                        <button type="submit" class="btn btn-success">
+                                            {{ ucwords(__('messages.checkout')) }}
+                                        </button>
                                     </div>
+
                                 </div>
-                            </form>
-                            @else
-                            <div class="row">
-                                <div class="col">
-                                    {{ ucwords(__('messages.empty_cart')) }}
-                                </div>
+                                
                             </div>
                             <div class="row">
-                                <div class="col">
-                                    <a href="{{ route('store.index') }}" class="btn btn-primary">{{ ucwords(__('messages.continue_shopping')) }}</a>
-                                </div>
+                                &nbsp;
                             </div>
-                            @endif
+                            
+                        </form>
+
+                        @else
+                        <div class="row">
+                            <div class="col">
+                                {{ ucwords(__('messages.empty_cart')) }}
+                            </div>
                         </div>
+                        <div class="row">
+                            <div class="col">
+                                <a href="{{ route('store.index') }}" class="btn btn-primary">{{ ucwords(__('messages.continue_shopping')) }}</a>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
-    
-    
-    
-    
-    @endsection
-    
-    @section('scripts')
-    <script>
-        $(document).ready(function() { 
-            $('.product-quantity input').change( function() {
-                updateProductQuantity(this);
-                
-            });
-            
-            $('.billing_cycle').change( function() {
-                console.log(this.id);
-                $.get( "/cart/item/changeBillingCycle?token={{ $cart->token ?? null}}&item=" + this.id + "&value=" + this.value, function() {
-                    
-                })
-                .done(function(data) {
-                    console.log('ok');
-                })
-                .fail(function(data) {
-                    console.log(data);
-                    
-                });
-            });
+        </div>
+    </section>
+</div>
+
+
+
+
+@endsection
+
+@section('scripts')
+<script>
+    $(document).ready(function() { 
+        $('.product-quantity input').change( function() {
+            updateProductQuantity(this);
+
         });
-        
-        function updateProductQuantity(item) {
-            $.get( "/cart/item/" + item.name + "/quantity/" + item.value, function() {
-                //action begining
+
+        $('.billing_cycle').change( function() {
+            console.log(this.id);
+            $.get( "/cart/item/changeBillingCycle?token={{ $cart->token ?? null}}&item=" + this.id + "&value=" + this.value, function() {
+
             })
             .done(function(data) {
-                updateProductSubTotal(item);
+                console.log('ok');
             })
             .fail(function(data) {
                 console.log(data);
+
+            });
+        });
+    });
+
+    function updateProductQuantity(item) {
+        $.get( "/cart/item/" + item.name + "/quantity/" + item.value, function() {
+                //action begining
+            })
+        .done(function(data) {
+            updateProductSubTotal(item);
+        })
+        .fail(function(data) {
+            console.log(data);
                 // some error
             });
-        }
-        
-        function updateProductSubTotal(item) {
-            var productRow = $(item).parent().parent().parent().parent();
-            var price = parseFloat(productRow.children('.product-price').text());
-            var quantity = item.value;
-            var linePrice = price * quantity;
-            
-            productRow.children('.product-line-price').each(function () {
-                
-                $(this).text(linePrice.toFixed(2));
-                
-            });
-            
-        }
-        
-        function recalculateCart()
-        {
-            return true;
-        }
-    </script>
-    @endsection
+    }
+
+    function updateProductSubTotal(item) {
+        var productRow = $(item).parent().parent().parent().parent();
+        var price = parseFloat(productRow.children('.product-price').text());
+        var quantity = item.value;
+        var linePrice = price * quantity;
+
+        productRow.children('.product-line-price').each(function () {
+
+            $(this).text(linePrice.toFixed(2));
+
+        });
+
+    }
+
+    function recalculateCart()
+    {
+        return true;
+    }
+</script>
+@endsection

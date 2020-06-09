@@ -193,10 +193,17 @@ Route::group(['middleware' => 'auth'], function () {
 	// Routes that platform managers and providers can access
 	Route::group(['middleware' => ['role:Super Admin|Admin|Provider']], function () {
 		
+		Route::get('/reseller/create', 'ResellerController@create')
+			->middleware('permission:' . config('app.reseller_create'))->name('reseller.create');
+
+		Route::post('/reseller', 'ResellerController@store')
+			->middleware('permission:' . config('app.reseller_create'))->name('reseller.store');
+
 		Route::group(['middleware' => ['check_provider']], function () {
 			
-			Route::get('/reseller', 'ResellerController@index')
-			->middleware('permission:' . config('app.reseller_create'))->name('reseller.create');
+			/*Route::get('/reseller', 'ResellerController@index')
+			->middleware('permission:' . config('app.reseller_create'))->name('reseller.index');*/
+
 			
 			/*Route::get('/priceList/provider/{provider}', 'PriceListController@getProviderPriceList')
 			->middleware('permission:' . config('app.price_list_show'))->name('priceLists.provider_price_list');*/
@@ -232,8 +239,7 @@ Route::group(['middleware' => 'auth'], function () {
 			
 
 			// Route::resource('reseller', 'ResellerController');
-			Route::get('/reseller/create', 'ResellerController@create')
-			->middleware('permission:' . config('app.reseller_show'))->name('reseller.create');
+			
 
 			Route::get('/reseller/{reseller}-{slug}', 'ResellerController@show')
 			->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');

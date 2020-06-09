@@ -44,11 +44,14 @@
                                                 <div class="form-group">
                                                     <label for="status">{{ ucwords(trans_choice('messages.country', 1)) }}</label>
                                                     <div class="input-group-icon">
-                                                        <div class="country" name="country">
-                                                            {{-- <option selected>Choose country</option> --}}
-                                                            @foreach ($countries as $country)    
-                                                            <option value="{{$country->id}}">{{$country->name}}</option>
-                                                            @endforeach
+                                                        <div class="" name="">
+                                                            <select class="countryName" name="country_id">
+                                                                @foreach ($countries as $country)    
+                                                                <option value="{{$country->id}}">
+                                                                    {{$country->name}}
+                                                                </option>
+                                                                @endforeach
+                                                            </select>
                                                         </div>                                          
                                                     </div>
                                                 </div>
@@ -89,12 +92,12 @@
                                         <div class="col-md-12">
                                             <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
                                             <div class="form-group">
-                                                <div name="status" class="status form-select" sf-validate="required">
+                                                <select name="status_id" class="form-select" sf-validate="required">
                                                     <option selected></option>
                                                     @foreach ($statuses as $status)    
                                                     <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
                                                     @endforeach
-                                                </div>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -131,17 +134,13 @@
 @section('scripts')
 
 <script>
-    // In your Javascript (external .js resource or <script> tag)
-        $('.country').select2({
-            placeholder: 'Select an option'
-        });
-    </script>
-    <script>
-        // In your Javascript (external .js resource or <script> tag)
-            $('.status').select2({
-                placeholder: 'Select an option'
-            });
-        </script>
-    
-    @endsection
-    
+
+    $('.status').select2({
+        placeholder: 'Select an option'
+    });
+
+    //$('.countryName').select2();
+</script>
+
+@endsection
+

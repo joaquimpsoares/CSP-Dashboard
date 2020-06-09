@@ -263,7 +263,7 @@ class CartController extends Controller
     {
         $user = $this->getUser();
 
-        $cart = Cart::where('token', $token)->first();
+        $cart = Cart::where('token', $token)->with('products')->first();
 
         if ($user->id !== $cart->user_id)
             return abort(401);

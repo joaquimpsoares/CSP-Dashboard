@@ -6,7 +6,5 @@ interface UserRepositoryInterface
 {
 	public function all();
 
-	// public function canInteractWithCustomer(Customer $customer);
-
-	// public function customersOfReseller(Reseller $reseller);
+	public function create($user = null, $type = null, $model = null);
 }

@@ -17,7 +17,7 @@
                         <div class="col-md-3"></div>
                         <div class="col-md-6">
                             <div class="row">
-                                {{-- <form method="POST" action="{{ route('reseller.store') }}" class="col s12"> --}}
+                                <form method="POST" action="{{ route('reseller.store') }}" class="col s12">
                                     @csrf
                                     <div class="row">
                                         <div class="input-field col s4">
@@ -108,7 +108,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="button btn btn-primary">Create</button>
+                                <button type="submit" class="btn btn-primary">Create</button>
                             </form>
                         </div>
                     </div>

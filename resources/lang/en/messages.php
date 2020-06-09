@@ -189,6 +189,6 @@ return [
     'customer_price' => 'Customer Price',
     'manage' => 'manage',
     'setting' => 'setting|settings',
-
+    'place_order' => 'place order',
 
 ];
