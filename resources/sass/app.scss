@@ -6,3 +6,46 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+.badge-primary {
+    color: #fff;
+    background-color: $brand-color;
+}
+
+a:hover {
+    color: $brand-color;
+    text-decoration: underline;
+  }
+
+  .btn-primary {
+    color: #fff;
+    background-color: $brand-color;
+    border-color: $brand-color;
+  }
+
+  .btn-primary:hover {
+    color: #fff;
+    background-color: $brand-color-hoover;
+    border-color: $brand-color-hoover;
+  }
+
+
+  .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: $brand-color;
+}
+
+.genric-btn.primary-brand {
+    color: #fff;
+    background: $brand-color;
+    border: 1px solid transparent;
+}
+
+.header_area .navbar .nav .nav-item:hover .nav-link, .header_area .navbar .nav .nav-item.active .nav-link {
+    color: $brand-color;
+}
+
+.header_area .navbar .nav .nav-item.submenu ul .nav-item:hover .nav-link {
+    background: $brand-color;
+    color: #fff;
+  }

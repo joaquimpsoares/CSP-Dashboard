@@ -10931,3 +10931,47 @@ a.text-dark:focus {
   }
 }
 
+.badge-primary {
+  color: #fff;
+  background-color: #c5322d;
+}
+
+a:hover {
+  color: #c5322d;
+  text-decoration: underline;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #c5322d;
+  border-color: #c5322d;
+}
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #921e1a;
+  border-color: #921e1a;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #c5322d;
+}
+
+.genric-btn.primary-brand {
+  color: #fff;
+  background: #c5322d;
+  border: 1px solid transparent;
+}
+
+.header_area .navbar .nav .nav-item:hover .nav-link,
+.header_area .navbar .nav .nav-item.active .nav-link {
+  color: #c5322d;
+}
+
+.header_area .navbar .nav .nav-item.submenu ul .nav-item:hover .nav-link {
+  background: #c5322d;
+  color: #fff;
+}
+

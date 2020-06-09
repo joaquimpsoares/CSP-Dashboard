@@ -106,7 +106,7 @@
                                 <br>
                                 <div class="control">
                                     <div class="text-center text-md-left">
-                                        <a data-toggle="modal" data-target="#centralModalInfo" class="genric-btn success">{{ ucwords(trans_choice('messages.update', 1)) }}</a>
+                                        <a data-toggle="modal" data-target="#centralModalInfo" class="genric-btn primary-brand">{{ ucwords(trans_choice('messages.update', 1)) }}</a>
                                         <div class="modal fade" id="centralModalInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
                                         aria-hidden="true" data-backdrop="false">
                                         <div class="modal-dialog modal-notify modal-info" role="document">

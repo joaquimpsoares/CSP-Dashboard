@@ -1,4 +1,14 @@
 <!--================Header Menu Area =================-->
+
+<style>
+    $color-red: #FF0000;
+    $color-green: #00FF00;
+    $color-blue: #0000FF;
+    .badge-primary {
+    color: #fff;
+    background-color: $color-red;
+}
+</style>
 <header class="header_area">
       
     <div class="main_menu">
@@ -144,14 +154,14 @@
                         <ul class="nav navbar-nav navbar-right">
                             <li class="nav-item">
                                 <a href="{{ route('cart.pending') }}" class="cart">
-                                    <span class="badge badge-pill badge-primary aqua-gradient" style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span>
                                     <i class="lnr lnr lnr-cart"></i>
+                                    <span class="badge badge-pill badge-primary aqua-gradient">{{ Auth::user()->unreadnotifications->count() }}</span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="#" class="search">
-                                    <span class="badge badge-pill badge-primary aqua-gradient   " style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span>
                                     <i class="lnr lnr-magnifier"></i>
+                                    <span class="badge badge-pill badge-primary aqua-gradient">{{ Auth::user()->unreadnotifications->count() }}</span>
                                 </a>
                             </li>
                         </ul>

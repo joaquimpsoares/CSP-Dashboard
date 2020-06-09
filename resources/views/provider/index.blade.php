@@ -12,7 +12,7 @@
 			<div class="">
 				<i class="fas fa-dollar-sign fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
 				<div class="float-right">
-					<a type="submit" href="{{route('provider.create')}}" class="btn btn-success">{{ ucwords(__('messages.new_provider')) }}</a>
+					<a type="submit" href="{{route('provider.create')}}" class="btn btn-primary">{{ ucwords(__('messages.new_provider')) }}</a>
 				</div>
 				<div class="card-body">
 					<h4 class="card-title"><a>{{ ucwords(trans_choice('messages.provider_table', 1)) }}</a></h4>

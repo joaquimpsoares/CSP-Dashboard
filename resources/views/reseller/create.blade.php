@@ -3,6 +3,8 @@
 
 @section('content')
 
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
 <div class="container">
     <section class="section">
@@ -32,14 +34,19 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="input-field col s4">
+                                        <div class="input-field col s4">    
+                                            <select class="js-example-basic-multiple" name="states[]" multiple="multiple">
+                                                <option value="AL">Alabama</option>
+                                                  ...
+                                                <option value="WY">Wyoming</option>
+                                              {{-- </select>                                        
                                             <label for="country_id">{{ ucwords(trans_choice('messages.country', 1)) }}</label>
-                                            <select name="country_id" class="browser-default custom-select">
+                                            <select name="country_id" class=" js-example-basic-single browser-default custom-select">
                                                 <option selected>Open to select country</option>
                                                 @foreach ($countries as $country)    
                                                 <option value="{{$country->id}}">{{$country->name}}</option>
                                                 @endforeach
-                                            </select>
+                                            </select> --}}
                                         </div>
                                     </div>
                                     <div class="row">
@@ -119,5 +126,10 @@
 
 @section('scripts')
 
+<script>
+$(document).ready(function() {
+    $('.js-example-basic-multiple').select2();
+});
+</script>
 @endsection
 

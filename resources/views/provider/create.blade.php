@@ -2,7 +2,8 @@
 
 
 @section('content')
-
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
 <div class="container">
     <section class="section">
@@ -41,45 +42,20 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group">
+                                                    <label for="status">{{ ucwords(trans_choice('messages.country', 1)) }}</label>
                                                     <div class="input-group-icon">
-                                                        <select name="country" class="selectpicker form-select" sf-validate="required">
-                                                            <option selected>Open to select country</option>
+                                                        <div class="country" name="country">
+                                                            {{-- <option selected>Choose country</option> --}}
                                                             @foreach ($countries as $country)    
                                                             <option value="{{$country->id}}">{{$country->name}}</option>
                                                             @endforeach
-                                                        </select>
+                                                        </div>                                          
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    {{-- <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <div class="form-group">
-                                                    <label for="my-select">Text</label>
-                                                    <select name="country_id" class="custom-select">
-                                                        <option selected>Open to select country</option>
-                                                        @foreach ($countries as $country)    
-                                                        <option value="{{$country->id}}">{{$country->name}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> --}}
-                                    {{-- <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="country_id">{{ ucwords(trans_choice('messages.country', 1)) }}</label>
-                                            
-                                            <select name="country_id" class="custom-select">
-                                                <option selected>Open to select country</option>
-                                                @foreach ($countries as $country)    
-                                                <option value="{{$country->id}}">{{$country->name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div> --}}
+                                    
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -111,42 +87,42 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
+                                            <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
                                             <div class="form-group">
-                                                <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
-                                                <select name="status" class="selectpicker form-select" sf-validate="required">
+                                                <div name="status" class="status form-select" sf-validate="required">
                                                     <option selected></option>
                                                     @foreach ($statuses as $status)    
                                                     <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
                                                     @endforeach
-                                                </select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                        <hr>
-                                        <div class="row">
-                                            <div class="form-group">
-                                                <h3>Invite Provider</h3>
-                                                <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="form-group">
-                                                <h3>Send Notification?</h3>
-                                                <input type="checkbox" name="sendInvitation" value="1" class="form-control" value="{{ old('sendInvitation') }}" checked="checked">
-                                            </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <h3>Invite Provider</h3>
+                                            <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}">
                                         </div>
                                     </div>
-                                    <button type="submit" class="button is-rounded is-primary is-outlined">Create</button>
-                                </form>
-                            </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <h3>Send Notification?</h3>
+                                            <input type="checkbox" name="sendInvitation" value="1" class="form-control" value="{{ old('sendInvitation') }}" checked="checked">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="button is-rounded is-primary is-outlined">Create</button>
+                            </form>
                         </div>
-                        <div class="col-md-3"></div>
                     </div>
+                    <div class="col-md-3"></div>
                 </div>
             </div>
         </div>
-    </section>
-</div>
+    </div>
+</section>
+
 
 
 @endsection
@@ -154,5 +130,18 @@
 
 @section('scripts')
 
-@endsection
-
+<script>
+    // In your Javascript (external .js resource or <script> tag)
+        $('.country').select2({
+            placeholder: 'Select an option'
+        });
+    </script>
+    <script>
+        // In your Javascript (external .js resource or <script> tag)
+            $('.status').select2({
+                placeholder: 'Select an option'
+            });
+        </script>
+    
+    @endsection
+    
