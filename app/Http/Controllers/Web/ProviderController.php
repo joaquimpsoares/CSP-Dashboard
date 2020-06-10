@@ -184,7 +184,7 @@ class ProviderController extends Controller
                 'status_id' => $validate['status_id']
             ]);
 
-            $mainUser = $this->userRepository->create($validate, 'provider', $provider);
+            $this->userRepository->create($validate, 'provider', $provider);
 
             $priceList = PriceList::create([
                 'name' => 'Price List - ' . $provider->company_name,
