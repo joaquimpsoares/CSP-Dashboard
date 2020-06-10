@@ -2,23 +2,26 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Status;
 use App\Country;
 use App\Customer;
-use App\Reseller;
+use App\Http\Traits\UserTrait;
 use App\PriceList;
+use App\Repositories\CustomerRepositoryInterface;
+use App\Repositories\SubscriptionRepositoryInterface;
+use App\Repositories\UserRepositoryInterface;
+use App\Reseller;
+use App\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use App\Repositories\UserRepositoryInterface;
-use App\Repositories\CustomerRepositoryInterface;
-use App\Repositories\SubscriptionRepositoryInterface;
 
 
 
 
 class CustomerController extends Controller
 {
+    use UserTrait;
+
     private $subscriptionRepository;
     private $customerRepository;
     private $userRepository;
@@ -52,6 +55,8 @@ class CustomerController extends Controller
 
         $validate = $this->validator($request->all())->validate();
 
+        $user = $this->getUser();
+
         try {
             DB::beginTransaction();
 
@@ -67,12 +72,10 @@ class CustomerController extends Controller
                 'status_id' => $validate['status_id']
             ]);
 
+            $customer->resellers()->attach($user->reseller->id);
+
             $mainUser = $this->userRepository->create($validate, 'customer', $customer);
 
-            // dd($mainUser);
-            
-            // $provider->priceList()->associate($priceList);
-            // $provider->save();
             
             DB::commit();
         } catch (\PDOException $e) {

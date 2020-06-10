@@ -123,6 +123,8 @@ class UserRepository implements UserRepositoryInterface
                     # code...
                     break;
             }
+
+            return $newUser;
             
         }
     }

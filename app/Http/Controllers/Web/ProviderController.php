@@ -172,17 +172,7 @@ class ProviderController extends Controller
         try {
             DB::beginTransaction();
 
-            $provider =  Provider::create([
-                'company_name' => $validate['company_name'],
-                'nif' => $validate['nif'],
-                'country_id' => $validate['country_id'],
-                'address_1' => $validate['address_1'],
-                'address_2' => $validate['address_2'],
-                'city' => $validate['city'],
-                'state' => $validate['state'],
-                'postal_code' => $validate['postal_code'],
-                'status_id' => $validate['status_id']
-            ]);
+            $provider = $this->providerRepository->create($validate);
 
             $this->userRepository->create($validate, 'provider', $provider);
 
