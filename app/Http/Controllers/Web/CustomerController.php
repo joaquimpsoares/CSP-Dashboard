@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Status;
 use App\Country;
 use App\Customer;
 use App\Reseller;
-use App\Http\Requests\Request;
-use Illuminate\Support\Collection;
+use App\PriceList;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use App\Repositories\UserRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\SubscriptionRepositoryInterface;
+
 
 
 
@@ -16,11 +21,13 @@ class CustomerController extends Controller
 {
     private $subscriptionRepository;
     private $customerRepository;
-    
-    public function __construct(CustomerRepositoryInterface $customerRepository, SubscriptionRepositoryInterface $subscriptionRepository)
+    private $userRepository;
+
+    public function __construct(CustomerRepositoryInterface $customerRepository, SubscriptionRepositoryInterface $subscriptionRepository, UserRepositoryInterface $userRepository)
     {
         $this->customerRepository = $customerRepository;
         $this->subscriptionRepository = $subscriptionRepository;
+        $this->userRepository = $userRepository;
         
     }
     
@@ -33,12 +40,57 @@ class CustomerController extends Controller
     
     
     public function create(Customer $customer){
+
+        $countries = Country::get();
+        $statuses = Status::get();
         
-        return view('customer.create', compact('customer'));
+        return view('customer.create', compact('customer','countries','statuses'));
         
     }
     
-    public function store(Request $request) { }
+    public function store(Request $request) { 
+
+        $validate = $this->validator($request->all())->validate();
+
+        try {
+            DB::beginTransaction();
+
+            $customer =  Customer::create([
+                'company_name' => $validate['company_name'],
+                'nif' => $validate['nif'],
+                'country_id' => $validate['country_id'],
+                'address_1' => $validate['address_1'],
+                'address_2' => $validate['address_2'],
+                'city' => $validate['city'],
+                'state' => $validate['state'],
+                'postal_code' => $validate['postal_code'],
+                'status_id' => $validate['status_id']
+            ]);
+
+            $mainUser = $this->userRepository->create($validate, 'customer', $customer);
+
+            // dd($mainUser);
+            
+            // $provider->priceList()->associate($priceList);
+            // $provider->save();
+            
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            if ($e->errorInfo[1] == 1062) {
+                $errorMessage = "message.user_already_exists";
+            } else {
+                $errorMessage = "message.error";
+            }
+            return redirect()->route('customer.index')
+            ->with([
+                'alert' => 'danger', 
+                'message' => trans('messages.Provider Created unsuccessfully') . " (" . trans($errorMessage) . ")."
+            ]);
+        }
+
+        return redirect()->route('customer.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Created successfully')]);
+    }
     
     
     public function show(Customer $customer) {
@@ -81,4 +133,20 @@ class CustomerController extends Controller
         
         return $user;
     }
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'company_name' => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
+            'nif' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
+            'email' => ['required', 'email', 'max:255'],
+            'address_1' => ['required', 'string', 'max:255'],
+            'address_2' => ['nullable', 'string', 'max:255'],
+            'country_id' => ['required', 'integer', 'min:1'],
+            'city' => ['required', 'string', 'max:255'],
+            'state' => ['required', 'string', 'max:255'],
+            'postal_code' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
+            'status_id' => ['required', 'integer', 'exists:statuses,id'],
+            'sendInvitation' => ['nullable', 'integer'],
+        ]);
+    } 
 }

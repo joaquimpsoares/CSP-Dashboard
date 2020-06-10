@@ -166,6 +166,7 @@ class ProviderController extends Controller
     public function store(Request $request)
     {
 
+        // dd($request->all());
         $validate = $this->validator($request->all())->validate();
 
         try {
@@ -250,7 +251,7 @@ class ProviderController extends Controller
             'nif' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
             'email' => ['required', 'email', 'max:255'],
             'address_1' => ['required', 'string', 'max:255'],
-            'address_2' => ['required', 'string', 'max:255'],
+            'address_2' => ['nullable', 'string', 'max:255'],
             'country_id' => ['required', 'integer', 'min:1'],
             'city' => ['required', 'string', 'max:255'],
             'state' => ['required', 'string', 'max:255'],

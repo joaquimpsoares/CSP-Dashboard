@@ -11,15 +11,12 @@ use App\Reseller;
 use App\Subscription;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Symfony\Component\Console\Input\Input;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProviderRepositoryInterface;
 use App\Repositories\ResellerRepositoryInterface;
 use App\Repositories\SubscriptionRepositoryInterface;
-use PhpParser\Node\Stmt\Foreach_;
 use Tagydes\MicrosoftConnection\Facades\Subscription as SubscriptionFacade;
 use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 

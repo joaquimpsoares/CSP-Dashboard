@@ -22,8 +22,7 @@ class UserRepository implements UserRepositoryInterface
 	{
         $user = $this->getUser();
 
-
-        switch ($this->getUserLevel()) {
+		switch ($this->getUserLevel()) {
             case config('app.super_admin'):
             $users = User::with(['country' => function ($query) {
                 $query->where('name', 'message.active');
@@ -75,6 +74,7 @@ class UserRepository implements UserRepositoryInterface
     public function create($user = null, $type = null, $model = null) {
 
         if (!empty($user) && !empty($type) && !empty($model)) {
+
             $user = [
                 'email' => $user['email'],
                 'password' => Hash::make(Str::random(20)),

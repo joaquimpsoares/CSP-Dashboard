@@ -1,135 +1,137 @@
 @extends('layouts.app')
 
-
 @section('content')
 
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-
-<div class="container">
-    <section class="section">
-        <div class="card">
-            <div class="">
-                <i class="fab fa-product-hunt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
-                <div class="card-body">
-                    <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.new_reseller', 2)) }}</a></h4>
-                    <div class="row">
-                        <div class="col-md-3"></div>
-                        <div class="col-md-6">
-                            <div class="row">
-                                <form method="POST" action="{{ route('reseller.store') }}" class="col s12">
-                                    @csrf
-                                    <div class="row">
-                                        <div class="input-field col s4">
-                                            <div class="md-form">
-                                                <input type="text" id="company_name" name="company_name" class="form-control" value="{{ old('company_name') }}">
-                                                <label for="company_name">{{ ucwords(trans_choice('messages.company_name', 1)) }}</label>
-                                            </div>
-                                        </div>
-                                        <div class="input-field col s4">
-                                            <div class="md-form">
-                                                <input type="text" id="nif" name="nif" class="form-control" value="{{ old('nif') }}">
-                                                <label for="nif">{{ ucwords(trans_choice('messages.nif', 1)) }}</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="input-field col s4">    
-                                            <select class="js-example-basic-multiple" name="states[]" multiple="multiple">
-                                                <option value="AL">Alabama</option>
-                                                  ...
-                                                <option value="WY">Wyoming</option>
-                                              {{-- </select>                                        
-                                            <label for="country_id">{{ ucwords(trans_choice('messages.country', 1)) }}</label>
-                                            <select name="country_id" class=" js-example-basic-single browser-default custom-select">
-                                                <option selected>Open to select country</option>
-                                                @foreach ($countries as $country)    
-                                                <option value="{{$country->id}}">{{$country->name}}</option>
-                                                @endforeach
-                                            </select> --}}
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="input-field col s4">
-                                            <div class="md-form">
-                                                <input type="text" id="address_1" name="address_1" class="form-control" value="{{ old('address_1') }}">
-                                                <label for="address_1">{{ ucwords(trans_choice('messages.address_1', 1)) }}</label>
-                                            </div>
-                                        </div>
-                                        <div class="input-field col s4">
-                                            <div class="md-form">
-                                                <input type="text" id="address_2" name="address_2" class="form-control" value="{{ old('address_2') }}">
-                                                <label for="address_2">{{ ucwords(trans_choice('messages.address_2', 1)) }}</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="input-field col s4">
-                                            <div class="md-form">
-                                                <input type="text" id="city" name="city" class="form-control" value="{{ old('city') }}">
-                                                <label for="city">{{ ucwords(trans_choice('messages.city', 1)) }}</label>
-                                            </div>
-                                        </div>
-                                        <div class="input-field col s4">
-                                            <div class="md-form">
-                                                <input type="text" id="state" name="state" class="form-control" value="{{ old('state') }}">
-                                                <label for="state">{{ ucwords(trans_choice('messages.state', 1)) }}</label>
-                                            </div>
-                                        </div>
-                                        <div class="input-field col s4">
-                                            <div class="md-form">
-                                                <input type="text" id="postal_code" name="postal_code" class="form-control" value="{{ old('postal_code') }}">
-                                                <label for="postal_code">{{ ucwords(trans_choice('messages.postal_code', 1)) }}</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="input-field col s4">
-                                            <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
-                                            <select name="status" class="browser-default custom-select">
-                                                <option selected></option>
-                                                @foreach ($statuses as $status)    
-                                                <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div class="row">
-                                        <div class="input-field col s4">
-                                            <h3>Invite Provider</h3>
-                                            <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="input-field col s4">
-                                            <h3>Send Notification?</h3>
-                                            <input type="checkbox" name="sendInvitation" value="1" class="form-control" value="{{ old('sendInvitation') }}" checked="checked">
-                                        </div>
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Create</button>
-                            </form>
-                        </div>
+<div class="container mt-5">
+  <section class="dark-grey-text">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-12">
+            <form method="POST" action="{{ route('reseller.store') }}" class="col s12">
+              @csrf              
+              <h1>{{ ucwords(trans_choice('messages.new_reseller', 1)) }}</h1>
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <label for="company_name" class="">{{ ucwords(trans_choice('messages.company_name', 1)) }}</label>
+                  <input type="text" id="company_name" name="company_name" class="form-control" value="{{ old('company_name') }}">
+                </div>
+                <div class="col-md-6 mb-2">
+                  <label for="nif">{{ ucwords(trans_choice('messages.nif', 1)) }}</label>
+                  <input type="text" id="nif" name="nif" class="form-control" value="{{ old('nif') }}">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12 mb-2">
+                  <label for="country">{{ucwords(trans_choice('messages.country', 1))}}</label>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="country_id"><i class="fa fa-plane" aria-hidden="true"></i>
+                      </label>
                     </div>
-                    <div class="col-md-3"></div>
+                    <select name="country_id" class="custom-select" id="country_id" required>
+                      <option value="">Choose...</option>
+                      @foreach ($countries as $country)    
+                      <option value="{{$country->id}}">{{$country->name}}</option>
+                      @endforeach
+                    </select>
+                    <div class="invalid-feedback">
+                      {{ucwords(trans_choice('messages.Please_select_a_valid_country', 1))}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <label for="address" class="">{{ucwords(trans_choice('messages.address_1', 1))}}</label>
+              <input type="text" id="address_1" name="address_1" class="form-control mb-4" value="{{ old('address_1') }}" placeholder="1234 Main St">
+              <label for="address-2" class="">{{ucwords(trans_choice('messages.address_2', 1))}} (optional)</label>
+              <input type="text" id="address_2" name="address_2" class="form-control mb-4" value="{{ old('address_2') }}" placeholder="Appartment or numer">
+              <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                  <label for="address-2" class="">{{ucwords(trans_choice('messages.city', 1))}}</label>
+                  <input type="text" id="city" name="city" class="form-control mb-4" value="{{ old('city') }}">
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                  <label for="zip">{{ucwords(trans_choice('messages.state', 1))}}</label>
+                  <input name="state" type="text" class="form-control" id="zip" placeholder="" value="{{ old('state') }}" required >
+                  <div class="invalid-feedback">
+                    Zip code required.
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                  <label for="zip">Zip</label>
+                  <input name="postal_code" type="text" class="form-control" id="zip" placeholder="" value="{{ old('postal_code') }}" required>
+                  <div class="invalid-feedback">
+                    Zip code required.
+                  </div>
+                </div>
+                
+              </div>
+              <hr>
+              <div class="input-group mb-4">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">@</span>
+                </div>
+                <input name="email" type="text" class="form-control py-0" aria-describedby="basic-addon1" value="{{ old('email') }}" placeholder="youremail@example.com">
+              </div>
+              <div class="input-group mb-4">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1"><i class="fa fa-user" aria-hidden="true"></i>
+                  </span>
+                </div>
+                <input name="username" type="text" class="form-control py-0" aria-describedby="basic-addon1" value="{{ old('username') }}" placeholder="Username (Optional)">
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                    <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
+                    <div class="form-group">
+                        <select name="status_id" class="form-select" sf-validate="required">
+                            <option selected></option>
+                            @foreach ($statuses as $status)    
+                            <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
             </div>
+              {{-- 
+                <div class="mb-1">
+                  <input type="checkbox" class="form-check-input filled-in" id="chekboxRules">
+                  <label class="form-check-label" for="chekboxRules">I accept the terms and conditions</label>
+                </div>
+                <div class="mb-1">
+                  <input type="checkbox" class="form-check-input filled-in" id="safeTheInfo">
+                  <label class="form-check-label" for="safeTheInfo">Save this information for next time</label>
+                </div>
+                <div class="mb-1">
+                  <input type="checkbox" class="form-check-input filled-in" id="subscribeNewsletter">
+                  <label class="form-check-label" for="subscribeNewsletter">Subscribe to the newsletter</label>
+                </div>
+                <hr>
+              </form>
+              <hr class="mb-4">
+              <button class="btn btn-primary btn-lg btn-block" type="submit">Place order</button>
+            </div> --}}
+          </div>
         </div>
+        {{-- <button class="btn btn-primary btn-lg btn-block" type="submit">Next step</button> --}}
+        <div class="col-lg-4 mb-4">
+          <button class="btn btn-primary btn-lg submit_btn" type="submit">{{ucwords(trans_choice('messages.create', 1))}}</button>
+        </div>
+      </div>
     </div>
-</section>
+  </section>
 </div>
-
 
 @endsection
 
-
 @section('scripts')
-
 <script>
-$(document).ready(function() {
-    $('.js-example-basic-multiple').select2();
-});
+  .form-group.is-invalid {
+    .invalid-feedback {
+      display: block;
+    }
+  }
 </script>
+
 @endsection
 

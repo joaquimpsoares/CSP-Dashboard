@@ -9,6 +9,20 @@ use Webpatser\Countries\Countries;
 
 class Customer extends Model
 {
+    protected $guards = [];
+
+    protected $fillable = ['company_name',
+							'nif',
+							'country_id',
+							'address_1',
+							'address_2',
+							'city',
+							'state',
+                            'postal_code',
+                            'provider_id',
+							'status_id'];
+
+                            
     public function format()
     {
         return [
