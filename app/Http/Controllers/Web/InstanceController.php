@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Instance;
+use App\Provider;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -16,14 +17,15 @@ class InstanceController extends Controller
         $instances = Instance::all();
         
         return view('packages.microsoft', compact('instances'));
-        
-        // return view('packages.microsoft.conf', compact('instances'));
     }
     
-    public function create()
+    public function create(Request $request)
     {   
+        $provider_id = $request->provider;
+
+        $provider = Provider::findorfail($provider_id);
         
-        return view('packages.microsoft.create');
+        return view('packages.microsoft.create', compact('provider'));
     }
     
     public function store(Request $request)

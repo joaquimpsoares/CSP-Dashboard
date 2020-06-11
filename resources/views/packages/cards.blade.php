@@ -17,7 +17,7 @@
                 <h5 class="card-title"> {{ ucwords(trans_choice('messages.name', 1)) }}: {{ ucwords(trans_choice('messages.microsoft_instance', 1)) }}</h5>
             </div>
             <div class="p-3 text-right">
-                <a href=" {{ route('instances.create', $provider->id) }}" class="btn submit_btn">{{ ucwords(trans_choice('messages.add_new_instance', 1)) }}</a>
+                <a href=" {{ route('instances.create', ['provider' => $provider->id]) }}" class="btn submit_btn">{{ ucwords(trans_choice('messages.add_new_instance', 1)) }}</a>
             </div>
         </div>
     </div>

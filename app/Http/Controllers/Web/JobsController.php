@@ -33,6 +33,7 @@ class JobsController extends Controller
         $jobs =  $this->jobs->get();
         
         $order = [];
+        $data = [];
         foreach($jobs as $payload){
             $payload_json = json_decode( $payload->payload );
             $data = unserialize( $payload_json->data->command );

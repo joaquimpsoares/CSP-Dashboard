@@ -1,10 +1,9 @@
-
+<form  method="POST" action="{{ route('provider.update', $provider->id) }}" class="col s12">
+    @method('patch')
+    @csrf        
 <div class="card">
     <div class="card-body">
         <div class="col-lg-12">
-            <form  method="POST" action="{{ route('provider.update', $provider->id) }}" class="col s12">
-                @method('patch')
-                @csrf        
                 <h1>{{ ucwords(trans_choice('messages.provider_form', 1)) }}</h1>
                 <div class="row">
                     <div class="col-md-6 mb-4">

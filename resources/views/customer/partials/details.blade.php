@@ -3,7 +3,7 @@
     <div class="card-body">
         <div class="row">
             <div class="col-lg-12">
-                {{-- <form  method="POST" action="{{ route('update', $customer->id) }}" class="col s12"> --}}
+                <form  method="POST" action="{{ route('customer.store', $customer->id) }}" class="col s12">
                     @method('patch')
                     @csrf        
                     <h1>{{ ucwords(trans_choice('messages.customer_form', 1)) }}</h1>
