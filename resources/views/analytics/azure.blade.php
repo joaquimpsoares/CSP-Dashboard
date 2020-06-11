@@ -52,11 +52,6 @@
     .main {
         padding: 1em 0;
     }
-    .container {
-        max-width: 1200px;
-        width: 90%;
-        margin: 0 auto;
-    }
     
     .inner__sub {
         --fs-h5: 1.5rem;
@@ -314,15 +309,14 @@
         <div class="container">
             <div class="content">
                 <h2>Azure Analytics for customer: </h2>
-                <h4>CASA PRESTATIONS</h4>
+                <h4>Customer Name</h4>
                 <label>Subscription name: Microsoft Azure</label>
                 <p> Microsoft last updated at: {{$date->azure_updated_at}}</p>
                 <div class="columns is-multiline">
                     <div class="column">
                         <div class="box col-sm-12">
-                            <div class="container">
                                 <div class="row">
-                                    {{$average='10'}}
+                                    {{-- {{$average='10'}} --}}
                                     <div class="col-sm-4">
                                         <div class="card">
                                             {{-- <div class="card-header">

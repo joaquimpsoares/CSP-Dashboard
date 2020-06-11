@@ -86,16 +86,16 @@
     }   
 </style>
 @section('content')
-<div class="box">
+<div class="container">
     <section class="section">
         <div class="card">
             <div class="">
-                    <i class="fab fa-product-hunt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
-                    <div class="card-body">
-                        <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.product_card', 2)) }}</a></h4>
-                        <div class="row">
-                            <div class="col-md-3"></div>
-                            <div class="col-md-6">
+                <i class="fab fa-product-hunt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
+                <div class="card-body">
+                    <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.product_card', 2)) }}</a></h4>
+                    <div class="row">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-6">
                             <div class="row">
                                 <form method="POST" action="{{ route('instances.store') }}" class="col s12">
                                     @csrf
@@ -136,24 +136,16 @@
                                             </div>
                                             <input type="text" name="external_url" class="form-control" id="material-url" aria-describedby="external_url">
                                         </div>
-                                        {{-- <div class="input-field col s4">
-                                            <div class="md-form">
-                                                <input type="text" id="external_url" name="external_url" class="form-control" value="{{ old('external_url') }}">
-                                                <label for="external_url">{{ ucwords(trans_choice('messages.external_url', 1)) }}</label>
-                                            </div>
-                                        </div> --}}
                                     </div>
                                 </div>
-                                <button type="submit" class="button is-rounded is-primary is-outlined">Create</button>
+                                <button type="submit" class="btn submit_btn">Create</button>
                             </form>
                         </div>
                     </div>
-                    <div class="col-md-3"></div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 </div>
 
 

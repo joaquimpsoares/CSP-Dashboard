@@ -16,7 +16,7 @@
 				<h4 class="card-title">{{ ucwords(trans_choice('messages.subscription', 2)) }} </h4>
 				@include('subscriptions.partials.card', ['subscriptions' => $subscriptions])
 				@else
-				<h4 class="card-title">{{ ucwords(trans_choice('messages.subscriptions_table', 2)) }} </h4>
+				<h4 class="card-title">{{ ucwords(trans_choice('messages.subscription_table', 2)) }} </h4>
 				@include('subscriptions.partials.table', ['subscriptions' => $subscriptions])
 				@endif
 			</div>

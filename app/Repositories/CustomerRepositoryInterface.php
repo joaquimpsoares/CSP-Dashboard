@@ -9,6 +9,8 @@ interface CustomerRepositoryInterface
 {
 	public function all();
 
+	public function create($customer);
+
 	public function canInteractWithCustomer(Customer $customer);
 
 	public function customersOfReseller(Reseller $reseller);

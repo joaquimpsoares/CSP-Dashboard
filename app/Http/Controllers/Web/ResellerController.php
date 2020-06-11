@@ -75,23 +75,9 @@ class ResellerController extends Controller
         try {
         DB::beginTransaction();
 
-        $reseller =  Reseller::create([
-
-            'company_name' => $validate['company_name'],
-            'nif' => $validate['nif'],
-            'country_id' => $validate['country_id'],
-            'address_1' => $validate['address_1'],
-            'address_2' => $validate['address_2'],
-            'city' => $validate['city'],
-            'state' => $validate['state'],
-            'postal_code' => $validate['postal_code'],
-            'status_id' => "1",
-            'provider_id' => $user->provider->id
-            ]);
+        $reseller = $this->resellerRepository->create($validate, $user);
 
         $mainUser = $this->userRepository->create($validate, 'reseller', $reseller);
-        
-
 
             DB::commit();
         } catch (\PDOException $e) {
@@ -104,7 +90,7 @@ class ResellerController extends Controller
             return redirect()->route('reseller.index')
             ->with([
                 'alert' => 'danger',
-                'message' => trans('messages.Provider Created unsuccessfully') . " (" . trans($errorMessage) . ")."
+                'message' => trans('messages.reseller_not_created') . " (" . trans($errorMessage) . ")."
                 ]);
             }
 
@@ -116,6 +102,9 @@ class ResellerController extends Controller
 
         $countries = Country::get();
 
+        $statuses = Status::get();
+
+        $subscriptions = [];
         $customers = new Collection();
         foreach ($reseller as $resellers){
             $reseller = Reseller::find($reseller['id']);
@@ -127,7 +116,7 @@ class ResellerController extends Controller
         }
 
 
-            return view('reseller.show', compact('reseller','customers', 'countries', 'subscriptions'));
+            return view('reseller.show', compact('reseller','customers', 'countries', 'subscriptions','statuses'));
         }
 
 
@@ -184,7 +173,7 @@ class ResellerController extends Controller
                 'nif' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
                 'email' => ['required', 'email', 'max:255'],
                 'address_1' => ['required', 'string', 'max:255'],
-                'address_2' => ['required', 'string', 'max:255'],
+                'address_2' => ['nullable', 'string', 'max:255'],
                 'country_id' => ['required', 'integer', 'min:1'],
                 'city' => ['required', 'string', 'max:255'],
                 'state' => ['required', 'string', 'max:255'],

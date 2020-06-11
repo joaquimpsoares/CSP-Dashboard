@@ -82,40 +82,22 @@
               </div>
               <div class="row">
                 <div class="col-md-12">
-                    <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
-                    <div class="form-group">
-                        <select name="status_id" class="form-select" sf-validate="required">
-                            <option selected></option>
-                            @foreach ($statuses as $status)    
-                            <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                  <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
+                  <div class="form-group">
+                    <select name="status_id" class="form-select" sf-validate="required">
+                      <option selected></option>
+                      @foreach ($statuses as $status)    
+                      <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
+                      @endforeach
+                    </select>
+                  </div>
                 </div>
+              </div>
             </div>
-              {{-- 
-                <div class="mb-1">
-                  <input type="checkbox" class="form-check-input filled-in" id="chekboxRules">
-                  <label class="form-check-label" for="chekboxRules">I accept the terms and conditions</label>
-                </div>
-                <div class="mb-1">
-                  <input type="checkbox" class="form-check-input filled-in" id="safeTheInfo">
-                  <label class="form-check-label" for="safeTheInfo">Save this information for next time</label>
-                </div>
-                <div class="mb-1">
-                  <input type="checkbox" class="form-check-input filled-in" id="subscribeNewsletter">
-                  <label class="form-check-label" for="subscribeNewsletter">Subscribe to the newsletter</label>
-                </div>
-                <hr>
-              </form>
-              <hr class="mb-4">
-              <button class="btn btn-primary btn-lg btn-block" type="submit">Place order</button>
-            </div> --}}
           </div>
         </div>
-        {{-- <button class="btn btn-primary btn-lg btn-block" type="submit">Next step</button> --}}
         <div class="col-lg-4 mb-4">
-          <button class="btn btn-primary btn-lg submit_btn" type="submit">{{ucwords(trans_choice('messages.create', 1))}}</button>
+          <button class="button submit_btn right" type="submit">{{ucwords(trans_choice('messages.create', 1))}}</button>
         </div>
       </div>
     </div>

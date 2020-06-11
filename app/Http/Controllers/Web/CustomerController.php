@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\User;
+use App\Status;
 use App\Country;
 use App\Customer;
-use App\Http\Traits\UserTrait;
-use App\PriceList;
-use App\Repositories\CustomerRepositoryInterface;
-use App\Repositories\SubscriptionRepositoryInterface;
-use App\Repositories\UserRepositoryInterface;
 use App\Reseller;
-use App\Status;
+use App\PriceList;
 use Illuminate\Http\Request;
+use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Repositories\UserRepositoryInterface;
+use App\Repositories\CustomerRepositoryInterface;
+use App\Repositories\SubscriptionRepositoryInterface;
 
 
 
@@ -60,23 +61,12 @@ class CustomerController extends Controller
         try {
             DB::beginTransaction();
 
-            $customer =  Customer::create([
-                'company_name' => $validate['company_name'],
-                'nif' => $validate['nif'],
-                'country_id' => $validate['country_id'],
-                'address_1' => $validate['address_1'],
-                'address_2' => $validate['address_2'],
-                'city' => $validate['city'],
-                'state' => $validate['state'],
-                'postal_code' => $validate['postal_code'],
-                'status_id' => $validate['status_id']
-            ]);
+            $customer = $this->customerRepository->create($validate);
 
             $customer->resellers()->attach($user->reseller->id);
 
             $mainUser = $this->userRepository->create($validate, 'customer', $customer);
 
-            
             DB::commit();
         } catch (\PDOException $e) {
             DB::rollBack();
@@ -88,7 +78,7 @@ class CustomerController extends Controller
             return redirect()->route('customer.index')
             ->with([
                 'alert' => 'danger', 
-                'message' => trans('messages.Provider Created unsuccessfully') . " (" . trans($errorMessage) . ")."
+                'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
             ]);
         }
 
@@ -101,10 +91,16 @@ class CustomerController extends Controller
         $countries = Country::get();
         
         $customer = Customer::find($customer['id']);
-        
+
+        $users = User::where('customer_id', $customer->id)->first();
+
+        $statuses = Status::get();
+
+        $subscriptions = [];
+
         $subscriptions = $this->subscriptionRepository->subscriptionsOfCustomer($customer);
         
-        return view('customer.show', compact('customer','countries','subscriptions'));
+        return view('customer.show', compact('customer','countries','subscriptions','users','statuses'));
         
     }
     

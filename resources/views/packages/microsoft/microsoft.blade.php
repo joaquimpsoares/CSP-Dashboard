@@ -3,7 +3,7 @@
 @section('content')
 
 
-<div class="box">
+<div class="container">
     <section class="section">
         <div class="card">
             <div class="">
@@ -81,9 +81,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="button is-rounded is-primary is-outlined">{{ ucwords(trans_choice('messages.update', 1)) }}</button>
-                                <a href="{{ route('product.import', $instances->provider->id) }}" type="submit"  class="button is-rounded is-primary is-outlined">{{ ucwords(trans_choice('messages.import_product', 2)) }}</a>
-                                <a href="{{url()->previous()}}" type="submit" class="button is-rounded is-danger is-outlined">{{ ucwords(trans_choice('messages.cancel', 1)) }}</a>
+                                <button type="submit" class="btn submit_btn">{{ ucwords(trans_choice('messages.update', 1)) }}</button>
+                                <a href="{{ route('product.import', $instances->provider->id) }}" type="submit" class="genric-btn info">{{ ucwords(trans_choice('messages.import_product', 2)) }}</a>
+                                <a href="{{url()->previous()}}" type="submit" class="genric-btn primary">{{ ucwords(trans_choice('messages.cancel', 1)) }}</a>
                                 <div class="float-right">
                                     <a  target="_blank" href="https://login.microsoftonline.com/common/oauth2/authorize?client_id=66127fdf-8259-429c-9899-6ec066ff8915&response_type=code&redirect_uri=https://partnerconsent.tagydes.com/&prompt=admin_consent" class="button is-rounded is-warning is-outlined">{{ ucwords(__('messages.refresh_token')) }}</a>
                                 </div>
@@ -91,13 +91,10 @@
                         </form>
                     </div>
                 </div>
-                <div class="col-md-3"></div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 </div>
-
 
 @endsection
 

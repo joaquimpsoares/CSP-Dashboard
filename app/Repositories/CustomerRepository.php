@@ -8,123 +8,141 @@ use App\Repositories\CustomerRepositoryInterface;
 use App\Reseller;
 
 /**
- * 
- */
+* 
+*/
 class CustomerRepository implements CustomerRepositoryInterface
 {
-	
-	use UserTrait;
-
-	public function all()
-	{
+    
+    use UserTrait;
+    
+    public function all()
+    {
         $user = $this->getUser();
-
-		switch ($this->getUserLevel()) {
+        
+        switch ($this->getUserLevel()) {
             case config('app.super_admin'):
-
+                
                 $customers = Customer::with(['country', 'status' => function ($query) {
-					$query->where('name', 'message.active');
-				}])
+                    $query->where('name', 'message.active');
+                }])
                 ->orderBy('company_name')
                 ->get()->map->format();
-                break;
+            break;
             
             case config('app.admin'):
                 $customers = Customer::with(['country', 'status' => function ($query) {
-					$query->where('name', 'message.active');
-				}])
+                    $query->where('name', 'message.active');
+                }])
                 ->orderBy('company_name')
                 ->get()->map->format();
-
-                break;
+                
+            break;
             
             case config('app.provider'):
                 $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
                 
                 $customers = Customer::whereHas('resellers', function($query) use  ($resellers) {
-                	$query->whereIn('id', $resellers);
+                    $query->whereIn('id', $resellers);
                 })->with(['country', 'status' => function ($query) {
-					$query->where('name', 'message.active');
-				}])
+                    $query->where('name', 'message.active');
+                }])
                 ->orderBy('company_name')->get()->map->format();
-
-                break;
+                
+            break;
             
             case config('app.reseller'):
                 $reseller = $user->reseller;
                 $customers = $reseller->customers->map->format();
-
-                break;
+                
+            break;
             
             case config('app.subreseller'):
                 $reseller = $user->reseller;
                 $customers = $reseller->customers->format();
-                break;
+            break;
             
             default:
-                return abort(403, __('errors.unauthorized_action'));
-                
-                break;
-        }
-
-        return $customers;
+            return abort(403, __('errors.unauthorized_action'));
+            
+        break;
     }
+    
+    return $customers;
+}
+    public function create($validate)
+    {
+    
+        $newCustomer =  Customer::create([
+            'company_name' => $validate['company_name'],
+            'nif' => $validate['nif'],
+            'country_id' => $validate['country_id'],
+            'address_1' => $validate['address_1'],
+            'address_2' => $validate['address_2'],
+            'city' => $validate['city'],
+            'state' => $validate['state'],
+            'postal_code' => $validate['postal_code'],
+            'status_id' => $validate['status_id']
+            ]);
 
+            return $newCustomer;
+
+    }
+    
     
     public function canInteractWithCustomer(Customer $customer)
     {
-
+        
         $user = $this->getUser();
         
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
                 return true;
-                break;
+            break;
             
             case config('app.admin'):
                 return true;
-                break;
+            break;
             
             case config('app.provider'):
-
-                break;
+                
+            break;
             
             case config('app.reseller'):
                 $reseller = $user->reseller;
                 return $reseller->customers->contains($customer->id);
-                break;
+            break;
             
             case config('app.subreseller'):
                 
-                break;
+            break;
             
             default:
-                return false;
-                
-                break;
-        }
+            return false;
+            
+        break;
     }
+}
 
-    public function customersOfReseller(Reseller $reseller){
+public function customersOfReseller(Reseller $reseller){
+    
+    $customers = $reseller->customers->map->format();
+    
+    return $customers;
+}
 
-        $customers = $reseller->customers->map->format();
-
-        return $customers;
-    }
-
-    public function ResellerOfcustomer(Customer $customer){
-
-        $reseller = $customer->resellers;
-        
-        return $reseller;
-    }
+public function ResellerOfcustomer(Customer $customer){
+    
+    $reseller = $customer->resellers;
+    
+    return $reseller;
+}
 
 
-    public function getSubscriptions(Customer $customer){
-		
-		$subscriptions= $customer->subscriptions;
-		
-		return $subscriptions;
-		
-	}
+public function getSubscriptions(Customer $customer){
+    
+    $subscriptions= $customer->subscriptions;
+    
+    return $subscriptions;
+    
+}
 }
