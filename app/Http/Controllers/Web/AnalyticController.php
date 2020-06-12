@@ -71,8 +71,9 @@ class AnalyticController extends Controller
             
             
             $subscriptions = Subscription::select('instance_id')->first();
+            // dd($subscriptions->instance_id);
         
-            $instance = Instance::where('id', 4)->first();
+            $instance = Instance::where('id', $subscriptions->instance_id)->first();
             // dd($instance->name);
             return (int) FacadesAzureResource::withCredentials(
                 $instance->external_id,$instance->external_token
@@ -138,6 +139,12 @@ class AnalyticController extends Controller
             'created_at'    => "5trvfvczdfv",
             ]);
             
+
+            $subscriptions = Subscription::select('instance_id')->first();
+            // dd($subscriptions->instance_id);
+        
+            $instance = Instance::where('id', $subscriptions->instance_id)->first();
+            
         $resources = FacadesAzureResource::withCredentials(
             $instance->external_id,$instance->external_token
             )->all($customer, $subscription);
@@ -155,7 +162,7 @@ class AnalyticController extends Controller
                 'used' => $resource->quantityUsed,
                 'azure_updated_at' => Carbon::parse($resource->lastModifiedDate),
                 ]);
-            });
+            }); 
         return back()->withInput();
     }
                                     

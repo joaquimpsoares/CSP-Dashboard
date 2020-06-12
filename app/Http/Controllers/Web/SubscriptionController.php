@@ -129,23 +129,20 @@ public function store(Request $request)
 public function show(Subscription $subscription)
 {
 
-
-    
-    
     $subscriptions = Subscription::findOrFail($subscription->id);
-    // dd($subscriptions);
     
     $products = Product::where('sku', $subscriptions->product_id)->get();
     
-    
+    $usage = Product::where('sku', $subscriptions->product_id)->first();
+    // dd();
+
     foreach ($products as $key => $product) {
         $addons = $product->getaddons()->all();
     }
     
-    // dd($products);
+
+    if ($usage->billing === 'usage'){
     foreach ($products as $key => $product) {
-        // dd($product->billing);
-        if ($product === 'usage'){
             return view('subscriptions.edit', compact('subscriptions', 'products'));
         }
     }

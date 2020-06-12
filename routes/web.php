@@ -38,6 +38,8 @@ Route::get('/analytics/show/', [
 	'as' => 'analytics.show'
 ]);
 
+Route::resource('/priceList', 'PriceListController');
+
 
 
 Route::get('/jobs', 'JobsController@index')->name('jobs');
@@ -207,7 +209,7 @@ Route::group(['middleware' => 'auth'], function () {
 			/*Route::get('/priceList/provider/{provider}', 'PriceListController@getProviderPriceList')
 			->middleware('permission:' . config('app.price_list_show'))->name('priceLists.provider_price_list');*/
 			
-			Route::resource('/priceList', 'PriceListController');
+			// Route::resource('/priceList', 'PriceListController');
 			
 			/*
 			Inicio Confirmar nivel de acesso reseller->provider

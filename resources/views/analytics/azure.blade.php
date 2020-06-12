@@ -181,18 +181,6 @@
         *{
             box-sizing: border-box;
         }
-        /* html {
-            width: 100%;
-            height: 100%;
-        }
-        
-        body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            display: table;
-        } */
         
         .chart__container {
             border-radius: 8px;
@@ -209,8 +197,8 @@
         
         
         #chartdiv {
-            width: 1000px;
-            height: 500px;
+            width: 800px;
+            height: 300px;
         }
         
         #chartdiv1 {
@@ -311,7 +299,7 @@
                 <h2>Azure Analytics for customer: </h2>
                 <h4>Customer Name</h4>
                 <label>Subscription name: Microsoft Azure</label>
-                <p> Microsoft last updated at: {{$date->azure_updated_at}}</p>
+                <p> Microsoft last updated at: {{$date->azure_updated_at ?? ' '}}</p>
                 <div class="columns is-multiline">
                     <div class="column">
                         <div class="box col-sm-12">
@@ -418,7 +406,7 @@
                                                 </p>
                                             </div>
                                             <div class="card-footer">
-                                                <p>Updated at: {{$dateupdated->updated_at}} </p>
+                                                <p>Updated at: {{$dateupdated->updated_at ?? ' '}} </p>
                                                 <a href="{{ route('analytics.update') }}" class="button is-primary is-outlined">Refresh Manually </a>
                                             </div>
                                         </div>

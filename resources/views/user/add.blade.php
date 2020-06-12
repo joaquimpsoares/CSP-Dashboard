@@ -3,14 +3,6 @@
 @section('page-title', trans('app.add_user'))
 @section('page-heading', trans('app.create_new_user'))
 
-@section('breadcrumbs')
-    <li class="breadcrumb-item">
-        <a href="{{ route('user.list') }}">@lang('app.users')</a>
-    </li>
-    <li class="breadcrumb-item active">
-        @lang('app.create')
-    </li>
-@stop
 
 @section('content')
 
@@ -29,7 +21,7 @@
                     </p>
                 </div>
                 <div class="col-md-9">
-                    @include('user.partials.details', ['edit' => false, 'profile' => false])
+                    @include('user.partials.details')
                 </div>
             </div>
         </div>
@@ -66,7 +58,7 @@
 <br>
 @stop
 
-@section('scripts')
+{{-- @section('scripts')
     {!! HTML::script('assets/js/as/profile.js') !!}
     {!! JsValidator::formRequest('Tagydes\Http\Requests\User\CreateUserRequest', '#user-form') !!}
-@stop
+@stop --}}

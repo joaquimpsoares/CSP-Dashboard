@@ -22,15 +22,16 @@
     <div class="tab-content pt-5" id="myTabContentMD">
         <div class="tab-pane fade show active" id="home-md" role="tabpanel" aria-labelledby="home-tab-md">
         </div>
+        <div class="tab-pane fade" id="contact-md" role="tabpanel" aria-labelledby="contact-tab-md">
+            <div class="container col-xm-12">
+                @include('subscriptions.partials.table', ['subscriptions' => $subscriptions])
+            </div>
+        </div>            
         <div class="tab-pane fade" id="profile-md" role="tabpanel" aria-labelledby="profile-tab-md">
             <div class="container col-xm-12">
                 @include('customer.partials.details')
+                @include('user.partials.table', ['users' => $users])
             </div>
-            <div class="tab-pane fade" id="contact-md" role="tabpanel" aria-labelledby="contact-tab-md">
-                <div class="container col-xm-12">
-                    @include('subscriptions.partials.table', ['subscriptions' => $subscriptions])
-                </div>
-            </div>            
         </div>
     </div>
 </div>

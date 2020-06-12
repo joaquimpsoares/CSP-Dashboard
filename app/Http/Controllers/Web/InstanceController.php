@@ -45,7 +45,7 @@ class InstanceController extends Controller
         
         $create = Instance::create([
             'name' => $request->name,
-            'provider_id' => $request->provider,
+            'provider_id' => $request->provider_id,
             'tenant_id' => $request->tenant_id,
             'type' => 'microsoft',
             'external_type' => $external_type,

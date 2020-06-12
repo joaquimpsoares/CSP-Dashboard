@@ -25,6 +25,7 @@
                                     <div class="input-field col s4">
                                         <div class="md-form">
                                             <label for="provider">{{ ucwords(trans_choice('messages.belongs_to', 1)) }}</label>
+                                            <input type="hidden" name="provider_id" value="{{$provider->id}}">
                                             <input disabled type="text" id="p" name="provider" class="form-control" value="{{$provider->company_name}}">
                                         </div>
                                     </div>

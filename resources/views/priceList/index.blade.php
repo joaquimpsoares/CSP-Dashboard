@@ -13,19 +13,19 @@
 <script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
 
 
-<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-	<li class="nav-item">
-		<a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab"
-		aria-controls="pills-home" aria-selected="true">Price List</a>
-	</li>
-	<li class="nav-item">
-		<a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab"
-		aria-controls="pills-profile" aria-selected="false">Product</a>
-	</li>
-</ul>
-<div class="tab-content pt-2 pl-1" id="pills-tabContent">
-	<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab"><div class="box">
-		<section class="section">
+<div class="container">
+	<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+		<li class="nav-item">
+			<a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab"
+			aria-controls="pills-home" aria-selected="true">Price List</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab"
+			aria-controls="pills-profile" aria-selected="false">Product</a>
+		</li>
+	</ul>
+	<div class="tab-content pt-2 pl-1" id="pills-tabContent">
+		<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab"><div class="box">
 			<div class="card">
 				<div class="">
 					<i class="fas fa-money-check-alt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
@@ -44,7 +44,7 @@
 								@forelse($priceLists as $priceList)
 								<tr>
 									<td></td>
-								<td><a href="{{route('priceList.prices', $priceList['id']) }}">{{ $priceList['name'] }}</a></td>
+									<td><a href="{{route('priceList.prices', $priceList['id']) }}">{{ $priceList['name'] }}</a></td>
 									<td>{{ $priceList['description'] }}</td>
 									<td>
 										<a href="{{route('priceList.clone', $priceList['id'])}}"><i class="fa fa-clone"></i></a>
@@ -101,14 +101,12 @@
 				</div>
 			</div>
 		</div>
-	</section>
+	</div>
+</div>
 </div>
 
 
 @endsection
-
-@section('scripts')
-
 
 
 <script type="text/javascript">
@@ -196,4 +194,3 @@
 	});
 </script>
 
-@endsection
