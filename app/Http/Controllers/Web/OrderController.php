@@ -21,11 +21,15 @@ class OrderController extends Controller
     private $productRepository;
     private $orderRepository;
     
-    
+        
     public function __construct(ProductRepositoryInterface $productRepository, OrderRepositoryInterface $orderRepository)
     {
         $this->productRepository = $productRepository;
         $this->orderRepository = $orderRepository;
+    }
+
+    public function show() {
+        dd('aqui');
     }
     
     public function index()

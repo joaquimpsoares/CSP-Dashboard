@@ -101,8 +101,13 @@ class CartController extends Controller
         return redirect()->route('cart.index');
     }
 
-    public function addCustomer(Request $request, Customer $customer)
+    public function addCustomer(Request $request)
     {
+        $validate = $request->validate([
+            'customer_id' => 'integer|exists:customers,id'
+        ]);
+
+        $customer = Customer::find($validate['customer_id']);
 
         /* Check if can buy to this customer */
         if (!$this->customerRepository->canInteractWithCustomer($customer)) {
@@ -112,16 +117,31 @@ class CartController extends Controller
 
         $cart = $this->getUserCart();
 
+        //$cart->customer_id = $customer->id;
         $cart->customer()->associate($customer);
 
-        /*if(!empty($domain = $customer->microsoftTenantInfo->first())){
-            $cart->domain=$domain->tenant_domain;
-        }*/
-
         $cart->save();
+
+        $status = "tenant";
         
-        return true;
+        //return view('order.tenant', compact('cart'));
+                
+
     }
+
+    public function continueCheckout(Cart $cart)
+    {
+        /*$validate = $request->validate([
+            'id' => 'required|integer|exists:carts,id',
+        ]);*/
+
+        dd($cart);
+
+        if (empty($cart->domain)) {
+            return view('order.tenant', compact('cart'));
+        }
+    }
+
 
     public function checkDomainAvailability(Request $request) {
 
@@ -230,10 +250,12 @@ class CartController extends Controller
             $cartItem->pivot->billing_cycle = $id;
             $cartItem->pivot->save();
         }
+        
+        $status = "customer";
 
         $customers = $this->customerRepository->all();
 
-        return view('order.checkout', compact('cart', 'customers'));
+        return view('order.checkout', compact('cart', 'customers', 'status'));
     }
 
     public function pendingCheckout(Request $request)
@@ -251,10 +273,14 @@ class CartController extends Controller
         return view('order.checkout', compact('cart', 'customers'));
     }
 
-    private function getUserCart()
+    private function getUserCart($id = null)
     {
         $user = $this->getUser();
-        $cart = Cart::where('user_id', $user->id)->whereNull('customer_id')->with('products')->first();
+
+        if (empty($id))
+            $cart = Cart::where('user_id', $user->id)->whereNull('customer_id')->with('products')->first();
+        else
+            $cart = Cart::where('user_id', $user->id)->where('id', $id)->with('products')->first();
         
         return $cart;
     }

@@ -56,89 +56,6 @@ Route::get('/user/profile/{user}', 'UsersController@profile')->name('user.profil
 
 Route::post('registerInvitation', 'UsersController@registerInvitation')->name('registerInvitation');
 
-// Route::get('/sendnoti', function() {
-
-
-
-// 	$order = Order::with('products')->where('token', '28c4fbe8-6738-44a2-b3a1-ffe313f6a42f')->first();
-// 	$customer = Customer::with('MicrosoftTenantInfo')->where('id', $order->customer_id)->first();
-// 	$instance = Instance::where('id', $order->products[0]['instance']['id'])->first();
-
-// 	// $tenant_id = MicrosoftTenantInfo::where('tenant_domain', $order->domain );
-// 	// dd($tenant_id);
-// 	// $customer->MicrosoftTenantInfo[0]->tenant_id;
-
-
-
-// 	$existingCustomer = new TagydesCustomer([
-// 		'id' => '6befa526-58e2-4ac2-afaa-714745e13101',
-// 		'username' => 'name@email.com',
-// 		'password' => 'ljhbpirtf    ',
-// 		'firstName' => 'name',
-// 		'lastName' => 'name',
-// 		'email' => 'name@email.com'
-// 		]);	
-
-// 		foreach ($order->products as $product) {
-// 			$quantity = $product->pivot->quantity;
-// 			$billing_cycle = $product->pivot->billing_cycle;
-// 		}
-
-// 		$tagydescart = new TagydesCart();
-// 		foreach ($order->products as $key => $product) 
-// 		{
-// 			$TagydesProduct = new TagydesProduct([
-// 				'id' => $product['sku'],
-// 				'name' => $product['name'],
-// 				'description' => $product['description'],
-// 				'minimumQuantity' => $product['minimum_quantity'],
-// 				'maximumQuantity' => $product['maximum_quantity'],
-// 				'term' => $product['term'],
-// 				'limit' => $product['limit'],
-// 				'isTrial' => $product['is_trial'],
-// 				'uri' => $product['uri'],
-// 				'supportedBillingCycles' => ['annual','monthly'],
-// 				]);
-
-// 				$tagydescart->setCustomer($existingCustomer);
-
-// 				$tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
-
-
-// 				$tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->create($tagydescart);
-// 				// dd($tagydesorder);
-
-// 				$orderConfirm = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($tagydesorder);
-// 				dd($orderConfirm);
-
-
-
-// 				foreach ($orderConfirm->subscriptions() as $subscription)
-// 				{
-// 					$subscriptions = new Subscription();
-// 					$subscriptions->name = 				$subscription->name;
-// 					$subscriptions->subscription_id = 	$subscription->id;
-// 					$subscriptions->customer_id = 		$subscription->customerId; //customer id from request recieved from Microsoft
-// 					$subscriptions->product_id = 		$subscription->offerId;
-// 					$subscriptions->order_id = 			$subscription->orderId;
-// 					$subscriptions->amount = 			$subscription->quantity;
-// 					$subscriptions->expiration_data	=	Carbon::now()->addYear()->toDateTimeString(); //Set subscription expiration date
-// 					$subscriptions->billing_period = 	$subscription->billingCycle;
-// 					$subscriptions->currency = 			$subscription->currency;
-// 					$subscriptions->tenant_name	=		$customer->MicrosoftTenantInfo[0]->tenant_domain;
-// 					// $subscriptions->customer_id	=		$customer->id;
-// 					$subscriptions->save();
-// 				}
-// 				dd($subscription);
-
-// 		}
-// 	});
-
-
-// 			// 	PlaceOrderMicrosoft::dispatch()->onQueue('OrderCustomer')
-// 			// 	->delay(now()->addSeconds(10));            
-// 			// })->name('sendnoti');
-
 
 Route::get('invite', 'InviteController@invite')->name('invite');
 Route::post('invite', 'InviteController@process')->name('process');
@@ -321,10 +238,18 @@ Route::group(['middleware' => 'auth'], function () {
 	// Every authenticated user can access routes here
 	Route::get('/order/placeOrder', 'OrderController@placeOrder')->name('order.place_order');
 
-	Route::resource('order', 'OrderController');
+	
 	
 	Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
 	
+	//Novas rotas carrinho//
+	Route::post('/cart/customer/add', 'CartController@addCustomer')->name('cart.add_customer');
+	Route::get('/cart/{cart}/tenant', 'CartController@continueCheckout')->name('cart.tenant');
+	Route::post('/cart/checkout', 'CartController@checkout')->name('cart.checkout');
+	//Novas rotas carrinho//
+
+
+
 	Route::get('cart/pending', 'CartController@getPending')->name('cart.pending');
 	Route::get('cart/item/changeBillingCycle', 'CartController@changeBillingCycle')->name('cart.main_user');
 	Route::get('/cart/customer/mainUser', 'CartController@getMainUser')->name('cart.main_user');
@@ -333,9 +258,9 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/cart/add/product/{product}', 'CartController@addProduct')->name('cart.add_product');
 	Route::get('/cart/remove/item/{item}', 'CartController@removeItem')->name('cart.remove_product');
 	Route::get('/cart/clear', 'CartController@destroy')->name('cart.clear');
-	Route::post('/cart/checkout', 'CartController@checkout')->name('cart.checkout');
+	
 	Route::post('/cart/pending/checkout', 'CartController@pendingCheckout')->name('cart.pending_checkout');
-	Route::get('/cart/customer/{customer}/add', 'CartController@addCustomer')->name('cart.add_customer');
+	
 	Route::get('/cart/checkDomainAvailability', 'CartController@checkDomainAvailability')->name('cart.check_domain_availability');
 	Route::post('/cart/addMCAUser', 'CartController@addMCAUser')->name('cart.add_mca_user');
 	Route::resource('/subscription', 'SubscriptionController');
@@ -347,7 +272,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::resource('/store', 'StoreController');
 	Route::get('products/test', 'ProductController@index2');
 	Route::resource('product', 'ProductController');
-	
+	Route::resource('order', 'OrderController');
 	
 	
 	// End of every authenticated user can access routes here
