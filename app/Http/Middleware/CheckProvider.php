@@ -30,7 +30,7 @@ class CheckProvider
                     break;
                 
                 case config('app.provider'):
-                    dd($provider->id)
+                    // dd($provider->id)
                     $check = $provider->id === $user->provider->id;
                     
                     if (!$check)
