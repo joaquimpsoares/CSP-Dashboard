@@ -5,6 +5,7 @@ namespace App\Http\Controllers\web;
 use App\User;
 use App\Status;
 use App\Country;
+use App\Customer;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
 use App\Http\Controllers\Controller;
@@ -61,12 +62,16 @@ class UsersController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
-    public function create(User $user)
+    public function create(User $user, Request $request)
     {
+
         $countries = Country::get();
         $statuses = Status::get();
+
+        $level = $request->level;
+        $customer_id = $request->customer_id;
         
-        return view('user.add', compact('user','countries','statuses'));
+        return view('user.add', compact('user','countries','statuses','level','customer_id'));
         
     }
     
@@ -78,17 +83,18 @@ class UsersController extends Controller
     */
     public function store(Request $request)
     {
-        // dd($userequest->all());
-
+        // dd($request->all());
         $user = $this->getUser();
-
-        // dd($user);
         
         $validate = $this->validator($request->all())->validate();
+
+        $customer = Customer::where('id', $request->customer_id)->first();
+        dd($validate);
+
+        // dd($customer);
         
-        $mainUser = $this->userRepository->create($validate, 'customer', $customer);
-        
-        
+        $mainUser = $this->userRepository->create($validate, $request->level, $customer);
+        // dd($mainUser);
     }
     
     /**

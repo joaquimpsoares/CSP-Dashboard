@@ -30,7 +30,7 @@
         <div class="tab-pane fade" id="profile-md" role="tabpanel" aria-labelledby="profile-tab-md">
             <div class="container col-xm-12">
                 @include('customer.partials.details')
-                @include('user.partials.table', ['users' => $users])
+                @include('user.partials.table', ['users' => $users] )
             </div>
         </div>
     </div>

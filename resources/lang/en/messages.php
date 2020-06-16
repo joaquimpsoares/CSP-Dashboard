@@ -136,7 +136,7 @@ return [
     'reseller_created_successfully' => 'reseller created successfully',
     'provider_created_successfully' => 'provider created successfully',
     'add_instance' => 'add instance',
-    '' => '',
+    'new_user' => 'new user',
     '' => '',
     '' => '',
     '' => '',

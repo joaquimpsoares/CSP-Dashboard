@@ -15,8 +15,8 @@
 							@if(Auth::user()->userLevel->id=== 3)
 							<a type="submit" href="{{route('reseller.create')}}" class="btn submit_btn">{{ ucwords(__('messages.new_reseller')) }}</a>
 							@endif						</div>
+						</div>
 					</div>
-				</div>
 					<h4 class="card-title">
 						<a>
 							{{ ucwords(trans_choice('messages.reseller_table', 2)) }}

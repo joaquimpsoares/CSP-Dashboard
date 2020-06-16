@@ -26,6 +26,7 @@
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            @include('provider.partials.home', ['subscriptions' => $subscriptions])
         </div>
         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
             <div class="container col-xm-12">
@@ -45,6 +46,7 @@
         <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="account-tab">
             <div class="container col-xm-12">
                 @include('provider.partials.details')
+                @include('user.partials.table', ['users' => $users] )
             </div>
         </div>
         <div class="tab-pane fade" id="instance" role="tabpanel" aria-labelledby="instance-tab">

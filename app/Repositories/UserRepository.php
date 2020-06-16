@@ -82,6 +82,8 @@ class UserRepository implements UserRepositoryInterface
                 'notify' => $user['sendInvitation'] ?? false,
             ];
 
+            dd($type);
+
             switch ($type) {
                 case 'provider':
                     $providerLevel = UserLevel::where('name', config('app.provider'))->first();
@@ -90,6 +92,7 @@ class UserRepository implements UserRepositoryInterface
                     $user['provider_id'] = $model->id;
 
                     $newUser = User::create($user);
+                    dd($newUser);
                     
                     $newUser->assignRole(config('app.provider'));
 
