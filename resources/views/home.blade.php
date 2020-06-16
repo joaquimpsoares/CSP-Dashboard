@@ -5,7 +5,7 @@
 
 @auth
 
-{{-- {{dd($countResellers)}} --}}
+
 @include('provider.partials.home')
 
 

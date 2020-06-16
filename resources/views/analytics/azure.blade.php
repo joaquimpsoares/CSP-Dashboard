@@ -5,7 +5,7 @@
 <script src="//www.amcharts.com/lib/4/themes/animated.js"></script>
 <script src="//www.amcharts.com/lib/4/themes/kelly.js"></script>
 
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+{{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> --}}
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.dataTables.min.css">
 
 
@@ -303,87 +303,88 @@
                 <div class="columns is-multiline">
                     <div class="column">
                         <div class="box col-sm-12">
-                                <div class="row">
-                                    {{-- {{$average='10'}} --}}
-                                    <div class="col-sm-4">
-                                        <div class="card">
-                                            {{-- <div class="card-header">
-                                                Header
-                                            </div> --}}
-                                            <div class="card-body">
-                                                <h5 class="card-title">Status Current Budget</h5>
+                            <div class="row">
+                                {{-- {{$average='10'}} --}}
+                                <div class="col-sm-4">
+                                    <div class="card">
+                                        {{-- <div class="card-header">
+                                            Header
+                                        </div> --}}
+                                        <div class="card-body">
+                                            <h5 class="card-title">Status Current Budget</h5>
+                                            <br>
+                                            <p class="card-text">
+                                                @if($average<=29)
+                                                <font color="green" , size="16">${{$budget}}</font>
                                                 <br>
-                                                <p class="card-text">
-                                                    @if($average<=29)
-                                                    <font color="green" , size="16">${{$budget}}</font>
-                                                    <br>
-                                                    
-                                                    <br>
-                                                    <i color="green" class="fas fa-chart-line"></i>
-                                                    <font color="green" , size="4">{{$average}}% Used</font>
-                                                    <br>
-                                                    
-                                                    <progress class="warning" value={{$average}} max="100">{{$average}}%</progress>
-                                                    <br>
-                                                    @endif
-                                                    
-                                                    @if($average>=30 && $average<=70 )
-                                                    <font color="#FFBF58" , size="6">${{$budget}}</font>
-                                                    
-                                                    <i color="#FFBF58" class="fas fa-chart-line"></i>
-                                                    <font color="#FFBF58" , size="4">{{$average}}% Used</font>
-                                                    
-                                                    <progress class="warning" value={{$average}} max="100">{{$average}}%</progress>
-                                                    @endif
-                                                    
-                                                    @if($average>=70 && $average<>100)
-                                                    <br /> <br /><font color="red" , size="6">${{$budget}}</font>
-                                                    <br />
-                                                    <i color="red" class="fas fa-chart-line"></i>
-                                                    <font color="red" , size="4">{{$average}}% Used</font>
-                                                    {{-- <div class="percentage">
-                                                        <div class="progress">
-                                                            <div class="progress-bar color-5" role="progressbar" style="width: 80%" aria-valuenow="{{$average}}" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        </div>
-                                                    </div> --}}
-                                                    <br>
-                                                    <progress class="warning" value={{$average}} max="100">{{$average}}%</progress>
-                                                    
-                                                    {{-- <progress class="progress is-danger" value={{$average}} max="100">{{$average}}%</progress> --}}
-                                                    @endif
-                                                </p>
-                                            </div>
-                                            <div class="card-footer">
-                                                {{-- <button type="button is-primary is-outlined" value="Edit Budget" id="bt" onclick="toggle(this)"> </button> --}}
-                                                <a href="#"  id="bt" onclick="toggle(this)">Adjust Budget</a>
-                                                <!--The DIV element to toggle visibility. Its "display" property is set as "none". -->
-                                                <div style="border:solid 1px #ddd; padding:10px; display:none;" id="cont">
-                                                    <div>
-                                                        <form action=" {{route('analytics.edit')}}" method="post">
-                                                            @csrf
-                                                            {{-- <p> <strong>New Budget: </strong></p> --}}
-                                                            <div class="field">
-                                                                <div class="control">
-                                                                    <input id="value" name="budget" class="input" type="text" value="{{$budget}}">
-                                                                </div>
-                                                            </div>
-                                                            {{-- <input id="value" type="number" name="budget" value="" /> --}}
-                                                            <input type="submit" class="button is-primary" value="Send">
-                                                        </form>
+                                                
+                                                <br>
+                                                <i color="green" class="fas fa-chart-line"></i>
+                                                <font color="green" , size="4">{{$average}}% Used</font>
+                                                <br>
+                                                
+                                                <progress class="warning" value={{$average}} max="100">{{$average}}%</progress>
+                                                <br>
+                                                @endif
+                                                
+                                                @if($average>=30 && $average<=70 )
+                                                <font color="#FFBF58" , size="6">${{$budget}}</font>
+                                                
+                                                <i color="#FFBF58" class="fas fa-chart-line"></i>
+                                                <font color="#FFBF58" , size="4">{{$average}}% Used</font>
+                                                
+                                                <progress class="warning" value={{$average}} max="100">{{$average}}%</progress>
+                                                @endif
+                                                
+                                                @if($average>=70 && $average<>100)
+                                                <br /> <br /><font color="red" , size="6">${{$budget}}</font>
+                                                <br />
+                                                <i color="red" class="fas fa-chart-line"></i>
+                                                <font color="red" , size="4">{{$average}}% Used</font>
+                                                {{-- <div class="percentage">
+                                                    <div class="progress">
+                                                        <div class="progress-bar color-5" role="progressbar" style="width: 80%" aria-valuenow="{{$average}}" aria-valuemin="0" aria-valuemax="100"></div>
                                                     </div>
+                                                </div> --}}
+                                                <br>
+                                                <progress class="warning" value={{$average}} max="100">{{$average}}%</progress>
+                                                
+                                                {{-- <progress class="progress is-danger" value={{$average}} max="100">{{$average}}%</progress> --}}
+                                                @endif
+                                            </p>
+                                        </div>
+                                        <div class="card-footer">
+                                            {{-- <button type="button is-primary is-outlined" value="Edit Budget" id="bt" onclick="toggle(this)"> </button> --}}
+                                            <a href="#"  id="bt" onclick="toggle(this)">Adjust Budget</a>
+                                            <!--The DIV element to toggle visibility. Its "display" property is set as "none". -->
+                                            <div style="border:solid 1px #ddd; padding:10px; display:none;" id="cont">
+                                                <div>
+                                                    <form action=" {{route('analytics.edit')}}" method="post">
+                                                        @csrf
+                                                        {{-- <p> <strong>New Budget: </strong></p> --}}
+                                                        <div class="field">
+                                                            <div class="control">
+                                                                <input id="value" name="budget" class="input" type="text" value="{{$budget}}">
+                                                            </div>
+                                                        </div>
+                                                        {{-- <input id="value" type="number" name="budget" value="" /> --}}
+                                                        <input type="submit" class="button is-primary" value="Send">
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
-                                        <div class="card">
-                                            {{-- <div class="card-header">
-                                                Current Estimated Usage
-                                            </div> --}}
-                                            <div class="card-body">
-                                                <h5 class="card-title">Current Estimated Usage</h5>
-                                                <p class="card-text">
-                                                    <table class="table responsive">
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="card">
+                                        {{-- <div class="card-header">
+                                            Current Estimated Usage
+                                        </div> --}}
+                                        <div class="card-body">
+                                            <h5 class="card-title">Current Estimated Usage</h5>
+                                            <p class="card-text">
+                                                <table class="table table-hover responsive" id="azure">
+                                                    <thead class="thead-dark">
                                                         <tr>
                                                             <td>Usage</td>
                                                             <td>Budget</td>
@@ -392,87 +393,24 @@
                                                             @endif
                                                             <td>Percent</td>
                                                         </tr>
-                                                        <body>
-                                                            <tr>
-                                                                <td>${{$total}}</td>
-                                                                <td>${{$budget}}</td>
-                                                                @if($total > $budget)
-                                                                <td>${{$total - $budget}}</td>
-                                                                @endif
-                                                                <td>{{$average}}%</td>
-                                                            </tr>
-                                                        </body>
-                                                    </table>
-                                                </p>
-                                            </div>
-                                            <div class="card-footer">
-                                                <p>Updated at: {{$dateupdated->updated_at ?? ' '}} </p>
-                                                <a href="{{ route('analytics.update') }}" class="button is-primary is-outlined">Refresh Manually </a>
-                                            </div>
+                                                    </thead>
+                                                    <body>
+                                                        <tr>
+                                                            <td>${{$total}}</td>
+                                                            <td>${{$budget}}</td>
+                                                            @if($total > $budget)
+                                                            <td>${{$total - $budget}}</td>
+                                                            @endif
+                                                            <td>{{$average}}%</td>
+                                                        </tr>
+                                                    </body>
+                                                </table>
+                                            </p>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="columns is-multiline">
-                    <div class="column">
-                        <div class="box">
-                            <div class="heading">Current estimate by Category</div>
-                            @if ($total > $budget)
-                            <font color="red">Over Budget</font>
-                            <div class="title text-danger">${{$total}}</div>
-                            @else
-                            <div class="title text-success">${{$total}}</div>
-                            @endif
-                            <div class="level">
-                                <div class="level-item">
-                                    <div class="">
-                                        <div class="chart__container">
-                                            {{-- <canvas id="chart_0" width="1000" height="400"></canvas> --}}
-                                            <div id="chartdiv1"></div>
+                                        <div class="card-footer">
+                                            <p>Updated at: {{$dateupdated->updated_at ?? ' '}} </p>
+                                            <a href="{{ route('analytics.update') }}" class="button is-primary is-outlined">Refresh Manually </a>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="box">
-                            <div class="heading">Top 10 Categoryies</div>
-                            <div class="level">
-                                <div class="level-item">
-                                    <div class="chart__container" >
-                                        <div id="chartdiv"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="box">
-                            <div class="heading">Resources name</div>
-                            <div class="level">
-                                <div class="level-item">
-                                    <div class="chart__container" >
-                                        <table id="resources" class="display" style="width:100%">
-                                            <thead>
-                                                <tr>
-                                                    <th class="min-width-80 text-nowrap">Name</th>
-                                                    <th>Category</th>
-                                                    <th>Sub Category</th>
-                                                    <th>Total</th>
-                                                </tr>
-                                            </thead>
-                                            <body>
-                                                @foreach ($resourceName as $item)
-                                                <tr>
-                                                    <td class="text-nowrap">{{$item->name}}</td>
-                                                    <td class="text-nowrap">{{$item->category}}</td>
-                                                    <td class="text-nowrap">{{$item->subcategory}}</td>
-                                                    <td class="text-nowrap">${{$item->sum}}</td>
-                                                </tr>
-                                                @endforeach
-                                            </body>
-                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -480,8 +418,74 @@
                     </div>
                 </div>
             </div>
+            <div class="columns is-multiline">
+                <div class="column">
+                    <div class="box">
+                        <div class="heading">Current estimate by Category</div>
+                        @if ($total > $budget)
+                        <font color="red">Over Budget</font>
+                        <div class="title text-danger">${{$total}}</div>
+                        @else
+                        <div class="title text-success">${{$total}}</div>
+                        @endif
+                        <div class="level">
+                            <div class="level-item">
+                                <div class="">
+                                    <div class="chart__container">
+                                        {{-- <canvas id="chart_0" width="1000" height="400"></canvas> --}}
+                                        <div id="chartdiv1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="box">
+                        <div class="heading">Top 10 Categoryies</div>
+                        <div class="level">
+                            <div class="level-item">
+                                <div class="chart__container" >
+                                    <div id="chartdiv"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card" >
+                <div class="card-body">
+                    <h5 class="card-title">Resources name </h5>
+                    <table class="table table-hover responsive" id="resources">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th >Name</th>
+                                <th>Category</th>
+                                <th>Sub Category</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <body>
+                            @foreach ($resourceName as $item)
+                            <tr>
+                                <td >{{$item->name}}</td>
+                                <td >{{$item->category}}</td>
+                                <td >{{$item->subcategory}}</td>
+                                <td >${{$item->sum}}</td>
+                            </tr>
+                            @endforeach
+                        </body>
+                    </table>
+                    {{-- <p class="card-text">Content</p> --}}
+                </div>
+            </div>
         </div>
     </div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 @stop

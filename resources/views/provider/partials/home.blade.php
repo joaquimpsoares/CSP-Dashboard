@@ -237,89 +237,111 @@
                 <div class="card res-mg-t-30 table-mg-t-pro-n">
                     <div class="card-body">
                         <h3 class="card-title">Azure Subscriptions</h3>
-                        <ul class="country-state">
-                            <li>
-                                <h2><span class="counter">{{round($average, 0)}}</span>% Customer Name <small>current budget  </small>{{$budget}}</h2> 
-                                <div class="pull-right">100% <i class="fa fa-level-up text-danger ctn-ic-1"></i></div>
+                        <table class="table table-hover responsive" id="azure">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Company Name</th>
+                                    <th>Monthly Budget</th>
+                                    <th>Current Estimated</th>
+                                    <th>budget</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Company test</td>
+                                    <td> ${{$budget}}</td>
+                                    <td>${{$costSum}}</td>
+                                    <td><ul class="country-state">
+                                        <h2><span class="counter">{{round($average, 0)}}</span>%   <small></small></h2> 
+                                        <div class="pull-right"><span class="counter">{{round($average, 0)}}</span>%<i class="fa fa-level-up text-danger ctn-ic-1"></i></div>
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-success ctn-vs-4" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:100%;"> <span class="sr-only">{{round($average, 0)}} Budget</span></div>
+                                        </div>
+                                    </ul>
+                                </td>
+                                </tr>
+                                <tr>    
+                                <td>Company test</td>
+                                <td> ${{$budget}}</td>
+                                <td>${{$costSum}}</td>
+                                <td><ul class="country-state">
+                                    <h2><span class="counter">{{round($average, 0)}}</span>%   <small></small></h2> 
+                                    <div class="pull-right"><span class="counter">{{round($average, 0)}}</span>%<i class="fa fa-level-up text-danger ctn-ic-1"></i></div>
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-success ctn-vs-4" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:100%;"> <span class="sr-only">{{round($average, 0)}} Budget</span></div>
+                                    </div>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>    
+                            <td>Company test</td>
+                            <td> ${{$budget}}</td>
+                            <td>${{$costSum}}</td>
+                            <td><ul class="country-state">
+                                <h2><span class="counter">{{round($average, 0)}}</span>%   <small></small></h2> 
+                                <div class="pull-right"><span class="counter">{{round($average, 0)}}</span>%<i class="fa fa-level-up text-danger ctn-ic-1"></i></div>
                                 <div class="progress">
-                                    <div class="progress-bar progress-bar-success ctn-vs-4" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:100%;"> <span class="sr-only">100% Budget</span></div>
+                                    <div class="progress-bar progress-bar-success ctn-vs-4" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:100%;"> <span class="sr-only">{{round($average, 0)}} Budget</span></div>
                                 </div>
-                            </li>
-                            <li>
-                                <h2><span class="counter">48</span>% <small>Customer Name</small></h2> 
-                                <div class="pull-right">48% <i class="fa fa-level-up text-success ctn-ic-2"></i></div>
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-success ctn-vs-3" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:48%;"> <span class="sr-only">48% Complete</span></div>
-                                </div>
-                            </li>
-                            <li>
-                                <h2><span class="counter">55</span>% <small>Customer Name</small></h2> 
-                                <div class="pull-right">55% <i class="fa fa-level-up text-success ctn-ic-3"></i></div>
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-info ctn-vs-2" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:55%;"> <span class="sr-only">55% Complete</span></div>
-                                </div>
-                            </li>
-                            <li>
-                                <h2><span class="counter">33</span>% <small>Customer Name</small></h2> 
-                                <div class="pull-right">33% <i class="fa fa-level-down text-success ctn-ic-4"></i></div>
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-danger ctn-vs-1" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:33%;"> <span class="sr-only">33% Complete</span></div>
-                                </div>
-                            </li>
-                            <li>
-                                <h2><span class="counter">60</span>% <small>Customer Name</small></h2> 
-                                <div class="pull-right">60% <i class="fa fa-level-up text-success ctn-ic-5"></i></div>
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-inverse ctn-vs-5" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:60%;"> <span class="sr-only">60% Complete</span></div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+                            </ul>
+                        </td>
+                    </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-4 col-md-12">
-                <div class="card-success">
-                    <div class="card-body">
-                        <h4 class="card-title">Sales Overview</h4>
-                        <h6 class="card-subtitle">Ample Admin Vs Pixel Admin</h6>
-                        <div class="amp-pxl" style="height: 300px;">
-                            <div class="chartist-tooltip" style="top: -30.3333px; left: 252.333px;">
+    </div>
+    <div class="row">
+        <div class="col-lg-4 col-md-12">
+            <div class="card-success">
+                <div class="card-body">
+                    <h4 class="card-title">Sales Overview</h4>
+                    <h6 class="card-subtitle">Ample Admin Vs Pixel Admin</h6>
+                    <div class="amp-pxl" style="height: 300px;">
+                        <div class="chartist-tooltip" style="top: -30.3333px; left: 252.333px;">
+                        </div>
+                        <div class="text-center">
+                            <ul class="list-inline">
+                                <li>
+                                    <h6 class="text-muted text-success">
+                                        <i class="fa fa-circle font-10 m-r-10 "></i>Ample</h6> 
+                                    </li>
+                                    <li>
+                                        <h6 class="text-muted  text-info">
+                                            <i class="fa fa-circle font-10 m-r-10"></i>Pixel</h6> 
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Newsletter Campaign</h4>
+                            <h6 class="card-subtitle">Overview of Newsletter Campaign</h6>
                             <div class="text-center">
                                 <ul class="list-inline">
                                     <li>
-                                        <h6 class="text-muted text-success">
-                                            <i class="fa fa-circle font-10 m-r-10 "></i>Ample</h6> 
-                                        </li>
+                                        <h6 class="text-muted text-success"><i class="fa fa-circle font-10 m-r-10 "></i>Open Rate</h6> </li>
                                         <li>
-                                            <h6 class="text-muted  text-info">
-                                                <i class="fa fa-circle font-10 m-r-10"></i>Pixel</h6> 
-                                            </li>
+                                            <h6 class="text-muted  text-info"><i class="fa fa-circle font-10 m-r-10"></i>Recurring</h6> </li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">Newsletter Campaign</h4>
-                                <h6 class="card-subtitle">Overview of Newsletter Campaign</h6>
-                                <div class="text-center">
-                                    <ul class="list-inline">
-                                        <li>
-                                            <h6 class="text-muted text-success"><i class="fa fa-circle font-10 m-r-10 "></i>Open Rate</h6> </li>
-                                            <li>
-                                                <h6 class="text-muted  text-info"><i class="fa fa-circle font-10 m-r-10"></i>Recurring</h6> </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    
+                </div>
+                
+                
+                <script type="text/javascript">
+                    $(document).ready( function () {
+                        $('#azure').DataTable({
+                            "pagingType": "full_numbers",
+                            "order": [[ 0, "asc" ]]
+                        });
+                    } );
+                </script>

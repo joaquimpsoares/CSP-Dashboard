@@ -115,7 +115,7 @@ class HomeController extends Controller
                 $providers = $this->providerRepository->all();
                 return view('home', compact('provider','resellers','customers','instance','users',
                 'countries','subscriptions','order','statuses','countResellers',
-                'countCustomers','countSubscriptions','average', 'budget','providers','countries'));
+                'countCustomers','countSubscriptions','average', 'budget','providers','countries','costSum'));
         // return view('home');
     }
     

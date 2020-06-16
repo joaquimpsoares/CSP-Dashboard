@@ -4,8 +4,8 @@
         <div class="title">Azure</div>
     </div>
 </div>
-<table id="azure" class="table display responsive nowrap"  width="100%">
-    <thead>
+<table class="table table-hover responsive" id="subscriptions">
+    <thead class="thead-dark">
         <tr>
             <th>{{ ucwords(trans_choice('messages.customer', 1)) }}</th>                      
             <th>{{ ucwords(trans_choice('messages.subscription', 1)) }}</th>
@@ -26,7 +26,6 @@
     </tbody>
 </table>
 
-@section('scripts')
 <script type="text/javascript">
     $(document).ready( function () {
         $('#azure').DataTable({
@@ -35,4 +34,3 @@
         });
     } );
 </script>
-@endsection

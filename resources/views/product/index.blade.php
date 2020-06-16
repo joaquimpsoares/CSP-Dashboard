@@ -105,8 +105,8 @@
 				<i class="fab fa-product-hunt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
 				<div class="card-body">
 					<h4 class="card-title"><a>{{ ucwords(trans_choice('messages.product_table', 2)) }}</a></h4>
-					<table id="example" class="table display" style="width:100%">
-						<thead>
+				    <table class="table table-hover responsive" id="example">
+						<thead class="thead-dark">
 							<th><input name="select_all" value="1" id="example-select-all" type="checkbox" /></th>							
 							<th class="th-sm">{{ ucwords(trans_choice('messages.product_sku', 2)) }}</th>
 							<th class="th-sm">{{ ucwords(trans_choice('messages.product_name', 2)) }}</th>

@@ -119,7 +119,6 @@ class ProviderController extends Controller
 
                 $reseller = Reseller::get();
                 $countResellers = $reseller->count();
-                // dd($countCustomers);
                 
                 $instance = Instance::first();
                 
@@ -133,9 +132,10 @@ class ProviderController extends Controller
                 
                 $countries = Country::all();
                 $providers = $this->providerRepository->all();
+                
                 return view('provider.index', compact('provider','resellers','customers','instance','users',
                 'countries','subscriptions','order','statuses','countResellers',
-                'countCustomers','countSubscriptions','average', 'budget','providers','countries'));
+                'countCustomers','countSubscriptions','average', 'budget','providers','countries','costSum'));
         
         
         // return view('provider.index', compact('providers','countries'));     
@@ -205,7 +205,6 @@ class ProviderController extends Controller
                 $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
             }
             $countResellers = $reseller->count();
-            // dd($countCustomers);
             
             $instance = Instance::first();
             
@@ -234,7 +233,6 @@ class ProviderController extends Controller
     public function store(Request $request)
     {
         
-    // dd($request->all());
     $validate = $this->validator($request->all())->validate();
     
     try {

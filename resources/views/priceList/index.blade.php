@@ -14,42 +14,71 @@
 
 
 <div class="container">
-	<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-		<li class="nav-item">
-			<a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab"
-			aria-controls="pills-home" aria-selected="true">Price List</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab"
-			aria-controls="pills-profile" aria-selected="false">Product</a>
-		</li>
-	</ul>
-	<div class="tab-content pt-2 pl-1" id="pills-tabContent">
-		<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab"><div class="box">
+	<div class="card">
+		<div class="">
+			<i class="fas fa-money-check-alt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
+			<div class="card-body">
+				<h4 class="card-title"><a>Price List Table</a></h4>
+				<table class="table table-hover responsive" id="example">
+					<thead class="thead-dark">								
+						<tr>
+							<th></th>
+							<th>Name</th>
+							<th>Description</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						@forelse($priceLists as $priceList)
+						<tr>
+							<td></td>
+							<td><a href="{{route('priceList.prices', $priceList['id']) }}">{{ $priceList['name'] }}</a></td>
+							<td>{{ $priceList['description'] }}</td>
+							<td>
+								<a href="{{route('priceList.clone', $priceList['id'])}}"><i class="fa fa-clone"></i></a>
+								<a href="#"><i class="fa fa-list"></i></a>
+							</td>
+						</tr>
+						@empty
+						<tr>
+							<td colspan="5">Empty</td>
+						</tr>
+						@endforelse
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+	{{-- </section> --}}
+	{{-- </div>
+	</div>
+	<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+		<section class="section">
 			<div class="card">
 				<div class="">
 					<i class="fas fa-money-check-alt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
 					<div class="card-body">
 						<h4 class="card-title"><a>Price List Table</a></h4>
-						<table class="table table-striped table-bordered" id="priceLists">
-							<thead>
+						<table class="table table-hover responsive" id="example">
+							<thead class="thead-dark">
 								<tr>
-									<th></th>
-									<th>Name</th>
-									<th>Description</th>
-									<th>Actions</th>
+									<th><input name="select_all" value="1" id="example-select-all" type="checkbox" /></th>								<th>{{ ucwords(__('messages.product_sku')) }}</th>
+									<th>{{ ucwords(trans_choice('messages.product_name', 1)) }}</th>
+									<th>{{ ucwords(trans_choice('messages.pricelist_name', 1)) }}</th>
+									<th>{{ ucwords(trans_choice('messages.price', 1)) }}</th>
+									<th>{{ ucwords(trans_choice('messages.msrp', 1)) }}</th>
 								</tr>
 							</thead>
 							<tbody>
-								@forelse($priceLists as $priceList)
+								@forelse($prices as $price)
 								<tr>
 									<td></td>
-									<td><a href="{{route('priceList.prices', $priceList['id']) }}">{{ $priceList['name'] }}</a></td>
-									<td>{{ $priceList['description'] }}</td>
-									<td>
-										<a href="{{route('priceList.clone', $priceList['id'])}}"><i class="fa fa-clone"></i></a>
-										<a href="#"><i class="fa fa-list"></i></a>
-									</td>
+									<td>{{ $price['product_sku'] }}</td>
+									<td>{{ $price['name'] }}</td>
+									<td>{{ $price['pricelist']['name']}}</td>
+									<td>{{ $price['price'] }}</td>
+									<td>{{ $price['msrp'] }}</td>
 								</tr>
 								@empty
 								<tr>
@@ -61,52 +90,11 @@
 					</div>
 				</div>
 			</div>
-		</section>
-	</div>
-</div>
-<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-	<section class="section">
-		<div class="card">
-			<div class="">
-				<i class="fas fa-money-check-alt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
-				<div class="card-body">
-					<h4 class="card-title"><a>Price List Table</a></h4>
-					<table id="example" class="table display" style="width:100%">
-						<thead>
-							<tr>
-								<th><input name="select_all" value="1" id="example-select-all" type="checkbox" /></th>								<th>{{ ucwords(__('messages.product_sku')) }}</th>
-								<th>{{ ucwords(trans_choice('messages.product_name', 1)) }}</th>
-								<th>{{ ucwords(trans_choice('messages.pricelist_name', 1)) }}</th>
-								<th>{{ ucwords(trans_choice('messages.price', 1)) }}</th>
-								<th>{{ ucwords(trans_choice('messages.msrp', 1)) }}</th>
-							</tr>
-						</thead>
-						<tbody>
-							@forelse($prices as $price)
-							<tr>
-								<td></td>
-								<td>{{ $price['product_sku'] }}</td>
-								<td>{{ $price['name'] }}</td>
-								<td>{{ $price['pricelist']['name']}}</td>
-								<td>{{ $price['price'] }}</td>
-								<td>{{ $price['msrp'] }}</td>
-							</tr>
-							@empty
-							<tr>
-								<td colspan="5">Empty</td>
-							</tr>
-							@endforelse
-						</tbody>
-					</table>
-				</div>
-			</div>
 		</div>
 	</div>
-</div>
-</div>
+</div> --}}
 
 
-@endsection
 
 
 <script type="text/javascript">
@@ -194,3 +182,4 @@
 	});
 </script>
 
+@endsection
