@@ -7,7 +7,7 @@ $totalPrice = null;
 
 	<ul class="nav nav-tabs" id="myTab" role="tablist">
 		<li class="nav-item">
-			<a class="nav-link active" id="home-tab" data-toggle="tab" href="{{ route('order.place_order', ['token' => $cart->token]) }}" role="tab" aria-controls="home" aria-selected="true">{{ ucwords(trans_choice('messages.place_order', 1)) }}</a>
+			<a class="nav-link active" href="{{ route('order.place_order', ['token' => $cart->token]) }}" >{{ ucwords(trans_choice('messages.place_order', 1)) }}</a>
 		</li>
 	</ul>
 

@@ -244,7 +244,10 @@ Route::group(['middleware' => 'auth'], function () {
 	
 	//Novas rotas carrinho//
 	Route::post('/cart/customer/add', 'CartController@addCustomer')->name('cart.add_customer');
-	Route::get('/cart/{cart}/tenant', 'CartController@continueCheckout')->name('cart.tenant');
+	Route::post('/cart/customer/change', 'CartController@changeCustomer')->name('cart.change.customer');
+	Route::post('/cart/tenant/change', 'CartController@changeTenant')->name('cart.change.tenant');
+	Route::get('/cart/tenant', 'CartController@continueCheckout')->name('cart.tenant');
+	Route::get('/cart/review', 'CartController@continueCheckout')->name('cart.review');
 	Route::post('/cart/checkout', 'CartController@checkout')->name('cart.checkout');
 	//Novas rotas carrinho//
 
@@ -272,7 +275,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::resource('/store', 'StoreController');
 	Route::get('products/test', 'ProductController@index2');
 	Route::resource('product', 'ProductController');
-	Route::resource('order', 'OrderController');
+	Route::resource('/order', 'OrderController');
 	
 	
 	// End of every authenticated user can access routes here

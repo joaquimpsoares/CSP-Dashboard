@@ -104,7 +104,8 @@ class CartController extends Controller
     public function addCustomer(Request $request)
     {
         $validate = $request->validate([
-            'customer_id' => 'integer|exists:customers,id'
+            'customer_id' => 'required|integer|exists:customers,id',
+            'cart' => 'required|uuid|exists:carts,token'
         ]);
 
         $customer = Customer::find($validate['customer_id']);
@@ -115,30 +116,82 @@ class CartController extends Controller
         }
         /* End Check */
 
-        $cart = $this->getUserCart();
-
-        //$cart->customer_id = $customer->id;
+        $cart = $this->getUserCart(null, $validate['cart']);
+               
         $cart->customer()->associate($customer);
-
+        
         $cart->save();
 
         $status = "tenant";
         
         //return view('order.tenant', compact('cart'));
-                
-
+        return redirect()->route('cart.tenant', ['cart' => $cart->token]);
     }
 
-    public function continueCheckout(Cart $cart)
+    public function changeCustomer(Request $request)
     {
-        /*$validate = $request->validate([
-            'id' => 'required|integer|exists:carts,id',
-        ]);*/
+        $validate = $request->validate([
+            'cart' => 'required|uuid|exists:carts,token'
+        ]);
 
-        dd($cart);
+        $cart = $this->getUserCart(null, $validate['cart']);
+        $status = "customer";
 
-        if (empty($cart->domain)) {
+        $customers = $this->customerRepository->all();
+
+        return view('order.checkout', compact('cart', 'customers', 'status'));
+    }
+
+    public function changeTenant(Request $request)
+    {
+        $validate = $request->validate([
+            'cart' => 'required|uuid|exists:carts,token'
+        ]);
+
+        $cart = $this->getUserCart(null, $validate['cart']);
+        
+        return view('order.tenant', compact('cart'));
+    }
+
+    public function addMCAUser(Request $request)
+    {
+        $validate = $request->validate([
+            'firstName' => 'required|string',
+            'lastName' => 'required|string',
+            'email' => 'required|email:rfc,dns',
+            'phoneNumber' => 'string|nullable',
+            'token' => 'required|uuid'
+        ]);
+
+
+        $cart = $this->getByToken($validate['token']);
+
+        $cart->agreement_firstname = $validate['firstName'];
+        $cart->agreement_lastname = $validate['lastName'];
+        $cart->agreement_email = $validate['email'];
+        $cart->agreement_phone = $validate['phoneNumber'];
+        $cart->save();
+
+        return redirect()->route('cart.review', ['cart' => $cart->token]);
+    }
+
+    public function continueCheckout(Request $request)
+    {
+        $validate = $request->validate([
+            'cart' => 'required|uuid|exists:carts,token'
+        ]);
+
+        $cart = $this->getUserCart(null, $validate['cart']);
+        //dd($cart);
+
+        if (empty($cart->domain) && empty($cart->agreement_firstname)) {
             return view('order.tenant', compact('cart'));
+        } else {
+            if (empty($cart->agreement_firstname)){
+                return view('order.tenant', compact('cart'));
+            } else {
+                return view('order.review', compact('cart'));
+            }
         }
     }
 
@@ -157,7 +210,7 @@ class CartController extends Controller
         $instance = Instance::first();
         
         if($instance->type === 'microsoft'){
-            
+
             if (MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->getDomainAvailability($domain)){
 
                 $cart->domain = $domain;
@@ -186,29 +239,6 @@ class CartController extends Controller
         return $user;
     }
 
-    public function addMCAUser(Request $request)
-    {
-        $validate = $request->validate([
-            'firstName' => 'required|string',
-            'lastName' => 'required|string',
-            'email' => 'required|email:rfc,dns',
-            'phoneNumber' => 'string|nullable',
-            'token' => 'required|uuid'
-        ]);
-
-
-        $cart = $this->getByToken($validate['token']);
-
-        $cart->agreement_firstname = $validate['firstName'];
-        $cart->agreement_lastname = $validate['lastName'];
-        $cart->agreement_email = $validate['email'];
-        $cart->agreement_phone = $validate['phoneNumber'];
-        $cart->save();
-
-        return true;
-    }
-
-    
 
     public function destroy()
     {
@@ -273,14 +303,19 @@ class CartController extends Controller
         return view('order.checkout', compact('cart', 'customers'));
     }
 
-    private function getUserCart($id = null)
+    private function getUserCart($id = null, $token = null)
     {
         $user = $this->getUser();
 
-        if (empty($id))
-            $cart = Cart::where('user_id', $user->id)->whereNull('customer_id')->with('products')->first();
-        else
-            $cart = Cart::where('user_id', $user->id)->where('id', $id)->with('products')->first();
+        if (empty($token)) {
+            if (empty($id)) {
+                $cart = Cart::where('user_id', $user->id)->whereNull('customer_id')->with(['products', 'customer'])->first();
+            } else {
+                $cart = Cart::where('user_id', $user->id)->where('id', $id)->with(['products', 'customer'])->first();
+            }
+        } else {
+            $cart = Cart::where('user_id', $user->id)->where('token', $token)->with(['products', 'customer'])->first();
+        }
         
         return $cart;
     }

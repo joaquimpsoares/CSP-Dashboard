@@ -51,7 +51,7 @@ class OrderController extends Controller
                 new PlaceOrderMicrosoft($order)
                 ])->dispatch($order)->allOnQueue('PlaceordertoMS');
                 
-                return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
+                return view('order.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
             }
             
             public function syncproducts(Request $request)

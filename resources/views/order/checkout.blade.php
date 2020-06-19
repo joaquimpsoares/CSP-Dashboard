@@ -19,13 +19,13 @@
 										<div class="col">
 											<ul class="nav nav-tabs" id="myTab" role="tablist">
 												<li class="nav-item">
-													<a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">{{ ucwords(trans_choice('messages.customer', 1)) }}</a>
+													<a class="nav-link active" id="home-tab" data-toggle="tab" href="#home">{{ ucwords(trans_choice('messages.customer', 1)) }}</a>
 												</li>
 												<li class="nav-item">
-													<a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">{{ ucwords(trans_choice('messages.tenant', 1)) }}</a>
+													<a class="nav-link" id="profile-tab" data-toggle="tab" href="#">{{ ucwords(trans_choice('messages.tenant', 1)) }}</a>
 												</li>
 												<li class="nav-item">
-													<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">{{ ucwords(trans_choice('messages.review', 1)) }}</a>
+													<a class="nav-link" id="contact-tab" data-toggle="tab" href="#">{{ ucwords(trans_choice('messages.review', 1)) }}</a>
 												</li>
 											</ul>
 										</div>
@@ -37,10 +37,11 @@
 											<div class="row">
 												
 												@csrf
+												<input type="hidden" name="cart" value="{{ $cart->token }}">
 												<div class="col">
-													<select class="shipping_select" name="customer_id" style="display: none;">
+													<select class="" name="customer_id" >
 														@foreach($customers as $customer)
-														<option value="{{ $customer['id'] }}">{{ $customer['company_name'] }}</option>
+														<option value="{{ $customer['id'] }}" @if($cart->customer && $cart->customer->id == $customer['id']) selected="selected" @endif>{{ $customer['company_name'] }}</option>
 														@endforeach	
 													</select>
 												</div>

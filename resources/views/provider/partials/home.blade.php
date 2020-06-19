@@ -250,7 +250,7 @@
                                 <tr>
                                     <td>Company test</td>
                                     <td> ${{$budget}}</td>
-                                    <td>${{$costSum}}</td>
+                                    <td>$ </td>
                                     <td><ul class="country-state">
                                         <h2><span class="counter">{{round($average, 0)}}</span>%   <small></small></h2> 
                                         <div class="pull-right"><span class="counter">{{round($average, 0)}}</span>%<i class="fa fa-level-up text-danger ctn-ic-1"></i></div>
@@ -263,7 +263,7 @@
                                 <tr>    
                                 <td>Company test</td>
                                 <td> ${{$budget}}</td>
-                                <td>${{$costSum}}</td>
+                                <td>${</td>
                                 <td><ul class="country-state">
                                     <h2><span class="counter">{{round($average, 0)}}</span>%   <small></small></h2> 
                                     <div class="pull-right"><span class="counter">{{round($average, 0)}}</span>%<i class="fa fa-level-up text-danger ctn-ic-1"></i></div>
@@ -276,7 +276,7 @@
                         <tr>    
                             <td>Company test</td>
                             <td> ${{$budget}}</td>
-                            <td>${{$costSum}}</td>
+                            <td>$</td>
                             <td><ul class="country-state">
                                 <h2><span class="counter">{{round($average, 0)}}</span>%   <small></small></h2> 
                                 <div class="pull-right"><span class="counter">{{round($average, 0)}}</span>%<i class="fa fa-level-up text-danger ctn-ic-1"></i></div>
