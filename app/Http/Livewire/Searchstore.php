@@ -10,7 +10,7 @@ class Searchstore extends Component
 {
 
     public $search = '';
-    public $categories ='';
+    public $categories = "uncheck";
 
     use WithPagination;
 
@@ -23,9 +23,9 @@ class Searchstore extends Component
     public function render()
     {
         return view('livewire.searchstore', [
-            'products' => Product::where('name', 'like', "%$this->search%")
+            'products' => Product::where('name', 'like', '%' . $this->search . '%')
             ->orWhere('sku', 'LIKE', "%$this->search%")
-            ->orWhere('category', 'LIKE', "%$this->search%")->paginate(10),
+            ->orWhere('category', 'LIKE', "%$this->search%")->paginate(9),
         ]);
     }
 }

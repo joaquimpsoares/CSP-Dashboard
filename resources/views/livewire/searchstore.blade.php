@@ -1,15 +1,17 @@
 <div>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <legend><h3>{{ ucwords(trans_choice('messages.filter', 1)) }}</h3></legend>				
             @foreach ($categories as $category)
             <div class="form-check">
-                <input wire:model="categories" class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                {{$category->category}}
+                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                <label class="form-check-label" for="defaultCheck1">
+                    {{$category->category}}
+                </label>    
             </div>
             @endforeach
         </div>
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="row">
                 <div class="col-3">
                     <form method="GET" action="{{ route('store.index') }}" style="padding-top: 15px;">
@@ -39,10 +41,10 @@
                 @foreach($products as $product)
                 <div class="product-card">
                     @if (	 $product->category == "Trial")
-                    <div class="badge">{{$product->category}}</div>
+                    <div class="badge1">{{$product->category}}</div>
                     @endif
                     @if (	 $product->category == "Education")
-                    <div class="badge">{{$product->category}}</div>
+                    <div class="badge1">{{$product->category}}</div>
                     @endif
                     <div class="product-tumb">
                         <img src="{{ asset('images/vendors/' . $product->vendor . '.png') }}"  title="{{ $product->name }}" class="img-fuid" style="max-width: 120px;max-height: 120px;" />
@@ -75,5 +77,4 @@
             </div>
         </div>
     </div>
-</div>
     

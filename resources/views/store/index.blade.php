@@ -20,24 +20,45 @@
 		text-decoration: none;
 	} */
 	.product-card {
-		width: 350px;
+		width: 280px;
 		position: relative;
 		box-shadow: 0 5px 10px #dfdfdf;
 		margin: 30px auto;
 		background: #fafafa;
 	}
 	
-	.badge {
+	/* .badge1 {
 		position: absolute;
 		left: 0;
 		top: 20px;
 		text-transform: uppercase;
-		font-size: 13px;
+		font-size: 75%;
+		font-weight: 500;
+		background: rgb(145, 255, 0);
+		color: #5e5d5d;
+		padding: 3px 10px;
+		padding-right: 0.6em;
+		padding-left: 0.6em;
+		border-radius: 5em;
+	} */
+	
+	.badge1 {
+		position: absolute;
+		left: 0;
+		top: 30px;	
+		display: absolute;
+		padding: 0.25em 0.4em;
+		font-size: 75%;
 		font-weight: 700;
 		background: rgb(145, 255, 0);
-		color: rgb(0, 0, 0);
-		padding: 3px 10px;
+		line-height: 1;
+		text-align: center;
+		white-space: nowrap;
+		vertical-align: baseline;
+		border-radius: 0.25rem;
+		transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 	}
+	
 	
 	/* .badge {
 		position: absolute;
