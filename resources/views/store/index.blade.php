@@ -1,121 +1,166 @@
 @extends('layouts.app')
 
-
+<style>
+	@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700');
+	*
+	{
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
+	
+	
+	/* body
+	{
+		font-family: 'Roboto', sans-serif;
+	}
+	a
+	{
+		text-decoration: none;
+	} */
+	.product-card {
+		width: 350px;
+		position: relative;
+		box-shadow: 0 5px 10px #dfdfdf;
+		margin: 30px auto;
+		background: #fafafa;
+	}
+	
+	.badge {
+		position: absolute;
+		left: 0;
+		top: 20px;
+		text-transform: uppercase;
+		font-size: 13px;
+		font-weight: 700;
+		background: rgb(145, 255, 0);
+		color: rgb(0, 0, 0);
+		padding: 3px 10px;
+	}
+	
+	/* .badge {
+		position: absolute;
+		left: 0;
+		top: 20px;
+		text-transform: uppercase;
+		font-size: 13px;
+		font-weight: 700;
+		background: red;
+		color: #fff;
+		padding: 3px 10px;
+	} */
+	
+	.product-tumb {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 250px;
+		padding: 50px;
+		background: #f0f0f0;
+	}
+	
+	/* .text {
+		/* display: block; */
+		/* width: 100px; */
+		max-width: 200px;
+		overflow: hidden;
+		/* white-space: nowrap; */
+		text-overflow: ellipsis;
+	}
+	*/
+	.product-tumb img {
+		max-width: 100%;
+		max-height: 100%;
+	}
+	
+	.product-details {
+		padding: 30px;
+	}
+	
+	.product-catagory {
+		display: block;
+		font-size: 12px;
+		font-weight: 700;
+		text-transform: uppercase;
+		color: #ccc;
+		margin-bottom: 18px;
+	}
+	
+	.product-details h4 a {
+		font-weight: 500;
+		display: block;
+		margin-bottom: 18px;
+		text-transform: uppercase;
+		color: #363636;
+		text-decoration: none;
+		transition: 0.3s;
+	}
+	
+	.product-details h4 a:hover {
+		color: #fbb72c;
+	}
+	
+	.product-details p {
+		font-size: 15px;
+		line-height: 22px;
+		margin-bottom: 18px;
+		color: #999;
+	}
+	
+	.product-bottom-details {
+		overflow: hidden;
+		border-top: 1px solid #eee;
+		padding-top: 20px;
+	}
+	
+	.product-bottom-details div {
+		float: left;
+		width: 50%;
+	}
+	
+	.product-price {
+		font-size: 18px;
+		color: #fbb72c;
+		font-weight: 600;
+	}
+	
+	.product-price small {
+		font-size: 80%;
+		font-weight: 400;
+		text-decoration: line-through;
+		display: inline-block;
+		margin-right: 5px;
+	}
+	
+	.product-links {
+		text-align: right;
+	}
+	
+	.product-links button {
+		display: inline-block;
+		margin-left: 5px;
+		color: #e1e1e1;
+		transition: 0.3s;
+		font-size: 17px;
+	}
+	
+	.product-links button:hover {
+		color: #fbb72c;
+	}
+	.product-links button:border-color {
+		color: #000000;
+	}
+	.product-links button {
+		border: none;
+		background: none;
+	}
+</style>
 @section('content')
 <div class="container">
 	<section class="section">
 		<div class="row">
-			<div class="col-md-2">
-				<legend><h3>{{ ucwords(trans_choice('messages.filter', 1)) }}</h3></legend>				
-				<form method="GET" action="{{ route('store.index') }}" style="padding-top: 15px;">
-					<!-- Search form -->
-					@if (isset($filters['quantity']))
-					<input type="hidden" name="quantity" value="{{ $filters['quantity']}}" />
-					@endif
-					<div class="md-form active-purple active-purple-2 mb-3form-group" style="padding-top: 15px;">
-						<i class="fas fa-search"></i>
-						<input type="text" class="form-control" name="name" id="name" value="{{ $filters['name'] ?? '' }}" placeholder="{{ ucwords(trans_choice('messages.product_name', 1)) }}" />
-					</div>
-					<div class="form-group">
-						<label for="vendor">{{ ucwords(trans_choice('messages.vendor', 1)) }}</label>
-						<select class="custom-select" name="vendor" id="vendor">
-							<option value="" {{ ( isset($filters['vendor']) && $filters['vendor'] === 'all' ) ? 'selected' : '' }}>{{ ucwords(__('messages.all')) }}</option>
-							@foreach($vendors as $vendor)
-							<option value="{{ $vendor->name }}" {{ ( isset($filters['vendor']) && $filters['vendor'] ===  $vendor->name ) ? 'selected' : '' }}>{{ ucwords($vendor->name) }}</option>
-							@endforeach	
-						</select>
-					</div>
-					<div class="text-right" style="padding-top: 15px;">
-						<a href="{{ route('store.index') }}" class="btn btn-info">{{ ucwords(__('messages.clear_filter')) }}</a>
-						<button class="btn btn-success">{{ ucwords(__('messages.apply_filter')) }}</button>
-					</div>
-				</form>	
-			</div>
-			<div class="col-md-10">
-				<div class="row">
-					<div class="col-3">
-						<form method="GET" action="{{ route('store.index') }}" style="padding-top: 15px;">
-							@if (isset($filters['name']))
-							<input type="hidden" name="name" value="{{ $filters['name']}}" />
-							@endif
-							@if (isset($filters['vendor']))
-							<input type="hidden" name="vendor" value="{{ $filters['vendor']}}" />
-							@endif
-							<div class="input-group mb-3">
-								<select name="quantity" class="custom-select " id="quantity">
-									<option {{ (!isset($filters['quantity'])) ? 'selected' : ( isset($filters['quantity']) && $filters['quantity'] === '12' ) ? 'selected' : ''  }}>12</option>
-									<option {{ ( isset($filters['quantity']) && $filters['quantity'] === '24' ) ? 'selected' : '' }}>24</option>
-									<option {{ ( isset($filters['quantity']) && $filters['quantity'] === '36' ) ? 'selected' : '' }}>36</option>
-								</select>
-								<div class="input-group-append">
-									<button class="input-group-text" type="submit" for="quantity">{{ ucwords(__('messages.apply_filter')) }}</button>
-								</div>
-							</div>
-							<input type="hidden" name="search" value="1" />
-						</form>
-					</div>
-				</div>
-				@php
-				$cont=0
-				@endphp
-				<div class="row">
-					@foreach($products as $product)
-					<div class="col-sm-12 col-md-3" style="padding-top: 20px;">
-						<div class="card" style="min-height: 230px;">
-							<div class="card-body text-center">
-								<div class="row mx-auto justify-content-center">
-									<img src="{{ asset('images/vendors/' . $product->vendor . '.png') }}"  title="{{ $product->name }}" class="img-fuid" style="max-width: 120px;max-height: 120px;" />
-								</div>
-								<div class="row mx-auto justify-content-center" style="padding-top: 20px;">
-									@if(strlen($product->name) <= 40)
-									<div class="col-12" >&nbsp;</div>
-									@endif
-									<strong>{{ $product->name }}</strong>
-									@if(strlen($product->name) <= 40 || strlen($product->name) < 70)
-									<div class="col-12" >&nbsp;</div>
-									@endif
-									
-								</div>
-							</div>
-							<div class="card-footer text-muted text-center">
-								<div class="row">
-									<div class="col-6">	
-										<a class="btn btn-outline-dark" data-toggle="modal" data-target="#modal_product_{{$product->id}}">+ {{ $product->addons->count() }} {{ ucwords(trans_choice('messages.addon', 2)) }}</a>
-									</div>
-									<div class="col-6">
-										<form method="POST" action="{{ route('cart.add_to_cart') }}">
-											@csrf
-											<input type="hidden" name="product_id" value="{{$product->id}}">
-											<button type="submit" class="btn btn-outline-success">
-												{{ ucwords(__('messages.add_to_cart')) }}
-											</button>
-										</form>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					@php
-					$cont++
-					@endphp
-					@if($cont === 4)
-					@php
-					$cont=0
-					@endphp
-				</div>
-				<div class="row" >
-					@endif
-					@endforeach
-				</div>
-				<hr/>
-				<div class="row">
-					<div class="col">
-						<span class="float-right">
-							@include('partials.paginator', ['paginator' => $prices])
-						</span>
-					</div>
-				</div>
-			</div>
+			<livewire:searchstore/>
 		</div>
 	</section>
 </div>	
@@ -124,13 +169,7 @@
 @endsection
 
 @section('scripts')
-<script type="text/javascript">
-	$(document).ready( function () {
-		$('#products').DataTable({
-			"pagingType": "full_numbers",
-			"ordering": false
-		});
-	} );
-</script>
+
+
 @endsection
 
