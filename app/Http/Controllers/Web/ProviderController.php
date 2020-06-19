@@ -157,7 +157,8 @@ class ProviderController extends Controller
     
     public function show(Provider $provider)
     {
-        
+    
+
     $budget = cache()->remember('azure.budget', 260, function(){
             
         $customer = new TagydesCustomer([
@@ -210,7 +211,7 @@ class ProviderController extends Controller
             
             $order = OrderProducts::get();
             
-            $users = User::where('provider_id', $provider->id)->first();
+            $users = User::where('provider_id', $provider->id)->get();
             
             $subscriptions = $this->providerRepository->getSubscriptions($provider);
             $countCustomers =  $customers->count();
@@ -218,7 +219,7 @@ class ProviderController extends Controller
             
             return view('provider.show', compact('provider','resellers','customers','instance','users',
             'countries','subscriptions','order','statuses','countResellers',
-            'countCustomers','countSubscriptions','average', 'budget'));
+            'countCustomers','countSubscriptions','average', 'budget','costSum'));
         }
                 
     public function edit(Provider $provider)

@@ -2,16 +2,14 @@
 
 
 @section('content')
-
-
-<div class="container">
+<livewire:cart/>
+{{-- <div class="container">
     <section class="section">
         <div class="card">
             <div class="row">
                 <div class="col-md-2"></div>
                 <div class="col-md-8">
                     <div class="row">
-
                         @if($cart)
                         <form action="{{ route('cart.checkout') }}" method="POST" >
                             @csrf
@@ -123,7 +121,7 @@
             </div>
         </div>
     </section>
-</div>
+</div> --}}
 
 
 
@@ -131,7 +129,7 @@
 @endsection
 
 @section('scripts')
-<script>
+{{-- <script>
     $(document).ready(function() { 
         $('.product-quantity input').change( function() {
             updateProductQuantity(this);
@@ -184,5 +182,5 @@
     {
         return true;
     }
-</script>
+</script> --}}
 @endsection

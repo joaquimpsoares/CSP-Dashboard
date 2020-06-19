@@ -1,3 +1,11 @@
+<style>
+  .footer-area {
+    background: #e5ecee;
+    padding-top: 100px;
+    padding-bottom: 0px;
+}
+</style>
+
 <!--================ start footer Area  =================-->  
 <footer class="footer-area">
   <div class="container">

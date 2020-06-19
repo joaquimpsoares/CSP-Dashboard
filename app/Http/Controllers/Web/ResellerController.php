@@ -44,7 +44,7 @@ class ResellerController extends Controller
 
 
     public function getCustomersFromReseller(Reseller $reseller) {
-        dd($reseller);
+
     }
 
 
@@ -104,6 +104,8 @@ class ResellerController extends Controller
 
         $statuses = Status::get();
 
+        $users = User::where('reseller_id', $reseller->id)->get();
+
         $subscriptions = [];
         $customers = new Collection();
         foreach ($reseller as $resellers){
@@ -116,7 +118,7 @@ class ResellerController extends Controller
         }
 
 
-            return view('reseller.show', compact('reseller','customers', 'countries', 'subscriptions','statuses'));
+            return view('reseller.show', compact('reseller','customers', 'countries', 'users', 'subscriptions','statuses'));
         }
 
 

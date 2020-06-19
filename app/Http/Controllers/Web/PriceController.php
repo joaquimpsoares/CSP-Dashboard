@@ -23,7 +23,6 @@ class PriceController extends Controller
 
         $prices = Price::find($id);
         $newprices = $prices->replicate();
-        dd($newprices);
             // $newpricelist->id = $new_id;
             // $newpricelist->data = $new_data;
         $newprices->save();

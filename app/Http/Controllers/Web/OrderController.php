@@ -29,7 +29,7 @@ class OrderController extends Controller
     }
 
     public function show() {
-        dd('aqui');
+
     }
     
     public function index()
@@ -56,9 +56,6 @@ class OrderController extends Controller
             
             public function syncproducts(Request $request)
             {
-                
-                dd($request->all());
-                
                 
                 ImportProductsMicrosoftJob::dispatch($order)->onQueue('SyncProducts')
                 ->delay(now()->addSeconds(10)); 

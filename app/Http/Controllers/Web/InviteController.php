@@ -20,7 +20,6 @@ class InviteController extends Controller
     public function process(Request $request)
     {
         // validate the incoming request data
-        // dd($request->all());
         do {
             //generate a random string using Laravel's str_random helper
             $token = str_random();

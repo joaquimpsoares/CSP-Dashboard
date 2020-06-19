@@ -131,7 +131,7 @@
                 <div class="card card-body">
                     <div class="row">
                         <div class="col p-r-0 align-self-center">
-                            <h2 class="font-light m-b-0"> {{$countResellers}} </h2>
+                            <h2 class="font-light m-b-0"> {{$provider['resellers']->count()}} </h2>
                             <h6 class="text-muted">Resellers</h6>
                         </div>
                         <div class="col text-right align-self-center">
@@ -142,12 +142,12 @@
                                 a 15.9155 15.9155 0 0 1 0 -31.831"
                                 />
                                 <path class="circle"
-                                stroke-dasharray="30, 100"
+                                stroke-dasharray="{{$provider['resellers']->count()}}, 100"
                                 d="M18 2.0845
                                 a 15.9155 15.9155 0 0 1 0 31.831
                                 a 15.9155 15.9155 0 0 1 0 -31.831"
                                 />
-                                <text x="18" y="20.35" class="percentage">30%</text>
+                                <text x="18" y="20.35" class="percentage">{{$provider['resellers']->count()/100}}%</text>
                             </svg>
                         </div>
                     </div>
@@ -161,19 +161,19 @@
                             <h6 class="text-muted">Customers</h6>
                         </div>
                         <div class="col text-right align-self-center">
-                            <svg viewBox="0 0 36 36" class="circular-chart orange">
+                            <svg viewBox="0 0 36 36" class="circular-chart green">
                                 <path class="circle-bg"
                                 d="M18 2.0845
                                 a 15.9155 15.9155 0 0 1 0 31.831
                                 a 15.9155 15.9155 0 0 1 0 -31.831"
                                 />
                                 <path class="circle"
-                                stroke-dasharray="1, 100"
+                                stroke-dasharray="{{$countCustomers}}, 100"
                                 d="M18 2.0845
                                 a 15.9155 15.9155 0 0 1 0 31.831
                                 a 15.9155 15.9155 0 0 1 0 -31.831"
                                 />
-                                <text x="18" y="20.35" class="percentage">1%</text>
+                                <text x="18" y="20.35" class="percentage">{{$countCustomers/100}}%</text>
                             </svg>
                         </div>
                     </div>
@@ -187,19 +187,19 @@
                             <h6 class="text-muted">subscriptions</h6>
                         </div>
                         <div class="col text-right align-self-center">
-                            <svg viewBox="0 0 36 36" class="circular-chart orange">
+                            <svg viewBox="0 0 36 36" class="circular-chart green">
                                 <path class="circle-bg"
                                 d="M18 2.0845
                                 a 15.9155 15.9155 0 0 1 0 31.831
                                 a 15.9155 15.9155 0 0 1 0 -31.831"
                                 />
                                 <path class="circle"
-                                stroke-dasharray="0, 100"
+                                stroke-dasharray="{{$countSubscriptions}}, 100"
                                 d="M18 2.0845
                                 a 15.9155 15.9155 0 0 1 0 31.831
                                 a 15.9155 15.9155 0 0 1 0 -31.831"
                                 />
-                                <text x="18" y="20.35" class="percentage">0%</text>
+                                <text x="18" y="20.35" class="percentage">{{$countSubscriptions/100}}%</text>
                             </svg>
                         </div>
                     </div>
@@ -213,19 +213,19 @@
                             <h6 class="text-muted">About To Expire</h6>
                         </div>
                         <div class="col text-right align-self-center">
-                            <svg viewBox="0 0 36 36" class="circular-chart green">
+                            <svg viewBox="0 0 36 36" class="circular-chart orange">
                                 <path class="circle-bg"
                                 d="M18 2.0845
                                 a 15.9155 15.9155 0 0 1 0 31.831
                                 a 15.9155 15.9155 0 0 1 0 -31.831"
                                 />
                                 <path class="circle"
-                                stroke-dasharray="0, 100"
+                                stroke-dasharray="{{$countSubscriptions}}, 100"
                                 d="M18 2.0845
                                 a 15.9155 15.9155 0 0 1 0 31.831
                                 a 15.9155 15.9155 0 0 1 0 -31.831"
                                 />
-                                <text x="18" y="20.35" class="percentage">0%</text>
+                                <text x="18" y="20.35" class="percentage">{{$countSubscriptions/100}}%</text>
                             </svg>
                         </div>
                     </div>

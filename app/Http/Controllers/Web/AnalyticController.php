@@ -34,7 +34,6 @@ class AnalyticController extends Controller
         $dateupdated = AzureResource::select('updated_at')->first();
         
         $resourceName = AzureResource::groupBy('name')->selectRaw('sum(cost) as sum, name, category, subcategory')->orderBy('sum', 'DESC')->get();
-        // dd($resourceName);
         // $date = AzureResource::selectRaw('DATE_FORMAT(azure_updated_at, "%d-%b-%Y") as date')->first();
         
         $category = array_column($query, 'category');
@@ -71,10 +70,8 @@ class AnalyticController extends Controller
             
             
             $subscriptions = Subscription::select('instance_id')->first();
-            // dd($subscriptions->instance_id);
         
             $instance = Instance::where('id', $subscriptions->instance_id)->first();
-            // dd($instance->name);
             return (int) FacadesAzureResource::withCredentials(
                 $instance->external_id,$instance->external_token
                 )->budget($customer, $subscription);
@@ -116,7 +113,6 @@ class AnalyticController extends Controller
         
             $instance = Instance::where('id', 4)->first();
                         
-        // dd($customer);
         $customer = new TagydesCustomer([
             'id' => 'd9b842d6-aa51-44ca-a77c-f7d20411b942',
             'username' => 'bill@tagydes.com',
@@ -141,7 +137,6 @@ class AnalyticController extends Controller
             
 
             $subscriptions = Subscription::select('instance_id')->first();
-            // dd($subscriptions->instance_id);
         
             $instance = Instance::where('id', $subscriptions->instance_id)->first();
             
@@ -274,7 +269,6 @@ class AnalyticController extends Controller
             //     return redirect('analytics')
             //         ->with('message', 'Thanks for your message. We\'ll be in touch.');
             // }else{
-                //     dd("this is s");
                 // }
                 
             }

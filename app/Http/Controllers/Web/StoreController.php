@@ -43,7 +43,7 @@ class StoreController extends Controller
             
 
         $products = $this->productRepository->all($filters, $this->quantity);
-        // dd($products);
+
         $products = [];
         $prices = null;
         switch ($userLevel) {

@@ -51,9 +51,6 @@ class OrderRepository implements OrderRepositoryInterface
         return $order;
     }
 
-
-
-
     private function createOrderFromCart($cart)
     {
 

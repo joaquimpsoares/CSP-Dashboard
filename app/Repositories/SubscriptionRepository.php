@@ -39,8 +39,6 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
             case config('app.provider'):
 
                 $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
-
-                dd($resellers);
                 
                 $subscriptions = Customer::whereHas('resellers', function($query) use  ($resellers) {
                 	$query->whereIn('id', $resellers);

@@ -52,10 +52,8 @@
                                         </td>
                                         <td>{{ $job->queue }}</td>   
                                         <td>{{$order[$job->id]->customer->company_name}}</td>
-                                        {{-- <td>{{dd($order[$job->id]->products->product)}}</td> --}}
                                         <td>{{$order[$job->id]->domain}}</td>
                                         <td>{{ $job->attempts }}</td>
-                                        {{-- {{$job_date->format('Y-m-d H:i:s')}} --}}
                                         <td>{{ date('d-M-Y', strtotime($job->available_at)) }}</td>
                                     </tr>
                                     @empty

@@ -5,10 +5,8 @@
 
 
 <div class="container col-xm-12">
-    
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item">
-            
             <a class="nav-link btn rgba-blue-light btn rgba-blue-light active" id="home-tab-md" data-toggle="tab" href="#home-md" role="tab" aria-controls="home-md"
             aria-selected="true">Home</a>
         </li>
@@ -28,25 +26,28 @@
     <div class="tab-content pt-5" id="myTabContentMD">
         <div class="tab-pane fade show active" id="home-md" role="tabpanel" aria-labelledby="home-tab-md">
             
+        </div>
+        <div class="tab-pane fade" id="subscription-md" role="tabpanel" aria-labelledby="subscription-tab-md">
+            <div class="container col-xm-12">
+                @include('subscriptions.partials.row', ['subscriptions' => $subscriptions])
             </div>
-            <div class="tab-pane fade" id="subscription-md" role="tabpanel" aria-labelledby="subscription-tab-md">
-                <div class="container col-xm-12">
-                    @include('subscriptions.partials.row', ['subscriptions' => $subscriptions])
-                </div>
-            </div>
-            <div class="tab-pane fade" id="profile-md" role="tabpanel" aria-labelledby="profile-tab-md">
+        </div>
+        <div class="tab-pane fade" id="profile-md" role="tabpanel" aria-labelledby="profile-tab-md">
+            <div class="container col-xm-12">
                 @include('reseller.partials.details')
+                @include('user.partials.table', ['users' => $users] )
             </div>
-            <div class="tab-pane fade" id="customer-md" role="tabpanel" aria-labelledby="customer-tab-md">
-                <div class="container col-xm-12">
-                    @include('customer.partials.table', ['customers' => $customers])
-                </div>
+        </div>
+        <div class="tab-pane fade" id="customer-md" role="tabpanel" aria-labelledby="customer-tab-md">
+            <div class="container col-xm-12">
+                @include('customer.partials.table', ['customers' => $customers])
             </div>
         </div>
     </div>
-    
-    
-    @endsection
-    
-    
-    
+</div>
+
+
+@endsection
+
+
+

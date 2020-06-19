@@ -58,7 +58,7 @@ class JobsController extends Controller
     public function notifications()
     {
         $data = Auth::user()->unreadnotifications->data();
-        dd($data);        
+
         return view('layouts.nav', compact('data'));
     }
 
@@ -81,7 +81,6 @@ class JobsController extends Controller
             return $job;
         })->values();
 
-            dd($jobs);
         return [
             'jobs' => $jobs,
             'total' => $this->jobs->countRecent(),

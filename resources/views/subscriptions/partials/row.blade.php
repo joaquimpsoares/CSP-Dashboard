@@ -20,7 +20,6 @@
                 </thead>
                 <tbody>
                     @foreach ($subscriptions as $subscription)
-                    {{dd($subscription)}}
                     
                     {{-- @foreach ($customerSubscriptions as $subscription) --}}
                     <tr class="odd gradeX">

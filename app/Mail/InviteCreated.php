@@ -30,7 +30,6 @@ class InviteCreated extends Mailable
     public function build()
     {
 
-        // dd($this->invite->token);
         return $this->from('hello@gexample.com')->view('emails.invite', ['invite' => $this->invite]);   
 
         // return $this->from('you@example.com')

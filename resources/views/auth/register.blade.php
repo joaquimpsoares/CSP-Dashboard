@@ -6,8 +6,6 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <section>
-
-                {{dd($provider)}}
                 <div class="card-body">
                     <div class="card">
                         <div class="">

@@ -134,8 +134,6 @@ public function show(Subscription $subscription)
     $products = Product::where('sku', $subscriptions->product_id)->get();
     
     $usage = Product::where('sku', $subscriptions->product_id)->first();
-    // dd();
-
     foreach ($products as $key => $product) {
         $addons = $product->getaddons()->all();
     }
@@ -172,11 +170,9 @@ public function edit(Subscription $subscriptions)
 */
 public function update(Request $request, Subscription $subscription)
 {
-    // dd($request->all());
     
     $subscriptions = Subscription::findOrFail($subscription->id);
     $instance = Instance::first();    
-    // dd($instance);
     
     $this->validate($request, [
         'amount' => 'required|integer',

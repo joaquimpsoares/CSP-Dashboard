@@ -26,7 +26,6 @@
 							{{-- <th class="text-center">{{ ucwords(trans_choice('messages.action', 2)) }}</th> --}}
 						</thead>
 						<tbody>
-							{{dd($users)}}
 							@forelse($users as $user)
 							<tr>
 								<td style="width: 1px; white-space: nowrap;">

@@ -29,7 +29,6 @@ class PriceListController extends Controller
 
         $prices = Price::get();
         
-        // // dd($priceLists);
         // foreach($priceLists as $pricelist);{
         // $result = PriceList::where('id', $pricelist )->with('prices')->get();
         // // dump($result);
@@ -64,18 +63,15 @@ class PriceListController extends Controller
         foreach($pricelist->prices as $price)
         {
             $newClient->prices()->attach($price);
-            dd($newClient);
 
         }
         
     
         
-        dd($pricelist->prices);
         // $newpricelist = $pricelist->replicate();
         // // $newpricelist->id = $new_id;
         // // $newpricelist->data = $new_data;
         $newClient->save();
-        dd($newClient);
         
         return view('priceList.index', compact('prices'));
     }

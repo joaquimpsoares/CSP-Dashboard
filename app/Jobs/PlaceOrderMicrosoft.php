@@ -51,7 +51,6 @@ class PlaceOrderMicrosoft implements ShouldQueue
         $instanceid = $products->first()->instance_id;
         
         $instance = Instance::where('id',$instanceid)->first();
-        // dd($instance->external_id);
 
         $quantity=0;
         $billing_cycle = null;

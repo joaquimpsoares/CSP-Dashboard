@@ -1,5 +1,4 @@
 @php
-//dd($cart);
 $totalPrice = null;
 @endphp
 

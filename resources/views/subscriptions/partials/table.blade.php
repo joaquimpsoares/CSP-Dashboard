@@ -1,7 +1,7 @@
 
 <div class="container col-xm-12">
     <section class="dark-grey-text">
-        <table class="table table-hover responsive" id="subscriptions">
+        <table class="table table-hover " id="subscriptions">
             <thead class="thead-dark">
                 <tr>
                     <th>{{ ucwords(trans_choice('messages.#', 1)) }}</th>

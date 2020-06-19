@@ -48,7 +48,6 @@ class UsersController extends Controller
         // $id = Auth::user()->id;
         $user= User::where('id', $user->id)->with('country')->first();
         
-        // dd($user->notifications);
         $notifications = explode(', ',$user->notifications_preferences);
         
         $countries = Country::get();
@@ -83,18 +82,14 @@ class UsersController extends Controller
     */
     public function store(Request $request)
     {
-        // dd($request->all());
         $user = $this->getUser();
         
         $validate = $this->validator($request->all())->validate();
 
         $customer = Customer::where('id', $request->customer_id)->first();
-        dd($validate);
 
-        // dd($customer);
         
         $mainUser = $this->userRepository->create($validate, $request->level, $customer);
-        // dd($mainUser);
     }
     
     /**
@@ -128,9 +123,7 @@ class UsersController extends Controller
     */
     public function update(Request $request, User $user)
     {
-        
-    // dd($request->all());
-    
+            
     $user = User::findOrFail($user->id);
     
     $validate = $this->validator($request->all())->validate();

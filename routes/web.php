@@ -286,9 +286,7 @@ Auth::routes(['register' => true]);
 
 Route::impersonate();
 
-Route::get('/', function() {
-	return view('home');
-})->name('dashboard');
+Route::get('/', 'HomeController@index')->name('home');
 
 Auth::routes();
 

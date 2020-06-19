@@ -55,7 +55,6 @@
 				$cont=0
 				@endphp
 				<div class="row">
-                    {{-- {{dd($products)}} --}}
                     @foreach($products as $product)
 					<div class="col-sm-12 col-md-3" style="padding-top: 20px;">
 						<div class="card" style="min-height: 230px;">
