@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire;
 
+use App\Price;
+use App\Vendor;
 use App\Product;
 use Livewire\Component;
 use App\Http\Traits\UserTrait;
@@ -13,10 +15,37 @@ class CartProduct extends Component
     
 
     public $products =[];
+    public $prices ="";
 
     public function mount()
     {
-        $this->products = Product::get();
+        $user = $this->getUser();
+        $userLevel = $this->getUserLevel();
+
+        switch ($userLevel) {
+            case 'Provider':
+                # code...
+                break;
+            
+            case 'Reseller':
+                $priceList = $user->reseller->priceList->id;
+                $prices = Price::where('price_list_id', $priceList)->paginate($this->quantity);
+
+                foreach ($prices as $price) {
+                    $products[] = $price->product;
+                }
+                // dd($products);
+
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+        
+        $vendors = Vendor::orderBy('name')->get();
+
+        $quantity = $this->quantity;
         
     }
     

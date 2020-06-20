@@ -71,6 +71,6 @@ class StoreController extends Controller
 
         $quantity = $this->quantity;
 
-        return view('store.index', compact('products', 'vendors', 'filters', 'quantity', 'prices'));
+        return view('store.index');
     }
 }
