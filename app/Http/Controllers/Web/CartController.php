@@ -184,7 +184,6 @@ class CartController extends Controller
         ]);
 
         $cart = $this->getUserCart(null, $validate['cart']);
-        //dd($cart);
 
         if (empty($cart->domain) && empty($cart->agreement_firstname)) {
             return view('order.tenant', compact('cart'));
@@ -219,41 +218,9 @@ class CartController extends Controller
                 $cart->save();
 
                 return true;
-<<<<<<< Updated upstream
             } else {
                 return abort(401);
             }            
-=======
-            }
-                                    
-        public function checkout(Request $request)
-        {
-            
-            $validate = $request->validate([
-                'token' => 'required|uuid',
-                'billing_cycle.*' => 'required|in:annual,monthly,none'
-                ]);
-                
-                $cart = $this->getByToken($validate['token']);
-                
-                foreach ($validate['billing_cycle'] as $key => $id) {
-                    $cartItem = $cart->products()->wherePivot('id', $key)->first();
-                    $cartItem->pivot->billing_cycle = $id;
-                    $cartItem->pivot->save();
-                }
-                
-                $status = "customer";
-                
-                $customers = $this->customerRepository->all();
-                $countries = Country::all();
-                $statuses = Status::get();
-                
-                return view('order.checkout', compact('cart', 'customers', 'status', 'countries', 'statuses'));
-            }
-                                        
-        public function pendingCheckout(Request $request)
-        {
->>>>>>> Stashed changes
             
         }
 

@@ -97,58 +97,9 @@ class CustomerController extends Controller
             
             $customer = $this->customerRepository->create($validate);
             
-<<<<<<< HEAD
-            return view('customer.show', compact('customer','countries','subscriptions','users','statuses'));
-
-        }
-        
-        
-        public function edit(Customer $customer) { }
-        
-        
-        public function update(Request $request, Customer $customer) { 
-
-            // dd($request->all());
-
-            $validate = $this->validator($request->all())->validate();
-
-            // dd($validate);
-        
-            $user = $this->getUser();
-            
-            try {
-                DB::beginTransaction();
-                
-                    $customer = $this->customerRepository->update($customer, $validate);
-                                
-                DB::commit();
-            } catch (\PDOException $e) {
-                DB::rollBack();
-                if ($e->errorInfo[1] == 1062) {
-                    $errorMessage = "message.user_already_exists";
-                } else {
-                    $errorMessage = "message.error";
-                }
-                return redirect()->route('customer.index')
-                ->with([
-                    'alert' => 'danger', 
-                    'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
-                    ]);
-                }
-                
-                return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.customer_updated_successfully')]);
-        }
-        
-        
-        public function destroy(Customer $customer) { }
-        
-        public function getPriceList($customer)
-        {
-=======
             $customer->resellers()->attach($user->reseller->id);
             
             $mainUser = $this->userRepository->create($validate, 'customer', $customer);
->>>>>>> 8f4ffcc0b77bf54bdd7b878106003146b377cee1
             
             DB::commit();
         } catch (\PDOException $e) {
@@ -164,24 +115,6 @@ class CustomerController extends Controller
                 'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
             ]);
         }
-<<<<<<< HEAD
-        protected function validator(array $data)
-        {
-            return Validator::make($data, [
-                'company_name' => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-                'nif' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
-                'email' => ['sometimes', 'email', 'max:255'],
-                'address_1' => ['required', 'string', 'max:255'],
-                'address_2' => ['nullable', 'string', 'max:255'],
-                'country_id' => ['required', 'integer', 'min:1'],
-                'city' => ['required', 'string', 'max:255'],
-                'state' => ['required', 'string', 'max:255'],
-                'postal_code' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
-                'status_id' => ['required', 'integer', 'exists:statuses,id'],
-                'sendInvitation' => ['nullable', 'integer'],
-                ]);
-            } 
-=======
         
         return redirect()->route('customer.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Created successfully')]);
     }
@@ -209,9 +142,40 @@ class CustomerController extends Controller
     public function edit(Customer $customer) { }
 
 
-    public function update(Request $request, Customer $customer) { }
+    public function update(Request $request, Customer $customer) { 
 
+        // dd($request->all());
 
+        $validate = $this->validator($request->all())->validate();
+
+        // dd($validate);
+    
+        $user = $this->getUser();
+        
+        try {
+            DB::beginTransaction();
+            
+                $customer = $this->customerRepository->update($customer, $validate);
+                            
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            if ($e->errorInfo[1] == 1062) {
+                $errorMessage = "message.user_already_exists";
+            } else {
+                $errorMessage = "message.error";
+            }
+            return redirect()->route('customer.index')
+            ->with([
+                'alert' => 'danger', 
+                'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
+                ]);
+            }
+            
+            return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.customer_updated_successfully')]);
+        }
+
+        
     public function destroy(Customer $customer) { }
 
     public function getPriceList($customer)
@@ -225,7 +189,6 @@ class CustomerController extends Controller
         /* Check if can buy to this customer */
         if (!$this->customerRepository->canInteractWithCustomer($customer)) {
             return abort(401);
->>>>>>> 8f4ffcc0b77bf54bdd7b878106003146b377cee1
         }
         /* End Check */
 

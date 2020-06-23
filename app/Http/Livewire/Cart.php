@@ -59,7 +59,7 @@ class Cart extends Component
     {
         $this->cart = $this->getUserCart();
         
-        dd($this->cart);
+        // dd($this->cart);
         
         $this->productRepository = $productRepository;
         $this->billing_cycle = $this->cart->billing_cycle;
