@@ -2,8 +2,8 @@
 
 
 @section('content')
-<livewire:cart/>
-{{-- <div class="container">
+
+<div class="container">
     <section class="section">
         <div class="card">
             <div class="row">
@@ -121,7 +121,7 @@
             </div>
         </div>
     </section>
-</div> --}}
+</div>
 
 
 
@@ -129,7 +129,7 @@
 @endsection
 
 @section('scripts')
-{{-- <script>
+<script>
     $(document).ready(function() { 
         $('.product-quantity input').change( function() {
             updateProductQuantity(this);
@@ -182,5 +182,5 @@
     {
         return true;
     }
-</script> --}}
+</script>
 @endsection

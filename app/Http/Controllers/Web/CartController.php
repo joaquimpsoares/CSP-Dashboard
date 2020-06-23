@@ -31,7 +31,6 @@ class CartController extends Controller
     public function index() {
 
         $cart = $this->getUserCart();
-
         return view('order.cart', compact('cart'));
     }
 
@@ -119,7 +118,7 @@ class CartController extends Controller
         /* End Check */
 
         $cart = $this->getUserCart(null, $validate['cart']);
-               
+
         $cart->customer()->associate($customer);
         
         $cart->save();
@@ -140,8 +139,10 @@ class CartController extends Controller
         $status = "customer";
 
         $customers = $this->customerRepository->all();
+        $countries = Country::all();
+        $statuses = Status::get();
 
-        return view('order.checkout', compact('cart', 'customers', 'status'));
+        return view('order.checkout', compact('cart', 'customers', 'status', 'countries', 'statuses'));
     }
 
     public function changeTenant(Request $request)
@@ -218,14 +219,60 @@ class CartController extends Controller
                 $cart->save();
 
                 return true;
+
             } else {
                 return abort(401);
             }            
-            
+        }
+    }
+
+    public function checkout(Request $request)
+    {
+
+        $validate = $request->validate([
+            'token' => 'required|uuid',
+            'billing_cycle.*' => 'required|in:annual,monthly,none'
+        ]);
+
+        $cart = $this->getByToken($validate['token']);
+
+        foreach ($validate['billing_cycle'] as $key => $id) {
+            $cartItem = $cart->products()->wherePivot('id', $key)->first();
+            $cartItem->pivot->billing_cycle = $id;
+            $cartItem->pivot->save();
         }
 
-        return abort(401);
+        $status = "customer";
+
+        $customers = $this->customerRepository->all();
+        $countries = Country::all();
+        $statuses = Status::get();
+
+        return view('order.checkout', compact('cart', 'customers', 'status', 'countries', 'statuses'));
     }
+
+    /*public function checkout(Request $request)
+    {
+
+        $validate = $request->validate([
+            'token' => 'required|uuid',
+            'billing_cycle.*' => 'required|in:annual,monthly,none'
+        ]);
+
+        $cart = $this->getByToken($validate['token']);
+
+        foreach ($validate['billing_cycle'] as $key => $id) {
+            $cartItem = $cart->products()->wherePivot('id', $key)->first();
+            $cartItem->pivot->billing_cycle = $id;
+            $cartItem->pivot->save();
+        }
+
+        $status = "customer";
+
+        $customers = $this->customerRepository->all();
+
+        return view('order.checkout', compact('cart', 'customers', 'status'));
+    }*/
 
     public function getMainUser(Request $request)
     {
@@ -266,35 +313,14 @@ class CartController extends Controller
         return true;
     }
 
-    public function checkout(Request $request)
-    {
-
-        $validate = $request->validate([
-            'token' => 'required|uuid',
-            'billing_cycle.*' => 'required|in:annual,monthly,none'
-        ]);
-
-        $cart = $this->getByToken($validate['token']);
-
-        foreach ($validate['billing_cycle'] as $key => $id) {
-            $cartItem = $cart->products()->wherePivot('id', $key)->first();
-            $cartItem->pivot->billing_cycle = $id;
-            $cartItem->pivot->save();
-        }
-        
-        $status = "customer";
-
-        $customers = $this->customerRepository->all();
-
-        return view('order.checkout', compact('cart', 'customers', 'status'));
-    }
+    
 
     public function pendingCheckout(Request $request)
     {
 
         $validate = $request->validate([
             'token' => 'required|uuid',
-            
+
         ]);
 
         $cart = $this->getByToken($validate['token']);
@@ -317,7 +343,7 @@ class CartController extends Controller
         } else {
             $cart = Cart::where('user_id', $user->id)->where('token', $token)->with(['products', 'customer'])->first();
         }
-        
+
         return $cart;
     }
 
@@ -333,5 +359,5 @@ class CartController extends Controller
         return $cart;
     }
 
-    
+
 }
