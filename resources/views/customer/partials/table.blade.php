@@ -34,12 +34,12 @@
         </table>
     </section>
 </div>
-    
-    <script type="text/javascript">
-        $(document).ready( function () {
-            $('#customer').DataTable({
-                "pagingType": "full_numbers",
-                "order": [[ 0, "asc" ]]
-            });
-        } );
-    </script>
+
+<script type="text/javascript">
+    $(document).ready( function () {
+        $('#customer').DataTable({
+            "pagingType": "full_numbers",
+            "order": [[ 0, "asc" ]]
+        });
+    } );
+</script>

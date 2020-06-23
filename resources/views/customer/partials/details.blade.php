@@ -1,10 +1,9 @@
-
 <div class="card">
     <div class="card-body">
         <div class="row">
             <div class="col-lg-12">
-                <form  method="POST" action="{{ route('customer.store', $customer->id) }}" class="col s12">
-                    @method('patch')
+                <form  method="POST" action="{{ route('customer.update', $customer->id) }}" class="col s12">
+                    @method('POST')
                     @csrf        
                     <h1>{{ ucwords(trans_choice('messages.customer_form', 1)) }}</h1>
                     <div class="row">
@@ -63,19 +62,6 @@
                         
                     </div>
                     <hr>
-                    <div class="input-group mb-4">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">@</span>
-                        </div>
-                        <input name="email" type="text" class="form-control py-0" aria-describedby="basic-addon1" value="{{$users}}" placeholder="youremail@example.com">
-                    </div>
-                    <div class="input-group mb-4">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1"><i class="fa fa-user" aria-hidden="true"></i>
-                            </span>
-                        </div>
-                        <input name="username" type="text" class="form-control py-0" aria-describedby="basic-addon1" value="{{$customer->nif}}" placeholder="Username (Optional)">
-                    </div>
                     <div class="row">
                         <div class="col-md-12">
                             <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
@@ -84,6 +70,17 @@
                                     <option value="{{$customer->status->id}}" selected>{{$customer->status->name}}</option>
                                     @foreach ($statuses as $status)    
                                     <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="status">{{ ucwords(trans_choice('messages.price_list', 1)) }}</label>
+                            <div class="form-group">
+                                <select name="status_id" class="form-select" sf-validate="required">
+                                    <option value="{{$customer->priceList->id}}" selected>{{$customer->priceList->name}}</option>
+                                    @foreach ($statuses as $status)    
+                                    <option value="{{$customer->priceList->id}}">{{$customer->priceList->name}}</option>
                                     @endforeach
                                 </select>
                             </div>

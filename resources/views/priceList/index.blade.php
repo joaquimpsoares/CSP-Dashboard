@@ -1,6 +1,5 @@
 @extends('layouts.app')
 
-@section('content')
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
@@ -11,90 +10,16 @@
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+@section('content')
 
 
-<div class="container">
-	<div class="card">
-		<div class="">
-			<i class="fas fa-money-check-alt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
-			<div class="card-body">
-				<h4 class="card-title"><a>Price List Table</a></h4>
-				<table class="table table-hover responsive" id="example">
-					<thead class="thead-dark">								
-						<tr>
-							<th></th>
-							<th>Name</th>
-							<th>Description</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						@forelse($priceLists as $priceList)
-						<tr>
-							<td></td>
-							<td><a href="{{route('priceList.prices', $priceList['id']) }}">{{ $priceList['name'] }}</a></td>
-							<td>{{ $priceList['description'] }}</td>
-							<td>
-								<a href="{{route('priceList.clone', $priceList['id'])}}"><i class="fa fa-clone"></i></a>
-								<a href="#"><i class="fa fa-list"></i></a>
-							</td>
-						</tr>
-						@empty
-						<tr>
-							<td colspan="5">Empty</td>
-						</tr>
-						@endforelse
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-</div>
-	{{-- </section> --}}
-	{{-- </div>
-	</div>
-	<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-		<section class="section">
-			<div class="card">
-				<div class="">
-					<i class="fas fa-money-check-alt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
-					<div class="card-body">
-						<h4 class="card-title"><a>Price List Table</a></h4>
-						<table class="table table-hover responsive" id="example">
-							<thead class="thead-dark">
-								<tr>
-									<th><input name="select_all" value="1" id="example-select-all" type="checkbox" /></th>								<th>{{ ucwords(__('messages.product_sku')) }}</th>
-									<th>{{ ucwords(trans_choice('messages.product_name', 1)) }}</th>
-									<th>{{ ucwords(trans_choice('messages.pricelist_name', 1)) }}</th>
-									<th>{{ ucwords(trans_choice('messages.price', 1)) }}</th>
-									<th>{{ ucwords(trans_choice('messages.msrp', 1)) }}</th>
-								</tr>
-							</thead>
-							<tbody>
-								@forelse($prices as $price)
-								<tr>
-									<td></td>
-									<td>{{ $price['product_sku'] }}</td>
-									<td>{{ $price['name'] }}</td>
-									<td>{{ $price['pricelist']['name']}}</td>
-									<td>{{ $price['price'] }}</td>
-									<td>{{ $price['msrp'] }}</td>
-								</tr>
-								@empty
-								<tr>
-									<td colspan="5">Empty</td>
-								</tr>
-								@endforelse
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div> --}}
+
+@include('priceList.partials.pricelisttable')
 
 
+
+
+@endsection
 
 
 <script type="text/javascript">
@@ -103,13 +28,19 @@
 			dom: 'Bfrtip',
 			buttons: [
 			{
-				text: 'Clone',
+				text: '{{ ucwords(trans_choice('messages.import', 1)) }}',
 				action: function ( e, dt, node, config ) {
 					alert( 'Button activated' );
 				}
 			},
 			{
-				text: 'Delete',
+				text: '{{ ucwords(trans_choice('messages.clone', 1)) }}',
+				action: function ( e, dt, node, config ) {
+					alert( 'Button activated' );
+				}
+			},
+			{
+				text: '{{ ucwords(trans_choice('messages.delete', 1)) }}',
 				action: function ( e, dt, node, config ) {
 					alert( 'Button activated' );
 				}
@@ -182,4 +113,3 @@
 	});
 </script>
 
-@endsection

@@ -28,7 +28,9 @@ class Price extends Model
 			'msrp' => $this->msrp,
 			'currency' => $this->currency,
 			'pricelist' => $this->pricelist,
-			// 'product' => $this->product()->get()
+			'product' => $this->product()->first(),
+			'provider' => $this->provider()->first()
+
 		];
 	}
 
@@ -39,6 +41,10 @@ class Price extends Model
 	public function product() {
 		return $this->belongsTo('App\Product', 'product_sku', 'sku')->where('vendor', $this->product_vendor);
 		//return $this->belongsToMany('App\Product', 'prices', 'product_sku', 'sku')->where('vendor', $this->product_vendor);
+	}
+
+	public function provider() {
+		return $this->belongsTo('App\Provider', 'price_list_id', 'id');
 	}
 	
 

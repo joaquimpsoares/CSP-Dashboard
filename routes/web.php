@@ -102,8 +102,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::group(['middleware' => ['role:Super Admin|Admin']], function () {
 		
 		Route::resource('provider', 'ProviderController');
-		Route::get('priceList/{priceList}/prices', 'PriceListController@getPrices')->name('priceList.prices');
-		Route::get('priceList/clone/{id}', 'PriceListController@clone')->name('priceList.clone');
+		
 
 	});
 	
@@ -126,7 +125,7 @@ Route::group(['middleware' => 'auth'], function () {
 			/*Route::get('/priceList/provider/{provider}', 'PriceListController@getProviderPriceList')
 			->middleware('permission:' . config('app.price_list_show'))->name('priceLists.provider_price_list');*/
 			
-			// Route::resource('/priceList', 'PriceListController');
+
 			
 			/*
 			Inicio Confirmar nivel de acesso reseller->provider
@@ -157,6 +156,12 @@ Route::group(['middleware' => 'auth'], function () {
 		
 		Route::get('/customer', 'CustomerController@index')
 		->middleware('permission:' . config('app.customer_index'))->name('customer.index');
+
+		Route::get('priceList/{priceList}/prices', 'PriceListController@getPrices')->name('priceList.prices');
+		Route::get('priceList/clone/{id}', 'PriceListController@clone')->name('priceList.clone');
+		Route::post('priceList/update/{id}', 'PriceListController@update')->name('priceList.update');
+		
+		Route::post('pricelist/import', 'PriceListController@import');
 		
 		
 		Route::group(['middleware' => ['check_reseller']], function () {
@@ -176,6 +181,8 @@ Route::group(['middleware' => 'auth'], function () {
 			
 			Route::get('reseller/{reseller}-{slug}/customers', 'ResellerController@getCustomersFromReseller')
 			->middleware('permission:' . config('app.customer_index'))->name('reseller.customers');
+			
+			// Route::resource('/priceList', 'PriceListController');
 			
 			
 			/*
@@ -214,9 +221,9 @@ Route::group(['middleware' => 'auth'], function () {
 			->middleware('permission:' . config('app.customer_show'), 'check_customer')
 			->name('customer.show');
 			
-			Route::get('customer/{customer}-{slug}/edit', 'CustomerController@show')
-			->middleware('permission:' . config('app.customer_edit'))
-			->name('customer.edit');
+			Route::post('customer/update/{customer}', 'CustomerController@update')
+			->middleware('permission:' . config('app.customer_update'))
+			->name('customer.update');
 			
 			
 			/*
@@ -279,15 +286,15 @@ Route::group(['middleware' => 'auth'], function () {
 	
 	
 	// End of every authenticated user can access routes here
-});
+	});
 
 
-Auth::routes(['register' => true]);
+	Auth::routes(['register' => true]);
 
-Route::impersonate();
+	Route::impersonate();
 
-Route::get('/', 'HomeController@index')->name('home');
+	Route::get('/', 'HomeController@index')->name('home');
 
-Auth::routes();
+	Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+	Route::get('/home', 'HomeController@index')->name('home');

@@ -48,7 +48,7 @@ class ImportProductsMicrosoftJob implements ShouldQueue
                 return redirect()->route('products.list')->with('success', 'There is no client_id set up on the Microsoft instance');
             }
         
-            $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)->all();
+            $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token, 'MA')->all();
             
             $products->each(function($importedProduct)use($instance){
                 Product::updateOrCreate([

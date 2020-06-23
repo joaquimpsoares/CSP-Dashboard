@@ -70,7 +70,12 @@
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('store.index') }}">
-                                        {{ ucwords(trans_choice('messages.product', 2)) }} 
+                                        {{ ucwords(trans_choice('messages.store', 2)) }} 
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('priceList.index') }}">
+                                        {{ ucwords(trans_choice('messages.price_list', 2)) }}
                                     </a>
                                 </li>
                                 <li class="nav-item">

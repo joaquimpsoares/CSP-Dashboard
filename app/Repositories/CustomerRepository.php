@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Customer;
 use App\Http\Traits\UserTrait;
 use App\Repositories\CustomerRepositoryInterface;
+use Illuminate\Http\Request;
 use App\Reseller;
 
 /**
@@ -22,17 +23,14 @@ class CustomerRepository implements CustomerRepositoryInterface
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
                 
-                $customers = Customer::with(['country', 'status' => function ($query) {
-                    $query->where('name', 'message.active');
-                }])
+                $customers = Customer::with(['country', 'status'])
                 ->orderBy('company_name')
                 ->get()->map->format();
+
             break;
             
             case config('app.admin'):
-                $customers = Customer::with(['country', 'status' => function ($query) {
-                    $query->where('name', 'message.active');
-                }])
+                $customers = Customer::with(['country', 'status'])
                 ->orderBy('company_name')
                 ->get()->map->format();
                 
@@ -43,9 +41,7 @@ class CustomerRepository implements CustomerRepositoryInterface
                 
                 $customers = Customer::whereHas('resellers', function($query) use  ($resellers) {
                     $query->whereIn('id', $resellers);
-                })->with(['country', 'status' => function ($query) {
-                    $query->where('name', 'message.active');
-                }])
+                })->with(['country'])
                 ->orderBy('company_name')->get()->map->format();
                 
             break;
@@ -71,7 +67,6 @@ class CustomerRepository implements CustomerRepositoryInterface
 }
     public function create($validate)
     {
-    
         $newCustomer =  Customer::create([
             'company_name' => $validate['company_name'],
             'nif' => $validate['nif'],
@@ -83,66 +78,106 @@ class CustomerRepository implements CustomerRepositoryInterface
             'postal_code' => $validate['postal_code'],
             'status_id' => $validate['status_id']
             ]);
-
+            
             return $newCustomer;
+    }
 
+    public function update($customer, $validate)
+    {
+        
+        // dd($validate['company_name']);
+        $customer = Customer::find($customer->id);
+
+        // dd($customer);
+        
+        $updateCustomer = $customer->update([
+            'company_name' => $validate['company_name'],
+            'nif' => $validate['nif'],
+            'country_id' => $validate['country_id'],
+            'address_1' => $validate['address_1'],
+            'address_2' => $validate['address_2'],
+            'city' => $validate['city'],
+            'state' => $validate['state'],
+            'postal_code' => $validate['postal_code'],
+            'status_id' => $validate['status_id']
+        ]);
+        return $updateCustomer;
+
+        // dd($request->all());
+        // $updateCustomer =  Customer::store([
+        //     'company_name' => $validate['company_name'],
+        //     'nif' => $validate['nif'],
+        //     'country_id' => $validate['country_id'],
+        //     'address_1' => $validate['address_1'],
+        //     'address_2' => $validate['address_2'],
+        //     'city' => $validate['city'],
+        //     'state' => $validate['state'],
+        //     'postal_code' => $validate['postal_code'],
+        //     'status_id' => $validate['status_id']
+        //     ]);
+            
+            
+            // return $updateCustomer;
     }
     
     
     public function canInteractWithCustomer(Customer $customer)
     {
-        
-        $user = $this->getUser();
-        
-        switch ($this->getUserLevel()) {
-            case config('app.super_admin'):
-                return true;
-            break;
             
-            case config('app.admin'):
-                return true;
-            break;
+            $user = $this->getUser();
             
-            case config('app.provider'):
+            switch ($this->getUserLevel()) {
+                case config('app.super_admin'):
+                    return true;
+                break;
+                
+                case config('app.admin'):
+                    return true;
+                break;
+                
+                case config('app.provider'):
+                    
+                break;
+                
+                case config('app.reseller'):
+                    $reseller = $user->reseller;
+                    return $reseller->customers->contains($customer->id);
+                break;
+                
+                case config('app.subreseller'):
+                    
+                break;
+                
+                default:
+                return false;
                 
             break;
-            
-            case config('app.reseller'):
-                $reseller = $user->reseller;
-                return $reseller->customers->contains($customer->id);
-            break;
-            
-            case config('app.subreseller'):
-                
-            break;
-            
-            default:
-            return false;
-            
-        break;
+        }
     }
-}
 
-public function customersOfReseller(Reseller $reseller){
-    
-    $customers = $reseller->customers->map->format();
-    
-    return $customers;
-}
+    public function customersOfReseller(Reseller $reseller)
+    {
+        
+        $customers = $reseller->customers->map->format();
+        
+        return $customers;
+    }
 
-public function ResellerOfcustomer(Customer $customer){
-    
-    $reseller = $customer->resellers;
-    
-    return $reseller;
-}
+    public function ResellerOfcustomer(Customer $customer)
+    {
+        
+        $reseller = $customer->resellers;
+        
+        return $reseller;
+    }
 
 
-public function getSubscriptions(Customer $customer){
-    
-    $subscriptions= $customer->subscriptions;
-    
-    return $subscriptions;
-    
-}
+    public function getSubscriptions(Customer $customer)
+    {
+        
+        $subscriptions= $customer->subscriptions;
+        
+        return $subscriptions;
+        
+    }
 }

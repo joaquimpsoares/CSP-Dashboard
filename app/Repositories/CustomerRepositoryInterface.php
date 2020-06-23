@@ -11,6 +11,8 @@ interface CustomerRepositoryInterface
 
 	public function create($customer);
 
+	public function update($customer, $validate);
+
 	public function canInteractWithCustomer(Customer $customer);
 
 	public function customersOfReseller(Reseller $reseller);

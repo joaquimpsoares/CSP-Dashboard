@@ -1,51 +1,35 @@
 @extends('layouts.app')
 
 @section('content')
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.dataTables.min.css">
 
-
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
-
-
-<div class="container">
-	<div class="card">
-		<div class="card-body">
-			<h4 class="card-title"><a>Price List Table</a></h4>
-			<table class="table table-hover responsive" id="example">
-				<thead class="thead-dark">
-					<tr>
-						<th>{{ ucwords(trans_choice('messages.product_sku', 1)) }}</th>
-						<th>{{ ucwords(trans_choice('messages.product_name', 1)) }}</th>
-						<th>{{ ucwords(trans_choice('messages.price', 1)) }}</th>
-						<th>{{ ucwords(trans_choice('messages.msrp' ,1)) }}</th>
-						<th>{{ ucwords(trans_choice('messages.action', 2)) }}</th>
-					</tr>
-				</thead>
-				<tbody>
-					@forelse($prices as $price)
-					
-					<tr>
-						<td>{{ $price['product_sku'] }}</td>
-						<td>{{ $price['name'] }}</td>
-						<td>{{ $price['price'] }}</td>
-						<td>{{ $price['msrp'] }}</td>
-						<td></td>
-					</tr>
-					@empty
-					<tr>
-						<td colspan="5">Empty</td>
-					</tr>
-					@endforelse
-				</tbody>
-			</table>
+{{-- {{dd($priceList)}} --}}
+<div class="container col-xm-12">
+	<ul class="nav nav-pills md-tabs" id="myTabMD" role="tablist">
+		<li class="nav-item">
+			<a class="nav-link btn rgba-blue-light active" id="home-tab-md" data-toggle="tab" href="#home-md" role="tab" aria-controls="home-md"
+			aria-selected="true">{{ ucwords(trans_choice('messages.home', 1)) }}</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link btn rgba-blue-light" id="contact-tab-md" data-toggle="tab" href="#contact-md" role="tab" aria-controls="contact-md"
+			aria-selected="false">{{ ucwords(trans_choice('messages.price_list', 1)) }}</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link btn rgba-blue-light" id="profile-tab-md" data-toggle="tab" href="#profile-md" role="tab" aria-controls="profile-md"
+			aria-selected="false">{{ ucwords(trans_choice('messages.account', 1)) }}</a>
+		</li>
+	</ul>
+	<div class="tab-content pt-5" id="myTabContentMD">
+		<div class="tab-pane fade show active" id="home-md" role="tabpanel" aria-labelledby="home-tab-md">
+			@include('priceList.partials.details' , ['priceList' => $priceList])
+		</div>
+		<div class="tab-pane fade" id="contact-md" role="tabpanel" aria-labelledby="contact-tab-md">
+			@include('priceList.partials.pricetable')
+		</div>            
+		<div class="tab-pane fade" id="profile-md" role="tabpanel" aria-labelledby="profile-tab-md">
 		</div>
 	</div>
 </div>
+
 
 
 
@@ -55,6 +39,12 @@
 		var table = $('#example').DataTable({
 			dom: 'Bfrtip',
 			buttons: [
+			{
+				text: 'Import',
+				action: function ( e, dt, node, config ) {
+					alert( 'Button activated' );
+				}
+			},
 			{
 				text: 'Clone',
 				action: function ( e, dt, node, config ) {

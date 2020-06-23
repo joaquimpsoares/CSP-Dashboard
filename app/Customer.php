@@ -11,20 +11,23 @@ class Customer extends Model
 {
     protected $guards = [];
 
-    protected $fillable = ['company_name',
-							'nif',
-							'country_id',
-							'address_1',
-							'address_2',
-							'city',
-							'state',
-                            'postal_code',
-                            'provider_id',
-							'status_id'];
+    protected $fillable = 
+    ['company_name',
+    'nif',
+    'country_id',
+    'address_1',
+    'address_2',
+    'city',
+    'state',
+    'postal_code',
+    'provider_id',
+    'reseller_id',
+    'status_id'];
 
                             
     public function format()
     {
+        // // dd($this->status->name);
         return [
             'id' => $this->id,
             'company_name' => $this->company_name,
@@ -37,9 +40,12 @@ class Customer extends Model
             'postal_code' => $this->postal_code,
             'status' => $this->status->name,
             'path' => $this->path(),
+            'pathUpdate' => $this->pathUpdate(),
             'reseller' => $this->resellers()->first(),
             'subscriptions' => $this->subscriptions->count(),
-            'mainUser' => $this->users()->first()
+            'priceLists' => $this->priceLists()->first(),
+            'mainUser' => $this->users()->first(),
+            'users' => $this->users()->get()
             
         ];
 
@@ -59,6 +65,10 @@ class Customer extends Model
     	return $this->hasMany('App\Subscription');
     }
 
+    public function priceLists() {
+    	return $this->hasMany('App\PriceList', 'id', 'price_list_id');
+    }
+
     public function customer() {
     	return $this->belongsTo('App\Customer');
     }
@@ -69,6 +79,10 @@ class Customer extends Model
 
     public function pathEdit() {
         return url("/customer/{$this->id}-" . Str::slug($this->company_name, '-')."/edit");
+    }
+
+    public function pathUpdate() {
+        return url("/customer/{$this->id}-" . Str::slug($this->company_name, '-')."/update");
     }
 
     public function getMyResellersId() {

@@ -5,7 +5,7 @@
 				<legend><h3>{{ ucwords(trans_choice('messages.filter', 1)) }}</h3></legend>				
 				<form method="GET" action="{{ route('store.index') }}" style="padding-top: 15px;">
 					<!-- Search form -->
-					{{dd($prices)}}
+					{{-- {{dd($prices)}} --}}
 					@if (isset($filters['quantity']))
 					<input type="hidden" name="quantity" value="{{ $filters['quantity']}}" />
 					@endif

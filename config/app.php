@@ -162,6 +162,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         SocialiteProviders\Manager\ServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
 
         /*
@@ -190,6 +191,7 @@ return [
         Lab404\Impersonate\ImpersonateServiceProvider::class,
         //Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         // NotificationChannels\MsTeams\MsTeamsChannel::class,
+        
     ],
 
     /*
@@ -243,6 +245,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Countries' => Webpatser\Countries\CountriesFacade::class,
         'msteams' => NotificationChannels\MsTeams\MsTeamsChannel::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,  
     ],
 
     'super_admin' => env('SUPER_ADMIN_LEVEL'),

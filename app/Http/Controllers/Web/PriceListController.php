@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Customer;
-use App\Http\Controllers\Controller;
-use App\Http\Traits\UserTrait;
 use App\Price;
+use Exception;
 use App\PriceList;
-use App\Provider;
-use App\Repositories\PriceListRepositoryInterface;
-use App\Reseller;
 use Illuminate\Http\Request;
+use App\Imports\PricesImport;
+use App\Http\Traits\UserTrait;
+use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Repositories\PriceListRepositoryInterface;
 
 class PriceListController extends Controller
 {
@@ -25,7 +25,7 @@ class PriceListController extends Controller
     
     public function index()
     {
-        $priceLists = $this->priceListRepository->all();
+        $priceLists = $this->priceListRepository->all();    
 
         $prices = Price::get();
         
@@ -43,13 +43,56 @@ class PriceListController extends Controller
     
     public function getPrices($priceList)
     {
+        // $priceList = PriceList::where('id', $priceList)->first();
         
-        $result = PriceList::where('id', $priceList)->with('prices')->first();
+        $priceList = PriceList::where('id', $priceList)->with('prices')->first();
         
-        $prices = $result->prices->map->format();
+        $prices = $priceList->prices->map->format();
         
-        return view('priceList.prices', compact('prices'));
+        return view('priceList.prices', compact('prices','priceList'));
     }
+
+    public function update(Request $request, $priceList)
+    {
+
+        // dd($priceList);
+        $priceList = PriceList::find($priceList);
+
+        // dd($customer);
+        
+        $updatepriceList = $priceList->update([
+            'name' => $request['name'],
+            'description' => $request['description'],
+            
+        ]);
+
+        return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.pricelist_updated_successfully')]);
+        }
+
+        public function import(Request $request )
+        {
+            // dd($request->select_file);
+            Excel::import(new PricesImport, request()->file('select_file'));
+            
+        //     try {
+           
+        // return back();
+        //             // dd($request);
+
+        //     } catch (\Exception $e) {
+           
+        //             $errorMessage = "message.error";
+        //             redirect()->back
+        //             ->with([
+        //             'alert' => 'danger', 
+        //             'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
+        //             ]);
+        //         }
+                
+                return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.customer_updated_successfully')]);
+            // return back()->with('success', 'Excel Data Imported successfully');
+        }
+
     
     public function clone($id)
     {
@@ -65,8 +108,6 @@ class PriceListController extends Controller
             $newClient->prices()->attach($price);
 
         }
-        
-    
         
         // $newpricelist = $pricelist->replicate();
         // // $newpricelist->id = $new_id;
