@@ -92,15 +92,8 @@ class CustomerController extends Controller
         
         $user = $this->getUser();
         
-        try {
-            DB::beginTransaction();
-            
-            $customer = $this->customerRepository->create($validate);
-            
-
-            return view('customer.show', compact('customer','countries','subscriptions','users','statuses'));
-
-        }
+        dd($validate);
+        
     }
 
 
@@ -141,51 +134,6 @@ class CustomerController extends Controller
     }
 
 
-    public function destroy(Customer $customer) { }
-
-    public function getPriceList($customer)
-    {
-        $customer->resellers()->attach($user->reseller->id);
-
-        $mainUser = $this->userRepository->create($validate, 'customer', $customer);
-
-
-        DB::commit();
-    } catch (\PDOException $e) {
-        DB::rollBack();
-        if ($e->errorInfo[1] == 1062) {
-            $errorMessage = "message.user_already_exists";
-        } else {
-            $errorMessage = "message.error";
-        }
-        return redirect()->route('customer.index')
-        ->with([
-            'alert' => 'danger', 
-            'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
-        ]);
-    }
-    
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'company_name' => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-            'nif' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
-            'email' => ['sometimes', 'email', 'max:255'],
-            'address_1' => ['required', 'string', 'max:255'],
-            'address_2' => ['nullable', 'string', 'max:255'],
-            'country_id' => ['required', 'integer', 'min:1'],
-            'city' => ['required', 'string', 'max:255'],
-            'state' => ['required', 'string', 'max:255'],
-            'postal_code' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
-            'status_id' => ['required', 'integer', 'exists:statuses,id'],
-            'sendInvitation' => ['nullable', 'integer'],
-        ]);
-
-
-        return redirect()->route('customer.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Created successfully')]);
-    }
-
-
     public function show(Customer $customer) {
 
         $countries = Country::get();
@@ -205,13 +153,7 @@ class CustomerController extends Controller
     }
 
 
-    public function edit(Customer $customer) { }
-
-
-    public function update(Request $request, Customer $customer) { }
-
-
-    public function destroy(Customer $customer) { }
+ 
 
     public function getPriceList($customer)
     {
@@ -231,6 +173,7 @@ class CustomerController extends Controller
 
         return $user;
     }
+
     protected function validator(array $data)
     {
         return Validator::make($data, [
