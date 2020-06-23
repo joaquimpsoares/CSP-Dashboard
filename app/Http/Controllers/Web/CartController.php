@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Web;
 
 use App\Cart;
+use App\Country;
 use App\Customer;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\UserTrait;
 use App\Instance;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
+use App\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
@@ -217,9 +219,41 @@ class CartController extends Controller
                 $cart->save();
 
                 return true;
+<<<<<<< Updated upstream
             } else {
                 return abort(401);
             }            
+=======
+            }
+                                    
+        public function checkout(Request $request)
+        {
+            
+            $validate = $request->validate([
+                'token' => 'required|uuid',
+                'billing_cycle.*' => 'required|in:annual,monthly,none'
+                ]);
+                
+                $cart = $this->getByToken($validate['token']);
+                
+                foreach ($validate['billing_cycle'] as $key => $id) {
+                    $cartItem = $cart->products()->wherePivot('id', $key)->first();
+                    $cartItem->pivot->billing_cycle = $id;
+                    $cartItem->pivot->save();
+                }
+                
+                $status = "customer";
+                
+                $customers = $this->customerRepository->all();
+                $countries = Country::all();
+                $statuses = Status::get();
+                
+                return view('order.checkout', compact('cart', 'customers', 'status', 'countries', 'statuses'));
+            }
+                                        
+        public function pendingCheckout(Request $request)
+        {
+>>>>>>> Stashed changes
             
         }
 

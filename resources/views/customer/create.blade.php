@@ -93,15 +93,16 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </form>
           </div>
         </div>
-        <div class="col-lg-4 mb-4">
-          <button class="button submit_btn right" type="submit">{{ucwords(trans_choice('messages.create', 1))}}</button>
-        </div>
+      </div>
+      <div class="col-lg-4 mb-4">
+        <button class="button submit_btn right" type="submit">{{ucwords(trans_choice('messages.create', 1))}}</button>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 </div>
 
 @endsection

@@ -155,6 +155,9 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::post('/customer', 'CustomerController@store')
 			->middleware('permission:' . config('app.customer_create'))->name('customer.store');
 		
+		Route::post('/customer/cart', 'CustomerController@storeAndBuy')
+			->middleware('permission:' . config('app.customer_create'))->name('customer.store.cart');
+		
 		Route::get('/customer', 'CustomerController@index')
 		->middleware('permission:' . config('app.customer_index'))->name('customer.index');
 		
