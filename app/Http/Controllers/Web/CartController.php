@@ -10,8 +10,10 @@ use App\Http\Traits\UserTrait;
 use App\Instance;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
+use App\Repositories\UserRepositoryInterface;
 use App\Status;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 
@@ -21,11 +23,13 @@ class CartController extends Controller
     use UserTrait;
     private $customerRepository;
     private $productRepository;
+    private $userRepository;
 
-    public function __construct(CustomerRepositoryInterface $customerRepository, ProductRepositoryInterface $productRepository)
+    public function __construct(CustomerRepositoryInterface $customerRepository, ProductRepositoryInterface $productRepository, UserRepositoryInterface $userRepository)
     {
         $this->customerRepository = $customerRepository;
         $this->productRepository = $productRepository;
+        $this->userRepository = $userRepository;
     }
 
     public function index() {
@@ -143,6 +147,62 @@ class CartController extends Controller
         $statuses = Status::get();
 
         return view('order.checkout', compact('cart', 'customers', 'status', 'countries', 'statuses'));
+    }
+
+    public function storeCustomerAndBuy(Request $request) { 
+
+        $validate = $request->validate([
+            'company_name' => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
+            'nif' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
+            'email' => ['required', 'email', 'max:255'],
+            'address_1' => ['required', 'string', 'max:255'],
+            'address_2' => ['nullable', 'string', 'max:255'],
+            'country_id' => ['required', 'integer', 'min:1'],
+            'city' => ['required', 'string', 'max:255'],
+            'state' => ['required', 'string', 'max:255'],
+            'postal_code' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
+            'status_id' => ['required', 'integer', 'exists:statuses,id'],
+            'sendInvitation' => ['nullable', 'integer'],
+            'cart' => 'required|uuid|exists:carts,token'
+        ]);
+        
+        $user = $this->getUser();
+        
+        try {
+            DB::beginTransaction();
+            
+            $customer = $this->customerRepository->create($validate);
+            
+            $customer->resellers()->attach($user->reseller->id);
+            
+            $mainUser = $this->userRepository->create($validate, 'customer', $customer);
+            
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            if ($e->errorInfo[1] == 1062) {
+                $errorMessage = "message.user_already_exists";
+            } else {
+                $errorMessage = "message.error";
+            }
+            return redirect()->route('customer.index')
+            ->with([
+                'alert' => 'danger', 
+                'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
+            ]);
+        }
+
+        $cart = $this->getUserCart(null, $validate['cart']);
+
+        $cart->customer()->associate($customer);
+        
+        $cart->save();
+
+        $status = "tenant";
+        
+        //return view('order.tenant', compact('cart'));
+        return redirect()->route('cart.tenant', ['cart' => $cart->token]);
+        
     }
 
     public function changeTenant(Request $request)
