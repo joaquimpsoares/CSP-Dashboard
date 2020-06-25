@@ -13,8 +13,7 @@
 @section('content')
 
 
-
-@include('priceList.partials.pricelisttable')
+@include('priceList.partials.pricelisttable', ['products' => $products])
 
 
 

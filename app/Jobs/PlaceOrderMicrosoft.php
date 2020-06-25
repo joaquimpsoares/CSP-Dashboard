@@ -47,7 +47,13 @@ class PlaceOrderMicrosoft implements ShouldQueue
         
         $products = $this->order->products;
         $customer = $this->order->customer;
-        
+
+        foreach ($products as $product) 
+                {
+        $this->order->details = ('Placing Order for: '.$product['name']. ' for Subscription: '. $customer->company_name);
+        $this->order->save();
+                }
+
         $instanceid = $products->first()->instance_id;
         
         $instance = Instance::where('id',$instanceid)->first();
@@ -124,7 +130,11 @@ class PlaceOrderMicrosoft implements ShouldQueue
                     Log::info('Subscription created Successfully: '.$subscription);
                     
                 } catch (Exception $e) {
+
                     Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+
+                    $this->order->details = ('Error Placing order to Microsoft: '.$e->getMessage());
+                    $this->order->save();
 
                     $this->order->order_status_id = 3; 
                     $this->order->save();

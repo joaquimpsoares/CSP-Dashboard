@@ -16,7 +16,7 @@ class PriceList extends Model
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'prices' => $this->prices,
+            'prices' => $this->prices(),
             'provider' => $this->provider()->first(),
             'reseller' => $this->reseller()->get(),
             'customer' => $this->customer()->get()
@@ -24,8 +24,7 @@ class PriceList extends Model
         ];
     }
 
-    public function prices()
-    {
+    public function prices(){
         return $this->hasMany('App\Price');
     }
 

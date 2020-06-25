@@ -37,8 +37,7 @@ class SuccessJob extends Notification
      */
     public function via($notifiable)
     {
-        
-        return [MsTeamsChannel::class, 'mail', 'database'];
+        return ['msteams', 'mail', 'database'];
     }
 
     public function toMsTeams($notifiable)

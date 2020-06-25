@@ -12,7 +12,6 @@
 				<div class="col">
 					<div class="card">
 						<div class="card-body">
-
 							<div class="row">
 								<div class="col-lg-8">
 									<div class="row">
@@ -29,14 +28,12 @@
 												</li>
 											</ul>
 										</div>
-
 									</div>
 									<div class="tab-content pt-4">
 										<div class="row">
 											<div class="col">
 												<form action="{{ route('cart.add_customer') }}" method="post">
 													<div class="row">
-
 														@csrf
 														<input type="hidden" name="cart" value="{{ $cart->token }}">
 														<div class="col">
@@ -86,7 +83,6 @@
 														</div>
 													</div>
 												</div>
-
 											</div>
 										</div>
 									</div>

@@ -27,7 +27,6 @@ class Customer extends Model
                             
     public function format()
     {
-        // // dd($this->status->name);
         return [
             'id' => $this->id,
             'company_name' => $this->company_name,
@@ -45,6 +44,7 @@ class Customer extends Model
             'subscriptions' => $this->subscriptions->count(),
             'priceLists' => $this->priceLists()->first(),
             'mainUser' => $this->users()->first(),
+            'orders' => $this->orders()->get(),
             'users' => $this->users()->get()
             
         ];
@@ -63,6 +63,12 @@ class Customer extends Model
     }
     public function subscriptions() {
     	return $this->hasMany('App\Subscription');
+    }
+
+    
+    public function orders()
+    {
+        return $this->hasMany('App\Order');
     }
 
     public function priceLists() {

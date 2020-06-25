@@ -3,17 +3,7 @@
         <div class="row">
             <div class="row">
                 {{-- {{dd($prices)}} --}}
-                <div class="col-md-2">
-                    <legend><h3>{{ ucwords(trans_choice('messages.filter', 1)) }}</h3></legend>				
-                    {{-- @foreach ($categories as $category)
-                    <div class="form-check">
-                        <input wire:change="searchCategory('{{$category->category}}')"  class="form-check-input" type="checkbox" name="" id="">
-                        <label class="form-check-label" >
-                            {{$category->category}}
-                        </label>    
-                    </div>
-                    @endforeach --}}
-                </div>
+                <livewire:filterstore/>
                 <div class="col-md-10">
                     <div class="row">
                         <div class="col-3">
@@ -30,9 +20,9 @@
                                         <option {{ ( isset($filters['quantity']) && $filters['quantity'] === '24' ) ? 'selected' : '' }}>24</option>
                                         <option {{ ( isset($filters['quantity']) && $filters['quantity'] === '36' ) ? 'selected' : '' }}>36</option>
                                     </select>
-                                    {{-- <div class="input-group-append">
+                                    <div class="input-group-append">
                                         <button class="input-group-text" type="submit" for="quantity">{{ ucwords(__('messages.apply_filter')) }}</button>
-                                    </div> --}}
+                                    </div>
                                 </div>
                                 <input type="hidden" name="search" value="1" />
                             </form>
@@ -40,27 +30,31 @@
                     </div>
                     <div class="row">
                         <input wire:model="search" class="form-control" type="text" placeholder="Search products/sku..."/>
-                        @foreach($products as $product)
+                        @foreach($prices as $product)
                         <div class="product-card">
-                            {{-- @if ($product->category == "Trial")
-                            <div class="badge1">{{$product->category}}</div>
-                            @endif --}}
-                            {{-- @if ($product->category == "Education")
-                            <div class="badge1">{{$product->category}}</div>
-                            @endif --}}
+                            @if ($product->product->category == "Trial")
+                            <div class="badge1">{{$product->product->category}}</div>
+                            @endif
+                            @if ($product->product->category == "Education")
+                            <div class="badge1">{{$product->product->category}}</div>
+                            @endif
                             <div class="product-tumb">
-                                <img src="{{ asset('images/vendors/' . $product->vendor . '.png') }}"  title="{{ $product->name }}" class="img-fuid" style="max-width: 120px;max-height: 120px;" />
+                                <img src="{{ asset('images/vendors/' . $product->product->vendor . '.png') }}"  title="{{ $product->name }}" class="img-fuid" style="max-width: 120px;max-height: 120px;" />
                             </div>
                             <div class="product-details">
-                                {{-- <span class="product-category">{{ $product->category }}</span> --}}
+                                <span class="product-category">{{ $product->product->sku }}</span>
                                 <h4><a href="">{{ $product->name }}</a></h4>
-                                <p class="text">{{ str_limit($product->description, 150) }}</p>
+                                <p class="text">{{ str_limit($product->product->description, 150) }}</p>
                                 <div class="product-bottom-details">
-                                    {{-- <div class="product-price"><small></small>{{ $product->price->msrp}}$</div> --}}
+                                    @if(Auth::user()->userLevel->name == "Reseller")
+                                    <div class="product-price"><small>{{ $product->price}}$</small>{{ $product->msrp}}$</div>
+                                    @else
+                                    <div class="product-price"><small></small>{{ $product->msrp}}$</div>
+                                    @endif
                                     <div class="product-links">
                                         <form method="POST" action="{{ route('cart.add_to_cart') }}">
                                             @csrf
-                                            <input type="hidden" name="product_id" value="{{$product->id}}">
+                                            <input type="hidden" name="product_id" value="{{$product->product->id}}">
                                             <button type="submit" ><i class="fa fa-shopping-cart"></i></a></button>
                                         </form>
                                     </div>
@@ -69,11 +63,14 @@
                         </div>
                         @endforeach
                     </div>
-                    <hr>
                     <div class="row">
+                        @if ($prices)
+                        <h2><strong>{{ ucwords(trans_choice('messages.no_priceList', 1)) }}</strong></h2>
+                        @endif
+                        <hr>
                         <div class="col">
                             <span class="float-right">
-                                {{ $products->links() }}
+                                {{ $prices->links() }}
                             </span>
                         </div>
                     </div>
@@ -82,4 +79,3 @@
         </div>
     </section>
 </div>
-

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Imports\PricesImport;
 use App\Http\Traits\UserTrait;
 use App\Http\Controllers\Controller;
+use App\Product;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Repositories\PriceListRepositoryInterface;
 
@@ -25,8 +26,10 @@ class PriceListController extends Controller
     
     public function index()
     {
-        $priceLists = $this->priceListRepository->all();    
 
+        $products = Product::get();
+        $priceLists = $this->priceListRepository->all();    
+        // dd($products);
         $prices = Price::get();
         
         // foreach($priceLists as $pricelist);{
@@ -38,18 +41,29 @@ class PriceListController extends Controller
         // dump($prices);
         // }
         
-        return view('priceList.index', compact('priceLists', 'prices'));
+        return view('priceList.index', compact('priceLists', 'prices', 'products'));
     }
+
     
     public function getPrices($priceList)
     {
-        // $priceList = PriceList::where('id', $priceList)->first();
+
+        $user = $this->getUser();
+        
+        
+        $instance = $user->reseller->provider->instances->first()->id;
+        
+        $products = Product::find($priceList)->where('instance_id', $instance)->get();
         
         $priceList = PriceList::where('id', $priceList)->with('prices')->first();
+        // dd($priceList->prices);
+        // $prices = Price::where()
         
-        $prices = $priceList->prices->map->format();
+        $prices = $priceList->prices;
+        // dd($prices   );
+        // dd($prices);
         
-        return view('priceList.prices', compact('prices','priceList'));
+        return view('priceList.prices', compact('prices','priceList', 'products'));
     }
 
     public function update(Request $request, $priceList)
@@ -71,8 +85,14 @@ class PriceListController extends Controller
 
         public function import(Request $request )
         {
+
+
+            $data = Excel::import(new PricesImport, request()->file('select_file'));
+            // dd($data);
+
+            return back()->withInput(['tab'=>'contact-md']);
             // dd($request->select_file);
-            Excel::import(new PricesImport, request()->file('select_file'));
+            // Excel::import(new PricesImport, request()->file('select_file'));
             
         //     try {
            
@@ -89,8 +109,60 @@ class PriceListController extends Controller
         //             ]);
         //         }
                 
-                return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.customer_updated_successfully')]);
+                // return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.customer_updated_successfully')]);
             // return back()->with('success', 'Excel Data Imported successfully');
+        }
+
+        public function store(Request $request)
+        {
+            // dd($request->all());
+            
+            
+            $pricelist = PriceList::find($request->priceList);
+            // dd($pricelist);
+            // $product = Product::where('sku', $request->product_sku)->first();
+            $user = $this->getUser();
+
+            $instance = $user->reseller->provider->instances->first()->id;
+        
+            $product = Product::where('sku', $request->product_sku)->where('instance_id', $instance)->first();
+            // dd($product);
+
+            // $user->account()->associate($account);
+
+            // $user->save();
+
+            $validatedData = $request->validate([
+                'product_sku' => 'required|max:255',
+                'price' => 'required',
+                'msrp' => 'required|numeric',
+                'product_vendor' => 'required',
+                'currency' => 'required',
+                'price_list_id' => '2 - Default - Provider CBI'
+            ]);
+
+
+            $order = new Price();
+
+            // dd($product);
+            // $order->product_sku     = $request->product_sku;
+            $order->name            = $product->name;
+            $order->price           = $request->price;
+            $order->msrp            = $request->msrp;
+            $order->product_vendor  = $request->product_vendor;
+            $order->currency        = $request->currency;
+            $order->price_list_id   = $request->price_list_id;
+
+            $order->product()->associate($product);
+
+            $order->pricelist()->associate($pricelist);
+            $order->save();
+
+            return back()->with('success', 'Excel Data Imported successfully');
+
+            // $show = Price::create($validatedData);
+       
+            // return redirect('')->with('success', 'Corona Case is successfully saved');
         }
 
     

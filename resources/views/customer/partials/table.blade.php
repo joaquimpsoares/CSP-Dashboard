@@ -1,6 +1,6 @@
 <div class="container col-xm-12">
     <section class="dark-grey-text">
-        <table class="table table-hover respon  sive" id="customer">
+        <table class="table table-hover responsive" id="customer">
             <thead class="thead-dark">
                 <tr>
                     <th>{{ ucwords(trans_choice('messages.company_name', 1)) }}</th>

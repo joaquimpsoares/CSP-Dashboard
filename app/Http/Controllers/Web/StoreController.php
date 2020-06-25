@@ -27,49 +27,49 @@ class StoreController extends Controller
     public function index(Request $request) {
 
 
-        $user = $this->getUser();
-        $userLevel = $this->getUserLevel();
+        // $user = $this->getUser();
+        // $userLevel = $this->getUserLevel();
 
-    	$filters = $request->validate([
-            'name' => 'string|nullable',
-            'vendor' => 'nullable|exists:App\Vendor,name',
-            'search' => 'integer|size:1',
-            'page' => 'integer',
-            'quantity' => 'integer'
-        ]);
+    	// $filters = $request->validate([
+        //     'name' => 'string|nullable',
+        //     'vendor' => 'nullable|exists:App\Vendor,name',
+        //     'search' => 'integer|size:1',
+        //     'page' => 'integer',
+        //     'quantity' => 'integer'
+        // ]);
 
-        if (isset($filters['quantity']) && $filters['quantity'] > 0 && $filters['quantity'] !== 12) 
-            $this->quantity = $filters['quantity'];
+        // if (isset($filters['quantity']) && $filters['quantity'] > 0 && $filters['quantity'] !== 12) 
+        //     $this->quantity = $filters['quantity'];
             
 
-        $products = $this->productRepository->all($filters, $this->quantity);
+        // $products = $this->productRepository->all($filters, $this->quantity);
 
-        $products = [];
-        $prices = null;
-        switch ($userLevel) {
-            case 'Provider':
-                # code...
-                break;
+        // $products = [];
+        // $prices = null;
+        // switch ($userLevel) {
+        //     case 'Provider':
+        //         # code...
+        //         break;
             
-            case 'Reseller':
-                $priceList = $user->reseller->priceList->id;
-                $prices = Price::where('price_list_id', $priceList)->paginate($this->quantity);
+        //     case 'Reseller':
+        //         $priceList = $user->reseller->priceList->id;
+        //         $prices = Price::where('price_list_id', $priceList)->paginate($this->quantity);
 
-                foreach ($prices as $price) {
-                    $products[] = $price->product;
-                }
+        //         foreach ($prices as $price) {
+        //             $products[] = $price->product;
+        //         }
 
 
-                break;
+        //         break;
             
-            default:
-                # code...
-                break;
-        }
+        //     default:
+        //         # code...
+        //         break;
+        // }
         
-        $vendors = Vendor::orderBy('name')->get();
+        // $vendors = Vendor::orderBy('name')->get();
 
-        $quantity = $this->quantity;
+        // $quantity = $this->quantity;
 
         return view('store.index');
     }

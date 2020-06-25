@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\User;
 use App\Notifications\FailedJob;
 use App\Notifications\SuccessJob;
+use App\Order;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Queue\Events\JobFailed;
@@ -15,6 +16,15 @@ use Illuminate\Queue\Events\JobProcessing;
 
 class AppServiceProvider extends ServiceProvider
 {
+
+    public $order;
+
+    // public function __construct(Order $order)
+    // {
+
+    //     $this->order = $order;
+    // }
+
     /**
      * Register any application services.
      *
@@ -30,9 +40,10 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(Order $order)
     {
-        
+        $this->order = $order;
+        Log::notice('Order: ' . $this->order);
 
         // View::'layouts.nav'('key', 'value');
         /**
@@ -40,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
         *
         * Job dispatched & processing
         */
-        Queue::before(function ( JobProcessing $event ) {
+        Queue::before(function (JobProcessing $event) {
 
             Log::info('Job UUID: ' . $event->job->uuid());
             Log::info('Job ID: ' . $event->job->getJobId());
@@ -55,11 +66,11 @@ class AppServiceProvider extends ServiceProvider
         *
         * Job processed
         */
-        Queue::after(function ( JobProcessed $event ) {
+        Queue::after(function ( JobProcessed $event) {
             Log::notice('Job ID: ' . $event->job->getJobId());
             Log::notice('Job done: ' . $event->job->resolveName());
             Log::notice('Job Attempts: ' . $event->job->attempts());
-            User::first()->notify(new SuccessJob($event));
+            User::first()->notify(new SuccessJob($event, $order));
         });
 
         /**

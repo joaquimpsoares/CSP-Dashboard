@@ -145,7 +145,7 @@ return [
     'edit_pricelist' => 'edit price list',
     'pricelist_updated_successfully' => 'pricelist updated successfully',
     'new_pricelist' => 'new price list',
-    '' => '',
+    'no_priceList' => 'no price list defined',
     '' => '',
     '' => '',
     '' => '',

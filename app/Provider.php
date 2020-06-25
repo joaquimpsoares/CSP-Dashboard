@@ -38,7 +38,8 @@ class Provider extends Model
 			'customers' => $this->resellers,
 			'status' => $this->status->name,
 			'path' => $this->path(),
-			'mainUser' => $this->users()->first()
+			'mainUser' => $this->users()->first(),
+			'instance' => $this->instances()->get()
 
 		];
 

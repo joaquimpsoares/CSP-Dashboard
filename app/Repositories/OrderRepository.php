@@ -3,11 +3,14 @@
 namespace App\Repositories;
 
 use App\Cart;
-use App\Http\Traits\UserTrait;
 use App\Order;
-use App\Repositories\OrderRepositoryInterface;
-use Illuminate\Support\Facades\DB;
+use App\Customer;
+use App\Reseller;
 use Illuminate\Support\Str;
+use App\Http\Traits\UserTrait;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Repositories\OrderRepositoryInterface;
 
 /**
  * 
@@ -15,7 +18,73 @@ use Illuminate\Support\Str;
 class OrderRepository implements OrderRepositoryInterface
 {
 	
-	use UserTrait;
+    use UserTrait;
+    
+
+    public function all()
+	{
+
+        // foreach ($variable as $key => $value) {
+        //     # code...
+        // }
+
+		$user = $this->getUser();
+
+		switch ($this->getUserLevel()) {
+			case config('app.super_admin'):
+                $orders = Order::with('status', 'customer')->get()->sortByDesc('id');
+			break;
+
+			case config('app.admin'):
+                $orders = Order::with('status', 'customer')->get()->sortByDesc('id');
+			break;
+
+            case config('app.provider'):
+
+                $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
+                // dd($resellers);
+
+                // $orders = Customer::get()->map->format();
+                // dd($orders);
+
+                $orders = Customer::whereHas('resellers', function($query) use  ($resellers) {
+                        $query->whereIn('id', $resellers);
+                    })->get()->map->format();
+
+
+
+                    // dd($orders->orders);
+
+
+                    // dd($customers);
+
+                    // $orders = $customers;
+
+                
+                // $customers = Customer::whereHas('resellers', function($query) use  ($resellers) {
+                //     $query->whereIn('id', $resellers);
+                // })->with(['country'])
+                // ->orderBy('company_name')->get(); 
+                
+            // $orders = Order::with(['status', 'customer'=> function ($query) {
+            //     	$query->where('name', 'message.active');
+            //     }])->get()->sortByDesc('id');
+            
+            // $user->provider->resellers()->whereNull('main_office')
+			// ->with(['country', 'subResellers', 'status' => function ($query) {
+			// 	$query->where('name', 'message.active');
+			// }])
+			// ->orderBy('company_name')
+			// ->get()->map->format();
+			break;
+
+			default:
+			return abort(403, __('errors.unauthorized_action'));
+			break;
+		}
+
+		return $orders;
+	}
 
 	public function newFromCartToken($token)
     {
@@ -73,5 +142,27 @@ class OrderRepository implements OrderRepositoryInterface
         return $order;
 
     }
+
+    public function UpdateMSSubscription($subscription)
+    {
+
+        $order = new Order();
+
+        $order->customer_id = $subscription->customer_id;
+        $order->domain = $subscription->domain;
+        $order->token = Str::uuid();
+        $order->user_id = Auth::user()->id;
+        $order->verify = $subscription->verify;
+        $order->comments = $subscription->quantity;
+
+
+        $order->save();
+
+        return $order;
+
+    }
+
+
+    
 
 }

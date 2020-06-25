@@ -34,7 +34,10 @@ class OrderController extends Controller
     
     public function index()
     {
-        $orders = Order::with('status', 'customer')->get()->sortByDesc('id');
+        
+        // $orders = Order::with('status', 'customer')->get()->sortByDesc('id');
+
+        $orders = $this->orderRepository->all();
         
         return view('order.index', compact('orders'));
     }
@@ -46,26 +49,22 @@ class OrderController extends Controller
             ]);
             
             $order = $this->orderRepository->newFromCartToken($validate['token']);
+        
+        CreateCustomerMicrosoft::withChain([
+            new PlaceOrderMicrosoft($order)
+            ])->dispatch($order)->allOnQueue('PlaceordertoMS');
             
-            CreateCustomerMicrosoft::withChain([
-                new PlaceOrderMicrosoft($order)
-                ])->dispatch($order)->allOnQueue('PlaceordertoMS');
-                
-                return view('order.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
-            }
+        return view('order.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
+    }
             
-            public function syncproducts(Request $request)
-            {
-                
-                ImportProductsMicrosoftJob::dispatch($order)->onQueue('SyncProducts')
-                ->delay(now()->addSeconds(10)); 
-                
-                // CreateCustomerMicrosoft::withChain([
-                    //     new PlaceOrderMicrosoft($order)
-                    //     ])->dispatch($order)->allOnQueue('PlaceordertoMS');
-                    
-                    return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
-                }
-                
-                
-            }
+    public function syncproducts(Request $request)
+    {
+        
+        ImportProductsMicrosoftJob::dispatch($request)->onQueue('SyncProducts')
+        ->delay(now()->addSeconds(10)); 
+
+        return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
+    }
+            
+        
+    }

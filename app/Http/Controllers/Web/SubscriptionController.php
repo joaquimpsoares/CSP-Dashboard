@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Jobs\updateSubscriptionMicrosoftJob;
+use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProviderRepositoryInterface;
 use App\Repositories\ResellerRepositoryInterface;
@@ -30,14 +32,17 @@ class SubscriptionController extends Controller
     private $providerRepository;
     private $resellerRepository;
     private $customerRepository;
+    private $orderRepository;
+
     
     
-    public function __construct(ResellerRepositoryInterface $resellerRepository, CustomerRepositoryInterface $customerRepository,SubscriptionRepositoryInterface $subscriptionRepository, ProviderRepositoryInterface $providerRepository)
+    public function __construct(ResellerRepositoryInterface $resellerRepository, OrderRepositoryInterface $orderRepository, CustomerRepositoryInterface $customerRepository,SubscriptionRepositoryInterface $subscriptionRepository, ProviderRepositoryInterface $providerRepository)
     {
         $this->resellerRepository = $resellerRepository;
         $this->customerRepository = $customerRepository;
         $this->subscriptionRepository = $subscriptionRepository;
         $this->providerRepository = $providerRepository;
+        $this->orderRepository = $orderRepository;
     }
     
     
@@ -128,148 +133,171 @@ public function store(Request $request)
 */
 public function show(Subscription $subscription)
 {
-
     $subscriptions = Subscription::findOrFail($subscription->id);
-    
-    $products = Product::where('sku', $subscriptions->product_id)->get();
+    // dd($subscriptions);
     
     $usage = Product::where('sku', $subscriptions->product_id)->first();
-    foreach ($products as $key => $product) {
-        $addons = $product->getaddons()->all();
-    }
     
-
-    if ($usage->billing === 'usage'){
-    foreach ($products as $key => $product) {
-            return view('subscriptions.edit', compact('subscriptions', 'products'));
-        }
-    }
+    $products = Product::where('sku', $subscriptions->product_id)->where('instance_id', $subscriptions->instance_id)->get();
     
-    
-    return view('subscriptions.edit', compact('subscriptions', 'products', 'addons'));
+    // dd($products);
+    switch ($usage->billing) {
+        case 'usage':
+            $subscriptions = Subscription::findOrFail($subscription->id);
+            return view('subscriptions.editazure', compact('subscriptions', 'products'));
+        break;
+        case 'license':
+            foreach ($products as $key => $product) {
+                $addons = $product->getaddons()->all();
+            }
+            return view('subscriptions.edit', compact('subscriptions', 'products', 'addons'));
+        break;
+        
+        default:
+        # code...
+    break;
 }
 
-/**
-* Show the form for editing the specified resource.
-*
-* @param  \App\Subscription  $subscription
-* @return \Illuminate\Http\Response
-*/
-public function edit(Subscription $subscriptions)
-{
-    $subscription = Subscription::where('id', $subscriptions)->first();
-    return view('subscriptions.edit', compact('subscription'));
+
 }
 
-/**
-* Update the specified resource in storage.
-*
-* @param  \Illuminate\Http\Request  $request
-* @param  \App\Subscription  $subscription
-* @return \Illuminate\Http\Response
-*/
-public function update(Request $request, Subscription $subscription)
-{
+// /**
+// * Show the form for editing the specified resource.
+// *
+// * @param  \App\Subscription  $subscription
+// * @return \Illuminate\Http\Response
+// */
+// public function edit(Subscription $subscriptions)
+// {
+    //     $subscription = Subscription::where('id', $subscriptions)->first();
     
-    $subscriptions = Subscription::findOrFail($subscription->id);
-    $instance = Instance::first();    
+    //     dd($subscription);
+    //     return view('subscriptions.edit', compact('subscription'));
+    // }
     
-    $this->validate($request, [
-        'amount' => 'required|integer',
-        ]);
+    /**
+    * Update the specified resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @param  \App\Subscription  $subscription
+    * @return \Illuminate\Http\Response
+    */
+    public function update(Request $request, Subscription $subscription)
+    {
         
         
-        $subscription = new TagydesSubscription([
-            'id'            => $subscriptions->subscription_id,
-            'orderId'       => $subscriptions->order_id,
-            'offerId'       => $subscriptions->product_id,
-            'customerId'    => $subscriptions->customer->microsoftTenantInfo->first()->tenant_id,
-            'name'          => $subscriptions->name,
-            'status'        => $subscriptions->status_id,
-            'quantity'      => $subscriptions->amount,
-            'currency'      => $subscriptions->currency,
-            'billingCycle'  => $subscriptions->billing_period,
-            'created_at'    => $subscriptions->created_at->__toString(),
-            ]);
+        $subscription = Subscription::findOrFail($subscription->id);
+        
+        $order = $this->orderRepository->UpdateMSSubscription($subscription);
+
+        $instance = Instance::where('id', $subscription->instance_id)->first();
+
+        updateSubscriptionMicrosoftJob::dispatch($subscription, $request->all(), $order )->onQueue('PlaceordertoMS')
+            ->delay(now()->addSeconds(10));     
+        
+        // $this->validate($request, [
+        //     'amount' => 'required|integer',
+        //     ]);
             
             
-            if ($request->status == 1) {
-                $request->merge(['status' => 'active']);
-            }else {
-                $request->merge(['status' => 'suspended']);
+        //     $subscription = new TagydesSubscription([
+        //         'id'            => $subscriptions->subscription_id,
+        //         'orderId'       => $subscriptions->order_id,
+        //         'offerId'       => $subscriptions->product_id,
+        //         'customerId'    => $subscriptions->customer->microsoftTenantInfo->first()->tenant_id,
+        //         'name'          => $subscriptions->name,
+        //         'status'        => $subscriptions->status_id,
+        //         'quantity'      => $subscriptions->amount,
+        //         'currency'      => $subscriptions->currency,
+        //         'billingCycle'  => $subscriptions->billing_period,
+        //         'created_at'    => $subscriptions->created_at->__toString(),
+        //         ]);
+                
+                
+        //         if ($request->status == 1) {
+        //             $request->merge(['status' => 'active']);
+        //         }else {
+        //             $request->merge(['status' => 'suspended']);
+        //         }
+                
+        //         if($subscriptions->wasChanged('amount')){
+        //             try{
+        //                 dd($subscriptions->wasChanged('amount'));
+        //                 dd('status');
+        //                 $subscriptions->update(['amount'=> $request->amount]);
+        //                 $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->
+        //                 update($subscription, ['quantity' => $request->amount]);
+                        
+        //                 Log::info('License changed: '.$request->amount);
+        //             } catch (Exception $e) {
+        //                 Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+        //                 return redirect()->back()->with(['alert' => 'error', 'message' => ucwords(trans_choice('messages.something_went_wrong_try_again', 1))]);
+        //             }
+        //         }else if ($request->billing_period != $subscriptions->billing_period){
+        //             try{
+        //                 dump('billing_period');
+                        
+        //                 $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->changeBillingCycle($subscription, $request->billing_period);
+        //                 $subscriptions->update(['billing_period'=> $request->billing_period]);
+        //                 Log::info('Billing Cycle changed: '.$request->billing_period);
+                        
+        //             } catch (Exception $e) {
+        //                 Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+        //                 return redirect()->back()->with(['alert' => 'error', 'message' => ucwords(trans_choice('messages.something_went_wrong_try_again', 1))]);
+        //             }
+        //         }else {
+        //             try{
+        //                 dump('status');
+                        
+        //                 $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)
+        //                 ->update($subscription, ['status' => $request->status]);
+                        
+        //                 if ($request->status == 'active') {
+        //                     $request->merge(['status' => 1]);
+        //                 }else {
+        //                     $request->merge(['status' => 2]);
+        //                 }
+        //                 $subscriptions->update(['status_id' => $request->status]);
+        //                 Log::info('Status changed: '.$update);
+                        
+        //             } 
+        //             catch (Exception $e) {
+        //                 Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+        //                 return redirect()->back()->with(['alert' => 'error', 'message' => ucwords(trans_choice('messages.something_went_wrong_try_again', 1))]);
+        //             }
+        //         }
+                return redirect()->back()->with(['alert' => 'success', 'message' => ucwords(trans_choice('messages.subscription_updated_successfully', 1))]);
             }
             
-            if($request->status == $subscriptions->status){
-                try{
-                    $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->
-                    update($subscription, ['quantity' => $request->amount]);
-                    $subscriptions->update(['amount'=> $request->amount]);
-                    Log::info('License changed: '.$request->amount);
-                } catch (Exception $e) {
-                    Log::info('Error Placing order to Microsoft: '.$e->getMessage());
-                    return redirect()->back()->with(['alert' => 'error', 'message' => ucwords(trans_choice('messages.something_went_wrong_try_again', 1))]);
-                }
-            }else if ($request->billing_period != $subscriptions->billing_period){
-                try{
-                    $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->changeBillingCycle($subscription, $request->billing_period);
-                    $subscriptions->update(['billing_period'=> $request->billing_period]);
-                    Log::info('Billing Cycle changed: '.$request->billing_period);
-                    
-                } catch (Exception $e) {
-                    Log::info('Error Placing order to Microsoft: '.$e->getMessage());
-                    return redirect()->back()->with(['alert' => 'error', 'message' => ucwords(trans_choice('messages.something_went_wrong_try_again', 1))]);
-                }
-            }else {
-                try{
-                    $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)
-                    ->update($subscription, ['status' => $request->status]);
-                    
-                    if ($request->status == 'active') {
-                        $request->merge(['status' => 1]);
-                    }else {
-                        $request->merge(['status' => 2]);
-                    }
-                    $subscriptions->update(['status_id' => $request->status]);
-                    Log::info('Status changed: '.$update);
-                    
-                } 
-                catch (Exception $e) {
-                    Log::info('Error Placing order to Microsoft: '.$e->getMessage());
-                    return redirect()->back()->with(['alert' => 'error', 'message' => ucwords(trans_choice('messages.something_went_wrong_try_again', 1))]);
-                }
+            /**
+            * Remove the specified resource from storage.
+            *
+            * @param  \App\Subscription  $subscription
+            * @return \Illuminate\Http\Response
+            */
+            public function destroy(Subscription $subscription)
+            {
+                //
             }
-            return redirect()->back()->with(['alert' => 'success', 'message' => ucwords(trans_choice('messages.subscription_updated_successfully', 1))]);
-        }
-        
-        /**
-        * Remove the specified resource from storage.
-        *
-        * @param  \App\Subscription  $subscription
-        * @return \Illuminate\Http\Response
-        */
-        public function destroy(Subscription $subscription)
-        {
-            //
-        }
-        
-        public function listFromProvider(Provider $provider)
-        {
-            $subscriptions = $this->providerRepository->getSubscriptions($provider);
             
-            return $subscriptions;
-        }
-        
-        public function listFromReseller(Reseller $reseller)
-        {
-            $subscriptions = $this->resellerRepository->getSubscriptions($reseller);
+            public function listFromProvider(Provider $provider)
+            {
+                $subscriptions = $this->providerRepository->getSubscriptions($provider);
+                
+                return $subscriptions;
+            }
             
-            return $subscriptions;
-        }
-        
-        public function listFromCustomer(Customer $customer)
-        {
-            $subscriptions = $this->customerRepository->getSubscriptions($customer);
+            public function listFromReseller(Reseller $reseller)
+            {
+                $subscriptions = $this->resellerRepository->getSubscriptions($reseller);
+                
+                return $subscriptions;
+            }
             
-            return $subscriptions;
+            public function listFromCustomer(Customer $customer)
+            {
+                $subscriptions = $this->customerRepository->getSubscriptions($customer);
+                
+                return $subscriptions;
+            }
         }
-    }

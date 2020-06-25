@@ -28,6 +28,7 @@ class CreateOrdersTable extends Migration
             $table->string('agreement_email')->nullable();
             $table->string('agreement_phone')->nullable();
             $table->text('comments')->nullable();
+            $table->text('details')->nullable();
             $table->string('ext_company_id')->nullable();
             $table->string('ext_order_id')->nullable();
             $table->unsignedBigInteger('order_status_id')->default(1);

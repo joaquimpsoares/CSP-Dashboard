@@ -28,7 +28,6 @@
                                         </div>
                                     </div>
                                     @foreach ($products as $product)
-                                    @if ($product['billing'] == "license")
                                     <hr>
                                     <div class="field is-inline-block-desktop">
                                         {{ ucwords(trans_choice('messages.licenses', 1)) }}
@@ -40,7 +39,6 @@
                                             @endif
                                         </div>
                                     </div>  
-                                    @endif
                                     @endforeach        
                                 </div>
                                 <hr>

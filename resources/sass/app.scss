@@ -61,11 +61,19 @@ a:hover {
 
 	
 	.product-card {
-		width: 280px;
+		width: 310px;
 		position: relative;
 		box-shadow: 0 5px 10px #dfdfdf;
 		margin: 30px auto;
 		background: #fafafa;
+	}
+
+	.dashboard-card {
+		width: 190px;
+		// position: relative;
+		box-shadow: 0 5px 10px #dfdfdf;
+		margin: 30px auto;
+		// background: #fafafa;
 	}
 	
 	.badge1 {
@@ -123,7 +131,7 @@ a:hover {
 	}
 	
 	.product-details h4 a:hover {
-		color: #fbb72c;
+		color: #c5322d;
 	}
 	
 	.product-details p {
@@ -146,14 +154,14 @@ a:hover {
 	
 	.product-price {
 		font-size: 18px;
-		color: #fbb72c;
+		color: #c5322d;
 		font-weight: 600;
 	}
 	
 	.product-price small {
 		font-size: 80%;
 		font-weight: 400;
-		text-decoration: line-through;
+		// text-decoration: line-through;
 		display: inline-block;
 		margin-right: 5px;
 	}
@@ -171,7 +179,7 @@ a:hover {
 	}
 	
 	.product-links button:hover {
-		color: #fbb72c;
+		color: #c5322d;
 	}
 	.product-links button:border-color {
 		color: #000000;

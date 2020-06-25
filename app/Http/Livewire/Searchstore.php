@@ -13,33 +13,47 @@ class Searchstore extends Component
 {
     use UserTrait;
     
+    private $user = "";
+    private $level = [];
     public $search = '';
     public $categories = '';
-    public $prices = "null";
-    // public $products = [];
+    public $priceList = "null";
 
     use WithPagination;
 
     public function mount()
     {
-        $user = $this->getUser();
+        $this->user = $this->getUser();
 
-        $priceList = $user->reseller->priceList->id;
-        $this->products = Price::where('price_list_id', $priceList)->paginate(9);
+        $this->categories = Product::select('category')->distinct()->get();
+        $this->level = $this->getUserLevel();
 
+        switch ($this->level) {
+            case 'Customer':
+                $this->priceList = $this->user->customer->priceList->id;
+            break;
+
+            case 'Reseller':
+                $this->priceList = $this->user->reseller->priceList->id;
+            break;
+            
+            default:
+            return abort(403, __('errors.unauthorized_action'));
+        break;
+        }
     }
-
+    
     public function searchCategory($name)
     {
-         $this->search = $name;
+        $this->search = $name;
     }
-
+    
     public function render()
     {
-        return view('livewire.searchstore', [
-            'products' => Product::where('name', 'like', "%$this->search%")
-            ->orWhere('sku', 'LIKE', "%$this->search%")
-            ->orWhere('category', 'LIKE', "%$this->search%")->paginate(9),
+        return view('livewire.searchstore', 
+        [
+            'prices' => Price::having('price_list_id', $this->priceList)->where('name', 'like', "%$this->search%")
+            ->orwhere('product_sku', 'LIKE', "%$this->search%")->paginate(9),
         ]);
     }
 }
