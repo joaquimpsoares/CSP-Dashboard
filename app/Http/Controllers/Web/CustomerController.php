@@ -86,38 +86,52 @@ class CustomerController extends Controller
     }
 
 
-    public function storeAndBy(Request $request) { 
-        
+    public function storeAndBuy(Request $request) { 
+
         $validate = $this->validator($request->all())->validate();
         
         $user = $this->getUser();
         
-        try {
-            DB::beginTransaction();
-            
-            $customer = $this->customerRepository->create($validate);
-            
-            $customer->resellers()->attach($user->reseller->id);
-            
-            $mainUser = $this->userRepository->create($validate, 'customer', $customer);
-            
-            DB::commit();
-        } catch (\PDOException $e) {
-            DB::rollBack();
-            if ($e->errorInfo[1] == 1062) {
-                $errorMessage = "message.user_already_exists";
-            } else {
-                $errorMessage = "message.error";
-            }
-            return redirect()->route('customer.index')
-            ->with([
-                'alert' => 'danger', 
-                'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
-            ]);
-        }
+        dd($validate);
         
-        return redirect()->route('customer.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Created successfully')]);
     }
+
+        
+
+    // public function update(Request $request, Customer $customer) { 
+
+    //         // dd($request->all());
+
+    //     $validate = $this->validator($request->all())->validate();
+        
+    //     $user = $this->getUser();
+        
+    //     try {
+    //         DB::beginTransaction();
+            
+    //         $customer = $this->customerRepository->create($validate);
+            
+    //         $customer->resellers()->attach($user->reseller->id);
+            
+    //         $mainUser = $this->userRepository->create($validate, 'customer', $customer);
+            
+    //         DB::commit();
+    //     } catch (\PDOException $e) {
+    //         DB::rollBack();
+    //         if ($e->errorInfo[1] == 1062) {
+    //             $errorMessage = "message.user_already_exists";
+    //         } else {
+    //             $errorMessage = "message.error";
+    //         }
+    //         return redirect()->route('customer.index')
+    //         ->with([
+    //             'alert' => 'danger', 
+    //             'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
+    //         ]);
+    //     }
+        
+    //     return redirect()->route('customer.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Created successfully')]);
+    // }
 
 
     public function show(Customer $customer) {

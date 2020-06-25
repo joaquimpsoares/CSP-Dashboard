@@ -63,8 +63,9 @@
 												<div class="modal fade" id="createCustomer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 													<div class="modal-dialog modal-xl">
 														<div class="modal-content">
-															<form method="POST" action="{{ route('customer.store.cart') }}" class="col s12" id="createCustomer">
+															<form method="POST" action="{{ route('cart.customer.store') }}" class="col s12" id="createCustomer">
 																@csrf
+																<input type="hidden" name="cart" value="{{ $cart->token }}">
 																<div class="modal-header">
 																	<h5 class="modal-title" id="exampleModalLabel">
 																		{{ ucwords(trans_choice('messages.new_customer', 1)) }}
@@ -74,6 +75,7 @@
 																	</button>
 																</div>
 																<div class="modal-body">
+																	@include('partials.messages')
 																	@include('order.partials.create_customer')
 																</div>
 																<div class="modal-footer">

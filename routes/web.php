@@ -154,8 +154,6 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::post('/customer', 'CustomerController@store')
 			->middleware('permission:' . config('app.customer_create'))->name('customer.store');
 		
-		Route::post('/customer/cart', 'CustomerController@storeAndBuy')
-			->middleware('permission:' . config('app.customer_create'))->name('customer.store.cart');
 		
 		Route::get('/customer', 'CustomerController@index')
 		->middleware('permission:' . config('app.customer_index'))->name('customer.index');
@@ -259,6 +257,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/cart/tenant', 'CartController@continueCheckout')->name('cart.tenant');
 	Route::get('/cart/review', 'CartController@continueCheckout')->name('cart.review');
 	Route::post('/cart/checkout', 'CartController@checkout')->name('cart.checkout');
+	Route::post('/cart/customer', 'CartController@storeCustomerAndBuy')
+			->middleware('permission:' . config('app.customer_create'))->name('cart.customer.store');
 	//Novas rotas carrinho//
 
 
