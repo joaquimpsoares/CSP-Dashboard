@@ -21,22 +21,22 @@ class OrderController extends Controller
     private $productRepository;
     private $orderRepository;
     
-        
+    
     public function __construct(ProductRepositoryInterface $productRepository, OrderRepositoryInterface $orderRepository)
     {
         $this->productRepository = $productRepository;
         $this->orderRepository = $orderRepository;
     }
-
+    
     public function show() {
-
+        
     }
     
     public function index()
     {
         
         // $orders = Order::with('status', 'customer')->get()->sortByDesc('id');
-
+        
         $orders = $this->orderRepository->all();
         
         return view('order.index', compact('orders'));
@@ -48,23 +48,23 @@ class OrderController extends Controller
             'token' => 'required|uuid',
             ]);
             
-            $order = $this->orderRepository->newFromCartToken($validate['token']);
+        $order = $this->orderRepository->newFromCartToken($validate['token']);
         
         CreateCustomerMicrosoft::withChain([
             new PlaceOrderMicrosoft($order)
             ])->dispatch($order)->allOnQueue('PlaceordertoMS');
             
-        return view('order.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
-    }
-            
-    public function syncproducts(Request $request)
-    {
+            return view('store.index')->with(['alert' => 'success', 'message' => trans('messages.order_placed_susscessfully')]);
+        }
         
-        ImportProductsMicrosoftJob::dispatch($request)->onQueue('SyncProducts')
-        ->delay(now()->addSeconds(10)); 
-
-        return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
-    }
+        public function syncproducts(Request $request)
+        {
             
+            ImportProductsMicrosoftJob::dispatch($request)->onQueue('SyncProducts')
+            ->delay(now()->addSeconds(10)); 
+            
+            return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
+        }
+        
         
     }

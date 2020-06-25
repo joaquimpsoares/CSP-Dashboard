@@ -2,7 +2,6 @@
     <section class="section">
         <div class="row">
             <div class="row">
-                {{-- {{dd($prices)}} --}}
                 <livewire:filterstore/>
                 <div class="col-md-10">
                     <div class="row">

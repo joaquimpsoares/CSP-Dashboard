@@ -73,6 +73,11 @@ class CreateCustomerMicrosoft implements ShouldQueue
             $this->order->save();
 
         } catch (Exception $e) {
+            Log::info('Error creating Customer Microsoft: '.$e->getMessage());
+            $this->order->details = ('Error creating Customer Microsoft: '.$e->getMessage());
+            $this->order->save();
+
+
             Log::info('Error: '.$e->getMessage());
             $this->order->order_status_id = 3; 
             $this->order->save();

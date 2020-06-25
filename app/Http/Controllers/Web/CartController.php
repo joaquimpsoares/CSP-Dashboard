@@ -200,7 +200,6 @@ class CartController extends Controller
 
         $status = "tenant";
         
-        //return view('order.tenant', compact('cart'));
         return redirect()->route('cart.tenant', ['cart' => $cart->token]);
         
     }

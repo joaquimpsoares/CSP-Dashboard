@@ -12,7 +12,7 @@
 				<div class="col">
 					<div class="card">
 						<div class="card-body">
-
+							
 							<div class="row">
 								<div class="col-lg-8">
 									<div class="row">
@@ -37,45 +37,35 @@
 												</li>
 											</ul>
 										</div>
-
 									</div>
 									<div class="tab-content pt-4">
 										<div class="row">
 											<H1>{{ ucwords(trans_choice('messages.please_review_details', 1)) }}</H1>
 										</div>
-										<div class="row">
-											<h3>
-												{{ ucwords(trans_choice('messages.customer_selected', 1)) }}
-											</h3>
-										</div>
-										<div class="row">
-											<p>
-												{{ $cart->customer->company_name ?? __('messages.select_customer') }}
-											</p>
-										</div>
-										<div class="row">
-											<h3>{{ ucwords(trans_choice('messages.agreement_signed', 1)) }}</h3>
-										</div>
-										<div class="row">
-
-											<div class="md-form mb-0">
-												<p id="firstName">{{ $cart->agreement_firstname }}</p>
+										<div class="card" style="width: 24em">
+											<div class="card-header">
+												<h4>{{ ucwords(trans_choice('messages.customer_selected', 1)) }}</h4>
+											</div>
+											<div class="card-body">
+												<h5 class="card-title">{{ $cart->customer->company_name ?? __('messages.select_customer') }}</h5>
+												
 											</div>
 										</div>
-										<div class="row">
-											<div class="md-form mb-0">
-												<p id="lastName">{{ $cart->agreement_lastname }}</p>
+										<br>
+										<div class="card" style="width: 24em">
+											<div class="card-header">
+												<h4>{{ ucwords(trans_choice('messages.agreement_signed', 1)) }}</h4>
+											</div>
+											<div class="card-body">
+												{{-- <h5 class="card-title">Title</h5> --}}
+												<p id="firstName">{{ $cart->agreement_firstname }} <br>
+													{{ $cart->agreement_lastname }}<br>
+													{{ $cart->agreement_email }}<br>
+													{{ $cart->agreement_phone }}
+												</p>
 											</div>
 										</div>
-										<div class="row">
-											<div class="md-form mb-0">
-												<p id="email">{{ $cart->agreement_email }}</p>
-											</div>
-
-											<div class="md-form mb-0">
-												<p id="phoneNumber">{{ $cart->agreement_phone }}</p>
-											</div>
-										</div>
+										<br>
 										<div class="row">
 											<!-- Default disabled -->
 											<!-- Default checked -->

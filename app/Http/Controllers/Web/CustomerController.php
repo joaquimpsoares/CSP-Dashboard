@@ -92,7 +92,7 @@ class CustomerController extends Controller
         
         $user = $this->getUser();
         
-        dd($validate);
+        // dd($validate);
         
     }
 

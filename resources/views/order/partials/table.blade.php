@@ -14,34 +14,37 @@
             </thead>
             <tbody>
                 @foreach ($orders as $order)  
+                {{-- {{dd($order['status'])}} --}}
+                {{-- {{dd($order['customer']['company_name'])}} --}}
+                {{-- {{dd($order['status'])}} --}}
                 <tr>
-                    <td><img src="{{$order->user->avatar}}" alt="" width="50"></td>
-                    <td>{{ $order->customer->company_name }}</td>
-                    <td>{{ $order->details }}</td>
-                    <td>{{ $order->status->comments }}</td>
-                    <td>{{ $order->status->created_at }}</td>
-                    <td>{{ $order->status->updated_at }}</td>
+                    <td><img src="{{$order['avatar']['avatar']}}" alt="" width="50"></td>
+                    <td>{{ $order['customer'] }}</td>
+                    <td>{{ $order['details'] }}</td>
+                    <td>{{ $order['comments'] }}</td>
+                    <td>{{ $order['created_at'] }}</td>
+                    <td>{{ $order['updated_at'] }}</td>
                     
-                    @if ($order->order_status_id==4)
+                   {{-- @if ($order['status']['id']==4)
                     <td>    
-                        <p><span class="badge badge-primary">{{ $order->status->name }}</span></p>
+                        <p><span class="badge badge-primary">{{ $order['status']['name'] }}</span></p>
                     </td>
                     @endif
-                    @if ($order->order_status_id==1)
+                    @if ($order['status']['id']==1)
                     <td>    
-                        <p><span class="badge badge-info">{{ $order->status->name }}</span></p>
+                        <p><span class="badge badge-info">{{ $order['status']['name'] }}</span></p>
                     </td>
                     @endif
-                    @if ($order->order_status_id==2)
+                    @if ($order['status']['id']==2)
                     <td>    
-                        <p><span class="badge badge-success">{{ $order->status->name }}</span></p>
+                        <p><span class="badge badge-success">{{ $order['status']['name'] }}</span></p>
                     </td>
                     @endif
-                    @if ($order->order_status_id==3)
+                    @if ($order['status']['id']==3)
                     <td>
-                        <p><span class="badge badge-warning">{{ $order->status->name }}</span></p>
+                        <p><span class="badge badge-warning">{{ $order['status']['name'] }}</span></p>
                     </td>
-                    @endif
+                    @endif --}}
                 </tr>
                 @endforeach
             </tbody>
@@ -56,7 +59,7 @@
     $(document).ready( function () {
         $('#order').DataTable({
             "pagingType": "full_numbers",
-            "order": [[ 0, "asc" ]]
+            "order": [[ 4, "desc" ]]
         });
     } );
 </script>

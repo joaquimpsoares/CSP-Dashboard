@@ -11,7 +11,7 @@
 				<div class="col">
 					<div class="card">
 						<div class="card-body">
-
+							
 							<div class="row">
 								<div class="col-lg-8">
 									<div class="row">
@@ -32,7 +32,6 @@
 												</li>
 											</ul>
 										</div>
-
 									</div>
 									<div class="row">
 										<div class="col">
@@ -49,8 +48,8 @@
 												</div>
 												<div class="row">
 													<div class="col">
-														<div class="row float-right">
-															<button type="button" id="validateButton" class="btn btn-success" onclick="checkDomainAvailability()">{{ ucwords(trans_choice('messages.validate', 1)) }}</button>
+														<div class="float-sm-right">
+															<button type="button" id="validateButton" class="main_btn" onclick="checkDomainAvailability()">{{ ucwords(trans_choice('messages.validate', 1)) }}</button>
 														</div>
 													</div>
 												</div>
@@ -64,7 +63,6 @@
 																<label for="firstName">{{ ucwords(trans_choice('messages.first_name', 1)) }}</label>
 																<input type="text" name="firstName" id="firstName" class="form-control" required="required" value="{{ $cart->agreement_firstname ?? null }}"/>
 															</div>
-
 															<div class="md-form mb-0">
 																<label for="lastName">{{ ucwords(trans_choice('messages.last_name', 1)) }}</label>
 																<input type="text" name="lastName" id="lastName" class="form-control" required="required" value="{{ $cart->agreement_lastname ?? null }}" />
@@ -77,13 +75,12 @@
 																<label for="phoneNumber">{{ ucwords(trans_choice('messages.phone_number', 1)) }}</label>
 																<input type="text" name="phoneNumber" id="phoneNumber" class="form-control" value="{{ $cart->agreement_phone ?? null }}" />
 															</div>
-
-															<div class="row float-right">
-																<button type="submit" class="btn btn-primary" id="test">
+															<br>
+															<div class="float-sm-right">
+																<button type="submit" class="main_btn" id="test">
 																	{{ ucwords(trans_choice('messages.review', 1)) }}
 																</button>
 															</div>
-
 														</form>
 													</div>
 												</div>
@@ -111,46 +108,46 @@
 	
 	function checkDomainAvailability() {
 		var domain = $("#tenant").val();
-
+		
 		$("#validateButton").prop('disabled', true);
-
+		
 		$.get( "/cart/checkDomainAvailability/?token={{ urlencode($cart->token) }}&domain=" + domain, function() {
-
+			
 		})
 		.done(function(data) {
-
+			
 			getMainUserFromCustomer();
 			$("#validateButton").hide();
 			$("#agreement").show();
-
+			
 		})
 		.fail(function(data) {
 			console.log(data);
 			$("#validateButton").prop('disabled', false);
-
+			
 		});
 	}
-
+	
 	function getMainUserFromCustomer() {
-
+		
 		$.get( "/cart/customer/mainUser?token={{ $cart->token }}", function() {
-					//action begining            
-				})
+			//action begining            
+		})
 		.done(function(data) {
 			console.log('success');
-
+			
 			$('#firstName').val(data['first_name']);
 			$('#lastName').val(data['last_name']);
 			$('#email').val(data['email']);
 			$('#phoneNumber').val(data['phone']);
-
+			
 		})
 		.fail(function(data) {
 			console.log("erro");
 			console.log(data);
 		});
 	}
-
+	
 	@if(! empty($cart->domain))
 	getMainUserFromCustomer();
 	@endif

@@ -24,58 +24,48 @@ class OrderRepository implements OrderRepositoryInterface
     public function all()
 	{
 
-        // foreach ($variable as $key => $value) {
-        //     # code...
-        // }
-
 		$user = $this->getUser();
 
 		switch ($this->getUserLevel()) {
 			case config('app.super_admin'):
-                $orders = Order::with('status', 'customer')->get()->sortByDesc('id');
+                $orders = Order::with('status', 'customer')->get()->sortByDesc('id')->map->format();
 			break;
 
 			case config('app.admin'):
-                $orders = Order::with('status', 'customer')->get()->sortByDesc('id');
+                $orders = Order::with('status', 'customer')->get()->sortByDesc('id')->map->format();
 			break;
 
             case config('app.provider'):
 
-                $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
-                // dd($resellers);
+            $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
 
-                // $orders = Customer::get()->map->format();
+            $customers = Customer::whereHas('resellers', function($query) use  ($resellers) {
+                $query->whereIn('id', $resellers);
+            })->get()->map->format()->toArray();
+
+
+            foreach($customers as $customer){
+                $orders = Order::with('status', 'customer')->where('customer_id', $customer['id'])
+                ->get()->sortByDesc('id')->map->format();
                 // dd($orders);
+            }
+
+            // foreach ($orders as $users ){
+            //     foreach($users['users'] as $avatar){
+            //         // dd($avatar->avatar);
+            //     }
+            // }
+
+            break;
+            
+            case config('app.reseller'):
+
+                $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
 
                 $orders = Customer::whereHas('resellers', function($query) use  ($resellers) {
-                        $query->whereIn('id', $resellers);
-                    })->get()->map->format();
+                    $query->whereIn('id', $resellers);
+                })->get()->map->format();
 
-
-
-                    // dd($orders->orders);
-
-
-                    // dd($customers);
-
-                    // $orders = $customers;
-
-                
-                // $customers = Customer::whereHas('resellers', function($query) use  ($resellers) {
-                //     $query->whereIn('id', $resellers);
-                // })->with(['country'])
-                // ->orderBy('company_name')->get(); 
-                
-            // $orders = Order::with(['status', 'customer'=> function ($query) {
-            //     	$query->where('name', 'message.active');
-            //     }])->get()->sortByDesc('id');
-            
-            // $user->provider->resellers()->whereNull('main_office')
-			// ->with(['country', 'subResellers', 'status' => function ($query) {
-			// 	$query->where('name', 'message.active');
-			// }])
-			// ->orderBy('company_name')
-			// ->get()->map->format();
 			break;
 
 			default:
