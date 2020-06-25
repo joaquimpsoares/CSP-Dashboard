@@ -51,9 +51,11 @@ class PriceListController extends Controller
         $user = $this->getUser();
         
         
-        $instance = $user->reseller->provider->instances->first()->id;
+        $instance = $user->reseller->provider->instances->first();
         
-        $products = Product::find($priceList)->where('instance_id', $instance)->get();
+
+        
+        $products = $instance->products;
         
         $priceList = PriceList::where('id', $priceList)->with('prices')->first();
         // dd($priceList->prices);
@@ -115,7 +117,7 @@ class PriceListController extends Controller
 
         public function store(Request $request)
         {
-            // dd($request->all());
+            dd($request->all());
             
             
             $pricelist = PriceList::find($request->priceList);

@@ -19,4 +19,9 @@ class Instance extends Model
     	return $this->belongsTo('App\Provider');
     }
 
+    public function products()
+    {
+        return $this->hasMany('App\Product');
+    }
+
 }

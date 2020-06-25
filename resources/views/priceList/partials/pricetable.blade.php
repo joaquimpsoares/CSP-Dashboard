@@ -74,8 +74,6 @@
 				<tbody>
 					@forelse($prices as $price)
 					<tr>
-
-						{{dd($price->product)}}
 						<td></td>
 						<td	>{{ $price['product']['id'] }}</td>
 						<td	>{{ $price['product_sku'] }}</td>
