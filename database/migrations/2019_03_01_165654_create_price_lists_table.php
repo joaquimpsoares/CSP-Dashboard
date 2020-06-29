@@ -15,6 +15,7 @@ class CreatePriceListsTable extends Migration
     {
         Schema::create('price_lists', function (Blueprint $table) {
             $table->bigIncrements('id');
+            
             $table->string('name');
             $table->string('description');
             /*$table->decimal('markup', 8, 2);
@@ -22,6 +23,8 @@ class CreatePriceListsTable extends Migration
             $table->string('pricelistable_type')->nullable();*/
             $table->timestamps();
             $table->softDeletes();
+
+            
         });
     }
 

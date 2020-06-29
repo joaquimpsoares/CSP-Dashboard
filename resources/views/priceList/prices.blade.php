@@ -20,7 +20,9 @@
 	</ul>
 	<div class="tab-content pt-5" id="myTabContentMD">
 		<div class="tab-pane fade show active" id="home-md" role="tabpanel" aria-labelledby="home-tab-md">
-			@include('priceList.partials.details' , ['priceList' => $priceList])
+
+			@include('priceList.partials.details')
+
 		</div>
 		<div class="tab-pane fade" id="contact-md" role="tabpanel" aria-labelledby="contact-tab-md">
 			@include('priceList.partials.pricetable')
@@ -30,10 +32,6 @@
 	</div>
 </div>
 
-@foreach ($products as $product) 
-{{dd($product	)}}   
-{{-- <option value="{{$product->sku}}">{{$product->id}} {{$product->name}}</option> --}}
-@endforeach
 
 <script>
 	//redirect to specific tab

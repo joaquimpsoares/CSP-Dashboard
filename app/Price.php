@@ -39,9 +39,9 @@ class Price extends Model
 		return $this->belongsTo('App\PriceList', 'price_list_id', 'id');
 	}
 
-	public function products() {
+	public function product() {
 		
-		return $this->belongsTo('App\Product', 'instance_id', 'product_sku', 'sku')->where('vendor', $this->product_vendor);
+		return $this->belongsTo('App\Product', 'product_sku', 'sku')->where('vendor', $this->product_vendor)->where('instance_id', $this->instance_id);
 		
 		// return $this->belongsToMany('App\Product', ');
 	}

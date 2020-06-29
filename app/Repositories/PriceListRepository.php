@@ -82,21 +82,10 @@ class PriceListRepository implements PriceListRepositoryInterface
 				$prices = Price::get();
 		break;
 		case config('app.reseller'):
-					
-			$reseller_id=User::select('reseller_id')->where('id', Auth::user()->id)->first();
-			
-			
-			// dd($reseller_id);
-			$resellers=Reseller::where('id', $reseller_id->reseller_id)->first();
-			// dd($resellers->provider->instances['0']->id);
-
-			$products = Product::where('instance_id', $resellers->provider->instances['0']->id)->get();
-// dd($products);
-			$priceLists = PriceList::where('id', $resellers->price_list_id)->pluck('id');
-
-			$prices = Price::whereIn('price_list_id', $priceLists)
-			->get();
-		break;
+			$reseller = $user->reseller;
+			$priceList = $reseller->priceList;
+			$prices = $priceList->prices;
+			break;
 		
 		case config('app.subreseller'):
 			$reseller_id=User::select('reseller_id')->where('id', Auth::user()->id)->first();

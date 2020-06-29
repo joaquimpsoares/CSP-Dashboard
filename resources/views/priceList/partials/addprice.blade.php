@@ -9,10 +9,10 @@
       </div>
       <select name="product_sku" class="custom-select" id="country_id" required>
         <option value="">Choose...</option>
-        @foreach ($products as $product) 
-        {{-- {{dd($product)}}    --}}
+        @forelse($products as $product)
         <option value="{{$product->sku}}">{{$product->id}} {{$product->name}}</option>
-        @endforeach
+        @empty
+        @endforelse
       </select>
       <div class="invalid-feedback">
         {{ucwords(trans_choice('messages.Please_select_a_valid_country', 1))}}

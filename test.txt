@@ -1,0 +1,95 @@
+Dropped all tables successfully.
+Migration table created successfully.
+Migrating: 2014_10_12_100000_create_password_resets_table
+Migrated:  2014_10_12_100000_create_password_resets_table (0.01 seconds)
+Migrating: 2015_12_24_152327_create_sessions_table
+Migrated:  2015_12_24_152327_create_sessions_table (0.02 seconds)
+Migrating: 2017_01_01_000006_create_statuses_table
+Migrated:  2017_01_01_000006_create_statuses_table (0.01 seconds)
+Migrating: 2017_04_13_200254_create_api_tokens_table
+Migrated:  2017_04_13_200254_create_api_tokens_table (0 seconds)
+Migrating: 2018_03_15_150947_setup_countries_table
+Migrated:  2018_03_15_150947_setup_countries_table (0.03 seconds)
+Migrating: 2018_03_15_150948_charify_countries_table
+Migrated:  2018_03_15_150948_charify_countries_table (0.1 seconds)
+Migrating: 2019_03_01_165654_create_price_lists_table
+Migrated:  2019_03_01_165654_create_price_lists_table (0.01 seconds)
+Migrating: 2019_03_02_123558_create_providers_table
+Migrated:  2019_03_02_123558_create_providers_table (0.09 seconds)
+Migrating: 2019_03_03_123559_create_instances_table
+Migrated:  2019_03_03_123559_create_instances_table (0.02 seconds)
+Migrating: 2019_08_19_000000_create_failed_jobs_table
+Migrated:  2019_08_19_000000_create_failed_jobs_table (0.01 seconds)
+Migrating: 2020_03_02_123340_create_permission_tables
+Migrated:  2020_03_02_123340_create_permission_tables (0.19 seconds)
+Migrating: 2020_03_02_165719_create_resellers_table
+Migrated:  2020_03_02_165719_create_resellers_table (0.12 seconds)
+Migrating: 2020_03_03_125849_create_user_levels_table
+Migrated:  2020_03_03_125849_create_user_levels_table (0.01 seconds)
+Migrating: 2020_03_04_125738_create_customers_table
+Migrated:  2020_03_04_125738_create_customers_table (0.07 seconds)
+Migrating: 2020_03_09_155714_create_customer_reseller_table
+Migrated:  2020_03_09_155714_create_customer_reseller_table (0.08 seconds)
+Migrating: 2020_03_15_100027_create_products_table
+Migrated:  2020_03_15_100027_create_products_table (0.04 seconds)
+Migrating: 2020_03_16_101002_create_prices_table
+Migrated:  2020_03_16_101002_create_prices_table (0.08 seconds)
+Migrating: 2020_03_16_101152_create_vendors_table
+Migrated:  2020_03_16_101152_create_vendors_table (0.01 seconds)
+Migrating: 2020_03_16_185122_create_azure_resources_table
+Migrated:  2020_03_16_185122_create_azure_resources_table (0.01 seconds)
+Migrating: 2020_04_05_135201_create_jobs_table
+Migrated:  2020_04_05_135201_create_jobs_table (0.02 seconds)
+Migrating: 2020_04_17_105236_create_notifications_table
+Migrated:  2020_04_17_105236_create_notifications_table (0.02 seconds)
+Migrating: 2020_05_01_093520_create_invites_table
+Migrated:  2020_05_01_093520_create_invites_table (0.01 seconds)
+Migrating: 2020_05_05_183224_create_order_statuses_table
+Migrated:  2020_05_05_183224_create_order_statuses_table (0.01 seconds)
+Migrating: 2020_05_16_133525_create_microsoft_tenant_infos_table
+Migrated:  2020_05_16_133525_create_microsoft_tenant_infos_table (0.03 seconds)
+Migrating: 2020_06_26_101348_create_countryrules_table
+Migrated:  2020_06_26_101348_create_countryrules_table (0.01 seconds)
+Migrating: 2021_10_12_000000_create_users_table
+Migrated:  2021_10_12_000000_create_users_table (0.23 seconds)
+Migrating: 2021_10_12_000001_create_carts_table
+Migrated:  2021_10_12_000001_create_carts_table (0.06 seconds)
+Migrating: 2021_10_12_000002_create_cart_product_table
+Migrated:  2021_10_12_000002_create_cart_product_table (0.07 seconds)
+Migrating: 2021_10_12_000003_create_orders_table
+Migrated:  2021_10_12_000003_create_orders_table (0.1 seconds)
+Migrating: 2021_10_12_000005_create_order_product_table
+Migrated:  2021_10_12_000005_create_order_product_table (0.08 seconds)
+Migrating: 2021_10_12_000006_create_subscriptions_table
+Migrated:  2021_10_12_000006_create_subscriptions_table (0.06 seconds)
+Migrating: 2021_10_12_000007_create_notification_settings_table
+Migrated:  2021_10_12_000007_create_notification_settings_table (0.01 seconds)
+Migrating: 2021_10_12_000008_create_user_notifications_table
+Migrated:  2021_10_12_000008_create_user_notifications_table (0.05 seconds)
+Seeding: StatusSeeder
+Seeded:  StatusSeeder (0.01 seconds)
+Seeding: CountriesSeeder
+Seeded:  CountriesSeeder (0.25 seconds)
+Seeding: RoleSeeder
+Seeded:  RoleSeeder (0.02 seconds)
+_Seeding: PermissionSeeder
+Seeded:  PermissionSeeder (0.31 seconds)
+Seeding: UserLevelSeeder
+Seeded:  UserLevelSeeder (0.01 seconds)
+Seeding: PriceListSeeder
+Seeded:  PriceListSeeder (0 seconds)
+Seeding: CreateProviderResellerCustomerSeeder
+Seeded:  CreateProviderResellerCustomerSeeder (0.05 seconds)
+Seeding: UserSeeder
+Seeded:  UserSeeder (0.98 seconds)
+Seeding: VendorSeeder
+Seeded:  VendorSeeder (0 seconds)
+Seeding: InstanceSeeder
+Seeded:  InstanceSeeder (0.01 seconds)
+Seeding: ProductsSeeder
+Seeded:  ProductsSeeder (0.39 seconds)
+Seeding: PriceSeeder
+Seeded:  PriceSeeder (0.04 seconds)
+Seeding: OrderStatusSeeder
+Seeded:  OrderStatusSeeder (0.11 seconds)
+Database seeding completed successfully.

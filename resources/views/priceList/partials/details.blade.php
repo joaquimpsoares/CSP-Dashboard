@@ -1,4 +1,4 @@
-
+@if (!empty($priceList))
 <div class="card">
     <div class="card-body">
         <div class="row">
@@ -67,3 +67,4 @@
     </div>
 </div>
 
+@endif

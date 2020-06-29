@@ -66,7 +66,7 @@ class Product extends Model
     }
 
     public function price() {
-        return $this->hasOne('App\Price', 'product_sku', 'sku')->where('product_vendor', $this->vendor);
+        return $this->hasOne('App\Price', ['product_sku', 'instance_id'], ['sku', 'instance_id'])->where('product_vendor', $this->vendor);
     }
 
     public function instance() {

@@ -72,17 +72,17 @@
 					</tr>
 				</thead>
 				<tbody>
+
 					@forelse($prices as $price)
 					<tr>
-						{{-- {{dd($price['products'])}} --}}
 						<td></td>
-						<td	>{{ $price['products']['id'] }}</td>
-						<td	>{{ $price['product_sku'] }}</td>
-						<td><a href="{{ "price/" .$price['products']['id'] }}"> {{ $price['name'] }}</a></td>
-						<td>{{ $price['price'] }}</td>
-						<td>{{ $price['msrp'] }}</td>
+						<td	>{{ $price->product->id }}</td>
+						<td	>{{ $price->product_sku }}</td>
+						<td><a href="{{ "price/" .$price->product->id }}"> {{ $price->name }}</a></td>
+						<td>{{ $price->price }}</td>
+						<td>{{ $price->msrp }}</td>
 						<td>{{ ucwords(trans_choice('messages.action', 2)) }}</td>
-					</tr>
+					</tr>					
 					@empty
 					<tr>
 						<td colspan="5">{{ ucwords(trans_choice('messages.empty', 2)) }}</td>

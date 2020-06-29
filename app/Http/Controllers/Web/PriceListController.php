@@ -49,24 +49,10 @@ class PriceListController extends Controller
     {
 
         $user = $this->getUser();
+        $prices = $this->priceListRepository->listPrices();
+        $priceList = $user->reseller->priceList;
+        $products = Product::where('instance_id', $priceList->instance_id)->get();
 
-
-        $prices = $this->priceListRepository->listPrices();    
-       
-
-        $instance = $user->reseller->provider->instances->first();
-
-        
-        $products = $instance->products;
-// dd($products);
-
-        $priceList = PriceList::where('id', $priceList)->with('prices')->first();
-
-
-        
-        // $prices = $priceList->prices->map->format();
- 
-        
         return view('priceList.prices', compact('prices','priceList', 'products'));
     }
 
@@ -159,9 +145,10 @@ class PriceListController extends Controller
             $price->msrp            = $validatedData['msrp'];
             $price->product_vendor  = $validatedData['product_vendor'];
             $price->currency        = $validatedData['currency'];
+            $price->instance_id     = $pricelist->instance_id;
             $price->price_list_id   = $request->price_list_id;
 
-            $price->products()->associate($product);
+            $price->product()->associate($product);
             
             
             $price->pricelist()->associate($pricelist);
