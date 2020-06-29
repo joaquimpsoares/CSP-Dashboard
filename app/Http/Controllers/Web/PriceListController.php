@@ -50,8 +50,10 @@ class PriceListController extends Controller
 
         $user = $this->getUser();
         
-        
-        $instance = $user->reseller->provider->instances->first();
+        // dd($user->reseller);
+        $instance = $user->reseller->provider->instances->first()->id;
+
+        // dd($instance);
         
 
         
@@ -130,7 +132,7 @@ class PriceListController extends Controller
             $product = Product::where('sku', $request->product_sku)->where('instance_id', $instance)->first();
             // dd($product);
 
-            // $user->account()->associate($account);
+            // $user->account()->ciate($account);
 
             // $user->save();
 
@@ -155,7 +157,7 @@ class PriceListController extends Controller
             $order->currency        = $request->currency;
             $order->price_list_id   = $request->price_list_id;
 
-            $order->product()->associate($product);
+            $order->product()->ciate($product);
 
             $order->pricelist()->associate($pricelist);
             $order->save();
