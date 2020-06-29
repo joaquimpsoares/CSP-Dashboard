@@ -39,6 +39,7 @@ class OrderController extends Controller
         
         $orders = $this->orderRepository->all();
         
+        
         return view('order.index', compact('orders'));
     }
     
@@ -53,6 +54,7 @@ class OrderController extends Controller
         CreateCustomerMicrosoft::withChain([
             new PlaceOrderMicrosoft($order)
             ])->dispatch($order)->allOnQueue('PlaceordertoMS');
+            
             
             return view('store.index')->with(['alert' => 'success', 'message' => trans('messages.order_placed_susscessfully')]);
         }

@@ -25,7 +25,7 @@
                         <li class="nav-item">
                             
                             <a class="nav-link btn peach-gradient" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab"
-                            aria-controls="pills-profile" aria-selected="false" ><span class="badge badge-pill badge-warning" style="float:right;margin-bottom:-10px;">{{ Auth::user()->unreadnotifications->count() }}</span>
+                            aria-controls="pills-profile" aria-selected="false" ><span class="badge badge-pill badge-warning" style="float:right;margin-bottom:-10px;">{{ $failedJobs->count() }}</span>
                             {{ ucwords(trans_choice('messages.failed_task', 2)) }}</a>
                         </li>
                     </ul>

@@ -51,20 +51,23 @@ class PriceListController extends Controller
         $user = $this->getUser();
         
         // dd($user->reseller);
-        $instance = $user->reseller->provider->instances->first()->id;
+        $instance = $user->reseller->provider->instances->first();
 
         // dd($instance);
         
 
         
         $products = $instance->products;
-        
+        // dd($products);
+
         $priceList = PriceList::where('id', $priceList)->with('prices')->first();
-        // dd($priceList->prices);
-        // $prices = Price::where()
+
+        dd(Price::get());
+       
         
-        $prices = $priceList->prices;
-        // dd($prices   );
+        $prices = $priceList->prices->map->format();
+        dd($prices);
+        // dd($prices->products());
         // dd($prices);
         
         return view('priceList.prices', compact('prices','priceList', 'products'));
@@ -123,14 +126,17 @@ class PriceListController extends Controller
             
             
             $pricelist = PriceList::find($request->priceList);
-            // dd($pricelist);
+
+            $price = Price::where('price_list_id', $pricelist->id)->get()->map->format();
+
+            // dd($price);
             // $product = Product::where('sku', $request->product_sku)->first();
             $user = $this->getUser();
 
             $instance = $user->reseller->provider->instances->first()->id;
         
             $product = Product::where('sku', $request->product_sku)->where('instance_id', $instance)->first();
-            // dd($product);
+            // dd($product->sku);
 
             // $user->account()->ciate($account);
 
@@ -146,27 +152,22 @@ class PriceListController extends Controller
             ]);
 
 
-            $order = new Price();
+            $price = new Price();
 
-            // dd($product);
-            // $order->product_sku     = $request->product_sku;
-            $order->name            = $product->name;
-            $order->price           = $request->price;
-            $order->msrp            = $request->msrp;
-            $order->product_vendor  = $request->product_vendor;
-            $order->currency        = $request->currency;
-            $order->price_list_id   = $request->price_list_id;
+            $price->name            = $product->name;
+            $price->price           = $request->price;
+            $price->msrp            = $request->msrp;
+            $price->product_vendor  = $request->product_vendor;
+            $price->currency        = $request->currency;
+            $price->price_list_id   = $request->price_list_id;
 
-            $order->product()->ciate($product);
+            $price->products()->associate($product);
 
-            $order->pricelist()->associate($pricelist);
-            $order->save();
+            $price->pricelist()->associate($pricelist);
+            $price->save();
 
             return back()->with('success', 'Excel Data Imported successfully');
 
-            // $show = Price::create($validatedData);
-       
-            // return redirect('')->with('success', 'Corona Case is successfully saved');
         }
 
     

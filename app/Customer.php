@@ -44,9 +44,7 @@ class Customer extends Model
             'subscriptions' => $this->subscriptions->count(),
             'priceLists' => $this->priceLists()->first(),
             'mainUser' => $this->users()->first(),
-            'orders' => $this->orders()->get(),
-            'users' => $this->users()->get()
-            
+            'users' => $this->users()->get()     
         ];
 
     }

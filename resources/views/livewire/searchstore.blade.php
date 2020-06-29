@@ -31,19 +31,19 @@
                         <input wire:model="search" class="form-control" type="text" placeholder="Search products/sku..."/>
                         @foreach($prices as $product)
                         <div class="product-card">
-                            @if ($product->product->category == "Trial")
-                            <div class="badge1">{{$product->product->category}}</div>
+                            @if ($product->products->category == "Trial")
+                            <div class="badge1">{{$product->products->category}}</div>
                             @endif
-                            @if ($product->product->category == "Education")
-                            <div class="badge1">{{$product->product->category}}</div>
+                            @if ($product->products->category == "Education")
+                            <div class="badge1">{{$product->products->category}}</div>
                             @endif
                             <div class="product-tumb">
-                                <img src="{{ asset('images/vendors/' . $product->product->vendor . '.png') }}"  title="{{ $product->name }}" class="img-fuid" style="max-width: 120px;max-height: 120px;" />
+                                <img src="{{ asset('images/vendors/' . $product->products->vendor . '.png') }}"  title="{{ $product->name }}" class="img-fuid" style="max-width: 120px;max-height: 120px;" />
                             </div>
                             <div class="product-details">
-                                <span class="product-category">{{ $product->product->sku }}</span>
+                                <span class="product-category">{{ $product->products->sku }}</span>
                                 <h4><a href="">{{ $product->name }}</a></h4>
-                                <p class="text">{{ str_limit($product->product->description, 150) }}</p>
+                                <p class="text">{{ str_limit($product->products->description, 150) }}</p>
                                 <div class="product-bottom-details">
                                     @if(Auth::user()->userLevel->name == "Reseller")
                                     <div class="product-price"><small>{{ $product->price}}$</small>{{ $product->msrp}}$</div>
@@ -53,7 +53,7 @@
                                     <div class="product-links">
                                         <form method="POST" action="{{ route('cart.add_to_cart') }}">
                                             @csrf
-                                            <input type="hidden" name="product_id" value="{{$product->product->id}}">
+                                            <input type="hidden" name="product_id" value="{{$product->products->id}}">
                                             <button type="submit" ><i class="fa fa-shopping-cart"></i></a></button>
                                         </form>
                                     </div>

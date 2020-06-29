@@ -28,7 +28,8 @@ class Price extends Model
 			'msrp' => $this->msrp,
 			'currency' => $this->currency,
 			'pricelist' => $this->pricelist,
-			'product' => $this->product(),
+			'instance' => $this->pricelist->id,
+			'products' => $this->products,
 			'provider' => $this->provider()->first()
 
 		];
@@ -38,19 +39,16 @@ class Price extends Model
 		return $this->belongsTo('App\PriceList', 'price_list_id', 'id');
 	}
 
-	public function product() {
-		return $this->belongsTo('App\Product', ['product_sku', 'instance_id'], ['sku', 'instance_id'])->where('vendor', $this->product_vendor);
-		// return $this->belongsToMany('App\Product', 'App\price', 'product_sku', 'App\Product', 'sku')->where('vendor', $this->product_vendor);
+	public function products() {
+		
+		return $this->belongsTo('App\Product', 'product_sku',  'sku', 'instance_id')->where('vendor', $this->product_vendor);
+		
 	}
 
 	public function provider() {
 		return $this->belongsTo('App\Provider', 'price_list_id', 'id');
 	}
 	
-
-    public function instance() {
-		return $this->belongsTo('App\Instance');
-	}
 
 
 }

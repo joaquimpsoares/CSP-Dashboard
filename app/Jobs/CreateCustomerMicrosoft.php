@@ -10,6 +10,7 @@ use App\MicrosoftTenantInfo;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
+use App\Events\MSCustomerCreationEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -57,7 +58,7 @@ class CreateCustomerMicrosoft implements ShouldQueue
                 'email' => $this->order->agreement_email,
                 'telephone' => $this->order->agreement_phone,
                 //mca agreement
-            ]);         
+            ]);
             
             Log::info('Customer Created: '.$newCustomer);
 
@@ -68,6 +69,8 @@ class CreateCustomerMicrosoft implements ShouldQueue
             ]);
 
             Log::info('Tenant Created: '.$result);
+
+            // event(new MSCustomerCreationEvent($this->order));
 
             $this->order->ext_company_id = $newCustomer->id; 
             $this->order->save();

@@ -55,25 +55,28 @@ class SubscriptionController extends Controller
     */
     public function index()
     {
-        $subscriptions = [];
-        switch ($this->getUserLevel()) {
-            case 'Provider':
-                $provider = $this->getUser()->provider;
-                $subscriptions = $this->listFromProvider($provider);
-            break;
-            case 'Reseller':
-                $reseller = $this->getUser()->reseller;
-                $subscriptions = $this->listFromReseller($reseller);
-            break;
-            case 'Customer':
-                $customer = $this->getUser()->customer;
-                $subscriptions = $this->listFromCustomer($customer);
-            break;
+        $subscriptions = $this->subscriptionRepository->all();    
+
+
+        // $subscriptions = [];
+        // switch ($this->getUserLevel()) {
+        //     case 'Provider':
+        //         $provider = $this->getUser()->provider;
+        //         $subscriptions = $this->listFromProvider($provider);
+        //     break;
+        //     case 'Reseller':
+        //         $reseller = $this->getUser()->reseller;
+        //         $subscriptions = $this->listFromReseller($reseller);
+        //     break;
+        //     case 'Customer':
+        //         $customer = $this->getUser()->customer;
+        //         $subscriptions = $this->listFromCustomer($customer);
+        //     break;
             
-            default:
-            # code...
-        break;
-    }
+        //     default:
+        //     # code...
+        // break;
+    // }
     
     return view('subscriptions.index', compact('subscriptions'));
 }

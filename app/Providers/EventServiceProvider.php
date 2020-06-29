@@ -15,8 +15,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        \App\Events\Logging\LoggingEvent::class => [
-            \App\Listeners\Logging\MSCustomerCreation::class,
+        \App\Events\MSCustomerCreationEvent::class => [
+            \App\Listeners\MSCustomerCreationListener::class,
         ],
     ];
 

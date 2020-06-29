@@ -52,6 +52,7 @@ class Searchstore extends Component
     {
         return view('livewire.searchstore', 
         [
+            
             'prices' => Price::having('price_list_id', $this->priceList)->where('name', 'like', "%$this->search%")
             ->orwhere('product_sku', 'LIKE', "%$this->search%")->paginate(9),
         ]);

@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
+
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
 <div class="container mt-5">
   <section class="dark-grey-text">
@@ -29,7 +32,7 @@
                       <label class="input-group-text" for="country_id"><i class="fa fa-plane" aria-hidden="true"></i>
                       </label>
                     </div>
-                    <select name="country_id" class="custom-select" id="country_id" required>
+                    <select name="country_id" class="country_select" id="country_id" required>
                       <option value="">Choose...</option>
                       @foreach ($countries as $country)    
                       <option value="{{$country->id}}">{{$country->name}}</option>
@@ -52,6 +55,12 @@
                 </div>
                 <div class="col-lg-4 col-md-6 mb-4">
                   <label for="zip">{{ucwords(trans_choice('messages.state', 1))}}</label>
+                  {{-- <select name="country_id" class="custom-select" id="country_id" required>
+                    <option value="">Choose...</option>
+                    @foreach ($countryRules as $rules)    
+                    <option value="{{$rules->id}}">{{$rules->name}}</option>
+                    @endforeach
+                  </select> --}}
                   <input name="state" type="text" class="form-control" id="zip" placeholder="" value="{{ old('state') }}" required >
                   <div class="invalid-feedback">
                     Zip code required.
@@ -93,13 +102,13 @@
                   </div>
                 </div>
               </div>
-            </form>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col-lg-4 mb-4">
-        <button class="button submit_btn right" type="submit">{{ucwords(trans_choice('messages.create', 1))}}</button>
-      </div>
+        <div class="col-lg-4 mb-4">
+          <button class="button submit_btn right" type="submit">{{ucwords(trans_choice('messages.create', 1))}}</button>
+        </div>
+      </form>
     </div>
   </div>
 </section>
@@ -114,6 +123,11 @@
       display: block;
     }
   }
+</script>
+<script>
+  $(document).ready(function() {
+    $('.country_select').select2();
+});
 </script>
 
 @endsection

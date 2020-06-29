@@ -30,7 +30,40 @@
 										</div>
 									</div>
 									<div class="tab-content pt-4">
-										
+										<div class="row">
+											<div class="col">
+												<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCustomer">
+													{{ ucwords(trans_choice('messages.new_customer', 1)) }}
+												</button>
+												<!-- Modal -->
+												<div class="modal fade" id="createCustomer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+													<div class="modal-dialog modal-xl">
+														<div class="modal-content">
+															<form method="POST" action="{{ route('cart.customer.store') }}" class="col s12" id="createCustomer">
+																@csrf
+																<input type="hidden" name="cart" value="{{ $cart->token }}">
+																<div class="modal-header">
+																	<h5 class="modal-title" id="exampleModalLabel">
+																		{{ ucwords(trans_choice('messages.new_customer', 1)) }}
+																	</h5>
+																	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																		<span aria-hidden="true">&times;</span>
+																	</button>
+																</div>
+																<div class="modal-body">
+																	@include('partials.messages')
+																	@include('order.partials.create_customer')
+																</div>
+																<div class="modal-footer">
+																	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+																	<button type="submit" class="btn btn-primary" >Save changes</button>
+																</div>
+															</form>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
 										<div class="row">
 											<div class="col">
 												<form action="{{ route('cart.add_customer') }}" method="post">
@@ -44,40 +77,6 @@
 																@endforeach	
 															</select>
 														</div>
-														
-														<div class="col">
-															<button type="button" class="main_btn" data-toggle="modal" data-target="#createCustomer">
-																{{ ucwords(trans_choice('messages.new_customer', 1)) }}
-															</button>
-															<!-- Modal -->
-															<div class="modal fade" id="createCustomer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-																<div class="modal-dialog modal-xl">
-																	<div class="modal-content">
-																		<form method="POST" action="{{ route('cart.customer.store') }}" class="col s12" id="createCustomer">
-																			@csrf
-																			<input type="hidden" name="cart" value="{{ $cart->token }}">
-																			<div class="modal-header">
-																				<h5 class="modal-title" id="exampleModalLabel">
-																					{{ ucwords(trans_choice('messages.new_customer', 1)) }}
-																				</h5>
-																				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																					<span aria-hidden="true">&times;</span>
-																				</button>
-																			</div>
-																			<div class="modal-body">
-																				@include('partials.messages')
-																				@include('order.partials.create_customer')
-																			</div>
-																			<div class="modal-footer">
-																				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-																				<button type="submit" class="btn btn-primary" >Save changes</button>
-																			</div>
-																		</form>
-																	</div>
-																</div>
-															</div>
-														</div>
-
 														<div class="float-sm-right">
 															<div class="col">
 																<button class="main_btn">{{ ucwords(trans_choice('messages.next', 1)) }}</button>
@@ -86,7 +85,6 @@
 													</div>
 												</form>
 											</div>
-
 										</div>
 										
 									</div>

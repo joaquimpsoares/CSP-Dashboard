@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events\Logging;
+namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class LoggingEvent
+class MSCustomerCreationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

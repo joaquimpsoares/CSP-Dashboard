@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Web;
 use App\User;
 use App\Status;
 use App\Country;
+use App\countryrules;
+use App\Countryrules as AppCountryrules;
 use App\Customer;
 use App\Reseller;
 use App\PriceList;
@@ -23,6 +25,7 @@ class CustomerController extends Controller
 {
     use UserTrait;
     
+    public $countryRules;
     private $subscriptionRepository;
     private $customerRepository;
     private $userRepository;
@@ -45,10 +48,14 @@ class CustomerController extends Controller
     
     public function create(Customer $customer){
 
-        $countries = Country::get();
+        
+        
+        $countries = Country::get()->sortByDesc('id');
+        $countryRules = AppCountryrules::get();
+        // dd($countryRules);
         $statuses = Status::get();
         
-        return view('customer.create', compact('customer','countries','statuses'));
+        return view('customer.create', compact('customer','countries','statuses','countryRules'));
         
     }
     
@@ -212,16 +219,24 @@ class CustomerController extends Controller
     }
     protected function validator(array $data)
     {
+
+        // dd($data['country_id']);
+        $countryName = Country::where('id', $data['country_id'])->first();
+        // dd($countryName);
+        $countryRules = AppCountryrules::where('iso2Code', $countryName->iso_3166_2)->first();
+        // dd($countryRules->postalCodeRegex);
+        
         return Validator::make($data, [
             'company_name' => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
             'nif' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
+            // 'nif' => ['required', 'string', 'regex:/'.$countryRules->vatIdRegex.'/'],
             'email' => ['required', 'email', 'max:255'],
             'address_1' => ['required', 'string', 'max:255'],
             'address_2' => ['nullable', 'string', 'max:255'],
             'country_id' => ['required', 'integer', 'min:1'],
             'city' => ['required', 'string', 'max:255'],
             'state' => ['required', 'string', 'max:255'],
-            'postal_code' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
+            'postal_code' => ['required', 'string', 'regex:/'.$countryRules->postalCodeRegex.'/', 'max:255'],
             'status_id' => ['required', 'integer', 'exists:statuses,id'],
             'sendInvitation' => ['nullable', 'integer'],
         ]);

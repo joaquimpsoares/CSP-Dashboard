@@ -13,19 +13,20 @@
                 </tr>
             </thead>
             <tbody>
+
                 @foreach ($orders as $order)  
-                {{-- {{dd($order['status'])}} --}}
-                {{-- {{dd($order['customer']['company_name'])}} --}}
-                {{-- {{dd($order['status'])}} --}}
+                
+                {{-- {{dd($order['avatar']->avatar)}} --}}
+
                 <tr>
                     <td><img src="{{$order['avatar']['avatar']}}" alt="" width="50"></td>
-                    <td>{{ $order['customer'] }}</td>
+                    <td>{{ $order['customer']->company_name }}</td>
                     <td>{{ $order['details'] }}</td>
                     <td>{{ $order['comments'] }}</td>
                     <td>{{ $order['created_at'] }}</td>
                     <td>{{ $order['updated_at'] }}</td>
                     
-                   {{-- @if ($order['status']['id']==4)
+                   @if ($order['status']['id']==4)
                     <td>    
                         <p><span class="badge badge-primary">{{ $order['status']['name'] }}</span></p>
                     </td>
@@ -44,7 +45,7 @@
                     <td>
                         <p><span class="badge badge-warning">{{ $order['status']['name'] }}</span></p>
                     </td>
-                    @endif --}}
+                    @endif
                 </tr>
                 @endforeach
             </tbody>
