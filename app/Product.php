@@ -9,6 +9,12 @@ class Product extends Model
 {
     protected $guarded = [];
 
+    protected $fillable = [
+		'vendor',
+		'instance_id',
+	];
+
+
     protected $casts = [
         'has_addons' => 'boolean',
         'addons' => 'collection',

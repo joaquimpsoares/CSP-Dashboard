@@ -30,6 +30,11 @@
 	</div>
 </div>
 
+@foreach ($products as $product) 
+{{dd($product	)}}   
+{{-- <option value="{{$product->sku}}">{{$product->id}} {{$product->name}}</option> --}}
+@endforeach
+
 <script>
 	//redirect to specific tab
 	$(document).ready(function () {

@@ -9,7 +9,8 @@
       </div>
       <select name="product_sku" class="custom-select" id="country_id" required>
         <option value="">Choose...</option>
-        @foreach ($products as $product)    
+        @foreach ($products as $product) 
+        {{-- {{dd($product)}}    --}}
         <option value="{{$product->sku}}">{{$product->id}} {{$product->name}}</option>
         @endforeach
       </select>

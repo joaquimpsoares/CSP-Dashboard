@@ -16,7 +16,7 @@ class PriceList extends Model
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'prices' => $this->prices(),
+            'prices' => $this->prices,
             'provider' => $this->provider()->first(),
             'reseller' => $this->reseller()->get(),
             'customer' => $this->customer()->get()

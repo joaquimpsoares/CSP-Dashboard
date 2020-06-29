@@ -18,8 +18,8 @@ class CreateCountryrulesTable extends Migration
         Schema::create('countryrules', function (Blueprint $table) {
             
             $table->bigIncrements('id');
-            $table->char('iso2Code', 2)();
-            $table->char('defaultCulture')->nullable();
+            $table->string('iso2Code');
+            $table->string('defaultCulture')->nullable();
             $table->boolean('isStateRequired');
             $table->string('supportedStatesList')->nullable();
             $table->string('supportedLanguagesList')->nullable();
@@ -37,9 +37,6 @@ class CreateCountryrulesTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            // $table->foreign('countryCallingCodesList')
-            //         ->references('calling_code')->on('countries')->onUpdate('cascade')
-            //         ->onDelete('cascade');
             
         });
 

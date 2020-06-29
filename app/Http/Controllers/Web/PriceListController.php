@@ -49,26 +49,23 @@ class PriceListController extends Controller
     {
 
         $user = $this->getUser();
-        
-        // dd($user->reseller);
-        $instance = $user->reseller->provider->instances->first();
 
-        // dd($instance);
-        
+
+        $prices = $this->priceListRepository->listPrices();    
+       
+
+        $instance = $user->reseller->provider->instances->first();
 
         
         $products = $instance->products;
-        // dd($products);
+// dd($products);
 
         $priceList = PriceList::where('id', $priceList)->with('prices')->first();
 
-        dd(Price::get());
-       
+
         
-        $prices = $priceList->prices->map->format();
-        dd($prices);
-        // dd($prices->products());
-        // dd($prices);
+        // $prices = $priceList->prices->map->format();
+ 
         
         return view('priceList.prices', compact('prices','priceList', 'products'));
     }
@@ -122,7 +119,7 @@ class PriceListController extends Controller
 
         public function store(Request $request)
         {
-            //dd($request->all());
+            // dd($request->all());
             
             
             $pricelist = PriceList::find($request->priceList);
@@ -133,10 +130,12 @@ class PriceListController extends Controller
             // $product = Product::where('sku', $request->product_sku)->first();
             $user = $this->getUser();
 
+
             $instance = $user->reseller->provider->instances->first()->id;
+            // dd($instance);
         
             $product = Product::where('sku', $request->product_sku)->where('instance_id', $instance)->first();
-            // dd($product->sku);
+            // dd($product);
 
             // $user->account()->ciate($account);
 
@@ -148,22 +147,25 @@ class PriceListController extends Controller
                 'msrp' => 'required|numeric',
                 'product_vendor' => 'required',
                 'currency' => 'required',
-                'price_list_id' => '2 - Default - Provider CBI'
-            ]);
+                ]);
 
 
+                // dd($validatedData['price']);
             $price = new Price();
 
+            // $price->product_sku     = $validatedData['product_sku'];
             $price->name            = $product->name;
-            $price->price           = $request->price;
-            $price->msrp            = $request->msrp;
-            $price->product_vendor  = $request->product_vendor;
-            $price->currency        = $request->currency;
+            $price->price           = $validatedData['price'];
+            $price->msrp            = $validatedData['msrp'];
+            $price->product_vendor  = $validatedData['product_vendor'];
+            $price->currency        = $validatedData['currency'];
             $price->price_list_id   = $request->price_list_id;
 
             $price->products()->associate($product);
-
+            
+            
             $price->pricelist()->associate($pricelist);
+            // dd($price);
             $price->save();
 
             return back()->with('success', 'Excel Data Imported successfully');
