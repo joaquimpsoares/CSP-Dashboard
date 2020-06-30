@@ -34,7 +34,6 @@ class CartProduct extends Component
                 foreach ($prices as $price) {
                     $products[] = $price->product;
                 }
-                // dd($products);
 
                 break;
             

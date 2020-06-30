@@ -137,13 +137,11 @@ public function store(Request $request)
 public function show(Subscription $subscription)
 {
     $subscriptions = Subscription::findOrFail($subscription->id);
-    // dd($subscriptions);
     
     $usage = Product::where('sku', $subscriptions->product_id)->first();
     
     $products = Product::where('sku', $subscriptions->product_id)->where('instance_id', $subscriptions->instance_id)->get();
     
-    // dd($products);
     switch ($usage->billing) {
         case 'usage':
             $subscriptions = Subscription::findOrFail($subscription->id);
@@ -174,7 +172,6 @@ public function show(Subscription $subscription)
 // {
     //     $subscription = Subscription::where('id', $subscriptions)->first();
     
-    //     dd($subscription);
     //     return view('subscriptions.edit', compact('subscription'));
     // }
     
@@ -225,8 +222,6 @@ public function show(Subscription $subscription)
                 
         //         if($subscriptions->wasChanged('amount')){
         //             try{
-        //                 dd($subscriptions->wasChanged('amount'));
-        //                 dd('status');
         //                 $subscriptions->update(['amount'=> $request->amount]);
         //                 $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->
         //                 update($subscription, ['quantity' => $request->amount]);

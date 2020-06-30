@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Country;
 use App\Product;
 use App\Instance;
+use App\Provider;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Livewire\Provider;
 use App\Jobs\ImportProductsMicrosoftJob;
+use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
 use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
 
@@ -16,10 +18,15 @@ class ProductController extends Controller
 {
     public $id;
     private $productRepository;
+    private $orderRepository;
 
-    public function __construct(ProductRepositoryInterface $productRepository)
+
+    public function __construct(ProductRepositoryInterface $productRepository, OrderRepositoryInterface $orderRepository)
     {
         $this->productRepository = $productRepository;
+        $this->orderRepository = $orderRepository;
+
+
     }
 
     public function index()
@@ -135,6 +142,13 @@ class ProductController extends Controller
     public function import($id)
     {
 
+        $order = $this->orderRepository->ImportProductsMicrosoftOrder();
+
+        $provider = Provider::where('id', $id)->select('country_id')->first();
+
+        $country = Country::select('iso_3166_2')->where('id', $provider->country_id)->first();
+        
+
         $instance = Instance::where('provider_id', $id)->first();
 
         if( ! $instance){
@@ -154,7 +168,7 @@ class ProductController extends Controller
                 ]);
             }
 
-            ImportProductsMicrosoftJob::dispatch($instance)->onQueue('SyncProducts')
+            ImportProductsMicrosoftJob::dispatch($instance, $order, $country->iso_3166_2)->onQueue('SyncProducts')
             ->delay(now()->addSeconds(10));            
         }
 

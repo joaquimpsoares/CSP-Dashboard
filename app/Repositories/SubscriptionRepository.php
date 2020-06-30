@@ -50,7 +50,13 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
             break;
             
             case config('app.reseller'):
-                // dd('here');
+                $reseller = $user->reseller;
+                $customer = $reseller->customers->pluck('id');
+                $subscriptions = Subscription::whereIn('customer_id', $customer)
+                ->orderBy('id')->get();
+            break;
+            
+            case config('app.subreseller'):
                 $reseller = $user->reseller;
                 $customer = $reseller->customers->pluck('id');
                 $subscriptions = Customer::whereHas('resellers', function($query) use  ($customer) {
@@ -59,16 +65,9 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
 					$query->where('name', 'message.active');
 				}])
                 ->orderBy('company_name')->get();
-                dd($subscriptions);
-            break;
-            
-            case config('app.subreseller'):
-                $reseller = $user->reseller;
-                $subscriptions = $reseller->subscriptions()->get();
             break;
             case config('app.customer'):
                 $reseller = $user->customer;
-                // dd($reseller->subscriptions);
                 $subscriptions = $reseller->subscriptions;
             break;
             

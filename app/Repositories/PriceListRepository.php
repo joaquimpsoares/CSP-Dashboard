@@ -81,11 +81,20 @@ class PriceListRepository implements PriceListRepositoryInterface
 				$priceLists = PriceList::orderBy('name')->get()->map->format();
 				$prices = Price::get();
 		break;
+
+		case config('app.provider'):
+			$provider = $user->provider;
+			$priceList = $provider->priceList;
+			$prices = $priceList->prices;
+		break;
+
 		case config('app.reseller'):
 			$reseller = $user->reseller;
 			$priceList = $reseller->priceList;
 			$prices = $priceList->prices;
-			break;
+		break;
+
+
 		
 		case config('app.subreseller'):
 			$reseller_id=User::select('reseller_id')->where('id', Auth::user()->id)->first();

@@ -118,7 +118,7 @@ class ProviderController extends Controller
                 }
 
                 $reseller = Reseller::get();
-                $countResellers = $reseller->count();
+                // $countResellers = $reseller->count();
                 
                 $instance = Instance::first();
                 
@@ -134,7 +134,7 @@ class ProviderController extends Controller
                 $providers = $this->providerRepository->all();
                 
                 return view('provider.index', compact('provider','resellers','customers','instance','users',
-                'countries','subscriptions','order','statuses','countResellers',
+                'countries','subscriptions','order','statuses',
                 'countCustomers','countSubscriptions','average', 'budget','providers','countries','costSum'));
         
         
@@ -205,7 +205,7 @@ class ProviderController extends Controller
                 $reseller = Reseller::find($reseller['id']);
                 $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
             }
-            $countResellers = $reseller->count();
+            // $countResellers = $reseller->count();
             
             $instance = Instance::first();
             
@@ -218,7 +218,7 @@ class ProviderController extends Controller
             $countSubscriptions = $subscriptions->count();
             
             return view('provider.show', compact('provider','resellers','customers','instance','users',
-            'countries','subscriptions','order','statuses','countResellers',
+            'countries','subscriptions','order','statuses',
             'countCustomers','countSubscriptions','average', 'budget','costSum'));
         }
                 
@@ -245,7 +245,7 @@ class ProviderController extends Controller
         
         $priceList = PriceList::create([
             'name' => 'Price List - ' . $provider->company_name,
-            'description' => 'Default Provider Price List'
+            'description' => 'Default Provider Price List' . $provider->company_name
             ]);
             
             $provider->priceList()->associate($priceList);

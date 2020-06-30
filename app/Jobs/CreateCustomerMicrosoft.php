@@ -32,15 +32,21 @@ class CreateCustomerMicrosoft implements ShouldQueue
     public function handle()
     {
 
+        
+        $this->order->details = ('Stage 1 - Creating Customer '. $this->order->customer->company_name);
         $this->order->order_status_id = 2; //Order running state
         $this->order->save();
         
-        $instance = Instance::first();
+        // Log::info('Confirmation of products: '. $this->order->products->first()->instance_id)->first();
         
         $customer = $this->order->customer;
-
-        Log::info('Confirmation of Result: '.$customer);
         
+        $instance = Instance::where('id', $this->order->products->first()->instance_id)->first();
+        
+        Log::info('Confirmation of Result: '.$instance);
+        Log::info('Confirmation of Result: '.$customer);
+        Log::info('Confirmation Customer Country: '.$customer->country->iso_3166_2);
+
         try {
             $newCustomer = TagydesCustomer::withCredentials($instance->external_id, $instance->external_token)->create([
                 'company' => $customer->company_name,
@@ -60,17 +66,18 @@ class CreateCustomerMicrosoft implements ShouldQueue
                 //mca agreement
             ]);
             
-            Log::info('Customer Created: '.$newCustomer);
-
             $result = MicrosoftTenantInfo::create([
                 'tenant_id' => $newCustomer->id,
                 'tenant_domain' => $this->order->domain,
                 'customer_id' => $customer->id
-            ]);
-
-            Log::info('Tenant Created: '.$result);
-
+                ]);
+                
+                
+                
             // event(new MSCustomerCreationEvent($this->order));
+            
+            Log::info('Customer Created: '.$newCustomer);
+            Log::info('Tenant Created: '.$result);
 
             $this->order->ext_company_id = $newCustomer->id; 
             $this->order->save();

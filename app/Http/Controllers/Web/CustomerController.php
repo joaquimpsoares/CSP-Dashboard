@@ -52,7 +52,6 @@ class CustomerController extends Controller
         
         $countries = Country::get()->sortByDesc('id');
         $countryRules = AppCountryrules::get();
-        // dd($countryRules);
         $statuses = Status::get();
         
         return view('customer.create', compact('customer','countries','statuses','countryRules'));
@@ -99,7 +98,6 @@ class CustomerController extends Controller
         
         $user = $this->getUser();
         
-        // dd($validate);
         
     }
 
@@ -107,7 +105,6 @@ class CustomerController extends Controller
 
     // public function update(Request $request, Customer $customer) { 
 
-    //         // dd($request->all());
 
     //     $validate = $this->validator($request->all())->validate();
         
@@ -165,12 +162,8 @@ class CustomerController extends Controller
 
     public function update(Request $request, Customer $customer) { 
 
-        // dd($request->all());
-
         $validate = $this->validator($request->all())->validate();
 
-        // dd($validate);
-    
         $user = $this->getUser();
         
         try {
@@ -220,11 +213,8 @@ class CustomerController extends Controller
     protected function validator(array $data)
     {
 
-        // dd($data['country_id']);
         $countryName = Country::where('id', $data['country_id'])->first();
-        // dd($countryName);
         $countryRules = AppCountryrules::where('iso2Code', $countryName->iso_3166_2)->first();
-        // dd($countryRules->postalCodeRegex);
         
         return Validator::make($data, [
             'company_name' => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],

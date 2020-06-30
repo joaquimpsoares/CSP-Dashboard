@@ -15,17 +15,17 @@
             <tbody>
 
                 @foreach ($orders as $order)  
-                
-                {{-- {{dd($order['avatar']->avatar)}} --}}
-
                 <tr>
                     <td><img src="{{$order['avatar']['avatar']}}" alt="" width="50"></td>
+                    @if (!@empty($order['customer']->company_name))
                     <td>{{ $order['customer']->company_name }}</td>
+                    @else
+                    <td></td>    
+                    @endif
                     <td>{{ $order['details'] }}</td>
                     <td>{{ $order['comments'] }}</td>
                     <td>{{ $order['created_at'] }}</td>
                     <td>{{ $order['updated_at'] }}</td>
-                    
                    @if ($order['status']['id']==4)
                     <td>    
                         <p><span class="badge badge-primary">{{ $order['status']['name'] }}</span></p>
@@ -60,7 +60,7 @@
     $(document).ready( function () {
         $('#order').DataTable({
             "pagingType": "full_numbers",
-            "order": [[ 4, "desc" ]]
+            "order": [[ 5, "desc" ]]
         });
     } );
 </script>

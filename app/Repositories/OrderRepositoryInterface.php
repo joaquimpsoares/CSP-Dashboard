@@ -11,4 +11,7 @@ interface OrderRepositoryInterface
 
 	public function UpdateMSSubscription($subscription);
 
+	public function ImportProductsMicrosoftOrder();
+
+
 }

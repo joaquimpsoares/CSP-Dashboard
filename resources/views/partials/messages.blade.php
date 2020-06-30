@@ -1,7 +1,6 @@
 <div class="container">
 	<div class="row">
 		<div class="col">
-				{{-- {{dd(Session::get('alert'))}} --}}
 			@if(Session::get('alert'))
 			<div class="alert alert-{{ Session::get('alert') }} " role="alert">
 				<strong>{{ ucfirst(Session::get('alert')) }}</strong> {{ Session::get('message') }}

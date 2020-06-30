@@ -29,7 +29,6 @@ class PriceListController extends Controller
 
         $products = Product::get();
         $priceLists = $this->priceListRepository->all();    
-        // dd($products);
         $prices = Price::get();
         
         // foreach($priceLists as $pricelist);{
@@ -48,10 +47,37 @@ class PriceListController extends Controller
     public function getPrices($priceList)
     {
 
+    
         $user = $this->getUser();
-        $prices = $this->priceListRepository->listPrices();
-        $priceList = $user->reseller->priceList;
-        $products = Product::where('instance_id', $priceList->instance_id)->get();
+
+		switch ($this->getUserLevel()) {
+			case config('app.super_admin'):
+					
+				$priceLists = PriceList::orderBy('name')->get()->map->format();
+				$prices = Price::get();
+		break;
+
+        case config('app.provider'):
+            $prices = $this->priceListRepository->listPrices();
+
+			$provider = $user->provider;
+            $priceList = $provider->priceList;
+            $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
+            $prices = $priceList->prices;
+            
+		break;
+
+		case config('app.reseller'):
+			$prices = $this->priceListRepository->listPrices();
+            
+            $priceList = $user->reseller->priceList;
+            $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
+        
+        break;
+    }
+
+        // $user = $this->getUser();
+        
 
         return view('priceList.prices', compact('prices','priceList', 'products'));
     }
@@ -59,10 +85,8 @@ class PriceListController extends Controller
     public function update(Request $request, $priceList)
     {
 
-        // dd($priceList);
         $priceList = PriceList::find($priceList);
 
-        // dd($customer);
         
         $updatepriceList = $priceList->update([
             'name' => $request['name'],
@@ -78,16 +102,13 @@ class PriceListController extends Controller
 
 
             $data = Excel::import(new PricesImport, request()->file('select_file'));
-            // dd($data);
 
             return back()->withInput(['tab'=>'contact-md']);
-            // dd($request->select_file);
             // Excel::import(new PricesImport, request()->file('select_file'));
             
         //     try {
            
         // return back();
-        //             // dd($request);
 
         //     } catch (\Exception $e) {
            
@@ -105,27 +126,12 @@ class PriceListController extends Controller
 
         public function store(Request $request)
         {
-            // dd($request->all());
-            
             
             $pricelist = PriceList::find($request->priceList);
 
             $price = Price::where('price_list_id', $pricelist->id)->get()->map->format();
 
-            // dd($price);
-            // $product = Product::where('sku', $request->product_sku)->first();
-            $user = $this->getUser();
-
-
-            $instance = $user->reseller->provider->instances->first()->id;
-            // dd($instance);
-        
-            $product = Product::where('sku', $request->product_sku)->where('instance_id', $instance)->first();
-            // dd($product);
-
-            // $user->account()->ciate($account);
-
-            // $user->save();
+            $product = Product::where('sku', $request->product_sku)->where('instance_id', $pricelist->instance_id)->first();
 
             $validatedData = $request->validate([
                 'product_sku' => 'required|max:255',
@@ -135,11 +141,7 @@ class PriceListController extends Controller
                 'currency' => 'required',
                 ]);
 
-
-                // dd($validatedData['price']);
             $price = new Price();
-
-            // $price->product_sku     = $validatedData['product_sku'];
             $price->name            = $product->name;
             $price->price           = $validatedData['price'];
             $price->msrp            = $validatedData['msrp'];
@@ -150,9 +152,8 @@ class PriceListController extends Controller
 
             $price->product()->associate($product);
             
-            
             $price->pricelist()->associate($pricelist);
-            // dd($price);
+
             $price->save();
 
             return back()->with('success', 'Excel Data Imported successfully');
@@ -188,13 +189,11 @@ class PriceListController extends Controller
     {
         $userLevel = $this->getUserLevel();
         
-        dd('reseller');
     }
     
     public function getCustomerPriceList(Request $request, Customer $customer)
     {
         $userLevel = $this->getUserLevel();
         
-        dd('Customer');
     }*/
 }

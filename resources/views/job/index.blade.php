@@ -38,6 +38,7 @@
                                         <th>{{ ucwords(trans_choice('messages.id', 2)) }}</th>
                                         <th>{{ ucwords(trans_choice('messages.queue_name', 1)) }}</th>
                                         <th>{{ ucwords(trans_choice('messages.customer', 1)) }}</th>
+                                        <th>{{ ucwords(trans_choice('messages.tenant', 1)) }}</th>
                                         <th>{{ ucwords(trans_choice('messages.attempts', 1)) }}</th>
                                         <th>{{ ucwords(trans_choice('messages.started_at', 1)) }}</th>
                                     </tr>
@@ -48,11 +49,16 @@
                                         <col width="13">
                                         <col width="80">
                                         <td>
-                                            <a href="·">{{ $job->id }}</a>
+                                            <a href="#">{{ $job->id }}</a>
                                         </td>
                                         <td>{{ $job->queue }}</td>   
-                                        <td>{{$order[$job->id]->customer->company_name}}</td>
-                                        <td>{{$order[$job->id]->domain}}</td>
+                                        @if (!empty($order[$job->id]->customer->company_name) )    
+                                        <td>{{ $order[$job->id]->customer->company_name}}</td>
+                                        <td>{{ $order[$job->id]->domain}}</td>
+                                        @elseif(empty($order[$job->id]->customer->company_name) )
+                                        <td></td>
+                                        <td></td>
+                                        @endif
                                         <td>{{ $job->attempts }}</td>
                                         <td>{{ date('d-M-Y', strtotime($job->available_at)) }}</td>
                                     </tr>

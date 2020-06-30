@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Order;
+use Exception;
+use App\Country;
 use App\Product;
 use App\Instance;
 use Illuminate\Bus\Queueable;
@@ -16,6 +18,8 @@ use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
 class ImportProductsMicrosoftJob implements ShouldQueue
 {
     public $instance;
+    public $order;
+    public $country;
 
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     
@@ -24,9 +28,11 @@ class ImportProductsMicrosoftJob implements ShouldQueue
     *
     * @return void
     */
-    public function __construct(Instance $instance)
+    public function __construct(Instance $instance, Order $order,    $country)
     {
         $this->instance = $instance;
+        $this->order = $order;
+        $this->country = $country;
     }
     
     /**
@@ -37,23 +43,34 @@ class ImportProductsMicrosoftJob implements ShouldQueue
     public function handle()
     {
 
+        $this->order->order_status_id = 2; //Order running state
+        $this->order->save();
         
         $instance = $this->instance;
-        if( ! $instance){
-            return redirect()->route('products.list')->with('success', 'The account has no assigned instance');
-        }
+        Log::info('instance: '.$instance);
+
+        Log::info('Country: '.$this->country);
+
+        // if( ! $instance){
+        //     return redirect()->route('products.list')->with('success', 'The account has no assigned instance');
+        // }
         
-        if($instance->type === 'microsoft'){
-            if( ! $instance->tenant_id){
-                return redirect()->route('products.list')->with('success', 'There is no client_id set up on the Microsoft instance');
-            }
+        // if($instance->type === 'microsoft'){
+        //     if( ! $instance->tenant_id){
+        //         return redirect()->route('products.list')->with('success', 'There is no client_id set up on the Microsoft instance');
+        //     }
+
+            try {
         
-            $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token, 'MA')->all();
-            
+            $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)
+            ->forCountry($this->country)->all();
+
             $products->each(function($importedProduct)use($instance){
+            Log::info('CREATE products: '.$importedProduct);
+
                 Product::updateOrCreate([
                     'sku' => $importedProduct->id,
-                    'instance_id' => $instance->id
+                    'instance_id' => $instance->id,
                 ],[
                     'name' => $importedProduct->name,
                     'description' => $importedProduct->description,
@@ -84,6 +101,17 @@ class ImportProductsMicrosoftJob implements ShouldQueue
                     'reseller_qualifications' => $importedProduct->resellerQualifications,
                     ]);
                 });
+
+            } catch (Exception $e) {
+                Log::info('Error importing products: '.$e->getMessage());
+                $this->order->details = ('Error importing products: '.$e->getMessage());
+                $this->order->order_status_id = 3; 
+                $this->order->save();
+    
+                Log::info('Error: '.$e->getMessage());
             }
+            // }  
+                $this->order->order_status_id = 4; //Order running state
+                $this->order->save();
         }
     }

@@ -2,7 +2,6 @@
 
 @section('content')
 
-{{-- {{dd($priceList)}} --}}
 <div class="container col-xm-12">
 	<ul class="nav nav-pills md-tabs" id="myTabMD" role="tablist">
 		<li class="nav-item">

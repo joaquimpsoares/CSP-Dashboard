@@ -61,8 +61,9 @@ class OrderController extends Controller
         
         public function syncproducts(Request $request)
         {
+            $order = $this->orderRepository->ImportProductsMicrosoftOrder();
             
-            ImportProductsMicrosoftJob::dispatch($request)->onQueue('SyncProducts')
+            ImportProductsMicrosoftJob::dispatch($request, $order)->onQueue('SyncProducts')
             ->delay(now()->addSeconds(10)); 
             
             return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);

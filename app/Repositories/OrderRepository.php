@@ -153,6 +153,23 @@ class OrderRepository implements OrderRepositoryInterface
     }
 
 
+    public function ImportProductsMicrosoftOrder()
+    {
+
+        $order = new Order();
+
+        $order->token = Str::uuid();
+        $order->user_id = Auth::user()->id;
+        $order->details = "Importing MS Products";
+
+
+        $order->save();
+
+        return $order;
+
+    }
+
+
     
 
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Instance;
 use App\Provider;
+use App\PriceList;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -52,6 +53,11 @@ class InstanceController extends Controller
             'external_id' => '66127fdf-8259-429c-9899-6ec066ff8915',
             'external_url' => $request->external_url
         ]);
+
+        $priceList = PriceList::updateOrcreate([
+            'instance_id' => $create->id,
+            ]);
+
         
         return redirect()->route('provider.index')->with('success', 'Instance created succesfully');
     }   

@@ -20,20 +20,10 @@ class Order extends Model
             'comments' => $this->comments,
             'details' => $this->details,
             'customer' => $this->customer()->first(),
-            'avatar' => $this->customer->users->first(),
+            'avatar' => $this->user->first(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'status' => $this->status,
-            // 'postal_code' => $this->postal_code,
-            // 'status' => $this->status->name,
-            // 'path' => $this->path(),
-            // 'pathUpdate' => $this->pathUpdate(),
-            // 'reseller' => $this->resellers()->first(),
-            // 'subscriptions' => $this->subscriptions->count(),
-            // 'priceLists' => $this->priceLists()->first(),
-            // 'mainUser' => $this->users()->first(),
-            // 'orders' => $this->orders()->get(),
-            // 'users' => $this->users()->get()
             
         ];
 

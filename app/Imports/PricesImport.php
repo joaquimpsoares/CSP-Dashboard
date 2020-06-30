@@ -17,7 +17,6 @@ class PricesImport implements ToModel, WithHeadingRow, WithBatchInserts
     */
     public function model(Array $row)
     {
-        // dd($row['name']);
         
         // Price::updateOrCreate([
         //     'name'          => $row['name'],

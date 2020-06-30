@@ -51,7 +51,6 @@
 									<tbody>
 										{{-- @if ($users == null) --}}
 										@foreach($users as $user)
-										{{-- {{dd($users)}} --}}
 										<tr>
 											<td><img src="{{$user->avatar}}" class="rounded-circle z-depth-0" alt="avatar image"  width='50' Height ='auto'></td>
 											<td><a href="/user/{{$user->id }}">{{ $user['email'] }}</a></td>

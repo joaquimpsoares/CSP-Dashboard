@@ -85,10 +85,8 @@ class CustomerRepository implements CustomerRepositoryInterface
     public function update($customer, $validate)
     {
         
-        // dd($validate['company_name']);
         $customer = Customer::find($customer->id);
 
-        // dd($customer);
         
         $updateCustomer = $customer->update([
             'company_name' => $validate['company_name'],
@@ -103,7 +101,6 @@ class CustomerRepository implements CustomerRepositoryInterface
         ]);
         return $updateCustomer;
 
-        // dd($request->all());
         // $updateCustomer =  Customer::store([
         //     'company_name' => $validate['company_name'],
         //     'nif' => $validate['nif'],

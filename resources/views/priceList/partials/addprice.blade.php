@@ -1,18 +1,18 @@
   
 <div class="row">
   <div class="col-md-12 mb-2">
-    <label for="country">{{ucwords(trans_choice('messages.product', 1))}}</label>
+    <label for="country">{{ucwords(trans_choice('messages.select_product', 1))}}</label>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
         <label class="input-group-text" for="country_id"><i class="fa fa-plane" aria-hidden="true"></i>
         </label>
       </div>
+      <input type="hidden" name="timelimit" value="0" size="1" />
       <select name="product_sku" class="custom-select" id="country_id" required>
         <option value="">Choose...</option>
-        @forelse($products as $product)
+        @foreach ($products as $product) 
         <option value="{{$product->sku}}">{{$product->id}} {{$product->name}}</option>
-        @empty
-        @endforelse
+        @endforeach
       </select>
       <div class="invalid-feedback">
         {{ucwords(trans_choice('messages.Please_select_a_valid_country', 1))}}

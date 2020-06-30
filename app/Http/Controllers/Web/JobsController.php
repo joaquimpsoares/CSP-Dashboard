@@ -39,6 +39,7 @@ class JobsController extends Controller
             $payload_json = json_decode( $payload->payload );
             $data = unserialize( $payload_json->data->command );
             $order[$payload->id] = $data->order;
+
         }
         
         $running = $jobs->count();

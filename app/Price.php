@@ -29,7 +29,7 @@ class Price extends Model
 			'currency' => $this->currency,
 			'pricelist' => $this->pricelist,
 			'instance' => $this->pricelist->id,
-			'products' => $this->products,
+			'category' => $this->product,
 			'provider' => $this->provider()->first()
 
 		];
@@ -41,9 +41,9 @@ class Price extends Model
 
 	public function product() {
 		
-		return $this->belongsTo('App\Product', 'product_sku', 'sku')->where('vendor', $this->product_vendor)->where('instance_id', $this->instance_id);
+		return $this->belongsTo('App\Product', 'product_sku', 'sku')
+		->where('vendor', $this->product_vendor)->where('instance_id', $this->instance_id);
 		
-		// return $this->belongsToMany('App\Product', ');
 	}
 
 	public function provider() {
