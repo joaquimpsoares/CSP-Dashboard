@@ -11,7 +11,6 @@
 				<div class="col">
 					<div class="card">
 						<div class="card-body">
-							
 							<div class="row">
 								<div class="col-lg-8">
 									<div class="row">
@@ -54,34 +53,36 @@
 													</div>
 												</div>
 												<div class="row">
-													<div id="agreement" @if(empty($cart->domain)) style="display: none" @endif>
-														<form action="{{ route('cart.add_mca_user') }}" id="mca_user" method="post">
-															@csrf
-															<input type="hidden" name="token" value="{{ $cart->token }}" />
-															<h2>{{ ucwords(trans_choice('messages.sign_agreement_microsoft', 1)) }}</h2>
-															<div class="md-form mb-0">
-																<label for="firstName">{{ ucwords(trans_choice('messages.first_name', 1)) }}</label>
-																<input type="text" name="firstName" id="firstName" class="form-control" required="required" value="{{ $cart->agreement_firstname ?? null }}"/>
-															</div>
-															<div class="md-form mb-0">
-																<label for="lastName">{{ ucwords(trans_choice('messages.last_name', 1)) }}</label>
-																<input type="text" name="lastName" id="lastName" class="form-control" required="required" value="{{ $cart->agreement_lastname ?? null }}" />
-															</div>
-															<div class="md-form mb-0">
-																<label for="email">{{ ucwords(trans_choice('messages.email', 1)) }}</label>
-																<input type="email" name="email" id="email" class="form-control" required="required" value="{{ $cart->agreement_email ?? null }}" />
-															</div>
-															<div class="md-form mb-0">
-																<label for="phoneNumber">{{ ucwords(trans_choice('messages.phone_number', 1)) }}</label>
-																<input type="text" name="phoneNumber" id="phoneNumber" class="form-control" value="{{ $cart->agreement_phone ?? null }}" />
-															</div>
-															<br>
-															<div class="float-sm-right">
-																<button type="submit" class="main_btn" id="test">
-																	{{ ucwords(trans_choice('messages.review', 1)) }}
-																</button>
-															</div>
-														</form>
+													<div class="col">
+														<div id="agreement" @if(empty($cart->domain)) style="display: none" @endif>
+															<form action="{{ route('cart.add_mca_user') }}" id="mca_user" method="post">
+																@csrf
+																<input type="hidden" name="token" value="{{ $cart->token }}" />
+																<h2>{{ ucwords(trans_choice('messages.sign_agreement_microsoft', 1)) }}</h2>
+																<div class="md-form mb-0">
+																	<label for="firstName">{{ ucwords(trans_choice('messages.first_name', 1)) }}</label>
+																	<input type="text" name="firstName" id="firstName" class="form-control" required="required" value="{{ $cart->agreement_firstname ?? null }}"/>
+																</div>
+																<div class="md-form mb-0">
+																	<label for="lastName">{{ ucwords(trans_choice('messages.last_name', 1)) }}</label>
+																	<input type="text" name="lastName" id="lastName" class="form-control" required="required" value="{{ $cart->agreement_lastname ?? null }}" />
+																</div>
+																<div class="md-form mb-0">
+																	<label for="email">{{ ucwords(trans_choice('messages.email', 1)) }}</label>
+																	<input type="email" name="email" id="email" class="form-control" required="required" value="{{ $cart->agreement_email ?? null }}" />
+																</div>
+																<div class="md-form mb-0">
+																	<label for="phoneNumber">{{ ucwords(trans_choice('messages.phone_number', 1)) }}</label>
+																	<input type="text" name="phoneNumber" id="phoneNumber" class="form-control" value="{{ $cart->agreement_phone ?? null }}" />
+																</div>
+																<br>
+																<div class="float-sm-right">
+																	<button type="submit" class="main_btn" id="test">
+																		{{ ucwords(trans_choice('messages.review', 1)) }}
+																	</button>
+																</div>
+															</form>
+														</div>
 													</div>
 												</div>
 											</div>

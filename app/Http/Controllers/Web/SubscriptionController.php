@@ -18,7 +18,9 @@ use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProviderRepositoryInterface;
 use App\Repositories\ResellerRepositoryInterface;
+use Tagydes\MicrosoftConnection\Facades\ServiceCosts;
 use App\Repositories\SubscriptionRepositoryInterface;
+use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Facades\Subscription as SubscriptionFacade;
 use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 
@@ -79,101 +81,89 @@ class SubscriptionController extends Controller
     // }
     
     return view('subscriptions.index', compact('subscriptions'));
-}
+    }   
 
-public function card()
-{
-    $subscriptions = [];
-    switch ($this->getUserLevel()) {
-        case 'Provider':
-            $provider = $this->getUser()->provider;
-            $subscriptions = $this->listFromProvider($provider);
-        break;
-        case 'Reseller':
-            $reseller = $this->getUser()->reseller;
-            $subscriptions = $this->listFromReseller($reseller);
-        break;
-        case 'Customer':
-            $customer = $this->getUser()->customer;
-            $subscriptions = $this->listFromCustomer($customer);
-        break;
-        
-        default:
-        # code...
-    break;
-}
+        public function card()
+        {
+            $subscriptions = [];
+            switch ($this->getUserLevel()) {
+                case 'Provider':
+                    $provider = $this->getUser()->provider;
+                    $subscriptions = $this->listFromProvider($provider);
+                break;
+                case 'Reseller':
+                    $reseller = $this->getUser()->reseller;
+                    $subscriptions = $this->listFromReseller($reseller);
+                break;
+                case 'Customer':
+                    $customer = $this->getUser()->customer;
+                    $subscriptions = $this->listFromCustomer($customer);
+                break;
+                
+                default:
+                # code...
+            break;
+        }
 
-return view('subscriptions.customer', compact('subscriptions'));
-}
+        return view('subscriptions.customer', compact('subscriptions'));
+        }
 
 
-/**
-* Show the form for creating a new resource.
-*
-* @return \Illuminate\Http\Response
-*/
-public function create()
-{
-    //
-}
+        /**
+        * Show the form for creating a new resource.
+        *
+        * @return \Illuminate\Http\Response
+        */
+        public function create()
+        {
+            //
+        }
 
-/**
-* Store a newly created resource in storage.
-*
-* @param  \Illuminate\Http\Request  $request
-* @return \Illuminate\Http\Response
-*/
-public function store(Request $request)
-{
-    //
-}
+        /**
+        * Store a newly created resource in storage.
+        *
+        * @param  \Illuminate\Http\Request  $request
+        * @return \Illuminate\Http\Response
+        */
+        public function store(Request $request)
+        {
+            //
+        }
 
-/**
-* Display the specified resource.
-*
-* @param  \App\Subscription  $subscription
-* @return \Illuminate\Http\Response
-*/
-public function show(Subscription $subscription)
-{
-    $subscriptions = Subscription::findOrFail($subscription->id);
-    
-    $usage = Product::where('sku', $subscriptions->product_id)->first();
-    
-    $products = Product::where('sku', $subscriptions->product_id)->where('instance_id', $subscriptions->instance_id)->get();
-    
-    switch ($usage->billing) {
-        case 'usage':
+        /**
+        * Display the specified resource.
+        *
+        * @param  \App\Subscription  $subscription
+        * @return \Illuminate\Http\Response
+        */
+        public function show(Subscription $subscription)
+        {
             $subscriptions = Subscription::findOrFail($subscription->id);
-            return view('subscriptions.editazure', compact('subscriptions', 'products'));
-        break;
-        case 'license':
-            foreach ($products as $key => $product) {
-                $addons = $product->getaddons()->all();
-            }
-            return view('subscriptions.edit', compact('subscriptions', 'products', 'addons'));
-        break;
-        
-        default:
-        # code...
-    break;
-}
+            
+            $usage = Product::where('sku', $subscriptions->product_id)->first();
+            
+            $products = Product::where('sku', $subscriptions->product_id)->where('instance_id', $subscriptions->instance_id)->get();
+            
+            switch ($usage->billing) {
+                case 'usage':
+                    $subscriptions = Subscription::findOrFail($subscription->id);
+                    return view('subscriptions.editazure', compact('subscriptions', 'products'));
+                break;
+                case 'license':
+                    foreach ($products as $key => $product) {
+                        $addons = $product->getaddons()->all();
+                    }
+                    return view('subscriptions.edit', compact('subscriptions', 'products', 'addons'));
+                break;
+                
+                default:
+                # code...
+            break;
+        }
 
 
-}
+        }
 
-// /**
-// * Show the form for editing the specified resource.
-// *
-// * @param  \App\Subscription  $subscription
-// * @return \Illuminate\Http\Response
-// */
-// public function edit(Subscription $subscriptions)
-// {
-    //     $subscription = Subscription::where('id', $subscriptions)->first();
-    
-    //     return view('subscriptions.edit', compact('subscription'));
-    // }
     
     /**
     * Update the specified resource in storage.
@@ -264,38 +254,39 @@ public function show(Subscription $subscription)
         //                 return redirect()->back()->with(['alert' => 'error', 'message' => ucwords(trans_choice('messages.something_went_wrong_try_again', 1))]);
         //             }
         //         }
-                return redirect()->back()->with(['alert' => 'success', 'message' => ucwords(trans_choice('messages.subscription_updated_successfully', 1))]);
-            }
-            
-            /**
-            * Remove the specified resource from storage.
-            *
-            * @param  \App\Subscription  $subscription
-            * @return \Illuminate\Http\Response
-            */
-            public function destroy(Subscription $subscription)
-            {
-                //
-            }
-            
-            public function listFromProvider(Provider $provider)
-            {
-                $subscriptions = $this->providerRepository->getSubscriptions($provider);
-                
-                return $subscriptions;
-            }
-            
-            public function listFromReseller(Reseller $reseller)
-            {
-                $subscriptions = $this->resellerRepository->getSubscriptions($reseller);
-                
-                return $subscriptions;
-            }
-            
-            public function listFromCustomer(Customer $customer)
-            {
-                $subscriptions = $this->customerRepository->getSubscriptions($customer);
-                
-                return $subscriptions;
-            }
+            return redirect()->back()->with(['alert' => 'success', 'message' => ucwords(trans_choice('messages.subscription_updated_successfully', 1))]);
         }
+
+   
+        /**
+        * Remove the specified resource from storage.
+        *
+        * @param  \App\Subscription  $subscription
+        * @return \Illuminate\Http\Response
+        */
+        public function destroy(Subscription $subscription)
+        {
+            //
+        }
+        
+        public function listFromProvider(Provider $provider)
+        {
+            $subscriptions = $this->providerRepository->getSubscriptions($provider);
+            
+            return $subscriptions;
+        }
+        
+        public function listFromReseller(Reseller $reseller)
+        {
+            $subscriptions = $this->resellerRepository->getSubscriptions($reseller);
+            
+            return $subscriptions;
+        }
+        
+        public function listFromCustomer(Customer $customer)
+        {
+            $subscriptions = $this->customerRepository->getSubscriptions($customer);
+            
+            return $subscriptions;
+        }
+    }

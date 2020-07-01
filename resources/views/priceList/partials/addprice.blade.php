@@ -1,4 +1,6 @@
-  
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>  
+
 <div class="row">
   <div class="col-md-12 mb-2">
     <label for="country">{{ucwords(trans_choice('messages.select_product', 1))}}</label>
@@ -8,7 +10,7 @@
         </label>
       </div>
       <input type="hidden" name="timelimit" value="0" size="1" />
-      <select name="product_sku" class="custom-select" id="country_id" required>
+      <select name="product_sku" class="country_select" id="country_select" style="width: 95%" required>
         <option value="">Choose...</option>
         @foreach ($products as $product) 
         <option value="{{$product->sku}}">{{$product->id}} {{$product->name}}</option>
@@ -41,55 +43,8 @@
   </div>
 </div>
 
-{{-- <label for="address" class="">{{ucwords(trans_choice('messages.address_1', 1))}}</label>
-<input type="text" id="address_1" name="address_1" class="form-control mb-4" value="{{ old('address_1') }}" placeholder="1234 Main St">
-<label for="address-2" class="">{{ucwords(trans_choice('messages.address_2', 1))}} (optional)</label>
-<input type="text" id="address_2" name="address_2" class="form-control mb-4" value="{{ old('address_2') }}" placeholder="Appartment or numer">
-<div class="row">
-  <div class="col-lg-4 col-md-6 mb-4">
-    <label for="address-2" class="">{{ucwords(trans_choice('messages.city', 1))}}</label>
-    <input type="text" id="city" name="city" class="form-control mb-4" value="{{ old('city') }}">
-  </div>
-  <div class="col-lg-4 col-md-6 mb-4">
-    <label for="zip">{{ucwords(trans_choice('messages.state', 1))}}</label>
-    <input name="state" type="text" class="form-control" id="zip" placeholder="" value="{{ old('state') }}" required >
-    <div class="invalid-feedback">
-      Zip code required.
-    </div>
-  </div>
-  <div class="col-lg-4 col-md-6 mb-4">
-    <label for="zip">Zip</label>
-    <input name="postal_code" type="text" class="form-control" id="zip" placeholder="" value="{{ old('postal_code') }}" required>
-    <div class="invalid-feedback">
-      Zip code required.
-    </div>
-  </div>
-
-</div>
-<hr>
-<div class="input-group mb-4">
-  <div class="input-group-prepend">
-    <span class="input-group-text" id="basic-addon1">@</span>
-  </div>
-  <input name="email" type="text" class="form-control py-0" aria-describedby="basic-addon1" value="{{ old('email') }}" placeholder="youremail@example.com">
-</div>
-<div class="input-group mb-4">
-  <div class="input-group-prepend">
-    <span class="input-group-text" id="basic-addon1"><i class="fa fa-user" aria-hidden="true"></i>
-    </span>
-  </div>
-  <input name="username" type="text" class="form-control py-0" aria-describedby="basic-addon1" value="{{ old('username') }}" placeholder="Username (Optional)">
-</div>
-<div class="row">
-  <div class="col-md-12">
-    <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
-    <div class="form-group">
-      <select name="status_id" class="form-select" sf-validate="required">
-        <option selected></option>
-        @foreach ($statuses as $status)    
-        <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
-        @endforeach
-      </select>
-    </div>
-  </div>
-</div> --}}
+<script>
+  $(document).ready(function() {
+    $('.country_select').select2();
+});
+</script>

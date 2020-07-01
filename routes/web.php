@@ -28,6 +28,12 @@ Route::get('/analytics/update', [
 	'as' => 'analytics.update'
 ]);
 
+Route::get('/customer/costs', [
+	'uses' => 'CustomerController@CustomerServiceCosts',
+	'as' => 'customer.costs'
+]);
+
+
 Route::post('/analytics/edit/', [
 	'uses' => 'AnalyticController@edit',
 	'as' => 'analytics.edit'

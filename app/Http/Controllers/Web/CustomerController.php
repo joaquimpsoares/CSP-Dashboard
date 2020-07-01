@@ -5,18 +5,23 @@ namespace App\Http\Controllers\Web;
 use App\User;
 use App\Status;
 use App\Country;
-use App\countryrules;
-use App\Countryrules as AppCountryrules;
 use App\Customer;
+use App\Instance;
 use App\Reseller;
 use App\PriceList;
+use App\countryrules;
+use App\Subscription;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\DB;
+use App\Countryrules as AppCountryrules;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\SubscriptionRepositoryInterface;
+use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
+use Tagydes\MicrosoftConnection\Facades\ServiceCosts;
+use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 
 
 
@@ -146,15 +151,46 @@ class CustomerController extends Controller
 
         $users = User::where('customer_id', $customer->id)->get();
 
+        $costs = $this->CustomerServiceCosts($customer);
+
         $statuses = Status::get();
 
         $subscriptions = [];
 
         $subscriptions = $this->subscriptionRepository->subscriptionsOfCustomer($customer);
+        $licensesCount = $subscriptions->sum('amount');
 
-        return view('customer.show', compact('customer','countries','subscriptions','users','statuses'));
+        return view('customer.show', compact('licensesCount','costs','customer','countries','subscriptions','users','statuses'));
 
     }
+
+    Public function CustomerServiceCosts($customer)
+    {
+
+        // dd($customer->resellers->first()->provider->instances->first()->id);
+
+        $instance = Instance::where('id', $customer->resellers->first()->provider->instances->first()->id)->first();
+        try {
+            $customer = new TagydesCustomer([
+                'id' => $customer->microsoftTenantInfo->first()->tenant_id,
+                'username' => 'bill@tagydes.com',
+                'password' => 'blabla',
+                'firstName' => 'Nombre',
+                'lastName' => 'Apellido',
+                'email' => 'bill@tagydes.com',
+                ]);            
+                
+            $resources = ServiceCosts::withCredentials(
+            $instance->external_id,$instance->external_token
+            )->serviceCosts($customer);         
+            return $resources;
+
+        } catch (\Throwable $th) {
+                
+        }
+            
+    }
+            
 
 
     public function edit(Customer $customer) { }

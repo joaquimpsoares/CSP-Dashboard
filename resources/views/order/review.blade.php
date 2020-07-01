@@ -12,7 +12,6 @@
 				<div class="col">
 					<div class="card">
 						<div class="card-body">
-							
 							<div class="row">
 								<div class="col-lg-8">
 									<div class="row">
@@ -78,14 +77,12 @@
 								</div>
 								@include('order.partials.side')
 							</div>
-							
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
 </section>
 @else
 
