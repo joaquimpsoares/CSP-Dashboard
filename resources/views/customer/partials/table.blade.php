@@ -3,6 +3,7 @@
         <table class="table table-hover responsive" id="customer">
             <thead class="thead-dark">
                 <tr>
+                    <th>{{ ucwords(trans_choice('messages.#', 1)) }}</th>
                     <th>{{ ucwords(trans_choice('messages.company_name', 1)) }}</th>
                     <th>{{ ucwords(trans_choice('messages.reseller', 2)) }}</th>
                     <th>{{ ucwords(trans_choice('messages.subscription', 2)) }}</th>
@@ -15,6 +16,7 @@
                 @forelse($customers as $customer)
                 @if($customer['status'] === 'message.active')
                 <tr>
+                    <td width="3%" class="f-s-600"><a href="{{ $customer['path'] }}">{{ $customer['id'] }}</a></td>
                     <td><a href="{{ $customer['path'] }}">{{ $customer['company_name'] }}</a></td>
                     <td>{{ $customer['reseller']['company_name'] }}</td>
                     <td>{{ $customer['subscriptions'] }}</td>

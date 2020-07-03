@@ -32,7 +32,7 @@
                       <label class="input-group-text" for="country_id"><i class="fa fa-plane" aria-hidden="true"></i>
                       </label>
                     </div>
-                    <select name="country_id" class="country_select" id="country_id" required>
+                    <select name="country_id" class="country_select" id="country_id" style="width: 95%" required>
                       <option value="">Choose...</option>
                       @foreach ($countries as $country)    
                       <option value="{{$country->id}}">{{$country->name}}</option>

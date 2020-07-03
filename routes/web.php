@@ -97,8 +97,6 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('permissions', 'PermissionController');
 		Route::get('/product/import/{provider_id}', 'ProductController@import')->name('product.import');
 		
-		Route::resource('/instances', 'InstanceController');
-		Route::get('/instances/getMasterToken/{provider_id}', 'InstanceController@getMasterToken')->name('instances.getMasterToken');
 		
 	});
 	
@@ -116,6 +114,10 @@ Route::group(['middleware' => 'auth'], function () {
 	
 	// Routes that platform managers and providers can access
 	Route::group(['middleware' => ['role:Super Admin|Admin|Provider']], function () {
+		
+			Route::resource('/instances', 'InstanceController');
+
+			Route::get('/instances/getMasterToken/{provider_id}', 'InstanceController@getMasterToken')->name('instances.getMasterToken');
 		
 			Route::get('/reseller/create', 'ResellerController@create')
 				->middleware('permission:' . config('app.reseller_create'))->name('reseller.create');
@@ -169,6 +171,8 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::post('priceList/update/{id}', 'PriceListController@update')->name('priceList.update');
 		
 		Route::post('pricelist/import', 'PriceListController@import');
+
+		Route::post('pricelist/storePriceList', 'PriceListController@storePriceList')->name('priceList.storePriceList');
 		
 		
 		Route::group(['middleware' => ['check_reseller']], function () {

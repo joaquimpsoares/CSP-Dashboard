@@ -78,14 +78,14 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
     }
     
     return $subscriptions;
-}
+    }
 
-public function subscriptionsOfCustomer(Customer $customer){
+    public function subscriptionsOfCustomer(Customer $customer){
 
-    $subscriptions = $customer->subscriptions;
+        $subscriptions = $customer->subscriptions;
 
-    return $subscriptions;
-}
+        return $subscriptions;
+    }
 
 
 }

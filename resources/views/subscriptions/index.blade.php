@@ -9,8 +9,7 @@
 
 <div class="container">
 	<section class="section">
-		<div class="">
-			<i class="fas fa-file-invoice-dollar fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
+		<div class="card">
 			<div class="card-body">
 				@if (Auth::user()->userLevel->name == "Customer")
 				<h4 class="card-title">{{ ucwords(trans_choice('messages.subscription', 2)) }} </h4>

@@ -2,13 +2,13 @@
     <div class="card">
         <div class="">
             <div class="card-body">
-                @if(Auth::user()->userLevel->id === 4)
+                @if(Auth::user()->userLevel->id === 3)
                 <div class="md-form">
                     <div style="display: flex;">
                         <div style="flex-grow: 31;">
                         </div>
                         <div>
-                            <a type="submit" href="" class="btn submit_btn">{{ ucwords(__('messages.new_pricelist')) }}</a>
+                        <a type="submit" href="{{route('priceList.create')}}" class="btn submit_btn">{{ ucwords(__('messages.new_pricelist')) }}</a>
                         </div>
                     </div>
                 </div>

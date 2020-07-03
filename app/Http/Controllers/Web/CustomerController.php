@@ -65,6 +65,8 @@ class CustomerController extends Controller
     
     public function store(Request $request) { 
 
+        // dd($request->all());
+
         $validate = $this->validator($request->all())->validate();
         
         $user = $this->getUser();
@@ -73,11 +75,26 @@ class CustomerController extends Controller
             DB::beginTransaction();
             
             $customer = $this->customerRepository->create($validate);
-            
+
             $customer->resellers()->attach($user->reseller->id);
+
+            // dd($customer->resellers->first()->priceList->id);
+
+            // $customer->priceLists->attach($customer->resellers->first()->priceList->id);
+
+            $priceList = $customer->resellers->first()->priceList;
+            dd($priceList);
+            
+            
+            $customer->priceLists()->associate($priceList);
+            $customer->save();
+
+            dd($customer);
             
             $mainUser = $this->userRepository->create($validate, 'customer', $customer);
             
+            // dd($customer);
+
             DB::commit();
         } catch (\PDOException $e) {
             DB::rollBack();
@@ -251,7 +268,7 @@ class CustomerController extends Controller
 
         $countryName = Country::where('id', $data['country_id'])->first();
         $countryRules = AppCountryrules::where('iso2Code', $countryName->iso_3166_2)->first();
-        
+        // dd('/'.$countryRules->postalCodeRegex.'/');
         return Validator::make($data, [
             'company_name' => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
             'nif' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
@@ -262,7 +279,8 @@ class CustomerController extends Controller
             'country_id' => ['required', 'integer', 'min:1'],
             'city' => ['required', 'string', 'max:255'],
             'state' => ['required', 'string', 'max:255'],
-            'postal_code' => ['required', 'string', 'regex:/'.$countryRules->postalCodeRegex.'/', 'max:255'],
+            'postal_code' => ['required', 'string', 'regex:/^\\d{4}(-\\d{3})?$/', 'max:255'],
+            // 'postal_code' => ['required', 'string', 'regex:/'.$countryRules->postalCodeRegex.'/'],
             'status_id' => ['required', 'integer', 'exists:statuses,id'],
             'sendInvitation' => ['nullable', 'integer'],
         ]);

@@ -45,14 +45,21 @@ class UsersController extends Controller
     public function profile(User $user)
     {
         
-        // $id = Auth::user()->id;
+        $user = $this->getUser();
+        // dd($user->provider);
+
+        $provider = $user->provider;
+        
         $user= User::where('id', $user->id)->with('country')->first();
+        
+        // instance $userlevel
+
         
         $notifications = explode(', ',$user->notifications_preferences);
         
         $countries = Country::get();
         
-        return view('user.profile', compact('user', 'countries','notifications'));
+        return view('user.profile', compact('user', 'countries','notifications','provider'));
     }
     
     
@@ -128,28 +135,26 @@ class UsersController extends Controller
     
     $validate = $this->validator($request->all())->validate();
 
+    if(request()->has('avatar')){
+        $avataruploaded = request()->file('avatar');
+        $avatarname = time() . '.' . $avataruploaded->getClientOriginalExtension() ;
+        $avatarpath = public_path('/images/profile/');
+        $avataruploaded->move($avatarpath, $avatarname);
         
+        $user->username             = $request->input('username');
+        $user->email                = $request->input('email');
+        $user->first_name           = $request->input('first_name');
+        $user->last_name            = $request->input('last_name');
+        $user->address              = $request->input('address');
+        $user->city                 = $request->input('city');
+        $user->state                = $request->input('state');
+        $user->country_id           = $request->input('country_id');
+        $user->postal_code          = $request->input('postal_code');
+        $user->avatar               = '/images/profile/' . $avatarname;
         
-        if(request()->has('avatar')){
-            $avataruploaded = request()->file('avatar');
-            $avatarname = time() . '.' . $avataruploaded->getClientOriginalExtension() ;
-            $avatarpath = public_path('/images/profile/');
-            $avataruploaded->move($avatarpath, $avatarname);
-            
-            $user->username             = $request->input('username');
-            $user->email                = $request->input('email');
-            $user->first_name           = $request->input('first_name');
-            $user->last_name            = $request->input('last_name');
-            $user->address              = $request->input('address');
-            $user->city                 = $request->input('city');
-            $user->state                = $request->input('state');
-            $user->country_id           = $request->input('country_id');
-            $user->postal_code          = $request->input('postal_code');
-            $user->avatar               = '/images/profile/' . $avatarname;
-            
-            $user->save();
-            
-            return redirect()->back()->with('success', 'Instance created succesfully');
+        $user->save();
+        
+        return redirect()->back()->with('success', 'Instance created succesfully');
             
         }
 

@@ -63,7 +63,6 @@ class Customer extends Model
     	return $this->hasMany('App\Subscription');
     }
 
-    
     public function orders()
     {
         return $this->hasMany('App\Order');
@@ -102,9 +101,9 @@ class Customer extends Model
         return $resellersList;
     }
 
-    public function priceList() {
-        return $this->belongsTo('App\PriceList');
-    }
+    // public function priceList() {
+    //     return $this->belongsTo('App\PriceList');
+    // }
     
     public function status() {
         return $this->belongsTo(Status::class);

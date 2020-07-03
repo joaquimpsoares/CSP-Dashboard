@@ -1,8 +1,10 @@
+
 <div class="container col-xm-12">
     <section class="dark-grey-text">
-        <table class="table table-hover" id="reseller">
+        <table class="table table-hover responsive" id="reseller">
             <thead class="thead-dark">
                 <tr>
+                    <th>{{ ucwords(trans_choice('messages.#', 1)) }}</th>
                     <th>{{ ucwords(trans_choice('messages.company_name', 1)) }}</th>
                     <th>{{ ucwords(trans_choice('messages.customer', 2)) }}</th>
                     <th>{{ ucwords(trans_choice('messages.provider', 1)) }}</th>
@@ -14,7 +16,8 @@
             <tbody>
                 @forelse($resellers as $reseller)
                 @if($reseller['status'] === 'message.active')
-                <tr>
+                <tr class="odd gradeX">
+                    <td width="3%" class="f-s-600"><a href="{{ $reseller['path'] }}">{{ $reseller['id'] }}</a></td>
                     <td><a href="{{ $reseller['path'] }}">{{ $reseller['company_name'] }}</a></td>
                     <td>{{ $reseller['customers'] }}</td>
                     <td>{{ $reseller['provider']['company_name'] }}</td>
@@ -34,13 +37,13 @@
         </table>
     </section>
 </div>
-    
-    
-    <script type="text/javascript">
-        $(document).ready( function () {
-            $('#reseller').DataTable({
-                "pagingType": "full_numbers",
-                "order": [[ 0, "asc" ]]
-            });
-        } );
-    </script>
+
+
+<script type="text/javascript">
+    $(document).ready( function () {
+        $('#reseller').DataTable({
+            "pagingType": "full_numbers",
+            "order": [[ 0, "asc" ]]
+        });
+    } );
+</script>

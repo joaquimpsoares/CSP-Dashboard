@@ -98,8 +98,8 @@
         
     </style>
     
-    <link rel="stylesheet" href="https://colorlib.com/polygon/kiaalap/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://colorlib.com/polygon/kiaalap/style.css">
+    {{-- <link rel="stylesheet" href="https://colorlib.com/polygon/kiaalap/css/font-awesome.min.css"> --}}
+    {{-- <link rel="stylesheet" href="https://colorlib.com/polygon/kiaalap/style.css"> --}}
     
     <div class="preloader" style="display: none;">
     </div>

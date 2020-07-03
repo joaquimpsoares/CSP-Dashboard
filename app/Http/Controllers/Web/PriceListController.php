@@ -43,6 +43,24 @@ class PriceListController extends Controller
         return view('priceList.index', compact('priceLists', 'prices', 'products'));
     }
 
+    public function create()
+    {
+
+        $products = Product::get();
+        $priceLists = $this->priceListRepository->all();    
+        $prices = Price::get();
+        
+        // foreach($priceLists as $pricelist);{
+        // $result = PriceList::where('id', $pricelist )->with('prices')->get();
+        // // dump($result);
+        // }
+        // foreach($result as $price){
+        // $prices = $price->prices->map->format();
+        // dump($prices);
+        // }
+        
+        return view('priceList.create', compact('priceLists', 'prices', 'products'));
+    }
     
     public function getPrices($priceList)
     {
@@ -96,6 +114,21 @@ class PriceListController extends Controller
 
         return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.pricelist_updated_successfully')]);
         }
+
+        public function storePriceList(Request $request)
+        {
+    dd($request->all());
+            // $priceList = PriceList::find($priceList);
+    
+            
+            // $updatepriceList = $priceList->update([
+            //     'name' => $request['name'],
+            //     'description' => $request['description'],
+                
+            // ]);
+    
+            return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.pricelist_updated_successfully')]);
+            }
 
         public function import(Request $request )
         {

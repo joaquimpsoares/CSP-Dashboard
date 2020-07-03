@@ -11,7 +11,6 @@
 	<div class="card-body">
 		<div class="row">
 			<div class="col-lg-12">
-				<i class="fas fa-user fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
 				<div class="card-body">
 					<div class="row">
 						<div class="col-md-12">

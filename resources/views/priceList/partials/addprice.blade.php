@@ -9,7 +9,6 @@
         <label class="input-group-text" for="country_id"><i class="fa fa-plane" aria-hidden="true"></i>
         </label>
       </div>
-      <input type="hidden" name="timelimit" value="0" size="1" />
       <select name="product_sku" class="country_select" id="country_select" style="width: 95%" required>
         <option value="">Choose...</option>
         @foreach ($products as $product) 
@@ -46,5 +45,5 @@
 <script>
   $(document).ready(function() {
     $('.country_select').select2();
-});
+  });
 </script>

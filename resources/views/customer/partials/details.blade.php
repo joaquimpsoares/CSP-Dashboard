@@ -1,3 +1,5 @@
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>  
+
 <div class="card">
     <div class="card-body">
         <div class="row">
@@ -24,7 +26,7 @@
                                     <label class="input-group-text" for="country_id"><i class="fa fa-plane" aria-hidden="true"></i>
                                     </label>
                                 </div>
-                                <select name="country_id" class="custom-select" id="country_id" required>
+                                <select name="country_id" class="country_select" id="country_id" style="width: 95%" required>
                                     <option value="{{$customer->country->id}}" selected>{{$customer->country->name}}</option>
                                     @foreach ($countries as $country)
                                     <option value="{{$country->id}}">{{$country->name}}</option>
@@ -121,5 +123,17 @@
 </div>
 
 
+<script>
+    .form-group.is-invalid {
+        .invalid-feedback {
+            display: block;
+        }
+    }
+</script>
+<script>
+    $(document).ready(function() {
+        $('.country_select').select2();
+    });
+</script>
 
 

@@ -88,7 +88,6 @@
                                         {{ ucwords(trans_choice('messages.order', 2)) }}
                                     </a>
                                 </li>
-
                             </ul>
                         </li>
 
@@ -118,12 +117,6 @@
                                         {{ ucwords(trans_choice('messages.job', 2)) }}
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('order.index') }}">
-                                        {{ ucwords(trans_choice('messages.order', 2)) }}
-                                    </a>
-                                </li>
-
                             </ul>
                         </li>
                         @endcan
