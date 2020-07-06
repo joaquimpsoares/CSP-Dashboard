@@ -114,6 +114,19 @@ class CartController extends Controller
         ]);
 
         $customer = Customer::find($validate['customer_id']);
+        $customerTenant = null;
+
+        $subscriptions = $customer->subscriptions;
+        foreach ($subscriptions as $subscription) {
+            foreach ($subscription->products as $product) {
+                if ($product->billing === "license") {
+                    $tenant = explode('.onmicrosoft.com', $subscription->tenant_name);
+                    $customerTenant = $tenant[0];
+                }
+            }
+        }
+
+
 
         /* Check if can buy to this customer */
         if (!$this->customerRepository->canInteractWithCustomer($customer)) {
@@ -130,7 +143,7 @@ class CartController extends Controller
         $status = "tenant";
         
         //return view('order.tenant', compact('cart'));
-        return redirect()->route('cart.tenant', ['cart' => $cart->token]);
+        return redirect()->route('cart.tenant', ['cart' => $cart->token, 'customerTenant' => $customerTenant]);
     }
 
     public function changeCustomer(Request $request)
@@ -211,8 +224,10 @@ class CartController extends Controller
         ]);
 
         $cart = $this->getUserCart(null, $validate['cart']);
+        $canChangeTenant = (empty($cart->agreement_firstname)) ? TRUE : FALSE;
+
         
-        return view('order.tenant', compact('cart'));
+        return view('order.tenant', compact('cart', 'canChangeTenant'));
     }
 
     public function addMCAUser(Request $request)
@@ -240,18 +255,34 @@ class CartController extends Controller
     public function continueCheckout(Request $request)
     {
         $validate = $request->validate([
-            'cart' => 'required|uuid|exists:carts,token'
+            'cart' => 'required|uuid|exists:carts,token',
+            'customerTenant' => 'nullable|string|regex:/(^[A-Za-z0-9 ]+$)+/'
         ]);
 
         $cart = $this->getUserCart(null, $validate['cart']);
+        $canChangeTenant = TRUE;
+        $customer = $cart->customer;
+
+
+        if (!empty($validate['customerTenant'])) {
+            $domain = $validate['customerTenant'] . '.onmicrosoft.com';
+            $order = $customer->orders()->where('domain', $domain)->first();
+            $cart->domain = $validate['customerTenant'];
+            $cart->agreement_firstname = $order->agreement_firstname;
+            $cart->agreement_lastname = $order->agreement_lastname;
+            $cart->agreement_email = $order->agreement_email;
+            $cart->agreement_phone = $order->agreement_phone;
+            $cart->save();
+            $canChangeTenant = FALSE;
+        }
 
         if (empty($cart->domain) && empty($cart->agreement_firstname)) {
-            return view('order.tenant', compact('cart'));
+            return view('order.tenant', compact('cart', 'canChangeTenant'));
         } else {
             if (empty($cart->agreement_firstname)){
-                return view('order.tenant', compact('cart'));
+                return view('order.tenant', compact('cart', 'canChangeTenant'));
             } else {
-                return view('order.review', compact('cart'));
+                return view('order.review', compact('cart', 'canChangeTenant'));
             }
         }
     }

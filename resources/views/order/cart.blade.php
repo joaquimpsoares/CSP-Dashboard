@@ -128,22 +128,22 @@
 <script>
     $(document).ready(function() { 
         $('.product-quantity input').change( function() {
-            updateProductQuantity(this);
-            
+            updateProductQuantity(this);            
         });
         
         $('.billing_cycle').change( function() {
-            console.log(this.id);
+            //console.log(this.id);
             $.get( "/cart/item/changeBillingCycle?token={{ $cart->token ?? null}}&item=" + this.id + "&value=" + this.value, function() {
                 
             })
             .done(function(data) {
-                console.log('ok');
+                //console.log('ok');
             })
             .fail(function(data) {
-                console.log(data);
-                
+                //console.log(data);                
             });
+            var item = $('input[name="' + this.id + '"]');
+            updateProductSubTotal(item[0]);
         });
     });
     
@@ -155,16 +155,21 @@
             updateProductSubTotal(item);
         })
         .fail(function(data) {
-            console.log(data);
+            //console.log(data);
             // some error
         });
     }
     
     function updateProductSubTotal(item) {
+        var selectedBillingCycle = $('#' + item.name).val();
+
         var productRow = $(item).parent().parent().parent().parent();
         var price = parseFloat(productRow.children('.product-price').text());
         var quantity = item.value;
         var linePrice = price * quantity;
+        if (selectedBillingCycle === "annual") {
+            linePrice = linePrice * 12;
+        }
         
         productRow.children('.product-line-price').each(function () {
             

@@ -15,9 +15,8 @@
                                 @endif
                                 <div class="input-group mb-3">
                                     <select name="quantity" class="custom-select " id="quantity">
-                                        <option {{ (!isset($filters['quantity'])) ? 'selected' : ( isset($filters['quantity']) && $filters['quantity'] === '12' ) ? 'selected' : ''  }}>12</option>
-                                        <option {{ ( isset($filters['quantity']) && $filters['quantity'] === '24' ) ? 'selected' : '' }}>24</option>
-                                        <option {{ ( isset($filters['quantity']) && $filters['quantity'] === '36' ) ? 'selected' : '' }}>36</option>
+                                        
+
                                     </select>
                                     <div class="input-group-append">
                                         <button class="input-group-text" type="submit" for="quantity">{{ ucwords(__('messages.apply_filter')) }}</button>
@@ -33,12 +32,15 @@
                         @foreach($prices as $product)
                         {{-- @dd($product->product['category']) --}}
                         <div class="product-card">
-                            @if ($product->products['category'] == "Trial")
-                            <div class="badge1">{{$product->product['category']}}</div>
+                            
+                            @if ($product->product->category == "Trial")
+                            <div class="badge1">{{$product->product->category}}</div>
                             @endif
-                            @if ($product->products['category'] == "Education")
-                            <div class="badge1">{{$product->product['category']}}</div>
+                            @if ($product->product->category == "Education")
+                            <div class="badge1">{{$product->product->category}}</div>
+                            
                             @endif
+
                             <div class="product-tumb">
                                 <img src="{{ asset('images/vendors/' . $product->product->vendor . '.png') }}"  title="{{ $product->name }}" class="img-fuid" style="max-width: 120px;max-height: 120px;" />
                             </div>
