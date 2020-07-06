@@ -38,7 +38,6 @@ class PriceListRepository implements PriceListRepositoryInterface
 				break;
 				
 				case config('app.provider'):
-					
 					$provider_id=User::select('provider_id')->where('id', Auth::user()->id)->first();
 					$provider=Provider::where('id', $provider_id->provider_id)->first();				
 					$priceLists = PriceList::where('id', $provider->price_list_id)->get()->map->format();

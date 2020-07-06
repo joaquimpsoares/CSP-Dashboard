@@ -30,15 +30,7 @@ class PriceListController extends Controller
         $products = Product::get();
         $priceLists = $this->priceListRepository->all();    
         $prices = Price::get();
-        
-        // foreach($priceLists as $pricelist);{
-        // $result = PriceList::where('id', $pricelist )->with('prices')->get();
-        // // dump($result);
-        // }
-        // foreach($result as $price){
-        // $prices = $price->prices->map->format();
-        // dump($prices);
-        // }
+
         
         return view('priceList.index', compact('priceLists', 'prices', 'products'));
     }
@@ -50,35 +42,40 @@ class PriceListController extends Controller
         $priceLists = $this->priceListRepository->all();    
         $prices = Price::get();
         
-        // foreach($priceLists as $pricelist);{
-        // $result = PriceList::where('id', $pricelist )->with('prices')->get();
-        // // dump($result);
-        // }
-        // foreach($result as $price){
-        // $prices = $price->prices->map->format();
-        // dump($prices);
-        // }
-        
         return view('priceList.create', compact('priceLists', 'prices', 'products'));
     }
     
     public function getPrices($priceList)
     {
-
     
         $user = $this->getUser();
 
 		switch ($this->getUserLevel()) {
-			case config('app.super_admin'):
-					
-				$priceLists = PriceList::orderBy('name')->get()->map->format();
-				$prices = Price::get();
+            case config('app.super_admin'):
+                
+                $prices = $this->priceListRepository->listPrices();
+            
+                $provider = $user->provider;
+                $priceList = $provider->priceList;
+                $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
+                $prices = $priceList->prices;
+                    
+                // $prices = $this->priceListRepository->listPrices();
+
+                // $priceList = PriceList::where('')->orderBy('name')->get()->map->format();
+                // $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
+
+                // // $products = Product::get();
+
+                // // $prices = Price::get();
+                
 		break;
 
         case config('app.provider'):
+            
             $prices = $this->priceListRepository->listPrices();
-
-			$provider = $user->provider;
+            
+            $provider = $user->provider;
             $priceList = $provider->priceList;
             $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
             $prices = $priceList->prices;
@@ -117,7 +114,7 @@ class PriceListController extends Controller
 
         public function storePriceList(Request $request)
         {
-    dd($request->all());
+           dd($request->all());
             // $priceList = PriceList::find($priceList);
     
             
@@ -125,10 +122,10 @@ class PriceListController extends Controller
             //     'name' => $request['name'],
             //     'description' => $request['description'],
                 
-            // ]);
-    
-            return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.pricelist_updated_successfully')]);
-            }
+        // ]);
+
+          return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.pricelist_updated_successfully')]);
+        }
 
         public function import(Request $request )
         {
@@ -157,41 +154,41 @@ class PriceListController extends Controller
             // return back()->with('success', 'Excel Data Imported successfully');
         }
 
-        public function store(Request $request)
-        {
-            
-            $pricelist = PriceList::find($request->priceList);
+    public function store(Request $request)
+    {
+        
+        $pricelist = PriceList::find($request->priceList);
 
-            $price = Price::where('price_list_id', $pricelist->id)->get()->map->format();
+        $price = Price::where('price_list_id', $pricelist->id)->get()->map->format();
 
-            $product = Product::where('sku', $request->product_sku)->where('instance_id', $pricelist->instance_id)->first();
+        $product = Product::where('sku', $request->product_sku)->where('instance_id', $pricelist->instance_id)->first();
 
-            $validatedData = $request->validate([
-                'product_sku' => 'required|max:255',
-                'price' => 'required',
-                'msrp' => 'required|numeric',
-                'product_vendor' => 'required',
-                'currency' => 'required',
-                ]);
+        $validatedData = $request->validate([
+            'product_sku' => 'required|max:255',
+            'price' => 'required',
+            'msrp' => 'required|numeric',
+            'product_vendor' => 'required',
+            'currency' => 'required',
+            ]);
 
-            $price = new Price();
-            $price->name            = $product->name;
-            $price->price           = $validatedData['price'];
-            $price->msrp            = $validatedData['msrp'];
-            $price->product_vendor  = $validatedData['product_vendor'];
-            $price->currency        = $validatedData['currency'];
-            $price->instance_id     = $pricelist->instance_id;
-            $price->price_list_id   = $request->price_list_id;
+        $price = new Price();
+        $price->name            = $product->name;
+        $price->price           = $validatedData['price'];
+        $price->msrp            = $validatedData['msrp'];
+        $price->product_vendor  = $validatedData['product_vendor'];
+        $price->currency        = $validatedData['currency'];
+        $price->instance_id     = $pricelist->instance_id;
+        $price->price_list_id   = $request->price_list_id;
 
-            $price->product()->associate($product);
-            
-            $price->pricelist()->associate($pricelist);
+        $price->product()->associate($product);
+        
+        $price->pricelist()->associate($pricelist);
 
-            $price->save();
+        $price->save();
 
-            return back()->with('success', 'Excel Data Imported successfully');
+        return back()->with('success', 'Excel Data Imported successfully');
 
-        }
+    }
 
     
     public function clone($id)

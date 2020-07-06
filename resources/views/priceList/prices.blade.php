@@ -12,10 +12,10 @@
 			<a class="nav-link btn rgba-blue-light" id="contact-tab-md" data-toggle="tab" href="#contact-md" role="tab" aria-controls="contact-md"
 			aria-selected="false">{{ ucwords(trans_choice('messages.price_list', 1)) }}</a>
 		</li>
-		<li class="nav-item">
+		{{-- <li class="nav-item">
 			<a class="nav-link btn rgba-blue-light" id="profile-tab-md" data-toggle="tab" href="#profile-md" role="tab" aria-controls="profile-md"
 			aria-selected="false">{{ ucwords(trans_choice('messages.account', 1)) }}</a>
-		</li>
+		</li> --}}
 	</ul>
 	<div class="tab-content pt-5" id="myTabContentMD">
 		<div class="tab-pane fade show active" id="home-md" role="tabpanel" aria-labelledby="home-tab-md">

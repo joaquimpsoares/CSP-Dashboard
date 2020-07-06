@@ -65,8 +65,7 @@ class ImportProductsMicrosoftJob implements ShouldQueue
             $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)
             ->forCountry($this->country)->all($this->country);
 
-            // dd($products);
-
+                
             $products->each(function($importedProduct)use($instance){
             Log::info('CREATE products: '.$importedProduct);
 

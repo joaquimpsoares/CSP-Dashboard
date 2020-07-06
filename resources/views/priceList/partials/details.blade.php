@@ -30,7 +30,7 @@
                         </div>
                     </div>
                     @endif
-                </form>
+                {{-- </form> --}}
             </div>
         </div>
     </div>

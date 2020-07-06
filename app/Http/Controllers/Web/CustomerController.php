@@ -65,7 +65,6 @@ class CustomerController extends Controller
     
     public function store(Request $request) { 
 
-        // dd($request->all());
 
         $validate = $this->validator($request->all())->validate();
         
@@ -78,22 +77,18 @@ class CustomerController extends Controller
 
             $customer->resellers()->attach($user->reseller->id);
 
-            // dd($customer->resellers->first()->priceList->id);
 
             // $customer->priceLists->attach($customer->resellers->first()->priceList->id);
 
             $priceList = $customer->resellers->first()->priceList;
-            dd($priceList);
             
             
             $customer->priceLists()->associate($priceList);
             $customer->save();
 
-            dd($customer);
             
             $mainUser = $this->userRepository->create($validate, 'customer', $customer);
             
-            // dd($customer);
 
             DB::commit();
         } catch (\PDOException $e) {
@@ -110,7 +105,7 @@ class CustomerController extends Controller
             ]);
         }
 
-        return redirect()->route('customer.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Created successfully')]);
+        return redirect()->route('customer.index')->with(['alert' => 'success', 'message' => trans('messages.customer_created_successfully')]);
     }
 
 
@@ -184,7 +179,6 @@ class CustomerController extends Controller
     Public function CustomerServiceCosts($customer)
     {
 
-        // dd($customer->resellers->first()->provider->instances->first()->id);
 
         $instance = Instance::where('id', $customer->resellers->first()->provider->instances->first()->id)->first();
         try {
@@ -268,7 +262,6 @@ class CustomerController extends Controller
 
         $countryName = Country::where('id', $data['country_id'])->first();
         $countryRules = AppCountryrules::where('iso2Code', $countryName->iso_3166_2)->first();
-        // dd('/'.$countryRules->postalCodeRegex.'/');
         return Validator::make($data, [
             'company_name' => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
             'nif' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],

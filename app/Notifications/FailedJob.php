@@ -40,8 +40,8 @@ class FailedJob extends Notification
     {
         // $msteams = MsTeamsChannel::class;
 
-    // return explode(', ', $notifiable->notifications_preferences);
-    return ['msteams', 'mail', 'database'];
+    return explode(', ', $notifiable->notifications_preferences);
+    // return ['msteams', 'mail', 'database'];
     }
 
     public function toMsTeams($notifiable)

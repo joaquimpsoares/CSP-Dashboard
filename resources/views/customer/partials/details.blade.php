@@ -76,7 +76,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-12">
+                        {{-- <div class="col-md-12">
                             <label for="status">{{ ucwords(trans_choice('messages.price_list', 1)) }}</label>
                             <div class="form-group">
                                 <select name="status_id" class="form-select" sf-validate="required">
@@ -86,7 +86,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>

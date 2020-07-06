@@ -85,7 +85,7 @@ class Provider extends Model
     }
 
     public function priceList() {
-        return $this->hasMany('App\PriceList', 'instance_id', 'price_list_id');
+        return $this->belongsTo('App\PriceList');
     }
     
 }

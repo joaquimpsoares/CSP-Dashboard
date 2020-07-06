@@ -37,7 +37,8 @@ class SuccessJob extends Notification
      */
     public function via($notifiable)
     {
-        return ['msteams', 'mail', 'database'];
+        return explode(', ', $notifiable->notifications_preferences);
+        // return ['msteams', 'mail', 'database'];
     }
 
     public function toMsTeams($notifiable)
@@ -51,7 +52,8 @@ class SuccessJob extends Notification
                         "**Job ID:**    " . $this->event->job->getJobId()."<br/>".
                         "**Job Name:**  ". $this->event->job->resolveName()."<br/>".
                         "**Attempts:**  ". $this->event->job->attempts()."<br/>".
-                        "**Message Body:**  ". $this->event->job->getRawBody())
+                        // "**Message Body:**  ". $this->event->job->getRawBody())
+                        "**Message Body:**  ". $this->event)
                         // "teste" .$this->customer() ."<br/>".
             ->button('Please check it' ,'app()->environment()');
             // ->image('https://source.unsplash.com/random/800x800?animals,nature&q='.now()

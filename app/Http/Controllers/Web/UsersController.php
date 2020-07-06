@@ -46,7 +46,6 @@ class UsersController extends Controller
     {
         
         $user = $this->getUser();
-        // dd($user->provider);
 
         $provider = $user->provider;
         

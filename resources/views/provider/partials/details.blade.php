@@ -65,7 +65,14 @@
                         
                     </div>
                     <hr>
-                    <div class="row">
+                    <table class="table table-light">
+                        <tbody>
+                            <tr>
+                            <td>{{$provider->priceList->name}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    {{-- <div class="row">
                         <div class="col-md-12">
                             <label for="status">{{ ucwords(trans_choice('messages.price_list', 1)) }}</label>
                             <div class="form-group">
@@ -77,7 +84,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

@@ -13,10 +13,14 @@ use Tagydes\MicrosoftConnection\Models\Cart as TagydesCart;
 use Tagydes\MicrosoftConnection\Facades\Order as TagydesOrder;
 use Tagydes\MicrosoftConnection\Models\Product as TagydesProduct;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
+use Tagydes\KasperskyConnection\Facades\Customer as Tagydeskasp;
+
 
 //Marco verifica aqui esta linha... para a importação dos productos!
 
 // Route::resource('/analytics', 'AnalyticController');
+
+
 
 Route::get('/analytics', [
 	'uses' => 'AnalyticController@index',
@@ -75,8 +79,37 @@ Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlew
 
 **********************************************************************************/
 Route::get('/test', function() {
-	$customers = App\Customer::all();
-	dump($customers);
+	$newCustomer = Tagydeskasp::withCredentials('teset', 'whatever')->create([
+		"BillingPlan" => "Yearly",
+		"Sku"=> "KL4542XAPFG",
+		"Quantity"=> 30,
+		"CompanyName"=> "Joaquim",
+		"Email"=> "joaquim.soares@tagydes.com",
+		"Phone"=> "600032256",
+		"CustomerCode"=> "string",
+		"AddressLine1"=> "Calle",
+		"AddressLine2"=> "string",
+		"City"=> "Lisbon",
+		"State"=> "Lisbon",
+		"Zip"=> "1900-00",
+		"Country" => "SPA",
+		"Partner"=> "TAGYDES",
+		"Reseller"=> "TE27PT00",
+		"ExternalSubscriptionId"=>  "string",
+		"ExternalOrderId"=> "string",
+		"ExternalLineItemId"=> "string",
+		"AgreementAccepted"=> true,
+		"AgreementText"=> "string",
+		"AgreementTextHash"=> "string",
+		"ApprovalCode"=>  "ApprovalCode@TAGYDES@4",
+		"DeliveryEmail"=> "joaquim.soares@tagydes.com"
+		]);
+	
+	$result = MicrosoftTenantInfo::create([
+		'tenant_id' => $newCustomer->id,
+		'tenant_domain' => $this->order->domain,
+		'customer_id' => $customer->id
+		]);
 });
 /**********************************************************************************
 Fim Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
