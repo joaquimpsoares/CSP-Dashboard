@@ -11,14 +11,7 @@
                         @if (isset($filters['vendor']))
                         <input  type="hidden" name="vendor" value="{{ $filters['vendor']}}" />
                         @endif
-                        <div class="input-group mb-3">
-                            <select name="quantity" class="custom-select " id="quantity">
-                            </select>
-                            <div class="input-group-append">
-                                <button class="input-group-text" type="submit" for="quantity">{{ ucwords(__('messages.apply_filter')) }}</button>
-                            </div>
-                        </div>
-                        <input type="hidden" name="search" value="1" />
+                        
                     </form>
                 </div>
             </div>
