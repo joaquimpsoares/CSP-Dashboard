@@ -57,15 +57,22 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function getPriceOf($product_id) {
         $user = $this->getUser();
-        $instance = $user->reseller->provider->instances->first()->id;
-        $product = Product::where('id', $product_id)->where('instance_id', $instance)->first();
-
+        
         switch ($this->getUserLevel()) {
             case 'Provider':
                 # code...
-                break;
+            break;
+            
+            case 'Customer':
+                $instance = $user->customer->resellers->first()->provider->instances->first()->id;
+                $product = Product::where('id', $product_id)->where('instance_id', $instance)->first();
+                $priceList = $user->customer->priceLists->first();
+                $prices = Price::where('price_list_id', $priceList->id)->where('product_sku', $product->sku)->where('product_vendor', $product->vendor)->first();
+            break;
             
             case 'Reseller':
+                $instance = $user->reseller->provider->instances->first()->id;
+                $product = Product::where('id', $product_id)->where('instance_id', $instance)->first();
                 $priceList = $user->reseller->priceList;
                 $prices = Price::where('price_list_id', $priceList->id)->where('product_sku', $product->sku)->where('product_vendor', $product->vendor)->first();
                 break;

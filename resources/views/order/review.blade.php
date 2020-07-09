@@ -41,22 +41,20 @@
 										<div class="row">
 											<H1>{{ ucwords(trans_choice('messages.please_review_details', 1)) }}</H1>
 										</div>
-										<div class="card" style="width: 24em">
-											<div class="card-header">
-												<h4>{{ ucwords(trans_choice('messages.customer_selected', 1)) }}</h4>
-											</div>
+										
+										<div class="bd-callout bd-callout-info">
+											<h4>{{ ucwords(trans_choice('messages.customer_selected', 1)) }}</h4>
+											<hr>
 											<div class="card-body">
-												<h5 class="card-title">{{ $cart->customer->company_name ?? __('messages.select_customer') }}</h5>
-												
+												{{ $cart->customer->company_name ?? __('messages.select_customer') }}
 											</div>
 										</div>
+										
 										<br>
-										<div class="card" style="width: 24em">
-											<div class="card-header">
-												<h4>{{ ucwords(trans_choice('messages.agreement_signed', 1)) }}</h4>
-											</div>
+										<div class="bd-callout bd-callout-info">
+											<h4>{{ ucwords(trans_choice('messages.agreement_signed', 1)) }}</h4>
+											<hr>
 											<div class="card-body">
-												{{-- <h5 class="card-title">Title</h5> --}}
 												<p id="firstName">{{ $cart->agreement_firstname }} <br>
 													{{ $cart->agreement_lastname }}<br>
 													{{ $cart->agreement_email }}<br>
@@ -64,6 +62,7 @@
 												</p>
 											</div>
 										</div>
+										
 										<br>
 										<div class="row">
 											<!-- Default disabled -->

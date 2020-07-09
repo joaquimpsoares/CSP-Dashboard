@@ -138,7 +138,7 @@
         </div>
         <div class="row">
             <div class="col-md-1 col-lg-3">
-                <div class="dashboard-card">
+                <div class="dashboard-card ">
                     <div class="card card-body">
                         <div class="row">
                             <div class="col p-r-0 align-self-center">
@@ -222,7 +222,7 @@
                 </div>
             </div>
             <div class="col-md-1 col-lg-3">
-                <div class="dashboard-card">
+                <div class="dashboard-card ">
                     <div class="card card-body">
                         <div class="row">
                             <div class="col p-r-0 align-self-center">
@@ -280,7 +280,7 @@
         </div>
         <div class="row">
             <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
-                <div class="card res-mg-t-30 table-mg-t-pro-n">
+                <div class="card bd-callout-info res-mg-t-30 table-mg-t-pro-n">
                     <div class="card-body">
                         <h3 class="card-title">Azure Subscriptions</h3>
                         <table class="table table-hover responsive" id="azure">

@@ -49,7 +49,6 @@ class CustomerRepository implements CustomerRepositoryInterface
             case config('app.reseller'):
                 $reseller = $user->reseller;
                 $customers = $reseller->customers->map->format();
-                
             break;
             
             case config('app.subreseller'):

@@ -69,7 +69,7 @@ class OrderRepository implements OrderRepositoryInterface
 			break;
 
 			default:
-			return abort(403, __('errors.unauthorized_action'));
+			    return abort(403, __('errors.unauthorized_action'));
 			break;
 		}
 

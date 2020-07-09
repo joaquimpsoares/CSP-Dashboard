@@ -5,11 +5,9 @@
 
 @section('content')
 
-
-
 <div class="container">
 	<section class="section">
-		<div class="card">
+		<div class="card bd-callout-info">
 			<div class="card-body">
 				@if (Auth::user()->userLevel->name == "Customer")
 				<h4 class="card-title">{{ ucwords(trans_choice('messages.subscription', 2)) }} </h4>

@@ -7,7 +7,7 @@
 @section('content')
 <div class="container">
 	<section class="section">
-		<div class="card">
+		<div class="card bd-callout-info">
 			<div class="card-body">
 				<div class="md-form">
 					<div style="display: flex;">

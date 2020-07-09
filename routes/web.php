@@ -78,8 +78,19 @@ Route::get('accept/{token}', 'InviteController@accept')->name('accept');
 Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
 **********************************************************************************/
+
 Route::get('/test', function() {
-	$newCustomer = Tagydeskasp::withCredentials('teset', 'whatever')->create([
+
+	$certificate=Instance::where('type', 'kaspersky')->first();
+
+	$string = str_replace(array("\r\n", "\r", "\n"), "",  $certificate->external_token);
+	// $string = str_replace(array("\n", "\r"), ' ', $certificate->external_token);
+	// $string = trim(preg_replace('/\s\s+/', ' ', $certificate->external_token));
+
+	// dd($string);
+	// dd($certificate->external_token);
+	
+	$newCustomer = Tagydeskasp::withCredentials($certificate->external_url, $string)->create([
 		"BillingPlan" => "Yearly",
 		"Sku"=> "KL4542XAPFG",
 		"Quantity"=> 30,
@@ -93,7 +104,7 @@ Route::get('/test', function() {
 		"State"=> "Lisbon",
 		"Zip"=> "1900-00",
 		"Country" => "SPA",
-		"Partner"=> "TAGYDES",
+		"Partner"=> "$certificate->tenant_id",
 		"Reseller"=> "TE27PT00",
 		"ExternalSubscriptionId"=>  "string",
 		"ExternalOrderId"=> "string",
@@ -108,8 +119,10 @@ Route::get('/test', function() {
 	$result = MicrosoftTenantInfo::create([
 		'tenant_id' => $newCustomer->id,
 		'tenant_domain' => $this->order->domain,
-		'customer_id' => $customer->id
-		]);
+		'customer_id' => $customer->id,
+	], $certificate->external_url);
+
+
 });
 /**********************************************************************************
 Fim Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
@@ -148,7 +161,9 @@ Route::group(['middleware' => 'auth'], function () {
 	// Routes that platform managers and providers can access
 	Route::group(['middleware' => ['role:Super Admin|Admin|Provider']], function () {
 		
+		Route::get('/instances/kascreate', 'InstanceController@kascreate')->name('instances.kascreate');
 			Route::resource('/instances', 'InstanceController');
+			
 
 			Route::get('/instances/getMasterToken/{provider_id}', 'InstanceController@getMasterToken')->name('instances.getMasterToken');
 		
@@ -325,7 +340,12 @@ Route::group(['middleware' => 'auth'], function () {
 			->name('subscription.card');
 	
 	Route::resource('/cart', 'CartController');
+
+	Route::get('/store/categories/{vendor}', 'StoreController@categories')->name('store.categories');
+	Route::get('/store/searchstore/{category}', 'StoreController@searchstore')->name('store.searchstore');
+
 	Route::resource('/store', 'StoreController');
+
 	Route::get('products/test', 'ProductController@index2');
 	Route::resource('product', 'ProductController');
 	Route::resource('/order', 'OrderController');

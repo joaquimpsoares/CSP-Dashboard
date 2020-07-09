@@ -7,8 +7,7 @@
 @section('content')
 <div class="container">
 	
-	{{-- <livewire:searchstore/> --}}
-	<livewire:store/>
+	<livewire:searchstore :category="$category"/>
 	
 </div>	
 
@@ -19,4 +18,3 @@
 
 
 @endsection
-

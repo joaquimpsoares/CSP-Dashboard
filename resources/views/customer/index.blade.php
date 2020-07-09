@@ -6,7 +6,7 @@
 
 <div class="container">
 	<section class="section">
-		<div class="card">
+		<div class="card bd-callout-info">
 			<div class="card-body">
 				@if(Auth::user()->userLevel->id === 4)
 				<div class="md-form">

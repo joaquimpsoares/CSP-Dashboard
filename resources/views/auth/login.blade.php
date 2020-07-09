@@ -38,14 +38,35 @@
                     <form class="row login_form" action="{{ route('login') }}" method="post" id="contactForm" novalidate="novalidate">
                         @csrf
                         <div class="col-md-12 form-group">
-                            <input type="text" class="form-control" id="email" name="email" value="superadmin@admin.com" placeholder="Username">
+                            <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="superadmin@admin.com" placeholder="Username" required autocomplete="email" autofocus>
+                            @error('email')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                         <div class="col-md-12 form-group">
-                            <input type="password" class="form-control" id="password" value="admin123" name="password" placeholder="Password">
+                            <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" value="admin123" name="password" placeholder="Password" required autocomplete="current-password">
+                            @error('password')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
+                        {{-- <div class="form-group row">
+                            <div class="col-md-6 offset-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+
+                                    <label class="form-check-label" for="remember">
+                                        {{ __('Remember Me') }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div> --}}
                         <div class="col-md-12 form-group">
                             <div class="creat_account">
-                                <input type="checkbox" id="f-option2" name="selector">
+                                <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                                 <label for="f-option2">Keep me logged in</label>
                             </div>
                         </div>

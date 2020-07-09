@@ -29,6 +29,15 @@ class InstanceController extends Controller
         return view('packages.microsoft.create', compact('provider'));
     }
     
+    public function kascreate(Request $request)
+    {   
+        $provider_id = $request->provider;
+
+        $provider = Provider::findorfail($provider_id);
+        
+        return view('packages.kaspersky.create', compact('provider'));
+    }
+
     public function store(Request $request)
     {
         

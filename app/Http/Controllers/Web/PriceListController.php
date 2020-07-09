@@ -47,7 +47,7 @@ class PriceListController extends Controller
     
     public function getPrices($priceList)
     {
-    
+    // dd($priceList);
         $user = $this->getUser();
 
 		switch ($this->getUserLevel()) {
@@ -56,18 +56,15 @@ class PriceListController extends Controller
                 $prices = $this->priceListRepository->listPrices();
             
                 $provider = $user->provider;
-                $priceList = $provider->priceList;
-                $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
+                $instances = ($provider->instances->pluck('id'));
+                
+                $priceList = PriceList::where('id', $priceList)->first();
+
+                // dd($provider->instance_id);
+                $products = Product::whereIn('instance_id', $priceList)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
+                // dd($products);
                 $prices = $priceList->prices;
-                    
-                // $prices = $this->priceListRepository->listPrices();
-
-                // $priceList = PriceList::where('')->orderBy('name')->get()->map->format();
-                // $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
-
-                // // $products = Product::get();
-
-                // // $prices = Price::get();
+    
                 
 		break;
 
@@ -82,10 +79,12 @@ class PriceListController extends Controller
             
 		break;
 
-		case config('app.reseller'):
-			$prices = $this->priceListRepository->listPrices();
+        case config('app.reseller'):
             
-            $priceList = $user->reseller->priceList;
+
+            $priceList = PriceList::where('id', $priceList)->first();
+
+            $prices = $priceList->prices;
             $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
         
         break;
@@ -100,6 +99,7 @@ class PriceListController extends Controller
     public function update(Request $request, $priceList)
     {
 
+        // dd($request->all());
         $priceList = PriceList::find($priceList);
 
         

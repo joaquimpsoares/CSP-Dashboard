@@ -179,7 +179,6 @@ class CustomerController extends Controller
     Public function CustomerServiceCosts($customer)
     {
 
-
         $instance = Instance::where('id', $customer->resellers->first()->provider->instances->first()->id)->first();
         try {
             $customer = new TagydesCustomer([

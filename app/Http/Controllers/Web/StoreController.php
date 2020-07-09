@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\UserTrait;
 use App\Price;
+use App\Product;
 use App\Repositories\ProductRepositoryInterface;
 use App\Vendor;
 use Illuminate\Http\Request;
@@ -72,5 +73,31 @@ class StoreController extends Controller
         // $quantity = $this->quantity;
 
         return view('store.index');
+    }
+
+    public function categories($vendor) {
+
+        switch ($vendor) {
+            case 'microsoft':
+                $categories = Product::select('category')->where('vendor', $vendor)->groupby('category')->get();
+                // dd($categories);
+                break;
+            case 'kaspersky':
+                # code...
+                dd($vendor);
+                break;
+        
+            default:
+                # code...
+                break;
+        }
+
+        return view('store.categories', compact('categories'));
+    }
+
+    public function searchstore($category) {
+        $this->category = $category;
+
+        return view('store.searchstore', compact('category'));
     }
 }

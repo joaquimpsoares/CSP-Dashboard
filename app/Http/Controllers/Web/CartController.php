@@ -318,7 +318,6 @@ class CartController extends Controller
 
     public function checkout(Request $request)
     {
-
         $validate = $request->validate([
             'token' => 'required|uuid',
             'billing_cycle.*' => 'required|in:annual,monthly,none'
@@ -334,9 +333,36 @@ class CartController extends Controller
 
         $status = "customer";
 
-        $customers = $this->customerRepository->all();
-        $countries = Country::all();
-        $statuses = Status::get();
+        switch ($this->getUserLevel()) {
+            case config('app.super_admin'):
+
+                $orders = Order::get()->map->format()->toArray();
+
+			break;
+
+            case config('app.customer'):
+                $customers =  $this->getUser()->customer;
+                $countries = Country::all();
+                $statuses = Status::get();
+			break;
+
+            case config('app.provider'):
+            
+       
+            break;
+            
+            case config('app.reseller'):
+                
+                $customers = $this->customerRepository->all();
+                $countries = Country::all();
+                $statuses = Status::get();
+
+			break;
+
+			default:
+			    return abort(403, __('errors.unauthorized_action'));
+			break;
+		}
 
         return view('order.checkout', compact('cart', 'customers', 'status', 'countries', 'statuses'));
     }

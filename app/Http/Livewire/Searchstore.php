@@ -5,9 +5,11 @@ namespace App\Http\Livewire;
 use App\Price;
 use App\Vendor;
 use App\Product;
+use App\PriceList;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Traits\UserTrait;
+use Illuminate\Support\Facades\DB;
 
 class Searchstore extends Component
 {
@@ -18,11 +20,13 @@ class Searchstore extends Component
     public $search = '';
     public $categories = '';
     public $priceList = "null";
+    public $category;
 
     use WithPagination;
 
-    public function mount()
+    public function mount($category)
     {
+        $this->category = $category;
         $this->user = $this->getUser();
 
         $this->categories = Product::select('category')->distinct()->get();
@@ -30,11 +34,15 @@ class Searchstore extends Component
 
         switch ($this->level) {
             case 'Customer':
-                $this->priceList = $this->user->customer->priceList->id;
+                $this->priceList = $this->user->customer->priceLists->first()->id;
             break;
 
             case 'Reseller':
-                $this->priceList = $this->user->reseller->priceList->id;
+                $this->instance = $this->user->reseller->provider->instances->pluck('id');
+
+                $this->priceList = PriceList::wherein('id',$this->instance )->pluck('id')->toArray();
+                // dd($this->priceList);
+                // $this->priceList = $this->user->reseller->priceList->id;
             break;
             
             default:
@@ -52,8 +60,15 @@ class Searchstore extends Component
     {
         return view('livewire.searchstore', 
         [
-            'prices' => Price::having('price_list_id', $this->priceList)->where('name', 'like', '%' . $this->search . '%')
-            ->orwhere('product_sku', 'LIKE', "%$this->search%")->paginate(9),
+
+            'prices' => DB::table('prices')
+            ->join('products', 'prices.product_sku', '=', 'products.sku')
+            ->where('category', $this->category)
+            ->having('price_list_id', $this->priceList)->where('prices.name', 'like', '%' . $this->search . '%')
+            ->orwhere('product_sku', 'LIKE', "%$this->search%")->where('category', $this->category)->paginate(9),
+           
+            // Price::having('price_list_id', $this->priceList)->where('name', 'like', '%' . $this->search . '%')
+            // ->orwhere('product_sku', 'LIKE', "%$this->search%")->where('category', $this->category)->paginate(9),
         ]);
     }
 }

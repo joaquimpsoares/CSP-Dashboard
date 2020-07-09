@@ -8,13 +8,15 @@
 <div class="container col-xm-12">
     <div class="row">
         <div class="col-md-12   ">
-            <div class="card">
+            <div class="bd-callout bd-callout-info">
+            {{-- <div class="card"> --}}
                 <div class="view overlay">
-                    <div class="card-body">
+                    {{-- <div class="card-body"> --}}
                         <div class="panel-block">
                             <form class="form-horizontal form-bordered" method="POST" action="{{ route('subscription.update', $subscriptions->id) }}">
                                 @method('PATCH')
                                 @csrf
+                                  
                                 <div class="field-group">
                                     <div class="field is-inline-block-desktop">
                                         <h3 class="card-title">{{ ucwords(trans_choice('messages.subscription_name', 1)) }}</h3> 
