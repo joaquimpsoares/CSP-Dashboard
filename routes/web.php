@@ -342,7 +342,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::resource('/cart', 'CartController');
 
 	Route::get('/store/categories/{vendor}', 'StoreController@categories')->name('store.categories');
-	Route::get('/store/searchstore/{category}', 'StoreController@searchstore')->name('store.searchstore');
+	Route::get('/store/searchstore/{vendor}/{category}', 'StoreController@searchstore')->name('store.searchstore');
 
 	Route::resource('/store', 'StoreController');
 

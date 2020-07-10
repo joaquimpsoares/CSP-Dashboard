@@ -6,8 +6,8 @@
 </style>
 @section('content')
 <div class="container">
-	
-	<livewire:searchstore :category="$category"/>
+	{{-- {{dd($vendor)}} --}}
+	<livewire:searchstore  :vendor="$vendor" :category="$category"/>
 	
 </div>	
 

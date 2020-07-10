@@ -15,7 +15,6 @@ class StoreController extends Controller
 
     use UserTrait;
 
-	private $quantity = 12;
 	private $productRepository;
 
 	public function __construct(ProductRepositoryInterface $productRepository) 
@@ -26,51 +25,6 @@ class StoreController extends Controller
 
 
     public function index(Request $request) {
-
-
-        // $user = $this->getUser();
-        // $userLevel = $this->getUserLevel();
-
-    	// $filters = $request->validate([
-        //     'name' => 'string|nullable',
-        //     'vendor' => 'nullable|exists:App\Vendor,name',
-        //     'search' => 'integer|size:1',
-        //     'page' => 'integer',
-        //     'quantity' => 'integer'
-        // ]);
-
-        // if (isset($filters['quantity']) && $filters['quantity'] > 0 && $filters['quantity'] !== 12) 
-        //     $this->quantity = $filters['quantity'];
-            
-
-        // $products = $this->productRepository->all($filters, $this->quantity);
-
-        // $products = [];
-        // $prices = null;
-        // switch ($userLevel) {
-        //     case 'Provider':
-        //         # code...
-        //         break;
-            
-        //     case 'Reseller':
-        //         $priceList = $user->reseller->priceList->id;
-        //         $prices = Price::where('price_list_id', $priceList)->paginate($this->quantity);
-
-        //         foreach ($prices as $price) {
-        //             $products[] = $price->product;
-        //         }
-
-
-        //         break;
-            
-        //     default:
-        //         # code...
-        //         break;
-        // }
-        
-        // $vendors = Vendor::orderBy('name')->get();
-
-        // $quantity = $this->quantity;
 
         return view('store.index');
     }
@@ -84,7 +38,7 @@ class StoreController extends Controller
                 break;
             case 'kaspersky':
                 # code...
-                dd($vendor);
+                $categories = Product::select('category')->where('vendor', $vendor)->groupby('category')->get();
                 break;
         
             default:
@@ -92,12 +46,14 @@ class StoreController extends Controller
                 break;
         }
 
-        return view('store.categories', compact('categories'));
+        return view('store.categories', compact('categories', 'vendor'));
     }
 
-    public function searchstore($category) {
+    public function searchstore($category,$vendor) {
         $this->category = $category;
+        $this->vendor = $vendor;
 
-        return view('store.searchstore', compact('category'));
+
+        return view('store.searchstore', compact('category','vendor'));
     }
 }

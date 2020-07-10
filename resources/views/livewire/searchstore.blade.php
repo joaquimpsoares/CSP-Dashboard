@@ -20,7 +20,7 @@
                 @if (!empty($prices))
                 {{-- {{dd($prices)}} --}}
                 @foreach($prices as $product)
-                {{-- {{dd($product->category)}} --}}
+                {{-- {{dd($product)}} --}}
                 <div class="product-card">
                     @if ($product->category == "Trial")
                     <div class="badge1">{{$product->category}}</div>
@@ -44,7 +44,7 @@
                             <div class="product-links">
                                 <form method="POST" action="{{ route('cart.add_to_cart') }}">
                                     @csrf
-                                    {{-- <input type="hidden" name="product_id" value="{{$product['id']}}"> --}}
+                                    <input type="hidden" name="product_id" value="{{$product->id}}">
                                     <button type="submit" ><i class="fa fa-shopping-cart"></i></a></button>
                                 </form>
                             </div>
