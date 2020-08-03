@@ -96,6 +96,7 @@ class ImportProductsMicrosoftJob implements ShouldQueue
                     'addons' => $importedProduct->addons->map(function($item){
                         return serialize($item);
                     }),
+                    'upgrade_target_offers' => $importedProduct->upgradeTargetOffers,
                     'supported_billing_cycles' => $importedProduct->supportedBillingCycles,
                     'conversion_target_offers' => $importedProduct->conversionTargetOffers,
                     'resellee_qualifications' => $importedProduct->reselleeQualifications,

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Tier;
 use App\Country;
 use App\Product;
 use App\Instance;
@@ -9,6 +10,7 @@ use App\Provider;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Jobs\ImportProductsMicrosoftJob;
+use App\Price;
 use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
 use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
@@ -32,7 +34,9 @@ class ProductController extends Controller
     public function index()
     {
         
-        $products = Product::all();
+        $products = $this->productRepository->showall();
+
+        // $products = Product::all();
 
         return  view('product.index', compact('products'));
     }
@@ -44,27 +48,68 @@ class ProductController extends Controller
     }
 
     public function create()
-    {}
+    {
+        // dd(Tier::get());
+        // dd($product = Price::first()->tiers);
+        $instances = Instance::get();
+
+        return view('product.create', compact('instances'));
+    }
 
 
     public function store(Request $request)
-    {}
-
-
-    public function show(Product $product)
     {
-        $product = Product::findOrFail($product->id);
+        // dd($request->all());
+        $product = new Product();
+            $product->vendor       = $request->vendor;
+            $product->instance_id       = '3';
+
+            $product->sku       = $request->sku;
+            $product->name       = $request->name;
+            $product->description       = $request->description;
+            $product->addons       = $request->addons;
+            $product->minimum_quantity       = $request->minimum_quantity;
+            $product->maximum_quantity       = $request->maximum_quantity;
+            $product->limit       = $request->limit;
+            $product->billing       = $request->billing;
+            $product->supported_billing_cycles       = $request->supported_billing_cycles;
+            $product->category       = $request->category;
+            $product->resellee_qualifications       = $request->resellee_qualifications;
+            // $product->name       = $request->name;
+            // $product->name       = $request->name;
+            // $product->name       = $request->name;
+          
+            $product->save();
+
+
+    }
+
+
+    public function show($id)
+    {
+        $product = Product::findOrFail($id);
 
         return view('product.show', compact('product'));
     }
 
 
     public function edit(Product $product)
-    {}
+    {
+        // foreach ($product as $key => $product) {
+            $addons = $product->getaddons()->all();
+            // dd($addons);
+        // }
+
+
+
+        return view('product.edit', compact('product','addons'));
+    }
 
 
     public function update(Request $request, Product $product)
     {
+
+        // dd($request->all());
         $product = Product::findOrFail($request);
 
         $this->validate($request, [
@@ -108,7 +153,7 @@ class ProductController extends Controller
 
         ]);
 
-        $instance->update($request->all());
+        // $instance->update($request->all());
     }
 
 

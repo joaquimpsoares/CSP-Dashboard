@@ -16,7 +16,7 @@ class CreateProviderResellerCustomerSeeder extends Seeder
      */
     public function run()
     {
-        $active = Status::where('name', 'message.active')->first();
+        $active = Status::where('name', 'messages.active')->first();
 
         $provider = Provider::create([
     		'company_name' => 'Provider 1',

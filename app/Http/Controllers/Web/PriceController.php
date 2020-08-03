@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Price;
+use App\Tier;
 use Illuminate\Http\Request;
 
 class PriceController extends Controller
@@ -70,7 +71,9 @@ class PriceController extends Controller
      */
     public function edit(Price $price)
     {
-        //
+        $price = Price::find($price->id);
+
+        return view('price.edit', compact('price'));
     }
 
     /**
@@ -82,7 +85,17 @@ class PriceController extends Controller
      */
     public function update(Request $request, Price $price)
     {
-        //
+
+        $pricerequest = $request->except(['_token', '_method', 'tier_name', 'min_quantity', 'max_quantity' ]);
+
+        Price::where('id', $price->id)->update($pricerequest);
+
+        $price->tiers()->update([
+            'max_quantity' => $request->max_quantity,
+            'min_quantity' => $request->min_quantity
+        ]);
+
+        return back();
     }
 
     /**

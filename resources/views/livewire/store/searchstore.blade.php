@@ -1,6 +1,5 @@
 <section class="section">
     <div class="row">
-        {{-- <livewire:filterstore/> --}}
         <div class="col-md-10">
             <div class="row">
                 <div class="col-3">
@@ -11,16 +10,15 @@
                         @if (isset($filters['vendor']))
                         <input  type="hidden" name="vendor" value="{{ $filters['vendor']}}" />
                         @endif
-                        
                     </form>
                 </div>
             </div>
+            
             <div class="row">
                 <input wire:model="search" class="form-control" type="text" placeholder="Search products/sku..."/>
                 @if (!empty($prices))
-                {{-- {{dd($prices)}} --}}
                 @foreach($prices as $product)
-                {{-- {{dd($product)}} --}}
+                {{-- {{dd($product->price)}} --}}
                 <div class="product-card">
                     @if ($product->category == "Trial")
                     <div class="badge1">{{$product->category}}</div>

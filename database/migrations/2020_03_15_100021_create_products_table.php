@@ -41,8 +41,8 @@ class CreateProductsTable extends Migration
             $table->string('acquisition_type')->nullable();
 
             $table->string('category')->nullable();
-            $table->string('upgrade_target_offers')->nullable();
-            
+
+            $table->text('upgrade_target_offers')->nullable();
             $table->text('addons')->nullable();
             $table->text('supported_billing_cycles')->nullable();
             $table->text('conversion_target_offers')->nullable();
@@ -53,6 +53,7 @@ class CreateProductsTable extends Migration
             $table->index(['sku', 'instance_id']);
 
             $table->foreign('instance_id')->references('id')->on('instances');
+
         });
     }
 

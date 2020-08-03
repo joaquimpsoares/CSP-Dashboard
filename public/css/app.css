@@ -10991,6 +10991,7 @@ a:hover {
 
 .dashboard-card {
   width: 190px;
+  border-radius: 52px;
   box-shadow: 0 5px 10px #dfdfdf;
   margin: 30px auto;
 }

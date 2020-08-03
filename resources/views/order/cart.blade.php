@@ -31,15 +31,17 @@
                                     </thead>
                                     <tbody>
                                         @forelse($cart->products as $product)
+                                        {{dd($product->prices->tiers)}}
+                                         @foreach ($product->prices as $item)
+                                             {{dd($item)}}
+                                         @endforeach
                                         <tr class="product">
                                             <td>
                                                 {{ $product->name }}
                                             </td>
                                             <td>
-                                                <div class="col">
-                                                    <div class="product-quantity">
-                                                        <input type="number" value="{{ $product->pivot->quantity }}" name="{{ $product->pivot->id }}" id="quantity" class="form-control" step="1" min="{{ $product->minimum_quantity }}" max="{{ $product->maximum_quantity }}" style="max-width: 10em;" required />
-                                                    </div>
+                                                <div class="product-quantity">
+                                                    <input type="number" value="{{ $product->pivot->quantity }}" name="{{ $product->pivot->id }}" id="quantity" class="form-control" step="1" min="{{ $product->minimum_quantity }}" max="{{ $product->maximum_quantity }}" style="max-width: 10em;" required />
                                                 </div>
                                             </td>
                                             <td>
@@ -162,7 +164,7 @@
     
     function updateProductSubTotal(item) {
         var selectedBillingCycle = $('#' + item.name).val();
-
+        
         var productRow = $(item).parent().parent().parent().parent();
         var price = parseFloat(productRow.children('.product-price').text());
         var quantity = item.value;

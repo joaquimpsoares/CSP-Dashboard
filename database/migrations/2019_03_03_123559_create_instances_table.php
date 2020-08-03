@@ -26,6 +26,7 @@ class CreateInstancesTable extends Migration
             $table->string('external_id')->nullable();
             $table->string('external_type')->nullable();
             $table->string('external_url')->nullable();
+            $table->binary('certificate')->nullable(); 
             
             $table->text('external_token')->nullable();
             $table->timestamp('external_token_updated_at')->nullable();

@@ -77,13 +77,10 @@ class CustomerController extends Controller
 
             $customer->resellers()->attach($user->reseller->id);
 
-
-            // $customer->priceLists->attach($customer->resellers->first()->priceList->id);
-
             $priceList = $customer->resellers->first()->priceList;
             
-            
             $customer->priceLists()->associate($priceList);
+            
             $customer->save();
 
             
@@ -94,9 +91,9 @@ class CustomerController extends Controller
         } catch (\PDOException $e) {
             DB::rollBack();
             if ($e->errorInfo[1] == 1062) {
-                $errorMessage = "message.user_already_exists";
+                $errorMessage = "messages.user_already_exists";
             } else {
-                $errorMessage = "message.error";
+                $errorMessage = "messages.error";
             }
             return redirect()->route('customer.index')
             ->with([

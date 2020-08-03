@@ -46,10 +46,13 @@ class Price extends Model
 		
 	}
 
-	public function provider() {
-		return $this->belongsTo('App\Provider', 'price_list_id', 'id');
-	}
+	// public function provider() {
+	// 	return $this->belongsTo('App\Provider', 'price_list_id', 'id');
+	// }
 	
+	public function tiers() {
+        return $this->belongsToMany('App\Tier');
+    }
 
 
 }

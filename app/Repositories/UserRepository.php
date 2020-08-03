@@ -25,7 +25,7 @@ class UserRepository implements UserRepositoryInterface
 		switch ($this->getUserLevel()) {
             case config('app.super_admin'):
             $users = User::with(['country' => function ($query) {
-                $query->where('name', 'message.active');
+                $query->where('name', 'messages.active');
             }])
             ->orderBy('username')
             ->get();
@@ -33,7 +33,7 @@ class UserRepository implements UserRepositoryInterface
             
             case config('app.admin'):
             $users = User::with(['country' => function ($query) {
-                $query->where('name', 'message.active');
+                $query->where('name', 'messages.active');
             }])
             ->orderBy('username')
             ->get();
@@ -45,7 +45,7 @@ class UserRepository implements UserRepositoryInterface
             $users = User::whereHas('resellers', function($query) use  ($resellers) {
                 $query->whereIn('id', $resellers);
             })->with(['country' => function ($query) {
-                $query->where('name', 'message.active');
+                $query->where('name', 'messages.active');
             }])
             ->orderBy('username')->toSql();
 

@@ -26,6 +26,25 @@ class StoreController extends Controller
 
     public function index(Request $request) {
 
+        $user = $this->getUser();
+
+        // dd($user);
+
+        switch ($this->getUserLevel()) {
+            case config('app.super_admin'):
+                return abort(403, __('errors.access_with_resellers_credentials'));
+
+                break;
+            case 'app.admin':
+                return abort(403, __('errors.access_with_resellers_credentials'));
+            break;
+        
+            default:
+                # code...
+                break;
+        }
+
+
         return view('store.index');
     }
 
@@ -42,8 +61,8 @@ class StoreController extends Controller
                 break;
         
             default:
-                # code...
-                break;
+            return abort(403, __('errors.unauthorized_action'));
+        break;
         }
 
         return view('store.categories', compact('categories', 'vendor'));

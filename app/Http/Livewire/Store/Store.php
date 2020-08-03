@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Http\Livewire\Store;
 
 use App\Product;
 use Livewire\Component;
@@ -24,6 +24,13 @@ class Store extends Component
                 $this->priceList = Price::get('product_vendor')->groupby('product_vendor');
                 // dd($this->priceList);
                 break;
+
+                case 'Customer':
+
+                    $this->instance = $this->user->customer->resellers->first()->provider->instances->pluck('id');
+                    $this->priceList = Price::get('product_vendor')->groupby('product_vendor');
+                    // dd($this->priceList);
+                    break;
             
             default:
                 # code...
@@ -35,7 +42,7 @@ class Store extends Component
     
     public function render()
     {
-        return view('livewire.store', [
+        return view('livewire.store.store', [
             
             'products' => Product::select('vendor')
             ->wherein('instance_id', $this->instance)

@@ -13,6 +13,7 @@ class Product extends Model
     protected $casts = [
         'has_addons' => 'boolean',
         'addons' => 'collection',
+        'upgrade_target_offers' => 'collection',
         'supported_billing_cycles' => 'collection',
         'conversion_target_offers' => 'collection',
         'resellee_qualifications' => 'collection',
@@ -64,6 +65,10 @@ class Product extends Model
         return $this->hasOne('App\Price', ['product_sku', 'instance_id'], ['sku', 'instance_id'])->where('product_vendor', $this->vendor);
     }
 
+    public function prices() {
+        return $this->hasOne('App\Price', 'product_sku', 'sku');
+    }
+
     public function instance() {
         return $this->hasOne('App\Instance', 'id', 'instance_id');
     }
@@ -74,5 +79,9 @@ class Product extends Model
 
     public function subsriptions() {
         return $this->hasMany('App\Subscription', 'sku', 'product_id');
+    }
+
+    public function tiers() {
+        return $this->hasMany('App\Tier', 'product_sku', 'sku');
     }
 }

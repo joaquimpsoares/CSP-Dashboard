@@ -1,6 +1,3 @@
-{{-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" /> --}}
-{{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>   --}}
-
 <div class="card">
     <div class="card-body">
         <div class="row">
@@ -65,26 +62,26 @@
                         
                     </div>
                     <hr>
-                    <table class="table table-light">
+                    {{-- <table class="table table-light">
                         <tbody>
                             <tr>
                             <td>{{$provider->priceList->name}}</td>
                             </tr>
                         </tbody>
-                    </table>
-                    {{-- <div class="row">
+                    </table> --}}
+                    <div class="row">
                         <div class="col-md-12">
                             <label for="status">{{ ucwords(trans_choice('messages.price_list', 1)) }}</label>
                             <div class="form-group">
                                 <select name="status_id" class="form-select" sf-validate="required">
-                                    <option value="choose.." ></option>
-                                    @foreach ($provider->priceList as $priceList) 
-                                    <option value="{{$priceList->id}}" selected>{{$priceList->name}}</option>
+                                    <option value="{{$provider->status->id}}" selected>{{ucwords(trans_choice($provider->status->name,1))}}</option>
+                                    @foreach ($statuses as $status)    
+                                    <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                    </div> --}}
+                    </div>
                 </div>
             </div>
         </div>

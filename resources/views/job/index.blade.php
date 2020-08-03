@@ -3,17 +3,9 @@
 
 @section('content')
 
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
-
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
-
-
 <div class="container">
     <section class="section">
-        <div class="card">
+        <div class="card bd-callout-info">
             <div class="">
                 <i class="fas fa-tasks fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
                 <div class="card-body">
@@ -23,7 +15,6 @@
                             aria-controls="pills-home" aria-selected="true"><span class="badge badge-pill badge-success" style="float:right;margin-bottom:-10px;">{{ $running }}</span>Active Tasks</a>
                         </li>
                         <li class="nav-item">
-                            
                             <a class="nav-link btn peach-gradient" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab"
                             aria-controls="pills-profile" aria-selected="false" ><span class="badge badge-pill badge-warning" style="float:right;margin-bottom:-10px;">{{ $failedJobs->count() }}</span>
                             {{ ucwords(trans_choice('messages.failed_task', 2)) }}</a>
@@ -31,7 +22,9 @@
                     </ul>
                     <div class="tab-content pt-2 pl-1" id="pills-tabContent">
                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                            <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.active_task', 2)) }}</a></h4>
+                            <livewire:jobs.indexjobs/>
+
+                            {{-- <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.active_task', 2)) }}</a></h4>
                             <table id="job" class="display responsive " width="100%">
                                 <thead>
                                     <tr>
@@ -68,11 +61,12 @@
                                     </tr>
                                     @endforelse
                                 </tbody>
-                            </table>
+                            </table> --}}
                         </div>
                         <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                            <h4 class="card-title"><a>  </a></h4>
-                            <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.failed_tasks', 1)) }}</a></h4>
+                            <livewire:jobs.failedjobs/>
+
+                            {{-- <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.failed_tasks', 1)) }}</a></h4>
                             <table id="failedjob" class="display responsive " width="100%">
                                 <thead>
                                     <tr>
@@ -115,7 +109,7 @@
                                 </tbody>
                             </table>
                             
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>

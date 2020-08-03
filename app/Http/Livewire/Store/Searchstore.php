@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Http\Livewire\Store;
 
 use App\Price;
-use App\Vendor;
-use App\Product;
 use App\PriceList;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -18,7 +16,8 @@ class Searchstore extends Component
     public $search = '';
     public $priceList = "null";
     public $category = " ";
-    public $vendorv= " ";
+    public $vendor= " ";
+    // public $price= " ";
     
     use WithPagination;
     
@@ -27,6 +26,7 @@ class Searchstore extends Component
             $this->category = $category;
             // dd($this->category);
             $this->vendor = $vendor;
+            // dd($this->vendor);
             $this->user = $this->getUser();
             
             $this->level = $this->getUserLevel();
@@ -56,18 +56,15 @@ class Searchstore extends Component
             // }
             
             switch ($this->level) {
+
                 case 'Customer':
-                    $this->priceList = $this->user->customer->priceLists->first()->id;
+                    $this->instance = $this->user->customer->resellers->first()->provider->instances->pluck('id');
+                    $this->priceList = PriceList::wherein('instance_id',$this->instance )->pluck('id')->toArray();
                 break;
                 
                 case 'Reseller':
-
-
                     $this->instance = $this->user->reseller->provider->instances->pluck('id');
-                    // dd($this->instance);
-                    
                     $this->priceList = PriceList::wherein('instance_id',$this->instance )->pluck('id')->toArray();
-                    // dd($this->priceList);
                 break;
                 
                 default:
@@ -78,19 +75,19 @@ class Searchstore extends Component
         $this->price = Price::select('price_list_id')->groupby('price_list_id')->where('product_vendor',$this->category)
         ->wherein('instance_id',$this->instance)->first();
 
-        // dd($this->prices->price_list_id);
+        // // dd($this->prices->price_list_id);
     }
 
     public function render()
     {
-        return view('livewire.searchstore', 
+        return view('livewire.store.searchstore', 
         [
-            
             'prices' => DB::table('prices')
             ->join('products', 'prices.product_sku', '=', 'products.sku')
             ->where('products.category', $this->vendor)
             ->where('prices.product_vendor', $this->category)
-            ->having('price_list_id', $this->price->price_list_id)->where('prices.name', 'like', '%' . $this->search . '%')
+            // ->having('price_list_id', $this->price->price_list_id)
+            ->where('prices.name', 'like', '%' . $this->search . '%')
             ->orwhere('product_sku', 'LIKE', "%$this->search%")->where('category', $this->category)
             ->paginate(9),
             

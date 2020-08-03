@@ -50,6 +50,7 @@ Route::get('/analytics/show/', [
 
 Route::resource('/priceList', 'PriceListController');
 
+Route::resource('/price', 'PriceController');
 
 
 Route::get('/jobs', 'JobsController@index')->name('jobs');
@@ -82,15 +83,16 @@ Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlew
 Route::get('/test', function() {
 
 	$certificate=Instance::where('type', 'kaspersky')->first();
+	// dd($certificate->Certificate);
 
-	$string = str_replace(array("\r\n", "\r", "\n"), "",  $certificate->external_token);
+	// $string = str_replace(array("\r\n", "\r", "\n"), "",  $certificate->Certificate);
 	// $string = str_replace(array("\n", "\r"), ' ', $certificate->external_token);
 	// $string = trim(preg_replace('/\s\s+/', ' ', $certificate->external_token));
 
 	// dd($string);
 	// dd($certificate->external_token);
 	
-	$newCustomer = Tagydeskasp::withCredentials($certificate->external_url, $string)->create([
+	$newCustomer = Tagydeskasp::withCredentials($certificate->external_url, $certificate)->create([
 		"BillingPlan" => "Yearly",
 		"Sku"=> "KL4542XAPFG",
 		"Quantity"=> 30,
@@ -112,9 +114,11 @@ Route::get('/test', function() {
 		"AgreementAccepted"=> true,
 		"AgreementText"=> "string",
 		"AgreementTextHash"=> "string",
-		"ApprovalCode"=>  "ApprovalCode@TAGYDES@4",
+		"ApprovalCode"=>  "ApprovalCode@TAGYDES@5",
 		"DeliveryEmail"=> "joaquim.soares@tagydes.com"
 		]);
+
+		dd($newCustomer);
 	
 	$result = MicrosoftTenantInfo::create([
 		'tenant_id' => $newCustomer->id,
@@ -347,6 +351,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::resource('/store', 'StoreController');
 
 	Route::get('products/test', 'ProductController@index2');
+	Route::get('products/{id}', 'ProductController@show');
+
 	Route::resource('product', 'ProductController');
 	Route::resource('/order', 'OrderController');
 	

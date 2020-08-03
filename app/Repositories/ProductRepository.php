@@ -32,6 +32,27 @@ class ProductRepository implements ProductRepositoryInterface
 
     }
 
+    public function showall($filters = null, $quantity = null)
+	{
+        if (empty($filters) && empty($quantity))
+        {
+            $products = Product::
+            orderBy('name')->get();
+        } else {
+            if (isset($filters['search'])) {
+                $products = $this->searchFilter($filters, $quantity);
+            } else {
+                $products = Product::where('addons', '<>', '[]')
+                ->orderBy('vendor')
+                ->orderBy('name')
+                ->get();
+            }
+        }
+
+        return $products;
+
+    }
+
     public function searchFilter($filters, $quantity) {
 
         $products = (new Product)->newQuery();
@@ -64,10 +85,16 @@ class ProductRepository implements ProductRepositoryInterface
             break;
             
             case 'Customer':
-                $instance = $user->customer->resellers->first()->provider->instances->first()->id;
-                $product = Product::where('id', $product_id)->where('instance_id', $instance)->first();
-                $priceList = $user->customer->priceLists->first();
-                $prices = Price::where('price_list_id', $priceList->id)->where('product_sku', $product->sku)->where('product_vendor', $product->vendor)->first();
+
+                $product = Product::where('id', $product_id)->first();
+                // dd($product->sku);
+                $priceList = Price::where('product_sku',$product->sku)->first()->price_list_id;
+                // dd($priceList);
+                $prices = Price::where('price_list_id', $priceList)->where('product_sku', $product->sku)->where('product_vendor', $product->vendor)->first();
+                // $instance = $user->customer->resellers->first()->provider->instances->first()->id;
+                // $product = Product::where('id', $product_id)->where('instance_id', $instance)->first();
+                // $priceList = $user->customer->priceLists->first()->dd();
+                // $prices = Price::where('price_list_id', $priceList->id)->where('product_sku', $product->sku)->where('product_vendor', $product->vendor)->first();
             break;
             
             case 'Reseller':

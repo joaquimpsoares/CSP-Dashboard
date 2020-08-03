@@ -43,7 +43,7 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
                 $subscriptions = Customer::whereHas('resellers', function($query) use  ($resellers) {
                 	$query->whereIn('id', $resellers);
                 })->with(['country', 'status' => function ($query) {
-					$query->where('name', 'message.active');
+					$query->where('name', 'messages.active');
 				}])
                 ->orderBy('company_name')->get();
 
@@ -62,7 +62,7 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
                 $subscriptions = Customer::whereHas('resellers', function($query) use  ($customer) {
                 	$query->whereIn('id', $customer);
                 })->with(['country', 'status' => function ($query) {
-					$query->where('name', 'message.active');
+					$query->where('name', 'messages.active');
 				}])
                 ->orderBy('company_name')->get();
             break;

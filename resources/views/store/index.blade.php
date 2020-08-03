@@ -6,10 +6,7 @@
 </style>
 @section('content')
 <div class="container">
-	
-	{{-- <livewire:searchstore/> --}}
-	<livewire:store/>
-	
+	<livewire:store.store/>	
 </div>	
 
 

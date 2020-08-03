@@ -8,11 +8,16 @@ use App\PriceList;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
 
 
 class InstanceController extends Controller
 {
+
+    public $provider;
+
     public function index()
     {
         $instances = Instance::all();
@@ -40,7 +45,7 @@ class InstanceController extends Controller
 
     public function store(Request $request)
     {
-        
+
         if($request->direct_reseller === 'on' )
             $external_type = 'direct';
         else
@@ -51,20 +56,22 @@ class InstanceController extends Controller
             'tenant_id' => 'required|String',
             'external_url' => 'String'
         ]);
-        
-        
+
         $create = Instance::create([
             'name' => $request->name,
             'provider_id' => $request->provider_id,
             'tenant_id' => $request->tenant_id,
-            'type' => 'microsoft',
+            'type' => $request->type,
             'external_type' => $external_type,
             'external_id' => '66127fdf-8259-429c-9899-6ec066ff8915',
-            'external_url' => $request->external_url
+            'external_url' => $request->external_url,
+            'certificate'  => Crypt::encryptString($request->certificate),
+
         ]);
 
         $priceList = PriceList::updateOrcreate([
             'instance_id' => $create->id,
+            'name' => $request->name,
             ]);
 
         
@@ -93,15 +100,33 @@ class InstanceController extends Controller
             */
             public function edit($id)
             {
-                $instances = Instance::findOrFail($id);
                 
-                if ($instances->external_token_updated_at == null)
+                $instances = Instance::findOrFail($id);
+
+                switch ($instances->type) {
+                    case 'kaspersky':
+
+                        try {
+                            $certificate = Crypt::decryptString($instances->certificate);
+                        } catch (DecryptException $e) {
+                            //
+                        }
+                        return view('packages.kaspersky.kaspersky', compact('instances','certificate'));
+                        break;
+                    
+                    default:
+                    if ($instances->external_token_updated_at == null)
                     
                     $expiration = $instances->external_token_updated_at;
                 
-                else
+                    else
                     
                     $expiration = $instances->external_token_updated_at->addDays(90);
+                    return view('packages.microsoft.microsoft', compact('instances', 'expiration'));
+                        break;
+                }
+                
+                
                 
                 return view('packages.microsoft.microsoft', compact('instances', 'expiration'));
             }
@@ -115,7 +140,6 @@ class InstanceController extends Controller
             */
             public function update(Request $request, $id)
             {
-                
                 if($request->direct_reseller === 'on' )
                     $external_type = 'direct';
                 else
@@ -129,17 +153,18 @@ class InstanceController extends Controller
                     'external_type' => 'String|in:direct,indirect',
                     'external_url' => 'String'
                 ]);
+
                 
                 $instance = Instance::findOrFail($id);
                 
                 $instance->name             = $request->input('name');
                 $instance->tenant_id        = $request->input('tenant_id');
-                // $instance->user_id          = $user->id;
                 $instance->external_type    = $external_type;
                 $instance->external_url     = $request->input('external_url');
+
+                $instance->certificate      = Crypt::encryptString($request->input('certificate'));
                 
                 $instance->save();
-
 
                 
                 return redirect()->back()->with('success', 'Instance updated succesfully')->withInput(['tab'=>'tabPageID']);;

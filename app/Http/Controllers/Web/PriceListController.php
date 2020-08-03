@@ -16,6 +16,7 @@ use App\Repositories\PriceListRepositoryInterface;
 class PriceListController extends Controller
 {
     use UserTrait;
+    public $priceList;
     
     private $priceListRepository;
     
@@ -30,7 +31,6 @@ class PriceListController extends Controller
         $products = Product::get();
         $priceLists = $this->priceListRepository->all();    
         $prices = Price::get();
-
         
         return view('priceList.index', compact('priceLists', 'prices', 'products'));
     }
@@ -64,7 +64,6 @@ class PriceListController extends Controller
                 $products = Product::whereIn('instance_id', $priceList)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
                 // dd($products);
                 $prices = $priceList->prices;
-    
                 
 		break;
 
@@ -80,7 +79,6 @@ class PriceListController extends Controller
 		break;
 
         case config('app.reseller'):
-            
 
             $priceList = PriceList::where('id', $priceList)->first();
 

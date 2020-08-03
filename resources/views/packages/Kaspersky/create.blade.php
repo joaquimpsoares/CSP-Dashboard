@@ -2,8 +2,6 @@
 
 @section('content')
 
-
-
 <div class="container">
     <div class="card">
         <div class="">
@@ -15,6 +13,7 @@
                         <div class="row">
                             <form  method="POST" action="{{ route('instances.store') }}" class="col s12">
                                 @csrf
+                                <input type="hidden" id="type" name="type" class="form-control" value="kaspersky">      
                                 <div class="row">
                                     <div class="input-field col s4">
                                         <div class="md-form">
@@ -50,25 +49,19 @@
                                         </div>
                                     </div>
                                 </div>
-                                <hr>
-                                {{-- <div class="row">
+                                <div class="row">
                                     <div class="input-field col s4">
-                                        <div class="custom-control custom-radio">
-                                            <label class="custom-control-label" for="defaultGroupExample1">{{ ucwords(trans_choice('messages.direct_reseller', 1)) }}</label>
-                                            <input type="radio" class="custom-control-input" id="defaultGroupExample1" name="direct_reseller">
-                                        </div>
-                                        <div class="custom-control custom-radio">
-                                            <label class="custom-control-label" for="defaultGroupExample2">{{ ucwords(trans_choice('messages.indirect_reseller', 1)) }}</label>
-                                            <input type="radio" class="custom-control-input" id="defaultGroupExample2" name="indirect_reseller">
+                                        <div class="md-form">
+                                            <label for="certificate">{{ ucwords(trans_choice('messages.certificate', 1)) }}</label>
+                                            <textarea textarea name="certificate" id="certificate" cols="120" rows="10" type="text" id="certificate" name="certificate" class="form-control" value="{{old('certificate')}}"> </textarea>
                                         </div>
                                     </div>
-                                </div> --}}
+                                </div>
+                                <hr>
                             </div>
                             <button type="submit" class="btn submit_btn">{{ ucwords(trans_choice('messages.create', 1)) }}</button>
                             <a href="{{url()->previous()}}" type="submit" class="genric-btn primary">{{ ucwords(trans_choice('messages.cancel', 1)) }}</a>
-                            {{-- <div class="float-right">
-                                <a  target="_blank" href="https://login.microsoftonline.com/common/oauth2/authorize?client_id=66127fdf-8259-429c-9899-6ec066ff8915&response_type=code&redirect_uri=https://partnerconsent.tagydes.com/&prompt=admin_consent" class="button is-rounded is-warning is-outlined">{{ ucwords(__('messages.refresh_token')) }}</a>
-                            </div> --}}
+
                         </div>
                     </form>
                 </div>

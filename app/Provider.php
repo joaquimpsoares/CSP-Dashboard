@@ -51,14 +51,12 @@ class Provider extends Model
 
 	public function getMyCustomersId() {
 		$customers = [];
-
 		$resellers = $this->resellers()->whereNull('main_office')->get(['id']);
 		foreach ($resellers as $reseller) {
 			foreach ($reseller->customers()->get(['id']) as $customer) {
 				$customers[] = $customer->id;
 			}
 		}
-
 		return $customers;
 	}
 
@@ -76,12 +74,10 @@ class Provider extends Model
 	
 	public function users() {
     	return $this->hasMany('App\User');
-    }
+	}
 
-
-	public function instances()
-    {
-    	return $this->hasMany('App\Instance');
+	public function instances() {
+		return $this->hasMany('App\Instance');
     }
 
     public function priceList() {

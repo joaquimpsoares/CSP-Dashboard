@@ -194,9 +194,9 @@ class CartController extends Controller
         } catch (\PDOException $e) {
             DB::rollBack();
             if ($e->errorInfo[1] == 1062) {
-                $errorMessage = "message.user_already_exists";
+                $errorMessage = "messages.user_already_exists";
             } else {
-                $errorMessage = "message.error";
+                $errorMessage = "messages.error";
             }
             return redirect()->route('customer.index')
             ->with([

@@ -24,7 +24,7 @@ class ResellerRepository implements ResellerRepositoryInterface
 			case config('app.super_admin'):
 			$resellers = Reseller::whereNull('main_office')
 			->with(['country', 'subResellers', 'status' => function ($query) {
-				$query->where('name', 'message.active');
+				$query->where('name', 'messages.active');
 			}])
 			->get()
 			->map->format();
@@ -33,7 +33,7 @@ class ResellerRepository implements ResellerRepositoryInterface
 			case config('app.admin'):
 			$resellers = Reseller::whereNull('main_office')
 			->with(['country', 'subResellers', 'status' => function ($query) {
-				$query->where('name', 'message.active');
+				$query->where('name', 'messages.active');
 			}])
 			->get()
 			->map->format();
@@ -42,7 +42,7 @@ class ResellerRepository implements ResellerRepositoryInterface
 			case config('app.provider'):
 			$resellers = $user->provider->resellers()->whereNull('main_office')
 			->with(['country', 'subResellers', 'status' => function ($query) {
-				$query->where('name', 'message.active');
+				$query->where('name', 'messages.active');
 			}])
 			->orderBy('company_name')
 			->get()->map->format();

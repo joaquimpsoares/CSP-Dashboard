@@ -15,7 +15,7 @@
             </thead>
             <tbody>
                 @forelse($resellers as $reseller)
-                @if($reseller['status'] === 'message.active')
+                @if($reseller['status'] === 'messages.active')
                 <tr class="odd gradeX">
                     <td width="3%" class="f-s-600"><a href="{{ $reseller['path'] }}">{{ $reseller['id'] }}</a></td>
                     <td><a href="{{ $reseller['path'] }}">{{ $reseller['company_name'] }}</a></td>

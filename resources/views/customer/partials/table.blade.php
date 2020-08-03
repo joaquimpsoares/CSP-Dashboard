@@ -14,7 +14,7 @@
             </thead>
             <tbody>
                 @forelse($customers as $customer)
-                @if($customer['status'] === 'message.active')
+                @if($customer['status'] === 'messages.active')
                 <tr>
                     <td width="3%" class="f-s-600"><a href="{{ $customer['path'] }}">{{ $customer['id'] }}</a></td>
                     <td><a href="{{ $customer['path'] }}">{{ $customer['company_name'] }}</a></td>

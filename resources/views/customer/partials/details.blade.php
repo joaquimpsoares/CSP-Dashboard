@@ -69,7 +69,7 @@
                             <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
                             <div class="form-group">
                                 <select name="status_id" class="form-select" sf-validate="required">
-                                    <option value="{{$customer->status->id}}" selected>{{$customer->status->name}}</option>
+                                    <option value="{{$customer->status->id}}" selected>{{ucwords(trans_choice($customer->status->name, 1))}}</option>
                                     @foreach ($statuses as $status)    
                                     <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
                                     @endforeach

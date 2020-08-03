@@ -1,6 +1,7 @@
 <div class="container">
 	<div class="card">
 		<div class="card-body">
+
 			{{-- @if(Auth::user()->userLevel->id === 4) --}}
 			<div class="md-form">
 				<div style="display: flex;">
@@ -72,13 +73,12 @@
 					</tr>
 				</thead>
 				<tbody>
-
-					@forelse($prices as $price)
+					@forelse($prices as $price)	
 					<tr>
 						<td></td>
 						<td	>{{ $price->product->id }}</td>
 						<td	>{{ $price->product_sku }}</td>
-						<td><a href="{{ "price/" .$price->product->id }}"> {{ $price->name }}</a></td>
+						<td><a href="{{ route('price.edit', $price->id)}}"> {{ $price->name }}</a></td>
 						<td>{{ $price->price }}</td>
 						<td>{{ $price->msrp }}</td>
 						<td>{{ ucwords(trans_choice('messages.action', 2)) }}</td>

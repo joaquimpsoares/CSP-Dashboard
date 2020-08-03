@@ -98,9 +98,6 @@
         
     </style>
     
-    {{-- <link rel="stylesheet" href="https://colorlib.com/polygon/kiaalap/css/font-awesome.min.css"> --}}
-    {{-- <link rel="stylesheet" href="https://colorlib.com/polygon/kiaalap/style.css"> --}}
-    
     <div class="preloader" style="display: none;">
     </div>
     <div class="container">
@@ -138,7 +135,7 @@
         </div>
         <div class="row">
             <div class="col-md-1 col-lg-3">
-                <div class="dashboard-card ">
+                <div class="dashboard-card">
                     <div class="card card-body">
                         <div class="row">
                             <div class="col p-r-0 align-self-center">
