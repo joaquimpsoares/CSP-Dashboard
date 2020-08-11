@@ -59,28 +59,30 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        dd($request->all());
         $product = new Product();
             $product->vendor       = $request->vendor;
             $product->instance_id       = '3';
 
-            $product->sku       = $request->sku;
-            $product->name       = $request->name;
-            $product->description       = $request->description;
-            $product->addons       = $request->addons;
-            $product->minimum_quantity       = $request->minimum_quantity;
-            $product->maximum_quantity       = $request->maximum_quantity;
-            $product->limit       = $request->limit;
-            $product->billing       = $request->billing;
+            $product->sku                       = $request->sku;
+            $product->name                      = $request->name;
+            $product->description               = $request->description;
+            $product->category                  = $request->category;
+            $product->addons                        = $request->addons;
+            $product->minimum_quantity              = $request->minimum_quantity;
+            $product->maximum_quantity              = $request->maximum_quantity;
+            $product->limit                         = $request->limit;
+            $product->billing                        = $request->billing;
             $product->supported_billing_cycles       = $request->supported_billing_cycles;
-            $product->category       = $request->category;
-            $product->resellee_qualifications       = $request->resellee_qualifications;
+            $product->category                       = $request->category;
+            $product->resellee_qualifications        = $request->resellee_qualifications;
             // $product->name       = $request->name;
             // $product->name       = $request->name;
             // $product->name       = $request->name;
           
             $product->save();
 
+        return back();
 
     }
 
@@ -109,11 +111,10 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
 
-        // dd($request->all());
-        $product = Product::findOrFail($request);
+        $product = Product::findOrFail($product->id);
 
         $this->validate($request, [
-            'name' => 'String',
+            'name' => 'required|String',
             'minimum_quantity' => 'Integer',
             'maximumQuantity' => 'Integer',
             'limit' => 'Integer',
@@ -134,26 +135,28 @@ class ProductController extends Controller
 
         $product->update([
 
-            'name' => $product->name,
-            'description' => $product->description,
-            'uri' => $product->uri,
-            'minimum_quantity' => $product->minimum_quantity,
-            'maximum_quantity' => $product->maximum_quantity,
-            'limit' => $product->limit,
-            'term' => $product->term,
-            'is_available_for_purchase' => $product->is_available_for_purchase,
-            'locale' => $product->locale,
-            'country' => $product->country,
-            'is_trial' => $product->is_trial,
-            'has_addons' => $product->has_addons,
-            'is_autoRenewable' => $product->is_autoRenewable,
-            'billing' => $product->billing,
-            'acquisition_type' => $product->acquisition_type,
-            'supported_billing_cycles' => $product->supported_billing_cycles,
+            'name' => $request->name,
+            'description' => $request->description,
+            'uri' => $request->uri,
+            'category' => $request->category,
+            'minimum_quantity' => $request->minimum_quantity,
+            'maximum_quantity' => $request->maximum_quantity,
+            'limit' => $request->limit,
+            'term' => $request->term,
+            'is_available_for_purchase' => $request->is_available_for_purchase,
+            'locale' => $request->locale,
+            'country' => $request->country,
+            'is_trial' => $request->is_trial,
+            'has_addons' => $request->has_addons,
+            'is_autoRenewable' => $request->is_autoRenewable,
+            'billing' => $request->billing,
+            'acquisition_type' => $request->acquisition_type,
+            'supported_billing_cycles' => $request->supported_billing_cycles,
 
-        ]);
+            ]);
+            
+            return back()->withInput();
 
-        // $instance->update($request->all());
     }
 
 

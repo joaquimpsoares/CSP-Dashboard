@@ -148,6 +148,14 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="input-field col s4">
+                                                <div class="md-form">
+                                                    <label for="form1">{{ ucwords(trans_choice('messages.product_category', 1)) }}</label>
+                                                    <input type="text" id="form1" name="category"  class="form-control" value="{{$product->category}}">
+                                                </div>
+                                            </div>
+                                        </div>
                                         @if ($product->addons != "[]")
                                         <div class="row">
                                             <div class="input-field col s4">
@@ -222,14 +230,7 @@
                                                 </div>
                                             </div>
                                         </div>  
-                                        <div class="row">
-                                            <div class="input-field col s4">
-                                                <div class="md-form">
-                                                    <label for="form1">{{ ucwords(trans_choice('messages.product_category', 1)) }}</label>
-                                                    <input type="text" id="form1" name="category"  class="form-control" value="{{$product->category}}">
-                                                </div>
-                                            </div>
-                                        </div>
+                                        
                                         <div class="row">
                                             <div class="input-field col s4">
                                                 <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.trial', 1)) }}</label>  

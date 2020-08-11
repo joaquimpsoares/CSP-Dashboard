@@ -3,9 +3,10 @@
 @section('content')
 
 <style>
-        
-        
-        
+    
+   
+    
+    
     /*! CSS Used from: https://www.wrappixel.com/demos/admin-templates/material-pro/assets/plugins/chartist-js/dist/chartist-init.css */
     .chartist-chart{position:relative;}
     .usage .ct-series-a .ct-line{stroke:#fff;}
@@ -30,303 +31,191 @@
     /*! CSS Used from: https://www.wrappixel.com/demos/admin-templates/material-pro/assets/plugins/vectormap/jquery-jvectormap-2.0.2.css */
     
     
-    .card{margin-bottom:30px;}
-    .card .card-subtitle{font-weight:300;margin-bottom:15px;color:#99abb4;}
-    .card-inverse .card-subtitle{color:rgba(255, 255, 255, 0.65);}
-    .card-success{background:#26c6da;border-color:#26c6da;}
-    .card-primary{background:#7460ee;border-color:#7460ee;}
-    .card-primary{background:#7460ee;border-color:#7460ee;}
     
-    .flex-wrapper {
-        display: flex;
-        flex-flow: row nowrap;
-    }
-    
-    .single-chart {
-        width: 33%;
-        justify-content: space-around ;
-    }
-    
-    .circular-chart {
-        display: block;
-        margin: 10px auto;
-        max-width: 80%;
-        max-height: 250px;
-    }
-    
-    .circle-bg {
-        fill: none;
-        stroke: #eee;
-        stroke-width: 3.8;
-    }
-    
-    .circle {
-        fill: none;
-        stroke-width: 2.8;
-        stroke-linecap: round;
-        animation: progress 1s ease-out forwards;
-    }
-    
-    @keyframes progress {
-        0% {
-            stroke-dasharray: 0 100;
-        }
-    }
-    
-    .circular-chart.orange .circle {
-        stroke: #ff9f00;
-    }
-    
-    .circular-chart.green .circle {
-        stroke: #4CC790;
-    }
-    
-    .circular-chart.blue .circle {
-        stroke: #3c9ee5;
-    }
-    
-    .percentage {
-        fill: #666;
-        font-family: sans-serif;
-        font-size: 0.5em;
-        text-anchor: middle;
-    }
-
-    .dashboard-card {
-    width: 280px;
-    position: relative;
-    box-shadow: 0 5px 10px #dfdfdf;
-    margin: 10px 5px 10px ;
-    background: #fafafa;
-}
     
 </style>
 
 <link rel="stylesheet" href="https://colorlib.com/polygon/kiaalap/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://colorlib.com/polygon/kiaalap/style.css">
 
-    
-    <div class="preloader" style="display: none;">
+
+<div class="preloader" style="display: none;">
+</div>
+<div class="container">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor">Dashboard</h3>
+        </div>
+        <div class="col-md-7 col-4 align-self-center">
+            <div class="d-flex m-t-10 justify-content-end">
+                <div class="d-flex m-r-20 m-l-10 hidden-md-down">
+                    <div class="chart-text m-r-10">
+                        <h6 class="m-b-0"><small>THIS MONTH</small>
+                        </h6>
+                        <h4 class="m-t-0 text-info">$58,356
+                            
+                        </h4>
+                    </div>
+                    <div class="spark-chart">
+                        <div id="monthchart"><canvas width="60" height="35" style="display: inline-block; width: 60px; height: 35px; vertical-align: top;"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex m-r-20 m-l-10 hidden-md-down">
+                    <div class="chart-text m-r-10">
+                        <h6 class="m-b-0"><small>LAST MONTH</small></h6>
+                        <h4 class="m-t-0 text-primary">$48,356</h4>
+                    </div>
+                    <div class="spark-chart">
+                        <div id="lastmonthchart"><canvas width="60" height="35" style="display: inline-block; width: 60px; height: 35px; vertical-align: top;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="container">
-        <div class="row page-titles">
-            <div class="col-md-5 col-8 align-self-center">
-                <h3 class="text-themecolor">Dashboard</h3>
-            </div>
-            <div class="col-md-7 col-4 align-self-center">
-                <div class="d-flex m-t-10 justify-content-end">
-                    <div class="d-flex m-r-20 m-l-10 hidden-md-down">
-                        <div class="chart-text m-r-10">
-                            <h6 class="m-b-0"><small>THIS MONTH</small>
-                            </h6>
-                            <h4 class="m-t-0 text-info">$58,356
-                                
-                            </h4>
+    <div class="row">
+        <div class="col-md-1 col-lg-3">
+            <div class="dashboard-card">
+                <div class="card card-body">
+                    <div class="row">
+                        <div class="col p-r-0 align-self-center">
+                            <h2 class="font-light m-b-0"> {{$countCustomers}} </h2>
+                            <h6 class="text-muted">Customers</h6>
                         </div>
-                        <div class="spark-chart">
-                            <div id="monthchart"><canvas width="60" height="35" style="display: inline-block; width: 60px; height: 35px; vertical-align: top;"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex m-r-20 m-l-10 hidden-md-down">
-                        <div class="chart-text m-r-10">
-                            <h6 class="m-b-0"><small>LAST MONTH</small></h6>
-                            <h4 class="m-t-0 text-primary">$48,356</h4>
-                        </div>
-                        <div class="spark-chart">
-                            <div id="lastmonthchart"><canvas width="60" height="35" style="display: inline-block; width: 60px; height: 35px; vertical-align: top;"></canvas>
-                            </div>
+                        <div class="col text-right align-self-center">
+                            <svg viewBox="0 0 36 36" class="circular-chart orange">
+                                <path class="circle-bg"
+                                d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"
+                                />
+                                <path class="circle"
+                                stroke-dasharray="{{$countCustomers}}, 100"
+                                d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"
+                                />
+                                <text x="18" y="20.35" class="percentage">{{$countCustomers/100}}%</text>
+                            </svg>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-1 col-lg-3">
-                <div class="dashboard-card">
-                    <div class="card card-body">
-                        <div class="row">
-                            <div class="col p-r-0 align-self-center">
-                                <h2 class="font-light m-b-0"> {{$countCustomers}} </h2>
-                                <h6 class="text-muted">Customers</h6>
-                            </div>
-                            <div class="col text-right align-self-center">
-                                <svg viewBox="0 0 36 36" class="circular-chart orange">
-                                    <path class="circle-bg"
-                                    d="M18 2.0845
-                                    a 15.9155 15.9155 0 0 1 0 31.831
-                                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    />
-                                    <path class="circle"
-                                    stroke-dasharray="{{$countCustomers}}, 100"
-                                    d="M18 2.0845
-                                    a 15.9155 15.9155 0 0 1 0 31.831
-                                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    />
-                                    <text x="18" y="20.35" class="percentage">{{$countCustomers/100}}%</text>
-                                </svg>
-                            </div>
+        <div class="col-md-1 col-lg-3">
+            <div class="dashboard-card">
+                <div class="card card-body">
+                    <div class="row">
+                        <div class="col p-r-0 align-self-center">
+                            <h2 class="font-light m-b-0">{{$countCustomers}}</h2>
+                            <h6 class="text-muted">Customers</h6>
+                        </div>
+                        <div class="col text-right align-self-center">
+                            <svg viewBox="0 0 36 36" class="circular-chart green">
+                                <path class="circle-bg"
+                                d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"
+                                />
+                                <path class="circle"
+                                stroke-dasharray="{{$countCustomers}}, 100"
+                                d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"
+                                />
+                                <text x="18" y="20.35" class="percentage">{{$countCustomers/100}}%</text>
+                            </svg>
                         </div>
                     </div>
                 </div>
             </div>
-            {{-- <div class="col-md-1 col-lg-3">
-                <div class="dashboard-card">
-                    <div class="card card-body">
-                        <div class="row">
-                            <div class="col p-r-0 align-self-center">
-                                <h2 class="font-light m-b-0"> {{$provider['resellers']->count()}} </h2>
-                                <h6 class="text-muted">Resellers</h6>
-                            </div>
-                            <div class="col text-right align-self-center">
-                                <svg viewBox="0 0 36 36" class="circular-chart orange">
-                                    <path class="circle-bg"
-                                    d="M18 2.0845
-                                    a 15.9155 15.9155 0 0 1 0 31.831
-                                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    />
-                                    <path class="circle"
-                                    stroke-dasharray="{{$provider['resellers']->count()}}, 100"
-                                    d="M18 2.0845
-                                    a 15.9155 15.9155 0 0 1 0 31.831
-                                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    />
-                                    <text x="18" y="20.35" class="percentage">{{$provider['resellers']->count()/100}}%</text>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
-            <div class="col-md-1 col-lg-3">
-                <div class="dashboard-card">
-                    <div class="card card-body">
-                        <div class="row">
-                            <div class="col p-r-0 align-self-center">
-                                <h2 class="font-light m-b-0">{{$countCustomers}}</h2>
-                                <h6 class="text-muted">Customers</h6>
-                            </div>
-                            <div class="col text-right align-self-center">
-                                <svg viewBox="0 0 36 36" class="circular-chart green">
-                                    <path class="circle-bg"
-                                    d="M18 2.0845
-                                    a 15.9155 15.9155 0 0 1 0 31.831
-                                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    />
-                                    <path class="circle"
-                                    stroke-dasharray="{{$countCustomers}}, 100"
-                                    d="M18 2.0845
-                                    a 15.9155 15.9155 0 0 1 0 31.831
-                                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    />
-                                    <text x="18" y="20.35" class="percentage">{{$countCustomers/100}}%</text>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-1 col-lg-3">
-                <div class="dashboard-card">
-                    <div class="card card-body">
-                        <div class="row">
-                            <div class="col p-r-0 align-self-center">
-                                <h2 class="font-light m-b-0">{{$countSubscriptions}}</h2>
-                                <h6 class="text-muted">subscriptions</h6>
-                            </div>
-                            <div class="col text-right align-self-center">
-                                <svg viewBox="0 0 36 36" class="circular-chart green">
-                                    <path class="circle-bg"
-                                    d="M18 2.0845
-                                    a 15.9155 15.9155 0 0 1 0 31.831
-                                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    />
-                                    <path class="circle"
-                                    stroke-dasharray="{{$countSubscriptions}}, 100"
-                                    d="M18 2.0845
-                                    a 15.9155 15.9155 0 0 1 0 31.831
-                                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    />
-                                    <text x="18" y="20.35" class="percentage">{{$countSubscriptions/100}}%</text>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {{-- <div class="col-md-1 col-lg-3">
-                <div class="dashboard-card">
-                    <div class="card card-body">
-                        <div class="row">
-                            <div class="col p-r-0 align-self-center">
-                                <h2 class="font-light m-b-0"> {{$countSubscriptions}}</h2>
-                                <h6 class="text-muted">About To Expire</h6>
-                            </div>
-                            <div class="col text-right align-self-center">
-                                <svg viewBox="0 0 36 36" class="circular-chart orange">
-                                    <path class="circle-bg"
-                                    d="M18 2.0845
-                                    a 15.9155 15.9155 0 0 1 0 31.831
-                                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    />
-                                    <path class="circle"
-                                    stroke-dasharray="{{$countSubscriptions}}, 100"
-                                    d="M18 2.0845
-                                    a 15.9155 15.9155 0 0 1 0 31.831
-                                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    />
-                                    <text x="18" y="20.35" class="percentage">{{$countSubscriptions/100}}%</text>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
         </div>
-        <div class="row">
-            <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
-                <div class="card res-mg-t-30 table-mg-t-pro-n">
-                    <div class="card-body">
-                        <h3 class="card-title">Azure Subscriptions</h3>
-                        <table class="table table-hover responsive" id="azure">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th>Company Name</th>
-                                    <th>Monthly Budget</th>
-                                    <th>Current Estimated</th>
-                                    <th>budget</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Company test</td>
-                                    <td>${{$budget}}</td>
-                                    <td>${{$costSum}}</td>
-                                    <td><ul class="country-state">
-                                        <h2><span class="counter">{{round($average, 0)}}</span>%   <small></small></h2> 
-                                        <div class="pull-right"><span class="counter">{{round($average, 0)}}</span>%<i class="fa fa-level-up text-danger ctn-ic-1"></i></div>
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-success ctn-vs-4" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:100%;"> <span class="sr-only">{{round($average, 0)}} Budget</span></div>
-                                        </div>
-                                    </ul>
-                                </td>
+        <div class="col-md-1 col-lg-3">
+            <div class="dashboard-card">
+                <div class="card card-body">
+                    <div class="row">
+                        <div class="col p-r-0 align-self-center">
+                            <h2 class="font-light m-b-0">{{$countSubscriptions}}</h2>
+                            <h6 class="text-muted">subscriptions</h6>
+                        </div>
+                        <div class="col text-right align-self-center">
+                            <svg viewBox="0 0 36 36" class="circular-chart green">
+                                <path class="circle-bg"
+                                d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"
+                                />
+                                <path class="circle"
+                                stroke-dasharray="{{$countSubscriptions}}, 100"
+                                d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"
+                                />
+                                <text x="18" y="20.35" class="percentage">{{$countSubscriptions/100}}%</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        {{-- <div class="col-lg-8  col-md-12">
+            <div class="card_news">
+                <div class="img">
+                    <img src="https://partners.kaspersky.com/s/sfsites/c/resource/KL_banner_loginMSP" alt="image univers">
+                </div>
+                <div class="content">
+                    <h3 class="title">Kaspersky Onboard</h3>
+                    <p class="text">
+                        If you haven't done yet, please check the link for you to obtain a Kaspersky Reseller Pin.
+                    </p>
+                    <div class="buttons">
+                        <a href="https://www.kasperskypartners.com/?eid=registe" class="btn-continue">Continue &#8594;</a>
+                    </div>
+                </div>
+            </div>
+        </div> --}}
+        <div class="col-lg-4 col-md-12">
+            <div class="card_news">
+                <div class="img">
+                    <img src="https://partners.kaspersky.com/s/sfsites/c/resource/KL_banner_loginMSP" alt="image univers">
+                </div>
+                <div class="content">
+                    <h3 class="title">Kaspersky Onboard</h3>
+                    <p class="text">
+                        If you haven't done yet, 
+                        please check the link to become Kaspersky Reseller once you register you'll recieve a Kaspersky Reseller Pin.
+                    </p>
+                    <div class="buttons">
+                        {{-- <button class="btn-back">Back</button> --}}
+                        <a href="https://www.kasperskypartners.com/?eid=registe"  target="_blank" class="btn-continue">Become a Member &#8594;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
+            <div class="card res-mg-t-30 table-mg-t-pro-n">
+                <div class="card-body">
+                    <h3 class="card-title">Azure Subscriptions</h3>
+                    <table class="table table-hover responsive" id="azure">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Company Name</th>
+                                <th>Monthly Budget</th>
+                                <th>Current Estimated</th>
+                                <th>budget</th>
                             </tr>
-                            <tr>    
+                        </thead>
+                        <tbody>
+                            <tr>
                                 <td>Company test</td>
-                                <td> ${{$budget}}</td>
-                            <td>${{$costSum}}</td>
-                                    <td><ul class="country-state">
-                                        <h2><span class="counter">{{round($average, 0)}}</span>%   <small></small></h2> 
-                                        <div class="pull-right"><span class="counter">{{round($average, 0)}}</span>%<i class="fa fa-level-up text-danger ctn-ic-1"></i></div>
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-success ctn-vs-4" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:100%;"> <span class="sr-only">{{round($average, 0)}} Budget</span></div>
-                                        </div>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>    
-                                <td>Company test</td>
-                                <td> ${{$budget}}</td>
+                                <td>${{$budget}}</td>
                                 <td>${{$costSum}}</td>
                                 <td><ul class="country-state">
                                     <h2><span class="counter">{{round($average, 0)}}</span>%   <small></small></h2> 
@@ -337,67 +226,50 @@
                                 </ul>
                             </td>
                         </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                        <tr>    
+                            <td>Company test</td>
+                            <td> ${{$budget}}</td>
+                            <td>${{$costSum}}</td>
+                            <td><ul class="country-state">
+                                <h2><span class="counter">{{round($average, 0)}}</span>%   <small></small></h2> 
+                                <div class="pull-right"><span class="counter">{{round($average, 0)}}</span>%<i class="fa fa-level-up text-danger ctn-ic-1"></i></div>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-success ctn-vs-4" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:100%;"> <span class="sr-only">{{round($average, 0)}} Budget</span></div>
+                                </div>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>    
+                        <td>Company test</td>
+                        <td> ${{$budget}}</td>
+                        <td>${{$costSum}}</td>
+                        <td><ul class="country-state">
+                            <h2><span class="counter">{{round($average, 0)}}</span>%   <small></small></h2> 
+                            <div class="pull-right"><span class="counter">{{round($average, 0)}}</span>%<i class="fa fa-level-up text-danger ctn-ic-1"></i></div>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-success ctn-vs-4" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:100%;"> <span class="sr-only">{{round($average, 0)}} Budget</span></div>
+                            </div>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
-<div class="row">
-    <div class="col-lg-4 col-md-12">
-        <div class="card-success">
-            <div class="card-body">
-                <h4 class="card-title">Sales Overview</h4>
-                <h6 class="card-subtitle">Ample Admin Vs Pixel Admin</h6>
-                <div class="amp-pxl" style="height: 300px;">
-                    <div class="chartist-tooltip" style="top: -30.3333px; left: 252.333px;">
-                    </div>
-                    <div class="text-center">
-                        <ul class="list-inline">
-                            <li>
-                                <h6 class="text-muted text-success">
-                                    <i class="fa fa-circle font-10 m-r-10 "></i>Ample</h6> 
-                                </li>
-                                <li>
-                                    <h6 class="text-muted  text-info">
-                                        <i class="fa fa-circle font-10 m-r-10"></i>Pixel</h6> 
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Newsletter Campaign</h4>
-                        <h6 class="card-subtitle">Overview of Newsletter Campaign</h6>
-                        <div class="text-center">
-                            <ul class="list-inline">
-                                <li>
-                                    <h6 class="text-muted text-success"><i class="fa fa-circle font-10 m-r-10 "></i>Open Rate</h6> </li>
-                                    <li>
-                                        <h6 class="text-muted  text-info"><i class="fa fa-circle font-10 m-r-10"></i>Recurring</h6> </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @endsection
+
+
+@endsection
 
 @section('scripts')
-            
-            
-            <script type="text/javascript">
-                $(document).ready( function () {
-                    $('#azure').DataTable({
-                        "pagingType": "full_numbers",
-                        "order": [[ 0, "asc" ]]
-                    });
-                } );
-            </script>
+
+
+<script type="text/javascript">
+    $(document).ready( function () {
+        $('#azure').DataTable({
+            "pagingType": "full_numbers",
+            "order": [[ 0, "asc" ]]
+        });
+    } );
+</script>
 
 @endsection

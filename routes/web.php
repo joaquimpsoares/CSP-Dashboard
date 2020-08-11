@@ -1,19 +1,24 @@
 <?php
 
+use App\Tier;
 use App\Order;
+use App\Price;
+use App\Product;
 use App\Customer;
 use App\Instance;
+use App\PriceList;
 use Carbon\Carbon;
 use App\Subscription;
 use App\MicrosoftTenantInfo;
 use App\Jobs\PlaceOrderMicrosoft;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
 use Tagydes\MicrosoftConnection\Models\Cart as TagydesCart;
 use Tagydes\MicrosoftConnection\Facades\Order as TagydesOrder;
+use Tagydes\KasperskyConnection\Facades\Customer as Tagydeskasp;
 use Tagydes\MicrosoftConnection\Models\Product as TagydesProduct;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
-use Tagydes\KasperskyConnection\Facades\Customer as Tagydeskasp;
 
 
 //Marco verifica aqui esta linha... para a importação dos productos!
@@ -82,20 +87,36 @@ Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlew
 
 Route::get('/test', function() {
 
-	$certificate=Instance::where('type', 'kaspersky')->first();
-	// dd($certificate->Certificate);
+	$instance=Instance::where('type', 'kaspersky')->first();
+	$certificate=Instance::select('certificate')->where('type', 'kaspersky')->first();
+	// dd($certificate->certificate);
 
-	// $string = str_replace(array("\r\n", "\r", "\n"), "",  $certificate->Certificate);
-	// $string = str_replace(array("\n", "\r"), ' ', $certificate->external_token);
-	// $string = trim(preg_replace('/\s\s+/', ' ', $certificate->external_token));
+	$certificate = Crypt::decryptString($certificate->certificate);
+	$url=Instance::select('external_url')->where('type', 'kaspersky')->first();
+	// dd($certificate);	
 
-	// dd($string);
-	// dd($certificate->external_token);
+	$id = 'KL4536XAEMG';
+
+	$quantity = '15';
+
+	$product = Price::where('product_sku', $id)->first();
+
+	$tiers = $product->tiers;
+	$tier = $tiers->filter(function($value){
+		return true;
+	});
 	
-	$newCustomer = Tagydeskasp::withCredentials($certificate->external_url, $certificate)->create([
-		"BillingPlan" => "Yearly",
-		"Sku"=> "KL4542XAPFG",
-		"Quantity"=> 30,
+	
+	$tier = $tiers->filter(function($tier) use ($quantity) {
+		return $quantity >= $tier->min_quantity && $quantity < $tier->max_quantity;
+	})->first();
+
+	// dd($instance->tenant_id);
+	
+	$newCustomer = Tagydeskasp::withCredentials($url, $certificate)->create([
+		"BillingPlan" => "PAYG",
+		"Sku"=> $tier->product_sku,
+		"Quantity"=> $quantity,
 		"CompanyName"=> "Joaquim",
 		"Email"=> "joaquim.soares@tagydes.com",
 		"Phone"=> "600032256",
@@ -106,7 +127,7 @@ Route::get('/test', function() {
 		"State"=> "Lisbon",
 		"Zip"=> "1900-00",
 		"Country" => "SPA",
-		"Partner"=> "$certificate->tenant_id",
+		"Partner"=> $instance->tenant_id,
 		"Reseller"=> "TE27PT00",
 		"ExternalSubscriptionId"=>  "string",
 		"ExternalOrderId"=> "string",
@@ -114,17 +135,17 @@ Route::get('/test', function() {
 		"AgreementAccepted"=> true,
 		"AgreementText"=> "string",
 		"AgreementTextHash"=> "string",
-		"ApprovalCode"=>  "ApprovalCode@TAGYDES@5",
+		"ApprovalCode"=>  "ApprovalCode@TAGYDES@6",
 		"DeliveryEmail"=> "joaquim.soares@tagydes.com"
 		]);
 
 		dd($newCustomer);
 	
-	$result = MicrosoftTenantInfo::create([
-		'tenant_id' => $newCustomer->id,
-		'tenant_domain' => $this->order->domain,
-		'customer_id' => $customer->id,
-	], $certificate->external_url);
+	// $result = MicrosoftTenantInfo::create([
+	// 	'tenant_id' => $newCustomer->id,
+	// 	'tenant_domain' => $this->order->domain,
+	// 	'customer_id' => $customer->id,
+	// ], $certificate->external_url);
 
 
 });
