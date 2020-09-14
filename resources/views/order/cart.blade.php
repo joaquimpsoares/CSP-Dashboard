@@ -31,9 +31,9 @@
                                     </thead>
                                     <tbody>
                                         @forelse($cart->products as $product)
-                                        {{dd($product->prices->tiers)}}
+                                        {{-- {{dd($product->prices->tiers)}} --}}
                                          @foreach ($product->prices as $item)
-                                             {{dd($item)}}
+                                             {{-- {{dd($product->pivot->quantity)}} --}}
                                          @endforeach
                                         <tr class="product">
                                             <td>
@@ -41,7 +41,16 @@
                                             </td>
                                             <td>
                                                 <div class="product-quantity">
+                                                    @if ($product->prices->tiers)
+                                                    @foreach ($product->prices->tiers as $item)
+                                                        {{-- {{dd($item->min_quantity)}} --}}
+                                                    <input type="number" value="{{ $item->quantity }}" name="{{ $product->pivot->id }}" id="quantity" class="form-control" step="1" min="{{ $item->min_quantity }}" max="{{ $item->max_quantity }}" style="max-width: 10em;" required />
+                                                    @endforeach
+                                                        
+                                                    @else
+                                                        
                                                     <input type="number" value="{{ $product->pivot->quantity }}" name="{{ $product->pivot->id }}" id="quantity" class="form-control" step="1" min="{{ $product->minimum_quantity }}" max="{{ $product->maximum_quantity }}" style="max-width: 10em;" required />
+                                                    @endif
                                                 </div>
                                             </td>
                                             <td>

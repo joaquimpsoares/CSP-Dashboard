@@ -28,27 +28,27 @@
 
                     <ul class="nav navbar-nav menu_nav ml-auto">
 
-                        <li class="nav-item active">
+                        <li class="nav-item {{ (request()->segment('1') == null) ? 'active' : ''}}">
                             <a class="nav-link" href="{{ route('home') }}">
                                 Home
                             </a>
                         </li>
                         @can(config('app.provider_index'))
-                        <li class="nav-item">
+                        <li class="nav-item {{ (request()->segment(1) == 'provider' ) ? 'active' : ''}}">
                             <a class="nav-link" href="{{ route('provider.index') }}">
                                 {{ ucwords(trans_choice('messages.provider', 2)) }}
                             </a>
                         </li>
                         @endcan
                         @can(config('app.reseller_index'))
-                        <li class="nav-item">
+                        <li class="nav-item {{ (request()->segment(1) == 'reseller' ) ? 'active' : ''}}">
                             <a class="nav-link" href="{{ route('reseller.index') }}">
                                 {{ ucwords(trans_choice('messages.reseller', 2)) }}
                             </a>
                         </li>
                         @endcan
                         @can(config('app.customer_index'))
-                        <li class="nav-item">
+                        <li class="nav-item {{ (request()->segment(1) == 'customer' ) ? 'active' : ''}}">
                             <a class="nav-link" href="{{ route('customer.index') }}">
                                 {{ ucwords(trans_choice('messages.customer', 2)) }}
                             </a> 
@@ -56,14 +56,19 @@
                         @endcan
 
                         @can(config('app.subscription_index'))
-                        <li class="nav-item">
+                        <li class="nav-item {{ (request()->segment(1) == 'subscription' ) ? 'active' : ''}}">
                             <a class="nav-link" href="{{ route('subscription.index') }}">
                                 {{ ucwords(trans_choice('messages.subscription', 2)) }}
                             </a> 
                         </li>
                         @endcan
 
-                        <li class="nav-item submenu dropdown">
+                        <li class="nav-item submenu dropdown
+                        {{ 
+                            (request()->segment(1) == 'store' 
+                            ||request()->segment(1) == 'priceList' 
+                            ||request()->segment(1) == 'cart'
+                            ||request()->segment(1) == 'order') ? 'active' : ''}}">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                 {{ ucwords(__('messages.marketplace')) }}
                             </a>
@@ -92,7 +97,11 @@
                         </li>
 
                         @can(config('app.manage_roles'))
-                        <li class="nav-item submenu dropdown">
+                        <li class="nav-item submenu dropdown {{ 
+                        (request()->segment(1) == 'roles' 
+                        ||request()->segment(1) == 'priceList' 
+                        ||request()->segment(1) == 'product'
+                        ||request()->segment(1) == 'jobs') ? 'active' : ''}}">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                 {{ ucwords(__('messages.manage')) }}
                             </a>

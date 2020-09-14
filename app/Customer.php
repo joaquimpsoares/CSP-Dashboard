@@ -113,4 +113,8 @@ class Customer extends Model
         return $this->hasMany('App\MicrosoftTenantInfo');
     }
 
+    public function microsoftLincenseInfo() {
+        return $this->hasMany('App\MicrosoftLicenseInfo');
+    }
+
 }

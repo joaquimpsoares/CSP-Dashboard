@@ -4,7 +4,7 @@
 
 <style>
     
-   
+    
     
     
     /*! CSS Used from: https://www.wrappixel.com/demos/admin-templates/material-pro/assets/plugins/chartist-js/dist/chartist-init.css */
@@ -178,6 +178,40 @@
                 </div>
             </div>
         </div> --}}
+        <div class="col-lg-4 col-md-12">
+            <div class="card_news">
+                <div class="img">
+                    <img src="images/store/store-management.png" alt="image univers">
+                </div>
+                <div class="content">
+                    <h3 class="title">Store</h3>
+                    <p class="text">
+                        Use the store to purchase products on behalf of your customers, select Microsoft of Kaspersky products.
+                    </p>
+                    <div class="buttons">
+                        {{-- <button class="btn-back">Back</button> --}}
+                        <a href="store" class="btn-continue">Go to Store &#8594;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <div class="card_news">
+                <div class="img">
+                    <img src="images/store/img20-min.png" alt="image univers">
+                </div>
+                <div class="content">
+                    <h3 class="title">Analytics</h3>
+                    <p class="text">
+                        Use the store to purchase products on behalf of your customers, select Microsoft of Kaspersky products.
+                    </p>
+                    <div class="buttons">
+                        {{-- <button class="btn-back">Back</button> --}}
+                        <a href="store" class="btn-continue">Go to Analytics &#8594;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-lg-4 col-md-12">
             <div class="card_news">
                 <div class="img">

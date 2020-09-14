@@ -10,10 +10,15 @@ use App\PriceList;
 use Carbon\Carbon;
 use App\Subscription;
 use App\MicrosoftTenantInfo;
+use App\KasperskyLincenseInfo;
 use App\Jobs\PlaceOrderMicrosoft;
+use App\kaspersky_lincense_infos;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
+use Tagydes\KasperskyConnection\Facades\Order as KasOrder;
 use Tagydes\MicrosoftConnection\Models\Cart as TagydesCart;
 use Tagydes\MicrosoftConnection\Facades\Order as TagydesOrder;
 use Tagydes\KasperskyConnection\Facades\Customer as Tagydeskasp;
@@ -88,20 +93,27 @@ Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlew
 Route::get('/test', function() {
 
 	$instance=Instance::where('type', 'kaspersky')->first();
+	// dd($instance);
 	$certificate=Instance::select('certificate')->where('type', 'kaspersky')->first();
-	// dd($certificate->certificate);
 
 	$certificate = Crypt::decryptString($certificate->certificate);
 	$url=Instance::select('external_url')->where('type', 'kaspersky')->first();
 	// dd($certificate);	
 
-	$id = 'KL4536XAEMG';
+	// $id = 'KL4536XAEMG'; //monthly
+	$id = 'KL4536XAMFG'; //yearly
 
 	$quantity = '15';
 
 	$product = Price::where('product_sku', $id)->first();
 
+
+	// dd($product->product->billing);
+
+	// dd($product);
 	$tiers = $product->tiers;
+	dd($tiers);
+	// dd($tiers);
 	$tier = $tiers->filter(function($value){
 		return true;
 	});
@@ -111,22 +123,26 @@ Route::get('/test', function() {
 		return $quantity >= $tier->min_quantity && $quantity < $tier->max_quantity;
 	})->first();
 
+	// dd($tier);
+
+	$customer = Customer::where('id', 310000)->first();
+	// dd($customer->country->iso_3166_3);
 	// dd($instance->tenant_id);
 	
 	$newCustomer = Tagydeskasp::withCredentials($url, $certificate)->create([
-		"BillingPlan" => "PAYG",
+		"BillingPlan" => "yearly",
 		"Sku"=> $tier->product_sku,
 		"Quantity"=> $quantity,
-		"CompanyName"=> "Joaquim",
+		"CompanyName"=> $customer->company_name,
 		"Email"=> "joaquim.soares@tagydes.com",
 		"Phone"=> "600032256",
-		"CustomerCode"=> "string",
-		"AddressLine1"=> "Calle",
-		"AddressLine2"=> "string",
-		"City"=> "Lisbon",
-		"State"=> "Lisbon",
-		"Zip"=> "1900-00",
-		"Country" => "SPA",
+		"CustomerCode"=> $customer->id,
+		"AddressLine1"=> $customer->address_1,
+		"AddressLine2"=> $customer->address_2,
+		"City"=> $customer->city,
+		"State"=> $customer->state,
+		"Zip"=> $customer->postal_code,
+		"Country" => $customer->country->iso_3166_3,
 		"Partner"=> $instance->tenant_id,
 		"Reseller"=> "TE27PT00",
 		"ExternalSubscriptionId"=>  "string",
@@ -135,18 +151,60 @@ Route::get('/test', function() {
 		"AgreementAccepted"=> true,
 		"AgreementText"=> "string",
 		"AgreementTextHash"=> "string",
-		"ApprovalCode"=>  "ApprovalCode@TAGYDES@6",
+		// "ApprovalCode"=>  "ApprovalCode@TAGYDES@6",
 		"DeliveryEmail"=> "joaquim.soares@tagydes.com"
 		]);
 
-		dd($newCustomer);
+		// dd($newCustomer);
 	
-	// $result = MicrosoftTenantInfo::create([
-	// 	'tenant_id' => $newCustomer->id,
-	// 	'tenant_domain' => $this->order->domain,
-	// 	'customer_id' => $customer->id,
-	// ], $certificate->external_url);
+		// $result = 
 
+
+	$kas_details = KasperskyLincenseInfo ::create([
+		'subscriptionid' => $newCustomer->SubscriptionId,
+		'activationcode' => $newCustomer->ActivationCode,
+		'licenseid' => $newCustomer->LicenseId,
+		'customer_id' => $customer->id,
+	]);
+	dd($kas_details);
+	// dd($instance->external_token);
+	// $orderConfirm = KasOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($kas_details);
+	// Log::info('Confirmation of cart Cart: '.$orderConfirm);
+	
+	dd($newCustomer);
+
+
+	foreach ($newCustomer->subscriptions() as $subscription)
+            {
+                $subscriptions = new Subscription();
+                $subscriptions->name = 				$subscription->name;
+                $subscriptions->subscription_id = 	$subscription->id;
+                $subscriptions->customer_id = 		$customer->id; //customer id from request recieved from Microsoft
+                $subscriptions->product_id = 		$subscription->offerId;
+                $subscriptions->instance_id =		$product->instance_id;
+                $subscriptions->billing_type =      $product->billing;
+                $subscriptions->order_id = 			$subscription->orderId;
+                $subscriptions->amount = 			$subscription->quantity;
+                $subscriptions->expiration_data	=	Carbon::now()->addYear()->toDateTimeString(); //Set subscription expiration date
+                $subscriptions->billing_period = 	$subscription->billingCycle;
+                $subscriptions->currency = 			$subscription->currency;
+                $subscriptions->tenant_name	=		$this->order->domain;
+				$subscriptions->status_id =         1;
+                $subscriptions->save();
+				dd($subscription);
+			}
+			
+	// $result = Subscription::create([
+	// 	'subscription_id' => $newCustomer->SubscriptionId,
+	// 	'customer_id' => $customer->id,
+	// 	'product_id' => $tier->product_sku,
+	// 	'amount' => $quantity,
+	// 	'instance_id' => $product->instance_id,
+	// 	'billing_period' => $product->product->supported_billing_cycles->first(),
+	// 	'billing_type' => $product->product->billing,
+	// ]);	
+
+// dd($result);
 
 });
 /**********************************************************************************
@@ -386,8 +444,12 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::impersonate();
 
+	// Route::get('/{lang}', 'HomeController@index', function ($lang) {
+	// 	App::setlocale($lang);
+	// })->name('home');
+
 	Route::get('/', 'HomeController@index')->name('home');
 
-	Auth::routes();
-
 	Route::get('/home', 'HomeController@index')->name('home');
+	
+	Auth::routes();

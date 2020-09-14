@@ -28,8 +28,6 @@ class StoreController extends Controller
 
         $user = $this->getUser();
 
-        // dd($user);
-
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
                 return abort(403, __('errors.access_with_resellers_credentials'));
@@ -53,7 +51,6 @@ class StoreController extends Controller
         switch ($vendor) {
             case 'microsoft':
                 $categories = Product::select('category')->where('vendor', $vendor)->groupby('category')->get();
-                // dd($categories);
                 break;
             case 'kaspersky':
                 # code...
