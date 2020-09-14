@@ -32,7 +32,7 @@
                             <td></td>
                             <td><a href="{{route('priceList.prices', $priceList['id']) }}">{{ $priceList['name'] }}</a></td>
                             <td>{{ $priceList['description'] }}</td>
-                            <td>{{ $priceList['provider']['company_name'] }}</td>
+                            <td>{{ $priceList['provider']['company_name'] ?? null }}</td>
                             <td>{{ $priceList['reseller']->count() }}</td>
                             <td>{{ $priceList['customer']->count() }}</td>
                             <td>

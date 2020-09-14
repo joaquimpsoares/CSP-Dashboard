@@ -16,5 +16,7 @@ interface ProductRepositoryInterface
 
 	public function getPriceOf($product);
 
+	public function getByID($id);
+
 	
 }

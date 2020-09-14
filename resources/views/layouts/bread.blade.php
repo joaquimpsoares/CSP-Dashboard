@@ -9,9 +9,9 @@
                         <a href="{{ route('home') }}">Home</a>
                         @foreach ($segments = request()->segments() as $index => $segment)
                         @if($segment !== "home")
-                        <a href=" {{ url(implode(array_slice($segments, 0, $index +1), '/')) }} ">
-                            {{isset($model) && $index == count($segments) - 1 ? $model->title : title_case($segment)}}
-                        </a>
+                        {{-- <a href=" {{ url(implode(array_slice($segments, 0, $index +1), '/')) }} ">
+                                                                                                                            {{isset($model) && $index == count($segments) - 1 ? $model->title : title_case($segment)}}
+                                                                                                                        </a> --}}
                         @endif
                         @endforeach
                     </div>

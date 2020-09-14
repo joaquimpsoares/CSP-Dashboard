@@ -40,18 +40,7 @@
                                                 {{ $product->name }}
                                             </td>
                                             <td>
-                                                <div class="product-quantity">
-                                                    @if ($product->prices->tiers)
-                                                    @foreach ($product->prices->tiers as $item)
-                                                        {{-- {{dd($item->min_quantity)}} --}}
-                                                    <input type="number" value="{{ $item->quantity }}" name="{{ $product->pivot->id }}" id="quantity" class="form-control" step="1" min="{{ $item->min_quantity }}" max="{{ $item->max_quantity }}" style="max-width: 10em;" required />
-                                                    @endforeach
-                                                        
-                                                    @else
-                                                        
-                                                    <input type="number" value="{{ $product->pivot->quantity }}" name="{{ $product->pivot->id }}" id="quantity" class="form-control" step="1" min="{{ $product->minimum_quantity }}" max="{{ $product->maximum_quantity }}" style="max-width: 10em;" required />
-                                                    @endif
-                                                </div>
+                                                <div class="product-quantity">                                                    <input type="number" value="{{ $product->pivot->quantity }}" name="{{ $product->pivot->id }}" id="quantity" class="form-control" step="1"  style="max-width: 10em;" required />{{-- min="{{ $product->minimum_quantity }}" max="{{ $product->maximum_quantity }}" --}}                                                </div>
                                             </td>
                                             <td>
                                                 <select name="billing_cycle[{{ $product->pivot->id }}]" required="required" class="billing_cycle" id="{{ $product->pivot->id }}">

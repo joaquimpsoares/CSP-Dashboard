@@ -52,6 +52,8 @@ class CartController extends Controller
             'product_id' => 'required|exists:products,id'
         ]);
 
+        $product = $this->productRepository->getByID($validate['product_id']);
+
         // if product aren't on the prices table doesn't add to the cart and continue
         if ($prices = $this->productRepository->getPriceOf($validate['product_id'])) {
 
@@ -66,7 +68,8 @@ class CartController extends Controller
             $cart->products()->attach($validate['product_id'], [
                 'price' => $prices->price,
                 'retail_price' => $prices->msrp,
-                'id' => Str::uuid()
+                'id' => Str::uuid(),
+                'quantity' => $product->minimum_quantity
             ]);
         }
         
@@ -81,14 +84,36 @@ class CartController extends Controller
         $product = $cart->products->first(function ($value) use ($item_id) {    
             return $value->pivot->id == $item_id;
         });
-
+            
         if ($this->productRepository->verifyQuantities($product, $quantity)) {
+            
+            if (!$product->tiers->isEmpty()) {
+
+                $prices = $product->tiers()
+                ->where('min_quantity', '<=', $quantity)
+                ->where('max_quantity', '>=', $quantity)
+                ->first();
+
+                $product->pivot->price = $prices->price;
+                $product->pivot->retail_price = $prices->msrp;
+                
+            }   
+
             $product->pivot->quantity = $quantity;
             $product->pivot->save();
+
             return true;
-        }        
+         
+        }
+                      
 
         return false;
+
+    }
+
+    /* For those products who has tiers and have to change
+    * the price according to the quantity */
+    public function updateProductPriceOnCartByQuantity(Product $product, $quantity) {
 
     }
 

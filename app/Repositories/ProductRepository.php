@@ -70,8 +70,18 @@ class ProductRepository implements ProductRepositoryInterface
     }
 
     public function verifyQuantities(Product $product, $quantity) {
-        if ($product->minimum_quantity <= $quantity && $product->maximum_quantity >= $quantity)
-            return true;
+        
+        if (!$product->tiers->isEmpty()) {
+            $prices = $product->tiers()
+                ->where('min_quantity', '<=', $quantity)
+                ->where('max_quantity', '>=', $quantity)
+                ->count();
+            return $prices > 0 ? true : false;
+        } else {
+            if ($product->minimum_quantity <= $quantity && $product->maximum_quantity >= $quantity)
+            return true;    
+        }
+        
 
         return false;
     }
@@ -100,10 +110,19 @@ class ProductRepository implements ProductRepositoryInterface
             case 'Reseller':
                 // $instance = $user->reseller->provider->instances->first()->id;
                 $product = Product::where('id', $product_id)->first();
-                // dd($product->sku);
-                $priceList = Price::where('product_sku',$product->sku)->first()->price_list_id;
-                // dd($priceList);
-                $prices = Price::where('price_list_id', $priceList)->where('product_sku', $product->sku)->where('product_vendor', $product->vendor)->first();
+                
+                // If product has tiers check the lowest price on tiers relationship
+                if (!$product->tiers->isEmpty()) {
+
+                    $prices = $product->tiers()->orderBy('min_quantity', 'ASC')->first();
+
+                } else {
+                    
+                    $priceList = Price::where('product_sku',$product->sku)->first()->price_list_id;
+                    $prices = Price::where('price_list_id', $priceList)->where('product_sku', $product->sku)->where('product_vendor', $product->vendor)->first();
+                }
+                
+                
                 break;
 
             case 'Sub Reseller':
@@ -116,5 +135,10 @@ class ProductRepository implements ProductRepositoryInterface
         }
 
         return $prices;
+    }
+
+    public function getByID($id) {
+        $product = Product::find($id);
+        return $product;
     }
 }

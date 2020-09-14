@@ -59,7 +59,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
+        //dd($request->all());
         $product = new Product();
             $product->vendor       = $request->vendor;
             $product->instance_id       = '3';
