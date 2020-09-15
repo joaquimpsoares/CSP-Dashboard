@@ -13,7 +13,7 @@
             </thead>
             <tbody>
                 @forelse($providers as $provider)
-                @if($provider['status'] === 'Messages.active')
+                {{-- @if($provider['status'] === 'Messages.active') --}}
                 <tr>
                     <td><a href="{{ $provider['path'] }}">{{ $provider['company_name'] }}</a></td>
                     <td> {{$provider['resellers']->count()}} </td>
@@ -23,7 +23,7 @@
                         @include('partials.actions', ['model' => $provider, 'modelo' => 'provider'])
                     </td>
                 </tr>
-                @endif
+                {{-- @endif --}}
                 @empty
                 <tr>
                     <td colspan="5">Empty</td>
