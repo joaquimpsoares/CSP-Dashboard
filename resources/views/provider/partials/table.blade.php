@@ -13,7 +13,7 @@
             </thead>
             <tbody>
                 @forelse($providers as $provider)
-                @if($provider['status'] === 'messages.active')
+                @if($provider['status'] === 'Messages.active')
                 <tr>
                     <td><a href="{{ $provider['path'] }}">{{ $provider['company_name'] }}</a></td>
                     <td> {{$provider['resellers']->count()}} </td>
