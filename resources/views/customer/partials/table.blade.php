@@ -14,7 +14,7 @@
             </thead>
             <tbody>
                 @forelse($customers as $customer)
-                @if($customer['status'] === 'messages.active')
+                {{-- @if($customer['status'] === 'messages.active') --}}
                 <tr>
                     <td width="3%" class="f-s-600"><a href="{{ $customer['path'] }}">{{ $customer['id'] }}</a></td>
                     <td><a href="{{ $customer['path'] }}">{{ $customer['company_name'] }}</a></td>
@@ -26,7 +26,7 @@
                         @include('partials.actions', ['model' => $customer, 'modelo' => 'customer'])
                     </td>
                 </tr>
-                @endif
+                {{-- @endif --}}
                 @empty
                 <tr>
                     <td colspan="5">Empty</td>
