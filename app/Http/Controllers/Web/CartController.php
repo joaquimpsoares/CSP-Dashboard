@@ -168,7 +168,10 @@ class CartController extends Controller
         $status = "tenant";
         
         //return view('order.tenant', compact('cart'));
-        return redirect()->route('cart.tenant', ['cart' => $cart->token, 'customerTenant' => $customerTenant]);
+        if ($this->cartHasTenant($cart))
+            return redirect()->route('cart.tenant', ['cart' => $cart->token, 'customerTenant' => $customerTenant]);
+        else
+            return redirect()->route('cart.review', ['cart' => $cart->token]);
     }
 
     public function changeCustomer(Request $request)
@@ -184,7 +187,9 @@ class CartController extends Controller
         $countries = Country::all();
         $statuses = Status::get();
 
-        return view('order.checkout', compact('cart', 'customers', 'status', 'countries', 'statuses'));
+        $hasTenant = $this->cartHasTenant($cart);
+
+        return view('order.checkout', compact('cart', 'customers', 'status', 'countries', 'statuses', 'hasTenant'));
     }
 
     public function storeCustomerAndBuy(Request $request) { 
@@ -238,6 +243,7 @@ class CartController extends Controller
 
         $status = "tenant";
         
+
         return redirect()->route('cart.tenant', ['cart' => $cart->token]);
         
     }
@@ -301,13 +307,15 @@ class CartController extends Controller
             $canChangeTenant = FALSE;
         }
 
-        if (empty($cart->domain) && empty($cart->agreement_firstname)) {
+        $hasTenant = $this->cartHasTenant($cart);
+
+        if (empty($cart->domain) && empty($cart->agreement_firstname) && $hasTenant) {
             return view('order.tenant', compact('cart', 'canChangeTenant'));
         } else {
-            if (empty($cart->agreement_firstname)){
+            if (empty($cart->agreement_firstname) && $hasTenant){
                 return view('order.tenant', compact('cart', 'canChangeTenant'));
             } else {
-                return view('order.review', compact('cart', 'canChangeTenant'));
+                return view('order.review', compact('cart', 'canChangeTenant', 'hasTenant'));
             }
         }
     }
@@ -345,7 +353,8 @@ class CartController extends Controller
     {
         $validate = $request->validate([
             'token' => 'required|uuid',
-            'billing_cycle.*' => 'required|in:annual,monthly,none'
+            //'billing_cycle.*' => 'required|exists:products,billing'
+            'billing_cycle.*' => 'required|in:annual,monthly,PAYG,none'
         ]);
 
         $cart = $this->getByToken($validate['token']);
@@ -389,7 +398,22 @@ class CartController extends Controller
 			break;
 		}
 
-        return view('order.checkout', compact('cart', 'customers', 'status', 'countries', 'statuses'));
+        $hasTenant = $this->cartHasTenant($cart);
+
+        return view('order.checkout', compact('cart', 'customers', 'status', 'countries', 'statuses', 'hasTenant'));
+    }
+
+    public function cartHasTenant($cart) {
+        $hasTenant = false;
+
+        foreach ($cart['products'] as $product) {
+            if ($product->vendor === "microsoft") {
+                $hasTenant = true;
+                break;
+            }
+        }
+
+        return $hasTenant;
     }
 
     /*public function checkout(Request $request)

@@ -30,11 +30,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @php
+                                        $i = 1;
+                                        @endphp
                                         @forelse($cart->products as $product)
-                                        {{-- {{dd($product->prices->tiers)}} --}}
-                                         @foreach ($product->prices as $item)
-                                             {{-- {{dd($product->pivot->quantity)}} --}}
-                                         @endforeach
+                                                                                
                                         <tr class="product">
                                             <td>
                                                 {{ $product->name }}
@@ -70,6 +70,9 @@
                                                 </div>
                                             </td>
                                         </tr>
+                                        @php
+                                        $i++;
+                                        @endphp
                                         @empty
                                         <tr>
                                             <td colspan="6">
@@ -160,22 +163,29 @@
         });
     }
     
+    // Update price on form
     function updateProductSubTotal(item) {
         var selectedBillingCycle = $('#' + item.name).val();
+        console.log("BillingCycle: " + selectedBillingCycle);
         
+        // Line to change
         var productRow = $(item).parent().parent().parent().parent();
+        
+
         var price = parseFloat(productRow.children('.product-price').text());
         var quantity = item.value;
+        console.log("quantity: " + quantity);
+        
         var linePrice = price * quantity;
         if (selectedBillingCycle === "annual") {
             linePrice = linePrice * 12;
         }
         
         productRow.children('.product-line-price').each(function () {
-            
-            $(this).text(linePrice.toFixed(2));
-            
+            $(this).text(linePrice.toFixed(2));           
         });
+
+
         
     }
     

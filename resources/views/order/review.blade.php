@@ -24,6 +24,7 @@
 														<input type="hidden" name="cart" value="{{ $cart->token }}" />
 													</form>
 												</li>
+												@if($hasTenant)
 												<li class="nav-item">
 													<a class="nav-link"href="#" onclick="event.preventDefault(); document.getElementById('changeTenant').submit();">{{ ucwords(trans_choice('messages.tenant', 1)) }}</a>
 													<form id="changeTenant" method="post" action="{{ route('cart.change.tenant') }}">
@@ -31,6 +32,7 @@
 														<input type="hidden" name="cart" value="{{ $cart->token }}" />
 													</form>
 												</li>
+												@endif
 												<li class="nav-item">
 													<a class="nav-link active" id="contact-tab" data-toggle="tab" href="#">{{ ucwords(trans_choice('messages.review', 1)) }}</a>
 												</li>

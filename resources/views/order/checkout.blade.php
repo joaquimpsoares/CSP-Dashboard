@@ -20,9 +20,11 @@
 												<li class="nav-item">
 													<a class="nav-link active" id="home-tab" data-toggle="tab" href="#home">{{ ucwords(trans_choice('messages.customer', 1)) }}</a>
 												</li>
+												@if($hasTenant)
 												<li class="nav-item">
 													<a class="nav-link" id="profile-tab" data-toggle="tab" href="#">{{ ucwords(trans_choice('messages.tenant', 1)) }}</a>
 												</li>
+												@endif
 												<li class="nav-item">
 													<a class="nav-link" id="contact-tab" data-toggle="tab" href="#">{{ ucwords(trans_choice('messages.review', 1)) }}</a>
 												</li>
