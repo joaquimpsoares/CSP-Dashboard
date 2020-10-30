@@ -33,7 +33,7 @@ class Reseller extends Model
             'city' => $this->city,
             'state' => $this->state,
             'nif' => $this->nif,
-            'postal_code' => $this->postal_code,
+            'postal_code' => $this->postal_code,    
             'status' => $this->status->name,
             'path' => $this->path(),
             'provider' => $this->provider,

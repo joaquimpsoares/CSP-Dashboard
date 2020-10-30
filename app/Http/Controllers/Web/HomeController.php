@@ -106,7 +106,7 @@ class HomeController extends Controller
 
                     
                     if ($increase == 0.0) {
-                        echo 'Divisor is 0';
+                        // echo 'Divisor is 0';
                         $average1 = 0;
                     } else {
                         $average1 = ($increase/$budget)*100;
@@ -200,7 +200,7 @@ class HomeController extends Controller
 
                     
                     if ($increase == 0.0) {
-                        echo 'Divisor is 0';
+                        // echo 'Divisor is 0';
                         $average1 = 0;
                     } else {
                         $average1 = ($increase/$budget)*100;
@@ -286,7 +286,7 @@ class HomeController extends Controller
 
                     
                     if ($increase == 0.0) {
-                        echo 'Divisor is 0';
+                        // echo 'Divisor is 0';
                         $average1 = 0;
                     } else {
                         $average1 = ($increase/$budget)*100;

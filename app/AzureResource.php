@@ -10,3 +10,4 @@ class AzureResource extends Model
 
     protected $guarded = [];
 }
+    
