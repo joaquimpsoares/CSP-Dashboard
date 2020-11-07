@@ -58,6 +58,8 @@ class LoginController extends Controller
     {
         $user = Socialite::driver('microsoft')->user();
 
+        dd($user);
+
         // $user->token;
     }
 }
