@@ -24,8 +24,8 @@
         </li>
     </ul>
     <div class="tab-content pt-5" id="myTabContentMD">
-        <div class="tab-pane fade show active" id="home-md" role="tabpanel" aria-labelledby="home-tab-md">
-            
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            @include('reseller.partials.home', ['subscriptions' => $subscriptions])
         </div>
         <div class="tab-pane fade" id="subscription-md" role="tabpanel" aria-labelledby="subscription-tab-md">
             <div class="container col-xm-12">

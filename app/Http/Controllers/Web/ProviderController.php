@@ -73,7 +73,7 @@ class ProviderController extends Controller
         $budget = cache()->remember('azure.budget', 260, function(){
             
             $customer = new TagydesCustomer([
-                'id' => 'd9b842d6-aa51-44ca-a77c-f7d20411b942',
+                'id' => '4e03835b-242f-441c-9958-ad3e5e05f55d',
                 'username' => 'bill@tagydes.com',
                 'password' => 'blabla',
                 'firstName' => 'Nombre',
@@ -85,7 +85,7 @@ class ProviderController extends Controller
                 'id'            => 'C01AD64D-6D65-45C4-B755-C11BD4F0DA0E',
                 'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
                 'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-                'customerId'    => "d9b842d6-aa51-44ca-a77c-f7d20411b942",
+                'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
                 'name'          => "5trvfvczdfv",
                 'status'        => "5trvfvczdfv",
                 'quantity'      => "1",
@@ -172,12 +172,13 @@ class ProviderController extends Controller
     
     public function show(Provider $provider)
     {
+
     
 
     $budget = cache()->remember('azure.budget', 260, function(){
             
         $customer = new TagydesCustomer([
-            'id' => 'd9b842d6-aa51-44ca-a77c-f7d20411b942',
+            'id' => '4e03835b-242f-441c-9958-ad3e5e05f55d',
             'username' => 'bill@tagydes.com',
             'password' => 'blabla',
             'firstName' => 'Nombre',
@@ -189,7 +190,7 @@ class ProviderController extends Controller
             'id'            => 'C01AD64D-6D65-45C4-B755-C11BD4F0DA0E',
             'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
             'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-            'customerId'    => "d9b842d6-aa51-44ca-a77c-f7d20411b942",
+            'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
             'name'          => "5trvfvczdfv",
             'status'        => "5trvfvczdfv",
             'quantity'      => "1",

@@ -34,13 +34,14 @@
                                         $i = 1;
                                         @endphp
                                         @forelse($cart->products as $product)
-                                                                                
+                                        
                                         <tr class="product">
                                             <td>
                                                 {{ $product->name }}
                                             </td>
                                             <td>
-                                                <div class="product-quantity">                                                    <input type="number" value="{{ $product->pivot->quantity }}" name="{{ $product->pivot->id }}" id="quantity" class="form-control" step="1"  style="max-width: 10em;" required />{{-- min="{{ $product->minimum_quantity }}" max="{{ $product->maximum_quantity }}" --}}                                                </div>
+                                                <div class="product-quantity">                                                    
+                                                    <input type="number" value="{{ $product->pivot->quantity }}" name="{{ $product->pivot->id }}" id="quantity" class="form-control" step="1"  style="max-width: 10em;" required />{{-- min="{{ $product->minimum_quantity }}" max="{{ $product->maximum_quantity }}" --}}                                                </div>
                                             </td>
                                             <td>
                                                 <select name="billing_cycle[{{ $product->pivot->id }}]" required="required" class="billing_cycle" id="{{ $product->pivot->id }}">
@@ -171,7 +172,7 @@
         // Line to change
         var productRow = $(item).parent().parent().parent().parent();
         
-
+        
         var price = parseFloat(productRow.children('.product-price').text());
         var quantity = item.value;
         console.log("quantity: " + quantity);
@@ -184,8 +185,8 @@
         productRow.children('.product-line-price').each(function () {
             $(this).text(linePrice.toFixed(2));           
         });
-
-
+        
+        
         
     }
     

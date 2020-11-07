@@ -37,10 +37,11 @@
 				<div class="modal-dialog modal-xl">
 					<div class="modal-content">
 						<form method="POST" action="{{ route('priceList.store', ["priceList" => $priceList]) }}" class="col s12" id="createCustomer">
+							@method('POST')
 							@csrf
 							<div class="modal-header">
 								<h5 class="modal-title" id="exampleModalLabel">
-									{{ ucwords(trans_choice('messages.new_customer', 1)) }}
+									{{ ucwords(trans_choice('messages.new_product', 1)) }}
 								</h5>
 								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>

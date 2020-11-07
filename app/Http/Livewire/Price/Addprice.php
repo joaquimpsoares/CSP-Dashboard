@@ -12,7 +12,7 @@ class Addprice extends Component
 {
     public $name, $product_vendor, $product_sku, 
     $price, $currency, $min_quantity, $tier_name, 
-    $max_quantity, $msrp, $priceList;
+    $max_quantity, $msrp, $priceList, $products;
 
     public $tier_product_sku, $tier_min_quantity, $tier_max_quantity, $tier_price, $tier_msrp;
 
@@ -28,7 +28,11 @@ class Addprice extends Component
 
         $this->prices = Price::where('price_list_id', $this->priceList->id)->get();
 
-        // dd($this->priceList);
+        $this->products = Product::get();
+
+        // dd($this->products);
+
+
         // dd($this->priceList->instance_id);
     }
 
@@ -46,7 +50,7 @@ class Addprice extends Component
 
         $this->pricelist = PriceList::find($this->priceList->id);
 
-
+dd($this->products);
 
         $this->product = Product::where('sku', $this->product_sku)->where('instance_id',$this->pricelist->instance_id)->first();
 

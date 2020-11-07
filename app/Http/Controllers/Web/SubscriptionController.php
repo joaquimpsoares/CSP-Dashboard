@@ -174,16 +174,87 @@ class SubscriptionController extends Controller
     */
     public function update(Request $request, Subscription $subscription)
     {
-        
-        
-        $subscription = Subscription::findOrFail($subscription->id);
-        
-        $order = $this->orderRepository->UpdateMSSubscription($subscription);
 
-        $instance = Instance::where('id', $subscription->instance_id)->first();
 
-        updateSubscriptionMicrosoftJob::dispatch($subscription, $request->all(), $order )->onQueue('PlaceordertoMS')
-            ->delay(now()->addSeconds(10));     
+        $subscriptions = Subscription::findOrFail($subscription->id);
+        $instance = Instance::first();    
+        
+        $this->validate($request, [
+        'amount' => 'required|integer',
+        ]);
+        
+            
+        $subscription = new TagydesSubscription([
+            'id'            => $subscriptions->subscription_id,
+            'orderId'       => $subscriptions->order_id,
+            'offerId'       => $subscriptions->product_id,
+            'customerId'    => $subscriptions->customer->microsoftTenantInfo->first()->tenant_id,
+            'name'          => $subscriptions->name,
+            'status'        => $subscriptions->status_id,
+            'quantity'      => $subscriptions->amount,
+            'currency'      => $subscriptions->currency,
+            'billingCycle'  => $subscriptions->billing_period,
+            'created_at'    => $subscriptions->created_at->__toString(),
+            ]);
+
+        
+        if ($request->status == 1) {
+            $request->merge(['status' => 'active']);
+        }else {
+            $request->merge(['status' => 'suspended']);
+        }
+        
+        if($request->amount != $subscriptions->amount){
+            try{
+                $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->
+                update($subscription, ['quantity' => $request->amount]);
+                $subscriptions->update(['amount'=> $request->amount]);
+                Log::info('License changed: '.$request->amount);
+            } catch (Exception $e) {
+                Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+            }
+        }else if ($request->billing_period != $subscriptions->billing_period){
+            try{
+            $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->changeBillingCycle($subscription, $request->billing_period);
+            $subscriptions->update(['billing_period'=> $request->billing_period]);
+            Log::info('Billing Cycle changed: '.$request->billing_period);
+
+        } catch (Exception $e) {
+            Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+        }
+        }else{
+            try{
+            $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)
+            ->update($subscription, ['status' => $request->status]);
+
+                if ($request->status == 'active') {
+                    $request->merge(['status' => 1]);
+                }else {
+                    $request->merge(['status' => 2]);
+                }
+                $subscriptions->update(['status_id' => $request->status]);
+                Log::info('Status changed: '.$request->status);
+
+            } catch (Exception $e) {
+                Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+            }
+        }
+        
+        return redirect()->back()->with('success', 'Subscription updated succesfully');
+            
+    }
+        
+        
+        // $subscription = Subscription::findOrFail($subscription->id);
+        
+        // $order = $this->orderRepository->UpdateMSSubscription($subscription);
+
+        // dd($order);
+
+        // $instance = Instance::where('id', $subscription->instance_id)->first();
+
+        // updateSubscriptionMicrosoftJob::dispatch($subscription, $request->all(), $order )->onQueue('PlaceordertoMS')
+        //     ->delay(now()->addSeconds(10));     
         
         // $this->validate($request, [
         //     'amount' => 'required|integer',
@@ -254,8 +325,8 @@ class SubscriptionController extends Controller
         //                 return redirect()->back()->with(['alert' => 'error', 'message' => ucwords(trans_choice('messages.something_went_wrong_try_again', 1))]);
         //             }
         //         }
-            return redirect()->back()->with(['alert' => 'success', 'message' => ucwords(trans_choice('messages.subscription_updated_successfully', 1))]);
-        }
+        //     return redirect()->back()->with(['alert' => 'success', 'message' => ucwords(trans_choice('messages.subscription_updated_successfully', 1))]);
+        // }
 
    
         /**

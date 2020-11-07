@@ -103,7 +103,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-1 col-lg-3">
+        {{-- <div class="col-md-1 col-lg-3">
             <div class="dashboard-card">
                 <div class="card card-body">
                     <div class="row">
@@ -130,7 +130,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="col-md-1 col-lg-3">
             <div class="dashboard-card">
                 <div class="card card-body">
@@ -181,7 +181,7 @@
         <div class="col-lg-4 col-md-12">
             <div class="card_news">
                 <div class="img">
-                    <img src="images/store/store-management.png" alt="image univers">
+                    <img src="/images/store/store-management.png" alt="image univers">
                 </div>
                 <div class="content">
                     <h3 class="title">Store</h3>
@@ -198,7 +198,7 @@
         <div class="col-lg-4 col-md-12">
             <div class="card_news">
                 <div class="img">
-                    <img src="images/store/img20-min.png" alt="image univers">
+                    <img src="/images/store/img20-min.png" alt="image univers">
                 </div>
                 <div class="content">
                     <h3 class="title">Analytics</h3>
@@ -232,7 +232,7 @@
         </div>
     </div>
     
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
             <div class="card res-mg-t-30 table-mg-t-pro-n">
                 <div class="card-body">
@@ -289,7 +289,7 @@
             </tbody>
         </table>
     </div>
-</div>
+</div> --}}
 
 
 @endsection

@@ -85,7 +85,6 @@ class OrderRepository implements OrderRepositoryInterface
         try {
             $order = $this->createOrderFromCart($cart);
 
-
             foreach ($cart->products as $product)
             {
                 $order->products()->attach($product->id, [
@@ -112,7 +111,6 @@ class OrderRepository implements OrderRepositoryInterface
 
     private function createOrderFromCart($cart)
     {
-
         $order = new Order();
 
         $order->customer_id = $cart->customer_id;

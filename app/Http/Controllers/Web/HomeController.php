@@ -66,7 +66,7 @@ class HomeController extends Controller
                 $budget = cache()->remember('azure.budget', 260, function(){
                     
                     $customer = new TagydesCustomer([
-                        'id' => 'd9b842d6-aa51-44ca-a77c-f7d20411b942',
+                        'id' => '4e03835b-242f-441c-9958-ad3e5e05f55d',
                         'username' => 'bill@tagydes.com',
                         'password' => 'blabla',
                         'firstName' => 'Nombre',
@@ -78,7 +78,7 @@ class HomeController extends Controller
                             'id'            => 'C01AD64D-6D65-45C4-B755-C11BD4F0DA0E',
                             'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
                             'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-                            'customerId'    => "d9b842d6-aa51-44ca-a77c-f7d20411b942",
+                            'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
                             'name'          => "5trvfvczdfv",
                             'status'        => "5trvfvczdfv",
                             'quantity'      => "1",
@@ -118,26 +118,36 @@ class HomeController extends Controller
                     
                     
                     $countries = Country::all();
-                    $resellers = $this->resellerRepository->resellersOfProvider($provider);
+                    if ($provider) {
+                        $resellers = $this->resellerRepository->resellersOfProvider($provider);
+                        foreach ($resellers as $reseller){
+                            $reseller = Reseller::find($reseller['id']);
+                            // $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
+                        }
+                        
+                        $reseller = Reseller::get();
+                        $countResellers = $reseller->count();
+                    }
+                    $resellers=0;
                     $customers = new Collection();
                     
-                    foreach ($resellers as $reseller){
-                        $reseller = Reseller::find($reseller['id']);
-                        $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
-                    }
-                    
-                    $reseller = Reseller::get();
-                    $countResellers = $reseller->count();
                     
                     $instance = Instance::first();
                     
                     $order = OrderProducts::get();
                     
-                    $users = User::where('provider_id', $provider->id)->first();
+                    if ($provider) {
+                        # code...
+                        $users = User::where('provider_id', $provider->id)->firstOrFail();
+                        $subscriptions = $this->providerRepository->getSubscriptions($provider);
+                        $countSubscriptions = $subscriptions->count();
+                    }
+                    $users=0;
+                    $subscriptions=0;
+                    $countResellers = 0;
+                    $countSubscriptions=0;
                     
-                    $subscriptions = $this->providerRepository->getSubscriptions($provider);
                     $countCustomers =  $customers->count();
-                    $countSubscriptions = $subscriptions->count();
                     
                     $countries = Country::all();
                     $providers = $this->providerRepository->all();
@@ -160,7 +170,7 @@ class HomeController extends Controller
                 $budget = cache()->remember('azure.budget', 260, function(){
                     
                 $customer = new TagydesCustomer([
-                    'id' => 'd9b842d6-aa51-44ca-a77c-f7d20411b942',
+                    'id' => '4e03835b-242f-441c-9958-ad3e5e05f55d',
                     'username' => 'bill@tagydes.com',
                     'password' => 'blabla',
                     'firstName' => 'Nombre',
@@ -172,7 +182,7 @@ class HomeController extends Controller
                     'id'            => 'C01AD64D-6D65-45C4-B755-C11BD4F0DA0E',
                     'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
                     'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-                    'customerId'    => "d9b842d6-aa51-44ca-a77c-f7d20411b942",
+                    'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
                     'name'          => "5trvfvczdfv",
                     'status'        => "5trvfvczdfv",
                     'quantity'      => "1",
@@ -246,7 +256,7 @@ class HomeController extends Controller
                 $budget = cache()->remember('azure.budget', 260, function(){
                     
                 $customer = new TagydesCustomer([
-                    'id' => 'd9b842d6-aa51-44ca-a77c-f7d20411b942',
+                    'id' => '4e03835b-242f-441c-9958-ad3e5e05f55d',
                     'username' => 'bill@tagydes.com',
                     'password' => 'blabla',
                     'firstName' => 'Nombre',
@@ -258,7 +268,7 @@ class HomeController extends Controller
                     'id'            => 'C01AD64D-6D65-45C4-B755-C11BD4F0DA0E',
                     'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
                     'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-                    'customerId'    => "d9b842d6-aa51-44ca-a77c-f7d20411b942",
+                    'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
                     'name'          => "5trvfvczdfv",
                     'status'        => "5trvfvczdfv",
                     'quantity'      => "1",
@@ -352,7 +362,7 @@ class HomeController extends Controller
         $budget = cache()->remember('azure.budget', 260, function(){
             
         $customer = new TagydesCustomer([
-            'id' => 'd9b842d6-aa51-44ca-a77c-f7d20411b942',
+            'id' => '4e03835b-242f-441c-9958-ad3e5e05f55d',
             'username' => 'bill@tagydes.com',
             'password' => 'blabla',
             'firstName' => 'Nombre',
@@ -364,7 +374,7 @@ class HomeController extends Controller
             'id'            => 'C01AD64D-6D65-45C4-B755-C11BD4F0DA0E',
             'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
             'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-            'customerId'    => "d9b842d6-aa51-44ca-a77c-f7d20411b942",
+            'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
             'name'          => "5trvfvczdfv",
             'status'        => "5trvfvczdfv",
             'quantity'      => "1",

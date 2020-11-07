@@ -154,6 +154,7 @@ class PriceListController extends Controller
 
     public function store(Request $request)
     {
+        dd($request->all());
         
         $pricelist = PriceList::find($request->priceList);
 

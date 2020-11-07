@@ -87,14 +87,14 @@
             font-size: 0.5em;
             text-anchor: middle;
         }
-
+        
         .dashboard-card {
-		width: 280px;
-		position: relative;
-		box-shadow: 0 5px 10px #dfdfdf;
-		margin: 10px 5px 10px ;
-		background: #fafafa;
-	}
+            width: 280px;
+            position: relative;
+            box-shadow: 0 5px 10px #dfdfdf;
+            margin: 10px 5px 10px ;
+            background: #fafafa;
+        }
         
     </style>
     
@@ -133,13 +133,15 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-1 col-lg-3">
+        <div class="row justify-center">
+            {{-- <div class="col-md-1 col-lg-3">
                 <div class="dashboard-card">
                     <div class="card card-body">
                         <div class="row">
                             <div class="col p-r-0 align-self-center">
+                                @if($provider)
                                 <h2 class="font-light m-b-0"> {{$provider->count()}} </h2>
+                                @endif
                                 <h6 class="text-muted">Providers</h6>
                             </div>
                             <div class="col text-right align-self-center">
@@ -150,24 +152,32 @@
                                     a 15.9155 15.9155 0 0 1 0 -31.831"
                                     />
                                     <path class="circle"
+                                    @if($provider)
                                     stroke-dasharray="{{$provider['resellers']->count()}}, 100"
+                                    @endif
                                     d="M18 2.0845
                                     a 15.9155 15.9155 0 0 1 0 31.831
                                     a 15.9155 15.9155 0 0 1 0 -31.831"
                                     />
+                                    @if($provider)
+                                    
                                     <text x="18" y="20.35" class="percentage">{{$provider->count()/100}}%</text>
+                                    @endif
+                                    
                                 </svg>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="col-md-1 col-lg-3">
                 <div class="dashboard-card">
                     <div class="card card-body">
                         <div class="row">
                             <div class="col p-r-0 align-self-center">
+                                @if($provider)
                                 <h2 class="font-light m-b-0"> {{$provider['resellers']->count()}} </h2>
+                                @endif
                                 <h6 class="text-muted">Resellers</h6>
                             </div>
                             <div class="col text-right align-self-center">
@@ -178,12 +188,20 @@
                                     a 15.9155 15.9155 0 0 1 0 -31.831"
                                     />
                                     <path class="circle"
+                                    @if($provider)
+                                    
                                     stroke-dasharray="{{$provider['resellers']->count()}}, 100"
+                                    @endif
+                                    
                                     d="M18 2.0845
                                     a 15.9155 15.9155 0 0 1 0 31.831
                                     a 15.9155 15.9155 0 0 1 0 -31.831"
                                     />
+                                    @if($provider)
+                                    
                                     <text x="18" y="20.35" class="percentage">{{$provider['resellers']->count()/100}}%</text>
+                                    @endif
+                                    
                                 </svg>
                             </div>
                         </div>
@@ -275,7 +293,7 @@
                 </div>
             </div> --}}
         </div>
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
                 <div class="card bd-callout-info res-mg-t-30 table-mg-t-pro-n">
                     <div class="card-body">
@@ -306,19 +324,6 @@
                             <tr>    
                                 <td>Company test</td>
                                 <td> ${{$budget}}</td>
-                            <td>${{$costSum}}</td>
-                                    <td><ul class="country-state">
-                                        <h2><span class="counter">{{round($average, 0)}}</span>%   <small></small></h2> 
-                                        <div class="pull-right"><span class="counter">{{round($average, 0)}}</span>%<i class="fa fa-level-up text-danger ctn-ic-1"></i></div>
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-success ctn-vs-4" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:100%;"> <span class="sr-only">{{round($average, 0)}} Budget</span></div>
-                                        </div>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>    
-                                <td>Company test</td>
-                                <td> ${{$budget}}</td>
                                 <td>${{$costSum}}</td>
                                 <td><ul class="country-state">
                                     <h2><span class="counter">{{round($average, 0)}}</span>%   <small></small></h2> 
@@ -329,13 +334,26 @@
                                 </ul>
                             </td>
                         </tr>
-                    </tbody>
-                </table>
-            </div>
+                        <tr>    
+                            <td>Company test</td>
+                            <td> ${{$budget}}</td>
+                            <td>${{$costSum}}</td>
+                            <td><ul class="country-state">
+                                <h2><span class="counter">{{round($average, 0)}}</span>%   <small></small></h2> 
+                                <div class="pull-right"><span class="counter">{{round($average, 0)}}</span>%<i class="fa fa-level-up text-danger ctn-ic-1"></i></div>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-success ctn-vs-4" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:100%;"> <span class="sr-only">{{round($average, 0)}} Budget</span></div>
+                                </div>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
-<div class="row">
+</div> --}}
+{{-- <div class="row">
     <div class="col-lg-4 col-md-12">
         <div class="card-success">
             <div class="card-body">
@@ -377,7 +395,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             
             
             <script type="text/javascript">

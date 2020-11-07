@@ -8,7 +8,7 @@ return [
     'tenant' => 'Tenant',
     'review' => 'Review',
     'please_review_details' => 'Please Review Details',
-    'cliente_selected' => 'Purching order for cliente',
+    'cliente_selected' => 'Pruchasing order for cliente',
     'agreement_signed' => 'Agreement Signed By',
     'sign_agreement_microsoft' => 'Sign Microsoft Cloud Agreement',
     'first_name' => 'First Name',

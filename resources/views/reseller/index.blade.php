@@ -12,7 +12,7 @@
 						<div style="flex-grow: 31;">
 						</div>
 						<div>
-							@if(Auth::user()->userLevel->id=== 3)
+							@if(Auth::user()->userLevel->id === 3)
 							<a type="submit" href="{{route('reseller.create')}}" class="btn submit_btn">{{ ucwords(__('messages.new_reseller')) }}</a>
 							@endif						</div>
 						</div>

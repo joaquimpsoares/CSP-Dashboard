@@ -191,7 +191,7 @@ Route::get('/test', function() {
                 $subscriptions->tenant_name	=		$this->order->domain;
 				$subscriptions->status_id =         1;
                 $subscriptions->save();
-				dd($subscription);
+				// dd($subscription);
 			}
 			
 	// $result = Subscription::create([

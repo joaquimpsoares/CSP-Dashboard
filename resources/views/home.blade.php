@@ -5,9 +5,19 @@
 
 @auth
 
+@if(Auth::user()->userLevel->id === 1)
+{{-- @include('home') --}}
+@endif
 
+{{-- {{dd(Auth::user()->userLevel->id)}} --}}
+
+@if(Auth::user()->userLevel->id === 2)
 @include('provider.partials.home')
+@endif
 
+@if(Auth::user()->userLevel->id === 3)
+@include('provider.partials.home')
+@endif
 
 @endauth
 

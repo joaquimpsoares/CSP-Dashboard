@@ -47,7 +47,7 @@ class AnalyticController extends Controller
         $budget = cache()->remember('azure.budget', 0, function(){
             
             $customer = new TagydesCustomer([
-                'id' => 'd9b842d6-aa51-44ca-a77c-f7d20411b942',
+                'id' => '4e03835b-242f-441c-9958-ad3e5e05f55d',
                 'username' => 'bill@tagydes.com',
                 'password' => 'blabla',
                 'firstName' => 'Nombre',
@@ -59,7 +59,7 @@ class AnalyticController extends Controller
             'id'            => 'C01AD64D-6D65-45C4-B755-C11BD4F0DA0E',
             'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
             'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-            'customerId'    => "d9b842d6-aa51-44ca-a77c-f7d20411b942",
+            'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
             'name'          => "5trvfvczdfv",
             'status'        => "5trvfvczdfv",
             'quantity'      => "1",
@@ -82,8 +82,30 @@ class AnalyticController extends Controller
         // $costSum = "3000";
         
         $increase = ($budget-$costSum);
-        $average1 = ($increase/$budget)*100;
-        $average = 100-$average1;
+
+        
+        if($increase !== 0){
+            $average1 = ($increase/$budget)*100;
+            $average = 100-$average1;
+
+            return view('analytics.azure', [
+                'category' => json_encode($category, JSON_NUMERIC_CHECK),
+                'query' => json_encode($query, JSON_NUMERIC_CHECK),
+                'top10q'=> json_encode($top10Q, JSON_NUMERIC_CHECK),
+                'sum' => json_encode($sum, JSON_NUMERIC_CHECK),
+                'total' => $costSum,
+                'budgetAndTotal' => json_encode([$budget, $budget - $costSum ], JSON_NUMERIC_CHECK),
+                'budget' => $budget,
+                'date' => $msdate,
+                'dateupdated' => $dateupdated,
+                'resourceName' => $resourceName,
+                'average' => (int) $average,
+            
+                'top10C' => json_encode($top10C, JSON_NUMERIC_CHECK),
+                'top10S' => json_encode($top10S, JSON_NUMERIC_CHECK)
+                ]);
+            }
+        
                     
                     
     return view('analytics.azure', [
@@ -97,7 +119,7 @@ class AnalyticController extends Controller
         'date' => $msdate,
         'dateupdated' => $dateupdated,
         'resourceName' => $resourceName,
-        'average' => (int) $average,
+        'average' => (int) ['0'],
         'top10C' => json_encode($top10C, JSON_NUMERIC_CHECK),
         'top10S' => json_encode($top10S, JSON_NUMERIC_CHECK)
         ]);
@@ -114,7 +136,7 @@ class AnalyticController extends Controller
             $instance = Instance::where('id', 4)->first();
                         
         $customer = new TagydesCustomer([
-            'id' => 'd9b842d6-aa51-44ca-a77c-f7d20411b942',
+            'id' => '4e03835b-242f-441c-9958-ad3e5e05f55d',
             'username' => 'bill@tagydes.com',
             'password' => 'blabla',
             'firstName' => 'Nombre',
@@ -126,7 +148,7 @@ class AnalyticController extends Controller
             'id'            => 'C01AD64D-6D65-45C4-B755-C11BD4F0DA0E',
             'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
             'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-            'customerId'    => "d9b842d6-aa51-44ca-a77c-f7d20411b942",
+            'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
             'name'          => "5trvfvczdfv",
             'status'        => "5trvfvczdfv",
             'quantity'      => "1",
@@ -171,11 +193,11 @@ class AnalyticController extends Controller
 
         $subscriptions = Subscription::select('instance_id')->first();
         
-            $instance = Instance::where('id', 4)->first();
+            $instance = Instance::where('id', 1)->first();
 
         $value = $request->budget;
         $customer = new TagydesCustomer([
-            'id' => 'd9b842d6-aa51-44ca-a77c-f7d20411b942',
+            'id' => '4e03835b-242f-441c-9958-ad3e5e05f55d',
             'username' => 'bill@tagydes.com',
             'password' => 'blabla',
             'firstName' => 'Nombre',
@@ -218,7 +240,7 @@ class AnalyticController extends Controller
         $budget = cache()->remember('azure.budget', 0, function(){
             
             $customer = new TagydesCustomer([
-                'id' => 'd9b842d6-aa51-44ca-a77c-f7d20411b942',
+                'id' => '4e03835b-242f-441c-9958-ad3e5e05f55d',
                 'username' => 'bill@tagydes.com',
                 'password' => 'blabla',
                 'firstName' => 'Nombre',
@@ -230,7 +252,7 @@ class AnalyticController extends Controller
                     'id'            => 'C01AD64D-6D65-45C4-B755-C11BD4F0DA0E',
                     'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
                     'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-                    'customerId'    => "d9b842d6-aa51-44ca-a77c-f7d20411b942",
+                    'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
                     'name'          => "5trvfvczdfv",
                     'status'        => "5trvfvczdfv",
                     'quantity'      => "1",

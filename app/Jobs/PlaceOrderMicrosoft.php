@@ -53,6 +53,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
             $this->order->details = ('Stage 2 - Placing Order for: '.$product['name']. ' for Customer: '. $customer->company_name);
             $this->order->save();
         }
+
         
         $instanceid = $products->first()->instance_id;
         
@@ -69,6 +70,8 @@ class PlaceOrderMicrosoft implements ShouldQueue
             'lastName' => 'name',
             'email' => 'name@email.com',
             ]);
+
+            Log::info('Adding existingCustomer: '.$this->order->ext_company_id);
             
         try {
             $tagydescart = new TagydesCart();
