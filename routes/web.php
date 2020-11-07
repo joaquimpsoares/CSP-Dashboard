@@ -216,6 +216,10 @@ use App\Http\Controllers\Auth\LoginController;
 Route::get('login/microsoft', [LoginController::class, 'redirectToProvider']);
 Route::get('login/microsoft/callback', [LoginController::class, 'handleProviderCallback']);
 
+Route::get('login/graph', [LoginController::class, 'redirectToProvider']);
+Route::get('login/graph/callback', [LoginController::class, 'handleProviderCallback']);
+
+
 Route::group(['middleware' => 'auth'], function () {
 	
 	

@@ -33,6 +33,7 @@
         "php-http/guzzle6-adapter": "^2.0",
         "php-http/httplug-bundle": "^1.18",
         "socialiteproviders/microsoft": "^4.0",
+        "socialiteproviders/microsoft-graph": "^4.0",
         "spatie/laravel-permission": "^3.11",
         "tagydes/kaspersky-connection": "dev-master",
         "tagydes/microsoft-connection": "dev-master",
