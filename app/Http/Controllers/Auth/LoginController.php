@@ -56,9 +56,11 @@ class LoginController extends Controller
      */
     public function handleProviderCallback()
     {
-        $user = Socialite::driver('microsoft')->user();
 
-        dd($user);
+        $reditect = Socialite::driver('microsoft')->redirect();
+        
+
+        dd($reditect);
 
         // $user->token;
     }
