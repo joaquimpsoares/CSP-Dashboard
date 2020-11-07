@@ -46,7 +46,7 @@ class LoginController extends Controller
      */
     public function redirectToProvider()
     {
-        return Socialite::driver('microsoft')->redirect();
+        return Socialite::driver('graph')->redirect();
     }
 
     /**
@@ -57,7 +57,7 @@ class LoginController extends Controller
     public function handleProviderCallback()
     {
 
-        $reditect = Socialite::driver('microsoft')->redirect();
+        $reditect = Socialite::driver('graph')->user();
         
 
         dd($reditect);

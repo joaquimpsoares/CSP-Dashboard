@@ -22,6 +22,9 @@ class EventServiceProvider extends ServiceProvider
             // ... other providers
             'SocialiteProviders\\Microsoft\\MicrosoftExtendSocialite@handle',
         ],
+        'SocialiteProviders\Manager\SocialiteWasCalled' => [
+            'SocialiteProviders\Graph\GraphExtendSocialite@handle'
+        ],
     ];
 
     /**
