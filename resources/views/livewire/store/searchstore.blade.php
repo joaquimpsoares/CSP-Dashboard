@@ -18,7 +18,6 @@
                 <input wire:model="search" class="form-control" type="text" placeholder="Search products/sku..."/>
                 @if (!empty($prices))
                 @foreach($prices as $product)
-                {{-- {{dd($product->price)}} --}}
                 <div class="product-card">
                     @if ($product->category == "Trial")
                     <div class="badge1">{{$product->category}}</div>
