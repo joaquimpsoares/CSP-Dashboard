@@ -191,6 +191,7 @@ return [
         Lab404\Impersonate\ImpersonateServiceProvider::class,
         //Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         // NotificationChannels\MsTeams\MsTeamsChannel::class,
+        \SocialiteProviders\Manager\ServiceProvider::class,
         
     ],
 

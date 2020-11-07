@@ -211,7 +211,10 @@ Route::get('/test', function() {
 Fim Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
 **********************************************************************************/
+use App\Http\Controllers\Auth\LoginController;
 
+Route::get('login/microsoft', [LoginController::class, 'redirectToProvider']);
+Route::get('login/microsoft/callback', [LoginController::class, 'handleProviderCallback']);
 
 Route::group(['middleware' => 'auth'], function () {
 	

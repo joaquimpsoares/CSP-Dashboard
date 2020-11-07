@@ -18,6 +18,10 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\MSCustomerCreationEvent::class => [
             \App\Listeners\MSCustomerCreationListener::class,
         ],
+        \SocialiteProviders\Manager\SocialiteWasCalled::class => [
+            // ... other providers
+            'SocialiteProviders\\Microsoft\\MicrosoftExtendSocialite@handle',
+        ],
     ];
 
     /**
