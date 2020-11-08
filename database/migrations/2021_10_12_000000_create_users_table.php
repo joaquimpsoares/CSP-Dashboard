@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('email')->unique();
             $table->string('username')->nullable()->index();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('phone')->nullable();
@@ -34,6 +34,7 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->timestamp('last_login')->nullable();
             $table->string('confirmation_token', 60)->nullable();
+            $table->string('socialite_id')->nullable();
             $table->unsignedSmallInteger('status_id')->index()->default(5);
 
             $table->integer('two_factor_country_code')->nullable();

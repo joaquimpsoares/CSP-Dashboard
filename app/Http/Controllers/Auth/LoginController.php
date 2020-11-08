@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\User;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Laravel\Socialite\Facades\Socialite;
@@ -46,7 +47,9 @@ class LoginController extends Controller
      */
     public function redirectToProvider()
     {
-        return Socialite::driver('graph')->redirect();
+            return Socialite::with('graph')
+            ->setTenantId(env('GRAPH_TENANT_ID'))
+            ->redirect();
     }
 
     /**
@@ -57,11 +60,22 @@ class LoginController extends Controller
     public function handleProviderCallback()
     {
 
-        $reditect = Socialite::driver('graph')->user();
-        
+        $socialiteUser = Socialite::driver('graph')
+            ->setTenantId(env('GRAPH_TENANT_ID'))
+            ->user();
 
-        dd($reditect);
+        $user = User::firstOrCreate([
+            'socialite_id' => $socialiteUser->getId(),
+        ],
+        [
+            'email' => $socialiteUser->getEmail(),
+            'name' => $socialiteUser->getName(),
+            
+        ]);
 
-        // $user->token;
+        Auth()->login($user, true);
+
+        return redirect('dashboard');
     }
+
 }
