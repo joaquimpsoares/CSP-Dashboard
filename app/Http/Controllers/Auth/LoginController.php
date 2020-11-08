@@ -64,6 +64,8 @@ class LoginController extends Controller
             ->setTenantId(env('GRAPH_TENANT_ID'))
             ->user();
 
+            // dd($socialiteUser->getId());
+
         $user = User::firstOrCreate([
             'socialite_id' => $socialiteUser->getId(),
         ],
