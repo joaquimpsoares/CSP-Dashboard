@@ -70,6 +70,7 @@ class LoginController extends Controller
         [
             'email' => $socialiteUser->getEmail(),
             'name' => $socialiteUser->getName(),
+            'user_level_id' => '3',
             
         ]);
 
