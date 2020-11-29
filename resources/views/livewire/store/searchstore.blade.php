@@ -1,6 +1,6 @@
 <section class="section">
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-12">
             <div class="row">
                 <div class="col-3">
                     <form method="GET" action="{{route('store.index')}}" style="padding-top: 15px;">
@@ -13,7 +13,7 @@
                     </form>
                 </div>
             </div>
-            
+
             <div class="row">
                 <input wire:model="search" class="form-control" type="text" placeholder="Search products/sku..."/>
                 @if (!empty($prices))

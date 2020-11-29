@@ -1,9 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.master')
+@section('css')
 
+@endsection
 
 @section('content')
 
-<div class="container">
+
     <section class="section">
         <div class="card bd-callout-info">
             <div class="">
@@ -44,8 +46,8 @@
                                         <td>
                                             <a href="#">{{ $job->id }}</a>
                                         </td>
-                                        <td>{{ $job->queue }}</td>   
-                                        @if (!empty($order[$job->id]->customer->company_name) )    
+                                        <td>{{ $job->queue }}</td>
+                                        @if (!empty($order[$job->id]->customer->company_name) )
                                         <td>{{ $order[$job->id]->customer->company_name}}</td>
                                         <td>{{ $order[$job->id]->domain}}</td>
                                         @elseif(empty($order[$job->id]->customer->company_name) )
@@ -89,14 +91,14 @@
                                         <td style="width: 15px">{{ Str::limit($failedJob->payload, 100, $end='[...]')  }}</td>
                                         <td style="width: 15px">{{ Str::limit($failedJob->exception, 100, $end='[...]') }}</td>
                                         <td >
-                                            <div class="col-2"> 
+                                            <div class="col-2">
                                                 <a href="{{route('jobs.retry', $failedJob->id)}}">
-                                                    <i class="fas fa-redo-alt text-primary }}"></i>		
+                                                    <i class="fas fa-redo-alt text-primary }}"></i>
                                                 </a>
-                                            </div>                                      
-                                            <div class="col-2"> 
+                                            </div>
+                                            <div class="col-2">
                                                 <a href="{{route('jobs.destroy', $failedJob->id)}}">
-                                                    <i class="fas fa-trash-alt text-primary }}"></i>		
+                                                    <i class="fas fa-trash-alt text-primary }}"></i>
                                                 </a>
                                             </div>
                                         </td>
@@ -108,14 +110,13 @@
                                     @endforelse
                                 </tbody>
                             </table>
-                            
+
                         </div> --}}
                     </div>
                 </div>
             </div>
         </div>
     </section>
-</div>
 @endsection
     @section('scripts')
 <script type="text/javascript">

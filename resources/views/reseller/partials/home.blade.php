@@ -1,309 +1,142 @@
-@extends('layouts.app')
+@extends('layouts.master')
+@section('css')
+<!-- Data table css -->
 
+<!-- Slect2 css -->
+<link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
+@endsection
+@section('page-header')
+<!--Page header-->
+<div class="page-header">
+    <div class="page-leftheader">
+        {{-- <h4 class="page-title">{{ ucwords(trans_choice('messages.reseller_table', 1)) }}</h4> --}}
+    </div>
+    <div class="page-rightheader ml-auto d-lg-flex d-none">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#" class="d-flex"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm5 15h-2v-6H9v6H7v-7.81l5-4.5 5 4.5V18z"/><path d="M7 10.19V18h2v-6h6v6h2v-7.81l-5-4.5z" opacity=".3"/></svg><span class="breadcrumb-icon"> Home</span></a></li>
+            <li class="breadcrumb-item"><a href="#">Pages</a></li>
+            <li class="breadcrumb-item"><a href="#">Blog</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Blog 01</li>
+        </ol>
+    </div>
+</div>
+<!--End Page header-->
+@endsection
 @section('content')
 
-<style>
-    
-    
-    
-    
-    /*! CSS Used from: https://www.wrappixel.com/demos/admin-templates/material-pro/assets/plugins/chartist-js/dist/chartist-init.css */
-    .chartist-chart{position:relative;}
-    .usage .ct-series-a .ct-line{stroke:#fff;}
-    .usage .ct-series-a .ct-point{stroke-width:0px;}
-    .usage .ct-series-a .ct-area{fill-opacity:0;}
-    /*! CSS Used from: https://www.wrappixel.com/demos/admin-templates/material-pro/assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css */
-    .chartist-tooltip{position:absolute;display:inline-block;opacity:0;min-width:50px;padding:5px 10px;border-radius:5px;background:#313131;color:#fff;font-weight:500;text-align:center;pointer-events:none;z-index:1;-webkit-transition:opacity .2s linear;-moz-transition:opacity .2s linear;-o-transition:opacity .2s linear;transition:opacity .2s linear;}
-    .ct-area,.ct-line{pointer-events:none;}
-    /*! CSS Used from: https://www.wrappixel.com/demos/admin-templates/material-pro/assets/plugins/css-chart/css-chart.css */
-    .css-bar{position:relative;display:inline-block;font-size:16px;border-radius:50%;background-color:transparent;margin-bottom:20px;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box;width:80px;height:80px;font-size:18px;}
-    .css-bar:after{display:inline-block;position:absolute;top:0;left:0;border-radius:50%;text-align:center;font-weight:light;color:#a1a2a3;}
-    .css-bar:after{content:attr(data-label);background-color:#fff;z-index:101;}
-    .css-bar:after{width:70px;height:70px;margin-left:5px;margin-top:5px;line-height:70px;}
-    .css-bar.css-bar-20{background-image:linear-gradient(90deg, #fafafa 50%, transparent 50%, transparent), linear-gradient(162deg, #7460ee 50%, #fafafa 50%, #fafafa);}
-    .css-bar.css-bar-40{background-image:linear-gradient(90deg, #fafafa 50%, transparent 50%, transparent), linear-gradient(234deg, #7460ee 50%, #fafafa 50%, #fafafa);}
-    .css-bar.css-bar-60{background-image:linear-gradient(306deg, #7460ee 50%, transparent 50%, transparent), linear-gradient(270deg, #7460ee 50%, #fafafa 50%, #fafafa);}
-    .css-bar-primary.css-bar-40{background-image:linear-gradient(90deg, #fafafa 50%, transparent 50%, transparent), linear-gradient(234deg, #7460ee 50%, #fafafa 50%, #fafafa);}
-    .css-bar-success.css-bar-20{background-image:linear-gradient(90deg, #fafafa 50%, transparent 50%, transparent), linear-gradient(162deg, #26c6da 50%, #fafafa 50%, #fafafa);}
-    .css-bar-info.css-bar-20{background-image:linear-gradient(90deg, #fafafa 50%, transparent 50%, transparent), linear-gradient(162deg, #1e88e5 50%, #fafafa 50%, #fafafa);}
-    .css-bar-danger.css-bar-60{background-image:linear-gradient(306deg, #fc4b6c 50%, transparent 50%, transparent), linear-gradient(270deg, #fc4b6c 50%, #fafafa 50%, #fafafa);}
-    .css-bar{background-clip:content-box;}
-    /*! CSS Used from: https://www.wrappixel.com/demos/admin-templates/material-pro/assets/plugins/vectormap/jquery-jvectormap-2.0.2.css */
-    
-    
-    
-    
-</style>
 
-<link rel="stylesheet" href="https://colorlib.com/polygon/kiaalap/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://colorlib.com/polygon/kiaalap/style.css">
-
-
-<div class="preloader" style="display: none;">
+<div class="row">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="mb-2 fs-18 text-muted">
+                            Resellers
+                        </div>
+                        {{-- <h1 class="font-weight-bold mb-1">{{$reseller['resellers']->count()}}</h1> --}}
+                        <span class="text-primary"><i class="fa fa-arrow-up mr-1"></i> +1.4%</span>
+                    </div>
+                    <div class="col col-auto">
+                        <div class="mx-auto chart-circle chart-circle-md chart-circle-primary mt-sm-0 mb-0" data-value="0.85" data-thickness="12" data-color="#4454c3">
+                            <div class="mx-auto chart-circle-value text-center fs-20">85%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="mb-2 fs-18 text-muted">
+                            Customers
+                        </div>
+                        <h1 class="font-weight-bold mb-1">{{$countCustomers}}</h1>
+                        <span class="text-success"><i class="fa fa-arrow-up mr-1"></i> +1.8%</span>
+                    </div>
+                    <div class="col col-auto">
+                        <div class="mx-auto chart-circle chart-circle-md chart-circle-success mt-sm-0 mb-0" data-value="0.60" data-thickness="12" data-color="#2dce89">
+                            <div class="mx-auto chart-circle-value text-center fs-20">60%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="mb-2 fs-18 text-muted">
+                            Subscriptions
+                        </div>
+                        <h1 class="font-weight-bold mb-1">{{$countSubscriptions}}</h1>
+                        <span class="text-danger"><i class="fa fa-arrow-down mr-1"></i> -2.4%</span>
+                    </div>
+                    <div class="col col-auto">
+                        <div class="mx-auto chart-circle chart-circle-md chart-circle-secondary mt-sm-0 mb-0" data-value="0.45" data-thickness="12" data-color="#f7346b">
+                            <div class="mx-auto chart-circle-value text-center fs-20">25%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="container">
-    <div class="row page-titles">
-        <div class="col-md-5 col-8 align-self-center">
-            <h3 class="text-themecolor">Dashboard</h3>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title ">Quick Links</h3>
+        <div class="card-options">
+            <a href="#" class="card-options-collapse mr-2" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+            <a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
         </div>
-        <div class="col-md-7 col-4 align-self-center">
-            <div class="d-flex m-t-10 justify-content-end">
-                <div class="d-flex m-r-20 m-l-10 hidden-md-down">
-                    <div class="chart-text m-r-10">
-                        <h6 class="m-b-0"><small>THIS MONTH</small>
-                        </h6>
-                        <h4 class="m-t-0 text-info">$58,356
-                            
-                        </h4>
-                    </div>
-                    <div class="spark-chart">
-                        <div id="monthchart"><canvas width="60" height="35" style="display: inline-block; width: 60px; height: 35px; vertical-align: top;"></canvas>
-                        </div>
-                    </div>
+    </div>
+    <div class="card-group p-5">
+        <div class="card  overflow-hidden shadow-none border border-right-0">
+            <img  src="{{URL::asset('images/store/store-management.png')}}" alt="image" height="300" width="auto">
+            <div class="card-body">
+                <h5 class="card-title">Store</h5>
+                <p class="card-text"> Use the store to purchase products on behalf of your customers, select Microsoft of Kaspersky products.</p>
+            </div>
+            <div class="card-footer text-right">
+                <small class="text-muted"><a href="/store" class="btn btn-success btn-sm mt-3">Go to Store &#8594;</a></small>
+            </div>
+        </div>
+        <div class="card  overflow-hidden shadow-none border border-right-0">
+            <img  src="{{URL::asset('images/store/web-marketing-analytics.jpg')}}" alt="image" height="300" width="auto">
+            <div class="card-body">
+                <h5 class="card-title">Analytics</h5>
+                <p class="card-text">Check your <Strong>Azure</Strong> analytics</p>
+            </div>
+            <div class="card-footer text-right">
+                <small class="text-muted"><a href="#" class="btn btn-success btn-sm mt-3">Go to Analytics &#8594;</a></small>
+            </div>
+        </div>
+        <div class="card overflow-hidden shadow-none border">
+            <img  src="{{URL::asset('https://partners.kaspersky.com/s/sfsites/c/resource/KL_banner_loginMSP')}}" alt="image" height="300" width="auto">
+            <div class="card-body">
+                <h5 class="card-title">Kaspersky Onboard</h5>
+                <p class="card-text"> If you haven't done yet,
+                    please check the link to become Kaspersky Reseller once you register you'll recieve a Kaspersky Reseller Pin.</p>
                 </div>
-                <div class="d-flex m-r-20 m-l-10 hidden-md-down">
-                    <div class="chart-text m-r-10">
-                        <h6 class="m-b-0"><small>LAST MONTH</small></h6>
-                        <h4 class="m-t-0 text-primary">$48,356</h4>
-                    </div>
-                    <div class="spark-chart">
-                        <div id="lastmonthchart"><canvas width="60" height="35" style="display: inline-block; width: 60px; height: 35px; vertical-align: top;"></canvas>
-                        </div>
-                    </div>
+                <div class="card-footer text-right">
+                    <small class="text-muted"><a href="https://www.kasperskypartners.com/?eid=registe" class="btn btn-success btn-sm mt-3">Become a Member &#8594;</a></small>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-1 col-lg-3">
-            <div class="dashboard-card">
-                <div class="card card-body">
-                    <div class="row">
-                        <div class="col p-r-0 align-self-center">
-                            <h2 class="font-light m-b-0"> {{$countCustomers}} </h2>
-                            <h6 class="text-muted">Customers</h6>
-                        </div>
-                        <div class="col text-right align-self-center">
-                            <svg viewBox="0 0 36 36" class="circular-chart orange">
-                                <path class="circle-bg"
-                                d="M18 2.0845
-                                a 15.9155 15.9155 0 0 1 0 31.831
-                                a 15.9155 15.9155 0 0 1 0 -31.831"
-                                />
-                                <path class="circle"
-                                stroke-dasharray="{{$countCustomers}}, 100"
-                                d="M18 2.0845
-                                a 15.9155 15.9155 0 0 1 0 31.831
-                                a 15.9155 15.9155 0 0 1 0 -31.831"
-                                />
-                                <text x="18" y="20.35" class="percentage">{{$countCustomers/100}}%</text>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {{-- <div class="col-md-1 col-lg-3">
-            <div class="dashboard-card">
-                <div class="card card-body">
-                    <div class="row">
-                        <div class="col p-r-0 align-self-center">
-                            <h2 class="font-light m-b-0">{{$countCustomers}}</h2>
-                            <h6 class="text-muted">Customers</h6>
-                        </div>
-                        <div class="col text-right align-self-center">
-                            <svg viewBox="0 0 36 36" class="circular-chart green">
-                                <path class="circle-bg"
-                                d="M18 2.0845
-                                a 15.9155 15.9155 0 0 1 0 31.831
-                                a 15.9155 15.9155 0 0 1 0 -31.831"
-                                />
-                                <path class="circle"
-                                stroke-dasharray="{{$countCustomers}}, 100"
-                                d="M18 2.0845
-                                a 15.9155 15.9155 0 0 1 0 31.831
-                                a 15.9155 15.9155 0 0 1 0 -31.831"
-                                />
-                                <text x="18" y="20.35" class="percentage">{{$countCustomers/100}}%</text>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-        <div class="col-md-1 col-lg-3">
-            <div class="dashboard-card">
-                <div class="card card-body">
-                    <div class="row">
-                        <div class="col p-r-0 align-self-center">
-                            <h2 class="font-light m-b-0">{{$countSubscriptions}}</h2>
-                            <h6 class="text-muted">subscriptions</h6>
-                        </div>
-                        <div class="col text-right align-self-center">
-                            <svg viewBox="0 0 36 36" class="circular-chart green">
-                                <path class="circle-bg"
-                                d="M18 2.0845
-                                a 15.9155 15.9155 0 0 1 0 31.831
-                                a 15.9155 15.9155 0 0 1 0 -31.831"
-                                />
-                                <path class="circle"
-                                stroke-dasharray="{{$countSubscriptions}}, 100"
-                                d="M18 2.0845
-                                a 15.9155 15.9155 0 0 1 0 31.831
-                                a 15.9155 15.9155 0 0 1 0 -31.831"
-                                />
-                                <text x="18" y="20.35" class="percentage">{{$countSubscriptions/100}}%</text>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row">
-        {{-- <div class="col-lg-8  col-md-12">
-            <div class="card_news">
-                <div class="img">
-                    <img src="https://partners.kaspersky.com/s/sfsites/c/resource/KL_banner_loginMSP" alt="image univers">
-                </div>
-                <div class="content">
-                    <h3 class="title">Kaspersky Onboard</h3>
-                    <p class="text">
-                        If you haven't done yet, please check the link for you to obtain a Kaspersky Reseller Pin.
-                    </p>
-                    <div class="buttons">
-                        <a href="https://www.kasperskypartners.com/?eid=registe" class="btn-continue">Continue &#8594;</a>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-        <div class="col-lg-4 col-md-12">
-            <div class="card_news">
-                <div class="img">
-                    <img src="/images/store/store-management.png" alt="image univers">
-                </div>
-                <div class="content">
-                    <h3 class="title">Store</h3>
-                    <p class="text">
-                        Use the store to purchase products on behalf of your customers, select Microsoft of Kaspersky products.
-                    </p>
-                    <div class="buttons">
-                        {{-- <button class="btn-back">Back</button> --}}
-                        <a href="store" class="btn-continue">Go to Store &#8594;</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-12">
-            <div class="card_news">
-                <div class="img">
-                    <img src="/images/store/img20-min.png" alt="image univers">
-                </div>
-                <div class="content">
-                    <h3 class="title">Analytics</h3>
-                    <p class="text">
-                        Use the store to purchase products on behalf of your customers, select Microsoft of Kaspersky products.
-                    </p>
-                    <div class="buttons">
-                        {{-- <button class="btn-back">Back</button> --}}
-                        <a href="store" class="btn-continue">Go to Analytics &#8594;</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-12">
-            <div class="card_news">
-                <div class="img">
-                    <img src="https://partners.kaspersky.com/s/sfsites/c/resource/KL_banner_loginMSP" alt="image univers">
-                </div>
-                <div class="content">
-                    <h3 class="title">Kaspersky Onboard</h3>
-                    <p class="text">
-                        If you haven't done yet, 
-                        please check the link to become Kaspersky Reseller once you register you'll recieve a Kaspersky Reseller Pin.
-                    </p>
-                    <div class="buttons">
-                        {{-- <button class="btn-back">Back</button> --}}
-                        <a href="https://www.kasperskypartners.com/?eid=registe"  target="_blank" class="btn-continue">Become a Member &#8594;</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    {{-- <div class="row">
-        <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
-            <div class="card res-mg-t-30 table-mg-t-pro-n">
-                <div class="card-body">
-                    <h3 class="card-title">Azure Subscriptions</h3>
-                    <table class="table table-hover responsive" id="azure">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th>Company Name</th>
-                                <th>Monthly Budget</th>
-                                <th>Current Estimated</th>
-                                <th>budget</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Company test</td>
-                                <td>${{$budget}}</td>
-                                <td>${{$costSum}}</td>
-                                <td><ul class="country-state">
-                                    <h2><span class="counter">{{round($average, 0)}}</span>%   <small></small></h2> 
-                                    <div class="pull-right"><span class="counter">{{round($average, 0)}}</span>%<i class="fa fa-level-up text-danger ctn-ic-1"></i></div>
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-success ctn-vs-4" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:100%;"> <span class="sr-only">{{round($average, 0)}} Budget</span></div>
-                                    </div>
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr>    
-                            <td>Company test</td>
-                            <td> ${{$budget}}</td>
-                            <td>${{$costSum}}</td>
-                            <td><ul class="country-state">
-                                <h2><span class="counter">{{round($average, 0)}}</span>%   <small></small></h2> 
-                                <div class="pull-right"><span class="counter">{{round($average, 0)}}</span>%<i class="fa fa-level-up text-danger ctn-ic-1"></i></div>
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-success ctn-vs-4" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:100%;"> <span class="sr-only">{{round($average, 0)}} Budget</span></div>
-                                </div>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>    
-                        <td>Company test</td>
-                        <td> ${{$budget}}</td>
-                        <td>${{$costSum}}</td>
-                        <td><ul class="country-state">
-                            <h2><span class="counter">{{round($average, 0)}}</span>%   <small></small></h2> 
-                            <div class="pull-right"><span class="counter">{{round($average, 0)}}</span>%<i class="fa fa-level-up text-danger ctn-ic-1"></i></div>
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-success ctn-vs-4" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:100%;"> <span class="sr-only">{{round($average, 0)}} Budget</span></div>
-                            </div>
-                        </ul>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div> --}}
 
 
-@endsection
-
-@section('scripts')
 
 
-<script type="text/javascript">
-    $(document).ready( function () {
-        $('#azure').DataTable({
-            "pagingType": "full_numbers",
-            "order": [[ 0, "asc" ]]
-        });
-    } );
-</script>
+    @endsection
 
-@endsection
+    @section('scripts')
+
+
+    @endsection

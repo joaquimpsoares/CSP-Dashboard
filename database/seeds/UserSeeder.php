@@ -2,8 +2,8 @@
 
 use App\Customer;
 use App\Reseller;
-use App\User;
-use App\UserLevel;
+use App\Models\User;
+use App\Models\UserLevel;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        
+
         $reseller = Reseller::first();
         $reseller2 = Reseller::where('company_name', 'Reseller 2')->first();
         $reseller3 = Reseller::where('company_name', 'Reseller 3')->first();
@@ -172,8 +172,8 @@ class UserSeeder extends Seeder
         $userSubReseller->assignRole(config('app.subreseller'));
         $userCustomer->assignRole(config('app.customer'));
 
-        
-        
+
+
 
     }
 }

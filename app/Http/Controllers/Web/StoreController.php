@@ -17,10 +17,10 @@ class StoreController extends Controller
 
 	private $productRepository;
 
-	public function __construct(ProductRepositoryInterface $productRepository) 
+	public function __construct(ProductRepositoryInterface $productRepository)
 	{
 		$this->productRepository = $productRepository;
-        
+
 	}
 
 
@@ -36,7 +36,7 @@ class StoreController extends Controller
             case 'app.admin':
                 return abort(403, __('errors.access_with_resellers_credentials'));
             break;
-        
+
             default:
                 # code...
                 break;
@@ -56,7 +56,7 @@ class StoreController extends Controller
                 # code...
                 $categories = Product::select('category')->where('vendor', $vendor)->groupby('category')->get();
                 break;
-        
+
             default:
             return abort(403, __('errors.unauthorized_action'));
         break;

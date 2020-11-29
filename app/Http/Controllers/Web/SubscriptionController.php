@@ -28,7 +28,7 @@ use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 
 class SubscriptionController extends Controller
 {
-    
+
     use UserTrait;
     private $subscriptionRepository;
     private $providerRepository;
@@ -36,8 +36,8 @@ class SubscriptionController extends Controller
     private $customerRepository;
     private $orderRepository;
 
-    
-    
+
+
     public function __construct(ResellerRepositoryInterface $resellerRepository, OrderRepositoryInterface $orderRepository, CustomerRepositoryInterface $customerRepository,SubscriptionRepositoryInterface $subscriptionRepository, ProviderRepositoryInterface $providerRepository)
     {
         $this->resellerRepository = $resellerRepository;
@@ -46,10 +46,10 @@ class SubscriptionController extends Controller
         $this->providerRepository = $providerRepository;
         $this->orderRepository = $orderRepository;
     }
-    
-    
-    
-    
+
+
+
+
     /**
     * Display a listing of the resource.
     *
@@ -57,31 +57,31 @@ class SubscriptionController extends Controller
     */
     public function index()
     {
-        $subscriptions = $this->subscriptionRepository->all();    
+        // $subscriptions = $this->subscriptionRepository->all();
 
 
-        // $subscriptions = [];
-        // switch ($this->getUserLevel()) {
-        //     case 'Provider':
-        //         $provider = $this->getUser()->provider;
-        //         $subscriptions = $this->listFromProvider($provider);
-        //     break;
-        //     case 'Reseller':
-        //         $reseller = $this->getUser()->reseller;
-        //         $subscriptions = $this->listFromReseller($reseller);
-        //     break;
-        //     case 'Customer':
-        //         $customer = $this->getUser()->customer;
-        //         $subscriptions = $this->listFromCustomer($customer);
-        //     break;
-            
-        //     default:
-        //     # code...
-        // break;
-    // }
-    
+        $subscriptions = [];
+        switch ($this->getUserLevel()) {
+            case 'Provider':
+                $provider = $this->getUser()->provider;
+                $subscriptions = $this->listFromProvider($provider);
+            break;
+            case 'Reseller':
+                $reseller = $this->getUser()->reseller;
+                $subscriptions = $this->listFromReseller($reseller);
+            break;
+            case 'Customer':
+                $customer = $this->getUser()->customer;
+                $subscriptions = $this->listFromCustomer($customer);
+            break;
+
+            default:
+            # code...
+        break;
+    }
+
     return view('subscriptions.index', compact('subscriptions'));
-    }   
+    }
 
         public function card()
         {
@@ -99,7 +99,7 @@ class SubscriptionController extends Controller
                     $customer = $this->getUser()->customer;
                     $subscriptions = $this->listFromCustomer($customer);
                 break;
-                
+
                 default:
                 # code...
             break;
@@ -139,11 +139,11 @@ class SubscriptionController extends Controller
         public function show(Subscription $subscription)
         {
             $subscriptions = Subscription::findOrFail($subscription->id);
-            
+
             $usage = Product::where('sku', $subscriptions->product_id)->first();
-            
+
             $products = Product::where('sku', $subscriptions->product_id)->where('instance_id', $subscriptions->instance_id)->get();
-            
+
             switch ($usage->billing) {
                 case 'usage':
                     $subscriptions = Subscription::findOrFail($subscription->id);
@@ -155,7 +155,7 @@ class SubscriptionController extends Controller
                     }
                     return view('subscriptions.edit', compact('subscriptions', 'products', 'addons'));
                 break;
-                
+
                 default:
                 # code...
             break;
@@ -164,7 +164,7 @@ class SubscriptionController extends Controller
 
         }
 
-    
+
     /**
     * Update the specified resource in storage.
     *
@@ -177,13 +177,13 @@ class SubscriptionController extends Controller
 
 
         $subscriptions = Subscription::findOrFail($subscription->id);
-        $instance = Instance::first();    
-        
+        $instance = Instance::first();
+
         $this->validate($request, [
         'amount' => 'required|integer',
         ]);
-        
-            
+
+
         $subscription = new TagydesSubscription([
             'id'            => $subscriptions->subscription_id,
             'orderId'       => $subscriptions->order_id,
@@ -197,13 +197,13 @@ class SubscriptionController extends Controller
             'created_at'    => $subscriptions->created_at->__toString(),
             ]);
 
-        
+
         if ($request->status == 1) {
             $request->merge(['status' => 'active']);
         }else {
             $request->merge(['status' => 'suspended']);
         }
-        
+
         if($request->amount != $subscriptions->amount){
             try{
                 $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->
@@ -239,28 +239,27 @@ class SubscriptionController extends Controller
                 Log::info('Error Placing order to Microsoft: '.$e->getMessage());
             }
         }
-        
+
         return redirect()->back()->with('success', 'Subscription updated succesfully');
-            
+
     }
-        
-        
+
+
         // $subscription = Subscription::findOrFail($subscription->id);
-        
+
         // $order = $this->orderRepository->UpdateMSSubscription($subscription);
 
-        // dd($order);
 
         // $instance = Instance::where('id', $subscription->instance_id)->first();
 
         // updateSubscriptionMicrosoftJob::dispatch($subscription, $request->all(), $order )->onQueue('PlaceordertoMS')
-        //     ->delay(now()->addSeconds(10));     
-        
+        //     ->delay(now()->addSeconds(10));
+
         // $this->validate($request, [
         //     'amount' => 'required|integer',
         //     ]);
-            
-            
+
+
         //     $subscription = new TagydesSubscription([
         //         'id'            => $subscriptions->subscription_id,
         //         'orderId'       => $subscriptions->order_id,
@@ -273,20 +272,20 @@ class SubscriptionController extends Controller
         //         'billingCycle'  => $subscriptions->billing_period,
         //         'created_at'    => $subscriptions->created_at->__toString(),
         //         ]);
-                
-                
+
+
         //         if ($request->status == 1) {
         //             $request->merge(['status' => 'active']);
         //         }else {
         //             $request->merge(['status' => 'suspended']);
         //         }
-                
+
         //         if($subscriptions->wasChanged('amount')){
         //             try{
         //                 $subscriptions->update(['amount'=> $request->amount]);
         //                 $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->
         //                 update($subscription, ['quantity' => $request->amount]);
-                        
+
         //                 Log::info('License changed: '.$request->amount);
         //             } catch (Exception $e) {
         //                 Log::info('Error Placing order to Microsoft: '.$e->getMessage());
@@ -295,11 +294,11 @@ class SubscriptionController extends Controller
         //         }else if ($request->billing_period != $subscriptions->billing_period){
         //             try{
         //                 dump('billing_period');
-                        
+
         //                 $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->changeBillingCycle($subscription, $request->billing_period);
         //                 $subscriptions->update(['billing_period'=> $request->billing_period]);
         //                 Log::info('Billing Cycle changed: '.$request->billing_period);
-                        
+
         //             } catch (Exception $e) {
         //                 Log::info('Error Placing order to Microsoft: '.$e->getMessage());
         //                 return redirect()->back()->with(['alert' => 'error', 'message' => ucwords(trans_choice('messages.something_went_wrong_try_again', 1))]);
@@ -307,10 +306,10 @@ class SubscriptionController extends Controller
         //         }else {
         //             try{
         //                 dump('status');
-                        
+
         //                 $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)
         //                 ->update($subscription, ['status' => $request->status]);
-                        
+
         //                 if ($request->status == 'active') {
         //                     $request->merge(['status' => 1]);
         //                 }else {
@@ -318,8 +317,8 @@ class SubscriptionController extends Controller
         //                 }
         //                 $subscriptions->update(['status_id' => $request->status]);
         //                 Log::info('Status changed: '.$update);
-                        
-        //             } 
+
+        //             }
         //             catch (Exception $e) {
         //                 Log::info('Error Placing order to Microsoft: '.$e->getMessage());
         //                 return redirect()->back()->with(['alert' => 'error', 'message' => ucwords(trans_choice('messages.something_went_wrong_try_again', 1))]);
@@ -328,7 +327,7 @@ class SubscriptionController extends Controller
         //     return redirect()->back()->with(['alert' => 'success', 'message' => ucwords(trans_choice('messages.subscription_updated_successfully', 1))]);
         // }
 
-   
+
         /**
         * Remove the specified resource from storage.
         *
@@ -339,25 +338,25 @@ class SubscriptionController extends Controller
         {
             //
         }
-        
+
         public function listFromProvider(Provider $provider)
         {
             $subscriptions = $this->providerRepository->getSubscriptions($provider);
-            
+
             return $subscriptions;
         }
-        
+
         public function listFromReseller(Reseller $reseller)
         {
             $subscriptions = $this->resellerRepository->getSubscriptions($reseller);
-            
+
             return $subscriptions;
         }
-        
+
         public function listFromCustomer(Customer $customer)
         {
             $subscriptions = $this->customerRepository->getSubscriptions($customer);
-            
+
             return $subscriptions;
         }
     }

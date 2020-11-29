@@ -1,5 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.master')
+@section('css')
 
+@endsection
 
 @section('content')
 <div class="box">
@@ -73,7 +75,7 @@
 			"info": false
 		});
 	} );
-	
+
 </script>
 <script type="text/javascript">
 	$(document).ready( function () {

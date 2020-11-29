@@ -11,7 +11,7 @@ class Customer extends Model
 {
     protected $guards = [];
 
-    protected $fillable = 
+    protected $fillable =
     ['company_name',
     'nif',
     'country_id',
@@ -24,7 +24,7 @@ class Customer extends Model
     'reseller_id',
     'status_id'];
 
-                            
+
     public function format()
     {
         return [
@@ -38,13 +38,14 @@ class Customer extends Model
             'nif' => $this->nif,
             'postal_code' => $this->postal_code,
             'status' => $this->status->name,
+            'created_at' => $this->created_at,
             'path' => $this->path(),
             'pathUpdate' => $this->pathUpdate(),
             'reseller' => $this->resellers()->first(),
             'subscriptions' => $this->subscriptions->count(),
             'priceLists' => $this->priceLists()->first(),
             'mainUser' => $this->users()->first(),
-            'users' => $this->users()->get()     
+            'users' => $this->users()->get()
         ];
 
     }
@@ -104,7 +105,7 @@ class Customer extends Model
     // public function priceList() {
     //     return $this->belongsTo('App\PriceList');
     // }
-    
+
     public function status() {
         return $this->belongsTo(Status::class);
     }

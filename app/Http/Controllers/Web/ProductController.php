@@ -33,7 +33,7 @@ class ProductController extends Controller
 
     public function index()
     {
-        
+
         $products = $this->productRepository->showall();
 
         // $products = Product::all();
@@ -59,7 +59,6 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request->all());
         $product = new Product();
             $product->vendor       = $request->vendor;
             $product->instance_id       = '3';
@@ -79,7 +78,7 @@ class ProductController extends Controller
             // $product->name       = $request->name;
             // $product->name       = $request->name;
             // $product->name       = $request->name;
-          
+
             $product->save();
 
         return back();
@@ -110,51 +109,59 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
+        // dd($request->all());
 
-        $product = Product::findOrFail($product->id);
 
-        $this->validate($request, [
-            'name' => 'required|String',
-            'minimum_quantity' => 'Integer',
-            'maximumQuantity' => 'Integer',
-            'limit' => 'Integer',
-            'term' => 'String',
-            'isAvailableForPurchase' => 'Integer',
-            'locale' => 'String',
-            'country' => 'String',
-            'isTrial' => 'String',
-            'hasAddOns' => 'String',
-            'isAutoRenewable' => 'String',
-            'billing' => 'String',
-            'acquisitionType' => 'String',
-            'supportedBillingCycles' => 'String',
-            'conversionTargetOffers' => 'String',
-            'reselleeQualifications' => 'String',
-            'resellerQualifications' => 'String'
-        ]);
+        // dd($product);
 
-        $product->update([
+        //        $validate = $this->validate($request, [
+            //             'name' => 'required|String',
+            //             'minimum_quantity' => 'Integer',
+            //             'maximumQuantity' => 'Integer',
+            //             'limit' => 'Integer',
+            //             'term' => 'String',
+            //             'isAvailableForPurchase' => 'Integer',
+            //             'locale' => 'String',
+            //             'country' => 'String',
+            //             'isTrial' => 'String',
+            //             'hasAddOns' => 'String',
+            //             'isAutoRenewable' => 'String',
+            //             'billing' => 'String',
+            //             'acquisitionType' => 'String',
+            //             'supportedBillingCycles' => 'String',
+            //             'conversionTargetOffers' => 'String',
+            //             'reselleeQualifications' => 'String',
+            //             'resellerQualifications' => 'String'
+            //         ]);
 
-            'name' => $request->name,
-            'description' => $request->description,
-            'uri' => $request->uri,
-            'category' => $request->category,
-            'minimum_quantity' => $request->minimum_quantity,
-            'maximum_quantity' => $request->maximum_quantity,
-            'limit' => $request->limit,
-            'term' => $request->term,
-            'is_available_for_purchase' => $request->is_available_for_purchase,
-            'locale' => $request->locale,
-            'country' => $request->country,
-            'is_trial' => $request->is_trial,
-            'has_addons' => $request->has_addons,
-            'is_autoRenewable' => $request->is_autoRenewable,
-            'billing' => $request->billing,
-            'acquisition_type' => $request->acquisition_type,
-            'supported_billing_cycles' => $request->supported_billing_cycles,
 
-            ]);
-            
+
+            $product = Product::findOrFail($product->id);
+
+            $product->name                      = $request->name;
+            $product->description               = $request->description;
+            $product->category                  = $request->category;
+            $product->minimum_quantity          = $request->minimum_quantity;
+            $product->maximum_quantity          = $request->maximum_quantity;
+            $product->limit                     = $request->limit;
+            $product->billing                   = $request->billing;
+            $product->supported_billing_cycles  = $request->supported_billing_cycles;
+           $product->save();
+
+            // dd($request->supported_billing_cycles);
+            // $product->uri                       = $request->uri;
+            // $product->term                      = $request->term;
+            // $product->is_available_for_purchase = $request->is_available_for_purchase;
+            // $product->locale                    = $request->locale;
+            // $product->country                   = $request->country;
+            // $product->is_trial                  = $request->is_trial;
+            // $product->has_addons                = $request->has_addons;
+            // $product->is_autoRenewable          = $request->is_autoRenewable;
+            // $product->acquisition_type          = $request->acquisition_type;
+            // dd($product);
+
+            // dd($product);
+
             return back()->withInput();
 
     }
@@ -170,7 +177,7 @@ class ProductController extends Controller
         if( !$instance){
             return redirect()->back()->with('warning', 'The account has no assigned tenant');
         }
-        
+
         if( ! $instance->external_token){
             $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
             $instance->update([
@@ -192,32 +199,38 @@ class ProductController extends Controller
 
         $order = $this->orderRepository->ImportProductsMicrosoftOrder();
 
+
         $provider = Provider::where('id', $id)->select('country_id')->first();
 
+
         $country = Country::select('iso_3166_2')->where('id', $provider->country_id)->first();
-        
+
 
         $instance = Instance::where('provider_id', $id)->first();
 
         if( ! $instance){
             return redirect()->route('products.index')->with('success', 'The account has no assigned instance');
         }
-        
+
         if($instance->type === 'microsoft'){
             if( ! $instance->tenant_id){
                 return redirect()->route('products.index')->with('success', 'There is no client_id set up on the Microsoft instance');
             }
-            
+
             if( ! $instance->external_token){
                 $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
                 $instance->update([
                     'external_token' => $externalToken,
                     'external_token_updated_at' => now()
-                ]);
-            }
+                    ]);
+                }
 
             ImportProductsMicrosoftJob::dispatch($instance, $order, $country->iso_3166_2)->onQueue('SyncProducts')
-            ->delay(now()->addSeconds(10));            
+            ->delay(now()->addSeconds(10));
+        }
+        else{
+        return redirect()->back()->with('error', trans('messages.importproducts'));
+
         }
 
         return redirect()->route('jobs')->with(['alert' => 'success', 'message' => trans('messages.importproducts')]);

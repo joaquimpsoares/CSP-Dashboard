@@ -29,63 +29,62 @@ use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 class CustomerController extends Controller
 {
     use UserTrait;
-    
+
     public $countryRules;
     private $subscriptionRepository;
     private $customerRepository;
     private $userRepository;
-    
+
     public function __construct(CustomerRepositoryInterface $customerRepository, SubscriptionRepositoryInterface $subscriptionRepository, UserRepositoryInterface $userRepository)
     {
         $this->customerRepository = $customerRepository;
         $this->subscriptionRepository = $subscriptionRepository;
         $this->userRepository = $userRepository;
-        
+
     }
-    
+
     public function index(Customer $customer) {
 
         $customers = $this->customerRepository->all();
-        
+
         return view('customer.index', compact('customers'));
     }
-    
-    
+
+
     public function create(Customer $customer){
 
-        
-        
+
+
         $countries = Country::get()->sortByDesc('id');
         $countryRules = AppCountryrules::get();
         $statuses = Status::get();
-        
-        return view('customer.create', compact('customer','countries','statuses','countryRules'));
-        
-    }
-    
-    public function store(Request $request) { 
 
+        return view('customer.create', compact('customer','countries','statuses','countryRules'));
+
+    }
+
+    public function store(Request $request) {
 
         $validate = $this->validator($request->all())->validate();
-        
+
         $user = $this->getUser();
-        
+
         try {
             DB::beginTransaction();
-            
+
             $customer = $this->customerRepository->create($validate);
+
 
             $customer->resellers()->attach($user->reseller->id);
 
             $priceList = $customer->resellers->first()->priceList;
-            
-            $customer->priceLists()->associate($priceList);
-            
+
+            // $customer->priceLists()->associate($priceList);
+
             $customer->save();
 
-            
+
             $mainUser = $this->userRepository->create($validate, 'customer', $customer);
-            
 
             DB::commit();
         } catch (\PDOException $e) {
@@ -97,7 +96,7 @@ class CustomerController extends Controller
             }
             return redirect()->route('customer.index')
             ->with([
-                'alert' => 'danger', 
+                'alert' => 'danger',
                 'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
             ]);
         }
@@ -106,33 +105,33 @@ class CustomerController extends Controller
     }
 
 
-    public function storeAndBuy(Request $request) { 
+    public function storeAndBuy(Request $request) {
 
         $validate = $this->validator($request->all())->validate();
-        
+
         $user = $this->getUser();
-        
-        
+
+
     }
 
-        
 
-    // public function update(Request $request, Customer $customer) { 
+
+    // public function update(Request $request, Customer $customer) {
 
 
     //     $validate = $this->validator($request->all())->validate();
-        
+
     //     $user = $this->getUser();
-        
+
     //     try {
     //         DB::beginTransaction();
-            
+
     //         $customer = $this->customerRepository->create($validate);
-            
+
     //         $customer->resellers()->attach($user->reseller->id);
-            
+
     //         $mainUser = $this->userRepository->create($validate, 'customer', $customer);
-            
+
     //         DB::commit();
     //     } catch (\PDOException $e) {
     //         DB::rollBack();
@@ -143,11 +142,11 @@ class CustomerController extends Controller
     //         }
     //         return redirect()->route('customer.index')
     //         ->with([
-    //             'alert' => 'danger', 
+    //             'alert' => 'danger',
     //             'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
     //         ]);
     //     }
-        
+
     //     return redirect()->route('customer.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Created successfully')]);
     // }
 
@@ -185,35 +184,35 @@ class CustomerController extends Controller
                 'firstName' => 'Nombre',
                 'lastName' => 'Apellido',
                 'email' => 'bill@tagydes.com',
-                ]);            
-                
+                ]);
+
             $resources = ServiceCosts::withCredentials(
             $instance->external_id,$instance->external_token
-            )->serviceCosts($customer);         
+            )->serviceCosts($customer);
             return $resources;
 
         } catch (\Throwable $th) {
-                
+
         }
-            
+
     }
-            
+
 
 
     public function edit(Customer $customer) { }
 
 
-    public function update(Request $request, Customer $customer) { 
+    public function update(Request $request, Customer $customer) {
 
         $validate = $this->validator($request->all())->validate();
 
         $user = $this->getUser();
-        
+
         try {
             DB::beginTransaction();
-            
+
                 $customer = $this->customerRepository->update($customer, $validate);
-                            
+
             DB::commit();
         } catch (\PDOException $e) {
             DB::rollBack();
@@ -224,15 +223,15 @@ class CustomerController extends Controller
             }
             return redirect()->route('customer.index')
             ->with([
-                'alert' => 'danger', 
+                'alert' => 'danger',
                 'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
                 ]);
             }
-            
+
             return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.customer_updated_successfully')]);
         }
 
-        
+
     public function destroy(Customer $customer) { }
 
     public function getPriceList($customer)
@@ -268,10 +267,10 @@ class CustomerController extends Controller
             'country_id' => ['required', 'integer', 'min:1'],
             'city' => ['required', 'string', 'max:255'],
             'state' => ['required', 'string', 'max:255'],
-            'postal_code' => ['required', 'string', 'regex:/^\\d{4}(-\\d{3})?$/', 'max:255'],
+            'postal_code' => ['required', 'max:255'],
             // 'postal_code' => ['required', 'string', 'regex:/'.$countryRules->postalCodeRegex.'/'],
             'status_id' => ['required', 'integer', 'exists:statuses,id'],
             'sendInvitation' => ['nullable', 'integer'],
         ]);
-    } 
+    }
 }

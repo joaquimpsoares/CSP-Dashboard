@@ -33,16 +33,17 @@ class Reseller extends Model
             'city' => $this->city,
             'state' => $this->state,
             'nif' => $this->nif,
-            'postal_code' => $this->postal_code,    
+            'postal_code' => $this->postal_code,
             'status' => $this->status->name,
             'path' => $this->path(),
             'provider' => $this->provider,
+            'created_at' => $this->created_at,
             'customers' => $this->customers->count(),
             'mainUser' => $this->users()->first()
         ];
 
     }
-    
+
     public function country() {
     	return $this->belongsTo(Countries::class, 'country_id');
     }

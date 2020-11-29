@@ -51,7 +51,7 @@ class CreateUsersTable extends Migration
             $table->softDeletes();
 
             $table->foreign('country_id')->references('id')->on('countries');
-            $table->foreign('provider_id')->references('id')->on('providers');
+            // $table->foreign('provider_id')->references('id')->on('providers');
             $table->foreign('reseller_id')->references('id')->on('resellers');
             $table->foreign('customer_id')->references('id')->on('customers');
             $table->foreign('user_level_id')->references('id')->on('user_levels');

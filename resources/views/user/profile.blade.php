@@ -1,5 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.master')
+@section('css')
 
+@endsection
 
 @section('content')
 
@@ -87,7 +89,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>  
+                        </div>
                         <div class="col-md-4 mb-4 text-center">
                             <div class="card profile-card">
                                 <div class="card-header">
@@ -141,7 +143,7 @@
             </div>
             <div class="card bd-callout-success">
                 <div class="card-body">
-                    <img class="img" height="50" src="https://i2.wp.com/stratus.net.nz/wp-content/uploads/2018/06/Microsoft-CSP.png?resize=1160%2C334&ssl=1" alt=""> 
+                    <img class="img" height="50" src="https://i2.wp.com/stratus.net.nz/wp-content/uploads/2018/06/Microsoft-CSP.png?resize=1160%2C334&ssl=1" alt="">
                     <h5 class="card-title">{{ ucwords(trans_choice('messages.microsoft_reseller_conf', 1)) }}</h5>
                     <p class="card-text">Please add your reseller Microsoft MPNID, if you don have one please follow the <a href="https://partner.microsoft.com/licensing">link</a> to obtain one from Microsoft Partner program. </p>
                     <div class="col-lg-2 col-md-4">
@@ -152,7 +154,7 @@
                 <div class="text-right">
                     <button type="submit" class="button submit_btn right">{{ ucwords(trans_choice('messages.update', 1)) }}</button>
                 </div>
-            </div>  
+            </div>
             @break
             @case('Provider')
             <div class="card bd-callout-info">
@@ -187,7 +189,7 @@
             </div>
             <div class="card bd-callout-success">
                 <div class="card-body">
-                    <img class="img" height="50" src="https://i2.wp.com/stratus.net.nz/wp-content/uploads/2018/06/Microsoft-CSP.png?resize=1160%2C334&ssl=1" alt=""> 
+                    <img class="img" height="50" src="https://i2.wp.com/stratus.net.nz/wp-content/uploads/2018/06/Microsoft-CSP.png?resize=1160%2C334&ssl=1" alt="">
                     <h5 class="card-title">{{ ucwords(trans_choice('messages.microsoft_reseller_conf', 1)) }}</h5>
                     <p class="card-text">Please add your reseller Microsoft MPNID, if you don have one please follow the <a href="https://partner.microsoft.com/licensing">link</a> to obtain one from Microsoft Partner program. </p>
                     <div class="col-lg-2 col-md-4">
@@ -212,7 +214,7 @@
                 </div>
             </div>
             @endswitch
-            
+
         </form>
     </section>
 </div>

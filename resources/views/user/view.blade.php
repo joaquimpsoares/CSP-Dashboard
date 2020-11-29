@@ -1,4 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.master')
+@section('css')
+
+@endsection
 
 @section('page-title', $user->present()->nameOrEmail)
 @section('page-heading', $user->present()->nameOrEmail)
@@ -9,8 +12,8 @@
 <ol class="breadcrumb pull-right">
     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
     <li class="breadcrumb-item active"><a href="{{ route('user.list') }}">@lang('app.users')</a></li>
-    <li class="breadcrumb-item">{{ $user->present()->nameOrEmail }}</li> 
-    
+    <li class="breadcrumb-item">{{ $user->present()->nameOrEmail }}</li>
+
 </ol>
 
 <!-- end breadcrumb -->
@@ -85,9 +88,9 @@
             <div class="card-body">
                 <h5 class="card-title">
 
-                    
+
                     @lang('app.latest_activity')
-                    
+
 
                     @if (count($userActivities))
                         <small class="float-right">
@@ -105,7 +108,7 @@
                 Branches
                 </h5>
                 @foreach($branches as $branch)
-                {{ $branch->title }} 
+                {{ $branch->title }}
                 </br>
                 @endforeach
                 @endisset

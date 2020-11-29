@@ -22,7 +22,7 @@ class ImportProductsMicrosoftJob implements ShouldQueue
     public $country;
 
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    
+
     /**
     * Create a new job instance.
     *
@@ -34,7 +34,7 @@ class ImportProductsMicrosoftJob implements ShouldQueue
         $this->order = $order;
         $this->country = $country;
     }
-    
+
     /**
     * Execute the job.
     *
@@ -45,7 +45,7 @@ class ImportProductsMicrosoftJob implements ShouldQueue
 
         $this->order->order_status_id = 2; //Order running state
         $this->order->save();
-        
+
         $instance = $this->instance;
         Log::info('instance: '.$instance);
 
@@ -54,18 +54,19 @@ class ImportProductsMicrosoftJob implements ShouldQueue
         // if( ! $instance){
         //     return redirect()->route('products.list')->with('success', 'The account has no assigned instance');
         // }
-        
+
         // if($instance->type === 'microsoft'){
         //     if( ! $instance->tenant_id){
         //         return redirect()->route('products.list')->with('success', 'There is no client_id set up on the Microsoft instance');
         //     }
 
             try {
-        
+
             $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)
             ->forCountry($this->country)->all($this->country);
 
-                
+
+
             $products->each(function($importedProduct)use($instance){
             Log::info('CREATE products: '.$importedProduct);
 
@@ -76,23 +77,23 @@ class ImportProductsMicrosoftJob implements ShouldQueue
                     'name' => $importedProduct->name,
                     'description' => $importedProduct->description,
                     'uri' => $importedProduct->uri,
-                    
+
                     'minimum_quantity' => $importedProduct->minimumQuantity,
                     'maximum_quantity' => $importedProduct->maximumQuantity,
                     'limit' => $importedProduct->limit,
                     'term' => $importedProduct->term,
                     'category' => $importedProduct->category,
-                    
+
                     'locale' => $importedProduct->locale,
                     'country' => $importedProduct->country,
-                    
+
                     'is_trial' => $importedProduct->isTrial,
                     'has_addons' => $importedProduct->hasAddOns,
                     'is_autorenewable' => $importedProduct->isAutoRenewable,
-                    
+
                     'billing' => $importedProduct->billing,
                     'acquisition_type' => $importedProduct->acquisitionType,
-                    
+
                     'addons' => $importedProduct->addons->map(function($item){
                         return serialize($item);
                     }),
@@ -107,12 +108,12 @@ class ImportProductsMicrosoftJob implements ShouldQueue
             } catch (Exception $e) {
                 Log::info('Error importing products: '.$e->getMessage());
                 $this->order->details = ('Error importing products: '.$e->getMessage());
-                $this->order->order_status_id = 3; 
+                $this->order->order_status_id = 3;
                 $this->order->save();
-    
+
                 Log::info('Error: '.$e->getMessage());
             }
-            // }  
+            // }
                 $this->order->order_status_id = 4; //Order running state
                 $this->order->save();
         }

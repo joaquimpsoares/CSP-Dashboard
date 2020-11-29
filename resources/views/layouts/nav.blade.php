@@ -10,7 +10,7 @@
 }
 </style>
 <header class="header_area">
-      
+
     <div class="main_menu">
         <nav class="navbar navbar-expand-lg navbar-light main_box">
             <div class="container">
@@ -51,7 +51,7 @@
                         <li class="nav-item {{ (request()->segment(1) == 'customer' ) ? 'active' : ''}}">
                             <a class="nav-link" href="{{ route('customer.index') }}">
                                 {{ ucwords(trans_choice('messages.customer', 2)) }}
-                            </a> 
+                            </a>
                         </li>
                         @endcan
 
@@ -59,14 +59,14 @@
                         <li class="nav-item {{ (request()->segment(1) == 'subscription' ) ? 'active' : ''}}">
                             <a class="nav-link" href="{{ route('subscription.index') }}">
                                 {{ ucwords(trans_choice('messages.subscription', 2)) }}
-                            </a> 
+                            </a>
                         </li>
                         @endcan
 
                         <li class="nav-item submenu dropdown
-                        {{ 
-                            (request()->segment(1) == 'store' 
-                            ||request()->segment(1) == 'priceList' 
+                        {{
+                            (request()->segment(1) == 'store'
+                            ||request()->segment(1) == 'priceList'
                             ||request()->segment(1) == 'cart'
                             ||request()->segment(1) == 'order') ? 'active' : ''}}">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -75,7 +75,7 @@
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('store.index') }}">
-                                        {{ ucwords(trans_choice('messages.store', 2)) }} 
+                                        {{ ucwords(trans_choice('messages.store', 2)) }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -97,9 +97,9 @@
                         </li>
 
                         @can(config('app.manage_roles'))
-                        <li class="nav-item submenu dropdown {{ 
-                        (request()->segment(1) == 'roles' 
-                        ||request()->segment(1) == 'priceList' 
+                        <li class="nav-item submenu dropdown {{
+                        (request()->segment(1) == 'roles'
+                        ||request()->segment(1) == 'priceList'
                         ||request()->segment(1) == 'product'
                         ||request()->segment(1) == 'jobs') ? 'active' : ''}}">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -108,7 +108,7 @@
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('roles.index') }}">
-                                        {{ ucwords(trans_choice('messages.manage_role', 2)) }} 
+                                        {{ ucwords(trans_choice('messages.manage_role', 2)) }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -138,7 +138,7 @@
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('roles.index') }}">
-                                        {{ ucwords(trans_choice('messages.account', 2)) }} 
+                                        {{ ucwords(trans_choice('messages.account', 2)) }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -180,7 +180,7 @@
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('user.profile', Auth::user()->id) }}">
-                                        {{ ucwords(trans_choice('messages.account', 2)) }} 
+                                        {{ ucwords(trans_choice('messages.account', 2)) }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -196,7 +196,7 @@
 
                     </ul>
 
-                    
+
                     @endauth
 
                     @guest
@@ -233,7 +233,7 @@
                     </ul>
                     @endguest
 
-                </div> 
+                </div>
             </div>
         </nav>
     </div>

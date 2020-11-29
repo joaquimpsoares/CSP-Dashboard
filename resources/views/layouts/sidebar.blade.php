@@ -562,7 +562,7 @@ body {
                 <ul>
                   <li>
                     <a href="#">Products
-  
+
                     </a>
                   </li>
                   <li>
@@ -683,7 +683,7 @@ body {
       </div>
     </nav>
     <!-- sidebar-wrapper  -->
-    
+
   {{-- </div> --}}
   <!-- page-wrapper -->
 

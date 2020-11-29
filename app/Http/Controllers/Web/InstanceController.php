@@ -9,75 +9,91 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use App\Repositories\ProviderRepositoryInterface;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
 
 
+
+
+
 class InstanceController extends Controller
 {
+
+    private $providerRepository;
+
+
+
+    public function __construct(ProviderRepositoryInterface $providerRepository)
+    {
+        $this->providerRepository = $providerRepository;
+    }
+
 
     public $provider;
 
     public function index()
     {
         $instances = Instance::all();
-        
-        return view('packages.microsoft', compact('instances'));
+        $provider = Auth::user()->provider;
+        $provider = Instance::where('provider_id', $provider->id)->get();
+
+        return view('packages.cards', compact('instances','provider'));
     }
-    
+
     public function create(Request $request)
-    {   
+    {
+
         $provider_id = $request->provider;
 
         $provider = Provider::findorfail($provider_id);
-        
+
         return view('packages.microsoft.create', compact('provider'));
     }
-    
+
     public function kascreate(Request $request)
-    {   
+    {
         $provider_id = $request->provider;
 
         $provider = Provider::findorfail($provider_id);
-        
+
         return view('packages.kaspersky.create', compact('provider'));
     }
 
     public function store(Request $request)
     {
 
-        if($request->direct_reseller === 'on' )
+        if($request->external_type === 'direct_reseller' )
             $external_type = 'direct';
         else
-            $external_type = 'indirect';  
-        
+            $external_type = 'indirect';
+
         $this->validate($request, [
             'name' => 'required|String',
             'tenant_id' => 'required|String',
             'external_url' => 'String'
         ]);
 
-        $create = Instance::create([
+        $instance = Instance::create([
             'name' => $request->name,
             'provider_id' => $request->provider_id,
             'tenant_id' => $request->tenant_id,
-            'type' => $request->type,
+            'type' => 'Microsoft',
             'external_type' => $external_type,
             'external_id' => '66127fdf-8259-429c-9899-6ec066ff8915',
             'external_url' => $request->external_url,
             'certificate'  => Crypt::encryptString($request->certificate),
-
         ]);
 
         $priceList = PriceList::updateOrcreate([
-            'instance_id' => $create->id,
+            'instance_id' => $instance->id,
+        ],[
             'name' => $request->name,
-            ]);
+        ]);
 
-        
         return redirect()->route('provider.index')->with('success', 'Instance created succesfully');
-    }   
-    
+    }
+
             /**
             * Display the specified resource.
             *
@@ -86,12 +102,12 @@ class InstanceController extends Controller
             */
             public function show($id)
             {
-                
+
                 $instances = Instance::findOrFail($id);
-                
+
                 return view('packages.microsoft', compact('instances'));
             }
-            
+
             /**
             * Show the form for editing the specified resource.
             *
@@ -100,7 +116,7 @@ class InstanceController extends Controller
             */
             public function edit($id)
             {
-                
+
                 $instances = Instance::findOrFail($id);
 
                 switch ($instances->type) {
@@ -113,24 +129,24 @@ class InstanceController extends Controller
                         }
                         return view('packages.kaspersky.kaspersky', compact('instances','certificate'));
                         break;
-                    
+
                     default:
                     if ($instances->external_token_updated_at == null)
-                    
+
                     $expiration = $instances->external_token_updated_at;
-                
+
                     else
-                    
+
                     $expiration = $instances->external_token_updated_at->addDays(90);
                     return view('packages.microsoft.microsoft', compact('instances', 'expiration'));
                         break;
                 }
-                
-                
-                
+
+
+
                 return view('packages.microsoft.microsoft', compact('instances', 'expiration'));
             }
-            
+
             /**
             * Update the specified resource in storage.
             *
@@ -143,10 +159,10 @@ class InstanceController extends Controller
                 if($request->direct_reseller === 'on' )
                     $external_type = 'direct';
                 else
-                    $external_type = 'indirect';            
-                
+                    $external_type = 'indirect';
+
                 $user = Auth::user();
-                
+
                 $this->validate($request, [
                     'name' => 'String',
                     'tenant_id' => 'String',
@@ -154,50 +170,50 @@ class InstanceController extends Controller
                     'external_url' => 'String'
                 ]);
 
-                
+
                 $instance = Instance::findOrFail($id);
-                
+
                 $instance->name             = $request->input('name');
                 $instance->tenant_id        = $request->input('tenant_id');
                 $instance->external_type    = $external_type;
                 $instance->external_url     = $request->input('external_url');
 
                 $instance->certificate      = Crypt::encryptString($request->input('certificate'));
-                
+
                 $instance->save();
 
-                
+
                 return redirect()->back()->with('success', 'Instance updated succesfully')->withInput(['tab'=>'tabPageID']);;
             }
-            
-            
+
+
             public function getMasterToken($id)
             {
 
                 $instance = Instance::findorFail($id);
-                
-                
+
+
                 if( !$instance){
                     return redirect()->back()->with('warning', 'The account has no assigned tenant');
                 }
-                
+
                 if( ! $instance->external_token){
                     $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
 
-                    
+
                     $expire = date("Y-m-d h:i:s", $externalToken['expiration']);
                     $external_token = $externalToken['token'];
 
-                    
+
                     $update = $instance->update([
                         'external_token' => $external_token,
                         'external_token_updated_at' => $expire
                         ]);
                 }
-                
+
                 return redirect()->back()->with('success', 'Instance updated succesfully');
-            }   
-            
+            }
+
                     /**
                     * Remove the specified resource from storage.
                     *
@@ -207,9 +223,9 @@ class InstanceController extends Controller
                     public function destroy($id)
                     {
                         $instance = Instance::findOrFail($id);
-                        
+
                         $instance->delete();
-                        
+
                         return redirect()->route('url()->previous()')->with('success', 'Instance deleted succesfully');
                     }
                 }

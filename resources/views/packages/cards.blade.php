@@ -3,7 +3,7 @@
 </div>
 <div class="row">
     <div class="card-columns">
-        
+
         @foreach ($provider->instances as $instance)
         @if ($instance->type == "kaspersky")
         <div class="card">
@@ -15,7 +15,7 @@
                 <a href=" {{ route('instances.edit', $instance->id) }}" class="genric-btn primary"> {{ ucwords(trans_choice('messages.edit', 1)) }}</a>
             </div>
         </div>
-        
+
         @else
         <div class="card">
             <img class="card-img-top" src="https://img.pngio.com/microsoft-corporate-logo-guidelines-trademarks-microsoft-logo-png-2008_900.jpg" height="170" alt="Card image cap">

@@ -1,9 +1,9 @@
-<div>    
+<div>
     <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.failed_task', 2)) }}</a></h4>
-    <div class="container col-xm-12">
-        <section class="dark-grey-text">
-            <table class="table table-hover responsive" id="job">
-                <thead class="thead-dark">  
+    <section class="dark-grey-text">
+        <div class="table-responsive">
+            <table id="example" class="table table-bordered text-nowrap key-buttons">
+                <thead class="thead-dark">
                     <tr>
                         <th>{{ ucwords(trans_choice('messages.id', 2)) }}</th>
                         <th>{{ ucwords(trans_choice('messages.queue_name', 1)) }}</th>
@@ -17,8 +17,8 @@
                     @forelse($failedJobs as $failed)
                     <tr>
                         <td><a href="#">{{ $failed->id }}</a></td>
-                        <td>{{ $failed->queue }}</td>   
-                        @if (!empty($order[$job->id]->customer->company_name) )    
+                        <td>{{ $failed->queue }}</td>
+                        @if (!empty($order[$job->id]->customer->company_name) )
                         <td>{{ $order[$job->id]->customer->company_name}}</td>
                         <td>{{ $order[$job->id]->domain}}</td>
                         @elseif(empty($order[$job->id]->customer->company_name) )
@@ -35,7 +35,7 @@
                     @endforelse
                 </tbody>
             </table>
-        </section>
-    </div>
+        </div>
+    </section>
 </div>
 

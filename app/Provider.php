@@ -37,9 +37,10 @@ class Provider extends Model
 			'resellers' => $this->resellers,
 			'customers' => $this->resellers,
 			'status' => $this->status->name,
+            'created_at' => $this->created_at,
 			'path' => $this->path(),
 			'mainUser' => $this->users()->first(),
-			'instance' => $this->instances()->get()
+            'instance' => $this->instances()->get(),
 
 		];
 
@@ -71,7 +72,7 @@ class Provider extends Model
     public function status() {
     	return $this->belongsTo(Status::class);
 	}
-	
+
 	public function users() {
     	return $this->hasMany('App\User');
 	}
@@ -83,5 +84,5 @@ class Provider extends Model
     public function priceList() {
         return $this->belongsTo('App\PriceList');
     }
-    
+
 }

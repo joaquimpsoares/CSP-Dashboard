@@ -1,5 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.master')
+@section('css')
 
+@endsection
 @section('content')
 
 <div class="container mt-5">
@@ -9,12 +11,13 @@
         <div class="row">
           <div class="col-lg-12">
             <form method="POST" action="{{ route('reseller.store') }}" class="col s12">
-              @csrf              
+              @csrf
               <h1>{{ ucwords(trans_choice('messages.new_reseller', 1)) }}</h1>
               <div class="row">
                 <div class="col-md-6 mb-4">
                   <label for="company_name" class="">{{ ucwords(trans_choice('messages.company_name', 1)) }}</label>
-                  <input type="text" id="company_name" name="company_name" class="form-control" value="{{ old('company_name') }}">
+                  <input type="text" id="company_name" name="company_name" class="form-control @error('company_name') is-invalid @enderror" value="{{ old('company_name') }}" >
+                  @error('company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                 </div>
                 <div class="col-md-6 mb-2">
                   <label for="nif">{{ ucwords(trans_choice('messages.nif', 1)) }}</label>
@@ -31,7 +34,7 @@
                     </div>
                     <select name="country_id" class="custom-select" id="country_id" required>
                       <option value="">Choose...</option>
-                      @foreach ($countries as $country)    
+                      @foreach ($countries as $country)
                       <option value="{{$country->id}}">{{$country->name}}</option>
                       @endforeach
                     </select>
@@ -64,7 +67,7 @@
                     Zip code required.
                   </div>
                 </div>
-                
+
               </div>
               <hr>
               <div class="input-group mb-4">
@@ -84,9 +87,8 @@
                 <div class="col-md-12">
                   <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
                   <div class="form-group">
-                    <select name="status_id" class="form-select" sf-validate="required">
-                      <option selected></option>
-                      @foreach ($statuses as $status)    
+                    <select name="status_id" class="custom-select" sf-validate="required">
+                      @foreach ($statuses as $status)
                       <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
                       @endforeach
                     </select>
@@ -97,7 +99,7 @@
           </div>
         </div>
         <div class="col-lg-4 mb-4">
-          <button class="button submit_btn right" type="submit">{{ucwords(trans_choice('messages.create', 1))}}</button>
+          <button class="btn btn-primary" type="submit">{{ucwords(trans_choice('messages.create', 1))}}</button>
         </div>
       </div>
     </div>

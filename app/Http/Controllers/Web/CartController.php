@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\Web;
 
 use App\Cart;
-use App\Country;
-use App\Customer;
-use App\Http\Controllers\Controller;
-use App\Http\Traits\UserTrait;
-use App\Instance;
-use App\Repositories\CustomerRepositoryInterface;
-use App\Repositories\ProductRepositoryInterface;
-use App\Repositories\UserRepositoryInterface;
+use App\Order;
 use App\Status;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Country;
+use App\Product;
+use App\Customer;
+use App\Instance;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Http\Traits\UserTrait;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Repositories\UserRepositoryInterface;
+use App\Repositories\ProductRepositoryInterface;
+use App\Repositories\CustomerRepositoryInterface;
 use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 
 class CartController extends Controller
@@ -36,6 +38,7 @@ class CartController extends Controller
 
         $cart = $this->getUserCart();
         return view('order.cart', compact('cart'));
+        // return view('order.cart');
     }
 
     public function getPending() {
@@ -72,7 +75,7 @@ class CartController extends Controller
                 'quantity' => $product->minimum_quantity
             ]);
         }
-        
+
 
         return redirect()->route('cart.index');
     }
@@ -81,12 +84,12 @@ class CartController extends Controller
 
         $cart = $this->getUserCart();
 
-        $product = $cart->products->first(function ($value) use ($item_id) {    
+        $product = $cart->products->first(function ($value) use ($item_id) {
             return $value->pivot->id == $item_id;
         });
-            
+
         if ($this->productRepository->verifyQuantities($product, $quantity)) {
-            
+
             if (!$product->tiers->isEmpty()) {
 
                 $prices = $product->tiers()
@@ -96,16 +99,16 @@ class CartController extends Controller
 
                 $product->pivot->price = $prices->price;
                 $product->pivot->retail_price = $prices->msrp;
-                
-            }   
+
+            }
 
             $product->pivot->quantity = $quantity;
             $product->pivot->save();
 
             return true;
-         
+
         }
-                      
+
 
         return false;
 
@@ -122,8 +125,8 @@ class CartController extends Controller
 
         $cart = $this->getUserCart();
 
-        $product = $cart->products->first(function ($value) use ($item_id) {    
-            return $value->pivot->id == $item_id;                
+        $product = $cart->products->first(function ($value) use ($item_id) {
+            return $value->pivot->id == $item_id;
         });
 
         $cart->products()->wherePivot('id', $item_id)->detach();
@@ -162,11 +165,11 @@ class CartController extends Controller
         $cart = $this->getUserCart(null, $validate['cart']);
 
         $cart->customer()->associate($customer);
-        
+
         $cart->save();
 
         $status = "tenant";
-        
+
         //return view('order.tenant', compact('cart'));
         if ($this->cartHasTenant($cart))
             return redirect()->route('cart.tenant', ['cart' => $cart->token, 'customerTenant' => $customerTenant]);
@@ -192,7 +195,7 @@ class CartController extends Controller
         return view('order.checkout', compact('cart', 'customers', 'status', 'countries', 'statuses', 'hasTenant'));
     }
 
-    public function storeCustomerAndBuy(Request $request) { 
+    public function storeCustomerAndBuy(Request $request) {
 
         $validate = $request->validate([
             'company_name' => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
@@ -208,18 +211,18 @@ class CartController extends Controller
             'sendInvitation' => ['nullable', 'integer'],
             'cart' => 'required|uuid|exists:carts,token'
         ]);
-        
+
         $user = $this->getUser();
-        
+
         try {
             DB::beginTransaction();
-            
+
             $customer = $this->customerRepository->create($validate);
-            
+
             $customer->resellers()->attach($user->reseller->id);
-            
+
             $mainUser = $this->userRepository->create($validate, 'customer', $customer);
-            
+
             DB::commit();
         } catch (\PDOException $e) {
             DB::rollBack();
@@ -230,7 +233,7 @@ class CartController extends Controller
             }
             return redirect()->route('customer.index')
             ->with([
-                'alert' => 'danger', 
+                'alert' => 'danger',
                 'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
             ]);
         }
@@ -238,14 +241,15 @@ class CartController extends Controller
         $cart = $this->getUserCart(null, $validate['cart']);
 
         $cart->customer()->associate($customer);
-        
+
         $cart->save();
 
         $status = "tenant";
-        
 
-        return redirect()->route('cart.tenant', ['cart' => $cart->token]);
-        
+
+        // return redirect()->route('cart.tenant', ['cart' => $cart->token]);
+        // return back()->withInput();
+
     }
 
     public function changeTenant(Request $request)
@@ -257,7 +261,7 @@ class CartController extends Controller
         $cart = $this->getUserCart(null, $validate['cart']);
         $canChangeTenant = (empty($cart->agreement_firstname)) ? TRUE : FALSE;
 
-        
+
         return view('order.tenant', compact('cart', 'canChangeTenant'));
     }
 
@@ -332,8 +336,8 @@ class CartController extends Controller
 
         $domain = $validate['domain'] . ".onmicrosoft.com";
 
-        $instance = Instance::first();
-        
+        $instance = Instance::where('id', '1')->first();
+
         if($instance->type === 'microsoft'){
 
             if (MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->getDomainAvailability($domain)){
@@ -345,7 +349,7 @@ class CartController extends Controller
 
             } else {
                 return abort(401);
-            }            
+            }
         }
     }
 
@@ -381,12 +385,12 @@ class CartController extends Controller
 			break;
 
             case config('app.provider'):
-            
-       
+
+
             break;
-            
+
             case config('app.reseller'):
-                
+
                 $customers = $this->customerRepository->all();
                 $countries = Country::all();
                 $statuses = Status::get();
@@ -478,7 +482,7 @@ class CartController extends Controller
         return true;
     }
 
-    
+
 
     public function pendingCheckout(Request $request)
     {
