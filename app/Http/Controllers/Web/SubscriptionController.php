@@ -57,14 +57,16 @@ class SubscriptionController extends Controller
     */
     public function index()
     {
-        // $subscriptions = $this->subscriptionRepository->all();
-
 
         $subscriptions = [];
+        $subscriptions = $this->subscriptionRepository->all();
         switch ($this->getUserLevel()) {
+
             case 'Provider':
                 $provider = $this->getUser()->provider;
+                dd($provider);
                 $subscriptions = $this->listFromProvider($provider);
+
             break;
             case 'Reseller':
                 $reseller = $this->getUser()->reseller;
@@ -79,6 +81,7 @@ class SubscriptionController extends Controller
             # code...
         break;
     }
+
 
     return view('subscriptions.index', compact('subscriptions'));
     }

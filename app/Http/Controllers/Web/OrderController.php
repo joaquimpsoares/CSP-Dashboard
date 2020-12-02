@@ -18,69 +18,70 @@ use App\Repositories\ProductRepositoryInterface;
 
 class OrderController extends Controller
 {
-    
+
     use UserTrait;
     private $productRepository;
     private $orderRepository;
-    
-    
+
+
     public function __construct(ProductRepositoryInterface $productRepository, OrderRepositoryInterface $orderRepository)
     {
         $this->productRepository = $productRepository;
         $this->orderRepository = $orderRepository;
     }
-    
+
     public function show() {
-        
+
     }
-    
+
     public function index()
     {
-        
+
         // $orders = Order::with('status', 'customer')->get()->sortByDesc('id');
-        
+
         $orders = $this->orderRepository->all();
-        
-        
+
+
         return view('order.index', compact('orders'));
     }
-    
+
     public function placeOrder(Request $request)
     {
         $validate = $request->validate([
             'token' => 'required|uuid',
             ]);
-            
+
             $order = $this->orderRepository->newFromCartToken($validate['token']);
-            
+
             $tt = MicrosoftTenantInfo::where('tenant_domain', 'like', $order->domain.'%')->first();
-            
-            
-            if($tt == null){
-                CreateCustomerMicrosoft::withChain([
-                    new PlaceOrderMicrosoft($order)
-                    ])->dispatch($order)->allOnQueue('PlaceordertoMS');
-                    
-                }  
-                else{
-                    $order->add(['ext_company_id' => $tt->tenant_id]);
-                    dd($order);
-                    PlaceOrderMicrosoft::dispatch($order)->allOnQueue('PlaceordertoMS');
-                    Log::info('Data to Place order: '.$order);
-                }
-                
-                return view('store.index')->with(['alert' => 'success', 'message' => trans('messages.order_placed_susscessfully')]);
-            }
-            
-            public function syncproducts(Request $request)
-            {
-                $order = $this->orderRepository->ImportProductsMicrosoftOrder();
-                
-                ImportProductsMicrosoftJob::dispatch($request, $order)->onQueue('SyncProducts')
-                ->delay(now()->addSeconds(10)); 
-                
-                return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
-            }
-            
-            
+
+
+        if($tt == null){
+        CreateCustomerMicrosoft::withChain([
+            new PlaceOrderMicrosoft($order)
+            ])->dispatch($order)->allOnQueue('PlaceordertoMS');
+
         }
+        else{
+
+        // array_merge(array($order), ['ext_company_id' => $tt->tenant_id]);
+        // dd($order);
+        PlaceOrderMicrosoft::dispatch($order)->allOnQueue('PlaceordertoMS');
+        Log::info('Data to Place order: '.$order);
+    }
+
+        return view('store.index')->with(['alert' => 'success', 'message' => trans('messages.order_placed_susscessfully')]);
+    }
+
+    public function syncproducts(Request $request)
+    {
+        $order = $this->orderRepository->ImportProductsMicrosoftOrder();
+
+        ImportProductsMicrosoftJob::dispatch($request, $order)->onQueue('SyncProducts')
+        ->delay(now()->addSeconds(10));
+
+        return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
+    }
+
+
+}
