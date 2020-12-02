@@ -2,8 +2,8 @@
 
 use App\Customer;
 use App\Reseller;
-use App\Models\User;
-use App\Models\UserLevel;
+use App\User;
+use App\UserLevel;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;

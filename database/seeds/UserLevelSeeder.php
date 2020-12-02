@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\UserLevel;
+use App\UserLevel;
 use Illuminate\Database\Seeder;
 
 class UserLevelSeeder extends Seeder
