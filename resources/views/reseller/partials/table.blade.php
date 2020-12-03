@@ -8,10 +8,10 @@
                     @if(Auth::user()->userLevel->id === 3)
                     <a class="dropdown-item" href="{{route('reseller.create')}}"><i class="fa fa-plus mr-2"></i>{{ ucwords(__('messages.new_reseller')) }}</a>
                     @endif
-                    <a class="dropdown-item" href="#"><i class="fa fa-eye mr-2"></i>View all new tab</a>
+                    {{-- <a class="dropdown-item" href="#"><i class="fa fa-eye mr-2"></i>View all new tab</a>
                     <a class="dropdown-item" href="#"><i class="fa fa-edit mr-2"></i>Edit Page</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#"><i class="fa fa-cog mr-2"></i> Settings</a>
+                    <a class="dropdown-item" href="#"><i class="fa fa-cog mr-2"></i> Settings</a> --}}
                 </div>
             </div>
         </div>

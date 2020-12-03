@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.master')
 
 @section('styles')
 <link href="{{ asset('css/datatables_bootstrap.css') }}" rel="stylesheet" />
@@ -19,7 +19,7 @@
 				<div class="">
 					<i class="fas fa-sliders-h fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
 					<div class="card-body">
-						<h4 class="card-title"><a>Roles Table</a></h4>	
+						<h4 class="card-title"><a>Roles Table</a></h4>
 						<table class="table table-striped table-bordered" id="roles">
 							<thead>
 								<th>&nbsp</th>
