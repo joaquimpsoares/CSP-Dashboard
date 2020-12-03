@@ -4,6 +4,7 @@
 <link rel="icon" href="{{URL::asset('assets/images/brand/favicon.ico')}}" type="image/x-icon"/>
 <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
+
 <!-- Bootstrap css -->
 <link href="{{URL::asset('assets/plugins/bootstrap/css/bootstrap.css')}}" rel="stylesheet" />
 <!-- Style css -->

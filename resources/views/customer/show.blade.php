@@ -3,9 +3,9 @@
 @section('content')
 
 <section>
+    {{-- <br>
     <br>
-    <br>
-    <br>
+    <br> --}}
     <ul class="nav nav-pills md-tabs" id="myTabMD" role="tablist">
         <li class="nav-item">
             <a class="nav-link btn rgba-blue-light active" id="home-tab-md" data-toggle="tab" href="#home-md" role="tab" aria-controls="home-md"
@@ -31,9 +31,9 @@
                                 <h2>Summary for customer {{$customer->company_name}}</h2>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row row-deck">
                             @if(!@empty($serviceCosts))
-                            <div class="col-md-12 col-lg-6">
+                            <div class="col-xl-8 col-lg-5 col-md-12">
                                 <div class="card">
                                     <div class="card-header">
                                         <div class="card-title">
@@ -41,7 +41,6 @@
                                         </div>
                                     </div>
                                     <div class="card-body">
-                                        {{-- <h5 class="card-title">Special title treatment</h5> --}}
                                         <dl class="row col-sm-">
                                             <dd class="col-sm-6">
                                                 <strong>Billing Start date</strong> <br>
@@ -67,45 +66,42 @@
 
                                 @endif
                             </div>
-                            <div class="col-md-12 col-lg-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <div class="card-title">
-                                            Active Subscriptions
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        {{-- <h5 class="card-title">Special title treatment</h5> --}}
-                                        <dl class="row col-sm-12">
-                                            <dd class="col-sm-8">
-                                                <strong> Subscriptions </strong><br>
-                                                <strong>Total Licenses</strong>
-                                            </dd>
-                                            <dd class="col-sm-4">
-                                                {{$customer->subscriptions->count()}} <br>
-                                                {{$licensesCount}}
-                                            </dd>
-                                        </dl>
+                            <div class="col-xl-4 col-lg-5 col-md-12">                                <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        Active Subscriptions
                                     </div>
                                 </div>
+                                <div class="card-body">
+                                    <dl class="row col-sm-12">
+                                        <dd class="col-sm-8">
+                                            <strong> Subscriptions </strong><br>
+                                            <strong>Total Licenses</strong>
+                                        </dd>
+                                        <dd class="col-sm-4">
+                                            {{$customer->subscriptions->count()}} <br>
+                                            {{$licensesCount}}
+                                        </dd>
+                                    </dl>
+                                </div>
                             </div>
-                        </section>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="contact-md" role="tabpanel" aria-labelledby="contact-tab-md">
-                {{-- <div class="container col-xm-12"> --}}
-                    @include('subscriptions.partials.table', ['subscriptions' => $subscriptions])
-                {{-- </div> --}}
-            </div>
-            <div class="tab-pane fade" id="profile-md" role="tabpanel" aria-labelledby="profile-tab-md">
-                <div class="container col-xm-12">
-                    @include('customer.partials.details')
-                    @include('user.partials.table', ['users' => $users] )
+                        </div>
+
+                    </section>
                 </div>
             </div>
         </div>
+        <div class="tab-pane fade" id="contact-md" role="tabpanel" aria-labelledby="contact-tab-md">
+            @include('subscriptions.partials.table', ['subscriptions' => $subscriptions])
+        </div>
+        <div class="tab-pane fade" id="profile-md" role="tabpanel" aria-labelledby="profile-tab-md">
+            <div class="container col-xm-12">
+                @include('customer.partials.details')
+                @include('user.partials.table', ['users' => $users] )
+            </div>
+        </div>
     </div>
+</div>
 </section>
 
 

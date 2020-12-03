@@ -25,9 +25,10 @@
             <div class="app-content main-content">
                 <div class="side-app">
                     @include('layouts.header')
+                    @include('layouts.bread')
                     @yield('page-header')
                     @yield('content')
-                    @include('layouts.footer')
+                    {{-- @include('layouts.footer') --}}
                 </div><!-- End Page -->
                 @include('layouts.footer-scripts')
             </div>

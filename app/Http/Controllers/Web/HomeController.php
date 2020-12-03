@@ -6,6 +6,7 @@ use App\User;
 use Throwable;
 use App\Status;
 use App\Country;
+use App\Customer;
 use App\Instance;
 use App\Provider;
 use App\Reseller;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProviderRepositoryInterface;
 use App\Repositories\ResellerRepositoryInterface;
+use App\Repositories\SubscriptionRepositoryInterface;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
@@ -27,20 +29,23 @@ class HomeController extends Controller
 
     use UserTrait;
 
+    private $userRepository;
     private $providerRepository;
     private $resellerRepository;
     private $customerRepository;
-    private $userRepository;
+    private $subscriptionRepository;
+
 
 
 
     /**
-    * Create a new controller instance.
-    *
-    * @return void
-    */
-    public function __construct(ProviderRepositoryInterface $providerRepository, ResellerRepositoryInterface $resellerRepository, CustomerRepositoryInterface $customerRepository)
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct(ProviderRepositoryInterface $providerRepository, SubscriptionRepositoryInterface $subscriptionRepository,ResellerRepositoryInterface $resellerRepository, CustomerRepositoryInterface $customerRepository)
     {
+        $this->subscriptionRepository = $subscriptionRepository;
         $this->providerRepository = $providerRepository;
         $this->resellerRepository = $resellerRepository;
         $this->customerRepository = $customerRepository;
@@ -344,8 +349,10 @@ class HomeController extends Controller
             break;
 
             case config('app.customer'):
+                $customer = $this->getUser()->customer;
+                $subscriptions = $this->listFromCustomer($customer);
 
-               return view('store.index');
+               return view('subscriptions.customer', compact('subscriptions', 'customer'));
 
             break;
 
@@ -424,6 +431,13 @@ class HomeController extends Controller
             return view('home', compact('provider','resellers','customers','instance','users',
             'countries','subscriptions','order','statuses','countResellers',
             'countCustomers','countSubscriptions','providers','countries'));
+        }
+
+        public function listFromCustomer(Customer $customer)
+        {
+            $subscriptions = $this->customerRepository->getSubscriptions($customer);
+
+            return $subscriptions;
         }
 
         public function dashboard()
