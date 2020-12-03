@@ -13,7 +13,8 @@
             </div>
             @endif
             <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.price_list_table', 1)) }}</a></h4>
-            <table class="table table-hover responsive" id="example">
+            <div class="table-responsive">
+                <table id="example" class="table table-bordered text-nowrap key-buttons">
                 <thead class="thead-dark">
                     <tr>
                         <th></th>

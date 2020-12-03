@@ -64,7 +64,6 @@ class SubscriptionController extends Controller
 
             case 'Provider':
                 $provider = $this->getUser()->provider;
-                dd($provider);
                 $subscriptions = $this->listFromProvider($provider);
 
             break;
@@ -177,7 +176,7 @@ class SubscriptionController extends Controller
     */
     public function update(Request $request, Subscription $subscription)
     {
-
+        // dd($request->all());
 
         $subscriptions = Subscription::findOrFail($subscription->id);
         $instance = Instance::first();

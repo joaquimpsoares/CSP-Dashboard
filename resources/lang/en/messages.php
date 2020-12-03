@@ -115,7 +115,7 @@ return [
     'expiration_date' => 'expiration date',
     'subscription_table' => 'subscription table|subscriptions table',
     '#' => '#',
-    'placed_on' => 'palced on',
+    'placed_on' => 'placed on',
     'last_updated' => 'last updated',
     'comments' => 'comments',
     'order_details' => 'order details',
