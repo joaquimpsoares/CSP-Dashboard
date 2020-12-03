@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\SubscriptionRepositoryInterface;
+use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Facades\ServiceCosts;
 use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
@@ -168,14 +169,17 @@ class CustomerController extends Controller
         $subscriptions = $this->subscriptionRepository->subscriptionsOfCustomer($customer);
         $licensesCount = $subscriptions->sum('amount');
 
-        return view('customer.show', compact('licensesCount','costs','customer','countries','subscriptions','users','statuses'));
+        $serviceCosts = $this->CustomerServiceCosts($customer);
+
+        return view('customer.show', compact('licensesCount','costs','customer','countries','subscriptions','users','statuses','serviceCosts'));
 
     }
 
     Public function CustomerServiceCosts($customer)
     {
 
-        $instance = Instance::where('id', $customer->resellers->first()->provider->instances->first()->id)->first();
+        $instance = Instance::where('id', '3')->first();
+
         try {
             $customer = new TagydesCustomer([
                 'id' => $customer->microsoftTenantInfo->first()->tenant_id,
@@ -185,17 +189,43 @@ class CustomerController extends Controller
                 'lastName' => 'Apellido',
                 'email' => 'bill@tagydes.com',
                 ]);
-
-            $resources = ServiceCosts::withCredentials(
-            $instance->external_id,$instance->external_token
-            )->serviceCosts($customer);
-            return $resources;
+        $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCosts($customer);
+        return $resources;
 
         } catch (\Throwable $th) {
 
         }
+    }
+
+    Public function serviceCostsLineitems($customer)
+    {
+
+        // dd($customer);
+        $customer = Customer::find($customer);
+        $instance = Instance::where('id', '3')->first();
+
+        try {
+            $customer = new TagydesCustomer([
+                'id' => $customer->microsoftTenantInfo->first()->tenant_id,
+                'username' => 'bill@tagydes.com',
+                'password' => 'blabla',
+                'firstName' => 'Nombre',
+                'lastName' => 'Apellido',
+                'email' => 'bill@tagydes.com',
+                ]);
+        $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCostsLineitems($customer);
+
+        return $resources;
+
+        } catch (\Throwable $th) {
+
+            // return ($th->getMessage());
+            // with(['success', 'message' => $th->getMessage()]);
+
+        }
 
     }
+
 
 
 

@@ -1,4 +1,4 @@
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>  
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
 <div class="card">
     <div class="card-body">
@@ -6,7 +6,7 @@
             <div class="col-lg-12">
                 <form  method="POST" action="{{ route('customer.update', $customer->id) }}" class="col s12">
                     @method('POST')
-                    @csrf        
+                    @csrf
                     <h1>{{ ucwords(trans_choice('messages.customer_form', 1)) }}</h1>
                     <div class="row">
                         <div class="col-md-6 mb-4">
@@ -61,7 +61,7 @@
                                 Zip code required.
                             </div>
                         </div>
-                        
+
                     </div>
                     <hr>
                     <div class="row">
@@ -70,7 +70,7 @@
                             <div class="form-group">
                                 <select name="status_id" class="form-select" sf-validate="required">
                                     <option value="{{$customer->status->id}}" selected>{{ucwords(trans_choice($customer->status->name, 1))}}</option>
-                                    @foreach ($statuses as $status)    
+                                    @foreach ($statuses as $status)
                                     <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
                                     @endforeach
                                 </select>
@@ -81,7 +81,7 @@
                             <div class="form-group">
                                 <select name="status_id" class="form-select" sf-validate="required">
                                     <option value="{{$customer->priceList->id}}" selected>{{$customer->priceList->name}}</option>
-                                    @foreach ($statuses as $status)    
+                                    @foreach ($statuses as $status)
                                     <option value="{{$customer->priceList->id}}">{{$customer->priceList->name}}</option>
                                     @endforeach
                                 </select>

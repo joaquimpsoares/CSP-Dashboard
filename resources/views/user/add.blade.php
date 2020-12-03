@@ -1,7 +1,4 @@
-@extends('layouts.app')
-
-@section('page-title', trans('app.add_user'))
-@section('page-heading', trans('app.create_new_user'))
+@extends('layouts.master')
 
 
 @section('content')
@@ -36,7 +33,7 @@
                 </h5>
                 <p class="text-muted font-weight-light">
                     Details used for authenticating with the application.
-                    
+
                 </p>
             </div>
             <div class="col-md-9">

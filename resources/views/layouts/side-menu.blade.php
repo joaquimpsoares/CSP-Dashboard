@@ -224,7 +224,7 @@
                                                     <ul class="slide-menu">
                                                         <li><a href="{{ route('store.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.store', 2)) }}</a></li>
                                                         <li><a href="{{ url('/' . $page='order') }}" class="slide-item">{{ ucwords(trans_choice('messages.order', 2)) }}</a></li>
-                                                        <li><a href="{{ url('/' . $page='cart') }}" class="slide-item"> Shopping Cart</a></li>
+                                                        <li><a href="{{ url('/' . $page='cart') }}" class="slide-item"> Shopping Cart <span class="ml-auto badge badge-success">12</span></li></a>
                                                     </ul>
                                                 </li>
                                                 <li class="slide">

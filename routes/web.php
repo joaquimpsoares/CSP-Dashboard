@@ -23,7 +23,10 @@ use Tagydes\MicrosoftConnection\Models\Cart as TagydesCart;
 use Tagydes\MicrosoftConnection\Facades\Order as TagydesOrder;
 use Tagydes\KasperskyConnection\Facades\Customer as Tagydeskasp;
 use Tagydes\MicrosoftConnection\Models\Product as TagydesProduct;
+use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
+
+
 
 
 //Marco verifica aqui esta linha... para a importação dos productos!
@@ -90,6 +93,29 @@ Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlew
 
 **********************************************************************************/
 
+
+Route::get('/servicecosts', function()
+{
+
+
+    $instance = Instance::where('id', '3')->first();
+    // dd($instance->external_id, $instance->external_token);
+
+    $customer = new TagydesCustomer([
+        'id' => 'd09c8a90-cd32-4aaa-a54e-1959632f651b',
+        'username' => 'bill@tagydes.com',
+        'password' => 'blabla',
+        'firstName' => 'Nombre',
+        'lastName' => 'Apellido',
+        'email' => 'bill@tagydes.com',
+        ]);
+
+    $test = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCosts($customer);
+    return $test;
+
+});
+
+
 Route::get('/test', function() {
 
 	$instance=Instance::where('type', 'kaspersky')->first();
@@ -98,7 +124,7 @@ Route::get('/test', function() {
 
 	$certificate = Crypt::decryptString($certificate->certificate);
 	$url=Instance::select('external_url')->where('type', 'kaspersky')->first();
-	// dd($certificate);	
+	// dd($certificate);
 
 	// $id = 'KL4536XAEMG'; //monthly
 	$id = 'KL4536XAMFG'; //yearly
@@ -117,8 +143,8 @@ Route::get('/test', function() {
 	$tier = $tiers->filter(function($value){
 		return true;
 	});
-	
-	
+
+
 	$tier = $tiers->filter(function($tier) use ($quantity) {
 		return $quantity >= $tier->min_quantity && $quantity < $tier->max_quantity;
 	})->first();
@@ -128,7 +154,7 @@ Route::get('/test', function() {
 	$customer = Customer::where('id', 310000)->first();
 	// dd($customer->country->iso_3166_3);
 	// dd($instance->tenant_id);
-	
+
 	$newCustomer = Tagydeskasp::withCredentials($url, $certificate)->create([
 		"BillingPlan" => "yearly",
 		"Sku"=> $tier->product_sku,
@@ -156,8 +182,8 @@ Route::get('/test', function() {
 		]);
 
 		// dd($newCustomer);
-	
-		// $result = 
+
+		// $result =
 
 
 	$kas_details = KasperskyLincenseInfo ::create([
@@ -170,7 +196,7 @@ Route::get('/test', function() {
 	// dd($instance->external_token);
 	// $orderConfirm = KasOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($kas_details);
 	// Log::info('Confirmation of cart Cart: '.$orderConfirm);
-	
+
 	dd($newCustomer);
 
 
@@ -193,7 +219,7 @@ Route::get('/test', function() {
                 $subscriptions->save();
 				// dd($subscription);
 			}
-			
+
 	// $result = Subscription::create([
 	// 	'subscription_id' => $newCustomer->SubscriptionId,
 	// 	'customer_id' => $customer->id,
@@ -202,7 +228,7 @@ Route::get('/test', function() {
 	// 	'instance_id' => $product->instance_id,
 	// 	'billing_period' => $product->product->supported_billing_cycles->first(),
 	// 	'billing_type' => $product->product->billing,
-	// ]);	
+	// ]);
 
 // dd($result);
 
@@ -221,42 +247,42 @@ Route::get('login/graph/callback', [LoginController::class, 'handleProviderCallb
 
 
 Route::group(['middleware' => 'auth'], function () {
-	
-	
+
+
 	/*****************************************************************************************************************/
-	
+
 	// Routes that only platform managers can access
 	Route::group(['middleware' => ['role:Super Admin']], function () {
-		
+
 		Route::resource('roles', 'RoleController');
 		Route::post('roles/update/all', 'RoleController@updateAll')->name('roles.update.all');
 		Route::resource('permissions', 'PermissionController');
 		Route::get('/product/import/{provider_id}', 'ProductController@import')->name('product.import');
-		
-		
+
+
 	});
-	
+
 	/*****************************************************************************************************************/
-	
+
 	// Routes that platform managers and administrators can access
 	Route::group(['middleware' => ['role:Super Admin|Admin']], function () {
-		
+
 		Route::resource('provider', 'ProviderController');
-		
+
 
 	});
-	
+
 	/*****************************************************************************************************************/
-	
+
 	// Routes that platform managers and providers can access
 	Route::group(['middleware' => ['role:Super Admin|Admin|Provider']], function () {
-		
+
 		Route::get('/instances/kascreate', 'InstanceController@kascreate')->name('instances.kascreate');
 			Route::resource('/instances', 'InstanceController');
-			
+
 
 			Route::get('/instances/getMasterToken/{provider_id}', 'InstanceController@getMasterToken')->name('instances.getMasterToken');
-		
+
 			Route::get('/reseller/create', 'ResellerController@create')
 				->middleware('permission:' . config('app.reseller_create'))->name('reseller.create');
 
@@ -264,33 +290,33 @@ Route::group(['middleware' => 'auth'], function () {
 				->middleware('permission:' . config('app.reseller_create'))->name('reseller.store');
 
 			Route::group(['middleware' => ['check_provider']], function () {
-			
-		
 
-			
+
+
+
 			/*Route::get('/priceList/provider/{provider}', 'PriceListController@getProviderPriceList')
 			->middleware('permission:' . config('app.price_list_show'))->name('priceLists.provider_price_list');*/
-			
 
-			
+
+
 			/*
 			Inicio Confirmar nivel de acesso reseller->provider
 			*/
-			
+
 			Route::get('provider/{provider}/priceList', 'ProviderController@getPriceList')->name('provider.price_lists');
-			
+
 			/*
 			Fim Confirmar nivel de acesso reseller->provider
 			*/
 		});
-		
+
 	});
-	
+
 	/*****************************************************************************************************************/
-	
+
 	// Routes that platform managers, providers and resellers can access
 	Route::group(['middleware' => ['role:' . config('app.super_admin') . '|' . config('app.admin' ) . '|' . config('app.provider' ) . '|' . config('app.reseller') . '|' . config('app.subreseller')]], function () {
-		
+
 		Route::get('/reseller', 'ResellerController@index')
 		->middleware('permission:' . config('app.reseller_index'))->name('reseller.index');
 
@@ -299,105 +325,111 @@ Route::group(['middleware' => 'auth'], function () {
 
 		Route::post('/customer', 'CustomerController@store')
 			->middleware('permission:' . config('app.customer_create'))->name('customer.store');
-		
-		
+
+
 		Route::get('/customer', 'CustomerController@index')
 		->middleware('permission:' . config('app.customer_index'))->name('customer.index');
 
 		Route::get('priceList/{priceList}/prices', 'PriceListController@getPrices')->name('priceList.prices');
 		Route::get('priceList/clone/{id}', 'PriceListController@clone')->name('priceList.clone');
 		Route::post('priceList/update/{id}', 'PriceListController@update')->name('priceList.update');
-		
+
 		Route::post('pricelist/import', 'PriceListController@import');
 
 		Route::post('pricelist/storePriceList', 'PriceListController@storePriceList')->name('priceList.storePriceList');
-		
-		
+
+
 		Route::group(['middleware' => ['check_reseller']], function () {
-			
+
 
 			// Route::resource('reseller', 'ResellerController');
-			
+
 
 			Route::get('/reseller/{reseller}-{slug}', 'ResellerController@show')
 			->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
-			
+
 			Route::patch('/reseller/update/{reseller}', 'ResellerController@update')
 			->name('reseller.update');
-			
+
 			Route::get('reseller/{reseller}-{slug}/edit', 'ResellerController@show')
 			->middleware('permission:' . config('app.reseller_edit'))->name('reseller.edit');
-			
+
 			Route::get('reseller/{reseller}-{slug}/customers', 'ResellerController@getCustomersFromReseller')
 			->middleware('permission:' . config('app.customer_index'))->name('reseller.customers');
-			
+
 			// Route::resource('/priceList', 'PriceListController');
-			
-			
+
+
 			/*
 			Inicio Confirmar nivel de acesso reseller->provider
 			*/
 			Route::get('reseller/{reseller}/priceList', 'ResellerController@getPriceList')->name('reseller.price_lists');
-			
-			
-			
+
+
+
 			Route::get('/jobs', 'JobsController@index')->name('jobs');
 			Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
 			Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
-			
+
 			/*
 			Fim Confirmar nivel de acesso reseller->provider
 			*/
-			
-			
+
+
 		});
-		
+
 		Route::group(['middleware' => ['check_customer']], function () {
 			//Route::get('/priceList/customer/{customer}', 'PriceListController@getCustomerPriceList')->name('priceLists.customer_price_list');
 		});
-		
+
 	});
-	
+
 	/*****************************************************************************************************************/
-	
+
 	// Routes that platform managers, providers, resellers and customers can access
 	Route::group(['middleware' => ['role:Super Admin|Admin|Provider|Reseller|Sub Reseller|Customer']], function () {
-		
+
 		Route::group(['middleware' => ['check_customer']], function () {
-			
-			
+
+
 			Route::get('/customer/{customer}-{slug}', 'CustomerController@show')
 			->middleware('permission:' . config('app.customer_show'), 'check_customer')
-			->name('customer.show');
-			
+            ->name('customer.show');
+
+            Route::get('/customer/serviceCostsLineitems/{id}', 'CustomerController@serviceCostsLineitems')
+            ->middleware('permission:' . config('app.customer_show'), 'check_customer')
+            ->name('customer.serviceCostsLineitems');
+
+
+
 			Route::post('customer/update/{customer}', 'CustomerController@update')
 			->middleware('permission:' . config('app.customer_update'))
 			->name('customer.update');
-			
-			
+
+
 			/*
 			Inicio Confirmar nivel de acesso reseller->provider
 			*/
-			
+
 			Route::get('/customer/{customer}/priceList', 'CustomerController@getPriceList')->name('customer.pricelist');
-			
+
 			/*
 			fim Confirmar nivel de acesso reseller->provider
 			*/
-			
+
 		});
-		
+
 	});
-	
+
 	/*****************************************************************************************************************/
-	
+
 	// Every authenticated user can access routes here
 	Route::get('/order/placeOrder', 'OrderController@placeOrder')->name('order.place_order');
 
-	
-	
+
+
 	Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
-	
+
 	//Novas rotas carrinho//
 	Route::post('/cart/customer/add', 'CartController@addCustomer')->name('cart.add_customer');
 	Route::post('/cart/customer/change', 'CartController@changeCustomer')->name('cart.change.customer');
@@ -419,16 +451,14 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/cart/add/product/{product}', 'CartController@addProduct')->name('cart.add_product');
 	Route::get('/cart/remove/item/{item}', 'CartController@removeItem')->name('cart.remove_product');
 	Route::get('/cart/clear', 'CartController@destroy')->name('cart.clear');
-	
+
 	Route::post('/cart/pending/checkout', 'CartController@pendingCheckout')->name('cart.pending_checkout');
-	
+
 	Route::get('/cart/checkDomainAvailability', 'CartController@checkDomainAvailability')->name('cart.check_domain_availability');
 	Route::post('/cart/addMCAUser', 'CartController@addMCAUser')->name('cart.add_mca_user');
 	Route::resource('/subscription', 'SubscriptionController');
-			Route::get('/subscription.card', 'SubscriptionController@card')
-			->middleware('permission:' . config('app.subscription_edit'))
-			->name('subscription.card');
-	
+	Route::get('/subscription.card', 'SubscriptionController@card')->middleware('permission:' . config('app.subscription_edit'))->name('subscription.card');
+
 	Route::resource('/cart', 'CartController');
 
 	Route::get('/store/categories/{vendor}', 'StoreController@categories')->name('store.categories');
@@ -441,8 +471,8 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::resource('product', 'ProductController');
 	Route::resource('/order', 'OrderController');
-	
-	
+
+
 	// End of every authenticated user can access routes here
 	});
 
@@ -458,5 +488,5 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/', 'HomeController@index')->name('home');
 
 	Route::get('/home', 'HomeController@index')->name('home');
-	
+
 	Auth::routes();

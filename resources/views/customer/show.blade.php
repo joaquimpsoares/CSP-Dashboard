@@ -2,11 +2,10 @@
 
 @section('content')
 
-
-
-
-
-<div class="container col-xm-12">
+<section>
+    {{-- <br>
+    <br>
+    <br> --}}
     <ul class="nav nav-pills md-tabs" id="myTabMD" role="tablist">
         <li class="nav-item">
             <a class="nav-link btn rgba-blue-light active" id="home-tab-md" data-toggle="tab" href="#home-md" role="tab" aria-controls="home-md"
@@ -27,22 +26,21 @@
                 <div class="card-body">
                     <h1 class="mb-4 mt-1 h5 text-center font-weight-bold"></h1>
                     <section id="services" class="services section-bg">
-                        <div class="container">
-
-                            <div class="section-title">
+                        <div class="card-header">
+                            <div class="card-title">
                                 <h2>Summary for customer {{$customer->company_name}}</h2>
-                                <hr>
-                                {{-- <p>We include the following services, this way you focus on the most important, your customers!!</p> --}}
                             </div>
-                            <div class="row">
-
-                                <div class="col-lg-6 col-md-6">
-                                    <div class="card bd-callout-warning">
-                                        <div class="icon"><i class="las la-basketball-ball" style="color: #ff689b;"></i></div>
-                                        <strong><h4>Current Estimated Costs</h4></strong> <br>
-                                        {{-- <p class="product-details">Subscriptions {{$customer->subscriptions->count()}}</p>
-                                        <p class="product-details">Total Licenses {{$licensesCount}}</p> --}}
-                                        @if(!@empty($costs))
+                        </div>
+                        <div class="row row-deck">
+                            @if(!@empty($serviceCosts))
+                            <div class="col-xl-8 col-lg-5 col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-title">
+                                            Current Estimated Costs
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
                                         <dl class="row col-sm-">
                                             <dd class="col-sm-6">
                                                 <strong>Billing Start date</strong> <br>
@@ -50,64 +48,64 @@
                                                 <strong>Pretax Total</strong> <br>
                                                 <strong>Tax Total</strong> <br>
                                                 <strong>After Total</strong> <br>
-                                                {{-- <small>{{ $product->name }}</small> --}}
                                             </dd>
                                             <dd class="col-sm-4">
-                                                {{date('d-m-Y', strtotime($costs->billingStartDate))}} <br>
+                                                {{date('d-m-Y', strtotime($serviceCosts->billingStartDate))}} <br>
                                                 {{date('d-m-Y', strtotime($costs->billingEndDate))}} <br>
                                                 {{number_format($costs->pretaxTotal, 2)}}{{$costs->currencySymbol}} <br>
                                                 {{number_format($costs->tax, 2)}}{{$costs->currencySymbol}} <br>
                                                 {{number_format($costs->afterTaxTotal, 2)}}{{$costs->currencySymbol}} <br>
                                             </dd>
                                         </dl>
-                                        @endif
+                                        <a class="btn btn-primary" href="\customer\serviceCostsLineitems\{{$customer->id}}">See Details</a>
+                                    </div>
+                                    <div class="card-footer text-muted">
+                                        Estimation of costs retrieve directly from Microsoft
                                     </div>
                                 </div>
-                                <div class="col-lg-4 col-md-6" data-wow-delay="0.1s">
-                                    <div class="card bd-callout-warning">
-                                        <div class="icon"><i class="las la-file-alt" style="color: #3fcdc7;"></i></div>
-                                        <strong><h4>Active Subscriptions</h4></strong> <br>
-                                        <dl class="row col-sm-12">
-                                            <dd class="col-sm-8">
-                                                <strong> Subscriptions </strong><br>
-                                                <strong>Total Licenses</strong>
-                                            </dd>
-                                            <dd class="col-sm-4">
-                                                {{$customer->subscriptions->count()}} <br>
-                                                {{$licensesCount}}
-                                            </dd>
-                                        </dl>
-                                    </div>
-                                </div>
-                            </section>
 
-                            <dl class="row">
-                                <dt class="col-sm-8">
-                                    {{-- Total --}}
-                                </dt>
-                                <dt class="col-sm-4">
-                                    {{-- $ {{ number_format(floatval($totalPrice), 2) }} --}}
-                                </dt>
-                            </dl>
+                                @endif
+                            </div>
+                            <div class="col-xl-4 col-lg-5 col-md-12">                                <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        Active Subscriptions
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <dl class="row col-sm-12">
+                                        <dd class="col-sm-8">
+                                            <strong> Subscriptions </strong><br>
+                                            <strong>Total Licenses</strong>
+                                        </dd>
+                                        <dd class="col-sm-4">
+                                            {{$customer->subscriptions->count()}} <br>
+                                            {{$licensesCount}}
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="contact-md" role="tabpanel" aria-labelledby="contact-tab-md">
-                    <div class="container col-xm-12">
-                        @include('subscriptions.partials.table', ['subscriptions' => $subscriptions])
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="profile-md" role="tabpanel" aria-labelledby="profile-tab-md">
-                    <div class="container col-xm-12">
-                        @include('customer.partials.details')
-                        @include('user.partials.table', ['users' => $users] )
-                    </div>
+
+                    </section>
                 </div>
             </div>
         </div>
+        <div class="tab-pane fade" id="contact-md" role="tabpanel" aria-labelledby="contact-tab-md">
+            @include('subscriptions.partials.table', ['subscriptions' => $subscriptions])
+        </div>
+        <div class="tab-pane fade" id="profile-md" role="tabpanel" aria-labelledby="profile-tab-md">
+            <div class="container col-xm-12">
+                @include('customer.partials.details')
+                @include('user.partials.table', ['users' => $users] )
+            </div>
+        </div>
+    </div>
+</div>
+</section>
 
 
 
-        @endsection
+@endsection
 
 
