@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
@@ -38,7 +39,6 @@ class CartController extends Controller
 
         $cart = $this->getUserCart();
         return view('order.cart', compact('cart'));
-        // return view('order.cart');
     }
 
     public function getPending() {
@@ -357,7 +357,6 @@ class CartController extends Controller
     {
         $validate = $request->validate([
             'token' => 'required|uuid',
-            //'billing_cycle.*' => 'required|exists:products,billing'
             'billing_cycle.*' => 'required|in:annual,monthly,PAYG,none'
         ]);
 
@@ -366,6 +365,7 @@ class CartController extends Controller
         foreach ($validate['billing_cycle'] as $key => $id) {
             $cartItem = $cart->products()->wherePivot('id', $key)->first();
             $cartItem->pivot->billing_cycle = $id;
+            $cartItem->pivot->quantity = $id;
             $cartItem->pivot->save();
         }
 
@@ -385,7 +385,6 @@ class CartController extends Controller
 			break;
 
             case config('app.provider'):
-
 
             break;
 
@@ -420,28 +419,6 @@ class CartController extends Controller
         return $hasTenant;
     }
 
-    /*public function checkout(Request $request)
-    {
-
-        $validate = $request->validate([
-            'token' => 'required|uuid',
-            'billing_cycle.*' => 'required|in:annual,monthly,none'
-        ]);
-
-        $cart = $this->getByToken($validate['token']);
-
-        foreach ($validate['billing_cycle'] as $key => $id) {
-            $cartItem = $cart->products()->wherePivot('id', $key)->first();
-            $cartItem->pivot->billing_cycle = $id;
-            $cartItem->pivot->save();
-        }
-
-        $status = "customer";
-
-        $customers = $this->customerRepository->all();
-
-        return view('order.checkout', compact('cart', 'customers', 'status'));
-    }*/
 
     public function getMainUser(Request $request)
     {
@@ -499,9 +476,11 @@ class CartController extends Controller
         return view('order.checkout', compact('cart', 'customers'));
     }
 
-    private function getUserCart($id = null, $token = null)
+    public static  function getUserCart($id = null, $token = null)
     {
-        $user = $this->getUser();
+        // $user = $this->getUser();
+        $user = Auth::user();
+        // dd($user);
 
         if (empty($token)) {
             if (empty($id)) {
@@ -511,6 +490,25 @@ class CartController extends Controller
             }
         } else {
             $cart = Cart::where('user_id', $user->id)->where('token', $token)->with(['products', 'customer'])->first();
+        }
+
+        return $cart;
+    }
+
+    public static  function CountCart($id = null, $token = null)
+    {
+        // $user = $this->getUser();
+        $user = Auth::user();
+        // dd($user);
+
+        if (empty($token)) {
+            if (empty($id)) {
+                $cart = Cart::where('user_id', $user->id)->whereNull('customer_id')->with(['products', 'customer'])->count();
+            } else {
+                $cart = Cart::where('user_id', $user->id)->where('id', $id)->with(['products', 'customer'])->count();
+            }
+        } else {
+            $cart = Cart::where('user_id', $user->id)->where('token', $token)->with(['products', 'customer'])->count();
         }
 
         return $cart;

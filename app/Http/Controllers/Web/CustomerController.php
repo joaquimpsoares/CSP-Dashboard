@@ -262,7 +262,14 @@ class CustomerController extends Controller
         }
 
 
-    public function destroy(Customer $customer) { }
+    public function destroy(Customer $customer) {
+
+        $customer = Customer::find($customer->id);
+        $customer->delete();
+
+        return redirect()->route('customer.index');
+
+    }
 
     public function getPriceList($customer)
     {

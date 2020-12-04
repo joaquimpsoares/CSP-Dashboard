@@ -1,4 +1,10 @@
 <!--aside open-->
+@php
+$cartcount = App\Http\Controllers\Web\CartController::CountCart();
+@endphp
+{{-- @dd($cartcount) --}}
+
+{{-- @dd() --}}
 <div class="app-sidebar app-sidebar2">
     <div class="app-sidebar__logo">
         <a class="header-brand" href="/">
@@ -66,17 +72,18 @@
             </ul>
         </li>
         @endcan
-
         @can(config('app.customer_index'))
         <li class="slide">
             <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="side-menu__icon"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                <span class="side-menu__label">{{ ucwords(__('messages.marketplace')) }}</span><i class="angle fa fa-angle-right"></i>
+                <span class="side-menu__label">{{ ucwords(__('messages.marketplace')) }} <span class="ml-auto badge badge-success">{{$cartcount}}</span></span><i class="angle fa fa-angle-right"></i>
             </a>
             <ul class="slide-menu">
                 <li><a href="{{ route('store.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.store', 2)) }}</a></li>
                 <li><a href="{{ url('/' . $page='order') }}" class="slide-item">{{ ucwords(trans_choice('messages.order', 2)) }}</a></li>
-                <li><a href="{{ url('/' . $page='cart') }}" class="slide-item"> Shopping Cart <span class="ml-auto badge badge-success">12</span></li></a>
+
+                <li><a href="{{ url('/' . $page='cart') }}" class="slide-item"> Shopping Cart
+                    <span class="ml-auto badge badge-success">{{$cartcount}}</span></li></a>
             </ul>
         </li>
         <li class="slide">
