@@ -25,13 +25,13 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
 
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
-                $subscriptions = Subscription::
+                $subscriptions = Subscription::with(['customer','products','status'])->
                 orderBy('id')
                 ->get();
             break;
 
             case config('app.admin'):
-                $subscriptions = Subscription::
+                $subscriptions = Subscription::with(['customer','products','status'])->
                 orderBy('id')
                 ->get();
             break;
@@ -40,7 +40,7 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
 
                 $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
 
-                $subscriptions = Subscription::get();
+                $subscriptions = Subscription::with(['customer','products','status'])->get();
 
                 // $subscriptions = Customer::whereHas('resellers', function($query) use  ($resellers) {
                 // 	$query->whereIn('id', $resellers);
@@ -54,14 +54,14 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
             case config('app.reseller'):
                 $reseller = $user->reseller;
                 $customer = $reseller->customers->pluck('id');
-                $subscriptions = Subscription::whereIn('customer_id', $customer)
+                $subscriptions = Subscription::with(['customer','products','status'])->whereIn('customer_id', $customer)
                 ->orderBy('id')->get();
             break;
 
             case config('app.subreseller'):
                 $reseller = $user->reseller;
                 $customer = $reseller->customers->pluck('id');
-                $subscriptions = Customer::whereHas('resellers', function($query) use  ($customer) {
+                $subscriptions = Customer::with(['customer','products','status'])->whereHas('resellers', function($query) use  ($customer) {
                 	$query->whereIn('id', $customer);
                 })->with(['country', 'status' => function ($query) {
 					$query->where('name', 'messages.active');

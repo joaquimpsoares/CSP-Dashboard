@@ -2,6 +2,8 @@
 @section('css')
 @endsection
 @section('content')
+
+@dd(env('SESSION_DOMAIN'))
 <div class="page">
     <div class="page-single">
         <div class="p-5">

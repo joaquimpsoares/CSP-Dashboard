@@ -9,11 +9,11 @@ use Illuminate\Support\Collection;
 use App\Repositories\ResellerRepositoryInterface;
 
 /**
- * 
+ *
  */
 class ResellerRepository implements ResellerRepositoryInterface
 {
-	
+
 	use UserTrait;
 
 	public function all()
@@ -22,7 +22,7 @@ class ResellerRepository implements ResellerRepositoryInterface
 
 		switch ($this->getUserLevel()) {
 			case config('app.super_admin'):
-			$resellers = Reseller::whereNull('main_office')
+			$resellers = Reseller::with(['provider','customers','users'])->whereNull('main_office')
 			->with(['country', 'subResellers', 'status' => function ($query) {
 				$query->where('name', 'messages.active');
 			}])
@@ -31,7 +31,7 @@ class ResellerRepository implements ResellerRepositoryInterface
 			break;
 
 			case config('app.admin'):
-			$resellers = Reseller::whereNull('main_office')
+			$resellers = Reseller::with(['provider','customers'])->with('App\Reseller')->whereNull('main_office')
 			->with(['country', 'subResellers', 'status' => function ($query) {
 				$query->where('name', 'messages.active');
 			}])
@@ -55,10 +55,10 @@ class ResellerRepository implements ResellerRepositoryInterface
 
 		return $resellers;
 	}
-	
+
 	public function create($validate, $user)
     {
-    
+
 		$newReseller =  Reseller::create([
             'company_name' => $validate['company_name'],
             'nif' => $validate['nif'],
@@ -89,7 +89,7 @@ class ResellerRepository implements ResellerRepositoryInterface
 	}
 
 	public function getSubscriptions(Reseller $reseller){
-		
+
 		$customers= $reseller->customers;
 
 		$subscriptions = new Collection();
@@ -97,9 +97,9 @@ class ResellerRepository implements ResellerRepositoryInterface
 		foreach($customers as $customer){
 			$subscriptions = $subscriptions->merge($customer->subscriptions);
 		}
-		
+
 		return $subscriptions;
-		
+
 	}
 
 

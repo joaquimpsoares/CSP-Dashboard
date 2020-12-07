@@ -34,9 +34,9 @@ use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
 
 class ResellerController extends Controller
 {
-    
+
     use UserTrait;
-    
+
     private $resellerRepository;
     private $customerRepository;
     private $subscriptionRepository;
@@ -44,9 +44,9 @@ class ResellerController extends Controller
 
     private $providerRepository;
 
-    
-    
-    
+
+
+
     public function __construct(ProviderRepositoryInterface $providerRepository,ResellerRepositoryInterface $resellerRepository, CustomerRepositoryInterface $customerRepository, SubscriptionRepositoryInterface $subscriptionRepository, UserRepositoryInterface $userRepository)
     {
         $this->providerRepository = $providerRepository;
@@ -54,52 +54,52 @@ class ResellerController extends Controller
         $this->customerRepository = $customerRepository;
         $this->subscriptionRepository = $subscriptionRepository;
         $this->userRepository = $userRepository;
-        
+
     }
-    
-    
+
+
     public function getCustomersFromReseller(Reseller $reseller) {
-        
+
     }
-    
-    
+
+
     public function index()
     {
-        
-        
-        
+
+
+
         $customers = new Collection();
-        
+
         $countCustomers =  $customers->count();
-        
+
         $resellers = $this->resellerRepository->all();
-        
+
         return view('reseller.index', compact('resellers', 'countCustomers'));
-        
+
     }
-    
-    
+
+
     public function create() {
-        
+
         $countries = Country::get();
         $statuses = Status::get();
-        
+
         return view('reseller.create', compact('countries', 'statuses'));
     }
-    
-    
+
+
     public function store(Request $request) {
         $user = $this->getUser();
-        
+
         $validate = $this->validator($request->all())->validate();
-        
+
         try {
             DB::beginTransaction();
-            
+
             $reseller = $this->resellerRepository->create($validate, $user);
-            
+
             $mainUser = $this->userRepository->create($validate, 'reseller', $reseller);
-            
+
             DB::commit();
         } catch (\PDOException $e) {
             DB::rollBack();
@@ -114,41 +114,41 @@ class ResellerController extends Controller
                 'message' => trans('messages.reseller_not_created') . " (" . trans($errorMessage) . ")."
                 ]);
             }
-            
+
             return redirect()->route('reseller.index')->with(['alert' => 'success', 'message' => trans('messages.reseller Created successfully')]);
         }
-        
-        
+
+
         public function show(Reseller $reseller) {
-            
-            
-            $provider_id = Auth::getUser()->provider_id;
-            $provider = Provider::where('id', $provider_id)->first();
-            
-            $budget = cache()->remember('azure.budget', 260, function(){
-                
-                $customer = new TagydesCustomer([
-                    'id' => '4e03835b-242f-441c-9958-ad3e5e05f55d',
-                    'username' => 'bill@tagydes.com',
-                    'password' => 'blabla',
-                    'firstName' => 'Nombre',
-                    'lastName' => 'Apellido',
-                    'email' => 'bill@tagydes.com',
-                    ]);
-                    
-                    $subscription = new TagydesSubscription([
-                        'id'            => 'C01AD64D-6D65-45C4-B755-C11BD4F0DA0E',
-                        'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-                        'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-                        'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
-                        'name'          => "5trvfvczdfv",
-                        'status'        => "5trvfvczdfv",
-                        'quantity'      => "1",
-                        'currency'      => "EUR",
-                        'billingCycle'  => "monthly",
-                        'created_at'    => "5trvfvczdfv",
-                        ]);
-                        
+
+            $reseller = Reseller::with('country')->find($reseller->id);
+            // $provider_id = Auth::getUser()->provider_id;
+            // $provider = Provider::where('id', $provider_id)->first();
+// dd($provider);
+            // $budget = cache()->remember('azure.budget', 2    60, function(){
+
+            //     $customer = new TagydesCustomer([
+            //         'id' => '4e03835b-242f-441c-9958-ad3e5e05f55d',
+            //         'username' => 'bill@tagydes.com',
+            //         'password' => 'blabla',
+            //         'firstName' => 'Nombre',
+            //         'lastName' => 'Apellido',
+            //         'email' => 'bill@tagydes.com',
+            //         ]);
+
+            //         $subscription = new TagydesSubscription([
+            //             'id'            => 'C01AD64D-6D65-45C4-B755-C11BD4F0DA0E',
+            //             'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
+            //             'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
+            //             'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
+            //             'name'          => "5trvfvczdfv",
+            //             'status'        => "5trvfvczdfv",
+            //             'quantity'      => "1",
+            //             'currency'      => "EUR",
+            //             'billingCycle'  => "monthly",
+            //             'created_at'    => "5trvfvczdfv",
+            //             ]);
+
                         // try {
                         //     return (int) FacadesAzureResource::withCredentials(
                         //         "66127fdf-8259-429c-9899-6ec066ff8915",
@@ -156,72 +156,70 @@ class ResellerController extends Controller
                         //         )->budget($customer, $subscription);
                         //     } catch (Throwable $e) {
                         //         report($e);
-                                
+
                         //         return false;
                         //     }
-                            
-                        });
-                        
-                        
-                        $costSum = AzureResource::sum('cost');
-                        $increase = ($budget-$costSum);
-                        
-                        
-                        if ($increase == 0.0) {
-                            // echo 'Divisor is 0';
-                            $average1 = 0;
-                        } else {
-                            $average1 = ($increase/$budget)*100;
-                        }
-                        $average = 100-$average1;
-                        
-                        
+
+                        // });
+
+
+                        // $costSum = AzureResource::sum('cost');
+                        // $increase = ($budget-$costSum);
+
+
+                        // if ($increase == 0.0) {
+                        //     // echo 'Divisor is 0';
+                        //     $average1 = 0;
+                        // } else {
+                        //     $average1 = ($increase/$budget)*100;
+                        // }
+                        // $average = 100-$average1;
+
+
                         $statuses = Status::get();
-                        
-                        
+
+
                         $countries = Country::all();
-                        $resellers = $this->resellerRepository->resellersOfProvider($provider);
-                        $customers = new Collection();
-                        
-                        foreach ($resellers as $reseller){
-                            $reseller = Reseller::find($reseller['id']);
-                            $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
-                        }
-                        
-                        $reseller = Reseller::get();
-                        $countResellers = $reseller->count();
-                        
-                        $instance = Instance::first();
-                        
-                        $order = OrderProducts::get();
-                        
-                        $users = User::where('provider_id', $provider->id)->first();
-                        
-                        $subscriptions = $this->providerRepository->getSubscriptions($provider);
-                        $countCustomers =  $customers->count();
-                        $countSubscriptions = $subscriptions->count();
+                        // $resellers = $this->resellerRepository->resellersOfProvider($provider);
+                        // $customers = new Collection();
+
+                        // foreach ($resellers as $reseller){
+                        //     $reseller = Reseller::find($reseller['id']);
+                        //     $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
+                        // }
+
+                        // $reseller = Reseller::get();
+                        // $countResellers = $reseller->count();
+
+                        // $instance = Instance::first();
+
+                        // $order = OrderProducts::get();
+
+                        // $users = User::where('provider_id', $provider->id)->first();
+
+                        // $subscriptions = $this->providerRepository->getSubscriptions($provider);
+                        // $countCustomers =  $customers->count();
+                        // $countSubscriptions = $subscriptions->count();
 
                         // dd($subscriptions);
-                        
-                        $countries = Country::all();
-                        $providers = $this->providerRepository->all();
-                        return view('reseller.show', compact('resellers','customers','instance','users',
-                        'countries','subscriptions','order','statuses','countResellers',
-                        'countCustomers','countSubscriptions','average', 'budget','providers','countries','costSum'));
+
+                        // $countries = Country::all();
+                        // $providers = $this->providerRepository->all();
+                        return view('reseller.show', compact('reseller','countries','statuses'));
                     }
-                    
-                    
+
+
                     public function edit(Reseller $reseller) {
-                        
+
                     }
-                    
-                    
+
+
                     public function update(Request $request, Reseller $reseller)
                     {
                         $this->validator($request->all())->validate();
-                        
+
                         $reseller = Reseller::findOrFail($reseller->id);
-                        
+
                         $reseller->company_name         = $request->input('company_name');
                         $reseller->nif                  = $request->input('nif');
                         $reseller->country_id           = $request->input('country_id');
@@ -230,33 +228,33 @@ class ResellerController extends Controller
                         $reseller->city                 = $request->input('city');
                         $reseller->state                = $request->input('state');
                         $reseller->postal_code          = $request->input('postal_code');
-                        
+
                         $reseller->save();
-                        
+
                         return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.Reseller Updated successfully')]);
-                        
+
                     }
-                    
-                    
+
+
                     public function destroy(Reseller $reseller) { }
-                    
+
                     public function getPriceList(Reseller $reseller)
                     {
-                        
+
                         $priceLists = [];
-                        
+
                         $priceLists[] = $reseller->priceList;
-                        
+
                         $customers = $reseller->customers()->with('priceList')->get();
-                        
+
                         foreach ($customers as $customer) {
                             if (!in_array($customer->priceList, $priceLists))
                             $priceLists[] = $customer->priceList;
                         }
-                        
+
                         return view('priceList.index', compact('priceLists'));
                     }
-                    
+
                     protected function validator(array $data)
                     {
                         return Validator::make($data, [

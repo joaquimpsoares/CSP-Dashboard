@@ -260,7 +260,6 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('roles', 'RoleController');
 		Route::post('roles/update/all', 'RoleController@updateAll')->name('roles.update.all');
 		Route::resource('permissions', 'PermissionController');
-		Route::get('/product/import/{provider_id}', 'ProductController@import')->name('product.import');
 
 
 	});
@@ -283,6 +282,7 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::get('/instances/kascreate', 'InstanceController@kascreate')->name('instances.kascreate');
 			Route::resource('/instances', 'InstanceController');
 
+            Route::get('/product/import/{provider_id}', 'ProductController@import')->name('product.import');
 
 			Route::get('/instances/getMasterToken/{provider_id}', 'InstanceController@getMasterToken')->name('instances.getMasterToken');
 

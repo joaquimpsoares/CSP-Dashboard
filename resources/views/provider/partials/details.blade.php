@@ -77,9 +77,9 @@
     <div class="col-lg-12 mb-4">
         <div class="float-sm-right">
             <button type="submit" class="btn btn-secondary">{{ ucwords(trans_choice('messages.update', 1)) }}</button>
-            {{-- <a data-toggle="modal" data-target="#centralModalInfo" class="btn btn-secondary">{{ ucwords(trans_choice('messages.update', 1)) }}</a> --}}
+            <a data-toggle="modal" data-target="#centralModalInfo" class="btn btn-secondary">{{ ucwords(trans_choice('messages.update', 1)) }}</a>
         </div>
-        {{-- <div class="text-center text-md-left">
+        <div class="text-center text-md-left">
             <div class="modal fade" id="centralModalInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"aria-hidden="true" data-backdrop="false">
                 <div class="modal-dialog modal-notify modal-info" role="document">
                     <div class="modal-content">
@@ -103,7 +103,7 @@
                     </div>
                 </div>
             </div>
-        </div> --}}
+        </div>
     </div>
 </div>
 

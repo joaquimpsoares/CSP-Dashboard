@@ -42,7 +42,7 @@
                         <td>{{$subscription->expiration_data}}</td>
                         <td>{{$subscription->billing_period}}</td>
                         <td class="align-middle">
-                            <span class="badge badge-lg {{ $subscription->status->name = '  ' ? 'badge-success' : 'badge-danger' }}">
+                            <span class="badge badge-lg {{ $subscription->status->name == 'messages.active' ? 'badge-success' : 'badge-danger' }}">
                                 {{ ucwords(trans_choice('messages.active', 1)) }}
                             </span>
                         </td>

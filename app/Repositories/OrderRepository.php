@@ -31,12 +31,12 @@ class OrderRepository implements OrderRepositoryInterface
 		switch ($this->getUserLevel()) {
             case config('app.super_admin'):
 
-                $orders = Order::get()->map->format()->toArray();
+                $orders = Order::with(['status'])->get()->map->format()->toArray();
 
 			break;
 
 			case config('app.admin'):
-                $orders = Order::get()->map->format()->toArray();
+                $orders = Order::with(['status'])->get()->map->format()->toArray();
 			break;
 
             case config('app.provider'):
@@ -48,7 +48,7 @@ class OrderRepository implements OrderRepositoryInterface
             })->pluck('id');
 
 
-            $orders = Order::whereHas('customer', function($query) use  ($customers) {
+            $orders = Order::with(['status'])->whereHas('customer', function($query) use  ($customers) {
                 $query->whereIn('id', $customers);
             })->get()->map->format();
 
@@ -62,7 +62,7 @@ class OrderRepository implements OrderRepositoryInterface
                     $query->whereIn('id', $reseller);
                 })->pluck('id');
 
-                $orders = Order::whereHas('customer', function($query) use  ($customers) {
+                $orders = Order::with(['status'])->whereHas('customer', function($query) use  ($customers) {
                     $query->whereIn('id', $customers);
                 })->get()->map->format();
 

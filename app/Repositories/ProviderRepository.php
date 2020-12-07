@@ -7,10 +7,10 @@ use Illuminate\Support\Collection;
 
 class ProviderRepository implements ProviderRepositoryInterface
 {
-	
+
 	public function all()
 	{
-		return Provider::orderBy('company_name')
+		return Provider::with(['resellers','status', 'resellers'])->orderBy('company_name')
 		->with('country')
 		->get()
 		->map->format();
@@ -32,13 +32,13 @@ class ProviderRepository implements ProviderRepositoryInterface
 
 		return $newProvider;
 	}
-	
+
 	public function getSubscriptions(Provider $provider){
-		
+
 		$resellers= $provider->resellers;
-		
+
 		$subscriptions = new Collection();
-		
+
 		foreach ($resellers as $reseller){
 			$customers=$reseller->customers;
 			foreach($customers as $customer)
@@ -48,6 +48,6 @@ class ProviderRepository implements ProviderRepositoryInterface
 		}
 		return $subscriptions;
 	}
-	
-	
+
+
 }
