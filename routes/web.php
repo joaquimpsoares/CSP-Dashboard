@@ -1,5 +1,6 @@
 <?php
 
+use App\Cart;
 use App\Tier;
 use App\Order;
 use App\Price;
@@ -16,15 +17,14 @@ use App\kaspersky_lincense_infos;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginController;
 use Tagydes\KasperskyConnection\Facades\Order as KasOrder;
 use Tagydes\MicrosoftConnection\Models\Cart as TagydesCart;
 use Tagydes\MicrosoftConnection\Facades\Order as TagydesOrder;
-use Tagydes\KasperskyConnection\Facades\Customer as Tagydeskasp;
-use Tagydes\MicrosoftConnection\Models\Product as TagydesProduct;
-use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
-use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 
 
 
@@ -237,7 +237,10 @@ Route::get('/test', function() {
 Fim Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
 **********************************************************************************/
-use App\Http\Controllers\Auth\LoginController;
+use Tagydes\KasperskyConnection\Facades\Customer as Tagydeskasp;
+use Tagydes\MicrosoftConnection\Models\Product as TagydesProduct;
+use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
+use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 
 Route::get('login/microsoft', [LoginController::class, 'redirectToProvider']);
 Route::get('login/microsoft/callback', [LoginController::class, 'handleProviderCallback']);
@@ -257,7 +260,6 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('roles', 'RoleController');
 		Route::post('roles/update/all', 'RoleController@updateAll')->name('roles.update.all');
 		Route::resource('permissions', 'PermissionController');
-		Route::get('/product/import/{provider_id}', 'ProductController@import')->name('product.import');
 
 
 	});
@@ -280,6 +282,7 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::get('/instances/kascreate', 'InstanceController@kascreate')->name('instances.kascreate');
 			Route::resource('/instances', 'InstanceController');
 
+            Route::get('/product/import/{provider_id}', 'ProductController@import')->name('product.import');
 
 			Route::get('/instances/getMasterToken/{provider_id}', 'InstanceController@getMasterToken')->name('instances.getMasterToken');
 
@@ -404,8 +407,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 			Route::post('customer/update/{customer}', 'CustomerController@update')
 			->middleware('permission:' . config('app.customer_update'))
-			->name('customer.update');
-
+            ->name('customer.update');
 
 			/*
 			Inicio Confirmar nivel de acesso reseller->provider

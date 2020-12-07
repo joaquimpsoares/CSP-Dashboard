@@ -15,13 +15,13 @@ use Illuminate\Support\Collection;
 use App\Repositories\OrderRepositoryInterface;
 
 /**
- * 
+ *
  */
 class OrderRepository implements OrderRepositoryInterface
 {
-	
+
     use UserTrait;
-    
+
 
     public function all()
 	{
@@ -31,38 +31,38 @@ class OrderRepository implements OrderRepositoryInterface
 		switch ($this->getUserLevel()) {
             case config('app.super_admin'):
 
-                $orders = Order::get()->map->format()->toArray();
+                $orders = Order::with(['status'])->get()->map->format()->toArray();
 
 			break;
 
 			case config('app.admin'):
-                $orders = Order::get()->map->format()->toArray();
+                $orders = Order::with(['status'])->get()->map->format()->toArray();
 			break;
 
             case config('app.provider'):
-            
+
             $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
 
             $customers = Customer::whereHas('resellers', function($query) use  ($resellers) {
                 $query->whereIn('id', $resellers);
             })->pluck('id');
-            
 
-            $orders = Order::whereHas('customer', function($query) use  ($customers) {
+
+            $orders = Order::with(['status'])->whereHas('customer', function($query) use  ($customers) {
                 $query->whereIn('id', $customers);
             })->get()->map->format();
-      
+
             break;
-            
+
             case config('app.reseller'):
-                
+
                 $reseller = $user->reseller;
 
                 $customers = Customer::whereHas('resellers', function($query) use  ($reseller) {
                     $query->whereIn('id', $reseller);
                 })->pluck('id');
 
-                $orders = Order::whereHas('customer', function($query) use  ($customers) {
+                $orders = Order::with(['status'])->whereHas('customer', function($query) use  ($customers) {
                     $query->whereIn('id', $customers);
                 })->get()->map->format();
 
@@ -104,7 +104,7 @@ class OrderRepository implements OrderRepositoryInterface
             DB::rollBack();
             return false;
         }
-        
+
 
         return $order;
     }
@@ -168,6 +168,6 @@ class OrderRepository implements OrderRepositoryInterface
     }
 
 
-    
+
 
 }

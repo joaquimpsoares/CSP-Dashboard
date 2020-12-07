@@ -64,17 +64,16 @@ class LoginController extends Controller
             ->setTenantId(env('GRAPH_TENANT_ID'))
             ->user();
 
-            // dd($socialiteUser->getId());
 
         $user = User::firstOrCreate([
             'socialite_id' => $socialiteUser->getId(),
+            'email' => $socialiteUser->getEmail(),
         ],
         [
-            'email' => $socialiteUser->getEmail(),
             'name' => $socialiteUser->getName(),
             'user_level_id' => '3',
             'provider_id' => '1',
-            
+
         ]);
 
         Auth()->login($user, true);

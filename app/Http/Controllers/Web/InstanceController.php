@@ -34,11 +34,12 @@ class InstanceController extends Controller
 
     public function index()
     {
-        $instances = Instance::all();
-        $provider = Auth::user()->provider;
-        $provider = Instance::where('provider_id', $provider->id)->get();
+        // $instances = Instance::all();
+        // $provider = Auth::user()->provider;
+        // dd($provider->instances );
+        // $provider = Instance::where('provider_id', $provider->id)->get();
 
-        return view('packages.cards', compact('instances','provider'));
+        return view('packages.cards');
     }
 
     public function create(Request $request)

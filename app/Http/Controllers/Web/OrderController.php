@@ -37,10 +37,7 @@ class OrderController extends Controller
     public function index()
     {
 
-        // $orders = Order::with('status', 'customer')->get()->sortByDesc('id');
-
         $orders = $this->orderRepository->all();
-
 
         return view('order.index', compact('orders'));
     }
@@ -64,8 +61,6 @@ class OrderController extends Controller
         }
         else{
 
-        // array_merge(array($order), ['ext_company_id' => $tt->tenant_id]);
-        // dd($order);
         PlaceOrderMicrosoft::dispatch($order)->allOnQueue('PlaceordertoMS');
         Log::info('Data to Place order: '.$order);
     }

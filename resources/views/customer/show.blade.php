@@ -3,10 +3,12 @@
 @section('content')
 
 <section>
+    @include('customer.partials.details')
+
     {{-- <br>
     <br>
     <br> --}}
-    <ul class="nav nav-pills md-tabs" id="myTabMD" role="tablist">
+    {{-- <ul class="nav nav-pills md-tabs" id="myTabMD" role="tablist">
         <li class="nav-item">
             <a class="nav-link btn rgba-blue-light active" id="home-tab-md" data-toggle="tab" href="#home-md" role="tab" aria-controls="home-md"
             aria-selected="true">Home</a>
@@ -96,11 +98,10 @@
         </div>
         <div class="tab-pane fade" id="profile-md" role="tabpanel" aria-labelledby="profile-tab-md">
             <div class="container col-xm-12">
-                @include('customer.partials.details')
                 @include('user.partials.table', ['users' => $users] )
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>
 </section>
 

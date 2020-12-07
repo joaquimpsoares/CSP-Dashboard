@@ -39,7 +39,8 @@ class Reseller extends Model
             'provider' => $this->provider,
             'created_at' => $this->created_at,
             'customers' => $this->customers->count(),
-            'mainUser' => $this->users()->first()
+            'mainUser' => $this->users()->first(),
+            'users' => $this->users(),
         ];
 
     }
@@ -49,7 +50,7 @@ class Reseller extends Model
     }
 
     public function users() {
-    	return $this->hasMany('App\User');
+    	return $this->hasMany(User::class);
     }
 
     public function provider() {

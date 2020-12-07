@@ -138,6 +138,8 @@ return [
     'provider_created_successfully' => 'provider created successfully',
     'add_instance' => 'add instance',
     'new_user' => 'new user',
+    'user' => 'user|users',
+    'owner' => 'owner',
     'store' => 'store',
     'import' => 'import',
     'clone' => 'clone',

@@ -1,4 +1,10 @@
 <!--aside open-->
+@php
+$cartcount = App\Http\Controllers\Web\CartController::CountCart();
+@endphp
+{{-- @dd($cartcount) --}}
+
+{{-- @dd() --}}
 <div class="app-sidebar app-sidebar2">
     <div class="app-sidebar__logo">
         <a class="header-brand" href="/">
@@ -55,7 +61,7 @@
                 </li>
             </ul>
         </li>
-        @can(config('app.pricelist_index'))
+        {{-- @can(config('app.provider_index')) --}}
         <li class="slide">
             <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}">
                 <svg class="side-menu__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
@@ -65,60 +71,72 @@
                 <li><a href="{{ url('/' . $page='analytics') }}" class="slide-item">{{ ucwords(trans_choice('messages.azure_analytic', 1)) }}</a></li>
             </ul>
         </li>
-        @endcan
-
-        @can(config('app.customer_index'))
+        {{-- @endcan --}}
+        {{-- @can(config('app.customer_index')) --}}
         <li class="slide">
             <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="side-menu__icon"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                <span class="side-menu__label">{{ ucwords(__('messages.marketplace')) }}</span><i class="angle fa fa-angle-right"></i>
+
+                <span class="side-menu__label">{{ ucwords(__('messages.marketplace')) }}
+                    {{-- <span class="pulse"></span> --}}
+                    <span class="ml-auto badge-pill badge-success">{{$cartcount}}</span>
+                </span><i class="angle fa fa-angle-right"></i>
             </a>
+
             <ul class="slide-menu">
                 <li><a href="{{ route('store.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.store', 2)) }}</a></li>
                 <li><a href="{{ url('/' . $page='order') }}" class="slide-item">{{ ucwords(trans_choice('messages.order', 2)) }}</a></li>
-                <li><a href="{{ url('/' . $page='cart') }}" class="slide-item"> Shopping Cart <span class="ml-auto badge badge-success">12</span></li></a>
-            </ul>
-        </li>
-        <li class="slide">
-            <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}">
-                <svg class="side-menu__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
-                <span class="side-menu__label">{{ ucwords(trans_choice('messages.setting', 2)) }}</span><i class="angle fa fa-angle-right"></i>
-            </a>
-            <ul class="slide-menu">
-                <li><a href="{{ route('priceList.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.price_list', 2)) }}</a></li>
-                <li><a href="{{ route('product.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.product', 2)) }}</a></li>
-                <li><a href="{{ route('jobs') }}" class="slide-item"> {{ ucwords(trans_choice('messages.job', 2)) }}</a></li>
-            </ul>
-        </li>
-        @endcan
-    </ul>
-    <div class="app-sidebar-help">
-        <div class="dropdown text-center">
-            <div class="help d-flex">
-                <a href="{{ url('/' . $page='#') }}" class="nav-link p-0 help-dropdown" data-toggle="dropdown">
-                    <span class="font-weight-bold">Help Info</span> <i class="fa fa-angle-down ml-2"></i>
+
+                <li><a href="{{ url('/' . $page='cart') }}" class="slide-item"> Shopping Cart
+                    <span class="ml-auto badge-pill badge-success">{{$cartcount}}</span></li></a>
+                </ul>
+            </li>
+            <li class="slide">
+                <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}">
+                    <svg class="side-menu__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                    <span class="side-menu__label">{{ ucwords(trans_choice('messages.setting', 2)) }}</span><i class="angle fa fa-angle-right"></i>
                 </a>
-                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow p-4">
-                    <div class="border-bottom pb-3">
-                        <h4 class="font-weight-bold">Help</h4>
-                        <a class="text-primary d-block" href="{{ url('/' . $page='#') }}">Knowledge base</a>
-                        <a class="text-primary d-block" href="{{ url('/' . $page='#') }}">Contact@info.com</a>
-                        <a class="text-primary d-block" href="{{ url('/' . $page='#') }}">88 8888 8888</a>
-                    </div>
-                    <div class="border-bottom pb-3 pt-3 mb-3">
-                        <p class="mb-1">Your Fax Number</p>
-                        <a class="font-weight-bold" href="{{ url('/' . $page='#') }}">88 8888 8888</a>
-                    </div>
-                    <a class="text-primary" href="{{ url('/' . $page='#') }}">Logout</a>
-                </div>
-                <div class="ml-auto">
-                    <a class="nav-link icon p-0" href="{{ url('/' . $page='#') }}">
-                        <svg class="header-icon" x="1008" y="1248" viewBox="0 0 24 24"  height="100%" width="100%" preserveAspectRatio="xMidYMid meet" focusable="false"><path opacity=".3" d="M12 6.5c-2.49 0-4 2.02-4 4.5v6h8v-6c0-2.48-1.51-4.5-4-4.5z"></path><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-11c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2v-5zm-2 6H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6zM7.58 4.08L6.15 2.65C3.75 4.48 2.17 7.3 2.03 10.5h2a8.445 8.445 0 013.55-6.42zm12.39 6.42h2c-.15-3.2-1.73-6.02-4.12-7.85l-1.42 1.43a8.495 8.495 0 013.54 6.42z"></path></svg>
-                        <span class="pulse "></span>
+                <ul class="slide-menu">
+                    @can(config('app.customer_index'))
+                    <li><a href="{{ route('priceList.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.price_list', 2)) }}</a></li>
+                    <li><a href="{{ route('product.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.product', 2)) }}</a></li>
+                    <li><a href="{{ route('instances.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.instance', 2)) }}</a></li>
+                    @endcan
+                    @can(config('app.provider_index'))
+                    <li><a href="{{ route('jobs') }}" class="slide-item"> {{ ucwords(trans_choice('messages.job', 2)) }}</a></li>
+                    @endcan
+                    <li><a href="{{ route('user.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.user', 2)) }}</a></li>
+                </ul>
+            </li>
+            {{-- @endcan --}}
+        </ul>
+        <div class="app-sidebar-help">
+            <div class="dropdown text-center">
+                <div class="help d-flex">
+                    <a href="{{ url('/' . $page='#') }}" class="nav-link p-0 help-dropdown" data-toggle="dropdown">
+                        <span class="font-weight-bold">Help Info</span> <i class="fa fa-angle-down ml-2"></i>
                     </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow p-4">
+                        <div class="border-bottom pb-3">
+                            <h4 class="font-weight-bold">Help</h4>
+                            <a class="text-primary d-block" href="{{ url('/' . $page='#') }}">Knowledge base</a>
+                            <a class="text-primary d-block" href="{{ url('/' . $page='#') }}">Contact@info.com</a>
+                            <a class="text-primary d-block" href="{{ url('/' . $page='#') }}">88 8888 8888</a>
+                        </div>
+                        <div class="border-bottom pb-3 pt-3 mb-3">
+                            <p class="mb-1">Your Fax Number</p>
+                            <a class="font-weight-bold" href="{{ url('/' . $page='#') }}">88 8888 8888</a>
+                        </div>
+                        <a class="text-primary" href="{{ url('/' . $page='#') }}">Logout</a>
+                    </div>
+                    <div class="ml-auto">
+                        <a class="nav-link icon p-0" href="{{ url('/' . $page='#') }}">
+                            <svg class="header-icon" x="1008" y="1248" viewBox="0 0 24 24"  height="100%" width="100%" preserveAspectRatio="xMidYMid meet" focusable="false"><path opacity=".3" d="M12 6.5c-2.49 0-4 2.02-4 4.5v6h8v-6c0-2.48-1.51-4.5-4-4.5z"></path><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-11c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2v-5zm-2 6H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6zM7.58 4.08L6.15 2.65C3.75 4.48 2.17 7.3 2.03 10.5h2a8.445 8.445 0 013.55-6.42zm12.39 6.42h2c-.15-3.2-1.73-6.02-4.12-7.85l-1.42 1.43a8.495 8.495 0 013.54 6.42z"></path></svg>
+                            <span class="pulse "></span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</aside>
-<!--aside closed-->
+    </aside>
+    <!--aside closed-->

@@ -2,20 +2,21 @@
 
 namespace App\Repositories;
 
-use App\Http\Traits\UserTrait;
-use App\Repositories\UserRepositoryInterface;
-use App\Reseller;
 use App\User;
+use App\Provider;
+use App\Reseller;
 use App\UserLevel;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Http\Traits\UserTrait;
+use Illuminate\Support\Facades\Hash;
+use App\Repositories\UserRepositoryInterface;
 
 /**
- * 
+ *
  */
 class UserRepository implements UserRepositoryInterface
 {
-	
+
 	use UserTrait;
 
 	public function all()
@@ -24,43 +25,46 @@ class UserRepository implements UserRepositoryInterface
 
 		switch ($this->getUserLevel()) {
             case config('app.super_admin'):
-            $users = User::with(['country' => function ($query) {
+            $users = User::with(['provider','status','customer','reseller','country' => function ($query) {
                 $query->where('name', 'messages.active');
             }])
             ->orderBy('username')
             ->get();
             break;
-            
+
             case config('app.admin'):
-            $users = User::with(['country' => function ($query) {
+            $users = User::with(['provider','status','customer','reseller','country' => function ($query) {
                 $query->where('name', 'messages.active');
             }])
             ->orderBy('username')
             ->get();
             break;
-            
-            case config('app.provider'):
-            $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
 
-            $users = User::whereHas('resellers', function($query) use  ($resellers) {
-                $query->whereIn('id', $resellers);
-            })->with(['country' => function ($query) {
-                $query->where('name', 'messages.active');
-            }])
-            ->orderBy('username')->toSql();
+            case config('app.provider'):
+            // $providers = Provider::where('provider_id', $user->provider->id)->pluck('id')->toArray();
+
+            // $users = User::whereHas('providers', function($query) use  ($providers) {
+            //     $query->whereIn('id', $providers);
+            // })->with(['country' => function ($query) {
+            //     $query->where('name', 'messages.active');
+            // }])
+            // ->orderBy('username')->toSql();
+
+            $provider = $user->provider;
+            $users = $provider->users()->get();
 
             break;
-            
+
             case config('app.reseller'):
             $reseller = $user->reseller;
             $users = $reseller->users()->get();
             break;
-            
+
             case config('app.subreseller'):
             $reseller = $user->reseller;
             $users = $reseller->users()->get();
             break;
-            
+
             default:
             return abort(403, __('errors.unauthorized_action'));
 
@@ -89,7 +93,7 @@ class UserRepository implements UserRepositoryInterface
                     $user['provider_id'] = $model->id;
 
                     $newUser = User::create($user);
-                    
+
                     $newUser->assignRole(config('app.provider'));
 
                     break;
@@ -101,7 +105,7 @@ class UserRepository implements UserRepositoryInterface
                     $user['reseller_id'] = $model->id;
 
                     $newUser = User::create($user);
-                    
+
                     $newUser->assignRole(config('app.reseller'));
 
                     break;
@@ -113,21 +117,21 @@ class UserRepository implements UserRepositoryInterface
                     $user['customer_id'] = $model->id;
 
                     $newUser = User::create($user);
-                    
+
                     $newUser->assignRole(config('app.customer'));
 
                     break;
-                
+
                 default:
                     # code...
                     break;
             }
 
             return $newUser;
-            
+
         }
     }
 
-    
+
 
 }
