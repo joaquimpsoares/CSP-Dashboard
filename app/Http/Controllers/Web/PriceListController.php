@@ -108,7 +108,6 @@ class PriceListController extends Controller
 
         public function storePriceList(Request $request)
         {
-            // dd($request->all());
             // $priceList = PriceList::find($priceList);
 
 
@@ -150,16 +149,12 @@ class PriceListController extends Controller
 
                         public function store(Request $request)
                         {
-                            // dd($request->all());
 
                             $pricelist = PriceList::find($request->priceList);
-                            // dd($pricelist);
 
                             // $price = Price::where('price_list_id', $pricelist->id)->get()->map->format();
-                            // dd($price);
 
                             $product = Product::where('sku', $request->sku)->where('instance_id', $pricelist->instance_id)->first();
-                            // dd($product);
 
                             $validatedData = $request->validate([
                                 'sku' => 'required|max:255',
@@ -169,7 +164,6 @@ class PriceListController extends Controller
                                 'currency' => 'required',
                                 ]);
 
-                                // dd($validatedData);
 
                                 $price = new Price();
                                 $price->name            = $product->name;
@@ -180,7 +174,6 @@ class PriceListController extends Controller
                                 $price->instance_id     = $pricelist->instance_id;
                                 $price->price_list_id   = $request->price_list_id;
 
-                                // dd($price);
 
                                 $price->product()->associate($product);
 

@@ -25,6 +25,7 @@
             <div class="app-content main-content">
                 <div class="side-app">
                     @include('layouts.header')
+                    @include('layouts.messages')
                     @include('layouts.bread')
                     @yield('page-header')
                     @yield('content')

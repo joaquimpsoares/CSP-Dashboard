@@ -22,11 +22,11 @@
                         <div class="col-md-12 mb-2">
                             <label for="country">{{ucwords(trans_choice('messages.country', 1))}}</label>
                             <div class="input-group mb-3">
-                                <div class="input-group-prepend">
+                                {{-- <div class="input-group-prepend">
                                     <label class="input-group-text" for="country_id"><i class="fa fa-plane" aria-hidden="true"></i>
                                     </label>
-                                </div>
-                                <select name="country_id" class="country_select" id="country_id" style="width: 95%" required>
+                                </div> --}}
+                                <select name="country_id" class="search-box" id="country_id" style="width: 95%" required>
                                     <option value="{{$customer->country->id}}" selected>{{$customer->country->name}}</option>
                                     @foreach ($countries as $country)
                                     <option value="{{$country->id}}">{{$country->name}}</option>
@@ -61,14 +61,14 @@
                                 Zip code required.
                             </div>
                         </div>
-
+                        
                     </div>
                     <hr>
                     <div class="row">
                         <div class="col-md-12">
                             <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
                             <div class="form-group">
-                                <select name="status_id" class="form-select" sf-validate="required">
+                                <select name="status_id" class="search-box" sf-validate="required">
                                     <option value="{{$customer->status->id}}" selected>{{ucwords(trans_choice($customer->status->name, 1))}}</option>
                                     @foreach ($statuses as $status)
                                     <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
@@ -91,9 +91,11 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4 mb-4">
+        <div class="col-lg-12 mb-4">
             <div class="text-center text-md-left">
-                <a data-toggle="modal" data-target="#centralModalInfo" class="genric-btn primary">{{ ucwords(trans_choice('messages.update', 1)) }}</a>
+                <div class="float-sm-right">
+                    <a data-toggle="modal" data-target="#centralModalInfo" class="btn btn-primary">{{ ucwords(trans_choice('messages.update', 1)) }}</a>
+                </div>
                 <div class="modal fade" id="centralModalInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"aria-hidden="true" data-backdrop="false">
                     <div class="modal-dialog modal-notify modal-info" role="document">
                         <div class="modal-content">
@@ -105,14 +107,14 @@
                             </div>
                             <div class="modal-body">
                                 <div class="text-center">
-                                    <i class="fas fa-check fa-4x mb-3 animated rotateIn"></i>
+                                    <i class="fa fa-check fa-4x mb-3 animated rotateIn"></i>
                                     <p>You are about to update customer {{$customer->company_name}}</p>
                                     <p>Are you sure?</p>
                                 </div>
                             </div>
                             <div class="modal-footer justify-content-center">
-                                <button type="submit" class="btn submit_btn">yes </button>
-                                <a type="button" class="genric-btn primary" data-dismiss="modal">No, thanks</a>
+                                <button type="submit" class="btn btn-primary">yes </button>
+                                <a type="button" class="btn btn-secondary" data-dismiss="modal">No, thanks</a>
                             </div>
                         </div>
                     </div>
@@ -122,18 +124,5 @@
     </div>
 </div>
 
-
-<script>
-    .form-group.is-invalid {
-        .invalid-feedback {
-            display: block;
-        }
-    }
-</script>
-<script>
-    $(document).ready(function() {
-        $('.country_select').select2();
-    });
-</script>
 
 

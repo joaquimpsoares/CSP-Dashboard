@@ -124,7 +124,6 @@ class ResellerController extends Controller
             $reseller = Reseller::with('country')->find($reseller->id);
             // $provider_id = Auth::getUser()->provider_id;
             // $provider = Provider::where('id', $provider_id)->first();
-// dd($provider);
             // $budget = cache()->remember('azure.budget', 2    60, function(){
 
             //     $customer = new TagydesCustomer([
@@ -201,7 +200,6 @@ class ResellerController extends Controller
                         // $countCustomers =  $customers->count();
                         // $countSubscriptions = $subscriptions->count();
 
-                        // dd($subscriptions);
 
                         // $countries = Country::all();
                         // $providers = $this->providerRepository->all();

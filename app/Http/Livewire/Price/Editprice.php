@@ -72,7 +72,6 @@ class Editprice extends Component
                 'price'           => $this->priceU,
                 'msrp'            => $this->msrp,
             ]);
-            // dd($record);
 
             $this->resetInput();
 
@@ -117,10 +116,8 @@ class Editprice extends Component
 
     public function render()
     {
-        // dd($this->price);
 
         $this->price = Price::where('id', $this->price->id)->first();
-        // dd($this->price);
         return view('livewire.price.editprice', [
         ]);
     }

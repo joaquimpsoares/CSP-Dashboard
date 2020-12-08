@@ -20,7 +20,7 @@
 						</div>
 						<!--End Page header-->
 @endsection
-@section('content')
+{{-- @section('content')
 						<!-- Row -->
 						<div class="row">
 							<div class="col-md-12">
@@ -83,7 +83,7 @@
 					</div>
 				</div><!-- end app-content-->
 			</div>
-@endsection
+@endsection --}}
 @section('js')
 <!-- popover js -->
 <script src="{{URL::asset('assets/js/popover.js')}}"></script>

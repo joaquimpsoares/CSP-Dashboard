@@ -231,7 +231,6 @@ class ProviderController extends Controller
             ]);
 
             $provider->priceList()->associate($priceList);
-            // dd($provider);
             $provider->save();
 
             DB::commit();

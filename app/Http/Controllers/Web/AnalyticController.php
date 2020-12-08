@@ -167,7 +167,6 @@ class AnalyticController extends Controller
 
             $instance = Instance::where('id', $subscriptions->instance_id)->first();
 
-// dd($instance->external_token);
         $resources = FacadesAzureResource::withCredentials(
             $instance->external_id,$instance->external_token
             )->all($customer, $subscription);

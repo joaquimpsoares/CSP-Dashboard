@@ -51,18 +51,18 @@ class UserRepository implements UserRepositoryInterface
             // ->orderBy('username')->toSql();
 
             $provider = $user->provider;
-            $users = $provider->users()->get();
+            $users = $provider->users()->with('status')->get();
 
             break;
 
             case config('app.reseller'):
             $reseller = $user->reseller;
-            $users = $reseller->users()->get();
+            $users = $reseller->users()->with('status')->get();
             break;
 
             case config('app.subreseller'):
             $reseller = $user->reseller;
-            $users = $reseller->users()->get();
+            $users = $reseller->users()->with('status')->get();
             break;
 
             default:
@@ -87,10 +87,11 @@ class UserRepository implements UserRepositoryInterface
 
             switch ($type) {
                 case 'provider':
-                    $providerLevel = UserLevel::where('name', config('app.provider'))->first();
+                    $providerLevel = UserLevel::with('status')->where('name', config('app.provider'))->first();
                     $user['user_level_id'] = $providerLevel->id;
-
-                    $user['provider_id'] = $model->id;
+                    
+                    $user['provider_id'] = $model;
+                    
 
                     $newUser = User::create($user);
 

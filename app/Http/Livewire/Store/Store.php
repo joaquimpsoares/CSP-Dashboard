@@ -32,14 +32,12 @@ class Store extends Component
             case 'Customer':
                 $this->instance = $this->user->customer->resellers->first()->provider->instances->pluck('id');
                 $this->priceList = Price::get('product_vendor')->groupby('product_vendor');
-                // dd($this->priceList);
             break;
             default:
             # code...
         break;
     }
     // $this->priceList = $this->user->reseller->priceLists->first()->id;
-    // dd($this->priceList);
 }
 
 public function render()

@@ -24,9 +24,7 @@ class Searchstore extends Component
     public function mount($category, $vendor)
         {
             $this->category = $category;
-            // dd($this->category);
             $this->vendor = $vendor;
-            // dd($this->vendor);
             $this->user = $this->getUser();
             
             $this->level = $this->getUserLevel();
@@ -34,7 +32,6 @@ class Searchstore extends Component
             // switch ($this->category) {
             //     case 'kaspersky':
             //         $this->prices = Price::where('product_vendor',$this->category)->first();
-            //         // dd($this->prices->price_list_id);
             //         // $this->priceList = PriceList::wherein('instance_id',$this->instance)
             //         // ->join('products', 'prices.product_sku', '=', 'products.sku')
             //         // ->pluck('id')
@@ -43,7 +40,6 @@ class Searchstore extends Component
 
             //         case 'microsoft':
                         
-            //             // dd($this->prices->price_list_id);
             //             // $this->priceList = PriceList::wherein('instance_id',$this->instance)
             //             // ->join('products', 'prices.product_sku', '=', 'products.sku')
             //             // ->pluck('id')
@@ -75,7 +71,6 @@ class Searchstore extends Component
         $this->price = Price::select('price_list_id')->groupby('price_list_id')->where('product_vendor',$this->category)
         ->wherein('instance_id',$this->instance)->first();
 
-        // // dd($this->prices->price_list_id);
     }
 
     public function render()
