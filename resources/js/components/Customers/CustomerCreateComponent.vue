@@ -1,14 +1,15 @@
 <template>
-  <div class="box col-xs-12">
-    <h2>Company Information</h2>
-    <hr />
-    <div class="row" v-for="customer in customers">
-      <div class="col-md-6">
-        <div class="form-group">
-          <!-- <label for="company_name" v-text="customer.company_name"></label> -->
-          <b-field label="Name">
-            <b-input v-model="customer.company_name"></b-input>
-          </b-field>
+    <div class="box col-xs-12">
+    <h2>Company Information hola</h2>
+    <hr>
+    <div class="row"  v-for="customer in customers" >
+        <div class="col-md-6">
+            <div class="form-group">
+                <!-- <label for="company_name" v-text="customer.company_name"></label> -->
+                <label for="company_name">Company Name</label>
+                <input type="text" class="input" id="company_name"
+                name="company_name" required placeholder="Company Name" :value="customer.company_name" data-parsley-required="true" >
+            </div>
         </div>
       </div>
       <div class="col-md-6">

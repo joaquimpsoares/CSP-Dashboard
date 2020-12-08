@@ -13,19 +13,23 @@ class StatusSeeder extends Seeder
     public function run()
     {
         Status::create([
-            'name' => 'message.active',
+            'name' => 'messages.active',
         ]);
 
         Status::create([
-            'name' => 'message.inactive',
+            'name' => 'messages.inactive',
         ]);
 
         Status::create([
-            'name' => 'message.canceled',
+            'name' => 'messages.canceled',
         ]);
 
         Status::create([
-            'name' => 'message.expired',
+            'name' => 'messages.expired',
+        ]);
+
+        Status::create([
+            'name' => 'messages.pending',
         ]);
     }
 }

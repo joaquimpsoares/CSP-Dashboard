@@ -13,7 +13,7 @@ class CreateApiTokensTable extends Migration
      */
     public function up()
     {
-        Schema::create('api_tokens', function (Blueprint $table) {
+        /*Schema::create('api_tokens', function (Blueprint $table) {
             $table->string('id', 40);
             $table->unsignedInteger('user_id');
             $table->string('ip_address', 45)->nullable();
@@ -30,7 +30,7 @@ class CreateApiTokensTable extends Migration
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
-        });
+        });*/
     }
 
     /**
@@ -40,12 +40,12 @@ class CreateApiTokensTable extends Migration
      */
     public function down()
     {
-        if (DB::getDriverName() != 'sqlite') {
+       /* if (DB::getDriverName() != 'sqlite') {
             Schema::table('api_tokens', function (Blueprint $table) {
                 $table->dropForeign('api_tokens_user_id_foreign');
             });
         }
 
-        Schema::dropIfExists('api_tokens');
+        Schema::dropIfExists('api_tokens');*/
     }
 }

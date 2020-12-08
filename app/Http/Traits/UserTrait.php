@@ -14,7 +14,6 @@ trait UserTrait {
 	public function getUserLevel() 
 	{
 		$user = \Auth::user();
-
     	return $user->userLevel->name;
 	}
 }

@@ -2,133 +2,231 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
 use App\Instance;
+use App\Provider;
+use App\PriceList;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use App\Repositories\ProviderRepositoryInterface;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
+
+
+
+
 
 class InstanceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    private $providerRepository;
+
+
+
+    public function __construct(ProviderRepositoryInterface $providerRepository)
+    {
+        $this->providerRepository = $providerRepository;
+    }
+
+
+    public $provider;
+
     public function index()
     {
-        $instances = Instance::all();
+        // $instances = Instance::all();
+        // $provider = Auth::user()->provider;
+        // dd($provider->instances );
+        // $provider = Instance::where('provider_id', $provider->id)->get();
 
-        return view('packages.microsoft.instance', compact('instances'));
-
-        // return view('packages.microsoft.conf', compact('instances'));
+        return view('packages.cards');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function create(Request $request)
     {
-        $instances = Instance::all();
 
-        return view('packages.microsoft.add', compact('instances'));
+        $provider_id = $request->provider;
+
+        $provider = Provider::findorfail($provider_id);
+
+        return view('packages.microsoft.create', compact('provider'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    public function kascreate(Request $request)
+    {
+        $provider_id = $request->provider;
+
+        $provider = Provider::findorfail($provider_id);
+
+        return view('packages.kaspersky.create', compact('provider'));
+    }
+
     public function store(Request $request)
     {
+
+        if($request->external_type === 'direct_reseller' )
+            $external_type = 'direct';
+        else
+            $external_type = 'indirect';
+
         $this->validate($request, [
             'name' => 'required|String',
-            'external_id' => 'required|String',
-            'external_type' => 'required|String|in:direct,indirect',
-            'external_url' => 'String'
-
-        ]);
-
-        Instance::create([
-            'name' => $request->name,
-            'provider' => 'microsoft',
-
-            'external_id' => $request->external_id,
-            'external_type' => $request->external_type,
-            'external_url' => $request->external_url
-        ]);
-
-        return redirect()->route('instances.index')->with('success', 'Instance created succesfully');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $instance = Instance::findOrFail($id);
-
-        return view('packages.microsoft.edit', compact('instance'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $instance = Instance::findOrFail($id);
-
-        $this->validate($request, [
-            'name' => 'String',
-            'external_id' => 'String',
-            'external_type' => 'String|in:direct,indirect',
+            'tenant_id' => 'required|String',
             'external_url' => 'String'
         ]);
 
-        $instance->update([
+        $instance = Instance::create([
             'name' => $request->name,
-            'external_id' => $request->external_id,
-            'external_type' => $request->external_type,
-            'external_url' => $request->external_url
+            'provider_id' => $request->provider_id,
+            'tenant_id' => $request->tenant_id,
+            'type' => 'Microsoft',
+            'external_type' => $external_type,
+            'external_id' => '66127fdf-8259-429c-9899-6ec066ff8915',
+            'external_url' => $request->external_url,
+            'certificate'  => Crypt::encryptString($request->certificate),
         ]);
 
-            // dd($instance);
-        $instance->update($request->all());
+        $priceList = PriceList::updateOrcreate([
+            'instance_id' => $instance->id,
+        ],[
+            'name' => $request->name,
+        ]);
 
-        return redirect()->route('instances.index')->with('success', 'Instance updated succesfully');
+        return redirect()->route('provider.index')->with('success', 'Instance created succesfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        $instance = Instance::findOrFail($id);
+            /**
+            * Display the specified resource.
+            *
+            * @param  int  $id
+            * @return \Illuminate\Http\Response
+            */
+            public function show($id)
+            {
 
-        $instance->delete();
+                $instances = Instance::findOrFail($id);
 
-        return redirect()->route('instances.index')->with('success', 'Instance deleted succesfully');
-    }
-}
+                return view('packages.microsoft', compact('instances'));
+            }
+
+            /**
+            * Show the form for editing the specified resource.
+            *
+            * @param  int  $id
+            * @return \Illuminate\Http\Response
+            */
+            public function edit($id)
+            {
+
+                $instances = Instance::findOrFail($id);
+
+                switch ($instances->type) {
+                    case 'kaspersky':
+
+                        try {
+                            $certificate = Crypt::decryptString($instances->certificate);
+                        } catch (DecryptException $e) {
+                            //
+                        }
+                        return view('packages.kaspersky.kaspersky', compact('instances','certificate'));
+                        break;
+
+                    default:
+                    if ($instances->external_token_updated_at == null)
+
+                    $expiration = $instances->external_token_updated_at;
+
+                    else
+
+                    $expiration = $instances->external_token_updated_at->addDays(90);
+                    return view('packages.microsoft.microsoft', compact('instances', 'expiration'));
+                        break;
+                }
+
+
+
+                return view('packages.microsoft.microsoft', compact('instances', 'expiration'));
+            }
+
+            /**
+            * Update the specified resource in storage.
+            *
+            * @param  \Illuminate\Http\Request  $request
+            * @param  int  $id
+            * @return \Illuminate\Http\Response
+            */
+            public function update(Request $request, $id)
+            {
+                if($request->direct_reseller === 'on' )
+                    $external_type = 'direct';
+                else
+                    $external_type = 'indirect';
+
+                $user = Auth::user();
+
+                $this->validate($request, [
+                    'name' => 'String',
+                    'tenant_id' => 'String',
+                    'external_type' => 'String|in:direct,indirect',
+                    'external_url' => 'String'
+                ]);
+
+
+                $instance = Instance::findOrFail($id);
+
+                $instance->name             = $request->input('name');
+                $instance->tenant_id        = $request->input('tenant_id');
+                $instance->external_type    = $external_type;
+                $instance->external_url     = $request->input('external_url');
+
+                $instance->certificate      = Crypt::encryptString($request->input('certificate'));
+
+                $instance->save();
+
+
+                return redirect()->back()->with('success', 'Instance updated succesfully')->withInput(['tab'=>'tabPageID']);;
+            }
+
+
+            public function getMasterToken($id)
+            {
+
+                $instance = Instance::findorFail($id);
+
+
+                if( !$instance){
+                    return redirect()->back()->with('warning', 'The account has no assigned tenant');
+                }
+
+                if( ! $instance->external_token){
+                    $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
+
+
+                    $expire = date("Y-m-d h:i:s", $externalToken['expiration']);
+                    $external_token = $externalToken['token'];
+
+
+                    $update = $instance->update([
+                        'external_token' => $external_token,
+                        'external_token_updated_at' => $expire
+                        ]);
+                }
+
+                return redirect()->back()->with('success', 'Instance updated succesfully');
+            }
+
+                    /**
+                    * Remove the specified resource from storage.
+                    *
+                    * @param  int  $id
+                    * @return \Illuminate\Http\Response
+                    */
+                    public function destroy($id)
+                    {
+                        $instance = Instance::findOrFail($id);
+
+                        $instance->delete();
+
+                        return redirect()->route('url()->previous()')->with('success', 'Instance deleted succesfully');
+                    }
+                }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Customer;
+use App\PriceList;
 use App\Provider;
 use App\Reseller;
 use App\Status;
@@ -15,7 +16,7 @@ class CreateProviderResellerCustomerSeeder extends Seeder
      */
     public function run()
     {
-        $active = Status::where('name', 'message.active')->first();
+        $active = Status::where('name', 'messages.active')->first();
 
         $provider = Provider::create([
     		'company_name' => 'Provider 1',
@@ -227,6 +228,26 @@ class CreateProviderResellerCustomerSeeder extends Seeder
         $customer8->resellers()->attach($reseller3);
         $customer9->resellers()->attach($reseller3);
 
+
+
+        $priceList1 = PriceList::find(1);
+        $priceList2 = PriceList::find(2);
+
+        $provider->priceList()->associate($priceList1);
+        $provider2->priceList()->associate($priceList2);
+
+        $provider->save();
+        $provider2->save();
         
+
+        foreach ($provider->resellers as $reseller) {
+            $reseller->priceList()->associate($priceList1);
+            $reseller->save();
+        }
+
+        foreach ($provider2->resellers as $reseller) {
+            $reseller->priceList()->associate($priceList2);
+            $reseller->save();
+        }
     }
 }

@@ -7,31 +7,39 @@ use Illuminate\Database\Eloquent\Model;
 class PriceList extends Model
 {
 
-	/*
-	* Para providers será criada uma unica priceList que representará o preço atual fornecido pelo canal de venda (ex: Microsoft)
-	* Um provider poderao criar mais de uma priceList para distribuir entre seus resellers
-	* Para resellers será criada uma única priceList que deverá ser negociada entre provider e reseller
-	* Um reseller poderao criar mais de uma priceList para distribuir entre seus subreseller/customers
-	* Uma priceList também poderá ser utilizada por um preço especial oferecido pelo distribuidor (ex: Microsoft) a um customer
-	*/
 	
 	protected $guarded = [];
 
-    public function providers() {
-    	return $this->morphedByMany('App\Provider', 'price_listables');
-    }
-
-    public function resellers() {
-    	return $this->morphedByMany('App\Reseller', 'price_listables');
-    }
-
-    public function products()
+    public function format()
     {
-    	return $this->belongsToMany('App\Product', 'price_list_product', 'price_list_id', 'product_sku');
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'prices' => $this->prices(),
+            'provider' => $this->provider()->first(),
+            'reseller' => $this->reseller()->get(),
+            'customer' => $this->customer()->get()
+
+        ];
     }
 
-    public function prices()
-    {
+    public function prices(){
         return $this->hasMany('App\Price');
     }
+
+    public function provider() {
+		return $this->belongsTo('App\Provider', 'id', 'price_list_id');
+    }
+    
+    public function reseller() {
+		return $this->belongsTo('App\Reseller', 'id', 'price_list_id');
+    }
+
+    public function customer() {
+		return $this->belongsTo('App\Customer', 'id', 'price_list_id');
+    }
+    
+    
+
 }

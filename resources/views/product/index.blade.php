@@ -1,132 +1,76 @@
-@extends('layouts.app')
+@extends('layouts.master')
+@section('css')
+<!-- Data table css -->
+<link href="{{URL::asset('assets/plugins/datatable/css/dataTables.bootstrap4.min.css')}}" rel="stylesheet" />
+<link href="{{URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css')}}"  rel="stylesheet">
+<link href="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.css')}}" rel="stylesheet" />
+<!-- Slect2 css -->
+<link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
+@endsection
 
 
 @section('content')
 
-<div class="row">
-	<div class="col-md-2">
-		<legend><h3>{{ ucwords(trans_choice('messages.filter', 1)) }}</h3></legend>
-		
-		<form method="GET" action="{{ route('products.index') }}" style="padding-top: 15px;">
-			<input type="hidden" name="search" value="1" />
-			@if (isset($filters['quantity']))
-			<input type="hidden" name="quantity" value="{{ $filters['quantity']}}" />
-			@endif
-			<div class="form-group" style="padding-top: 15px;">
-				<label for="name">{{ ucwords(__('messages.product_name')) }}</label>
-				<input type="text" class="form-control" name="name" id="name" value="{{ $filters['name'] ?? '' }}" placeholder="{{ ucwords(__('messages.product_name')) }}" />
-			</div>
-			<div class="form-group">
-				<label for="vendor">{{ ucwords(trans_choice('messages.vendor', 1)) }}</label>
-				<select class="custom-select" name="vendor" id="vendor">
-					<option value="" {{ ( isset($filters['vendor']) && $filters['vendor'] === 'all' ) ? 'selected' : '' }}>{{ ucwords(__('messages.all')) }}</option>
-					@foreach($vendors as $vendor)
-					<option value="{{ $vendor->name }}" {{ ( isset($filters['vendor']) && $filters['vendor'] ===  $vendor->name ) ? 'selected' : '' }}>{{ ucwords($vendor->name) }}</option>
-					@endforeach
-					
-				</select>
-			</div>
-			<div class="text-right" style="padding-top: 15px;">
-				<a href="{{ route('products.index') }}" class="btn btn-info">{{ ucwords(__('messages.clear_filter')) }}</a>
-				<button class="btn btn-success">{{ ucwords(__('messages.apply_filter')) }}</button>
-			</div>
-		</form>
-		
-	</div>
-	<div class="col-md-10">
-		<div class="row">
-			<div class="col-3">
-				<form method="GET" action="{{ route('products.index') }}" style="padding-top: 15px;">
-					@if (isset($filters['name']))
-					<input type="hidden" name="name" value="{{ $filters['name']}}" />
-					@endif
-					@if (isset($filters['vendor']))
-					<input type="hidden" name="vendor" value="{{ $filters['vendor']}}" />
-					@endif
-					<div class="input-group mb-3">
-						<select name="quantity" class="custom-select " id="quantity">
-							<option {{ (!isset($filters['quantity'])) ? 'selected' : ( isset($filters['quantity']) && $filters['quantity'] === '12' ) ? 'selected' : ''  }}>12</option>
-							<option {{ ( isset($filters['quantity']) && $filters['quantity'] === '24' ) ? 'selected' : '' }}>24</option>
-							<option {{ ( isset($filters['quantity']) && $filters['quantity'] === '36' ) ? 'selected' : '' }}>36</option>
-						</select>
-						<div class="input-group-append">
-							<button class="input-group-text" type="submit" for="quantity">{{ ucwords(__('messages.apply_filter')) }}</button>
-						</div>
-					</div>
+<section class="section">
+    <div class="card bd-callout-info">
 
-					<input type="hidden" name="search" value="1" />
-					
-				</form>
-			</div>
-		</div>
-		@php
-		$cont=0
-		@endphp
-		<div class="row">
-			@foreach($products as $product)
-			<div class="col-sm-12 col-md-3" style="padding-top: 20px;">
-				<div class="card" style="min-height: 230px;">
-					<div class="card-body text-center">
-						<div class="row mx-auto justify-content-center">
-							<img src="{{ asset('images/vendors/' . $product->vendor . '.png') }}"  title="{{ $product->name }}" class="img-fuid" style="max-width: 120px;max-height: 120px;" />
-						</div>
-						<div class="row mx-auto justify-content-center" style="padding-top: 20px;">
-							@if(strlen($product->name) <= 40)
-							<div class="col-12" >&nbsp;</div>
-							@endif
-							<strong>{{ $product->name }}</strong>
-							@if(strlen($product->name) <= 40 || strlen($product->name) < 70)
-							<div class="col-12" >&nbsp;</div>
-							@endif
-							
-						</div>
-					</div>
-					<div class="card-footer text-muted text-center">
-						<div class="row">
-							<div class="col-6">
-								<b><span class="align-middle">+ {{ $product->addons->count() }} {{ ucwords(trans_choice('messages.addon', 2)) }}</span></b>
-							</div>
-							<div class="col-6">
-								<a href="{{ route('cart.add_product', $product->id) }}" class="btn btn-outline-success">{{ ucwords(__('messages.add_to_cart')) }}</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			@php
-			$cont++
-			@endphp
-			@if($cont === 4)
-			@php
-			$cont=0
-			@endphp
-		</div>
-		<div class="row" >
-			@endif
-			@endforeach
-		</div>
-		<hr/>
-		<div class="row">
-			<div class="col">
-				<span class="float-right">
-					@include('partials.paginator', ['paginator' => $products])
-				</span>
-			</div>
-		</div>
-	</div>
+        <div>
+            <a type="submit" href="{{route('product.create')}}" class="btn submit_btn">{{ ucwords(__('messages.new_product')) }}</a>
+        </div>
+        <div class="card-body">
+            <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.product_table', 2)) }}</a></h4>
+            <div class="table-responsive">
 
-</div>
+                <table id="example" class="table table-bordered text-nowrap key-buttons">
+                    <thead class="thead-dark">
+                        <th class="th-sm">{{ ucwords(trans_choice('messages.product_sku', 2)) }}</th>
+                        <th class="th-sm">{{ ucwords(trans_choice('messages.product_name', 2)) }}</th>
+                        <th class="th-sm">{{ ucwords(trans_choice('messages.category', 2)) }}</th>
+                        <th class="th-sm">{{ ucwords(trans_choice('messages.vendor', 1)) }}</th>
+                        <th class="th-sm">{{ ucwords(trans_choice('messages.instance', 1)) }}</th>
+                        <th class="th-sm">{{ ucwords(trans_choice('messages.action', 2)) }}</th>
+                    </thead>
+                    <tbody>
+                        @forelse($products as $product)
+                        <tr>
+                            <td style="width: 1px;"><a  href="{{ route('product.edit' ,$product->id) }}">{{$product->sku}}</a></td>
+                            <td >{{$product->name}}</td>
+                            <td style="width: 1px; ; white-space: nowrap;">{{$product->category}}</td>
+                            <td class="text-center">{{$product->vendor}}</td>
+                            <td class="text-center">{{$product->instance->name}}</td>
+                            <td>Actions</td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td>Empty</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+
 @endsection
 
 
-@section('scripts')
-<script type="text/javascript">
-	$(document).ready( function () {
-		$('#products').DataTable({
-			"pagingType": "full_numbers",
-			"ordering": false
-		});
-	} );
-</script>
+@section('js')
+<!-- Data tables -->
+<script src="{{URL::asset('assets/plugins/datatable/js/jquery.dataTables.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/buttons.bootstrap4.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/jszip.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/pdfmake.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/vfs_fonts.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/buttons.html5.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/buttons.print.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/dataTables.responsive.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.js')}}"></script>
+<script src="{{URL::asset('assets/js/datatables.js')}}"></script>
+<!-- Select2 js -->
+<script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
 @endsection
-

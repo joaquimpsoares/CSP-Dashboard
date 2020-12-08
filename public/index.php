@@ -1,11 +1,15 @@
 <?php
-
-/**
- * Laravel - A PHP Framework For Web Artisans
- *
- * @package  Laravel
- * @author   Taylor Otwell <taylor@laravel.com>
- */
+/*
+Project        :   Dashtic – Laravel Admin Template A PHP Framework
+@package       :   Laravel
+Version        :   7.0
+Create Date    :   20/08/2020
+Copyright      :   Spruko Technologies Private Limited
+Author         :   SprukoSoft
+Author URL     :   https://themeforest.net/user/sprukosoft
+Support        :   support@spruko.com
+License        :   Licensed under ThemeForest Licence
+*/
 
 define('LARAVEL_START', microtime(true));
 

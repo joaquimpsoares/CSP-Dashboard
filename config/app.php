@@ -93,7 +93,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => 'es',
 
     /*
     |--------------------------------------------------------------------------
@@ -161,6 +161,9 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        SocialiteProviders\Manager\ServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+
 
         /*
          * Package Service Providers...
@@ -174,12 +177,22 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
-
+        App\Providers\ProviderRepositoryServiceProvider::class,
+        App\Providers\ResellerRepositoryServiceProvider::class,
+        App\Providers\CustomerRepositoryServiceProvider::class,
+        App\Providers\ProductRepositoryServiceProvider::class,
+        App\Providers\PriceListRepositoryServiceProvider::class,
+        App\Providers\UserRepositoryServiceProvider::class,
+        App\Providers\SubscriptionRepositoryServiceProvider::class,
+        App\Providers\OrderRepositoryServiceProvider::class,
+        
         Spatie\Permission\PermissionServiceProvider::class,
         Webpatser\Countries\CountriesServiceProvider::class,
         Lab404\Impersonate\ImpersonateServiceProvider::class,
-        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+        //Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+        // NotificationChannels\MsTeams\MsTeamsChannel::class,
+        \SocialiteProviders\Manager\ServiceProvider::class,
+        
     ],
 
     /*
@@ -232,6 +245,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Countries' => Webpatser\Countries\CountriesFacade::class,
+        'msteams' => NotificationChannels\MsTeams\MsTeamsChannel::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,  
     ],
 
     'super_admin' => env('SUPER_ADMIN_LEVEL'),
@@ -271,4 +286,11 @@ return [
     'price_list_create' => env('PRICELIST_CREATE'),
     'price_list_edit' => env('PRICELIST_EDIT'),
     'price_list_delete' => env('PRICELIST_DELETE'),
+
+    #SUBSCRIPTIONS PERMISSIONS
+    'subscription_index' => env('SUBSCRIPTION_INDEX'),
+    'subscription_show' => env('SUBSCRIPTION_SHOW'),
+    'subscription_create' => env('SUBSCRIPTION_CREATE'),
+    'subscription_edit' => env('SUBSCRIPTION_EDIT'),
+    'subscription_delete' => env('SUBSCRIPTION_DELETE'),
 ];

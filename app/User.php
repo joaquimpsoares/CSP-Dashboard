@@ -2,14 +2,15 @@
 
 namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Tymon\JWTAuth\Contracts\JWTSubject;
+use Webpatser\Countries\Countries;
+use Spatie\Permission\Traits\HasRoles;
 use App\Services\Auth\Api\TokenFactory;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate;
-use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements  JWTSubject
 {
@@ -25,7 +26,8 @@ class User extends Authenticatable implements  JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'provider_id', 'reseller_id', 'user_level_id'
+        'first_name', 'last_name', 'phone', 'username', 'email', 'password', 'status', 'provider_id', 'reseller_id', 
+        'customer_id', 'user_level_id', 'notify', 'notified', 'socialite_id',
     ];
 
     /**
@@ -46,9 +48,19 @@ class User extends Authenticatable implements  JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
+    public function format() 
+    {
+        return [
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'phone' => $this->phone,
+            'email' => $this->email
+        ];
+    }
+
     public function country()
     {
-        return $this->belongsTo('Webpatser\Countries\Countries');
+    	return $this->belongsTo(Countries::class);
     }
 
     public function provider() {
@@ -59,8 +71,24 @@ class User extends Authenticatable implements  JWTSubject
          return $this->belongsTo('App\Reseller');
     }
 
+    public function customer() {
+        return $this->belongsTo('App\Customer');
+   }
+
     public function userLevel() {
         return $this->belongsTo('App\UserLevel');
+    }
+
+    public function orders() {
+        return $this->hasMany('App\Order');
+    }
+
+    // public function notifications() {
+    //     return $this->hasMany('App\NotificationSettings');
+    // }
+
+    public function status() {
+        return $this->belongsTo('App\Status');
     }
 
    /**

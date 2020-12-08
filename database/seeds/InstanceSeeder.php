@@ -13,12 +13,25 @@ class InstanceSeeder extends Seeder
     public function run()
     {
         Instance::create([
-        	'user_id' => '0',
-            'name' => 'Microsoft Instance 1',
-            'provider' => 'microsoft',
+            'name' => 'Tagydes TIPS',
+            'type' => 'microsoft',
+            'provider_id' => 1,
+            // 'tenant_id' => 'bdaf0f95-e7b3-47c9-a22e-8bf43c272809', // Tenant CBI
+            'tenant_id' => '3ba0b5ee-443a-4350-9b2b-34bde19a0a49',
             'external_id' => '66127fdf-8259-429c-9899-6ec066ff8915',
             'external_type' => 'direct',
-            'external_token' => 'AQABAAAAAABeAFzDwllzTYGDLh_qYbH8mzMfQxnxmganTs8P6dciALzEiimvI1pkkyAef8Sy9Zce5xXSrZRLtAFl8BBjJR46pUY5OVxUWAbdRNYqt5rj6OoyeUnpYwLUNwa8m_W01j0wGb5cOf13qknCl1u14UdriP9c1qky-VGXxL5TDyN1jvgmZsIhf29XQzYLVGzNMZYKJbvaQJMEQjGW6valg2sheHohChimYSFvt_ilY_c9oBPjvoD6x-TDbtUgJDVFJ7N5OCEZ61_YkW6EeRYn5k64lnOc-gE4faLtMW5IRbqvJjy89NzWy7sanxg3r9tDlhlrz7NTWsAoBtNdsB9hp9GRnB4-W0nAL9R9dslzab7YZT8mgopAPXqsBLwjnl67ZLI1Jv8AyZCqDGNepUzkZEqTXzU9qZB8xh6p3isAjQwZ-zrFR4fG6kD9f4GTa86gkz2xRrv3yGlvMqYjaGAfTNiNcScW3YB53N4JnstJXjbBJOC5m7vvZx0SDdWCmO8Pl6Misb5H6fPq2v8HHtVJEXuVxh21IXUKkzwHnS51Fwoa39nhc44cXvZid3OSOLmyt78IHLlAkkW43VHplFWO9hdUx19btKZZzA71octb8zDP7Q5bVkjlQ_Zj5s6-t8B5MFn4wezx8xyPzbAyD9PydO2RnXJ-YL7qVXJGRJOXn_OzC3N_6DTP3TgIUI0J-WsFy0f1yhC72UBYHK75eMetisAMRogL1ZteIjX4HwTy09dbdg3bjD1358G5YJPhBaxreqdJyxM5lyobkJO4M-q0yq69fe2hbOrkuMbo77DU3znP2QIBBH3XWm58XN-4YnhLpOsWwWzu5_yTBDDUTkhga478kiDbBWT_naneJUynne0f2Tmw86fzNtfjcQBw_kc9AdOsFMlv-iPXHC6CQY3ez2_IfnnoWBsKSJMMy2R2lKWW0tKSK0dwDJ_ttbZVkxwEx-Eftiaj-JUfY8thJXD8o5mGnlKzapXFyinzSColNrY_L3jz6Qk2_C4KT_FPK3m4Qf_TUhFH9ep0gxDKBARVsCOO-TdAAAHtrMWK33Tn0WyDb7cV5ULaWPJxiIrpaEFrisiUGasw3BmsZ5MKTL8Bp9rTIAA',
+            // 'external_token' => 'AQABAAAAAAAm-06blBE1TpVMil8KPQ41y4HxE4_aJdIAQ6BHM6f0BELfqHh13KVkmEczgmbyySx6JQUGxlCrFNKq1eCMuAV0BLIR5rjvbglwROt1mNzgsU5ZNK4ueWgjTO1RYoVtG8iKcSXEXKUsUWi3H_Gb_To6GPmxcJik1AvwLTHJycD-snQkoYS9KTJEpKzkViwXD4h1kJ8vGpY-Qrk_wK4wLhACLuk-ZndCkSIAsN5Kv2PKayZko9a5wQvUB5fiOfCdGsXNwDKFCqP7lIYhMyfCIBJGgPwvA_wpBBYZrxTbqUVlXdo6NrF1zhli2u_j8S8r3fpT48SkDp0qsh8R7AGe636vGpIQM9WU_xlbentFMNk8EKUUGipRTY-zn-0UU_u0zt8itpTa0CKSxYw1vZ5AweUFMXur9uL0h9xu5G1zKbZ3DYtNYokvJVsB_uCZGKIuXEew4wb8Ct0QMryLdq-x9xZEEbDaPR0c0EREdzpQCKC1jdL9CBA2zpQhcvvkcjIOipdXMIs5rYRsz6ob1ZuvFQRcobAeOV2ArtGJdrcR_s4LLVIcO5DN2m6jj7snkmchieEYNRU_0kThpgtYyG8bVHEh2sp-tdAJkPjCZHh1nF_OLrCOYdJd2-9wSpisWsnMUk3qSEJiqTktrjVg_Zc3BhQuJ90bfqXe1NyHxkdPNTFQ8I5PjJyYIcW5Sim6u_GM8tT1PnL6tWfZVWOEB6kodw-2eqaTGJ3pZLbGL1SrhKXfL8c6beNBfjKZNQbQTOPcIkp-QywNwRuOYhQd1D3dXF2wyuEIqLntGjwyui1qFkZaDbsNc41qdfhbvFAZbH8U-fqYi36R5vaIWA-KfhD-OW0kg7M-dV5_bYXWq-PySyPnPedfShG3M71250BW6fG7V9ZyaIL1sVIE-9_wIbc6WvHu1d9nk17R4snRoyDZiQDSNLmh84ls926hIn6s3VWAk4QG3-ODOpaMbQY2H05SubQK_BHohStp74uM3NXrOo3EOmbLZiCmFeVhovy4Ojm6yMN0q96n-luxUJuzVCj7fGwizg1sa1xgagTkEhMNZvu6gnJ1BhHfCOwciIP2VDegBWri8KsuDMZC6fhF1ZUQEeDjBhVZYgFv-ARNZcbBt4wgZiAA',
+        ]);
+
+        Instance::create([
+            'name' => 'CBI Production',
+            'type' => 'microsoft',
+            'provider_id' => 2,
+            // 'tenant_id' => 'bdaf0f95-e7b3-47c9-a22e-8bf43c272809', // Tenant CBI
+            'tenant_id' => 'c42c6fbe-c193-4cbc-ac5b-84c0802184c5',
+            'external_id' => '66127fdf-8259-429c-9899-6ec066ff8915',
+            'external_type' => 'direct',
+            // 'external_token' => 'AQABAAAAAAAm-06blBE1TpVMil8KPQ41y4HxE4_aJdIAQ6BHM6f0BELfqHh13KVkmEczgmbyySx6JQUGxlCrFNKq1eCMuAV0BLIR5rjvbglwROt1mNzgsU5ZNK4ueWgjTO1RYoVtG8iKcSXEXKUsUWi3H_Gb_To6GPmxcJik1AvwLTHJycD-snQkoYS9KTJEpKzkViwXD4h1kJ8vGpY-Qrk_wK4wLhACLuk-ZndCkSIAsN5Kv2PKayZko9a5wQvUB5fiOfCdGsXNwDKFCqP7lIYhMyfCIBJGgPwvA_wpBBYZrxTbqUVlXdo6NrF1zhli2u_j8S8r3fpT48SkDp0qsh8R7AGe636vGpIQM9WU_xlbentFMNk8EKUUGipRTY-zn-0UU_u0zt8itpTa0CKSxYw1vZ5AweUFMXur9uL0h9xu5G1zKbZ3DYtNYokvJVsB_uCZGKIuXEew4wb8Ct0QMryLdq-x9xZEEbDaPR0c0EREdzpQCKC1jdL9CBA2zpQhcvvkcjIOipdXMIs5rYRsz6ob1ZuvFQRcobAeOV2ArtGJdrcR_s4LLVIcO5DN2m6jj7snkmchieEYNRU_0kThpgtYyG8bVHEh2sp-tdAJkPjCZHh1nF_OLrCOYdJd2-9wSpisWsnMUk3qSEJiqTktrjVg_Zc3BhQuJ90bfqXe1NyHxkdPNTFQ8I5PjJyYIcW5Sim6u_GM8tT1PnL6tWfZVWOEB6kodw-2eqaTGJ3pZLbGL1SrhKXfL8c6beNBfjKZNQbQTOPcIkp-QywNwRuOYhQd1D3dXF2wyuEIqLntGjwyui1qFkZaDbsNc41qdfhbvFAZbH8U-fqYi36R5vaIWA-KfhD-OW0kg7M-dV5_bYXWq-PySyPnPedfShG3M71250BW6fG7V9ZyaIL1sVIE-9_wIbc6WvHu1d9nk17R4snRoyDZiQDSNLmh84ls926hIn6s3VWAk4QG3-ODOpaMbQY2H05SubQK_BHohStp74uM3NXrOo3EOmbLZiCmFeVhovy4Ojm6yMN0q96n-luxUJuzVCj7fGwizg1sa1xgagTkEhMNZvu6gnJ1BhHfCOwciIP2VDegBWri8KsuDMZC6fhF1ZUQEeDjBhVZYgFv-ARNZcbBt4wgZiAA',
         ]);
     }
 }
