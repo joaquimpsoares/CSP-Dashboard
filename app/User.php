@@ -2,10 +2,11 @@
 
 namespace App;
 
+use App\Http\Traits\ActivityTrait;
 use Webpatser\Countries\Countries;
 use Spatie\Permission\Traits\HasRoles;
-use App\Services\Auth\Api\TokenFactory;
 
+use App\Services\Auth\Api\TokenFactory;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate;
@@ -17,18 +18,16 @@ class User extends Authenticatable implements  JWTSubject
     use Notifiable;
     use HasRoles;
     use Impersonate;
+    use ActivityTrait;
 
     protected $guard_name = 'web';
 
-    /**
+        /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
-        'first_name', 'last_name', 'phone', 'username', 'email', 'password', 'status', 'provider_id', 'reseller_id', 
-        'customer_id', 'user_level_id', 'notify', 'notified', 'socialite_id',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -48,7 +47,7 @@ class User extends Authenticatable implements  JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
-    public function format() 
+    public function format()
     {
         return [
             'first_name' => $this->first_name,

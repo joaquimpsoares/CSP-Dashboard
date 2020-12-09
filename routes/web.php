@@ -260,7 +260,7 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('roles', 'RoleController');
 		Route::post('roles/update/all', 'RoleController@updateAll')->name('roles.update.all');
 		Route::resource('permissions', 'PermissionController');
-
+        Route::get('logActivity', 'HomeController@logActivity')->name('logactivity');
 
 	});
 

@@ -1,28 +1,14 @@
-@extends('layouts.app')
-
-@section('page-title', trans('app.edit_user'))
-@section('page-heading', $user->present()->nameOrEmail)
-
-
-
-@section('breadcrumbs')
-
-<ol class="breadcrumb pull-right">
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-    <li class="breadcrumb-item active"><a href="{{ route('user.list') }}">@lang('app.users')</a></li>
-    <li class="breadcrumb-item">{{ $user->present()->nameOrEmail }}</li>
-
-</ol>
-
-<!-- end breadcrumb -->
-<!-- begin page-header -->
-<h1 class="page-header">@lang('app.users')</h1>
-
-@stop
+@extends('layouts.master')
+@section('css')
+<!-- Data table css -->
+<link href="{{URL::asset('assets/plugins/datatable/css/dataTables.bootstrap4.min.css')}}" rel="stylesheet" />
+<link href="{{URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css')}}"  rel="stylesheet">
+<link href="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.css')}}" rel="stylesheet" />
+<!-- Slect2 css -->
+<link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
+@endsection
 
 @section('content')
-
-@include('partials.messages')
 
 <div class="row">
     <div class="col-8">
@@ -51,7 +37,7 @@
                             @lang('app.login_details')
                         </a>
                     </li>
-                    @if (settings('2fa.enabled'))
+                    {{-- @if (settings('2fa.enabled'))
                         <li class="nav-item">
                             <a class="nav-link"
                                id="authentication-tab"
@@ -63,23 +49,23 @@
                                 @lang('app.two_factor_authentication')
                             </a>
                         </li>
-                    @endif
+                    @endif --}}
                 </ul>
 
                 <div class="tab-content mt-4" id="nav-tabContent">
                     <div class="tab-pane fade show active px-2" id="details" role="tabpanel" aria-labelledby="nav-home-tab">
-                        {!! Form::open(['route' => ['user.update.details', $user->id], 'method' => 'PUT', 'id' => 'details-form']) !!}
+                        {{-- {!! Form::open(['route' => ['user.update.details', $user->id], 'method' => 'PUT', 'id' => 'details-form']) !!} --}}
                             @include('user.partials.details', ['profile' => false])
-                        {!! Form::close() !!}
+                        {{-- {!! Form::close() !!} --}}
                     </div>
 
                     <div class="tab-pane fade px-2" id="login-details" role="tabpanel" aria-labelledby="nav-profile-tab">
-                        {!! Form::open(['route' => ['user.update.login-details', $user->id], 'method' => 'PUT', 'id' => 'login-details-form']) !!}
+                        {{-- {!! Form::open(['route' => ['user.update.login-details', $user->id], 'method' => 'PUT', 'id' => 'login-details-form']) !!}
                             @include('user.partials.auth')
-                        {!! Form::close() !!}
+                        {!! Form::close() !!} --}}
                     </div>
 
-                    @if (settings('2fa.enabled'))
+                    {{-- @if (settings('2fa.enabled'))
                         <div class="tab-pane fade px-2" id="2fa" role="tabpanel" aria-labelledby="nav-profile-tab">
                             <?php $route = Authy::isEnabled($user) ? 'disable' : 'enable'; ?>
 
@@ -88,7 +74,7 @@
                                 @include('user.partials.two-factor')
                             {!! Form::close() !!}
                         </div>
-                    @endif
+                    @endif --}}
                 </div>
 
             </div>
@@ -98,9 +84,9 @@
     <div class="col-4">
         <div class="card">
             <div class="card-body">
-                {!! Form::open(['route' => ['user.update.avatar', $user->id], 'files' => true, 'id' => 'avatar-form']) !!}
-                    @include('user.partials.avatar', ['updateUrl' => route('user.update.avatar.external', $user->id)])
-                {!! Form::close() !!}
+                {{-- @include('user.partials.avatar', ['updateUrl' => route('user.update.avatar.external', $user->id)]) --}}
+                {{-- {!! Form::open(['route' => ['user.update.avatar', $user->id], 'files' => true, 'id' => 'avatar-form']) !!}
+                {!! Form::close() !!} --}}
             </div>
         </div>
     </div>
@@ -108,7 +94,7 @@
 
 @stop
 
-@section('scripts')
+{{-- @section('scripts')
     {!! HTML::script('assets/js/as/btn.js') !!}
     {!! HTML::script('assets/js/as/profile.js') !!}
     {!! JsValidator::formRequest('Tagydes\Http\Requests\User\UpdateDetailsRequest', '#details-form') !!}
@@ -117,4 +103,4 @@
     @if (settings('2fa.enabled'))
         {!! JsValidator::formRequest('Tagydes\Http\Requests\TwoFactor\EnableTwoFactorRequest', '#two-factor-form') !!}
     @endif
-@stop
+@stop --}}

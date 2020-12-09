@@ -20,10 +20,14 @@ class EventServiceProvider extends ServiceProvider
         ],
         \SocialiteProviders\Manager\SocialiteWasCalled::class => [
             // ... other providers
+            'SocialiteProviders\Graph\GraphExtendSocialite@handle',
             'SocialiteProviders\Microsoft\MicrosoftExtendSocialite@handle',
         ],
-        \SocialiteProviders\Manager\SocialiteWasCalled::class => [
-            'SocialiteProviders\Graph\GraphExtendSocialite@handle'
+          'Illuminate\Auth\Events\Login' => [
+            'App\Listeners\LogSuccessfulLogin',
+        ],
+        'Illuminate\Auth\Events\Failed' => [
+            'App\Listeners\LogFailedLogin',
         ],
     ];
 

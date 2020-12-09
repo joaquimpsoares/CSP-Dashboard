@@ -20,9 +20,9 @@
                                     </div>
                                     {{-- Route::current()->getName()) --}}
                                     @if (Route::current()->getName() === "user.index")
-                                    <div>
-                                        <a href="{{route('user.create', ['level' => 'provider', 'customer_id' => $provider->id] )}}" style = "font-color:fffff" class="btn submit_btn">new user</a>
-                                    </div>
+                                    {{-- <div> --}}
+                                        <a href="{{route('user.create', ['level' => 'provider', 'customer_id' ] )}}" style = "font-color:fffff" class="btn submit_btn">new user</a>
+                                    {{-- </div> --}}
                                     @endif
                                     @if (Route::current()->getName() === "reseller.show")
                                     <div>

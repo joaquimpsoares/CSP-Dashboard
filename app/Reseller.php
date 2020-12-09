@@ -2,25 +2,19 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use App\Status;
+use Illuminate\Support\Str;
+use App\Http\Traits\ActivityTrait;
 use Webpatser\Countries\Countries;
+use Illuminate\Database\Eloquent\Model;
 
 class Reseller extends Model
 {
+    use ActivityTrait;
+
     protected $guards = [];
 
-    protected $fillable = ['company_name',
-							'nif',
-							'country_id',
-							'address_1',
-							'address_2',
-							'city',
-							'state',
-                            'postal_code',
-                            'provider_id',
-							'status_id'];
+    protected $guarded = [];
 
     public function format()
     {

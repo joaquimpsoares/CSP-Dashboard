@@ -96,6 +96,8 @@ class UsersController extends Controller
         
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
+                $id = Auth::User()->id;
+                $mainUser = $this->userRepository->create($validate, $request->level, $id);
                 
             break;
             case config('app.provider'):
@@ -136,7 +138,16 @@ public function show(User $user)
 */
 public function edit(User $user)
 {
-    //
+    $edit = true;
+        // $countries = $this->parseCountries($countryRepository);
+        //$roles = $roleRepository->lists();
+        // $statuses = UserStatus::lists();
+        // $socialLogins = $this->users->getUserSocialLogins($user->id);
+        $u = auth()->user();
+        // $roles = Role::where('order',$u->getRole())->orWhere('order', 5)->pluck('name','id');
+
+
+        return view('user.edit',compact('edit', 'user',));
 }
 
 /**

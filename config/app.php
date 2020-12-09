@@ -185,14 +185,14 @@ return [
         App\Providers\UserRepositoryServiceProvider::class,
         App\Providers\SubscriptionRepositoryServiceProvider::class,
         App\Providers\OrderRepositoryServiceProvider::class,
-        
+
         Spatie\Permission\PermissionServiceProvider::class,
         Webpatser\Countries\CountriesServiceProvider::class,
         Lab404\Impersonate\ImpersonateServiceProvider::class,
         //Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         // NotificationChannels\MsTeams\MsTeamsChannel::class,
         \SocialiteProviders\Manager\ServiceProvider::class,
-        
+
     ],
 
     /*
@@ -246,7 +246,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Countries' => Webpatser\Countries\CountriesFacade::class,
         'msteams' => NotificationChannels\MsTeams\MsTeamsChannel::class,
-        'Excel' => Maatwebsite\Excel\Facades\Excel::class,  
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        // 'LogActivity' => App\Helpers\LogActivity::class,
     ],
 
     'super_admin' => env('SUPER_ADMIN_LEVEL'),

@@ -3,10 +3,13 @@
 namespace App\Repositories;
 
 use App\Provider;
+use App\Http\Traits\ActivityTrait;
 use Illuminate\Support\Collection;
 
 class ProviderRepository implements ProviderRepositoryInterface
 {
+
+    use ActivityTrait;
 
 	public function all()
 	{

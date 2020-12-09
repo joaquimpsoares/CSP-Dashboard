@@ -3,10 +3,14 @@
 namespace App;
 
 use App\OrderStatus;
+use App\Http\Traits\ActivityTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+
+    use ActivityTrait;
+
     protected $guarded = [];
 
     // public function status() {
@@ -24,7 +28,7 @@ class Order extends Model
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'status' => $this->status,
-            
+
         ];
 
     }
