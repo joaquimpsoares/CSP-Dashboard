@@ -135,15 +135,15 @@ public function newFromCartToken($token)
     public function UpdateMSSubscription($subscription, $request)
     {
         
-        $request->all(), $subscription);
+        // dd($request->all(), $subscription);
         
         $amount = collect($request->amount)->diff(collect($subscription->amount));
         $billing_period = collect($request->billing_period)->diff(collect($subscription->billing_period));
         $status = collect($request->status)->diff(collect($subscription->status_id));
-        $billing_period,$status,$amount);
+        // dd($billing_period,$status,$amount);
         
-        $status->isempty() &&  !$billing_period->isempty() && $amount->isempty());
-        $status->isempty() &&  !$billing_period->isempty() && !$amount->isempty());
+        // dd($status->isempty() &&  !$billing_period->isempty() && $amount->isempty());
+        // dd($status->isempty() &&  !$billing_period->isempty() && !$amount->isempty());
         $order = new Order();
         $order->customer_id = $subscription->customer_id;
         $order->domain = $subscription->domain;
@@ -162,13 +162,15 @@ public function newFromCartToken($token)
             }else {
                 $request->merge(['status' => 'suspended']);
             }
+
+            dd($request->status);
             $order->details = "changing subscription ".$subscription->name . " and changing the status to " . $request->status;
         }else{
             return Redirect::back()->with('danger','nothing to do');
         }
         $order->save();
 
-        $order);
+        // dd($order);
         return $order;
         
     }

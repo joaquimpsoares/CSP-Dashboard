@@ -112,7 +112,6 @@ class UsersController extends Controller
     
     
     $customer = Customer::where('id', $request->customer_id)->first();
-    Auth::user()->provider);
     $mainUser = $this->userRepository->create($validate, $request->level, $id);
 }
 
@@ -124,7 +123,7 @@ class UsersController extends Controller
 */
 public function show(User $user)
 {
-    $user);
+    // dd($user);
     return view('user.view',compact('user'));
     
 }
