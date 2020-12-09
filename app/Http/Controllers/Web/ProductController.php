@@ -47,8 +47,6 @@ class ProductController extends Controller
 
     public function create()
     {
-        // dd(Tier::get());
-        // dd($product = Price::first()->tiers);
         $instances = Instance::get();
 
         return view('product.create', compact('instances'));
@@ -96,7 +94,6 @@ class ProductController extends Controller
     {
         // foreach ($product as $key => $product) {
             $addons = $product->getaddons()->all();
-            // dd($addons);
         // }
 
 
@@ -107,10 +104,8 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
-        // dd($request->all());
 
 
-        // dd($product);
 
         //        $validate = $this->validate($request, [
             //             'name' => 'required|String',
@@ -146,7 +141,6 @@ class ProductController extends Controller
             $product->supported_billing_cycles  = $request->supported_billing_cycles;
            $product->save();
 
-            // dd($request->supported_billing_cycles);
             // $product->uri                       = $request->uri;
             // $product->term                      = $request->term;
             // $product->is_available_for_purchase = $request->is_available_for_purchase;
@@ -156,9 +150,7 @@ class ProductController extends Controller
             // $product->has_addons                = $request->has_addons;
             // $product->is_autoRenewable          = $request->is_autoRenewable;
             // $product->acquisition_type          = $request->acquisition_type;
-            // dd($product);
 
-            // dd($product);
 
             return back()->withInput();
 

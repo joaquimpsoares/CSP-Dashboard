@@ -37,7 +37,7 @@ class OrderController extends Controller
     public function index()
     {
 
-        $orders = $this->orderRepository->all();
+        $orders = $this->orderRepository->all()->sortDesc();
 
         return view('order.index', compact('orders'));
     }

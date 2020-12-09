@@ -32,10 +32,11 @@
                     </div>
                 </div>
             </div>
-            <div class="">
+            @include('user.partials.table')
+            {{-- <div class="">
                 <i class="fab fa-product-hunt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
                 <div class="float-right">
-                    {{-- <a type="submit" class="btn btn-success">{{ ucwords(__('messages.new_customer')) }}</a> --}}
+                    <a type="submit" class="btn btn-success">{{ ucwords(__('messages.new_customer')) }}</a>
                 </div>
                 <div class="card-body">
 
@@ -67,7 +68,6 @@
                                         {{$user['customer']['company_name'] }}
                                     </td>
                                     <td class="text-center">
-                                        {{-- @dd($user->status->name); --}}
                                         {{ ucwords(trans_choice($user->status->name,1)) }}
                                     </td>
                                     <td>
@@ -82,7 +82,7 @@
                         </table>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </section>
     </div>
     @endsection

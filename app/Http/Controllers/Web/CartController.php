@@ -480,7 +480,6 @@ class CartController extends Controller
     {
         // $user = $this->getUser();
         $user = Auth::user();
-        // dd($user);
 
         if (empty($token)) {
             if (empty($id)) {
@@ -499,7 +498,6 @@ class CartController extends Controller
     {
         // $user = $this->getUser();
         $user = Auth::user();
-        // dd($user);
 
         if (empty($token)) {
             if (empty($id)) {

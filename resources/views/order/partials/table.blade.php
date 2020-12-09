@@ -24,7 +24,7 @@
                 </thead>
                 <tbody>
                     @foreach ($orders as $order)
-                    {{-- @dd($order) --}}
+                    {{-- $order) --}}
                     <tr>
                         <td><img src="{{$order['avatar']['avatar']}}" alt="" width="50"></td>
                         @if (!@empty($order['customer']->company_name))

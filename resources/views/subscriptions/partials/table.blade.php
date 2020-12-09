@@ -42,8 +42,8 @@
                         <td>{{$subscription->expiration_data}}</td>
                         <td>{{$subscription->billing_period}}</td>
                         <td class="align-middle">
-                            <span class="badge badge-lg {{ $subscription->status->name == 'messages.active' ? 'badge-success' : 'badge-danger' }}">
-                                {{ ucwords(trans_choice('messages.active', 1)) }}
+                            <span class="badge badge-lg {{ $subscription->status->name == 'messages.active' ? 'badge-success' : 'badge-danger'  }}">
+                                {{ ucwords(trans_choice($subscription->status->name, 1)) }}
                             </span>
                         </td>
                     </tr>
@@ -78,7 +78,7 @@
                                                             <td>
                                                                 <select name="billing_period" required="required" class="form-control SlectBox SumoUnder" id="{{ $subscription->products->first()->id }}">
                                                                     @foreach($subscription->products->first()->supported_billing_cycles as $cycle)
-                                                                    <option value="{{ $subscription->billing_period }}" @if($cycle == $subscription->billing_period) selected @endif>
+                                                                    <option value="{{ $cycle }}" @if($cycle == $subscription->billing_period) selected @endif>
                                                                         {{ $cycle }}
                                                                     </option>
                                                                     @endforeach

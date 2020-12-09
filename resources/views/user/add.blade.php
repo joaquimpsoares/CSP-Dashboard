@@ -3,7 +3,7 @@
 
 @section('content')
 
-@include('partials.messages')
+{{-- @include('partials.messages') --}}
 
 {!! Form::open(['route' => 'user.store', 'files' => true, 'id' => 'user-form']) !!}
 <div class="card">

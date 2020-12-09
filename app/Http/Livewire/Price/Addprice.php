@@ -22,7 +22,6 @@ class Addprice extends Component
     public function mount($priceList)
     {
 
-        // $this->pricelist = $pricelist;
 
         $this->priceList = $priceList;
 
@@ -30,15 +29,12 @@ class Addprice extends Component
 
         $this->products = Product::get();
 
-        // dd($this->products);
 
 
-        // dd($this->priceList->instance_id);
     }
 
     public function addPrice()
     {
-        // dd('this');
 
         // $validatedData = $this->validate([
         //     'product_sku' => 'required|max:255',
@@ -50,11 +46,8 @@ class Addprice extends Component
 
         $this->pricelist = PriceList::find($this->priceList->id);
 
-dd($this->products);
 
         $this->product = Product::where('sku', $this->product_sku)->where('instance_id',$this->pricelist->instance_id)->first();
-
-// dd($this->product);
 
         $price = new Price();
         $price->name            = $this->product->name;
@@ -74,7 +67,6 @@ dd($this->products);
 
     public function addpriceTier()
     {
-        dd($this->price);
 
         $tier = new Tier();
         $tier->name            = $this->tier_name;
@@ -113,7 +105,6 @@ dd($this->products);
     //     // $hl = $price->tiers()->attach($tier);
         
 
-    //     dd($tier);
         
 
 

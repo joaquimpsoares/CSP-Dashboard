@@ -2,9 +2,9 @@
 @php
 $cartcount = App\Http\Controllers\Web\CartController::CountCart();
 @endphp
-{{-- @dd($cartcount) --}}
+{{-- $cartcount) --}}
 
-{{-- @dd() --}}
+{{-- ) --}}
 <div class="app-sidebar app-sidebar2">
     <div class="app-sidebar__logo">
         <a class="header-brand" href="/">

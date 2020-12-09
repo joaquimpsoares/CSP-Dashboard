@@ -44,7 +44,8 @@ class updateSubscriptionMicrosoftJob implements ShouldQueue
     */
     public function handle()
     {
-        
+
+
         $this->order->order_status_id = 2; //Order running state
         $this->order->save();
         

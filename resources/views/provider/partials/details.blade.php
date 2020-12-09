@@ -21,7 +21,7 @@
                 <div class="col-md-12 mb-2">
                     <label for="country">{{ucwords(trans_choice('messages.country', 1))}}</label>
                     <div class="form-group">
-                        <select name="country_id" id="select-countries" class="form-control custom-select select2">
+                        <select name="country_id" id="select-countries" class="search-box">
                             <option value="{{$provider->country->id}}" selected>{{$provider->country->name}}</option>
                             @foreach ($countries as $country)
                             <option value="{{$country->id}}">{{$country->name}}</option>
@@ -56,14 +56,14 @@
                         Zip code required.
                     </div>
                 </div>
-
+                
             </div>
             <hr>
             <div class="row">
                 <div class="col-md-12">
-                    <label for="status">{{ ucwords(trans_choice('messages.price_list', 1)) }}</label>
+                    <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
                     <div class="form-group">
-                        <select name="status_id" class="form-select" sf-validate="required">
+                        <select name="status_id" class="form-control custom-select select2" sf-validate="required">
                             <option value="{{$provider->status->id}}" selected>{{ucwords(trans_choice($provider->status->name,1))}}</option>
                             @foreach ($statuses as $status)
                             <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
@@ -72,38 +72,36 @@
                     </div>
                 </div>
             </div>
-        </form>
-    </div>
-    <div class="col-lg-12 mb-4">
-        <div class="float-sm-right">
-            <button type="submit" class="btn btn-secondary">{{ ucwords(trans_choice('messages.update', 1)) }}</button>
-            <a data-toggle="modal" data-target="#centralModalInfo" class="btn btn-secondary">{{ ucwords(trans_choice('messages.update', 1)) }}</a>
         </div>
-        <div class="text-center text-md-left">
-            <div class="modal fade" id="centralModalInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"aria-hidden="true" data-backdrop="false">
-                <div class="modal-dialog modal-notify modal-info" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <p class="heading lead">{{ ucwords(trans_choice('messages.are_you_sure', 1)) }}</p>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true" class="white-text">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="text-center">
-                                <i class="fas fa-check fa-4x mb-3 animated rotateIn"></i>
-                                <p>You are about to update provider {{$provider->company_name}}</p>
-                                <p>Are you sure?</p>
+        <div class="col-lg-12 mb-4">
+            <div class="float-sm-right">
+                <a data-toggle="modal" data-target="#centralModalInfo" class="btn btn-primary">{{ ucwords(trans_choice('messages.update', 1)) }}</a>
+            </div>
+            <div class="text-center text-md-left">
+                <div class="modal fade" id="centralModalInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"aria-hidden="true" data-backdrop="false">
+                    <div class="modal-dialog modal-notify modal-info" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <p class="heading lead">{{ ucwords(trans_choice('messages.are_you_sure', 1)) }}</p>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true" class="white-text">&times;</span>
+                                </button>
                             </div>
-                        </div>
-                        <div class="modal-footer justify-content-center">
-                            <button type="submit" class="btn submit_btn">yes </button>
-                            <a type="button" class="genric-btn primary" data-dismiss="modal">No, thanks</a>
+                            <div class="modal-body">
+                                <div class="text-center">
+                                    <i class="fa fa-check fa-4x mb-3 animated rotateIn"></i>
+                                    <p>You are about to update provider {{$provider->company_name}}</p>
+                                    <p>Are you sure?</p>
+                                </div>
+                            </div>
+                            <div class="modal-footer justify-content-center">
+                                <button type="submit" class="btn btn-primary">yes </button>
+                                <a type="button" class="btn btn-secondary" data-dismiss="modal">No, thanks</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
+    

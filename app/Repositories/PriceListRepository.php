@@ -48,15 +48,12 @@ class PriceListRepository implements PriceListRepositoryInterface
 				case config('app.reseller'):
 
 					$reseller_id=User::where('id', Auth::user()->id)->first();
-					// dd($reseller_id->provider->instances->pluck('id'));
 					
 					$priceLists = PriceList::wherein('instance_id', $reseller_id->provider->instances->pluck('id'))->get()->map->format();
 					$prices = Price::get();
 					// $reseller_id=User::select('reseller_id')->where('id', Auth::user()->id)->first();
 
 					// $resellers=Reseller::where('id', $reseller_id->reseller_id)->first();
-					// DD($resellers);
-					// dd($priceLists);
 					
 				break;
 				
@@ -95,9 +92,7 @@ class PriceListRepository implements PriceListRepositoryInterface
 
 		case config('app.reseller'):
 			$reseller = $user->reseller;
-			// dd($reseller->provider->instances->pluck('id'));
 			$priceList = PriceList::where('instance_id', $reseller->provider->instances->pluck('id'))->first();
-			dd($priceList->prices);
 			// $priceList = $reseller->priceList;
 			$prices = $priceList->prices;
 		break;

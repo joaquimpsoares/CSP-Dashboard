@@ -18,7 +18,8 @@
                                 <div style="display: flex;">
                                     <div style="flex-grow: 31;">
                                     </div>
-                                    @if (Route::current()->getName() === "provider.show")
+                                    {{-- Route::current()->getName()) --}}
+                                    @if (Route::current()->getName() === "user.index")
                                     <div>
                                         <a href="{{route('user.create', ['level' => 'provider', 'customer_id' => $provider->id] )}}" style = "font-color:fffff" class="btn submit_btn">new user</a>
                                     </div>
@@ -42,7 +43,7 @@
                                             <th>{{ ucwords(trans_choice('messages.email', 1)) }}</th>
                                             <th>{{ ucwords(trans_choice('messages.username', 1)) }}</th>
                                             <th>{{ ucwords(trans_choice('messages.first_name', 1)) }}</th>
-                                            <th>{{ ucwords(trans_choice('messages.last_name', 1)) }}</th>
+                                            <th>{{ ucwords(trans_choice('messages.last_name', 1)) }}</th>   
                                             <th>{{ ucwords(trans_choice('messages.status', 1)) }}</th>
                                             <th>{{ ucwords(trans_choice('messages.action', 1)) }}</th>
                                         </tr>
@@ -57,7 +58,9 @@
                                             <td>{{ $user['first_name'] }}</td>
                                             <td>{{ $user['last_name'] }}</td>
                                             <td>{{ ucwords(trans_choice($user->status->name, 1)) }}</td>
-                                            <td>Actions</td>
+                                            <td>
+                                                @include('partials.actions', ['model' => $user, 'modelo' => 'user'])
+                                            </td>
                                         </tr>
                                         @endforeach
                                         {{-- @endif	 --}}

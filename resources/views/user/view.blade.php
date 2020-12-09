@@ -3,16 +3,16 @@
 
 @endsection
 
-@section('page-title', $user->present()->nameOrEmail)
-@section('page-heading', $user->present()->nameOrEmail)
+{{-- @section('page-title', $user->nameOrEmail)
+@section('page-heading', $user->nameOrEmail) --}}
 
 
 @section('breadcrumbs')
 
 <ol class="breadcrumb pull-right">
     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-    <li class="breadcrumb-item active"><a href="{{ route('user.list') }}">@lang('app.users')</a></li>
-    <li class="breadcrumb-item">{{ $user->present()->nameOrEmail }}</li>
+    {{-- <li class="breadcrumb-item active"><a href="{{ route('user.list') }}">@lang('app.users')</a></li> --}}
+    {{-- <li class="breadcrumb-item">{{ $user->nameOrEmail }}</li> --}}
 
 </ol>
 
@@ -52,11 +52,11 @@
                     <div>
                         <img class="rounded-circle img-thumbnail img-responsive mb-4"
                              width="130"
-                             height="130" src="{{ $user->present()->avatar }}">
+                             height="130" src="{{ $user->avatar }}">
                     </div>
 
-                    @if ($name = $user->present()->name)
-                        <h5>{{ $user->present()->name }}</h5>
+                    @if ($name = $user->name)
+                        <h5>{{ $user->name }}</h5>
                     @endif
                     <a href="mailto:{{ $user->email }}" class="text-muted font-weight-light mb-2">
                         {{ $user->email }}
@@ -72,11 +72,11 @@
                     @endif
                     <li class="list-group-item">
                         <strong>@lang('app.address'):</strong>
-                        {{ $user->present()->fullAddress }}
+                        {{ $user->fullAddress }}
                     </li>
                     <li class="list-group-item">
                         <strong>@lang('app.last_logged_in'):</strong>
-                        {{ $user->present()->lastLogin }}
+                        {{ $user->lastLogin }}
                     </li>
                 </ul>
             </div>
@@ -92,18 +92,18 @@
                     @lang('app.latest_activity')
 
 
-                    @if (count($userActivities))
+                    {{-- @if (count($userActivities))
                         <small class="float-right">
                             <a href="{{ route('activity.user', $user->id) }}" class="edit"
                                data-toggle="tooltip" data-placement="top" title="@lang('app.complete_activity_log')">
                                 @lang('app.view_all')
                             </a>
                         </small>
-                    @endif
+                    @endif --}}
                 </h5>
 
 
-                @isset($branches)
+                {{-- @isset($branches)
                 <h5>
                 Branches
                 </h5>
@@ -111,10 +111,10 @@
                 {{ $branch->title }}
                 </br>
                 @endforeach
-                @endisset
+                @endisset --}}
 
 
-                @if (count($userActivities))
+                {{-- @if (count($userActivities))
                     <table class="table table-borderless table-striped">
                         <thead>
                         <tr>
@@ -133,7 +133,7 @@
                     </table>
                 @else
                     <p class="text-muted font-weight-light"><em>@lang('app.no_activity_from_this_user_yet')</em></p>
-                @endif
+                @endif --}}
             </div>
         </div>
     </div>

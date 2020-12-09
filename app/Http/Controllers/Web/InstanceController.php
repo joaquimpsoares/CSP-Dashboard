@@ -36,7 +36,6 @@ class InstanceController extends Controller
     {
         // $instances = Instance::all();
         // $provider = Auth::user()->provider;
-        // dd($provider->instances );
         // $provider = Instance::where('provider_id', $provider->id)->get();
 
         return view('packages.cards');

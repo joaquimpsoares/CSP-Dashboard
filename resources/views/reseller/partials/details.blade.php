@@ -24,7 +24,7 @@
                                             <label class="input-group-text" for="country_id"><i class="fa fa-plane" aria-hidden="true"></i>
                                             </label>
                                         </div> --}}
-                                        <select name="country_id" class="search-box" id="country_id" required>
+                                        <select name="country_id" id="country_id" required>
                                             <option value="{{$reseller->country->id}}" selected>{{$reseller->country->name}}</option>
                                             @foreach ($countries as $country)
                                             <option value="{{$country->id}}">{{$country->name}}</option>
@@ -93,14 +93,14 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="text-center">
-                                            <i class="fas fa-check fa-4x mb-3 animated rotateIn"></i>
+                                            <i class="fa fa-check fa-4x mb-3 animated rotateIn"></i>
                                             <p>You are about to update reseller {{$reseller->company_name}}</p>
                                             <p>Are you sure?</p>
                                         </div>
                                     </div>
                                     <div class="modal-footer justify-content-center">
-                                        <button type="submit" class="btn submit_btn">yes </button>
-                                        <a type="button" class="btn btn-primary" data-dismiss="modal">No, thanks</a>
+                                        <button type="submit" class="btn btn-primary">yes </button>
+                                        <a type="button" class="btn btn-secondary" data-dismiss="modal">No, thanks</a>
                                     </div>
                                 </div>
                             </div>

@@ -6,6 +6,9 @@
 <link href="{{URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css')}}" rel="stylesheet" />
 <!--Daterangepicker css-->
 <link href="{{URL::asset('assets/plugins/bootstrap-daterangepicker/daterangepicker.css')}}" rel="stylesheet" />
+
+{{-- <link href="{{URL::asset('assets/plugins/notify/css/jquery.growl.css')}}" rel="stylesheet" /> --}}
+
 @endsection
 
 @section('content')
@@ -656,6 +659,11 @@
 <script src="{{URL::asset('assets/plugins/counters/waypoints.min.js')}}"></script>
 <!--Chart js -->
 <script src="{{URL::asset('assets/plugins/chart/chart.bundle.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/chart/utils.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/chart/utils.js')}}"></script>ç
+<!--welcome -->
+{{-- <script src="{{URL::asset('assets/plugins/notify/js/jquery.growl.js')}}"></script> --}}
+<script src="{{URL::asset('assets/plugins/notify/js/sample.js')}}"></script>
+
+
 @endsection
 

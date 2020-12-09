@@ -200,7 +200,6 @@ class CustomerController extends Controller
     Public function serviceCostsLineitems($customer)
     {
 
-        // dd($customer);
         $customer = Customer::find($customer);
         $instance = Instance::where('id', '3')->first();
 
@@ -234,8 +233,8 @@ class CustomerController extends Controller
 
     public function update(Request $request, Customer $customer) {
 
-        $validate = $this->validator($request->all())->validate();
 
+        $validate = $this->validator($request->all())->validate();
         $user = $this->getUser();
 
         try {
@@ -291,23 +290,22 @@ class CustomerController extends Controller
     }
     protected function validator(array $data)
     {
+        $data);
 
-        $countryName = Country::where('id', $data['country_id'])->first();
-        $countryRules = AppCountryrules::where('iso2Code', $countryName->iso_3166_2)->first();
+        // $countryName = Country::where('id', $data['country_id'])->first();
+        // $countryRules = AppCountryrules::where('iso2Code', $countryName->iso_3166_2)->first();
         return Validator::make($data, [
             'company_name' => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
             'nif' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
-            // 'nif' => ['required', 'string', 'regex:/'.$countryRules->vatIdRegex.'/'],
-            'email' => ['required', 'email', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255'],
             'address_1' => ['required', 'string', 'max:255'],
             'address_2' => ['nullable', 'string', 'max:255'],
             'country_id' => ['required', 'integer', 'min:1'],
             'city' => ['required', 'string', 'max:255'],
             'state' => ['required', 'string', 'max:255'],
-            'postal_code' => ['required', 'max:255'],
-            // 'postal_code' => ['required', 'string', 'regex:/'.$countryRules->postalCodeRegex.'/'],
+            'postal_code' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
             'status_id' => ['required', 'integer', 'exists:statuses,id'],
             'sendInvitation' => ['nullable', 'integer'],
-        ]);
+            ]);
     }
 }

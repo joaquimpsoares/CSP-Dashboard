@@ -9,7 +9,7 @@ interface OrderRepositoryInterface
 	
 	public function newFromCartToken($token);
 
-	public function UpdateMSSubscription($subscription);
+	public function UpdateMSSubscription($subscription,$request);
 
 	public function ImportProductsMicrosoftOrder();
 
