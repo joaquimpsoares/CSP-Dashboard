@@ -29,7 +29,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- @dd($providers->resellers) --}}
+                        {{-- $providers->resellers) --}}
                         @forelse($providers as $provider)
                         <tr>
                             <td><a href="{{ $provider['path'] }}">{{ $provider['company_name'] }}</a></td>

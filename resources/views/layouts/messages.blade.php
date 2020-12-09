@@ -15,7 +15,7 @@
     <script type="text/javascript">
     
         $(document).ready(function() {
-          $('#not5()'.not5();
+          $('#not5()');
         });
      </script>
     <div class="alert alert-danger">

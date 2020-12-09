@@ -135,15 +135,15 @@ public function newFromCartToken($token)
     public function UpdateMSSubscription($subscription, $request)
     {
         
-        // dd($request->all(), $subscription);
+        $request->all(), $subscription);
         
         $amount = collect($request->amount)->diff(collect($subscription->amount));
         $billing_period = collect($request->billing_period)->diff(collect($subscription->billing_period));
         $status = collect($request->status)->diff(collect($subscription->status_id));
-        // dd($billing_period,$status,$amount);
+        $billing_period,$status,$amount);
         
-        // dd($status->isempty() &&  !$billing_period->isempty() && $amount->isempty());
-        // dd($status->isempty() &&  !$billing_period->isempty() && !$amount->isempty());
+        $status->isempty() &&  !$billing_period->isempty() && $amount->isempty());
+        $status->isempty() &&  !$billing_period->isempty() && !$amount->isempty());
         $order = new Order();
         $order->customer_id = $subscription->customer_id;
         $order->domain = $subscription->domain;
@@ -168,7 +168,7 @@ public function newFromCartToken($token)
         }
         $order->save();
 
-        // dd($order);
+        $order);
         return $order;
         
     }

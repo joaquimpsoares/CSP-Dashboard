@@ -18,6 +18,7 @@
                                 <div style="display: flex;">
                                     <div style="flex-grow: 31;">
                                     </div>
+                                    {{-- Route::current()->getName()) --}}
                                     @if (Route::current()->getName() === "user.index")
                                     <div>
                                         <a href="{{route('user.create', ['level' => 'provider', 'customer_id' => $provider->id] )}}" style = "font-color:fffff" class="btn submit_btn">new user</a>

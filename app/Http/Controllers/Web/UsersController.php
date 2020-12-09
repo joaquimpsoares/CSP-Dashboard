@@ -89,13 +89,11 @@ class UsersController extends Controller
     */
     public function store(Request $request)
     {
-        
-        // dd($request->all());
+        dd($request->level);
         $user = $this->getUser();
         
         $validate = $this->validator($request->all())->validate();
         
-        // dd($this->getUserLevel());
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
                 
@@ -104,8 +102,6 @@ class UsersController extends Controller
                 $id = Auth::user()->provider->id;
 
                 $mainUser = $this->userRepository->create($validate, $request->level, $id);
-                // dd($mainUser);
-
             break;
             
             default:
@@ -116,7 +112,7 @@ class UsersController extends Controller
     
     
     $customer = Customer::where('id', $request->customer_id)->first();
-    dd(Auth::user()->provider);
+    Auth::user()->provider);
     $mainUser = $this->userRepository->create($validate, $request->level, $id);
 }
 
@@ -128,7 +124,7 @@ class UsersController extends Controller
 */
 public function show(User $user)
 {
-    // dd($user);
+    $user);
     return view('user.view',compact('user'));
     
 }

@@ -290,7 +290,7 @@ class CustomerController extends Controller
     }
     protected function validator(array $data)
     {
-        // dd($data);
+        $data);
 
         // $countryName = Country::where('id', $data['country_id'])->first();
         // $countryRules = AppCountryrules::where('iso2Code', $countryName->iso_3166_2)->first();

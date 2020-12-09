@@ -15,7 +15,7 @@
             </thead>
             <tbody>
                 @forelse($subscriptions as $subscription)
-                {{dd($subscriptionPurching )}}
+                $subscriptionPurching )}}
                 <tr class="odd gradeX">
                     <td width="1%" class="f-s-600">{{$subscription['id']}}</td>
                     <td>{{$subscription->name}}</td>

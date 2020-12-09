@@ -1,5 +1,5 @@
 <div>
-    {{-- {{dd($price->tiers->first()->id)}} --}}
+    {{-- $price->tiers->first()->id)}} --}}
     <table class="table table-light">
         <thead class="thead-light">
             <tr>

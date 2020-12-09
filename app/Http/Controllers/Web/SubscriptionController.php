@@ -240,18 +240,18 @@ public function update(Request $request, Subscription $subscription)
                     }
                 }elseif(!$status->isempty()){
                     try{
-                        // dd($request->status);
+                        $request->status);
                         
                         // if ($request->status == 1) {
                         //     $request->merge(['status' => 'active']);
                         // }else {
                         //     $request->merge(['status' => 'suspended']);
                         // }
-                        // dd($request->status);
+                        $request->status);
                         $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token) //change status only
                         ->update($subscription, ['status' => $request->status]);
                         
-                        // dd($update);
+                        $update);
                         
                         if ($request->status == 'active') {
                             $request->merge(['status' => 1]);
@@ -259,7 +259,7 @@ public function update(Request $request, Subscription $subscription)
                             $request->merge(['status' => 2]);
                         }
                         $tt = $subscriptions->update(['status_id' => $request->status]);
-                        // dd($tt);
+                        $tt);
                         Log::info('Status changed: '.$request->status);
                         
                     } catch (Exception $e) {
