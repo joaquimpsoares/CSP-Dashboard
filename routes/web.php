@@ -99,7 +99,7 @@ Route::get('/servicecosts', function()
 
 
     $instance = Instance::where('id', '3')->first();
-    $instance->external_id, $instance->external_token);
+    // dd($instance->external_id, $instance->external_token);
 
     $customer = new TagydesCustomer([
         'id' => 'd09c8a90-cd32-4aaa-a54e-1959632f651b',
@@ -119,12 +119,12 @@ Route::get('/servicecosts', function()
 Route::get('/test', function() {
 
 	$instance=Instance::where('type', 'kaspersky')->first();
-	$instance);
+	// dd($instance);
 	$certificate=Instance::select('certificate')->where('type', 'kaspersky')->first();
 
 	$certificate = Crypt::decryptString($certificate->certificate);
 	$url=Instance::select('external_url')->where('type', 'kaspersky')->first();
-	$certificate);
+	// dd($certificate);
 
 	// $id = 'KL4536XAEMG'; //monthly
 	$id = 'KL4536XAMFG'; //yearly
@@ -134,12 +134,12 @@ Route::get('/test', function() {
 	$product = Price::where('product_sku', $id)->first();
 
 
-	$product->product->billing);
+	// dd($product->product->billing);
 
-	$product);
+	// dd($product);
 	$tiers = $product->tiers;
 	dd($tiers);
-	$tiers);
+	// dd($tiers);
 	$tier = $tiers->filter(function($value){
 		return true;
 	});
@@ -149,11 +149,11 @@ Route::get('/test', function() {
 		return $quantity >= $tier->min_quantity && $quantity < $tier->max_quantity;
 	})->first();
 
-	$tier);
+	// dd($tier);
 
 	$customer = Customer::where('id', 310000)->first();
-	$customer->country->iso_3166_3);
-	$instance->tenant_id);
+	// dd($customer->country->iso_3166_3);
+	// dd($instance->tenant_id);
 
 	$newCustomer = Tagydeskasp::withCredentials($url, $certificate)->create([
 		"BillingPlan" => "yearly",
@@ -181,7 +181,7 @@ Route::get('/test', function() {
 		"DeliveryEmail"=> "joaquim.soares@tagydes.com"
 		]);
 
-		$newCustomer);
+		// dd($newCustomer);
 
 		// $result =
 
@@ -193,7 +193,7 @@ Route::get('/test', function() {
 		'customer_id' => $customer->id,
 	]);
 	dd($kas_details);
-	$instance->external_token);
+	// dd($instance->external_token);
 	// $orderConfirm = KasOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($kas_details);
 	// Log::info('Confirmation of cart Cart: '.$orderConfirm);
 
@@ -217,7 +217,7 @@ Route::get('/test', function() {
                 $subscriptions->tenant_name	=		$this->order->domain;
 				$subscriptions->status_id =         1;
                 $subscriptions->save();
-				$subscription);
+				// dd($subscription);
 			}
 
 	// $result = Subscription::create([
@@ -230,7 +230,7 @@ Route::get('/test', function() {
 	// 	'billing_type' => $product->product->billing,
 	// ]);
 
-$result);
+// dd($result);
 
 });
 /**********************************************************************************
