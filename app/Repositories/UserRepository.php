@@ -41,14 +41,6 @@ class UserRepository implements UserRepositoryInterface
             break;
 
             case config('app.provider'):
-            // $providers = Provider::where('provider_id', $user->provider->id)->pluck('id')->toArray();
-
-            // $users = User::whereHas('providers', function($query) use  ($providers) {
-            //     $query->whereIn('id', $providers);
-            // })->with(['country' => function ($query) {
-            //     $query->where('name', 'messages.active');
-            // }])
-            // ->orderBy('username')->toSql();
 
             $provider = $user->provider;
             $users = $provider->users()->with('status')->get();
@@ -90,7 +82,9 @@ class UserRepository implements UserRepositoryInterface
                     $providerLevel = UserLevel::where('name', config('app.provider'))->first();
                     $user['user_level_id'] = $providerLevel->id;
 
-                    $user['provider_id'] = $model;
+                    // dd($model->id);
+
+                    $user['provider_id'] = $model->id;
 
 
                     $newUser = User::create($user);
