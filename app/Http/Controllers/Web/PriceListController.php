@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Web;
 
 use App\Price;
 use Exception;
+use App\Product;
+use App\Instance;
 use App\PriceList;
 use Illuminate\Http\Request;
 use App\Imports\PricesImport;
 use App\Http\Traits\UserTrait;
 use App\Http\Controllers\Controller;
-use App\Product;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Repositories\PriceListRepositoryInterface;
 
@@ -108,14 +110,17 @@ class PriceListController extends Controller
 
         public function storePriceList(Request $request)
         {
-            // $priceList = PriceList::find($priceList);
+            // $priceList = PriceList::find($request->id);
+            // dd($request->all());
 
 
-            // $updatepriceList = $priceList->update([
-                //     'name' => $request['name'],
-                //     'description' => $request['description'],
+            $updatepriceList = PriceList::create([
+                    'name' => $request->name,
+                    'description' => $request->description,
+                    'instance_id' => $request->instance,
+                ]);
 
-                // ]);
+                // dd($updatepriceList);
 
                 return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.pricelist_updated_successfully')]);
             }

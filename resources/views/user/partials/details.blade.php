@@ -9,8 +9,8 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <form method="POST" action="{{ route('user.store') }}" class="col s12">
-                            <input type="hidden" name="level" value={{$level}}>
-                            <input type="hidden" name="customer_id" value={{$customer_id}}>
+                            {{-- <input type="hidden" name="level" value={{$level}}> --}}
+                            {{-- <input type="hidden" name="customer_id" value={{$customer_id}}> --}}
                             @csrf              
                             <h1>{{ ucwords(trans_choice('messages.new_user', 1)) }}</h1>
                             <div class="row">
@@ -33,9 +33,9 @@
                                         </div>
                                         <select name="country_id" class="custom-select" id="country_id" required>
                                             <option value="">Choose...</option>
-                                            @foreach ($countries as $country)    
+                                            {{-- @foreach ($countries as $country)    
                                             <option value="{{$country->id}}">{{$country->name}}</option>
-                                            @endforeach
+                                            @endforeach --}}
                                         </select>
                                         <div class="invalid-feedback">
                                             {{ucwords(trans_choice('messages.Please_select_a_valid_country', 1))}}
@@ -86,12 +86,12 @@
                                 <div class="col-md-12">
                                     <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
                                     <div class="form-group">
-                                        <select name="status_id" class="form-select" sf-validate="required">
+                                        {{-- <select name="status_id" class="form-select" sf-validate="required">
                                             <option selected></option>
                                             @foreach ($statuses as $status)    
                                             <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
                                             @endforeach
-                                        </select>
+                                        </select> --}}
                                     </div>
                                 </div>
                             </div>

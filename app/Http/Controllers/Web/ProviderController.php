@@ -16,6 +16,7 @@ use App\AzureResource;
 use App\OrderProducts;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Traits\ActivityTrait;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -35,6 +36,7 @@ use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
 class ProviderController extends Controller
 {
 
+    use ActivityTrait;
     private $providerRepository;
     private $resellerRepository;
     private $customerRepository;

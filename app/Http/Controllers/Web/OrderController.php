@@ -10,6 +10,7 @@ use App\Http\Traits\UserTrait;
 use App\Jobs\PlaceOrderMicrosoft;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Traits\ActivityTrait;
 use App\Jobs\CreateCustomerMicrosoft;
 use App\Jobs\ImportProductsMicrosoftJob;
 use App\Repositories\OrderRepositoryInterface;
@@ -20,6 +21,7 @@ class OrderController extends Controller
 {
 
     use UserTrait;
+    use ActivityTrait;
     private $productRepository;
     private $orderRepository;
 

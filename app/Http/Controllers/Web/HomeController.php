@@ -12,6 +12,8 @@ use App\Provider;
 use App\Reseller;
 use App\AzureResource;
 use App\OrderProducts;
+use App\Models\Activities;
+use App\Models\LogActivity;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Collection;
@@ -443,5 +445,17 @@ class HomeController extends Controller
         public function dashboard()
         {
             return view('dashboard');
+        }
+
+
+        /**
+         * Show the application dashboard.
+         *
+         * @return \Illuminate\Http\Response
+         */
+        public function logActivity()
+        {
+            $logs = LogActivity::latest()->get();
+            return view('user.activity',compact('logs'));
         }
     }

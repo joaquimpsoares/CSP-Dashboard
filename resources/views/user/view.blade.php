@@ -1,27 +1,12 @@
 @extends('layouts.master')
 @section('css')
-
+<!-- Data table css -->
+<link href="{{URL::asset('assets/plugins/datatable/css/dataTables.bootstrap4.min.css')}}" rel="stylesheet" />
+<link href="{{URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css')}}"  rel="stylesheet">
+<link href="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.css')}}" rel="stylesheet" />
+<!-- Slect2 css -->
+<link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
 @endsection
-
-{{-- @section('page-title', $user->nameOrEmail)
-@section('page-heading', $user->nameOrEmail) --}}
-
-
-@section('breadcrumbs')
-
-<ol class="breadcrumb pull-right">
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-    {{-- <li class="breadcrumb-item active"><a href="{{ route('user.list') }}">@lang('app.users')</a></li> --}}
-    {{-- <li class="breadcrumb-item">{{ $user->nameOrEmail }}</li> --}}
-
-</ol>
-
-<!-- end breadcrumb -->
-<!-- begin page-header -->
-<h1 class="page-header">@lang('app.users')</h1>
-
-@stop
-
 
 @section('content')
 
@@ -30,21 +15,19 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">
-                    @lang('app.details')
+                    {{ucwords(trans_choice('messages.details',1))}}
 
                     <small class="float-right">
                         @canBeImpersonated($user)
                             <a href="{{ route('impersonate', $user) }}"
-                               data-toggle="tooltip" data-placement="top" title="@lang('app.impersonate_user')">
-                                @lang('app.impersonate')
-                            </a>
+                               data-toggle="tooltip" data-placement="top" title="{{ucwords(trans_choice('messages.impersonate',1))}}">
+                            </a>{{ucwords(trans_choice('messages.impersonate',1))}}
                             <span class="text-muted">|</span>
                         @endCanBeImpersonated
 
                         <a href="{{ route('user.edit', $user->id) }}" class="edit"
-                           data-toggle="tooltip" data-placement="top" title="@lang('app.edit_user')">
-                            @lang('app.edit')
-                        </a>
+                           data-toggle="tooltip" data-placement="top" title="{{ucwords(trans_choice('messages.edit_user',1))}}">
+                                                    </a>{{ucwords(trans_choice('messages.edit_user',1))}}       
                     </small>
                 </h5>
 
@@ -66,16 +49,16 @@
                 <ul class="list-group list-group-flush mt-3">
                     @if ($user->phone)
                         <li class="list-group-item">
-                            <strong>@lang('app.phone'):</strong>
+                            <strong>{{ucwords(trans_choice('messages.phone',1))}}:</strong>
                             <a href="telto:{{ $user->phone }}">{{ $user->phone }}</a>
                         </li>
                     @endif
                     <li class="list-group-item">
-                        <strong>@lang('app.address'):</strong>
+                        <strong>{{ucwords(trans_choice('messages.address',1))}}:</strong>
                         {{ $user->fullAddress }}
                     </li>
                     <li class="list-group-item">
-                        <strong>@lang('app.last_logged_in'):</strong>
+                        <strong>{{ucwords(trans_choice('messages.last_logged_in',1))}}:</strong>
                         {{ $user->lastLogin }}
                     </li>
                 </ul>
@@ -89,14 +72,14 @@
                 <h5 class="card-title">
 
 
-                    @lang('app.latest_activity')
+                    {{ucwords(trans_choice('messages.latest_activity',1))}}
 
 
                     {{-- @if (count($userActivities))
                         <small class="float-right">
                             <a href="{{ route('activity.user', $user->id) }}" class="edit"
-                               data-toggle="tooltip" data-placement="top" title="@lang('app.complete_activity_log')">
-                                @lang('app.view_all')
+                               data-toggle="tooltip" data-placement="top" title="ucwords(trans_choice('app.complete_activity_log')">
+                                ucwords(trans_choice('app.view_all')
                             </a>
                         </small>
                     @endif --}}
@@ -118,21 +101,21 @@
                     <table class="table table-borderless table-striped">
                         <thead>
                         <tr>
-                            <th>@lang('app.action')</th>
-                            <th>@lang('app.date')</th>
+                            <th>ucwords(trans_choice('app.action')</th>
+                            <th>ucwords(trans_choice('app.date')</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($userActivities as $activity)
                             <tr>
                                 <td>{{ $activity->description }}</td>
-                                <td>{{ $activity->created_at->format(config('app.date_time_format')) }}</td>
+                                <td>{{ $activity->created_at->format(config('app.date_time_formatuc',1)) }}</td>
                             </tr>
                         @endforeach
                         </tbody>
                     </table>
                 @else
-                    <p class="text-muted font-weight-light"><em>@lang('app.no_activity_from_this_user_yet')</em></p>
+                    <p class="text-muted font-weight-light"><em>ucwords(trans_choice('app.no_activity_from_this_user_yet')</em></p>
                 @endif --}}
             </div>
         </div>

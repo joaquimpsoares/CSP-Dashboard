@@ -16,60 +16,70 @@ use Illuminate\Support\Facades\Auth;
 class PriceListRepository implements PriceListRepositoryInterface
 {
 	use UserTrait;
-	
+
 	public function all()
 	{
-		
+
 		$user = $this->getUser();
-		
+
 			switch ($this->getUserLevel()) {
 				case config('app.super_admin'):
-					
+
 						$priceLists = PriceList::orderBy('name')->get()->map->format();
 						$prices = Price::get();
 
 				break;
-				
+
 				case config('app.admin'):
 
 						$priceLists = PriceList::orderBy('name')->get()->map->format();
 						$prices = Price::get();
 
 				break;
-				
-				case config('app.provider'):
-					$provider_id=User::select('provider_id')->where('id', Auth::user()->id)->first();
-					$provider=Provider::where('id', $provider_id->provider_id)->first();				
-					$priceLists = PriceList::where('id', $provider->price_list_id)->get()->map->format();
-					$prices = Price::get();
-					
+
+                case config('app.provider'):
+
+                    // $instances = Auth::user()->provider->instances;
+                    // foreach ($instances as $instance)
+                    // $priceLists = PriceList::where('instance_id',$instance->id)->get()->map->format();
+					$priceLists = PriceList::wherein('instance_id', Auth::user()->provider->instances->pluck('id'))->get()->map->format();
+
+					// $provider_id=User::select('provider_id')->where('id', Auth::user()->id)->first();
+					// $provider=Provider::where('id', $provider_id->provider_id)->first();
+					// $priceLists = PriceList::where('id', $provider->price_list_id)->get()->map->format();
+					// $prices = Price::get();
+
 				break;
-				
+
 				case config('app.reseller'):
 
+
 					$reseller_id=User::where('id', Auth::user()->id)->first();
-					
-					$priceLists = PriceList::wherein('instance_id', $reseller_id->provider->instances->pluck('id'))->get()->map->format();
-					$prices = Price::get();
+
+					$priceLists = PriceList::wherein('instance_id', Auth::user()->reseller->provider->instances->pluck('id'))->get()->map->format();
+                    $prices = Price::get();
+
+                    $priceLists = PriceList::where('id', Auth::user()->reseller->provider->price_list_id)->get()->map->format();
+                    // dd($priceLists);
 					// $reseller_id=User::select('reseller_id')->where('id', Auth::user()->id)->first();
 
 					// $resellers=Reseller::where('id', $reseller_id->reseller_id)->first();
-					
+
 				break;
-				
+
 				case config('app.subreseller'):
 					$reseller_id=User::select('reseller_id')->where('id', Auth::user()->id)->first();
 					$resellers=Reseller::where('id', $reseller_id->reseller_id)->first();
 					$priceLists = PriceList::where('id', $resellers->price_list_id)->get()->map->format();
 					$prices = Price::get();
 				break;
-				
+
 				default:
 				return abort(403, __('errors.unauthorized_action'));
-				
+
 			break;
 		}
-	
+
 		return $priceLists;
 	}
 
@@ -79,7 +89,7 @@ class PriceListRepository implements PriceListRepositoryInterface
 
 		switch ($this->getUserLevel()) {
 			case config('app.super_admin'):
-					
+
 				$priceLists = PriceList::orderBy('name')->get()->map->format();
 				$prices = Price::get();
 		break;
@@ -98,7 +108,7 @@ class PriceListRepository implements PriceListRepositoryInterface
 		break;
 
 
-		
+
 		case config('app.subreseller'):
 			$reseller_id=User::select('reseller_id')->where('id', Auth::user()->id)->first();
 			$resellers=Reseller::where('id', $reseller_id->reseller_id)->first();
@@ -106,8 +116,8 @@ class PriceListRepository implements PriceListRepositoryInterface
 			$prices = Price::get();
 
 		break;
-		
-			
+
+
 			default:
 				# code...
 				break;
