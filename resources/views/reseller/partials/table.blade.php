@@ -37,7 +37,7 @@
                             <td width="3%" class="f-s-600"><a href="{{ $reseller['path'] }}">{{ $reseller['id'] }}</a></td>
                             <td><a href="{{ $reseller['path'] }}">{{ $reseller['company_name'] }}</a></td>
                             <td>{{ $reseller['customers'] }}</td>
-                            <td>{{ $reseller['provider']['company_name'] }}</td>
+                        <td><a href="{{$reseller['provider']->format()['path']}}">{{ $reseller['provider']['company_name'] }}</td>
                             <td>{{ $reseller['country'] }}</td>
                             <td>{{ $reseller['created_at'] }}</td>
                             <td style="width: 150px">

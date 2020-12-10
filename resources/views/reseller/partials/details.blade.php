@@ -24,7 +24,7 @@
                                             <label class="input-group-text" for="country_id"><i class="fa fa-plane" aria-hidden="true"></i>
                                             </label>
                                         </div> --}}
-                                        <select name="country_id" id="country_id" required>
+                                        <select name="country_id" id="country_id" class="form-control SlectBox" sf-validate="required" required>
                                             <option value="{{$reseller->country->id}}" selected>{{$reseller->country->name}}</option>
                                             @foreach ($countries as $country)
                                             <option value="{{$country->id}}">{{$country->name}}</option>

@@ -19,13 +19,11 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Subject</th>
-                            <th>URL</th>
-                            <th>Method</th>
-                            <th>Ip</th>
-                            <td>Log Time</td>
+                            <th>subject_id</th>
+                            <th>subject_type</th>
+                            <th>name</th>
                             <th>User Id</th>
-                            <th width="100px">User Agent</th>
+                            <td>Log Time</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -33,14 +31,11 @@
                         @foreach($logs as $key => $log)
                         <tr>
                             <td>{{ ++$key }}</td>
-                            <td>{{ $log->subject }}</td>
-                            <td class="text-success">{{ $log->url }}</td>
-                            <td><label class="label label-info">{{ $log->method }}</label></td>
-                            <td class="text-warning">{{ $log->ip }}</td>
+                            <td>{{ $log->subject_id }}</td>
+                            <td class="text-success">{{ $log->subject_type }}</td>
+                            <td><span class="badge badge-pill badge-primary mt-2">{{ $log->name }}</span></td>
                             <td>{{ $log->user_id }}</td>
-                            <td class="text-danger"> <button type="button" class="btn btn-info mr-2" data-container="body" data-toggle="popover" data-popover-color="popinfo" data-placement="top" title="alert info" data-content="{{ $log->agent }}">
-                                Show info
-                            </button></td>
+                            <td>{{ $log->created_at }}</td>
                         </tr>
                         @endforeach
                         @endif

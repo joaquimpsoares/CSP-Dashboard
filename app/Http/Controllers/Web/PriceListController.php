@@ -111,7 +111,6 @@ class PriceListController extends Controller
         public function storePriceList(Request $request)
         {
             // $priceList = PriceList::find($request->id);
-            // dd($request->all());
 
 
             $updatepriceList = PriceList::create([
@@ -120,7 +119,6 @@ class PriceListController extends Controller
                     'instance_id' => $request->instance,
                 ]);
 
-                // dd($updatepriceList);
 
                 return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.pricelist_updated_successfully')]);
             }

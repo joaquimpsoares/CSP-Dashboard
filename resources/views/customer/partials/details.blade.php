@@ -26,7 +26,7 @@
                                     <label class="input-group-text" for="country_id"><i class="fa fa-plane" aria-hidden="true"></i>
                                     </label>
                                 </div> --}}
-                                <select name="country_id" class="search-box" id="country_id" style="width: 95%" required>
+                                <select name="country_id" class="search-box" id="country_id" required>
                                     <option value="{{$customer->country->id}}" selected>{{$customer->country->name}}</option>
                                     @foreach ($countries as $country)
                                     <option value="{{$country->id}}">{{$country->name}}</option>
@@ -61,7 +61,7 @@
                                 Zip code required.
                             </div>
                         </div>
-                        
+
                     </div>
                     <hr>
                     <div class="row">

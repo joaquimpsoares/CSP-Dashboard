@@ -4,6 +4,7 @@ namespace App\Http\Traits;
 
 use ReflectionClass;
 use App\Models\Activities;
+use Illuminate\Support\Facades\Auth;
 
 trait ActivityTrait {
 
@@ -23,12 +24,13 @@ trait ActivityTrait {
     }
 
     protected function addActivity($event){
-
+        // dd(Auth::user()->id);
         Activities::create([
             'subject_id' => $this->id,
             'subject_type' => get_class($this),
             'name' => $this->getActivityName($this,$event),
-            'user_id' => $this->user_id,
+            'user_id' =>  Auth::user()->id,
+            // 'user_id' => $this->id,
         ]);
     }
 

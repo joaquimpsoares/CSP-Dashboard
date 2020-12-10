@@ -73,38 +73,35 @@ class ProviderController extends Controller
     public function index(Provider $provider)
     {
 
+        $statuses = Status::get();
 
-                $statuses = Status::get();
+        $countries = Country::all();
+        $resellers = $this->resellerRepository->resellersOfProvider($provider);
+        $customers = new Collection();
 
+        foreach ($resellers as $reseller){
+            $reseller = Reseller::find($reseller['id']);
+            $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
+        }
 
-                $countries = Country::all();
-                $resellers = $this->resellerRepository->resellersOfProvider($provider);
-                $customers = new Collection();
+        $reseller = Reseller::get();
 
-                foreach ($resellers as $reseller){
-                    $reseller = Reseller::find($reseller['id']);
-                    $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
-                }
+        $instance = Instance::first();
 
-                $reseller = Reseller::get();
-                // $countResellers = $reseller->count();
+        $order = OrderProducts::get();
 
-                $instance = Instance::first();
+        $users = User::where('provider_id', $provider->id)->first();
 
-                $order = OrderProducts::get();
+        $subscriptions = $this->providerRepository->getSubscriptions($provider);
+        $countCustomers =  $customers->count();
+        $countSubscriptions = $subscriptions->count();
 
-                $users = User::where('provider_id', $provider->id)->first();
+        $countries = Country::all();
+        $providers = $this->providerRepository->all();
 
-                $subscriptions = $this->providerRepository->getSubscriptions($provider);
-                $countCustomers =  $customers->count();
-                $countSubscriptions = $subscriptions->count();
-
-                $countries = Country::all();
-                $providers = $this->providerRepository->all();
-
-                return view('provider.index', compact('provider','resellers','customers','instance','users',
-                'countries','subscriptions','order','statuses',
-                'countCustomers','countSubscriptions','providers',));
+        return view('provider.index', compact('provider','resellers','customers','instance','users',
+        'countries','subscriptions','order','statuses',
+        'countCustomers','countSubscriptions','providers',));
 
     }
 
@@ -178,33 +175,33 @@ class ProviderController extends Controller
     //         $average = 100-$average1;
 
 
-            $statuses = Status::get();
+        $statuses = Status::get();
 
 
-            $countries = Country::all();
-            $resellers = $this->resellerRepository->resellersOfProvider($provider);
-            $customers = new Collection();
+        $countries = Country::all();
+        $resellers = $this->resellerRepository->resellersOfProvider($provider);
+        $customers = new Collection();
 
-            foreach ($resellers as $reseller){
-                $reseller = Reseller::find($reseller['id']);
-                $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
-            }
-            // $countResellers = $reseller->count();
-
-            $instance = Instance::first();
-
-            $order = OrderProducts::get();
-
-            $users = User::where('provider_id', $provider->id)->get();
-
-            $subscriptions = $this->providerRepository->getSubscriptions($provider);
-            $countCustomers =  $customers->count();
-            $countSubscriptions = $subscriptions->count();
-
-            return view('provider.show', compact('provider','resellers','customers','instance','users',
-            'countries','subscriptions','order','statuses',
-            'countCustomers','countSubscriptions'));
+        foreach ($resellers as $reseller){
+            $reseller = Reseller::find($reseller['id']);
+            $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
         }
+        // $countResellers = $reseller->count();
+
+        $instance = Instance::first();
+
+        $order = OrderProducts::get();
+
+        $users = User::where('provider_id', $provider->id)->get();
+
+        $subscriptions = $this->providerRepository->getSubscriptions($provider);
+        $countCustomers =  $customers->count();
+        $countSubscriptions = $subscriptions->count();
+
+        return view('provider.show', compact('provider','resellers','customers','instance','users',
+        'countries','subscriptions','order','statuses',
+        'countCustomers','countSubscriptions'));
+    }
 
     public function edit(Provider $provider)
     {
@@ -218,6 +215,8 @@ class ProviderController extends Controller
     public function store(Request $request)
     {
 
+        // dd($request->all());
+
     $validate = $this->validator($request->all())->validate();
 
     try {
@@ -225,7 +224,7 @@ class ProviderController extends Controller
 
         $provider = $this->providerRepository->create($validate);
 
-        $this->userRepository->create($validate, 'provider', $provider);
+        $user = $this->userRepository->create($validate, 'provider', $provider);
 
         $priceList = PriceList::create([
             'name' => 'Price List - ' . $provider->company_name,
@@ -234,7 +233,6 @@ class ProviderController extends Controller
 
             $provider->priceList()->associate($priceList);
             $provider->save();
-
             DB::commit();
         } catch (\PDOException $e) {
             DB::rollBack();
@@ -243,14 +241,10 @@ class ProviderController extends Controller
             } else {
                 $errorMessage = "message.error";
             }
-        return redirect()->route('provider.index')
-        ->with([
-            'alert' => 'danger',
-            'message' => trans('messages.provider_not_created') . " (" . trans($errorMessage) . ")."
-            ]);
-        }
+            return redirect()->back()->with('danger', ucwords(trans_choice($errorMessage, 1)) );
 
-        return redirect()->route('provider.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Created successfully')]);
+        }
+        return redirect()->route('provider.index')->with('success', ucwords(trans_choice('messages.provider_created_successfully', 1)) );
 
     }
 
