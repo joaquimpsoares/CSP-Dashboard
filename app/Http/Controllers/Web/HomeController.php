@@ -453,9 +453,15 @@ class HomeController extends Controller
          *
          * @return \Illuminate\Http\Response
          */
-        public function logActivity()
+        public function userLogInfo()
         {
             $logs = LogActivity::latest()->get();
-            return view('user.activity',compact('logs'));
+            return view('user.loginfo',compact('logs'));
+        }
+
+        public function logActivity()
+        {
+            $logs = Activities::latest()->get();
+            return view('user.logactivity',compact('logs'));
         }
     }

@@ -99,7 +99,6 @@ Route::get('/servicecosts', function()
 
 
     $instance = Instance::where('id', '3')->first();
-    // dd($instance->external_id, $instance->external_token);
 
     $customer = new TagydesCustomer([
         'id' => 'd09c8a90-cd32-4aaa-a54e-1959632f651b',
@@ -119,12 +118,10 @@ Route::get('/servicecosts', function()
 Route::get('/test', function() {
 
 	$instance=Instance::where('type', 'kaspersky')->first();
-	// dd($instance);
 	$certificate=Instance::select('certificate')->where('type', 'kaspersky')->first();
 
 	$certificate = Crypt::decryptString($certificate->certificate);
 	$url=Instance::select('external_url')->where('type', 'kaspersky')->first();
-	// dd($certificate);
 
 	// $id = 'KL4536XAEMG'; //monthly
 	$id = 'KL4536XAMFG'; //yearly
@@ -134,12 +131,9 @@ Route::get('/test', function() {
 	$product = Price::where('product_sku', $id)->first();
 
 
-	// dd($product->product->billing);
 
-	// dd($product);
 	$tiers = $product->tiers;
-	dd($tiers);
-	// dd($tiers);
+
 	$tier = $tiers->filter(function($value){
 		return true;
 	});
@@ -149,11 +143,9 @@ Route::get('/test', function() {
 		return $quantity >= $tier->min_quantity && $quantity < $tier->max_quantity;
 	})->first();
 
-	// dd($tier);
 
 	$customer = Customer::where('id', 310000)->first();
-	// dd($customer->country->iso_3166_3);
-	// dd($instance->tenant_id);
+
 
 	$newCustomer = Tagydeskasp::withCredentials($url, $certificate)->create([
 		"BillingPlan" => "yearly",
@@ -260,7 +252,9 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('roles', 'RoleController');
 		Route::post('roles/update/all', 'RoleController@updateAll')->name('roles.update.all');
 		Route::resource('permissions', 'PermissionController');
-        Route::get('logActivity', 'HomeController@logActivity')->name('logactivity');
+        Route::get('userloginfo', 'HomeController@userLogInfo')->name('userloginfo');
+        Route::get('logactivity', 'HomeController@logActivity')->name('logactivity');
+
 
 	});
 
@@ -404,9 +398,9 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('customer.serviceCostsLineitems');
 
 
-
+//need to check permissions has a reseller to be able tp edit.... customer_update
 			Route::post('customer/update/{customer}', 'CustomerController@update')
-			->middleware('permission:' . config('app.customer_update'))
+			->middleware('permission:' . config('app.customer_show'))
             ->name('customer.update');
 
 			/*

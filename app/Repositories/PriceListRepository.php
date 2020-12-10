@@ -60,7 +60,6 @@ class PriceListRepository implements PriceListRepositoryInterface
                     $prices = Price::get();
 
                     $priceLists = PriceList::where('id', Auth::user()->reseller->provider->price_list_id)->get()->map->format();
-                    // dd($priceLists);
 					// $reseller_id=User::select('reseller_id')->where('id', Auth::user()->id)->first();
 
 					// $resellers=Reseller::where('id', $reseller_id->reseller_id)->first();

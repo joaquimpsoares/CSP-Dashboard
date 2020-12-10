@@ -106,6 +106,10 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
                     <li><a href="{{ route('jobs') }}" class="slide-item"> {{ ucwords(trans_choice('messages.job', 2)) }}</a></li>
                     @endcan
                     <li><a href="{{ route('user.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.user', 2)) }}</a></li>
+                    @can(config('app.provider_index'))
+                    <li><a href="/userloginfo" class="slide-item"> {{ ucwords(trans_choice('messages.user_log_information', 2)) }}</a></li>
+                    <li><a href="/logactivity" class="slide-item"> {{ ucwords(trans_choice('messages.log_activity_information', 2)) }}</a></li>
+                    @endcan
                 </ul>
             </li>
             {{-- @endcan --}}

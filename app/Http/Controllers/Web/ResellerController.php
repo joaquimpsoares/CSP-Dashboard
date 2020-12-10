@@ -89,6 +89,7 @@ class ResellerController extends Controller
 
 
     public function store(Request $request) {
+
         $user = $this->getUser();
 
         $validate = $this->validator($request->all())->validate();
@@ -108,14 +109,10 @@ class ResellerController extends Controller
             } else {
                 $errorMessage = "message.error";
             }
-            return redirect()->route('reseller.index')
-            ->with([
-                'alert' => 'danger',
-                'message' => trans('messages.reseller_not_created') . " (" . trans($errorMessage) . ")."
-                ]);
-            }
+            return redirect()->back()->with('danger', ucwords(trans_choice($e, 1)) );
+        }
 
-            return redirect()->route('reseller.index')->with(['alert' => 'success', 'message' => trans('messages.reseller Created successfully')]);
+        return redirect()->route('reseller.index')->with('success', ucwords(trans_choice('messages.reseller_created_successfully', 1)) );
         }
 
 

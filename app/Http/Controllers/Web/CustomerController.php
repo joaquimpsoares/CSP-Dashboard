@@ -68,7 +68,9 @@ class CustomerController extends Controller
 
         $validate = $this->validator($request->all())->validate();
 
+
         $user = $this->getUser();
+
 
         try {
             DB::beginTransaction();
@@ -87,22 +89,21 @@ class CustomerController extends Controller
 
             $mainUser = $this->userRepository->create($validate, 'customer', $customer);
 
+
             DB::commit();
         } catch (\PDOException $e) {
             DB::rollBack();
             if ($e->errorInfo[1] == 1062) {
-                $errorMessage = "messages.user_already_exists";
+                $e = "errors.user_already_exists";
             } else {
-                $errorMessage = "messages.error";
+                $e = "errors.error";
             }
-            return redirect()->route('customer.index')
-            ->with([
-                'alert' => 'danger',
-                'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
-            ]);
+            return redirect()->back()->with('danger', ucwords(trans_choice($e, 1)) );
         }
 
-        return redirect()->route('customer.index')->with(['alert' => 'success', 'message' => trans('messages.customer_created_successfully')]);
+        return redirect()->route('customer.index')->with('success', ucwords(trans_choice('messages.customer_created_successfully', 1)) );
+
+        // return redirect()->route('customer.index')->with(['alert' => 'success', 'message' => trans('messages.customer_created_successfully')]);
     }
 
 
@@ -244,20 +245,18 @@ class CustomerController extends Controller
 
             DB::commit();
         } catch (\PDOException $e) {
+            dd($e);
             DB::rollBack();
             if ($e->errorInfo[1] == 1062) {
                 $errorMessage = "message.user_already_exists";
             } else {
                 $errorMessage = "message.error";
             }
-            return redirect()->route('customer.index')
-            ->with([
-                'alert' => 'danger',
-                'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
-                ]);
+            return redirect()->back()->with('danger', 'Customer Not Updated'. $errorMessage);
+
             }
 
-            return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.customer_updated_successfully')]);
+            return redirect()->back()->with('success', 'Customer Updated succesfully');
         }
 
 
@@ -304,7 +303,7 @@ class CustomerController extends Controller
             'state' => ['required', 'string', 'max:255'],
             'postal_code' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
             'status_id' => ['required', 'integer', 'exists:statuses,id'],
-            'sendInvitation' => ['nullable', 'integer'],
+            // 'sendInvitation' => ['nullable', 'integer'],
             ]);
     }
 }

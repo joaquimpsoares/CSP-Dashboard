@@ -87,11 +87,11 @@ class UserRepository implements UserRepositoryInterface
 
             switch ($type) {
                 case 'provider':
-                    $providerLevel = UserLevel::with('status')->where('name', config('app.provider'))->first();
+                    $providerLevel = UserLevel::where('name', config('app.provider'))->first();
                     $user['user_level_id'] = $providerLevel->id;
-                    
+
                     $user['provider_id'] = $model;
-                    
+
 
                     $newUser = User::create($user);
 

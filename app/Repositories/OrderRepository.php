@@ -20,72 +20,72 @@ use App\Repositories\OrderRepositoryInterface;
 */
 class OrderRepository implements OrderRepositoryInterface
 {
-    
+
     use UserTrait;
-    
-    
+
+
     public function all()
     {
-        
+
         $user = $this->getUser();
-        
+
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
-                
-                $orders = Order::with(['status'])->get()->map->format()->toArray();
-                
+
+                $orders = Order::with(['status'])->get()->map->format()->sortDesc()->toArray();
+
             break;
-            
+
             case config('app.admin'):
-                $orders = Order::with(['status'])->get()->map->format()->toArray();
+                $orders = Order::with(['status'])->get()->map->format()->sortDesc()->toArray();
             break;
-            
+
             case config('app.provider'):
-                
+
                 $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
-                
+
                 $customers = Customer::whereHas('resellers', function($query) use  ($resellers) {
                     $query->whereIn('id', $resellers);
                 })->pluck('id');
-                
-                
+
+
                 $orders = Order::with(['status'])->whereHas('customer', function($query) use  ($customers) {
                     $query->whereIn('id', $customers);
-                })->get()->map->format();
-                
+                })->get()->map->format()->sortDesc();
+
             break;
-            
+
             case config('app.reseller'):
-                
+
                 $reseller = $user->reseller;
-                
+
                 $customers = Customer::whereHas('resellers', function($query) use  ($reseller) {
                     $query->whereIn('id', $reseller);
                 })->pluck('id');
-                
+
                 $orders = Order::with(['status'])->whereHas('customer', function($query) use  ($customers) {
                     $query->whereIn('id', $customers);
-                })->get()->map->format();
-                
+                })->get()->map->format()->sortDesc();
+
             break;
-            
+
             default:
             return abort(403, __('errors.unauthorized_action'));
         break;
     }
-    
+
     return $orders;
 }
 
 public function newFromCartToken($token)
 {
     $cart = Cart::where('token', $token)->with('products')->first();
-    
+
     DB::beginTransaction();
-    
+
     try {
         $order = $this->createOrderFromCart($cart);
-        
+
         foreach ($cart->products as $product)
         {
             $order->products()->attach($product->id, [
@@ -96,24 +96,24 @@ public function newFromCartToken($token)
                 'quantity' => $product->pivot->quantity
                 ]);
             }
-            
+
             $cart->delete();
-            
+
             DB::commit();
-            
+
         } catch (\PDOException $e) {
             DB::rollBack();
             return false;
         }
-        
-        
+
+
         return $order;
     }
-    
+
     private function createOrderFromCart($cart)
     {
         $order = new Order();
-        
+
         $order->customer_id = $cart->customer_id;
         $order->domain = $cart->domain;
         $order->token = $cart->token;
@@ -125,25 +125,21 @@ public function newFromCartToken($token)
         $order->agreement_email = $cart->agreement_email;
         $order->agreement_phone = $cart->agreement_phone;
         $order->comments = $cart->comments;
-        
+
         $order->save();
-        
+
         return $order;
-        
+
     }
-    
+
     public function UpdateMSSubscription($subscription, $request)
     {
-        
-        // dd($request->all(), $subscription);
-        
+
+
         $amount = collect($request->amount)->diff(collect($subscription->amount));
         $billing_period = collect($request->billing_period)->diff(collect($subscription->billing_period));
         $status = collect($request->status)->diff(collect($subscription->status_id));
-        // dd($billing_period,$status,$amount);
-        
-        // dd($status->isempty() &&  !$billing_period->isempty() && $amount->isempty());
-        // dd($status->isempty() &&  !$billing_period->isempty() && !$amount->isempty());
+
         $order = new Order();
         $order->customer_id = $subscription->customer_id;
         $order->domain = $subscription->domain;
@@ -151,9 +147,9 @@ public function newFromCartToken($token)
         $order->user_id = Auth::user()->id;
         $order->verify = $subscription->verify;
         if ($status->isempty() &&  $billing_period->isempty() && !$amount->isempty()){
-            $order->details = "changing subscription ".$subscription->name ." ammount from ". $subscription->amount. " to ". $request->amount;
+            $order->details = "changing subscription ".$subscription->name ." amount from ". $subscription->amount. " to ". $request->amount;
         }elseif ($status->isempty() &&  !$billing_period->isempty() && !$amount->isempty()){
-            $order->details = "changing subscription ".$subscription->name ." ammount from ". $subscription->amount. " to ". $request->amount ." and " ." Billing Period from ". $subscription->billing_period. " to ". $request->billing_period;
+            $order->details = "changing subscription ".$subscription->name ." amount from ". $subscription->amount. " to ". $request->amount ." and " ." Billing Period from ". $subscription->billing_period. " to ". $request->billing_period;
         }elseif ($status->isempty() &&  !$billing_period->isempty() && $amount->isempty()){
             $order->details = "changing subscription ".$subscription->name ." Billing Period from ". $subscription->billing_period. " to ". $request->billing_period;
         }elseif(!$status->isempty()){
@@ -162,37 +158,34 @@ public function newFromCartToken($token)
             }else {
                 $request->merge(['status' => 'suspended']);
             }
-
-            dd($request->status);
             $order->details = "changing subscription ".$subscription->name . " and changing the status to " . $request->status;
         }else{
             return Redirect::back()->with('danger','nothing to do');
         }
         $order->save();
 
-        // dd($order);
         return $order;
-        
+
     }
-    
-    
+
+
     public function ImportProductsMicrosoftOrder()
     {
-        
+
         $order = new Order();
-        
+
         $order->token = Str::uuid();
         $order->user_id = Auth::user()->id;
         $order->details = "Importing MS Products";
-        
-        
+
+
         $order->save();
-        
+
         return $order;
-        
+
     }
-    
-    
-    
-    
+
+
+
+
 }
