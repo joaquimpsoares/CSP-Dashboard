@@ -23,8 +23,9 @@
                             <th>URL</th>
                             <th>Method</th>
                             <th>Ip</th>
-                            <th width="300px">User Agent</th>
+                            <td>Log Time</td>
                             <th>User Id</th>
+                            <th width="100px">User Agent</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,8 +37,10 @@
                             <td class="text-success">{{ $log->url }}</td>
                             <td><label class="label label-info">{{ $log->method }}</label></td>
                             <td class="text-warning">{{ $log->ip }}</td>
-                            <td class="text-danger">{{ $log->agent }}</td>
                             <td>{{ $log->user_id }}</td>
+                            <td class="text-danger"> <button type="button" class="btn btn-info mr-2" data-container="body" data-toggle="popover" data-popover-color="popinfo" data-placement="top" title="alert info" data-content="{{ $log->agent }}">
+                                Show info
+                            </button></td>
                         </tr>
                         @endforeach
                         @endif
