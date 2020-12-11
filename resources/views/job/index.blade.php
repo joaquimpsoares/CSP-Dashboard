@@ -47,6 +47,8 @@
                 </thead>
                 <tbody class="bg-white">
                     @forelse($jobs as $job)
+
+                    {{-- @dd($job) --}}
                     <tr class="font-sm leading-relaxed">
                         <td class="">
                             @if(!$job->isFinished())
@@ -110,10 +112,10 @@
                     </td>
                     <td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">
                         @if($job->hasFailed() && $job->exception_message !== null)
-                        <button type="button" class="btn btn-info mr-2" data-container="body" data-toggle="popover" data-popover-color="popinfo" data-placement="top" title="alert info" data-content="{{ $job->exception_message }}">
-                            Show info
+                        <button type="button" class="btn btn-info mr-2" data-container="body" data-toggle="popover" data-popover-color="popinfo" data-placement="top" title="alert error" data-content="{{ $job->exception_message }}">
+                            Show Error
                         </button>
-                        {{-- <textarea rows="4" class="w-64 text-xs p-1 border rounded" readonly>{{ $job->exception_message }}</textarea> --}}
+                        <a type="button" class="btn btn-secondary" href="/jobs/retry/{{$job->job_id}}">retry job</a>
                         @else
                         -
                         @endif

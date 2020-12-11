@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
 
-    use ActivityTrait;
+    // use ActivityTrait;
 
     protected $guarded = [];
 

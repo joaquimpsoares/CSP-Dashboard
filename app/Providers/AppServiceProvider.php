@@ -60,7 +60,7 @@ class AppServiceProvider extends ServiceProvider
             Log::notice('Job ID: ' . $event->job->getJobId());
             Log::notice('Job done: ' . $event->job->resolveName());
             Log::notice('Job Attempts: ' . $event->job->attempts());
-            User::first()->notify(new SuccessJob($event));
+            // User::first()->notify(new SuccessJob($event));
         });
 
         /**
@@ -70,8 +70,8 @@ class AppServiceProvider extends ServiceProvider
         */
         Queue::failing(function ( JobFailed $event ) {
 
-            Log::error('Job failed: ' . $event->job->resolveName() . '(' . $event->exception->getMessage() . ')');
-            User::first()->notify(new FailedJob($event));
+            // Log::error('Job failed: ' . $event->job->resolveName() . '(' . $event->exception->getMessage() . ')');
+            // User::first()->notify(new FailedJob($event));
 
         });
     }

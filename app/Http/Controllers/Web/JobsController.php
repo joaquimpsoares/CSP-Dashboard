@@ -96,13 +96,19 @@ class JobsController extends Controller
 
        Artisan::call('queue:retry ' . $id);
 
-       Auth::User()->notifications->first()->markasread();
-
        return redirect()->route('jobs')->with(['alert' => 'success', 'message' => trans('messages.jobrescheduled')]);
 
     }
 
+    public function runqueue(){
 
+        Artisan::call('queue:listen --queue=PlaceordertoMS,SyncProducts,default --sleep=3 --tries=3');
+
+        // Auth::User()->notifications->first()->markasread();
+
+        return redirect()->route('jobs')->with(['alert' => 'success', 'message' => trans('messages.jobrescheduled')]);
+
+     }
     public function pending(Request $request)
     {
         $jobs = $this->jobs->getPending($request->query('starting_at', -1))->map(function ($job) {
