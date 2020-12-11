@@ -27,7 +27,9 @@ use Tagydes\MicrosoftConnection\Models\Cart as TagydesCart;
 use Tagydes\MicrosoftConnection\Facades\Order as TagydesOrder;
 
 
-
+// Route::prefix('jobs')->group(function () {
+//     Route::queueMonitor();
+// });
 
 //Marco verifica aqui esta linha... para a importação dos productos!
 
@@ -66,7 +68,7 @@ Route::resource('/priceList', 'PriceListController');
 Route::resource('/price', 'PriceController');
 
 
-Route::get('/jobs', 'JobsController@index')->name('jobs');
+Route::get('jobs', 'JobsController@index')->name('jobs');
 Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
 Route::get('jobs/pending', 'JobsController@pending')->name('jobs.pending');
 Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');

@@ -13,6 +13,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use romanzipp\QueueMonitor\Traits\IsMonitored;
 use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
 
 class ImportProductsMicrosoftJob implements ShouldQueue
@@ -21,7 +22,7 @@ class ImportProductsMicrosoftJob implements ShouldQueue
     public $order;
     public $country;
 
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IsMonitored;
 
     /**
     * Create a new job instance.
@@ -61,6 +62,7 @@ class ImportProductsMicrosoftJob implements ShouldQueue
         //     }
 
             try {
+                $this->queueProgress(0);
 
             $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)
             ->forCountry($this->country)->all($this->country);
@@ -104,6 +106,8 @@ class ImportProductsMicrosoftJob implements ShouldQueue
                     'reseller_qualifications' => $importedProduct->resellerQualifications,
                     ]);
                 });
+                $this->queueProgress(90);
+
 
             } catch (Exception $e) {
                 Log::info('Error importing products: '.$e->getMessage());
@@ -116,5 +120,7 @@ class ImportProductsMicrosoftJob implements ShouldQueue
             // }
                 $this->order->order_status_id = 4; //Order running state
                 $this->order->save();
+                $this->queueProgress(100);
+
         }
     }

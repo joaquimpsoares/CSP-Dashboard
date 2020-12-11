@@ -14,6 +14,7 @@ use App\Events\MSCustomerCreationEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use romanzipp\QueueMonitor\Traits\IsMonitored;
 use Tagydes\MicrosoftConnection\Facades\Customer as TagydesCustomer;
 
 
@@ -22,7 +23,7 @@ class CreateCustomerMicrosoft implements ShouldQueue
 {
     public $order;
 
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IsMonitored;
 
     public function __construct(Order $order)
     {
