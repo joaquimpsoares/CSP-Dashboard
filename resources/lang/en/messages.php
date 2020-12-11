@@ -239,7 +239,7 @@ return [
     'create_pricelist' => 'create pricelist',
     'user_log_information' => 'user log information',
     'log_activity_information' => 'log activity information',
-    '' => '',
+    'queue_monitor' => 'queue monitor',
     '' => '',
     '' => '',
     '' => '',

@@ -32,6 +32,7 @@
         "maatwebsite/excel": "^3.1",
         "php-http/guzzle6-adapter": "^2.0",
         "php-http/httplug-bundle": "^1.18",
+        "romanzipp/laravel-queue-monitor": "^2.0",
         "socialiteproviders/microsoft": "^4.0",
         "socialiteproviders/microsoft-graph": "^4.0",
         "spatie/laravel-permission": "^3.11",

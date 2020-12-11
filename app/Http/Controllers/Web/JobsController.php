@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Artisan;
+use romanzipp\QueueMonitor\Models\Monitor;
 use Maatwebsite\Excel\Concerns\ToCollection;
-
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 class JobsController extends Controller
 {
 
@@ -28,26 +30,52 @@ class JobsController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
-    public function index()
+    public function index(Request $request)
     {
-        $jobs =  $this->jobs->get();
-        
-        $order = [];
-        $data = [];
-        
-        foreach($jobs as $payload){
-            $payload_json = json_decode( $payload->payload );
-            $data = unserialize( $payload_json->data->command );
-            $order[$payload->id] = $data->order;
+        {
+            $data = $request->validate([
+                'only_failed' => ['nullable'],
+            ]);
 
+            $filters = [
+                'onlyFailed' => (bool) Arr::get($data, 'only_failed'),
+            ];
+
+            $jobs = Monitor::query()
+                ->when($filters['onlyFailed'], static function (Builder $builder) {
+                    $builder->where('failed', 1);
+                })
+                ->ordered()
+                ->paginate(
+                    config('queue-monitor.ui.per_page')
+                )
+                ->appends(
+                    $request->all()
+                );
+
+            return view('job.index', [
+                'jobs' => $jobs,
+                'filters' => $filters,
+            ]);
         }
-        
-        $running = $jobs->count();
-        
-        $failedJobs = DB::table('failed_jobs')->get();
+        // $jobs =  $this->jobs->get();
 
-        return view('job.index', compact('jobs','failedJobs','running','order'));
-        
+        // $order = [];
+        // $data = [];
+
+        // foreach($jobs as $payload){
+        //     $payload_json = json_decode( $payload->payload );
+        //     $data = unserialize( $payload_json->data->command );
+        //     $order[$payload->id] = $data->order;
+
+        // }
+
+        // $running = $jobs->count();
+
+        // $failedJobs = DB::table('failed_jobs')->get();
+
+        // return view('job.index', compact('jobs','failedJobs','running','order'));
+
     }
 
     public function getPayload(){
@@ -65,11 +93,11 @@ class JobsController extends Controller
     }
 
     public function retryJob($id){
-       
+
        Artisan::call('queue:retry ' . $id);
 
        Auth::User()->notifications->first()->markasread();
-        
+
        return redirect()->route('jobs')->with(['alert' => 'success', 'message' => trans('messages.jobrescheduled')]);
 
     }
@@ -167,7 +195,7 @@ class JobsController extends Controller
     public function destroy($id)
     {
         DB::table('failed_jobs')->where('id', $id)->delete();
-    
+
         return redirect()->route('job')->with(['alert' => 'success', 'message' => trans('messages.importproducts')]);
 
     }
