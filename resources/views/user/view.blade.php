@@ -27,7 +27,7 @@
 
                         <a href="{{ route('user.edit', $user->id) }}" class="edit"
                            data-toggle="tooltip" data-placement="top" title="{{ucwords(trans_choice('messages.edit_user',1))}}">
-                                                    </a>{{ucwords(trans_choice('messages.edit_user',1))}}       
+                                                    </a>{{ucwords(trans_choice('messages.edit_user',1))}}
                     </small>
                 </h5>
 

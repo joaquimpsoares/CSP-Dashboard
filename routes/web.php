@@ -76,6 +76,8 @@ Route::post('provider/register', 'ProviderController@store')->name('provider.reg
 Route::resource('/user', 'UsersController');
 
 Route::get('/user/profile/{user}', 'UsersController@profile')->name('user.profile');
+Route::post('/user/updatepassword/{user}', 'UsersController@updatepassword')->name('user.updatepassword');
+
 
 
 Route::post('registerInvitation', 'UsersController@registerInvitation')->name('registerInvitation');

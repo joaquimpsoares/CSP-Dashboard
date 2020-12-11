@@ -24,13 +24,11 @@ trait ActivityTrait {
     }
 
     protected function addActivity($event){
-        // dd(Auth::user()->id);
         Activities::create([
             'subject_id' => $this->id,
             'subject_type' => get_class($this),
             'name' => $this->getActivityName($this,$event),
             'user_id' =>  Auth::user()->id,
-            // 'user_id' => $this->id,
         ]);
     }
 
