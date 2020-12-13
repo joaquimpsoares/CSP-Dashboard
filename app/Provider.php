@@ -17,13 +17,13 @@ class Provider extends Model
 
     public function format()
     {
-
         return [
             'id' => $this->id,
             'company_name' => $this->company_name,
             'address_1' => $this->address_1,
             'address_2' => $this->address_2,
             'country' => $this->country->name,
+            'countrycode' => $this->country->iso_3166_2,
             'city' => $this->city,
             'state' => $this->state,
             'nif' => $this->nif,

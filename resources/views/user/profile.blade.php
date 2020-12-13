@@ -66,13 +66,13 @@
                                 <div class="col-md-6 mb-4">
                                     <div class="md-form form-sm mb-0">
                                         <label for="username" class="">{{ ucwords(trans_choice('messages.username', 1)) }}</label>
-                                        <input type="text" id="username" name="username" class="form-control form-control-sm" value="{{$user->username}}">
+                                        <input type="text" id="username" name="username" class="form-control form-control" value="{{$user->username}}">
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-4">
                                     <div class="md-form form-sm mb-0">
                                         <label for="email" class="">{{ ucwords(trans_choice('messages.email', 1)) }}</label>
-                                        <input type="text" id="email" name="email" class="form-control form-control-sm" value="{{$user->email}}">
+                                        <input type="text" id="email" name="email" class="form-control form-control" value="{{$user->email}}">
                                     </div>
                                 </div>
                             </div>
@@ -80,13 +80,13 @@
                                 <div class="col-md-6">
                                     <div class="md-form form-sm mb-0">
                                         <label for="first_name" class="">{{ ucwords(trans_choice('messages.first_name', 1)) }}</label>
-                                        <input type="text" id="first_name" name="first_name" class="form-control form-control-sm" value="{{$user->first_name}}">
+                                        <input type="text" id="first_name" name="first_name" class="form-control form-control" value="{{$user->first_name}}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="md-form form-sm mb-0">
                                         <label for="last_name" class="">{{ ucwords(trans_choice('messages.last_name', 1)) }}</label>
-                                        <input type="text" id="last_name" name="last_name" class="form-control form-control-sm" value="{{$user->last_name}}">
+                                        <input type="text" id="last_name" name="last_name" class="form-control form-control" value="{{$user->last_name}}">
                                     </div>
                                 </div>
                             </div>
@@ -94,7 +94,7 @@
                                 <div class="col-md-12">
                                     <div class="md-form form-sm mb-0">
                                         <label for="address" class="">{{ ucwords(trans_choice('messages.address_1', 1)) }}</label>
-                                        <input type="text" id="address" name="address" class="form-control form-control-sm" value="{{$user->address}}">
+                                        <input type="text" id="address" name="address" class="form-control form-control" value="{{$user->address}}">
                                     </div>
                                 </div>
                             </div>
@@ -102,13 +102,13 @@
                                 <div class="col-lg-4 col-md-12">
                                     <div class="md-form form-sm mb-0">
                                         <label for="city" class="">{{ ucwords(trans_choice('messages.city', 1)) }}</label>
-                                        <input type="text" id="city" name="city" class="form-control form-control-sm" value="{{$user->city}}">
+                                        <input type="text" id="city" name="city" class="form-control form-control" value="{{$user->city}}">
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-6">
                                     <div class="form-group">
                                         <label for="country">{{ucwords(trans_choice('messages.country', 1))}}</label>
-                                        <select name="country_id" id="country_id" class="form-control-sm" sf-validate="required" required>
+                                        <select name="country_id" id="country_id" class="form-control  SlectBox" sf-validate="required" required>
                                             <option value="{{$user->country_id ?? ' ' }}" selected>{{$user->country->name ?? ' ' }}</option>
                                             @foreach ($countries as $country)
                                             <option value="{{$country->id}}">{{$country->name}}</option>
@@ -119,13 +119,13 @@
                                 <div class="col-lg-4 col-md-6">
                                     <div class="md-form form-sm mb-0">
                                         <label for="postal_code" class="">{{ ucwords(trans_choice('messages.postal_code', 1)) }}</label>
-                                        <input type="text" id="postal_code" name="postal_code" class="form-control form-control-sm" value="{{$user->postal_code}}">
+                                        <input type="text" id="postal_code" name="postal_code" class="form-control form-control" value="{{$user->postal_code}}">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Users Roles</label>
-                                <select class="form-control select2" data-placeholder="Choose Browser" multiple>
+                                <select class="form-control SlectBox" data-placeholder="Choose Browser" multiple>
                                     <option value="{{$user->roles->first()->id ?? ' ' }}" selected>{{$user->roles->first()->name ?? ' ' }}</option>
                                     @foreach ($roles as $role)
                                     <option value={{$role->id}}>
@@ -174,6 +174,7 @@
 
 @section('js')
 <!--Select2 js -->
+
 <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
 <script src="{{URL::asset('assets/js/select2.js')}}"></script>
 <!-- Timepicker js -->
@@ -206,45 +207,9 @@
 <!--multi js-->
 <script src="{{URL::asset('assets/plugins/multi/multi.min.js')}}"></script>
 <!-- Form Advanced Element -->
-<script src="{{URL::asset('assets/js/formelementadvnced.js')}}"></script>
-<script src="{{URL::asset('assets/js/form-elements.js')}}"></script>
-<script src="{{URL::asset('assets/js/file-upload.js')}}"></script>
-<!--Select2 js -->
-<script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
-<script src="{{URL::asset('assets/js/select2.js')}}"></script>
-<!-- Timepicker js -->
-<script src="{{URL::asset('assets/plugins/time-picker/jquery.timepicker.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/time-picker/toggles.min.js')}}"></script>
-<!-- Datepicker js -->
-<script src="{{URL::asset('assets/plugins/date-picker/date-picker.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/date-picker/jquery-ui.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/input-mask/jquery.maskedinput.js')}}"></script>
-<!--File-Uploads Js-->
-<script src="{{URL::asset('assets/plugins/fancyuploder/jquery.ui.widget.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/fancyuploder/jquery.fileupload.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/fancyuploder/jquery.iframe-transport.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/fancyuploder/jquery.fancy-fileupload.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/fancyuploder/fancy-uploader.js')}}"></script>
-<!-- File uploads js -->
-<script src="{{URL::asset('assets/plugins/fileupload/js/dropify.js')}}"></script>
-<script src="{{URL::asset('assets/js/filupload.js')}}"></script>
-<!-- Multiple select js -->
-<script src="{{URL::asset('assets/plugins/multipleselect/multiple-select.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/multipleselect/multi-select.js')}}"></script>
-<!--Sumoselect js-->
-<script src="{{URL::asset('assets/plugins/sumoselect/jquery.sumoselect.js')}}"></script>
-<!--intlTelInput js-->
-<script src="{{URL::asset('assets/plugins/intl-tel-input-master/intlTelInput.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/intl-tel-input-master/country-select.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/intl-tel-input-master/utils.js')}}"></script>
-<!--jquery transfer js-->
-<script src="{{URL::asset('assets/plugins/jQuerytransfer/jquery.transfer.js')}}"></script>
-<!--multi js-->
-<script src="{{URL::asset('assets/plugins/multi/multi.min.js')}}"></script>
-<!-- Form Advanced Element -->
-<script src="{{URL::asset('assets/js/formelementadvnced.js')}}"></script>
-<script src="{{URL::asset('assets/js/form-elements.js')}}"></script>
-<script src="{{URL::asset('assets/js/file-upload.js')}}"></script>
+{{-- <script src="{{URL::asset('assets/js/formelementadvnced.js')}}"></script> --}}
+{{-- <script src="{{URL::asset('assets/js/form-elements.js')}}"></script> --}}
+{{-- <script src="{{URL::asset('assets/js/file-upload.js')}}"></script> --}}
 @endsection
 
 
@@ -259,7 +224,7 @@
             <p class="card-text">Please add your reseller pin, if you don have one please follow the <a href="https://www.kasperskypartners.com/?eid=register">link</a> to obtain one from Kaspersky Official Site. </p>
             <div class="col-lg-2 col-md-4">
                 <label for="pin" class="">{{ ucwords(trans_choice('messages.reseller_pin', 1)) }}</label>
-                <input type="text" id="pin" name="pin" class="form-control form-control-sm" value="{{old('pin')}}">
+                <input type="text" id="pin" name="pin" class="form-control form-control" value="{{old('pin')}}">
             </div>
         </div>
         <div class="text-right">
@@ -273,7 +238,7 @@
             <p class="card-text">Please add your reseller Microsoft MPNID, if you don have one please follow the <a href="https://partner.microsoft.com/licensing">link</a> to obtain one from Microsoft Partner program. </p>
             <div class="col-lg-2 col-md-4">
                 <label for="mpnid" class="">{{ ucwords(trans_choice('messages.reseller_mpnid', 1)) }}</label>
-                <input type="text" id="mpnid" name="mpnid" class="form-control form-control-sm" value="{{old('mpnid')}}">
+                <input type="text" id="mpnid" name="mpnid" class="form-control form-control" value="{{old('mpnid')}}">
             </div>
         </div>
         <div class="text-right">
@@ -305,7 +270,7 @@
             <p class="card-text">Please add your reseller pin, if you don have one please follow the <a href="https://www.kasperskypartners.com/?eid=register">link</a> to obtain one from Kaspersky Official Site. </p>
             <div class="col-lg-2 col-md-4">
                 <label for="pin" class="">{{ ucwords(trans_choice('messages.reseller_pin', 1)) }}</label>
-                <input type="text" id="pin" name="pin" class="form-control form-control-sm" value="{{old('pin')}}">
+                <input type="text" id="pin" name="pin" class="form-control form-control" value="{{old('pin')}}">
             </div>
         </div>
         <div class="text-right">
@@ -319,7 +284,7 @@
             <p class="card-text">Please add your reseller Microsoft MPNID, if you don have one please follow the <a href="https://partner.microsoft.com/licensing">link</a> to obtain one from Microsoft Partner program. </p>
             <div class="col-lg-2 col-md-4">
                 <label for="mpnid" class="">{{ ucwords(trans_choice('messages.reseller_mpnid', 1)) }}</label>
-                <input type="text" id="mpnid" name="mpnid" class="form-control form-control-sm" value="{{old('mpnid')}}">
+                <input type="text" id="mpnid" name="mpnid" class="form-control form-control" value="{{old('mpnid')}}">
             </div>
         </div>
         <div class="text-right">
