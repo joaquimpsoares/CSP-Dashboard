@@ -34,11 +34,11 @@ class InstanceController extends Controller
 
     public function index()
     {
-        // $instances = Instance::all();
+        $instances = Instance::all();
         // $provider = Auth::user()->provider;
         // $provider = Instance::where('provider_id', $provider->id)->get();
 
-        return view('packages.cards');
+        return view('packages.cards', compact('instances'));
     }
 
     public function create(Request $request)
@@ -156,10 +156,7 @@ class InstanceController extends Controller
             */
             public function update(Request $request, $id)
             {
-                if($request->direct_reseller === 'on' )
-                    $external_type = 'direct';
-                else
-                    $external_type = 'indirect';
+
 
                 $user = Auth::user();
 
@@ -175,12 +172,14 @@ class InstanceController extends Controller
 
                 $instance->name             = $request->input('name');
                 $instance->tenant_id        = $request->input('tenant_id');
-                $instance->external_type    = $external_type;
+                $instance->external_type    = $request->external_type;
                 $instance->external_url     = $request->input('external_url');
 
                 $instance->certificate      = Crypt::encryptString($request->input('certificate'));
 
                 $instance->save();
+
+                // dd($instance);
 
 
                 return redirect()->back()->with('success', 'Instance updated succesfully')->withInput(['tab'=>'tabPageID']);;
