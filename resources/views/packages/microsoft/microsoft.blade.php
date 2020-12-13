@@ -48,11 +48,11 @@
                                                 <div class="form-label">Provider Type</div>
                                                 <div class="custom-controls-stacked">
                                                     <label class="custom-control custom-radio">
-                                                        <input type="radio" class="custom-control-input" name="external_type" value="direct_reseller" checked>
+                                                        <input type="radio" class="custom-control-input" id="option1" name="external_type" value="indirect"  {{ ($instances->external_type=="indirect")? "checked" : "" }} >
                                                         <span class="custom-control-label">{{ ucwords(trans_choice('messages.direct_reseller', 1)) }}</span>
                                                     </label>
                                                     <label class="custom-control custom-radio">
-                                                        <input type="radio" class="custom-control-input" name="external_type" value="indirect_reseller">
+                                                        <input type="radio" class="custom-control-input" id="option2" name="external_type" value="direct" {{ ($instances->external_type=="direct")? "checked" : "" }} >
                                                         <span class="custom-control-label">{{ ucwords(trans_choice('messages.indirect_reseller', 1)) }}</span>
                                                     </label>
                                                 </div>
@@ -66,7 +66,7 @@
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
                                                 </div>
-                                                <input type="text" name="external_url" class="form-control" id="basic-url" aria-describedby="basic-addon3" value=" {{$instances->external_url}} ">
+                                                <input type="text" name="external_url" class="form-control" id="basic-url" aria-describedby="basic-addon3" value="{{$instances->external_url}}">
                                             </div>
                                         </div>
                                     </div>
