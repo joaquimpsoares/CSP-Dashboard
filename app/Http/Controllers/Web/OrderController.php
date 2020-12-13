@@ -72,6 +72,7 @@ class OrderController extends Controller
 
     public function syncproducts(Request $request)
     {
+
         $order = $this->orderRepository->ImportProductsMicrosoftOrder();
 
         ImportProductsMicrosoftJob::dispatch($request, $order)->onQueue('SyncProducts')

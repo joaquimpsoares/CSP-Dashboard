@@ -192,9 +192,7 @@ class ProductController extends Controller
 
         $provider = Provider::where('id', $id)->select('country_id')->first();
 
-
         $country = Country::select('iso_3166_2')->where('id', $provider->country_id)->first();
-
 
         $instance = Instance::where('provider_id', $id)->first();
 
@@ -204,10 +202,11 @@ class ProductController extends Controller
 
         if($instance->type === 'microsoft'){
             if( ! $instance->tenant_id){
+
                 return redirect()->route('products.index')->with('success', 'There is no client_id set up on the Microsoft instance');
             }
 
-            if( ! $instance->external_token){
+            if( !$instance->external_token){
                 $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
                 $instance->update([
                     'external_token' => $externalToken,

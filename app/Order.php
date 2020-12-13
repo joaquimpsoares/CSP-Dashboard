@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
 
-    use ActivityTrait;
+    // use ActivityTrait;
 
     protected $guarded = [];
 
@@ -31,6 +31,10 @@ class Order extends Model
 
         ];
 
+    }
+
+    public function orderproduct() {
+    	return $this->belongsTo('App\OrderProducts', 'id', 'order_id');
     }
 
     public function status()

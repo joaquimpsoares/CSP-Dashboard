@@ -29,7 +29,7 @@ class ImportProductsMicrosoftJob implements ShouldQueue
     *
     * @return void
     */
-    public function __construct(Instance $instance, Order $order,    $country)
+    public function __construct(Instance $instance, Order $order, $country)
     {
         $this->instance = $instance;
         $this->order = $order;
