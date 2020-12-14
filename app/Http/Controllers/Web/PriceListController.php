@@ -62,8 +62,6 @@ class PriceListController extends Controller
 
                 $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
 
-                dd($products);
-
                 $prices = $priceList->prices;
 
             break;
@@ -127,7 +125,6 @@ class PriceListController extends Controller
 
             public function import(Request $request)
             {
-                // dd($request->all());
                 $data = Excel::import(new PricesImport, request()->file('select_file'), $request->instance_id);
 
                 return back()->withInput(['tab'=>'contact-md']);
@@ -143,7 +140,6 @@ class PriceListController extends Controller
 
                 $product = Product::where('sku', $request->sku)->where('instance_id', $pricelist->instance_id)->first();
 
-                dd($product);
 
                 $validatedData = $request->validate([
                     'sku' => 'required|max:255',
