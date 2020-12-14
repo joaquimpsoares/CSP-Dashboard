@@ -11,68 +11,115 @@
                 name="company_name" required placeholder="Company Name" :value="customer.company_name" data-parsley-required="true" >
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="nif">NIF</label>
-                <input type="text" class="input" id="nif"
-                name="nif" placeholder="NIF" :value="customer.nif" data-parsley-required="true" minlength="5" >
-            </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="nif">NIF</label>
+          <input
+            type="text"
+            class="input"
+            id="nif"
+            name="nif"
+            placeholder="NIF"
+            :value="customer.nif"
+            data-parsley-required="true"
+            minlength="5"
+          />
         </div>
+      </div>
     </div>
     <div>
-        <h2>Address Information</h2>
+      <h2>Address Information</h2>
     </div>
-    <hr>
-    <div class="row" v-for="customer in customers" >
-        <div class="col-md-4">
-            <div class="form-group">
-                <label for="address_1">Address 1</label>
-                <input type="text" class="input" id="address_1"
-                name="address_1" placeholder="Address 1" :value="customer.address_1">
-            </div>
+    <hr />
+    <div class="row" v-for="customer in customers">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="address_1">Address 1</label>
+          <input
+            type="text"
+            class="input"
+            id="address_1"
+            name="address_1"
+            placeholder="Address 1"
+            :value="customer.address_1"
+          />
         </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label for="address_2">Address 2</label>
-                <input type="text" class="input" id="address_2"
-                name="address_2" placeholder="Address 2" :value="customer.address_2">
-            </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="address_2">Address 2</label>
+          <input
+            type="text"
+            class="input"
+            id="address_2"
+            name="address_2"
+            placeholder="Address 2"
+            :value="customer.address_2"
+          />
         </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label for="city">City</label>
-                <input type="text" class="input" id="city"
-                name="city" placeholder="City" :value="customer.city">
-            </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="city">City</label>
+          <input
+            type="text"
+            class="input"
+            id="city"
+            name="city"
+            placeholder="City"
+            :value="customer.city"
+          />
         </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label for="postal_code">Postal Code</label>
-                <input type="text" class="input" id="postal_code"
-                name="postal_code" placeholder="Postal Code" :value="customer.postal_code">
-            </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="postal_code">Postal Code</label>
+          <input
+            type="text"
+            class="input"
+            id="postal_code"
+            name="postal_code"
+            placeholder="Postal Code"
+            :value="customer.postal_code"
+          />
         </div>
+      </div>
 
-        <div class="col-md-4">
-            <div class="form-group">
-                <label for="state">State</label>
-                <input type="text" class="input" id="state"
-                name="state" required placeholder="State" :value="customer.state">
-            </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="state">State</label>
+          <input
+            type="text"
+            class="input"
+            id="state"
+            name="state"
+            required
+            placeholder="State"
+            :value="customer.state"
+          />
         </div>
-        <div class="col-md-4">
-            <label for="country">Country</label>
-            <select name="country" id="country"></select>
-        </div>
+      </div>
+      <div class="col-md-4">
+        <label for="country">Country</label>
+        <select name="country" id="country"></select>
+      </div>
 
-        <div class="col-md-4">
-            <label for="Tenant_name">Tenant name</label>
-            <div class="form-group">
-                <input type="text" class="input" id="Tenant_name"
-                name="Tenant_name" disabled placeholder="Tenant name" value="Tenant name">
-            </div>
+      <div class="col-md-4">
+        <label for="Tenant_name">Tenant name</label>
+        <div class="form-group">
+          <input
+            type="text"
+            class="input"
+            id="Tenant_name"
+            name="Tenant_name"
+            disabled
+            placeholder="Tenant name"
+            value="Tenant name"
+          />
         </div>
-        <!-- @if(auth()->user()->getRole() != 1)
+      </div>
+      <!-- @if(auth()->user()->getRole() != 1)
         <div class="col-md-4">
             <div class="form-group">
                 <label for="country">@lang('app.branch')</label>
@@ -124,15 +171,18 @@
                     @lang('app.edit_customer')
                 </span>
             </a>
-            @endif -->
-        </div>
+      @endif-->
     </div>
+  </div>
 </template>
 
 <script>
 export default {
-    props:[
-        'customers'
-    ]
-}
+  props: ["customers"],
+  data() {
+    return {
+      name: "John Silver"
+    };
+  }
+};
 </script>

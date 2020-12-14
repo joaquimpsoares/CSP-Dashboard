@@ -9,6 +9,35 @@
 @endsection
 
 @section('content')
+<script>
+    function updateCartProductItemsNumber(item){
+        let tr = item.parentElement.parentElement.parentElement;
+
+        updateCartLine(tr);
+    }
+
+    function updateCartProductCycle(item){
+        let tr = item.parentElement.parentElement;
+
+        updateCartLine(tr);
+    }
+
+    function updateCartLine(tr){
+        let quantity = tr.getElementsByClassName('form-control')[0].value;
+        
+        let price = parseFloat(tr.getElementsByClassName('product-price')[0].innerHTML);
+
+        let cycle = tr.getElementsByClassName('billing_cycle')[0].value;
+
+        var subtotal = price * quantity;
+
+        if(cycle === 'annual'){
+            subtotal *= 12;
+        }
+
+        tr.getElementsByClassName('product-line-price')[0].innerHTML = subtotal.toFixed(2);
+    }
+</script>
 
 <div class="container">
     <section class="section">
@@ -48,10 +77,10 @@
                                             </td>
                                             <td>
                                                 <div class="product-quantity">
-                                                    <input type="number" value="{{ $product->pivot->quantity }}" name="{{ $product->pivot->id }}" id="quantity" class="form-control" step="1"  style="max-width: 10em;" required />{{-- min="{{ $product->minimum_quantity }}" max="{{ $product->maximum_quantity }}" --}}                                                </div>
+                                                    <input onchange="updateCartProductItemsNumber(this)" type="number" value="{{ $product->pivot->quantity }}" name="{{ $product->pivot->id }}" id="quantity" class="form-control" step="1"  style="max-width: 10em;" required />{{-- min="{{ $product->minimum_quantity }}" max="{{ $product->maximum_quantity }}" --}}                                                </div>
                                             </td>
                                             <td>
-                                                <select name="billing_cycle[{{ $product->pivot->id }}]" required="required" class="billing_cycle" id="{{ $product->pivot->id }}">
+                                                <select onchange="updateCartProductCycle(this)" name="billing_cycle[{{ $product->pivot->id }}]" required="required" class="billing_cycle" id="{{ $product->pivot->id }}">
                                                     <option value="" >{{ ucwords(__('messages.choose_one')) }}</option>
                                                     @foreach($product->supported_billing_cycles as $cycle)
                                                     <option value="{{ $cycle }}" @if($cycle == $product->pivot->billing_cycle) selected @endif>
@@ -131,75 +160,15 @@
 </div>
 
 
-
-
-@endsection
-
-@section('scripts')
 <script>
-    $(document).ready(function() {
-        $('.product-quantity input').change( function() {
-            updateProductQuantity(this);
-        });
-
-        $('.billing_cycle').change( function() {
-            //console.log(this.id);
-            $.get( "/cart/item/changeBillingCycle?token={{ $cart->token ?? null}}&item=" + this.id + "&value=" + this.value, function() {
-
-            })
-            .done(function(data) {
-                //console.log('ok');
-            })
-            .fail(function(data) {
-                //console.log(data);
-            });
-            var item = $('input[name="' + this.id + '"]');
-            updateProductSubTotal(item[0]);
-        });
-    });
-
-    function updateProductQuantity(item) {
-        $.get( "/cart/item/" + item.name + "/quantity/" + item.value, function() {
-            //action begining
-        })
-        .done(function(data) {
-            updateProductSubTotal(item);
-        })
-        .fail(function(data) {
-            //console.log(data);
-            // some error
-        });
-    }
-
-    // Update price on form
-    function updateProductSubTotal(item) {
-        var selectedBillingCycle = $('#' + item.name).val();
-        console.log("BillingCycle: " + selectedBillingCycle);
-
-        // Line to change
-        var productRow = $(item).parent().parent().parent().parent();
-
-
-        var price = parseFloat(productRow.children('.product-price').text());
-        var quantity = item.value;
-        console.log("quantity: " + quantity);
-
-        var linePrice = price * quantity;
-        if (selectedBillingCycle === "annual") {
-            linePrice = linePrice * 12;
+    let cartLines = document.getElementsByTagName('tr');
+    var counter = 0;
+    for(let cartLine of cartLines){
+        if(counter !== 0){
+            updateCartLine(cartLine);
         }
-
-        productRow.children('.product-line-price').each(function () {
-            $(this).text(linePrice.toFixed(2));
-        });
-
-
-
-    }
-
-    function recalculateCart()
-    {
-        return true;
+        counter++;
     }
 </script>
+
 @endsection

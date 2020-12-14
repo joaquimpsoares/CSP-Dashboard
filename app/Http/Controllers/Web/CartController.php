@@ -365,7 +365,7 @@ class CartController extends Controller
         foreach ($validate['billing_cycle'] as $key => $id) {
             $cartItem = $cart->products()->wherePivot('id', $key)->first();
             $cartItem->pivot->billing_cycle = $id;
-            $cartItem->pivot->quantity = $id;
+            $cartItem->pivot->quantity = $request->get($key);
             $cartItem->pivot->save();
         }
 

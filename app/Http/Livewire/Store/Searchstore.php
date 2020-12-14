@@ -55,12 +55,12 @@ class Searchstore extends Component
 
                 case 'Customer':
                     $this->instance = $this->user->customer->resellers->first()->provider->instances->pluck('id');
-                    $this->priceList = PriceList::wherein('instance_id',$this->instance )->pluck('id')->toArray();
+                    $this->priceList = $this->user->customer->resellers->first()->price_list_id;
                 break;
                 
                 case 'Reseller':
                     $this->instance = $this->user->reseller->provider->instances->pluck('id');
-                    $this->priceList = PriceList::wherein('instance_id',$this->instance )->pluck('id')->toArray();
+                    $this->priceList = $this->user->reseller->price_list_id;
                 break;
                 
                 default:
@@ -78,6 +78,7 @@ class Searchstore extends Component
         return view('livewire.store.searchstore', 
         [
             'prices' => DB::table('prices')
+            ->where('price_list_id', $this->priceList)
             ->join('products', 'prices.product_sku', '=', 'products.sku')
             ->where('products.category', $this->vendor)
             ->where('prices.product_vendor', $this->category)
