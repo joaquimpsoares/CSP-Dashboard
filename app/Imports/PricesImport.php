@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Price;
+use App\Product;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -17,8 +18,22 @@ class PricesImport implements ToModel, WithHeadingRow, WithBatchInserts
     */
     public function model(Array $row)
     {
-        
-        // Price::updateOrCreate([
+        // dd($row['sku']);
+        // dd(Product::where('sku', $row['sku'])->where('instance_id', $row['instance'])->firstOrFail()->id);
+
+        Price::updateOrCreate([
+            'name'          => $row['name'],
+        ],
+        [
+            'instance'      => $row['instance'],
+            'sku'           => Product::where('sku', $row['sku'])->where('instance_id', $row['instance'])->firstOrFail()->id,
+            'price'         => $row['price'],
+            'msrp'          => $row['msrp'],
+            'currency'      => $row['currency'],
+            'product_vendor'=> $row['vendor'],
+            'priceListId'   => $row['pricelist'],
+        ]);
+        // return new Price([
         //     'name'          => $row['name'],
         //     'sku'           => $row['sku'],
         //     'price'         => $row['price'],
@@ -26,17 +41,8 @@ class PricesImport implements ToModel, WithHeadingRow, WithBatchInserts
         //     'currency'      => $row['currency'],
         //     'product_vendor'=> $row['vendor'],
         //     'priceListId'   => $row['pricelist'],
-        // ]);
-        return new Price([
-            'name'          => $row['name'],
-            'sku'           => $row['sku'],
-            'price'         => $row['price'],
-            'msrp'          => $row['msrp'],
-            'currency'      => $row['currency'],
-            'product_vendor'=> $row['vendor'],
-            'priceListId'   => $row['pricelist'],
 
-        ]);
+        // ]);
     }
 
     public function headingRow(): int

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PriceList extends Model
 {
 
-	
+
 	protected $guarded = [];
 
     public function format()
@@ -28,10 +28,14 @@ class PriceList extends Model
         return $this->hasMany('App\Price');
     }
 
+    // public function instance() {
+	// 	return $this->where('App\Instance', 'id', 'instance_id');
+    // }
+
     public function provider() {
 		return $this->belongsTo('App\Provider', 'id', 'price_list_id');
     }
-    
+
     public function reseller() {
 		return $this->belongsTo('App\Reseller', 'id', 'price_list_id');
     }
@@ -39,7 +43,7 @@ class PriceList extends Model
     public function customer() {
 		return $this->belongsTo('App\Customer', 'id', 'price_list_id');
     }
-    
-    
+
+
 
 }

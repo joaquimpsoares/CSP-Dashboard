@@ -62,6 +62,8 @@ class PriceListController extends Controller
 
                 $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
 
+                dd($products);
+
                 $prices = $priceList->prices;
 
             break;
@@ -114,114 +116,98 @@ class PriceListController extends Controller
 
 
             $updatepriceList = PriceList::create([
-                    'name' => $request->name,
-                    'description' => $request->description,
-                    'instance_id' => $request->instance,
+                'name' => $request->name,
+                'description' => $request->description,
+                'instance_id' => $request->instance,
                 ]);
 
 
                 return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.pricelist_updated_successfully')]);
             }
 
-            public function import(Request $request )
+            public function import(Request $request)
             {
-
-
-                $data = Excel::import(new PricesImport, request()->file('select_file'));
+                // dd($request->all());
+                $data = Excel::import(new PricesImport, request()->file('select_file'), $request->instance_id);
 
                 return back()->withInput(['tab'=>'contact-md']);
-                // Excel::import(new PricesImport, request()->file('select_file'));
 
-                //     try {
+            }
 
-                    // return back();
+            public function store(Request $request)
+            {
 
-                    //     } catch (\Exception $e) {
+                $pricelist = PriceList::find($request->priceList);
 
-                        //             $errorMessage = "message.error";
-                        //             redirect()->back
-                        //             ->with([
-                            //             'alert' => 'danger',
-                            //             'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
-                            //             ]);
-                            //         }
+                // $price = Price::where('price_list_id', $pricelist->id)->get()->map->format();
 
-                            // return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.customer_updated_successfully')]);
-                            // return back()->with('success', 'Excel Data Imported successfully');
-                        }
+                $product = Product::where('sku', $request->sku)->where('instance_id', $pricelist->instance_id)->first();
 
-                        public function store(Request $request)
-                        {
+                dd($product);
 
-                            $pricelist = PriceList::find($request->priceList);
-
-                            // $price = Price::where('price_list_id', $pricelist->id)->get()->map->format();
-
-                            $product = Product::where('sku', $request->sku)->where('instance_id', $pricelist->instance_id)->first();
-
-                            $validatedData = $request->validate([
-                                'sku' => 'required|max:255',
-                                'price' => 'required',
-                                'msrp' => 'required|numeric',
-                                'product_vendor' => 'required',
-                                'currency' => 'required',
-                                ]);
+                $validatedData = $request->validate([
+                    'sku' => 'required|max:255',
+                    'price' => 'required',
+                    'msrp' => 'required|numeric',
+                    'product_vendor' => 'required',
+                    'currency' => 'required',
+                    ]);
 
 
-                                $price = new Price();
-                                $price->name            = $product->name;
-                                $price->price           = $validatedData['price'];
-                                $price->msrp            = $validatedData['msrp'];
-                                $price->product_vendor  = $validatedData['product_vendor'];
-                                $price->currency        = $validatedData['currency'];
-                                $price->instance_id     = $pricelist->instance_id;
-                                $price->price_list_id   = $request->price_list_id;
+                    $price = new Price();
+                    $price->name            = $product->name;
+                    $price->price           = $validatedData['price'];
+                    $price->msrp            = $validatedData['msrp'];
+                    $price->product_vendor  = $validatedData['product_vendor'];
+                    $price->currency        = $validatedData['currency'];
+                    $price->instance_id     = $pricelist->instance_id;
+                    $price->price_list_id   = $request->price_list_id;
 
 
-                                $price->product()->associate($product);
+                    $price->product()->associate($product);
 
-                                $price->pricelist()->associate($pricelist);
+                    $price->pricelist()->associate($pricelist);
 
-                                $price->save();
+                    $price->save();
 
-                                return back()->with('success', 'Excel Data Imported successfully');
+                    return back()->with('success', 'Excel Data Imported successfully');
 
-                            }
-
-
-                            public function clone($id)
-                            {
+                }
 
 
-                                $pricelist = PriceList::find($id);
-
-                                $newClient = $pricelist->replicate();
-                                $newClient->push(); //Push before to get id of $clone
-
-                                foreach($pricelist->prices as $price)
-                                {
-                                    $newClient->prices()->attach($price);
-
-                                }
-
-                                // $newpricelist = $pricelist->replicate();
-                                // // $newpricelist->id = $new_id;
-                                // // $newpricelist->data = $new_data;
-                                $newClient->save();
-
-                                return view('priceList.index', compact('prices'));
-                            }
+                public function clone($id)
+                {
 
 
-                            /*public function getResellerPriceList(Request $request, Reseller $reseller)
-                            {
-                                $userLevel = $this->getUserLevel();
+                    $pricelist = PriceList::find($id);
 
-                            }
+                    $newClient = $pricelist->replicate();
+                    $newClient->push(); //Push before to get id of $clone
 
-                            public function getCustomerPriceList(Request $request, Customer $customer)
-                            {
-                                $userLevel = $this->getUserLevel();
+                    foreach($pricelist->prices as $price)
+                    {
+                        $newClient->prices()->attach($price);
 
-                            }*/
-                        }
+                    }
+
+                    // $newpricelist = $pricelist->replicate();
+                    // // $newpricelist->id = $new_id;
+                    // // $newpricelist->data = $new_data;
+                    $newClient->save();
+
+                    return view('priceList.index', compact('prices'));
+                }
+
+
+                /*public function getResellerPriceList(Request $request, Reseller $reseller)
+                {
+                    $userLevel = $this->getUserLevel();
+
+                }
+
+                public function getCustomerPriceList(Request $request, Customer $customer)
+                {
+                    $userLevel = $this->getUserLevel();
+
+                }*/
+            }
