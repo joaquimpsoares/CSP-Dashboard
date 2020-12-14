@@ -63,7 +63,6 @@
                                                         <th>{{ ucwords(trans_choice('messages.action', 1)) }}</th>
                                                     </tr>
                                                     <tr class="last-product">
-
                                                         <form class="form-horizontal form-bordered" method="POST" action="{{ route('subscription.update', $subscription->id) }}">
                                                             <td>{{$subscription->name}}</td>
                                                             @if ($subscription->products->first()->billing === 'usage')
@@ -92,6 +91,14 @@
                                                                     </select>
                                                                 </div>
                                                             </td>
+                                                            @foreach ($subscription->products->first()->getaddons()->all() as $item)
+                                                            <tr>
+                                                                <td><strong>Add-on:</strong> {{$item->name}}</td>
+                                                                <td>
+                                                                    <input class="form-control" type="number" name="amount" value="{{$item->amount}}">
+                                                                </td>
+                                                                @endforeach
+                                                            </tr>
                                                             <td>
                                                                 <button type="submit" class="btn btn-primary" type="submit">Change</button>
                                                             </td>

@@ -72,8 +72,6 @@ class HomeController extends Controller
                 $provider_id = Auth::getUser()->provider_id;
                 $orders= Order::first();
 
-                // dd($orders);
-
                 $orderMonth = Order::whereMonth(
                     'created_at', '=', Carbon::now()->subMonth()->month
                 );
@@ -111,39 +109,70 @@ class HomeController extends Controller
             case config('app.provider'):
 
                 $provider_id = Auth::getUser()->provider_id;
-                $provider = Provider::where('id', $provider_id)->first();
+                $orders= Order::first();
 
+                // dd($orders);
+
+                $orderMonth = Order::whereMonth(
+                    'created_at', '=', Carbon::now()->subMonth()->month
+                );
+                $countOrders = ($orders->count()-$orderMonth->count());
 
                 $statuses = Status::get();
+                $resellers = $this->resellerRepository->all();
+                $customersweek = Customer::whereMonth(
+                    'created_at', '=', Carbon::now()->subWeekdays('1')
+                )->get();
+
+                $topProducts = OrderProducts::with('Order')->get();
+                // dd($topProducts->order);
+                // foreach($topProducts as $t){
+                    //     dd($t->product->groupBy('name')->get());
+
+                // }
 
 
-                $countries = Country::all();
-                $resellers = $this->resellerRepository->resellersOfProvider($provider);
-                $customers = new Collection();
+                $topProducts = OrderProducts::with(['Product' => function($query){
+                    $query->groupBy('name');
+                }])->get();
 
-                foreach ($resellers as $reseller){
-                    $reseller = Reseller::find($reseller['id']);
-                    $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
-                }
 
-                $reseller = Reseller::get();
-                $countResellers = $reseller->count();
+                return view('home', compact('resellers','orders','countOrders','customersweek','topProducts'));
 
-                $instance = Instance::first();
+                // $provider_id = Auth::getUser()->provider_id;
+                // $provider = Provider::where('id', $provider_id)->first();
 
-                $order = OrderProducts::get();
 
-                $users = User::where('provider_id', $provider->id)->first();
+                // $statuses = Status::get();
 
-                $subscriptions = $this->providerRepository->getSubscriptions($provider);
-                $countCustomers =  $customers->count();
-                $countSubscriptions = $subscriptions->count();
 
-                $countries = Country::all();
-                $providers = $this->providerRepository->all();
-                return view('home', compact('provider','resellers','customers','instance','users',
-                'countries','subscriptions','order','statuses','countResellers',
-                'countCustomers','countSubscriptions','providers','countries'));
+                // $countries = Country::all();
+                // $resellers = $this->resellerRepository->resellersOfProvider($provider);
+                // $customers = new Collection();
+
+                // foreach ($resellers as $reseller){
+                //     $reseller = Reseller::find($reseller['id']);
+                //     $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
+                // }
+
+                // $reseller = Reseller::get();
+                // $countResellers = $reseller->count();
+
+                // $instance = Instance::first();
+
+                // $order = OrderProducts::get();
+
+                // $users = User::where('provider_id', $provider->id)->first();
+
+                // $subscriptions = $this->providerRepository->getSubscriptions($provider);
+                // $countCustomers =  $customers->count();
+                // $countSubscriptions = $subscriptions->count();
+
+                // $countries = Country::all();
+                // $providers = $this->providerRepository->all();
+                // return view('home', compact('provider','resellers','customers','instance','users',
+                // 'countries','subscriptions','order','statuses','countResellers',
+                // 'countCustomers','countSubscriptions','providers','countries'));
 
             break;
 

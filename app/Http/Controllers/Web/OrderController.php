@@ -8,9 +8,10 @@ use App\MicrosoftTenantInfo;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
 use App\Jobs\PlaceOrderMicrosoft;
+use App\Http\Traits\ActivityTrait;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Traits\ActivityTrait;
 use App\Jobs\CreateCustomerMicrosoft;
 use App\Jobs\ImportProductsMicrosoftJob;
 use App\Repositories\OrderRepositoryInterface;
@@ -56,14 +57,17 @@ class OrderController extends Controller
 
 
         if($tt == null){
-        CreateCustomerMicrosoft::withChain([
-            new PlaceOrderMicrosoft($order)
-            ])->dispatch($order)->allOnQueue('PlaceordertoMS');
+
+            Bus::chain([new CreateCustomerMicrosoft($order), new PlaceOrderMicrosoft($order)])->onQueue('PlaceordertoMS')->dispatch();
+
+        // CreateCustomerMicrosoft::withChain([
+        //     new PlaceOrderMicrosoft($order)
+        //     ])->dispatch($order)->allOnQueue('PlaceordertoMS');
 
         }
         else{
 
-        PlaceOrderMicrosoft::dispatch($order)->allOnQueue('PlaceordertoMS');
+        PlaceOrderMicrosoft::dispatch($order)->OnQueue('PlaceordertoMS');
         Log::info('Data to Place order: '.$order);
     }
 

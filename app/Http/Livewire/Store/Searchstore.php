@@ -18,17 +18,17 @@ class Searchstore extends Component
     public $category = " ";
     public $vendor= " ";
     // public $price= " ";
-    
+
     use WithPagination;
-    
+
     public function mount($category, $vendor)
         {
             $this->category = $category;
             $this->vendor = $vendor;
             $this->user = $this->getUser();
-            
+
             $this->level = $this->getUserLevel();
-            
+
             // switch ($this->category) {
             //     case 'kaspersky':
             //         $this->prices = Price::where('product_vendor',$this->category)->first();
@@ -39,30 +39,32 @@ class Searchstore extends Component
             //         break;
 
             //         case 'microsoft':
-                        
+
             //             // $this->priceList = PriceList::wherein('instance_id',$this->instance)
             //             // ->join('products', 'prices.product_sku', '=', 'products.sku')
             //             // ->pluck('id')
             //             // ->toArray();
             //             break;
-                
+
             //     default:
             //         # code...
             //         break;
             // }
-            
+
             switch ($this->level) {
 
                 case 'Customer':
                     $this->instance = $this->user->customer->resellers->first()->provider->instances->pluck('id');
                     $this->priceList = $this->user->customer->resellers->first()->price_list_id;
                 break;
-                
+
                 case 'Reseller':
+
                     $this->instance = $this->user->reseller->provider->instances->pluck('id');
                     $this->priceList = $this->user->reseller->price_list_id;
+
                 break;
-                
+
                 default:
                 return abort(403, __('errors.unauthorized_action'));
             break;
@@ -75,18 +77,24 @@ class Searchstore extends Component
 
     public function render()
     {
-        return view('livewire.store.searchstore', 
-        [
-            'prices' => DB::table('prices')
-            ->where('price_list_id', $this->priceList)
-            ->join('products', 'prices.product_sku', '=', 'products.sku')
-            ->where('products.category', $this->vendor)
-            ->where('prices.product_vendor', $this->category)
-            // ->having('price_list_id', $this->price->price_list_id)
-            ->where('prices.name', 'like', '%' . $this->search . '%')
-            ->orwhere('product_sku', 'LIKE', "%$this->search%")->where('category', $this->category)
-            ->paginate(9),
-            
-            ]);
+        $prices = Price::where('product_vendor', $this->category)
+        ->wherein('instance_id',$this->instance)->where('prices.name', 'like', '%' . $this->search . '%')
+            ->orwhere('product_sku', 'LIKE', "%$this->search%")->get();
+
+        // dd($prices);
+
+        return view('livewire.store.searchstore', compact('prices'));
+        // [
+        //     'prices' => DB::table('prices')
+        //     ->where('price_list_id', $this->priceList)
+        //     ->join('products', 'prices.product_sku', '=', 'products.sku')
+        //     ->where('products.category', $this->vendor)
+        //     ->where('prices.product_vendor', $this->category)
+        //     ->having('price_list_id', $this->price->price_list_id)
+        //     ->where('prices.name', 'like', '%' . $this->search . '%')
+        //     ->orwhere('product_sku', 'LIKE', "%$this->search%")->where('category', $this->category)
+        //     ->paginate(9),
+
+        //     ]);
     }
 }

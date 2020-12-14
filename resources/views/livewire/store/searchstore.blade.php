@@ -26,10 +26,10 @@
                     <div class="badge1">{{$product->category}}</div>
                     @endif
                     <div class="absolute product-tumb">
-                        <img src="{{ asset('images/vendors/' . $product->vendor . '.png') }}"  title="{{ $product->name }}" class="img-fuid" style="max-width: 120px;max-height: 120px;" />
+                        <img src="{{ asset('/images/vendors/' . $product->product_vendor . '.png') }}"  title="{{ $product->name }}" class="img-fuid" style="max-width: 120px;max-height: 120px;" />
                     </div>
                     <div class="product-details">
-                        <span class="product-category">{{ $product->sku }}</span>
+                        <span class="product-category">{{ $product->instance_id }}</span>
                         <h4><a href="">{{ $product->name }}</a></h4>
                         <p class="text">{{ str_limit($product->description, 150) }}</p>
                         <div class="product-bottom-details">
@@ -58,7 +58,7 @@
                 <hr>
                 <div class="col">
                     <span class="float-right">
-                        {{ $prices->links() }}
+                        {{-- {{ $prices->links() }} --}}
                     </span>
                 </div>
             </div>

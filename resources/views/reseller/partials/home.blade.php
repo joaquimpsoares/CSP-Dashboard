@@ -10,7 +10,7 @@
 
 
 <div class="row">
-    <div class="col-lg-4">
+    {{-- <div class="col-lg-4">
         <div class="card">
             <div class="card-body">
                 <div class="row">
@@ -18,7 +18,7 @@
                         <div class="mb-2 fs-18 text-muted">
                             Resellers
                         </div>
-                        {{-- <h1 class="font-weight-bold mb-1">{{$reseller['resellers']->count()}}</h1> --}}
+                        <h1 class="font-weight-bold mb-1">{{$reseller['resellers']->count()}}</h1>
                         <span class="text-primary"><i class="fa fa-arrow-up mr-1"></i> +1.4%</span>
                     </div>
                     <div class="col col-auto">
@@ -29,7 +29,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <div class="col-lg-4">
         <div class="card">
             <div class="card-body">

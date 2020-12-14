@@ -66,13 +66,14 @@
 												</div>
 											</div>
 										</div>
-									</div>
+                                    </div>
+                                    @if(Auth::user()->userLevel->id === 1)
 									<div class="col-xl-12 col-md-12 col-lg-12">
-										<div class="card overflow-hidden">
-											<div class="row">
+                                        <div class="card overflow-hidden">
+                                            <div class="row">
 												<div class="col-xl-8 col-md-12 col-lg-7 pb-5">
-													<div class="card-header pb-50  border-0">
-														<h4 class="card-title">Country Base Profit</h4>
+                                                    <div class="card-header pb-50  border-0">
+                                                        <h4 class="card-title">Country Base Profit</h4>
 													</div>
 													<div id="vmap" class="vmap-width"></div>
 												</div>
@@ -82,7 +83,7 @@
                                                             <tbody>
                                                                 @forelse ($providers as $provider)
 																<tr>
-																	<td class="w-1 text-center"><i class="flag flag-{{strtolower($provider['countrycode'])}}"></i></td>
+                                                                    <td class="w-1 text-center"><i class="flag flag-{{strtolower($provider['countrycode'])}}"></i></td>
 																	<td>{{$provider['country']}} </td>
 																	<td class="text-right"><span class="font-weight-bold">$519.75</span></td>
 																</tr>
@@ -96,6 +97,39 @@
 											</div>
 										</div>
 									</div>
+                                    @endif
+                                    {{-- @dd(Auth::user()->userLevel->id) --}}
+                                    @if(Auth::user()->userLevel->id === 3)
+									<div class="col-xl-12 col-md-12 col-lg-12">
+                                        <div class="card overflow-hidden">
+                                            <div class="row">
+												<div class="col-xl-8 col-md-12 col-lg-7 pb-5">
+                                                    <div class="card-header pb-50  border-0">
+                                                        <h4 class="card-title">Country Base Profit</h4>
+													</div>
+													<div id="vmap" class="vmap-width"></div>
+												</div>
+												<div class="col-xl-4 col-md-12 col-lg-5 pl-0 pt-3 border-left">
+                                                    <div class="countryscroll" id="simplerscroll">
+                                                        <table class="table countrytable">
+                                                            <tbody>
+                                                                @forelse ($resellers as $reseller)
+																<tr>
+                                                                    <td class="w-1 text-center"><i class="flag flag-{{strtolower($reseller['countrycode'])}}"></i></td>
+																	<td>{{$reseller['country']}} </td>
+																	<td class="text-right"><span class="font-weight-bold">$519.75</span></td>
+																</tr>
+                                                                @empty
+
+                                                                @endforelse
+															</tbody>
+														</table>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+                                    @endif
 								</div>
 							</div>
 
