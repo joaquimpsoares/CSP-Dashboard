@@ -24,11 +24,17 @@
 													<path d="M22,9 L17.21,9 L12.83,2.44 C12.64,2.16 12.32,2.02 12,2.02 C11.68,2.02 11.36,2.16 11.17,2.45 L6.79,9 L2,9 C1.45,9 1,9.45 1,10 C1,10.09 1.01,10.18 1.04,10.27 L3.58,19.54 C3.81,20.38 4.58,21 5.5,21 L18.5,21 C19.42,21 20.19,20.38 20.43,19.54 L22.97,10.27 L23,10 C23,9.45 22.55,9 22,9 Z M12,4.8 L14.8,9 L9.2,9 L12,4.8 Z M18.5,19 L5.51,19.01 L3.31,11 L20.7,11 L18.5,19 Z M12,13 C10.9,13 10,13.9 10,15 C10,16.1 10.9,17 12,17 C13.1,17 14,16.1 14,15 C14,13.9 13.1,13 12,13 Z"></path>
 												</svg>
 												<p class=" mb-1 ">All Orders</p>
-												{{-- <h2 class="mb-1 font-weight-bold">{{$providers->count()}}</h2> --}}
-												<span class="mb-1 text-muted"><span class="text-danger"><i class="fa fa-caret-down  mr-1"></i> 43.2</span> than last month</span>
-												<div class="progress progress-sm mt-3 bg-success-transparent">
+                                                <h2 class="mb-1 font-weight-bold">{{$orders->count()}}</h2>
+                                                @if ($orders->count() > $countOrders)
+												<span class="mb-1 text-muted"><span class="text-success"><i class="fa fa-caret-up  mr-1"></i> {{$countOrders}}</span> than last month</span>
+
+                                                @else
+												<span class="mb-1 text-muted"><span class="text-danger"><i class="fa fa-caret-down  mr-1"></i> {{$countOrders}}</span> than last month</span>
+
+                                                @endif
+												{{-- <div class="progress progress-sm mt-3 bg-success-transparent">
 													<div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width: 78%"></div>
-												</div>
+												</div> --}}
 											</div>
 										</div>
 									</div>
@@ -71,65 +77,18 @@
 													<div id="vmap" class="vmap-width"></div>
 												</div>
 												<div class="col-xl-4 col-md-12 col-lg-5 pl-0 pt-3 border-left">
+                                                    <div class="countryscroll" id="simplerscroll">
+                                                        <table class="table countrytable">
+                                                            <tbody>
+                                                                @forelse ($providers as $provider)
+																<tr>
+																	<td class="w-1 text-center"><i class="flag flag-{{strtolower($provider['countrycode'])}}"></i></td>
+																	<td>{{$provider['country']}} </td>
+																	<td class="text-right"><span class="font-weight-bold">$519.75</span></td>
+																</tr>
+                                                                @empty
 
-													<div class="countryscroll" id="simplerscroll">
-														<table class="table countrytable">
-															<tbody>
-																<tr>
-																	<td class="w-1 text-center"><i class="flag flag-us "></i></td>
-																	<td>USA </td>
-																	<td class="text-right"><span class="font-weight-bold">$519.75</span></td>
-																</tr>
-																<tr>
-																	<td><i class="flag flag-cn "></i></td>
-																	<td>Chaina </td>
-																	<td class="text-right"><span class="font-weight-bold">$248.07</span></td>
-																</tr>
-																<tr>
-																	<td><i class="flag flag-de "></i></td>
-																	<td>Germany </td>
-																	<td class="text-right"><span class="font-weight-bold">$190.57</span></td>
-																</tr>
-																<tr>
-																	<td><i class="flag flag-ru "></i></td>
-																	<td>Russia </td>
-																	<td class="text-right"><span class="font-weight-bold">$173.25</span></td>
-																</tr>
-																<tr>
-																	<td><i class="flag flag-in "></i></td>
-																	<td>India </td>
-																	<td class="text-right"><span class="font-weight-bold">$63.00</span></td>
-																</tr>
-																<tr>
-																	<td><i class="flag flag-cn"></i></td>
-																	<td>China</td>
-																	<td class="text-right"><span class="font-weight-bold">$13.00</span></td>
-																</tr>
-																<tr>
-																	<td><i class="flag flag-pk"></i></td>
-																	<td>Pakisthan</td>
-																	<td class="text-right"><span class="font-weight-bold">$43.19</span></td>
-																</tr>
-																<tr>
-																	<td><i class="flag flag-ca"></i></td>
-																	<td>Canada</td>
-																	<td class="text-right"><span class="font-weight-bold">$56.19</span></td>
-																</tr>
-																<tr>
-																	<td><i class="flag flag-ge"></i></td>
-																	<td>Germany</td>
-																	<td class="text-right"><span class="font-weight-bold">$49.00</span></td>
-																</tr>
-																<tr>
-																	<td class="w-1 text-center"><i class="flag flag-us "></i></td>
-																	<td>USA </td>
-																	<td class="text-right"><span class="font-weight-bold">$519.75</span></td>
-																</tr>
-																<tr>
-																	<td><i class="flag flag-cn "></i></td>
-																	<td>Chaina </td>
-																	<td class="text-right"><span class="font-weight-bold">$248.07</span></td>
-																</tr>
+                                                                @endforelse
 															</tbody>
 														</table>
 													</div>
@@ -219,6 +178,10 @@
 									</div>
 									<div class="card-body">
 										<div class="scrollbar h-400" id="scrollbar">
+                                            @foreach ($topProducts as $item)
+                                            {{-- @dd($item->product->groupBy('name')) --}}
+                                            {{-- @dd($item->product->name) --}}
+                                            @endforeach
 											<div class="d-flex mb-5">
 												<a href="#" class="mr-4">
 													<img class="w-8 h-8 rounded shadow" src="{{URL::asset('assets/images/orders/1.jpg')}}" alt="media1">
@@ -343,69 +306,27 @@
 														</tr>
 													</thead>
 													<tbody>
+                                                        @forelse ($orders->where('details', '!=', "Importing MS Products") as $order)
+                                                        {{-- $order->where('details', '!=', "Importing MS Products")->first()->status->name --}}
 														<tr>
-															<td class="font-weight-bold"><img class="w-7 h-7 rounded shadow mr-3" src="{{URL::asset('assets/images/orders/7.jpg')}}" alt="media1"> New Book</td>
+                                                            @foreach ($order->products as $product)
+															<td class="font-weight-bold"><img class="w-7 h-7 rounded shadow mr-3" src="{{URL::asset('assets/images/orders/7.jpg')}}" alt="media1"> {{$product->name}}</td>
+                                                            @endforeach
 															<td>#12323423</td>
 															<td>11th July, 10am</td>
-															<td class="font-weight-bold">$13,206</td>
-															<td><span class="badge badge-primary badge-pill">Completed</span></td>
+                                                            <td class="font-weight-bold">$13,206</td>
+                                                            @if ($order->status->name == "Completed")
+															<td><span class="badge badge-primary badge-pill">{{$order->status->name}}</span></td>
+                                                            @elseif ($order->status->name == "Failed")
+                                                            <td><span class="badge badge-danger badge-pill">{{$order->status->name}}</span></td>
+                                                            @elseif ($order->status->name == "Order Placed")
+                                                            <td><span class="badge badge-warning badge-pill">{{$order->status->name}}</span></td>
+                                                            @endif
 														</tr>
-														<tr>
-															<td class="font-weight-bold"><img class="w-7 h-7 rounded shadow mr-3" src="{{URL::asset('assets/images/orders/8.jpg')}}" alt="media1"> New Bowl</td>
-															<td>#26762768</td>
-															<td>11th July, 10am</td>
-															<td class="font-weight-bold">$13,206</td>
-															<td><span class="badge badge-warning badge-pill">Pending</span></td>
-														</tr>
-														<tr>
-															<td class="font-weight-bold"><img class="w-7 h-7 rounded shadow mr-3" src="{{URL::asset('assets/images/orders/9.jpg')}}" alt="media1"> Modal Car</td>
-															<td>#76273277</td>
-															<td>11th July, 10am</td>
-															<td class="font-weight-bold">$13,206</td>
-															<td><span class="badge badge-primary badge-pill">Completed</span></td>
-														</tr>
-														<tr>
-															<td class="font-weight-bold"><img class="w-7 h-7 rounded shadow mr-3" src="{{URL::asset('assets/images/orders/10.jpg')}}" alt="media1"> Headset</td>
-															<td>#67237267</td>
-															<td>11th July, 10am</td>
-															<td class="font-weight-bold">$13,206</td>
-															<td><span class="badge badge-danger badge-pill">Declined</span></td>
-														</tr>
-														<tr>
-															<td class="font-weight-bold"><img class="w-7 h-7 rounded shadow mr-3" src="{{URL::asset('assets/images/orders/11.jpg')}}" alt="media1"> New Headset</td>
-															<td>#561527167</td>
-															<td>11th July, 10am</td>
-															<td class="font-weight-bold">$13,206</td>
-															<td><span class="badge badge-danger badge-pill">Declined</span></td>
-														</tr>
-														<tr>
-															<td class="font-weight-bold"><img class="w-7 h-7 rounded shadow mr-3" src="{{URL::asset('assets/images/orders/12.jpg')}}" alt="media1"> Watch</td>
-															<td>#12323423</td>
-															<td>11th July, 10am</td>
-															<td class="font-weight-bold">$13,206</td>
-															<td><span class="badge badge-primary badge-pill">Completed</span></td>
-														</tr>
-														<tr>
-															<td class="font-weight-bold"><img class="w-7 h-7 rounded shadow mr-3" src="{{URL::asset('assets/images/orders/13.jpg')}}" alt="media1"> Branded Shoes</td>
-															<td>#26762768</td>
-															<td>11th July, 10am</td>
-															<td class="font-weight-bold">$13,206</td>
-															<td><span class="badge badge-warning badge-pill">Pending</span></td>
-														</tr>
-														<tr>
-															<td class="font-weight-bold"><img class="w-7 h-7 rounded shadow mr-3" src="{{URL::asset('assets/images/orders/14.jpg')}}" alt="media1"> New Modal shoe</td>
-															<td>#12323423</td>
-															<td>11th July, 10am</td>
-															<td class="font-weight-bold">$13,206</td>
-															<td><span class="badge badge-primary badge-pill">Completed</span></td>
-														</tr>
-														<tr>
-															<td class="font-weight-bold"><img class="w-7 h-7 rounded shadow mr-3" src="{{URL::asset('assets/images/orders/5.jpg')}}" alt="media1"> Branded Shoes</td>
-															<td>#26762768</td>
-															<td>11th July, 10am</td>
-															<td class="font-weight-bold">$13,206</td>
-															<td><span class="badge badge-warning badge-pill">Pending</span></td>
-														</tr>
+
+                                                        @empty
+
+                                                        @endforelse
 													</tbody>
 												</table>
 											</div>
@@ -435,60 +356,19 @@
 											<div class="table-responsive">
 												<table class="table transaction-table mb-0">
 													<tbody>
+                                                        @forelse ($customersweek as $item)
 														<tr>
 															<td class="d-flex">
 																<img class="w-7 h-7 rounded shadow mr-3" src="{{URL::asset('assets/images/users/1.jpg')}}" alt="media1">
 																<div class="mt-2">
-																	<h6 class="mb-1 font-weight-semibold">John Wisely</h6>
-																	<small class="text-muted">1340 Gills Rd, VA, 23139</small>
+																	<h6 class="mb-1 font-weight-semibold">{{$item->company_name}}</h6>
+																	<small class="text-muted">{{$item->country->name}}</small>
 																</div>
 															</td>
 														</tr>
-														<tr>
-															<td class="d-flex">
-																<img class="w-7 h-7 rounded shadow mr-3" src="{{URL::asset('assets/images/users/4.jpg')}}" alt="media1">
-																<div class="mt-2">
-																	<h6 class="mb-1 font-weight-semibold">Nicki Fanning</h6>
-																	<small class="text-muted">408 1st St, NC, 28468</small>
-																</div>
-															</td>
-														</tr>
-														<tr>
-															<td class="d-flex">
-																<img class="w-7 h-7 rounded shadow mr-3" src="{{URL::asset('assets/images/users/5.jpg')}}" alt="media1">
-																<div class="mt-2">
-																	<h6 class="mb-1 font-weight-semibold">Lula Malone</h6>
-																	<small class="text-muted">104 Jefferson Ln, TN, 37643</small>
-																</div>
-															</td>
-														</tr>
-														<tr>
-															<td class="d-flex">
-																<img class="w-7 h-7 rounded shadow mr-3" src="{{URL::asset('assets/images/users/2.jpg')}}" alt="media1">
-																<div class="mt-2">
-																	<h6 class="mb-1 font-weight-semibold">Rina Summa</h6>
-																	<small class="text-muted">49 Scott Dr, NY, 10941</small>
-																</div>
-															</td>
-														</tr>
-														<tr>
-															<td class="d-flex">
-																<img class="w-7 h-7 rounded shadow mr-3" src="{{URL::asset('assets/images/users/10.jpg')}}" alt="media1">
-																<div class="mt-2">
-																	<h6 class="mb-1 font-weight-semibold">Yadira Acklin</h6>
-																	<small class="text-muted">507 E 22nd St S, IA, 50208</small>
-																</div>
-															</td>
-														</tr>
-														<tr>
-															<td class="d-flex">
-																<img class="w-7 h-7 rounded shadow mr-3" src="{{URL::asset('assets/images/users/12.jpg')}}" alt="media1">
-																<div class="mt-2">
-																	<h6 class="mb-1 font-weight-semibold">Joanna Latta</h6>
-																	<small class="text-muted">511 N Walnut St, LA, 71082</small>
-																</div>
-															</td>
-														</tr>
+                                                        @empty
+
+                                                        @endforelse
 													</tbody>
 												</table>
 											</div>
@@ -621,6 +501,7 @@
 				</div><!-- end app-content-->
 			</div>
 @endsection
+
 @section('js')
 <!-- ECharts js -->
 <script src="{{URL::asset('assets/plugins/echarts/echarts.js')}}"></script>

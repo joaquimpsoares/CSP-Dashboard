@@ -7,9 +7,10 @@
                     <div style="flex-grow: 31;">
                     </div>
                     <div>
-                        {{-- <form method="post" enctype="multipart/form-data" action="{{ url('/pricelist/import') }}">
+                        <form method="post" enctype="multipart/form-data" action="{{ url('/pricelist/import') }}">
                             {{ csrf_field() }}
                             <div class="form-group">
+                                <input type="hidden" name="instance_id" value="{{$priceList->instance_id}}">
                                 <tr>
                                     <td width="40%" align="right"><label>Select File for Upload</label></td>
                                     <td width="30">
@@ -26,7 +27,9 @@
                                 </tr>
                             </table>
                         </div>
-                    </form> --}}
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+
+                    </form>
                     <a href="" data-toggle="modal" data-target="#createCustomer" class="btn btn-primary"><i class="fe fe-plus mr-2"></i>{{ ucwords(__('messages.add_price')) }}</a>
                 </div>
             </div>
