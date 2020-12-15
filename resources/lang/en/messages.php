@@ -240,7 +240,7 @@ return [
     'user_log_information' => 'user log information',
     'log_activity_information' => 'log activity information',
     'queue_monitor' => 'queue monitor',
-    '' => '',
+    'mpnid' => 'mpn id',
     '' => '',
     '' => '',
     '' => '',
