@@ -22,10 +22,6 @@
                         <div class="col-md-12 mb-2">
                             <label for="country">{{ucwords(trans_choice('messages.country', 1))}}</label>
                             <div class="input-group mb-3">
-                                {{-- <div class="input-group-prepend">
-                                    <label class="input-group-text" for="country_id"><i class="fa fa-plane" aria-hidden="true"></i>
-                                    </label>
-                                </div> --}}
                                 <select name="country_id" class="search-box" id="country_id" required>
                                     <option value="{{$customer->country->id}}" selected>{{$customer->country->name}}</option>
                                     @foreach ($countries as $country)
@@ -61,7 +57,6 @@
                                 Zip code required.
                             </div>
                         </div>
-
                     </div>
                     <hr>
                     <div class="row">

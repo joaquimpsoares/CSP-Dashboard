@@ -23,6 +23,7 @@ class Reseller extends Model
             'company_name' => $this->company_name,
             'address_1' => $this->address_1,
             'address_2' => $this->address_2,
+            'mpnid' => $this->mpnid,
             'country' => $this->country->name,
             'countrycode' => $this->country->iso_3166_2,
             'city' => $this->city,

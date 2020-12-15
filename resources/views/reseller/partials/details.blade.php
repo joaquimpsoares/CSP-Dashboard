@@ -20,11 +20,7 @@
                                 <div class="col-md-12 mb-2">
                                     <label for="country">{{ucwords(trans_choice('messages.country', 1))}}</label>
                                     <div class="input-group">
-                                        {{-- <div class="input-group-prepend">
-                                            <label class="input-group-text" for="country_id"><i class="fa fa-plane" aria-hidden="true"></i>
-                                            </label>
-                                        </div> --}}
-                                        <select name="country_id" id="country_id" class="form-control SlectBox" sf-validate="required" required>
+                                        <select name="country_id" id="country_id" class="search-box" sf-validate="required" required>
                                             <option value="{{$reseller->country->id}}" selected>{{$reseller->country->name}}</option>
                                             @foreach ($countries as $country)
                                             <option value="{{$country->id}}">{{$country->name}}</option>
@@ -58,6 +54,12 @@
                                     <div class="invalid-feedback">
                                         Zip code required.
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-6 mb-4">
+                                    <label for="address-2" class="">{{ucwords(trans_choice('messages.mpnid', 1))}}</label>
+                                    <input type="text" id="mpnid" name="mpnid" class="form-control mb-4" value="{{$reseller->mpnid}}">
                                 </div>
                             </div>
                             <hr>

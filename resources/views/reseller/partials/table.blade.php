@@ -27,6 +27,7 @@
                             <th>{{ ucwords(trans_choice('messages.customer', 2)) }}</th>
                             <th>{{ ucwords(trans_choice('messages.provider', 1)) }}</th>
                             <th>{{ ucwords(trans_choice('messages.country', 1)) }}</th>
+                            <th>{{ ucwords(trans_choice('messages.mpn', 1)) }}</th>
                             <th>{{ ucwords(trans_choice('messages.created_at', 1)) }}</th>
                             <th>{{ ucwords(trans_choice('messages.action', 1)) }}</th>
                         </tr>
@@ -39,6 +40,11 @@
                             <td>{{ $reseller['customers'] }}</td>
                         <td><a href="{{$reseller['provider']->format()['path']}}">{{ $reseller['provider']['company_name'] }}</td>
                             <td>{{ $reseller['country'] }}</td>
+                            @if($reseller['provider']['instances']->first()['external_type'] == 'indirect')
+                            <td>{{ $reseller['mpnid'] }}</td>
+                            @else
+                            <td></td>
+                            @endif
                             <td>{{ $reseller['created_at'] }}</td>
                             <td style="width: 150px">
                                 @include('partials.actions', ['model' => $reseller, 'modelo' => 'reseller'])
