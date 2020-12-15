@@ -18,9 +18,10 @@ class Failedjobs extends Component
 
     public function render()
     {
-    //     return view('livewire.jobs.failedjobs',[
-    //         'jobs' => Jobs::all(),
-    //         'failedJobs' => DB::table('failed_jobs')->get(),
-    //     ]);
-    //    }
+        //     return view('livewire.jobs.failedjobs',[
+            //         'jobs' => Jobs::all(),
+            //         'failedJobs' => DB::table('failed_jobs')->get(),
+            //     ]);
+            //    }
+    }
 }
