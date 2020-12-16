@@ -53,7 +53,7 @@ class ResellerRepository implements ResellerRepositoryInterface
 
 	public function create($validate, $user)
     {
-
+        dd($validate);
 		$newReseller =  Reseller::create([
             'company_name' => $validate['company_name'],
             'nif' => $validate['nif'],
@@ -82,7 +82,15 @@ class ResellerRepository implements ResellerRepositoryInterface
 
 		return $resellers;
 
-	}
+    }
+
+    public function CustomerofReseller(Reseller $reseller)
+    {
+
+        $reseller = $reseller->customers;
+
+        return $reseller;
+    }
 
 	public function getSubscriptions(Reseller $reseller){
 

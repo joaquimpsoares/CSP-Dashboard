@@ -11,7 +11,9 @@ interface ResellerRepositoryInterface
 
 	public function create($reseller, $user);
 
-	public function resellersOfProvider(Provider $provider);
+    public function resellersOfProvider(Provider $provider);
+
+    public function CustomerofReseller(Reseller $reseller);
 
 	public function getSubscriptions(Reseller $reseller);
 

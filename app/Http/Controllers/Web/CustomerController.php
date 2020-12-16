@@ -171,6 +171,7 @@ class CustomerController extends Controller
         $licensesCount = $subscriptions->sum('amount');
 
         $serviceCosts = $this->CustomerServiceCosts($customer);
+        // dd($serviceCosts);
 
         return view('customer.show', compact('licensesCount','costs','customer','countries','subscriptions','users','statuses','serviceCosts'));
 
@@ -179,7 +180,7 @@ class CustomerController extends Controller
     Public function CustomerServiceCosts($customer)
     {
 
-        $instance = Instance::where('id', '3')->first();
+        $instance =session()->get('instance_id');
 
         try {
             $customer = new TagydesCustomer([
@@ -198,31 +199,25 @@ class CustomerController extends Controller
         }
     }
 
-    Public function serviceCostsLineitems($customer)
+    Public function serviceCostsLineitems($id)
     {
 
-        $customer = Customer::find($customer);
-        $instance = Instance::where('id', '3')->first();
+        $instance = session()->get('instance_id');
 
-        try {
             $customer = new TagydesCustomer([
-                'id' => $customer->microsoftTenantInfo->first()->tenant_id,
+                'id' => $id,
                 'username' => 'bill@tagydes.com',
                 'password' => 'blabla',
                 'firstName' => 'Nombre',
                 'lastName' => 'Apellido',
                 'email' => 'bill@tagydes.com',
                 ]);
+
         $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCostsLineitems($customer);
 
         return $resources;
 
-        } catch (\Throwable $th) {
 
-            // return ($th->getMessage());
-            // with(['success', 'message' => $th->getMessage()]);
-
-        }
 
     }
 

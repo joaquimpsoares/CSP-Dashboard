@@ -2,23 +2,52 @@
 
 namespace App\Http\Controllers\web;
 
-use Carbon\Carbon;
-use App\AzureResource;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\ScheduleNotifyAzure;
-use App\Http\Controllers\Controller;
-use Symfony\Component\HttpFoundation\Request;
 use App\Customer;
 use App\Instance;
+use App\Reseller;
+use Carbon\Carbon;
 use App\Subscription;
+use App\AzureResource;
+use App\Mail\ScheduleNotifyAzure;
+use App\Http\Controllers\Controller;
+use App\MicrosoftTenantInfo;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Symfony\Component\HttpFoundation\Request;
+use App\Repositories\OrderRepositoryInterface;
+use App\Repositories\CustomerRepositoryInterface;
+use App\Repositories\ProviderRepositoryInterface;
+use App\Repositories\ResellerRepositoryInterface;
+use App\Repositories\SubscriptionRepositoryInterface;
+use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
 // use Tagydes\MicrosoftConnection\Repositories\AzureResource\RestV1AzureResourceRepository;
 
 
+
+
 class AnalyticController extends Controller
 {
+
+
+    private $resellerRepository;
+
+    public function __construct(
+        ResellerRepositoryInterface $resellerRepository,
+        OrderRepositoryInterface $orderRepository,
+        CustomerRepositoryInterface $customerRepository,
+        SubscriptionRepositoryInterface $subscriptionRepository,
+        ProviderRepositoryInterface $providerRepository)
+    {
+        $this->resellerRepository = $resellerRepository;
+        $this->customerRepository = $customerRepository;
+        $this->subscriptionRepository = $subscriptionRepository;
+        $this->providerRepository = $providerRepository;
+        $this->orderRepository = $orderRepository;
+    }
+
     /**
     * Display a listing of the resource.
     *
@@ -303,17 +332,17 @@ class AnalyticController extends Controller
 
 
 
-            /**
-            * Update the specified resource in storage.
-            *
-            * @param  \Illuminate\Http\Request  $request
-            * @param  int  $id
-            * @return \Illuminate\Http\Response
-            */
-            public function update(Request $request, $id)
-            {
-                //
-            }
+        /**
+        * Update the specified resource in storage.
+        *
+        * @param  \Illuminate\Http\Request  $request
+        * @param  int  $id
+        * @return \Illuminate\Http\Response
+        */
+        public function update(Request $request, $id)
+        {
+            //
+        }
 
         /**
         * Remove the specified resource from storage.
@@ -325,4 +354,57 @@ class AnalyticController extends Controller
         {
             //
         }
+
+
+        /**
+        * Remove the specified resource from storage.
+        *
+        * @param  int  $id
+        * @return \Illuminate\Http\Response
+        */
+        public function licenses()
+        {
+            $reseller = Auth::user()->provider->resellers->first();
+
+            $customer = $this->resellerRepository->CustomerofReseller($reseller);
+
+            $serviceCosts = $customer->map(function($item, $key) {
+
+                $tenant = $item->microsoftTenantInfo->first()->tenant_id;
+
+                $serviceCosts = $this->CustomerServiceCosts($tenant);
+
+                return ($serviceCosts);
+            });
+
+            return view('analytics.licenses', compact('serviceCosts', 'customer'));
+        }
+
+        /**
+         * Undocumented function
+         *
+         * @param [type] $customer
+         * @return void
+         */
+        Public function CustomerServiceCosts($customer)
+    {
+
+        $instance = session()->get('instance_id');
+
+        try {
+        $customer = new TagydesCustomer([
+            'id' => $customer,
+            'username' => 'bill@tagydes.com',
+            'password' => 'blabla',
+            'firstName' => 'Nombre',
+            'lastName' => 'Apellido',
+            'email' => 'bill@tagydes.com',
+        ]);
+        $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCosts($customer);
+        return $resources;
+
+        } catch (\Throwable $th) {
+
+        }
+    }
     }

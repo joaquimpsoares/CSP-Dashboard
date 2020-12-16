@@ -242,7 +242,7 @@ return [
     'queue_monitor' => 'queue monitor',
     'mpnid' => 'mpn id'|'mpn',
     'mpn' => 'mpn id|mpn',
-    '' => '',
+    'license_based' => 'license based',
     '' => '',
     '' => '',
     '' => '',
