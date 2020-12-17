@@ -34,6 +34,6 @@ class LogSuccessfulLogin
     	$log['ip'] = Request::ip();
     	$log['agent'] = Request::header('user-agent');
     	$log['user_id'] = auth()->check() ? auth()->user()->id : 1;
-    	LogActivityModel::create($log);
+        LogActivityModel::create($log);
     }
 }

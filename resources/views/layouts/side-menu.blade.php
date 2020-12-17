@@ -69,6 +69,7 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
             </a>
             <ul class="slide-menu">
                 <li><a href="{{ url('/' . $page='analytics') }}" class="slide-item">{{ ucwords(trans_choice('messages.azure_analytic', 1)) }}</a></li>
+                <li><a href="{{ url('/' . $page='analytics/licenses') }}" class="slide-item">{{ ucwords(trans_choice('messages.license_based', 1)) }}</a></li>
             </ul>
         </li>
         {{-- @endcan --}}

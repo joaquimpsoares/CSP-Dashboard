@@ -166,7 +166,6 @@ class CustomerRepository implements CustomerRepositoryInterface
         return $reseller;
     }
 
-
     public function getSubscriptions(Customer $customer)
     {
 

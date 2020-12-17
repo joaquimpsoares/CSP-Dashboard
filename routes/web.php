@@ -47,6 +47,12 @@ Route::get('/analytics/update', [
 	'as' => 'analytics.update'
 ]);
 
+Route::get('/analytics/licenses', [
+	'uses' => 'AnalyticController@licenses',
+	'as' => 'analytics.licenses'
+]);
+
+
 Route::get('/customer/costs', [
 	'uses' => 'CustomerController@CustomerServiceCosts',
 	'as' => 'customer.costs'
@@ -390,6 +396,8 @@ Route::group(['middleware' => 'auth'], function () {
 	// Routes that platform managers, providers, resellers and customers can access
 	Route::group(['middleware' => ['role:Super Admin|Admin|Provider|Reseller|Sub Reseller|Customer']], function () {
 
+        Route::get('/customer/serviceCostsLineitems/{id}', 'CustomerController@serviceCostsLineitems')
+        ->name('customer.serviceCostsLineitems');
 		Route::group(['middleware' => ['check_customer']], function () {
 
 
@@ -397,9 +405,6 @@ Route::group(['middleware' => 'auth'], function () {
 			->middleware('permission:' . config('app.customer_show'), 'check_customer')
             ->name('customer.show');
 
-            Route::get('/customer/serviceCostsLineitems/{id}', 'CustomerController@serviceCostsLineitems')
-            ->middleware('permission:' . config('app.customer_show'), 'check_customer')
-            ->name('customer.serviceCostsLineitems');
 
 
 //need to check permissions has a reseller to be able tp edit.... customer_update
