@@ -215,6 +215,7 @@ public function update(Request $request, Subscription $subscription)
                 Log::info('License changed: '.$request->amount);
             } catch (Exception $e) {
                 Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+                return Redirect::back()->with('danger','Error Placing order to Microsoft: '.$e->getMessage());
             }
         }elseif ($status->isempty() &&  !$billing_period->isempty() && $amount->isempty()){ //Change billing period
             try{
