@@ -187,7 +187,7 @@ public function update(Request $request, Subscription $subscription)
     // Log::info('Data to Place order: '.$order);
 
     $subscriptions = Subscription::findOrFail($subscription->id);
-    $instance = $subscription->instance_id;
+    $instance = Instance::where('id', $subscription->instance_id)->first();
 
     $this->validate($request, [
         'amount' => 'required|integer',
@@ -205,67 +205,69 @@ public function update(Request $request, Subscription $subscription)
             'currency'      => $subscriptions->currency,
             'billingCycle'  => $subscriptions->billing_period,
             'created_at'    => $subscriptions->created_at->__toString(),
-        ]);
+            ]);
 
-        if($status->isempty() &&  $billing_period->isempty() && !$amount->isempty()){ //change only amount
-            try{
-                $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->
-                update($subscription, ['quantity' => $request->amount]);
-                $subscriptions->update(['amount'=> $request->amount]);
-                Log::info('License changed: '.$request->amount);
-            } catch (Exception $e) {
-                Log::info('Error Placing order to Microsoft: '.$e->getMessage());
-                return Redirect::back()->with('danger','Error Placing order to Microsoft: '.$e->getMessage());
-            }
-        }elseif ($status->isempty() &&  !$billing_period->isempty() && $amount->isempty()){ //Change billing period
-            try{
-                $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->changeBillingCycle($subscription, $request->billing_period);
-                $subscriptions->update(['billing_period'=> $request->billing_period]);
-                Log::info('Billing Cycle changed: '.$request->billing_period);
-
-            } catch (Exception $e) {
-                Log::info('Error Placing order to Microsoft: '.$e->getMessage());
-            }
-        }elseif ($status->isempty() &&  !$billing_period->isempty() && !$amount->isempty()){ //Change billing period AND AMOUNT
-            try{
-                $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->changeBillingCycle($subscription, $request->billing_period);
-                $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->update($subscription, ['quantity' => $request->amount]);
-                $subscriptions->update([
-                    'billing_period'=> $request->billing_period,
-                    'amount'=> $request->amount
-                    ]);
-                    Log::info('Billing Cycle changed To: '.$request->billing_period. "and amount changed to ". $request->amount);
-
-                } catch (Exception $e) {
-                    Log::info('Error Placing order to Microsoft: '.$e->getMessage());
-                }
-            }elseif(!$status->isempty()){
+            if($status->isempty() &&  $billing_period->isempty() && !$amount->isempty()){ //change only amount
                 try{
-
-                    $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token) //change status only
-                    ->update($subscription, ['status' => $request->status]);
-
-
-                    if ($request->status == 'active') {
-                        $request->merge(['status' => 1]);
-                    }else {
-                        $request->merge(['status' => 2]);
-                    }
-                    $tt = $subscriptions->update(['status_id' => $request->status]);
-                    Log::info('Status changed: '.$request->status);
+                    $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->
+                    update($subscription, ['quantity' => $request->amount]);
+                    $subscriptions->update(['amount'=> $request->amount]);
+                    Log::info('License changed: '.$request->amount);
+                } catch (Exception $e) {
+                    Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+                    return Redirect::back()->with('danger','Error Placing order to Microsoft: '.$e->getMessage());
+                }
+            }elseif ($status->isempty() &&  !$billing_period->isempty() && $amount->isempty()){ //Change billing period
+                try{
+                    $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->changeBillingCycle($subscription, $request->billing_period);
+                    $subscriptions->update(['billing_period'=> $request->billing_period]);
+                    Log::info('Billing Cycle changed: '.$request->billing_period);
 
                 } catch (Exception $e) {
                     Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+                    return Redirect::back()->with('danger','Error Placing order to Microsoft: '.$e->getMessage());
                 }
-            }else{
+            }elseif ($status->isempty() &&  !$billing_period->isempty() && !$amount->isempty()){ //Change billing period AND AMOUNT
+                try{
+                    $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->changeBillingCycle($subscription, $request->billing_period);
+                    $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->update($subscription, ['quantity' => $request->amount]);
+                    $subscriptions->update([
+                        'billing_period'=> $request->billing_period,
+                        'amount'=> $request->amount
+                        ]);
+                        Log::info('Billing Cycle changed To: '.$request->billing_period. "and amount changed to ". $request->amount);
 
-                return Redirect::back()->with('danger','nothing to do');
+                    } catch (Exception $e) {
+                        return Redirect::back()->with('danger','Error Placing order to Microsoft: '.$e->getMessage());
+                        Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+                    }
+                }elseif(!$status->isempty()){
+                    try{
+
+                        $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token) //change status only
+                        ->update($subscription, ['status' => $request->status]);
+
+                        if ($request->status == 'active') {
+                            $request->merge(['status' => 1]);
+                        }else {
+                            $request->merge(['status' => 2]);
+                        }
+                        $tt = $subscriptions->update(['status_id' => $request->status]);
+                        Log::info('Status changed: '.$request->status);
+
+                    } catch (Exception $e) {
+                        return Redirect::back()->with('danger','Error Placing order to Microsoft: '.$e->getMessage());
+                        Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+                    }
+                }else{
+
+                    return Redirect::back()->with('danger','nothing to do');
+                }
+
+
+                return redirect()->back()->with('success', 'Subscription updated succesfully');
+
             }
-
-
-            return redirect()->back()->with('success', 'Subscription updated succesfully');
-
-        }
 
 
 
