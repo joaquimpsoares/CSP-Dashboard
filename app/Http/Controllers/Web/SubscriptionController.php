@@ -189,6 +189,11 @@ public function update(Request $request, Subscription $subscription)
     $subscriptions = Subscription::findOrFail($subscription->id);
     $instance = Instance::where('id', $subscription->instance_id)->first();
 
+    Log::info('Subscription: '.$subscriptions);
+
+    Log::info('Instance: '.$instance);
+
+
     $this->validate($request, [
         'amount' => 'required|integer',
         ]);
@@ -207,11 +212,14 @@ public function update(Request $request, Subscription $subscription)
             'created_at'    => $subscriptions->created_at->__toString(),
             ]);
 
+            Log::info('MS subscriptions: '.$subscription);
+
             if($status->isempty() &&  $billing_period->isempty() && !$amount->isempty()){ //change only amount
                 try{
                     $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->
                     update($subscription, ['quantity' => $request->amount]);
                     $subscriptions->update(['amount'=> $request->amount]);
+                    Log::info('License changed: '.$update);
                     Log::info('License changed: '.$request->amount);
                 } catch (Exception $e) {
                     Log::info('Error Placing order to Microsoft: '.$e->getMessage());
