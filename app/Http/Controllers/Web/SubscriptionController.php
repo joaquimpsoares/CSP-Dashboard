@@ -187,7 +187,7 @@ public function update(Request $request, Subscription $subscription)
     // Log::info('Data to Place order: '.$order);
 
     $subscriptions = Subscription::findOrFail($subscription->id);
-    $instance = $subscription->tenant_id;
+    $instance = $subscription->instance_id;
 
     $this->validate($request, [
         'amount' => 'required|integer',
