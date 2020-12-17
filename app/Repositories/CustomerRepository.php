@@ -143,6 +143,10 @@ class CustomerRepository implements CustomerRepositoryInterface
 
                 break;
 
+                case config('app.customer'):
+                    return in_array($user->id, $customer->users->pluck('id')->toArray());
+                break;
+
                 default:
                 return false;
 
