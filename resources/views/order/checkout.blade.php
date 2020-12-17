@@ -40,79 +40,93 @@
 									</div>
 									<div class="tab-content pt-4">
 										@if(Auth::user()->userLevel->name !== config('app.customer'))
-											<div class="row">
-												<div class="col-sm-6">
-													<hr>
-													<h5>
-														Create new customer for this purchase</label>
-													</h5>
-													<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCustomer">
-														{{ ucwords(trans_choice('messages.new_customer', 1)) }}
-													</button>
-													<hr>
+										<div class="row">
+											<div class="col-sm-6">
+												<hr>
+												<h5>
+													Create new customer for this purchase</label>
+												</h5>
+												<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCustomer">
+													{{ ucwords(trans_choice('messages.new_customer', 1)) }}
+												</button>
+												<hr>
 
-													<!-- Modal -->
-													<div class="modal fade" id="createCustomer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-														<div class="modal-dialog modal-xl">
-															<div class="modal-content">
-																<form method="POST" action="{{ route('cart.customer.store') }}" class="col s12" id="createCustomer">
-																	@csrf
-																	<input type="hidden" name="cart" value="{{ $cart->token }}">
-																	<div class="modal-header">
-																		<h5 class="modal-title" id="exampleModalLabel">
-																			{{ ucwords(trans_choice('messages.new_customer', 1)) }}
-																		</h5>
-																		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																			<span aria-hidden="true">&times;</span>
-																		</button>
-																	</div>
-																	<div class="modal-body">
-																		@include('partials.messages')
-																		@include('order.partials.create_customer')
-																	</div>
-																	<div class="modal-footer">
-																		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-																		<button type="submit" class="btn btn-primary" >Save changes</button>
-																	</div>
-																</form>
-															</div>
+												<!-- Modal -->
+												<div class="modal fade" id="createCustomer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+													<div class="modal-dialog modal-xl">
+														<div class="modal-content">
+															<form method="POST" action="{{ route('cart.customer.store') }}" class="col s12" id="createCustomer">
+																@csrf
+																<input type="hidden" name="cart" value="{{ $cart->token }}">
+																<div class="modal-header">
+																	<h5 class="modal-title" id="exampleModalLabel">
+																		{{ ucwords(trans_choice('messages.new_customer', 1)) }}
+																	</h5>
+																	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																		<span aria-hidden="true">&times;</span>
+																	</button>
+																</div>
+																<div class="modal-body">
+																	@include('partials.messages')
+																	@include('order.partials.create_customer')
+																</div>
+																<div class="modal-footer">
+																	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+																	<button type="submit" class="btn btn-primary">Save changes</button>
+																</div>
+															</form>
 														</div>
 													</div>
 												</div>
-												<div class="col-sm-6">
-													<form action="{{ route('cart.add_customer') }}" method="post">
-														<div class="row">
-															@csrf
-															<input type="hidden" name="cart" value="{{ $cart->token }}">
-															<div class="col">
-																<hr>
-																<h5>
-																	Select existing customer for this purchase</label>
-																</h5>
-																<select class="" name="customer_id" >
-																	@foreach($customers as $customer)
-																	<option value="{{ $customer['id'] }}" @if($cart->customer && $cart->customer->id == $customer['id']) selected="selected" @endif>{{ $customer['company_name'] }}</option>
-																	@endforeach
-																</select>
+											</div>
+											<div class="col-sm-6">
+												<form action="{{ route('cart.add_customer') }}" method="post">
+													<div class="row">
+														@csrf
+														<input type="hidden" name="cart" value="{{ $cart->token }}">
+														<div class="col">
+															<hr>
+															<h5>
+																Select existing customer for this purchase</label>
+															</h5>
+															<select class="" name="customer_id">
+																@foreach($customers as $customer)
+																<option value="{{ $customer['id'] }}" @if($cart->customer && $cart->customer->id == $customer['id']) selected="selected" @endif>{{ $customer['company_name'] }}</option>
+																@endforeach
+															</select>
 
-															</div>
 														</div>
-														<hr>
-														<br>
-														<br>
-														<br>
-														<br>
-														<br>
-														<div class="float-sm-right">
-															<div class="col-sm-6">
-																<button class="main_btn">{{ ucwords(trans_choice('messages.next', 1)) }}</button>
-															</div>
+													</div>
+													<hr>
+													<br>
+													<br>
+													<br>
+													<br>
+													<br>
+													<div class="float-sm-right">
+														<div class="col-sm-6">
+															<button class="main_btn">{{ ucwords(trans_choice('messages.next', 1)) }}</button>
 														</div>
-													</form>
+													</div>
+												</form>
+											</div>
+										</div>
+										@else
+										Customer already selected
+
+										<form action="{{ route('cart.add_customer') }}" method="post">
+											<div class="row">
+												@csrf
+												<input type="hidden" name="cart" value="{{ $cart->token }}">
+												<input type="hidden" name="customer_id" value="{{ Auth::user()->customer->id }}">
+											</div>
+
+											<div class="float-sm-right">
+												<div class="col-sm-6">
+													<button class="main_btn">{{ ucwords(trans_choice('messages.next', 1)) }}</button>
 												</div>
 											</div>
-										@else
-											Customer already selected
+										</form>
 										@endif
 									</div>
 								</div>
@@ -122,7 +136,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+	</div>
 	</div>
 </section>
 @else
@@ -136,7 +150,7 @@
 
 @section('scripts')
 <script>
-	$('#createCustomer').on('shown.bs.modal', function () {
+	$('#createCustomer').on('shown.bs.modal', function() {
 		//$('#myInput').trigger('focus')
 	})
 </script>
