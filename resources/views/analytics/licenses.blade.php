@@ -41,12 +41,9 @@
                                 if(!empty($item)){
                                     $customer = App\MicrosoftTenantInfo::where('tenant_id',$item->customerId)->get();
                                 }
-
-
                                 @endphp
                                 <tr>
-                                    @if (!empty($customer->first()->customer))
-                                    {{-- @dd($dd->first()->customer) --}}
+                                    {{-- @if (!empty($customer->first()->customer)) --}}
                                     <td>{{$customer->first()->customer->company_name}}</td>
                                     <td>{{date('d-m-Y', strtotime($item->billingStartDate))}}</td>
                                     <td>{{date('d-m-Y', strtotime($item->billingEndDate))}}</td>
@@ -56,14 +53,13 @@
                                     <td>
                                         <a class="btn btn-primary" href="\customer\serviceCostsLineitems\{{$item->customerId}}">See Details</a>
                                     </td>
-                                    @else
-                                    <td></td>
-                                    @endif
+                                    {{-- @else --}}
+                                    {{-- <td></td> --}}
+                                    {{-- @endif --}}
                                 </tr>
                                 @endforeach
                             </tbody>
                             <tfoot>
-                                {{-- @dd($serviceCosts) --}}
                                 @if(empty($serviceCosts))
                                 <tr>
                                     <th></th>
