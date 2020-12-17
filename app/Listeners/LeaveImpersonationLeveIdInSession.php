@@ -29,9 +29,7 @@ class LeaveImpersonationLeveIdInSession
         session()->remove('provider_id', $event->impersonated->provider_id);
         session()->remove('reseller_id', $event->impersonated->reseller_id);
         session()->remove('customer_id', $event->impersonated->customer_id);
-        foreach($event->impersonated->provider->instances as $instance){
-            session()->remove('instance_id', $instance->id);
-        }
+            session()->remove('instance_id');
 
 
         session()->remove('role', $event->impersonated->roles->first()->name);

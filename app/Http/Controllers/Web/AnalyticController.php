@@ -356,29 +356,28 @@ class AnalyticController extends Controller
         }
 
 
-        /**
-        * Remove the specified resource from storage.
-        *
-        * @param  int  $id
-        * @return \Illuminate\Http\Response
-        */
-        public function licenses()
-        {
-            $reseller = Auth::user()->provider->resellers->first();
+            /**
+            * Remove the specified resource from storage.
+            *
+            * @param  int  $id
+            * @return \Illuminate\Http\Response
+            */
+            public function licenses()
+            {
+                $reseller = Auth::user()->provider->resellers->first();
 
-            $customer = $this->resellerRepository->CustomerofReseller($reseller);
+                $customer = $this->resellerRepository->CustomerofReseller($reseller);
+                $serviceCosts = $customer->map(function($item, $key) {
+                    if($item->microsoftTenantInfo->first() == null){
+                        return ($serviceCosts = []);
+                    }
+                    $tenant = $item->microsoftTenantInfo->first()->tenant_id;
+                    $serviceCosts = $this->CustomerServiceCosts($tenant);
+                    return ($serviceCosts);
+                });
 
-            $serviceCosts = $customer->map(function($item, $key) {
-
-                $tenant = $item->microsoftTenantInfo->first()->tenant_id;
-
-                $serviceCosts = $this->CustomerServiceCosts($tenant);
-
-                return ($serviceCosts);
-            });
-
-            return view('analytics.licenses', compact('serviceCosts', 'customer'));
-        }
+                return view('analytics.licenses', compact('serviceCosts', 'customer'));
+            }
 
         /**
          * Undocumented function

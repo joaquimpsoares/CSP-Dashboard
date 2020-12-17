@@ -34,7 +34,9 @@
                         <p class="text">{{ str_limit($product->description, 150) }}</p>
                         <div class="product-bottom-details">
                             @if(Auth::user()->userLevel->name == "Reseller")
-                            <div class="product-price"><small>{{ $product->price}}$</small>{{ $product->msrp}}$</div>
+                            <div class="product-price"><small>{{ $product->price}}$</small>
+                                    {{ $product->msrp}}$
+                            </div>
                             @else
                             <div class="product-price"><small></small>{{ $product->msrp}}$</div>
                             @endif
@@ -58,7 +60,7 @@
                 <hr>
                 <div class="col">
                     <span class="float-right">
-                        {{-- {{ $prices->links() }} --}}
+                        {{ $prices->links() }}
                     </span>
                 </div>
             </div>

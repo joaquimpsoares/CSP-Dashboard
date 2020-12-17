@@ -301,13 +301,13 @@ class CartController extends Controller
 
         if (!empty($validate['customerTenant'])) {
             $domain = $validate['customerTenant'] . '.onmicrosoft.com';
-            $order = $customer->orders()->where('domain', $domain)->first();
+            // $order = $customer->orders()->where('domain', $domain)->first();
             $cart->domain = $validate['customerTenant'];
-            $cart->agreement_firstname = $order->agreement_firstname;
-            $cart->agreement_lastname = $order->agreement_lastname;
-            $cart->agreement_email = $order->agreement_email;
-            $cart->agreement_phone = $order->agreement_phone;
-            $cart->save();
+            // $cart->agreement_firstname = $order->agreement_firstname;
+            // $cart->agreement_lastname = $order->agreement_lastname;
+            // $cart->agreement_email = $order->agreement_email;
+            // $cart->agreement_phone = $order->agreement_phone;
+            // $cart->save();
             $canChangeTenant = FALSE;
         }
 
