@@ -192,6 +192,7 @@ return [
         //Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         // NotificationChannels\MsTeams\MsTeamsChannel::class,
         \SocialiteProviders\Manager\ServiceProvider::class,
+        Kordy\Ticketit\TicketitServiceProvider::class,
 
     ],
 
