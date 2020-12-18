@@ -332,96 +332,97 @@ class AnalyticController extends Controller
 
 
 
-            switch ($this->getUserLevel()) {
-                case config('app.super_admin'):
+        switch ($this->getUserLevel()) {
+            case config('app.super_admin'):
 
-                    $reseller = Auth::user()->resellers->first();
-
-                    $customer = $this->resellerRepository->CustomerofReseller($reseller);
-                    $serviceCosts = $customer->map(function($item, $key) {
-                        if($item->microsoftTenantInfo->first() == null){
-                            return ($serviceCosts = []);
-                        }
+                $customer = Customer::all();
+                $serviceCosts = $customer->map(function($item, $key) {
+                    if($item->microsoftTenantInfo->first() == null){
+                        return ($serviceCosts = null);
+                    }else{
                         $tenant = $item->microsoftTenantInfo->first()->tenant_id;
                         $serviceCosts = $this->CustomerServiceCosts($tenant);
-                        return ($serviceCosts);
-                    });
 
-                    return view('analytics.licenses', compact('serviceCosts', 'customer'));
+                        return $serviceCosts;
+                    }
+                });
 
+                $serviceCosts = $serviceCosts->filter(function ($value) { return !is_null($value); });
 
-                break;
+                return view('analytics.licenses', compact('serviceCosts', 'customer'));
 
-                case config('app.admin'):
+            break;
 
-
-                break;
-
-                case config('app.provider'):
-
-                    $reseller = Auth::user()->provider->resellers->first();
-
-                    $customer = $this->resellerRepository->CustomerofReseller($reseller);
-                    $serviceCosts = $customer->map(function($item, $key) {
-                        if($item->microsoftTenantInfo->first() == null){
-                            return ($serviceCosts = []);
-                        }
-                        $tenant = $item->microsoftTenantInfo->first()->tenant_id;
-                        $serviceCosts = $this->CustomerServiceCosts($tenant);
-                        return ($serviceCosts);
-                    });
-
-                    return view('analytics.licenses', compact('serviceCosts', 'customer'));
-                break;
-
-                case config('app.reseller'):
-
-                    $reseller = Auth::user()->resellers->first();
-
-                    $customer = $this->resellerRepository->CustomerofReseller($reseller);
-                    $serviceCosts = $customer->map(function($item, $key) {
-                        if($item->microsoftTenantInfo->first() == null){
-                            return ($serviceCosts = []);
-                        }
-                        $tenant = $item->microsoftTenantInfo->first()->tenant_id;
-                        $serviceCosts = $this->CustomerServiceCosts($tenant);
-                        return ($serviceCosts);
-                    });
-
-                    return view('analytics.licenses', compact('serviceCosts', 'customer'));
+            case config('app.admin'):
 
 
+            break;
 
-                break;
+            case config('app.provider'):
 
-                case config('app.subreseller'):
+                $customer = $this->customerRepository->all();
+                $serviceCosts = $customer->map(function($item, $key) {
+                    if($item['tenant_id'] == null){
+                        return ($serviceCosts = null);
+                    }
+                    $tenant = $item['tenant_id']->tenant_id;
+                    $serviceCosts = $this->CustomerServiceCosts($tenant);
+                    return $serviceCosts;
+                });
 
-                break;
+                $serviceCosts = $serviceCosts->filter(function ($value) { return !is_null($value); });;
 
-                case config('app.customer'):
-                    $customer = $this->getUser()->customer;
-                    $subscriptions = $this->listFromCustomer($customer);
+                return view('analytics.licenses', compact('serviceCosts', 'customer'));
+            break;
 
-                    return view('subscriptions.customer', compact('subscriptions', 'customer'));
+            case config('app.reseller'):
 
-                break;
+                $customer = $this->customerRepository->all();
+                $serviceCosts = $customer->map(function($item, $key) {
+                    if($item['tenant_id'] == null){
+                        return ($serviceCosts = null);
+                    }
+                    $tenant = $item['tenant_id']->tenant_id;
+                    $serviceCosts = $this->CustomerServiceCosts($tenant);
+                    return $serviceCosts;
+                });
 
-                default:
-                return abort(403, __('errors.unauthorized_action'));
+                $serviceCosts = $serviceCosts->filter(function ($value) { return !is_null($value); });;
+
+                return view('analytics.licenses', compact('serviceCosts', 'customer'));
+
+            break;
+
+            case config('app.subreseller'):
+
+            break;
+
+            case config('app.customer'):
+
+                $customer = $this->getUser()->customer->format();
+
+                // // dd($customer);
+                // $serviceCosts = $customer->map(function($item, $key) {
+                //     dd($customer);
+                //     if($item['tenant_id'] == null){
+                //         return ($serviceCosts = null);
+                //     }
+                    $tenant = $customer['tenant_id']->tenant_id;
+                    $serviceCosts = $this->CustomerServiceCosts($tenant);
+                    return $serviceCosts;
+
+
+                // $serviceCosts = $serviceCosts->filter(function ($value) { return !is_null($value); });;
+
+                // return view('analytics.licenses', compact('serviceCosts', 'customer'));
+
+            break;
+
+            default:
+            return abort(403, __('errors.unauthorized_action'));
 
 
             }
-
-
-
-
-
-
-
-
-
-
-
 
 
         }
@@ -435,7 +436,9 @@ class AnalyticController extends Controller
         Public function CustomerServiceCosts($customer)
     {
 
+
         $instance = session()->get('instance_id');
+        $instance = Instance::where('id', '3')->first();
 
         try {
         $customer = new TagydesCustomer([
@@ -447,6 +450,7 @@ class AnalyticController extends Controller
             'email' => 'bill@tagydes.com',
         ]);
         $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCosts($customer);
+
         return $resources;
 
         } catch (\Throwable $th) {

@@ -37,14 +37,15 @@
                             </thead>
                             <tbody>
                                 @foreach ($serviceCosts as $item)
+                                {{-- @dd($serviceCosts) --}}
                                 @php
                                 if(!empty($item)){
-                                    $customer = App\MicrosoftTenantInfo::where('tenant_id',$item->customerId)->get();
+                                    $customer = App\MicrosoftTenantInfo::where('tenant_id',$item->customerId)->first();
                                 }
                                 @endphp
                                 <tr>
-                                    {{-- @if (!empty($customer->first()->customer)) --}}
-                                    <td>{{$customer->first()->customer->company_name}}</td>
+                                    @if (!empty($customer->customer))
+                                    <td>{{$customer->customer->company_name}}</td>
                                     <td>{{date('d-m-Y', strtotime($item->billingStartDate))}}</td>
                                     <td>{{date('d-m-Y', strtotime($item->billingEndDate))}}</td>
                                     <td>{{number_format($item->pretaxTotal, 2)}}{{$item->currencySymbol}}</td>
@@ -53,15 +54,15 @@
                                     <td>
                                         <a class="btn btn-primary" href="\customer\serviceCostsLineitems\{{$item->customerId}}">See Details</a>
                                     </td>
-                                    {{-- @else --}}
-                                    {{-- <td></td> --}}
-                                    {{-- @endif --}}
+                                    @else
+                                    <td></td>
+                                    @endif
                                 </tr>
                                 @endforeach
                             </tbody>
                             <tfoot>
-                                @if(empty($serviceCosts))
                                 <tr>
+                                    @if (!empty($customer->customer))
                                     <th></th>
                                     <th></th>
                                     <th></th>
@@ -69,8 +70,10 @@
                                     <th><strong>Total: </strong>{{$serviceCosts->sum('tax')}}{{$item->currencySymbol}}</th>
                                     <th><strong>Total: </strong>{{$serviceCosts->sum('afterTaxTotal')}}{{$item->currencySymbol}}</th>
                                     <th></th>
+                                    @else
+                                    <td></td>
+                                    @endif
                                 </tr>
-                                @endif
                             </tfoot>
                         </table>
                     </div>
