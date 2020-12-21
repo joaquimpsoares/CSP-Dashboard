@@ -40,16 +40,19 @@ class Price extends Model
 	}
 
 	public function product() {
-		
 		return $this->belongsTo('App\Product', 'product_sku', 'sku')
-		->where('vendor', $this->product_vendor)->where('instance_id', $this->instance_id);
-		
-	}
+		->where('vendor', $this->product_vendor)->where('instance_id', session()->get('instance_id'));
+
+    }
+
+    // public function products() {
+    //     return $this->hasOne('App\Product', 'sku', 'product_sku');
+    // }
 
 	// public function provider() {
 	// 	return $this->belongsTo('App\Provider', 'price_list_id', 'id');
 	// }
-	
+
 	public function tiers() {
         return $this->belongsToMany('App\Tier');
     }

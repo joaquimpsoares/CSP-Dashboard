@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Store;
 
 use App\Price;
 use App\PriceList;
+use App\Subscription;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Traits\UserTrait;
@@ -17,14 +18,15 @@ class Searchstore extends Component
     public $priceList = "null";
     public $category = " ";
     public $vendor= " ";
-    // public $price= " ";
+    public $price= " ";
+    // private $instance = " ";
 
     use WithPagination;
 
-    public function mount($category, $vendor)
+    public function mount($vendor,$category )
         {
-            $this->category = $category;
-            $this->vendor = $vendor;
+            $this->vendor = $category;
+            $this->category = $vendor;
             $this->user = $this->getUser();
 
             $this->level = $this->getUserLevel();
@@ -59,10 +61,8 @@ class Searchstore extends Component
                 break;
 
                 case 'Reseller':
-
                     $this->instance = $this->user->reseller->provider->instances->pluck('id');
                     $this->priceList = $this->user->reseller->price_list_id;
-
                 break;
 
                 default:
@@ -70,31 +70,44 @@ class Searchstore extends Component
             break;
         }
 
-        $this->price = Price::select('price_list_id')->groupby('price_list_id')->where('product_vendor',$this->category)
+        $price = Price::select('price_list_id')->groupby('price_list_id')->where('product_vendor',$this->category)
         ->wherein('instance_id',$this->instance)->first();
+
+        // $prices = Price::with('product')
+        // ->join('products', 'prices.product_sku', '=', 'products.sku')
+        // ->where('prices.name', 'like', "%azure%")
+        // // ->orwhere('prices.product_sku', 'LIKE', '%' . $this->search . '%')
+        // ->where('products.instance_id', $this->instance)
+        // ->where('price_list_id', $this->priceList)
+        // ->where('products.category', $this->category)
+        // ->where('product_vendor', $this->vendor)
+        // // ->toSql();
+        // ->paginate(9);
+
+        // dd($prices);
 
     }
 
     public function render()
     {
-        $prices = Price::where('product_vendor', $this->category)
-        ->wherein('instance_id',$this->instance)->where('prices.name', 'like', '%' . $this->search . '%')
-            ->orwhere('product_sku', 'LIKE', "%$this->search%")->get();
 
-        // dd($prices);
+        $result = DB::table('subscriptions')
+            ->select(DB::raw('count(*) as count, product_id'))
+            ->groupBy('product_id')
+            ->get();
 
-        return view('livewire.store.searchstore', compact('prices'));
-        // [
-        //     'prices' => DB::table('prices')
-        //     ->where('price_list_id', $this->priceList)
-        //     ->join('products', 'prices.product_sku', '=', 'products.sku')
-        //     ->where('products.category', $this->vendor)
-        //     ->where('prices.product_vendor', $this->category)
-        //     ->having('price_list_id', $this->price->price_list_id)
-        //     ->where('prices.name', 'like', '%' . $this->search . '%')
-        //     ->orwhere('product_sku', 'LIKE', "%$this->search%")->where('category', $this->category)
-        //     ->paginate(9),
+            // dd($result->max('product_id'));
 
-        //     ]);
+        return view('livewire.store.searchstore',[
+            'prices' => DB::table('prices')
+            ->join('products', 'prices.product_sku', '=', 'products.sku')
+            ->where('products.instance_id', session()->get('instance_id'))
+            ->where('price_list_id', $this->priceList)
+            ->where('products.category', $this->category)
+            ->where('product_vendor', $this->vendor)
+            ->where('products.name', 'like', '%'.$this->search.'%')
+            // ->orderBy($result->max('product_id'), 'desc')
+        ->paginate(9),
+        ]);
     }
 }

@@ -43,6 +43,7 @@ class Customer extends Model
             'status' => $this->status->name,
             'created_at' => $this->created_at,
             'path' => $this->path(),
+            'tenant_id' => $this->microsoftTenantInfo->first(),
             'pathUpdate' => $this->pathUpdate(),
             'reseller' => $this->resellers()->first(),
             'subscriptions' => $this->subscriptions->count(),

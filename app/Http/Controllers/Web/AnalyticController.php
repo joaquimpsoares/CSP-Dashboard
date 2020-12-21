@@ -8,9 +8,10 @@ use App\Reseller;
 use Carbon\Carbon;
 use App\Subscription;
 use App\AzureResource;
+use App\MicrosoftTenantInfo;
+use App\Http\Traits\UserTrait;
 use App\Mail\ScheduleNotifyAzure;
 use App\Http\Controllers\Controller;
-use App\MicrosoftTenantInfo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,18 +20,15 @@ use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProviderRepositoryInterface;
 use App\Repositories\ResellerRepositoryInterface;
 use App\Repositories\SubscriptionRepositoryInterface;
-use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
+use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
 // use Tagydes\MicrosoftConnection\Repositories\AzureResource\RestV1AzureResourceRepository;
 
-
-
-
 class AnalyticController extends Controller
 {
-
+    use UserTrait;
 
     private $resellerRepository;
 
@@ -249,16 +247,6 @@ class AnalyticController extends Controller
         return back()->with(compact('budget'));
     }
 
-    /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
     * Display the specified resource.
@@ -332,29 +320,6 @@ class AnalyticController extends Controller
 
 
 
-        /**
-        * Update the specified resource in storage.
-        *
-        * @param  \Illuminate\Http\Request  $request
-        * @param  int  $id
-        * @return \Illuminate\Http\Response
-        */
-        public function update(Request $request, $id)
-        {
-            //
-        }
-
-        /**
-        * Remove the specified resource from storage.
-        *
-        * @param  int  $id
-        * @return \Illuminate\Http\Response
-        */
-        public function destroy($id)
-        {
-            //
-        }
-
 
         /**
         * Remove the specified resource from storage.
@@ -364,20 +329,102 @@ class AnalyticController extends Controller
         */
         public function licenses()
         {
-            $reseller = Auth::user()->provider->resellers->first();
 
-            $customer = $this->resellerRepository->CustomerofReseller($reseller);
 
-            $serviceCosts = $customer->map(function($item, $key) {
 
-                $tenant = $item->microsoftTenantInfo->first()->tenant_id;
+        switch ($this->getUserLevel()) {
+            case config('app.super_admin'):
 
-                $serviceCosts = $this->CustomerServiceCosts($tenant);
+                $customer = Customer::all();
+                $serviceCosts = $customer->map(function($item, $key) {
+                    if($item->microsoftTenantInfo->first() == null){
+                        return ($serviceCosts = null);
+                    }else{
+                        $tenant = $item->microsoftTenantInfo->first()->tenant_id;
+                        $serviceCosts = $this->CustomerServiceCosts($tenant);
 
-                return ($serviceCosts);
-            });
+                        return $serviceCosts;
+                    }
+                });
 
-            return view('analytics.licenses', compact('serviceCosts', 'customer'));
+                $serviceCosts = $serviceCosts->filter(function ($value) { return !is_null($value); });
+
+                return view('analytics.licenses', compact('serviceCosts', 'customer'));
+
+            break;
+
+            case config('app.admin'):
+
+
+            break;
+
+            case config('app.provider'):
+
+                $customer = $this->customerRepository->all();
+                $serviceCosts = $customer->map(function($item, $key) {
+                    if($item['tenant_id'] == null){
+                        return ($serviceCosts = null);
+                    }
+                    $tenant = $item['tenant_id']->tenant_id;
+                    $serviceCosts = $this->CustomerServiceCosts($tenant);
+                    return $serviceCosts;
+                });
+
+                $serviceCosts = $serviceCosts->filter(function ($value) { return !is_null($value); });;
+
+                return view('analytics.licenses', compact('serviceCosts', 'customer'));
+            break;
+
+            case config('app.reseller'):
+
+                $customer = $this->customerRepository->all();
+                $serviceCosts = $customer->map(function($item, $key) {
+                    if($item['tenant_id'] == null){
+                        return ($serviceCosts = null);
+                    }
+                    $tenant = $item['tenant_id']->tenant_id;
+                    $serviceCosts = $this->CustomerServiceCosts($tenant);
+                    return $serviceCosts;
+                });
+
+                $serviceCosts = $serviceCosts->filter(function ($value) { return !is_null($value); });;
+
+                return view('analytics.licenses', compact('serviceCosts', 'customer'));
+
+            break;
+
+            case config('app.subreseller'):
+
+            break;
+
+            case config('app.customer'):
+
+                $customer = $this->getUser()->customer->format();
+
+                // // dd($customer);
+                // $serviceCosts = $customer->map(function($item, $key) {
+                //     dd($customer);
+                //     if($item['tenant_id'] == null){
+                //         return ($serviceCosts = null);
+                //     }
+                    $tenant = $customer['tenant_id']->tenant_id;
+                    $serviceCosts = $this->CustomerServiceCosts($tenant);
+                    return $serviceCosts;
+
+
+                // $serviceCosts = $serviceCosts->filter(function ($value) { return !is_null($value); });;
+
+                // return view('analytics.licenses', compact('serviceCosts', 'customer'));
+
+            break;
+
+            default:
+            return abort(403, __('errors.unauthorized_action'));
+
+
+            }
+
+
         }
 
         /**
@@ -389,7 +436,9 @@ class AnalyticController extends Controller
         Public function CustomerServiceCosts($customer)
     {
 
+
         $instance = session()->get('instance_id');
+        $instance = Instance::where('id', '3')->first();
 
         try {
         $customer = new TagydesCustomer([
@@ -401,6 +450,7 @@ class AnalyticController extends Controller
             'email' => 'bill@tagydes.com',
         ]);
         $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCosts($customer);
+
         return $resources;
 
         } catch (\Throwable $th) {

@@ -28,10 +28,6 @@ class PriceList extends Model
         return $this->hasMany('App\Price');
     }
 
-    // public function instance() {
-	// 	return $this->where('App\Instance', 'id', 'instance_id');
-    // }
-
     public function provider() {
 		return $this->belongsTo('App\Provider', 'id', 'price_list_id');
     }
