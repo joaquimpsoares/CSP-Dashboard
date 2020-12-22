@@ -14,9 +14,9 @@
     @livewireStyles
 
     <!---Global-loader-->
-    <div id="global-loader" >
+    {{-- <div id="global-loader" >
         <img src="{{URL::asset('assets/images/svgs/loader.svg')}}" alt="loader">
-    </div>
+    </div> --}}
 
     <div class="page">
         <div class="page-main">

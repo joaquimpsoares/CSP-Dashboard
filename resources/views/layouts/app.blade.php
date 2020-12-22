@@ -57,7 +57,7 @@
         <br/>
         @yield('content')
         <br/>
-        @include('layouts.footer')
+        {{-- @include('layouts.footer') --}}
     </div>
 
 

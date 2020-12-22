@@ -14,6 +14,7 @@
                                 <div class="card p-4 page-content">
                                     <div class="card-body page-single-content">
                                         <div class="w-100">
+                                            @include('layouts.messages')
                                             <div class="">
                                                 <h1 class="mb-2">Login</h1>
                                                 <p class="text-muted">Sign In to your account <i class="fab fa-microsoft"></i></p>
