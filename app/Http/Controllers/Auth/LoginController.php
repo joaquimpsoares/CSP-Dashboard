@@ -72,7 +72,7 @@ class LoginController extends Controller
         ->stateless()
         ->user();
 
-        $user = User::where('socialite_id', $socialiteUser->getId());
+        $user = User::where('socialite_id', $socialiteUser->getId())->first();
 
         Auth()->login($user, true);
 
