@@ -26,10 +26,10 @@
 												<p class=" mb-1 ">All Orders</p>
                                                 <h2 class="mb-1 font-weight-bold">{{$orders->count()}}</h2>
                                                 @if ($orders->count() > $countOrders)
-												<span class="mb-1 text-muted"><span class="text-success"><i class="fa fa-caret-up  mr-1"></i> {{$countOrders}}</span> than last month</span>
 
+												<span class="mb-1 text-muted"><span class="text-danger"><i class="fa fa-caret-down  mr-1"></i> {{$orders->count()-$countOrders}}</span> than last month</span>
                                                 @else
-												<span class="mb-1 text-muted"><span class="text-danger"><i class="fa fa-caret-down  mr-1"></i> {{$countOrders}}</span> than last month</span>
+												<span class="mb-1 text-muted"><span class="text-success"><i class="fa fa-caret-up  mr-1"></i> {{$orders->count() -$countOrders}}</span> than last month</span>
 
                                                 @endif
 												{{-- <div class="progress progress-sm mt-3 bg-success-transparent">
