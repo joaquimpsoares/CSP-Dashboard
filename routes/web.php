@@ -302,6 +302,7 @@ Route::group(['middleware' => 'auth'], function () {
 			/*Route::get('/priceList/provider/{provider}', 'PriceListController@getProviderPriceList')
 			->middleware('permission:' . config('app.price_list_show'))->name('priceLists.provider_price_list');*/
 
+            // route::get('scheduler', '\vendor\MatviiB\Scheduler\Controllers\SchedulerController@index')->name("scheduler.index");
 
 
 			/*
