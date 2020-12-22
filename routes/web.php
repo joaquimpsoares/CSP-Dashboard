@@ -35,8 +35,6 @@ use Tagydes\MicrosoftConnection\Facades\Order as TagydesOrder;
 
 // Route::resource('/analytics', 'AnalyticController');
 
-
-
 Route::get('/analytics', [
 	'uses' => 'AnalyticController@index',
 	'as' => 'analytics.list'

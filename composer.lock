@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f5c41ce78bbf6b9a29bdb0a188c1562a",
+    "content-hash": "3d0dc29878c1e67c9bd745e6f6ebc2bc",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2886,6 +2886,53 @@
             "time": "2020-08-28T17:11:00+00:00"
         },
         {
+            "name": "matviib/scheduler",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/MatviiB/scheduler.git",
+                "reference": "ec3b6a76e82f3268b34b385eff617ab5c4a836f7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/MatviiB/scheduler/zipball/ec3b6a76e82f3268b34b385eff617ab5c4a836f7",
+                "reference": "ec3b6a76e82f3268b34b385eff617ab5c4a836f7",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "MatviiB\\Scheduler\\SchedulerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "MatviiB\\Scheduler\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matvii Bondar",
+                    "email": "matvii.bondar@gmail.com"
+                }
+            ],
+            "description": "Service for scheduling and managing cron tasks in laravel application",
+            "keywords": [
+                "Tasks",
+                "cron",
+                "laravel",
+                "schedule",
+                "scheduler"
+            ],
+            "time": "2019-04-22T07:08:23+00:00"
+        },
+        {
             "name": "maximebf/debugbar",
             "version": "v1.16.4",
             "source": {
@@ -3325,16 +3372,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.10.3",
+            "version": "v4.10.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "dbe56d23de8fcb157bbc0cfb3ad7c7de0cfb0984"
+                "reference": "c6d052fc58cb876152f89f532b95a8d7907e7f0e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/dbe56d23de8fcb157bbc0cfb3ad7c7de0cfb0984",
-                "reference": "dbe56d23de8fcb157bbc0cfb3ad7c7de0cfb0984",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/c6d052fc58cb876152f89f532b95a8d7907e7f0e",
+                "reference": "c6d052fc58cb876152f89f532b95a8d7907e7f0e",
                 "shasum": ""
             },
             "require": {
@@ -3373,7 +3420,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2020-12-03T17:45:45+00:00"
+            "time": "2020-12-20T10:01:03+00:00"
         },
         {
             "name": "opis/closure",

@@ -248,7 +248,8 @@ return [
         'Countries' => Webpatser\Countries\CountriesFacade::class,
         'msteams' => NotificationChannels\MsTeams\MsTeamsChannel::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-        // 'LogActivity' => App\Helpers\LogActivity::class,
+        'SchedulerKernel' => MatviiB\Scheduler\SchedulerServiceProvider::class,
+        'LogActivity' => App\Helpers\LogActivity::class,
     ],
 
     'super_admin' => env('SUPER_ADMIN_LEVEL'),
