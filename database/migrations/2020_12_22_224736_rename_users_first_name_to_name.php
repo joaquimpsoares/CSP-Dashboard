@@ -14,7 +14,7 @@ class RenameUsersFirstNameToName extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->renameColumn('name', 'name');
+            $table->renameColumn('first_name', 'name');
         });
 
     }
