@@ -114,8 +114,13 @@
                     </tr>
                     @empty
                     @endforelse
+                    <div class="col">
+                        <span class="float-right">
+                        </span>
+                    </div>
                 </tbody>
             </table>
+            {{ $subscriptions->links('pagination::bootstrap-4') }}
         </div>
     </div>
 </div>

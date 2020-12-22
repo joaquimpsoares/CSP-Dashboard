@@ -27,7 +27,7 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
             case config('app.super_admin'):
                 $subscriptions = Subscription::with(['customer','products','status'])->
                 orderBy('id')
-                ->get();
+                ->paginate(10);
             break;
 
             case config('app.admin'):
