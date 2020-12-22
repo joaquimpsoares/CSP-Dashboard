@@ -47,7 +47,7 @@
                                             @if ($subscriptions->status == "1")
                                             <input readonly="readonly" class="input is-warning" name="amount" type="number" placeholder="Text input" value="{{ $subscriptions->amount }}">
                                             @else
-                                            <input  class="input" name="amount" type="number" placeholder="Text input" value="{{ $subscriptions->amount }}">
+                                            <input  class="form-control" name="amount" type="number" placeholder="Text input" value="{{ $subscriptions->amount }}">
                                             @endif
                                         </div>
                                     </td>
@@ -62,7 +62,7 @@
                                             @else
                                             @endif
                                             <div  class="select is-info">
-                                                <select name="billing_period" >
+                                                <select name="billing_period" required="required" class="form-control SlectBox SumoUnder" id="{{ $subscriptions->products->first()->id }}">
                                                     <option value="monthly" {{ $subscriptions->billing_period == "monthly" ? "selected":"" }}> Monthly</option>
                                                     <option value="annual" {{ $subscriptions->billing_period == "annual" ? "selected":"" }}> Annual</option>
                                                 </select>
@@ -76,7 +76,7 @@
                                     </td>
                                     <td class="py-2 px-0">
                                         <div name="status" class="select is-info">
-                                            <select name="status">
+                                            <select name="status" class="form-control SlectBox SumoUnder">
                                                 <option  value="1" {{ $subscriptions->status_id == "1" ? "selected":"" }}> Active</option>
                                                 <option  value="2" {{ $subscriptions->status_id == "2" ? "selected":"" }}> Suspended</option>
                                             </select>
@@ -88,7 +88,6 @@
                             </form>
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </div>

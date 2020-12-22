@@ -89,7 +89,7 @@
 																<h5>
 																	Select existing customer for this purchase</label>
 																</h5>
-																<select class="" name="customer_id" >
+																<select class="form-control SlectBox SumoUnder" name="customer_id" >
 																	@foreach($customers as $customer)
 																	<option value="{{ $customer['id'] }}" @if($cart->customer && $cart->customer->id == $customer['id']) selected="selected" @endif>{{ $customer['company_name'] }}</option>
 																	@endforeach
@@ -105,7 +105,7 @@
 														<br>
 														<div class="float-sm-right">
 															<div class="col-sm-6">
-																<button class="main_btn">{{ ucwords(trans_choice('messages.next', 1)) }}</button>
+																<button class="btn btn-secondary">{{ ucwords(trans_choice('messages.next', 1)) }} <i class="fe fe-arrow-right"></i></button>
 															</div>
 														</div>
 													</form>

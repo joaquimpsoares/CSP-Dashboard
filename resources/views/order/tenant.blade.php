@@ -56,7 +56,7 @@
 												<div class="row">
 													<div class="col">
 														<div class="float-sm-right">
-															<button type="button" id="validateButton" class="main_btn" onclick="checkDomainAvailability()">{{ ucwords(trans_choice('messages.validate', 1)) }}</button>
+															<button type="button" id="validateButton" class="btn btn-primary" onclick="checkDomainAvailability()">{{ ucwords(trans_choice('messages.validate', 1)) }}</button>
 														</div>
 													</div>
 												</div>
@@ -86,8 +86,8 @@
 																</div>
 																<br>
 																<div class="float-sm-right">
-																	<button type="submit" class="main_btn" id="test">
-																		{{ ucwords(trans_choice('messages.review', 1)) }}
+																	<button type="submit" class="btn btn-secondary" id="test">
+																		{{ ucwords(trans_choice('messages.review', 1)) }} <i class="fe fe-arrow-right"></i>
 																	</button>
 																</div>
 															</form>
@@ -130,8 +130,8 @@
 																</div>
 																<br>
 																<div class="float-sm-right">
-																	<button type="submit" class="main_btn" id="test">
-																		{{ ucwords(trans_choice('messages.review', 1)) }}
+																	<button type="submit" class="btn btn-secondary" id="test">
+																		{{ ucwords(trans_choice('messages.review', 1)) }} <i class="fe fe-arrow-right"></i>
 																	</button>
 																</div>
 															</form>
