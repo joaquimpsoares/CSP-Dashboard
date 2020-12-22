@@ -33,7 +33,7 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
             case config('app.admin'):
                 $subscriptions = Subscription::with(['customer','products','status'])->
                 orderBy('id')
-                ->get();
+                ->paginate(10);
             break;
 
             case config('app.provider'):
@@ -55,7 +55,7 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
                 $reseller = $user->reseller;
                 $customer = $reseller->customers->pluck('id');
                 $subscriptions = Subscription::with(['customer','products','status'])->whereIn('customer_id', $customer)
-                ->orderBy('id')->get();
+                ->orderBy('id')->paginate(10);
             break;
 
             case config('app.subreseller'):
