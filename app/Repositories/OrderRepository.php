@@ -178,7 +178,6 @@ public function newFromCartToken($token)
         $order->user_id = Auth::user()->id;
         $order->details = "Importing MS Products";
 
-
         $order->save();
 
         return $order;

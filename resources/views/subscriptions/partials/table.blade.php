@@ -48,7 +48,7 @@
                             </span>
                         </td>
                     </tr>
-                    {{-- <tr style="display:none">
+                    <tr style="display:none">
                         <td colspan="9">
                             <div class="">
                                 <div class="panel panel-primary receipts-inline-table border-0">
@@ -111,7 +111,7 @@
                                 </div>
                             </div>
                         </td>
-                    </tr> --}}
+                    </tr>
                     @empty
                     @endforelse
                 </tbody>

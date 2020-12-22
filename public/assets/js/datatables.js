@@ -8,10 +8,24 @@ $(function(e) {
 			searchPlaceholder: 'Search...',
 			sSearch: '',
 			lengthMenu: '_MENU_ ',
-		}
-	});
+        },
+        columnDefs: [ {
+            orderable: false,
+            className: 'select-checkbox',
+            targets:   0
+        } ],
+        select: {
+            style:    'os',
+            selector: 'td:first-child'
+        },
+        order: [[ 1, 'desc' ]]
+
+    });
+
 	table.buttons().container()
-	.appendTo( '#example_wrapper .col-md-6:eq(0)' );
+        .appendTo('#example_wrapper .col-md-6:eq(0)');
+
+
 
 	$('#example1').DataTable({
 		language: {
