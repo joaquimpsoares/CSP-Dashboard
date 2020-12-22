@@ -107,7 +107,7 @@ class Searchstore extends Component
             ->where('product_vendor', $this->vendor)
             ->where('products.name', 'like', '%'.$this->search.'%')
             // ->orderBy($result->max('product_id'), 'desc')
-        ->paginate(9),
+        ->paginate(10),
         ]);
     }
 }

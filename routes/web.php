@@ -35,8 +35,6 @@ use Tagydes\MicrosoftConnection\Facades\Order as TagydesOrder;
 
 // Route::resource('/analytics', 'AnalyticController');
 
-
-
 Route::get('/analytics', [
 	'uses' => 'AnalyticController@index',
 	'as' => 'analytics.list'
@@ -304,6 +302,7 @@ Route::group(['middleware' => 'auth'], function () {
 			/*Route::get('/priceList/provider/{provider}', 'PriceListController@getProviderPriceList')
 			->middleware('permission:' . config('app.price_list_show'))->name('priceLists.provider_price_list');*/
 
+            // route::get('scheduler', '\vendor\MatviiB\Scheduler\Controllers\SchedulerController@index')->name("scheduler.index");
 
 
 			/*

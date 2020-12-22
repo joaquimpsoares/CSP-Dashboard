@@ -8,11 +8,25 @@ $(function(e) {
 			searchPlaceholder: 'Search...',
 			sSearch: '',
 			lengthMenu: '_MENU_ ',
-		}
-	});
+        },
+        columnDefs: [ {
+            orderable: false,
+            className: 'select-checkbox',
+            targets:   0
+        } ],
+        select: {
+            style:    'os',
+            selector: 'td:first-child'
+        },
+        order: [[ 1, 'desc' ]]
+
+    });
+
 	table.buttons().container()
-	.appendTo( '#example_wrapper .col-md-6:eq(0)' );		
-	
+        .appendTo('#example_wrapper .col-md-6:eq(0)');
+
+
+
 	$('#example1').DataTable({
 		language: {
 			searchPlaceholder: 'Search...',
@@ -35,7 +49,7 @@ $(function(e) {
 			sSearch: '',
 			lengthMenu: '_MENU_',
 		}
-	}); 
+	});
     $('#example-delete tbody').on( 'click', 'tr', function () {
         if ( $(this).hasClass('selected') ) {
             $(this).removeClass('selected');
@@ -45,11 +59,11 @@ $(function(e) {
             $(this).addClass('selected');
         }
     } );
- 
+
     $('#button').click( function () {
         table.row('.selected').remove().draw( false );
     } );
-	
+
 	//Details display datatable
 	$('#example-1').DataTable( {
 		responsive: true,
@@ -72,5 +86,5 @@ $(function(e) {
 			}
 		}
 	} );
-	$('#example4').DataTable();
+	$('#example4').DataTable( {"paging": true});
 });

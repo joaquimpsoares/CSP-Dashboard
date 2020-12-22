@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
-use App\Models\LogActivity;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Redirect;
 
 class LoginController extends Controller
 {
@@ -25,61 +26,58 @@ class LoginController extends Controller
     use AuthenticatesUsers;
 
     /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
+    * Where to redirect users after login.
+    *
+    * @var string
+    */
     protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+    * Create a new controller instance.
+    *
+    * @return void
+    */
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
     }
 
-        /**
-     * Redirect the user to the GitHub authentication page.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    /**
+    * Redirect the user to the GitHub authentication page.
+    *
+    * @return \Illuminate\Http\Response
+    */
     public function redirectToProvider()
     {
-            return Socialite::with('graph')
-            ->setTenantId(env('GRAPH_TENANT_ID'))
-            ->redirect();
+        return Socialite::with('graph')
+        ->setTenantId(env('GRAPH_TENANT_ID'))
+        ->redirect();
     }
 
     /**
-     * Obtain the user information from GitHub.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function handleProviderCallback()
+    * Obtain the user information from GitHub.
+    *
+    * @return \Illuminate\Http\Response
+    */
+    public function handleProviderCallback(Request $request)
     {
 
+        if ($request->has('error')){
+            return Redirect::route('login')->with('danger','Please ask for the correct permissions to access the app: '.$request);
+        };
+
+
         $socialiteUser = Socialite::driver('graph')
-            ->setTenantId(env('GRAPH_TENANT_ID'))
-            ->user();
+        ->setTenantId(env('GRAPH_TENANT_ID'))
+        ->stateless()
+        ->user();
 
-
-        $user = User::firstOrCreate([
-            'socialite_id' => $socialiteUser->getId(),
-            'email' => $socialiteUser->getEmail(),
-        ],
-        [
-            'name' => $socialiteUser->getName(),
-            'user_level_id' => '3',
-            'provider_id' => '1',
-
-        ]);
+        $user = User::where('socialite_id', $socialiteUser->getId())->first();
 
         Auth()->login($user, true);
 
         return redirect('/');
     }
+
 
 }

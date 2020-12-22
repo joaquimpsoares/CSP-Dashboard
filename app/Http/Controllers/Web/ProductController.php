@@ -187,6 +187,7 @@ class ProductController extends Controller
     public function import($id)
     {
 
+
         $order = $this->orderRepository->ImportProductsMicrosoftOrder();
 
 
@@ -196,11 +197,12 @@ class ProductController extends Controller
 
         $instance = Instance::where('provider_id', $id)->first();
 
+
         if( ! $instance){
             return redirect()->route('products.index')->with('success', 'The account has no assigned instance');
         }
 
-        if($instance->type === 'microsoft'){
+        if($instance->type === 'microsoft' || $instance->type === 'Microsoft'){
             if( ! $instance->tenant_id){
 
                 return redirect()->route('products.index')->with('success', 'There is no client_id set up on the Microsoft instance');
@@ -214,15 +216,16 @@ class ProductController extends Controller
                     ]);
                 }
 
-            ImportProductsMicrosoftJob::dispatch($instance, $order, $country->iso_3166_2)->onQueue('SyncProducts')
-            ->delay(now()->addSeconds(10));
-        }
+                ImportProductsMicrosoftJob::dispatch($instance, $order, $country->iso_3166_2)->onQueue('SyncProducts')
+                ->delay(now()->addSeconds(10));
+            }
         else{
-        return redirect()->back()->with('error', trans('messages.importproducts'));
+        return redirect()->back()->with('danger', trans('messages.importproducts'));
 
         }
+        return redirect()->route('product.index')->with('success', ucwords(trans_choice('messages.importproducts', 1)) );
 
-        return redirect()->route('jobs')->with(['alert' => 'success', 'message' => trans('messages.importproducts')]);
+        // return redirect()->route('products')->with(['alert' => 'success', 'message' => trans('messages.importproducts')]);
     }
 
 

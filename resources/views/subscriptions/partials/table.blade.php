@@ -1,3 +1,4 @@
+
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">{{ ucwords(trans_choice('messages.subscription_table', 2)) }}</h3>
@@ -15,9 +16,9 @@
         </div> --}}
     </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table id="example4" class="table card-table table-vcenter text-nowrap border p-0">
-                <thead class="thead-dark">
+        <div class="table-responsive datatble-filter">
+            <table id="example" class="table card-table table-vcenter border p-0">
+                <thead>
                     <tr>
                         <th>{{ ucwords(trans_choice('messages.#', 1)) }}</th>
                         <th>{{ ucwords(trans_choice('messages.subscription_name', 1)) }}</th>
@@ -53,7 +54,7 @@
                                 <div class="panel panel-primary receipts-inline-table border-0">
                                     <div class="panel-body tabs-menu-body p-0 border-0">
                                         <div class="tab-content">
-                                            <table class="table detail-transaction">
+                                            <table class="table">
                                                 <tbody>
                                                     <tr>
                                                         <th>{{ ucwords(trans_choice('messages.subscription_name', 1)) }}</th>
@@ -91,17 +92,16 @@
                                                                     </select>
                                                                 </div>
                                                             </td>
+                                                            <td><button type="submit" class="btn btn-primary" type="submit">Change</button></td>
                                                             @foreach ($subscription->products->first()->getaddons()->all() as $item)
                                                             <tr>
                                                                 <td><strong>Add-on:</strong> {{$item->name}}</td>
-                                                                <td>
-                                                                    <input class="form-control" type="number" name="amount" value="{{$item->amount}}">
-                                                                </td>
-                                                                @endforeach
+                                                                <td><input class="form-control" type="number" name="amount" value="{{$item->amount}}"></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
                                                             </tr>
-                                                            <td>
-                                                                <button type="submit" class="btn btn-primary" type="submit">Change</button>
-                                                            </td>
+                                                            @endforeach
                                                         </form>
                                                     </tr>
                                                 </tbody>
@@ -119,4 +119,6 @@
         </div>
     </div>
 </div>
+
+
 

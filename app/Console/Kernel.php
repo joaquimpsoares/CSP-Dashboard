@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+
+use MatviiB\Scheduler\Console\Kernel as SchedulerKernel;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -24,7 +26,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // make changes just here
+        // cut your commands from here
+        // and write next line
+        with(new SchedulerKernel())->schedule($schedule);
     }
 
     /**
@@ -38,4 +43,6 @@ class Kernel extends ConsoleKernel
 
         require base_path('routes/console.php');
     }
+
+
 }
