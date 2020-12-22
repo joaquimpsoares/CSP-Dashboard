@@ -11,12 +11,12 @@
                         <form method="POST" action="{{ route('user.store') }}" class="col s12">
                             {{-- <input type="hidden" name="level" value={{$level}}> --}}
                             {{-- <input type="hidden" name="customer_id" value={{$customer_id}}> --}}
-                            @csrf              
+                            @csrf
                             <h1>{{ ucwords(trans_choice('messages.new_user', 1)) }}</h1>
                             <div class="row">
                                 <div class="col-md-6 mb-4">
-                                    <label for="first_name" class="">{{ ucwords(trans_choice('messages.first_name', 1)) }}</label>
-                                    <input type="text" id="first_name" name="first_name" class="form-control" value="{{ old('first_name') }}">
+                                    <label for="name" class="">{{ ucwords(trans_choice('messages.name', 1)) }}</label>
+                                    <input type="text" id="name" name="name" class="form-control" value="{{ old('name') }}">
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label for="last_name">{{ ucwords(trans_choice('messages.last_name', 1)) }}</label>
@@ -33,7 +33,7 @@
                                         </div>
                                         <select name="country_id" class="custom-select" id="country_id" required>
                                             <option value="">Choose...</option>
-                                            {{-- @foreach ($countries as $country)    
+                                            {{-- @foreach ($countries as $country)
                                             <option value="{{$country->id}}">{{$country->name}}</option>
                                             @endforeach --}}
                                         </select>
@@ -66,7 +66,7 @@
                                         Zip code required.
                                     </div>
                                 </div>
-                                
+
                             </div>
                             <hr>
                             <div class="input-group mb-4">
@@ -88,7 +88,7 @@
                                     <div class="form-group">
                                         {{-- <select name="status_id" class="form-select" sf-validate="required">
                                             <option selected></option>
-                                            @foreach ($statuses as $status)    
+                                            @foreach ($statuses as $status)
                                             <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
                                             @endforeach
                                         </select> --}}

@@ -123,7 +123,7 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow animated">
                         <div class="text-center">
-                            <a href="#" class="dropdown-item text-center user pb-0 font-weight-bold">{{Auth::user()->first_name}}</a>
+                            <a href="#" class="dropdown-item text-center user pb-0 font-weight-bold">{{Auth::user()->name}}</a>
                             <span class="text-center user-semi-title">{{Auth::user()->userLevel->name}}</span>
                             <div class="dropdown-divider"></div>
                         </div>
@@ -173,7 +173,7 @@
 </div>
 <!--/app header-->
 @if (app('impersonate')->isImpersonating())
-<div class="alert alert-info text-center" role="alert">Currently impersonating user <strong>{{Auth::user()->first_name}} {{Auth::user()->last_name}}</strong>
+<div class="alert alert-info text-center" role="alert">Currently impersonating user <strong>{{Auth::user()->name}} {{Auth::user()->last_name}}</strong>
     <a href="{{ route('impersonate.leave') }} ">
         <span style="color: red" >{{ ucwords(trans_choice('messages.stop_impersonation', 2)) }} &rarr;</i></span>
     </a>

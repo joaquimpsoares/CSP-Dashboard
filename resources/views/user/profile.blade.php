@@ -79,8 +79,8 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="md-form form-sm mb-0">
-                                        <label for="first_name" class="">{{ ucwords(trans_choice('messages.first_name', 1)) }}</label>
-                                        <input type="text" id="first_name" name="first_name" class="form-control form-control" value="{{$user->first_name}}">
+                                        <label for="name" class="">{{ ucwords(trans_choice('messages.name', 1)) }}</label>
+                                        <input type="text" id="name" name="name" class="form-control form-control" value="{{$user->name}}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">

@@ -187,7 +187,7 @@ public function update(Request $request, User $user)
 
             $user->username             = $request->input('username');
             $user->email                = $request->input('email');
-            $user->first_name           = $request->input('first_name');
+            $user->name           = $request->input('name');
             $user->last_name            = $request->input('last_name');
             $user->address              = $request->input('address');
             $user->city                 = $request->input('city');
@@ -205,7 +205,7 @@ public function update(Request $request, User $user)
         }
         $user->username             = $request->input('username');
         $user->email                = $request->input('email');
-        $user->first_name           = $request->input('first_name');
+        $user->name           = $request->input('name');
         $user->last_name            = $request->input('last_name');
         $user->address              = $request->input('address');
         $user->city                 = $request->input('city');
@@ -282,7 +282,7 @@ protected function validator(array $data)
         'state' => ['sometimes', 'string', 'max:255'],
         'postal_code' => ['sometimes', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
         'status_id' => ['sometimes', 'integer', 'exists:statuses,id'],
-        'first_name' => ['sometimes', 'string', 'max:255'],
+        'name' => ['sometimes', 'string', 'max:255'],
         'last_name' => ['sometimes', 'string', 'max:255'],
         'email' => ['sometimes', 'string', 'max:255'],
         'password' => ['sometimes', 'string', 'max:255'],
@@ -303,7 +303,7 @@ protected function validator(array $data)
         $user =  User::create([
             'username' => $request['email'],
             'provider_id' => $request['provider_id'],
-            'first_name' => $request['first_name'],
+            'name' => $request['name'],
             'last_name' => $request['last_name'],
             'address_2' => $request['address_2'],
             'email' => $request['email'],

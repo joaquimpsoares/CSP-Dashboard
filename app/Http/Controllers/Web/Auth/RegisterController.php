@@ -23,21 +23,21 @@ class RegisterController extends Controller
     | provide this functionality without requiring any additional code.
     |
     */
-    
+
     use RegistersUsers;
-    
+
     public function registerform(){
         return view('auth.register');
     }
-    
-    
+
+
     /**
     * Where to redirect users after registration.
     *
     * @var string
     */
     protected $redirectTo = RouteServiceProvider::HOME;
-    
+
     /**
     * Create a new controller instance.
     *
@@ -47,7 +47,7 @@ class RegisterController extends Controller
     {
         $this->middleware('guest');
     }
-    
+
     /**
     * Get a validator for an incoming registration request.
     *
@@ -57,14 +57,14 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'first_name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             ]);
-        }        
-        
+        }
+
         /**
         * Create a new user instance after a valid registration.
         *
@@ -73,8 +73,8 @@ class RegisterController extends Controller
         */
         protected function create(array $data)
         {
-            
-            
+
+
         }
 
         /**
@@ -85,7 +85,7 @@ class RegisterController extends Controller
         */
         protected function store(array $data)
         {
-            
+
         }
 
 

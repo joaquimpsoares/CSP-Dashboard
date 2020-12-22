@@ -61,7 +61,7 @@ $totalPrice = null;
                                                     <div class="card-body">
                                                         <h2 class="text-muted font-weight-bold">{{ ucwords(trans_choice('messages.please_review_details', 1)) }}</h2>
                                                         <div class="">
-                                                            <h5 class="mb-1">Hi <strong>{{Auth::user()->first_name}}</strong>,</h5>
+                                                            <h5 class="mb-1">Hi <strong>{{Auth::user()->name}}</strong>,</h5>
                                                             This is the details for the order placed for customer <strong> {{$cart->customer->company_name}} </strong>
                                                         </div>
                                                         <div class="dropdown-divider"></div>
@@ -89,7 +89,7 @@ $totalPrice = null;
                                                                 <h3 class="text-muted font-weight-bold">{{ ucwords(trans_choice('messages.agreement_signed', 1)) }}</span><br></h3>
                                                                 <dl class="row">
                                                                     <dd class="col-sm-4">
-                                                                        <p><b>{{ ucwords(trans_choice('messages.first_name', 1)) }}</b></p>
+                                                                        <p><b>{{ ucwords(trans_choice('messages.name', 1)) }}</b></p>
                                                                         <p><b>{{ ucwords(trans_choice('messages.last_name', 1)) }}</b></p>
                                                                         <p><b>{{ ucwords(trans_choice('messages.email', 1)) }}</b></p>
                                                                         <p><b>{{ ucwords(trans_choice('messages.phone_number', 1)) }}</b></p>

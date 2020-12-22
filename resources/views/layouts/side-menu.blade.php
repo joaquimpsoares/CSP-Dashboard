@@ -22,7 +22,7 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
                 <img src="{{Auth::user()->avatar}}" alt="user-img" class="avatar-xl rounded-circle mb-1">
             </div>
             <div class="user-info">
-                <h5 class=" mb-1 font-weight-bold">{{Auth::user()->first_name . Auth::user()->last_name}}</h5>
+                <h5 class=" mb-1 font-weight-bold">{{Auth::user()->name . Auth::user()->last_name}}</h5>
                 <span class="text-muted app-sidebar__user-name text-sm">{{Auth::user()->resellers}}</span>
             </div>
         </div>

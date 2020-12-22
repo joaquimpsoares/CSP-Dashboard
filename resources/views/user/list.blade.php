@@ -37,7 +37,7 @@
                         <table id="example" class="table table-bordered text-nowrap key-buttons">
                             <thead>
                                 <th>{{ ucwords(trans_choice('messages.email', 2)) }}</th>
-                                <th>{{ ucwords(trans_choice('messages.first_name', 2)) }}</th>
+                                <th>{{ ucwords(trans_choice('messages.name', 2)) }}</th>
                                 <th class="text-center">{{ ucwords(trans_choice('messages.last_name', 1)) }}</th>
                                 <th class="text-center">{{ ucwords(trans_choice('messages.owner', 1)) }}</th>
                                 <th class="text-center">{{ ucwords(trans_choice('messages.status', 1)) }}</th>
@@ -50,7 +50,7 @@
                                         {{$user['email']}}
                                     </td>
                                     <td style="width: 1px; white-space: nowrap;">
-                                        {{$user['first_name']}}
+                                        {{$user['name']}}
                                     </td>
                                     <td class="text-center">
                                         {{$user['last_name']}}
