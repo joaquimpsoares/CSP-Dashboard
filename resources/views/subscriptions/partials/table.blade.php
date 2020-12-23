@@ -65,11 +65,11 @@
                                                     </tr>
                                                     <tr class="last-product">
                                                         <form class="form-horizontal form-bordered" method="POST" action="{{ route('subscription.update', $subscription->id) }}">
+                                                            @method('PATCH')
                                                             <td>{{$subscription->name}}</td>
                                                             @if ($subscription->products->first()->billing === 'usage')
                                                             <td></td>
                                                             @else
-                                                            @method('PATCH')
                                                             @csrf
                                                             <td>
                                                                 <input class="form-control" type="number" name="amount" value="{{$subscription->amount}}">
@@ -96,7 +96,7 @@
                                                             @foreach ($subscription->products->first()->getaddons()->all() as $item)
                                                             <tr>
                                                                 <td><strong>Add-on:</strong> {{$item->name}}</td>
-                                                                <td><input class="form-control" type="number" name="amount" value="{{$item->amount}}"></td>
+                                                                <td><input class="form-control" type="number" name="amount_addon" value="{{$item->amount}}"></td>
                                                                 <td></td>
                                                                 <td></td>
                                                                 <td></td>
