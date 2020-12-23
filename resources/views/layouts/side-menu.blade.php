@@ -124,8 +124,8 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow p-4">
                         <div class="border-bottom pb-3">
                             <h4 class="font-weight-bold">Help</h4>
-                            <a class="text-primary d-block" href="{{ url('/' . $page='tickets') }}">Ticketing</a>
-                            <a class="text-primary d-block" href="{{ url('/' . $page='#') }}">Contact@tagydes.com</a>
+                            <a class="btn btn-secondary" style="color: white" href="{{ url('/' . $page='tickets') }}">Support Tickets</a>
+                            <a class="text-primary d-block" href="{{ url('/' . $page='#') }}">Support@tagydes.com</a>
                             {{-- <a class="text-primary d-block" href="{{ url('/' . $page='#') }}">88 8888 8888</a> --}}
                         </div>
                         <div class="border-bottom pb-3 pt-3 mb-3">

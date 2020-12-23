@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\User;
 use App\Status;
 use App\Country;
+use App\Customer;
 use App\Reseller;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
@@ -98,18 +100,46 @@ class ResellerController extends Controller
         return redirect()->route('reseller.index')->with('success', ucwords(trans_choice('messages.reseller_created_successfully', 1)) );
     }
 
-
     public function show(Reseller $reseller) {
 
-        $reseller = Reseller::with('country')->find($reseller->id);
+        $countries = Country::get();
 
         $statuses = Status::get();
 
+        $subscriptions = [];
+        $customers = new Collection();
+        foreach ($reseller as $resellers){
+            $reseller = Reseller::find($reseller['id']);
+            $customers = $this->customerRepository->customersOfReseller($reseller);
 
-        $countries = Country::all();
+            $subscriptions = $customers->flatMap(function ($values) {
+                $customer = Customer::find($values['id']);
+                $subscriptions = $this->subscriptionRepository->subscriptionsOfCustomer($customer);
+                return $subscriptions;
+            });
+            foreach ($customers as $customer){
 
-        return view('reseller.show', compact('reseller','countries','statuses'));
-    }
+            }
+        }
+
+        $users = User::where('reseller_id', $reseller->id)->get();
+
+
+            return view('reseller.show', compact('reseller','customers', 'countries', 'subscriptions','statuses', 'users'));
+        }
+
+
+    // public function show(Reseller $reseller) {
+
+    //     $reseller = Reseller::with('country')->find($reseller->id);
+
+    //     $statuses = Status::get();
+
+
+    //     $countries = Country::all();
+
+    //     return view('reseller.show', compact('reseller','countries','statuses'));
+    // }
 
 
     public function edit(Reseller $reseller) { }
