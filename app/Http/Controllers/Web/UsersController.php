@@ -156,7 +156,6 @@ public function edit(User $user)
     $u = auth()->user();
     // $roles = Role::where('order',$u->getRole())->orWhere('order', 5)->pluck('name','id');
 
-
     return view('user.edit',compact('edit', 'user','countries'));
 }
 
@@ -213,7 +212,7 @@ public function update(Request $request, User $user)
         $user->country_id           = $request->input('country_id');
         $user->postal_code          = $request->input('postal_code');
         // $user->password             = Hash::make($request->input('password'));
-
+        $user->assignRole(config('app.reseller'));
         $user->save();
         DB::commit();
         return redirect()->back()->with('success', 'User Updated succesfully');
@@ -285,6 +284,7 @@ protected function validator(array $data)
         'name' => ['sometimes', 'string', 'max:255'],
         'last_name' => ['sometimes', 'string', 'max:255'],
         'email' => ['sometimes', 'string', 'max:255'],
+        'socialite_id' => ['sometimes', 'string', 'max:255'],
         'password' => ['sometimes', 'string', 'max:255'],
         'avatar' => ['sometimes', 'image' => 'mimes:jpg,jpeg,bmp,svg,png,gif', 'max:5000' ]
         ]);

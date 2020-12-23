@@ -33,7 +33,6 @@
                 </h5>
                 <p class="text-muted font-weight-light">
                     Details used for authenticating with the application.
-
                 </p>
             </div>
             <div class="col-md-9">
