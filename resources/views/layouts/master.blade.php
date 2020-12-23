@@ -36,6 +36,6 @@
         </div>
     </div>
     @livewireScripts
-
+    @yield('footer')
 </body>
 </html>
