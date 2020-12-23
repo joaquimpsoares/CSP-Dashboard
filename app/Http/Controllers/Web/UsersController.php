@@ -92,15 +92,16 @@ class UsersController extends Controller
     */
     public function store(Request $request)
     {
-        $user = $this->getUser();
+        // dd($request->all());
 
         $validate = $this->validator($request->all())->validate();
-
+// dd($validate);
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
+                // dd($request->level);
                 $id = Auth::User()->id;
-                $mainUser = $this->userRepository->create($validate, $request->level, $id);
-
+                $mainUser = $this->userRepository->create($validate, config('app.super_admin'), $id);
+                // dd($mainUser);
             break;
             case config('app.provider'):
                 $id = Auth::user()->provider->id;
@@ -117,6 +118,10 @@ class UsersController extends Controller
 
     $customer = Customer::where('id', $request->customer_id)->first();
     $mainUser = $this->userRepository->create($validate, $request->level, $id);
+
+
+    return redirect()->route('user.index')->with('success', ucwords(trans_choice('messages.user_created_successfully', 1)) );
+
 }
 
 /**
@@ -168,6 +173,8 @@ public function edit(User $user)
 */
 public function update(Request $request, User $user)
 {
+
+    dd($request->all());
 
     $user = User::findOrFail($user->id);
 
@@ -227,7 +234,6 @@ public function update(Request $request, User $user)
         return redirect()->back()->with('danger', ucwords(trans_choice($errorMessage, 1)) );
 
     }
-    return redirect()->route('provider.index')->with('success', ucwords(trans_choice('messager.user_updated_succesfully', 1)) );
 
 }
 

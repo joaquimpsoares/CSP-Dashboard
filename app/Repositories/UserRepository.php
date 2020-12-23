@@ -68,6 +68,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function create($user = null, $type = null, $model = null) {
 
+        // dd($type);
         if (!empty($user) && !empty($type) && !empty($model)) {
 
             $user = [
@@ -78,14 +79,20 @@ class UserRepository implements UserRepositoryInterface
             ];
 
             switch ($type) {
+                case 'Super Admin':
+
+                    $user['user_level_id'] = 1;
+
+                    $newUser = User::create($user);
+
+                    $newUser->assignRole(config('app.super_admin'));
+
+                    break;
                 case 'provider':
                     $providerLevel = UserLevel::where('name', config('app.provider'))->first();
                     $user['user_level_id'] = $providerLevel->id;
 
-                    // dd($model->id);
-
                     $user['provider_id'] = $model->id;
-
 
                     $newUser = User::create($user);
 

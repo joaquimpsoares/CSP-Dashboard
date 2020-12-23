@@ -80,13 +80,13 @@
                                     <span class="input-group-text" id="basic-addon1"><i class="fa fa-user" aria-hidden="true"></i>
                                     </span>
                                 </div>
-                                <input name="externaluserid" type="text" class="form-control py-0" aria-describedby="basic-addon1" value="{{ old('externaluserid') }}" placeholder="External user ID (Optional)">
+                                <input name="socialite_id" type="text" class="form-control py-0" aria-describedby="basic-addon1" value="{{ old('externaluserid') }}" placeholder="External user ID (Optional)">
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
                                     <div class="form-group">
-                                        <select name="status_id" class="custom-select sf-validate="required">
+                                        <select name="status_id" class="custom-select sf-validate" required>
                                             <option value="{{$statuses->first()->id}}" selected>{{ucwords(trans_choice($statuses->first()->name, 1))}}</option>
                                             @foreach ($statuses as $status)
                                             <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>

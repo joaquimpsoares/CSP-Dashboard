@@ -63,12 +63,12 @@
                         </div>
                         <div class="card-body card-body-cascade">
                             <div class="row">
-                                <div class="col-md-6 mb-4">
+                                {{-- <div class="col-md-6 mb-4">
                                     <div class="md-form form-sm mb-0">
                                         <label for="username" class="">{{ ucwords(trans_choice('messages.username', 1)) }}</label>
                                         <input type="text" id="username" name="username" class="form-control form-control" value="{{$user->username}}">
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-md-6 mb-4">
                                     <div class="md-form form-sm mb-0">
                                         <label for="email" class="">{{ ucwords(trans_choice('messages.email', 1)) }}</label>
