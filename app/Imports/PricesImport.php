@@ -18,8 +18,6 @@ class PricesImport implements ToModel, WithHeadingRow, WithBatchInserts
     */
     public function model(Array $row)
     {
-        // dd($row['sku']);
-        // dd(Product::where('sku', $row['sku'])->where('instance_id', $row['instance'])->firstOrFail()->id);
 
         Price::updateOrCreate([
             'name'          => $row['name'],

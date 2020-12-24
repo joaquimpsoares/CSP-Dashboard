@@ -72,19 +72,20 @@ class ResellerController extends Controller
 
 
     public function store(Request $request) {
+
+        // dd($request->all());
         $user = $this->getUser();
 
         $validate = $this->validator($request->all())->validate();
-        dd($validate);
+        // dd($validate);
 
         try {
             DB::beginTransaction();
 
             $reseller = $this->resellerRepository->create($validate, $user);
 
-            dd($reseller);
-
             $mainUser = $this->userRepository->create($validate, 'reseller', $reseller);
+            // dd($mainUser);
 
             DB::commit();
         } catch (\PDOException $e) {
@@ -188,9 +189,7 @@ class ResellerController extends Controller
 
     protected function validator(array $data)
     {
-        // dd($data);
-        // return
-        $tt = Validator::make($data, [
+        return Validator::make($data, [
             'company_name' => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
             'nif' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
             'email' => ['sometimes', 'email', 'max:255'],
@@ -204,6 +203,6 @@ class ResellerController extends Controller
             'status_id' => ['required', 'integer', 'exists:statuses,id'],
             'sendInvitation' => ['nullable', 'integer'],
             ]);
-            dd($tt);
+            // dd($tt);
         }
     }

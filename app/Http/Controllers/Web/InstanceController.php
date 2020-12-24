@@ -179,9 +179,6 @@ class InstanceController extends Controller
 
                 $instance->save();
 
-                // dd($instance);
-
-
                 return redirect()->back()->with('success', 'Instance updated succesfully')->withInput(['tab'=>'tabPageID']);;
             }
 

@@ -22,6 +22,16 @@
 <!--multi css-->
 <link rel="stylesheet" href="{{URL::asset('assets/plugins/multi/multi.min.css')}}">
 @endsection
+<style>
+    .no-spin::-webkit-inner-spin-button, .no-spin::-webkit-outer-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}
+
+.no-spin {
+    -moz-appearance:textfield !important;
+}
+</style>
 @section('content')
 
 <div class="container mt-5">
@@ -87,7 +97,7 @@
                             <div class="row">
                                 <div class="col-lg-4 col-md-6 mb-4">
                                     <label for="address-2" class="">{{ucwords(trans_choice('messages.mpnid', 1))}}</label>
-                                    <input type="text" id="mpnid" name="mpnid" class="form-control mb-4" value="{{ old('mpnid') }}">
+                                    <input type="number" id="mpnid" name="mpnid" class="form-control mb-4 no-spin" min="4" value="{{ old('mpnid') }}">
                                 </div>
                             </div>
                             <hr>

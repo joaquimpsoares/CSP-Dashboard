@@ -68,7 +68,6 @@ class UserRepository implements UserRepositoryInterface
 
     public function create($user = null, $type = null, $model = null) {
 
-        // dd($type);
         if (!empty($user) && !empty($type) && !empty($model)) {
 
             $user = [

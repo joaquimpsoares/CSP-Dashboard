@@ -401,9 +401,7 @@ class AnalyticController extends Controller
 
                 $customer = $this->getUser()->customer->format();
 
-                // // dd($customer);
                 // $serviceCosts = $customer->map(function($item, $key) {
-                //     dd($customer);
                 //     if($item['tenant_id'] == null){
                 //         return ($serviceCosts = null);
                 //     }

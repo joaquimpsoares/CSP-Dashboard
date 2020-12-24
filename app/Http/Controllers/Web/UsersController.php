@@ -92,16 +92,12 @@ class UsersController extends Controller
     */
     public function store(Request $request)
     {
-        // dd($request->all());
 
         $validate = $this->validator($request->all())->validate();
-// dd($validate);
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
-                // dd($request->level);
                 $id = Auth::User()->id;
                 $mainUser = $this->userRepository->create($validate, config('app.super_admin'), $id);
-                // dd($mainUser);
             break;
             case config('app.provider'):
                 $id = Auth::user()->provider->id;
@@ -132,7 +128,6 @@ class UsersController extends Controller
 */
 public function show(User $user)
 {
-    // dd($user->roles);
 
     $roles = Role::get();
 
@@ -174,7 +169,6 @@ public function edit(User $user)
 public function update(Request $request, User $user)
 {
 
-    dd($request->all());
 
     $user = User::findOrFail($user->id);
 
@@ -184,7 +178,6 @@ public function update(Request $request, User $user)
         DB::beginTransaction();
 
         if(request()->has('avatar')){
-            // dd('hh');
             $avataruploaded = request()->file('avatar');
             $avatarname = time() . '.' . $avataruploaded->getClientOriginalExtension() ;
             $avatarpath = public_path('/images/profile/');

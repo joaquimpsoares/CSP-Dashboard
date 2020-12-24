@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('page-title', trans('app.my_profile'))
-@section('page-heading', trans('app.my_profile'))
+@section('page-title', __('My Profile'))
+@section('page-heading', __('My Profile'))
 
 @section('breadcrumbs')
     <li class="breadcrumb-item">
-        @lang('app.my_profile')
+        @lang('My Profile')
     </li>
 
     <li class="breadcrumb-item active">
-        @lang('app.two_factor_phone_verification')
+        @lang('Two-Factor Phone Verification')
     </li>
 @stop
 
@@ -22,10 +22,13 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title card-title-bold">
-                    @lang('app.phone_verification')
+                    @lang('Phone Verification')
                 </h5>
 
-                <p>@lang('app.we_have_sent_you_a_verification_token')</p>
+                <p>
+                    @lang('We have sent you a verification token via SMS. Please provide the token
+                    below to verify your phone number.')
+                </p>
 
                 {!! Form::open(['route' => "two-factor.verify", 'id' => 'two-factor-form']) !!}
                     @if ($user)
@@ -36,20 +39,20 @@
                                class="form-control"
                                id="token"
                                name="token"
-                               placeholder="@lang('app.token')">
+                               placeholder="@lang('Token')">
                     </div>
                     <div class="mt-3">
                         <button type="submit"
                                 class="btn btn-primary"
                                 data-toggle="loader"
-                                data-loading-text="@lang('app.verifying')">
-                            @lang('app.verify')
+                                data-loading-text="@lang('Verifying...')">
+                            @lang('Verify')
                         </button>
                         <a href="javascript:;"
                            class="btn d-none"
                            id="resend-token"
-                           data-loading-text="@lang('app.sending')">
-                            @lang('app.resend_token')
+                           data-loading-text="@lang('Sending...')">
+                            @lang('Resend Token')
                         </a>
                     </div>
                 {!! Form::close() !!}
