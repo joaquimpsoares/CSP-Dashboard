@@ -11,7 +11,7 @@ return [
     'cliente_selected' => 'Pruchasing order for cliente',
     'agreement_signed' => 'Agreement Signed By',
     'sign_agreement_microsoft' => 'Sign Microsoft Cloud Agreement',
-    'first_name' => 'First Name',
+    'name' => 'First Name',
     'last_name' => 'Last Name',
     'email' => 'Email Address',
     'phone_number' => 'Phone Number',

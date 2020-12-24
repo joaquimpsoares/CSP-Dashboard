@@ -84,9 +84,7 @@ class HomeController extends Controller
                 )->get();
 
                 $topProducts = OrderProducts::with('Order')->get();
-                // dd($topProducts->order);
                 // foreach($topProducts as $t){
-                    //     dd($t->product->groupBy('name')->get());
 
                 // }
 
@@ -95,7 +93,6 @@ class HomeController extends Controller
                     $query->groupBy('name');
                 }])->get();
 
-                // dd($topProducts->product);
 
                 return view('home', compact('providers','orders','countOrders','customersweek','topProducts'));
 
@@ -111,7 +108,6 @@ class HomeController extends Controller
                 $provider_id = Auth::getUser()->provider_id;
                 $orders= Order::first();
 
-                // dd($orders);
 
                 $orderMonth = Order::whereMonth(
                     'created_at', '=', Carbon::now()->subMonth()->month
@@ -125,13 +121,6 @@ class HomeController extends Controller
                 )->get();
 
                 $topProducts = OrderProducts::with('Order')->get();
-                // dd($topProducts->order);
-                // foreach($topProducts as $t){
-                    //     dd($t->product->groupBy('name')->get());
-
-                // }
-
-
                 $topProducts = OrderProducts::with(['Product' => function($query){
                     $query->groupBy('name');
                 }])->get();

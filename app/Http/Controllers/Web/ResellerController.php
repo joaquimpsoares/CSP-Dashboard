@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\User;
 use App\Status;
 use App\Country;
+use App\Customer;
 use App\Reseller;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
@@ -70,19 +72,20 @@ class ResellerController extends Controller
 
 
     public function store(Request $request) {
+
+        // dd($request->all());
         $user = $this->getUser();
 
         $validate = $this->validator($request->all())->validate();
-        dd($validate);
+        // dd($validate);
 
         try {
             DB::beginTransaction();
 
             $reseller = $this->resellerRepository->create($validate, $user);
 
-            dd($reseller);
-
             $mainUser = $this->userRepository->create($validate, 'reseller', $reseller);
+            // dd($mainUser);
 
             DB::commit();
         } catch (\PDOException $e) {
@@ -98,18 +101,46 @@ class ResellerController extends Controller
         return redirect()->route('reseller.index')->with('success', ucwords(trans_choice('messages.reseller_created_successfully', 1)) );
     }
 
-
     public function show(Reseller $reseller) {
 
-        $reseller = Reseller::with('country')->find($reseller->id);
+        $countries = Country::get();
 
         $statuses = Status::get();
 
+        $subscriptions = [];
+        $customers = new Collection();
+        foreach ($reseller as $resellers){
+            $reseller = Reseller::find($reseller['id']);
+            $customers = $this->customerRepository->customersOfReseller($reseller);
 
-        $countries = Country::all();
+            $subscriptions = $customers->flatMap(function ($values) {
+                $customer = Customer::find($values['id']);
+                $subscriptions = $this->subscriptionRepository->subscriptionsOfCustomer($customer);
+                return $subscriptions;
+            });
+            foreach ($customers as $customer){
 
-        return view('reseller.show', compact('reseller','countries','statuses'));
-    }
+            }
+        }
+
+        $users = User::where('reseller_id', $reseller->id)->get();
+
+
+            return view('reseller.show', compact('reseller','customers', 'countries', 'subscriptions','statuses', 'users'));
+        }
+
+
+    // public function show(Reseller $reseller) {
+
+    //     $reseller = Reseller::with('country')->find($reseller->id);
+
+    //     $statuses = Status::get();
+
+
+    //     $countries = Country::all();
+
+    //     return view('reseller.show', compact('reseller','countries','statuses'));
+    // }
 
 
     public function edit(Reseller $reseller) { }
@@ -158,9 +189,7 @@ class ResellerController extends Controller
 
     protected function validator(array $data)
     {
-        // dd($data);
-        // return
-        $tt = Validator::make($data, [
+        return Validator::make($data, [
             'company_name' => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
             'nif' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
             'email' => ['sometimes', 'email', 'max:255'],
@@ -174,6 +203,6 @@ class ResellerController extends Controller
             'status_id' => ['required', 'integer', 'exists:statuses,id'],
             'sendInvitation' => ['nullable', 'integer'],
             ]);
-            dd($tt);
+            // dd($tt);
         }
     }

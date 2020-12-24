@@ -60,7 +60,7 @@ class UsersController extends ApiController
     public function store(CreateUserRequest $request)
     {
         $data = $request->only([
-            'email', 'password', 'username', 'first_name', 'last_name',
+            'email', 'password', 'username', 'name', 'last_name',
             'phone', 'address', 'country_id', 'birthday', 'role_id'
         ]);
 
@@ -92,7 +92,7 @@ class UsersController extends ApiController
         $data = collect($request->all());
 
         $data = $data->only([
-            'email', 'password', 'username', 'first_name', 'last_name',
+            'email', 'password', 'username', 'name', 'last_name',
             'phone', 'address', 'country_id', 'birthday', 'status', 'role_id'
         ])->toArray();
 

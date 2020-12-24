@@ -38,8 +38,8 @@
                                     <input type="text" hidden="hiden" name="provider_id" value="{{$provider->id}}">
                                     <div class="row">
                                         <div class="md-form col-md-6">
-                                            <label for="first_name" class="col-md-4">{{ __('First Name') }}</label>
-                                            <input id="first_name" type="text" class="form-control @error('first_name') is-invalid @enderror" name="first_name" value="{{ old('first_name') }}" required autocomplete="first_name">
+                                            <label for="name" class="col-md-4">{{ __('First Name') }}</label>
+                                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name">
                                             @error('name')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -76,7 +76,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                        <div class="row"> 
+                                        <div class="row">
                                             <div class="md-form col-md-6">
                                                 <label for="password" class="col-md-4">{{ __('Password') }}</label>
                                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
@@ -84,9 +84,9 @@
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
-                                                @enderror   
+                                                @enderror
                                             </div>
-                                            
+
                                             <div class="md-form col-md-6">
                                                 <label for="password-confirm" class="col-md-4">{{ __('Confirm Password') }}</label>
                                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
@@ -109,7 +109,7 @@
             </section>
         </div>
     </div>
-    
-    
-    
+
+
+
     @endsection

@@ -22,7 +22,7 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
                 <img src="{{Auth::user()->avatar}}" alt="user-img" class="avatar-xl rounded-circle mb-1">
             </div>
             <div class="user-info">
-                <h5 class=" mb-1 font-weight-bold">{{Auth::user()->first_name . Auth::user()->last_name}}</h5>
+                <h5 class=" mb-1 font-weight-bold">{{Auth::user()->name . Auth::user()->last_name}}</h5>
                 <span class="text-muted app-sidebar__user-name text-sm">{{Auth::user()->resellers}}</span>
             </div>
         </div>
@@ -124,8 +124,8 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow p-4">
                         <div class="border-bottom pb-3">
                             <h4 class="font-weight-bold">Help</h4>
-                            <a class="text-primary d-block" href="{{ url('/' . $page='tickets') }}">Ticketing</a>
-                            <a class="text-primary d-block" href="{{ url('/' . $page='#') }}">Contact@tagydes.com</a>
+                            <a class="btn btn-secondary" style="color: white" href="{{ url('/' . $page='tickets') }}">Support Tickets</a>
+                            <a class="text-primary d-block" href="{{ url('/' . $page='#') }}">Support@tagydes.com</a>
                             {{-- <a class="text-primary d-block" href="{{ url('/' . $page='#') }}">88 8888 8888</a> --}}
                         </div>
                         <div class="border-bottom pb-3 pt-3 mb-3">

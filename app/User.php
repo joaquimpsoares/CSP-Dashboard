@@ -50,7 +50,7 @@ class User extends Authenticatable implements  JWTSubject
     public function format()
     {
         return [
-            'first_name' => $this->first_name,
+            'name' => $this->name,
             'last_name' => $this->last_name,
             'phone' => $this->phone,
             'email' => $this->email

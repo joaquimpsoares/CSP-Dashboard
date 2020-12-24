@@ -171,7 +171,6 @@ class CustomerController extends Controller
         $licensesCount = $subscriptions->sum('amount');
 
         $serviceCosts = $this->CustomerServiceCosts($customer);
-        // dd($serviceCosts);
 
         return view('customer.show', compact('licensesCount','costs','customer','countries','subscriptions','users','statuses','serviceCosts'));
 
@@ -240,7 +239,6 @@ class CustomerController extends Controller
 
             DB::commit();
         } catch (\PDOException $e) {
-            dd($e);
             DB::rollBack();
             if ($e->errorInfo[1] == 1062) {
                 $errorMessage = "message.user_already_exists";

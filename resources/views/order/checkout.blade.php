@@ -78,34 +78,33 @@
 														</div>
 													</div>
 												</div>
-											</div>
-											<div class="col-sm-6">
-												<form action="{{ route('cart.add_customer') }}" method="post">
-													<div class="row">
-														@csrf
-														<input type="hidden" name="cart" value="{{ $cart->token }}">
-														<div class="col">
-															<hr>
-															<h5>
-																Select existing customer for this purchase</label>
-															</h5>
-															<select class="" name="customer_id">
-																@foreach($customers as $customer)
-																<option value="{{ $customer['id'] }}" @if($cart->customer && $cart->customer->id == $customer['id']) selected="selected" @endif>{{ $customer['company_name'] }}</option>
-																@endforeach
-															</select>
+												<div class="col-sm-6">
+													<form action="{{ route('cart.add_customer') }}" method="post">
+														<div class="row">
+															@csrf
+															<input type="hidden" name="cart" value="{{ $cart->token }}">
+															<div class="col">
+																<hr>
+																<h5>
+																	Select existing customer for this purchase</label>
+																</h5>
+																<select class="form-control SlectBox SumoUnder" name="customer_id" >
+																	@foreach($customers as $customer)
+																	<option value="{{ $customer['id'] }}" @if($cart->customer && $cart->customer->id == $customer['id']) selected="selected" @endif>{{ $customer['company_name'] }}</option>
+																	@endforeach
+																</select>
 
 														</div>
-													</div>
-													<hr>
-													<br>
-													<br>
-													<br>
-													<br>
-													<br>
-													<div class="float-sm-right">
-														<div class="col-sm-6">
-															<button class="main_btn">{{ ucwords(trans_choice('messages.next', 1)) }}</button>
+														<hr>
+														<br>
+														<br>
+														<br>
+														<br>
+														<br>
+														<div class="float-sm-right">
+															<div class="col-sm-6">
+																<button class="btn btn-secondary">{{ ucwords(trans_choice('messages.next', 1)) }} <i class="fe fe-arrow-right"></i></button>
+															</div>
 														</div>
 													</div>
 												</form>

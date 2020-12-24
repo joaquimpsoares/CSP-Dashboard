@@ -1,29 +1,26 @@
 @extends('layouts.app')
 
-@section('page-title', $user->present()->nameOrEmail . ' - ' . trans('app.active_sessions'))
+@section('page-title', $user->present()->nameOrEmail . ' - ' . __('Active Sessions'))
 
 @section('page-heading')
-    @lang('app.sessions') ({{ $user->present()->nameOrEmail }})
+    @lang('Sessions') ({{ $user->present()->nameOrEmail }})
 @stop
 
 @section('breadcrumbs')
+    @if (isset($adminView))
+        <li class="breadcrumb-item">
+            <a href="{{ route('users.index') }}">@lang('Users')</a>
+        </li>
 
-<ol class="breadcrumb pull-right">
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-    <li class="breadcrumb-item active"><a href="{{ route('user.list') }}">@lang('app.users')</a></li>
-    <li class="breadcrumb-item">{{ $user->present()->nameOrEmail }}</li> 
-    
-</ol>
-
-<!-- end breadcrumb -->
-<!-- begin page-header -->
-<h1 class="page-header">@lang('app.users')</h1>
-
-@stop
-
+        <li class="breadcrumb-item">
+            <a href="{{ route('users.show', $user->id) }}">
+                {{ $user->present()->nameOrEmail }}
+            </a>
+        </li>
+    @endif
 
     <li class="breadcrumb-item active">
-        @lang('app.sessions')
+        @lang('Sessions')
     </li>
 @stop
 
@@ -37,11 +34,11 @@
             <table class="table table-borderless table-striped">
                 <thead>
                     <tr>
-                        <th>@lang('app.ip_address')</th>
-                        <th>@lang('app.device')</th>
-                        <th>@lang('app.browser')</th>
-                        <th>@lang('app.last_activity')</th>
-                        <th class="text-center">@lang('app.action')</th>
+                        <th>@lang('IP Address')</th>
+                        <th>@lang('Device')</th>
+                        <th>@lang('Browser')</th>
+                        <th>@lang('Last Activity')</th>
+                        <th class="text-center">@lang('Action')</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -50,20 +47,20 @@
                             <tr>
                                 <td>{{ $session->ip_address }}</td>
                                 <td>
-                                    {{ $session->device ?: trans('app.unknown') }} ({{ $session->platform ?: trans('app.unknown') }})
+                                    {{ $session->device ?: __('Unknown') }} ({{ $session->platform ?: __('Unknown') }})
                                 </td>
-                                <td>{{ $session->browser ?: trans('app.unknown') }}</td>
+                                <td>{{ $session->browser ?: __('Unknown') }}</td>
                                 <td>{{ $session->last_activity->format(config('app.date_time_format')) }}</td>
                                 <td class="text-center">
                                     <a href="{{ isset($profile) ? route('profile.sessions.invalidate', $session->id) : route('user.sessions.invalidate', [$user->id, $session->id]) }}"
                                        class="btn btn-icon"
-                                       title="@lang('app.invalidate_session')"
+                                       title="@lang('Invalidate Session')"
                                        data-toggle="tooltip"
                                        data-placement="top"
                                        data-method="DELETE"
-                                       data-confirm-title="@lang('app.please_confirm')"
-                                       data-confirm-text="@lang('app.are_you_sure_invalidate_session')"
-                                       data-confirm-delete="@lang('app.yes_proceed')">
+                                       data-confirm-title="@lang('Please Confirm')"
+                                       data-confirm-text="@lang('Are you sure that you want to invalidate this session?')"
+                                       data-confirm-delete="@lang('Yes, proceed!')">
                                         <i class="fas fa-times"></i>
                                     </a>
                                 </td>
@@ -71,7 +68,7 @@
                         @endforeach
                     @else
                         <tr>
-                            <td colspan="6"><em>@lang('app.no_records_found')</em></td>
+                            <td colspan="6"><em>@lang('No records found.')</em></td>
                         </tr>
                     @endif
                 </tbody>

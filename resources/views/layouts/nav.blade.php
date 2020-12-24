@@ -179,7 +179,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('user.profile', Auth::user()->id) }}">
+                                    <a class="nav-link" href="{{ route('user', Auth::user()->id) }}">
                                         {{ ucwords(trans_choice('messages.account', 2)) }}
                                     </a>
                                 </li>

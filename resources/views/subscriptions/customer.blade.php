@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="jumbotron">
-    <h1 class="display-3">Welcome {{Auth::user()->first_name}}</h1>
+    <h1 class="display-3">Welcome {{Auth::user()->name}}</h1>
     <p class="lead">Here you'll be able to manage your Subscriptions licenses.</p>
     <hr class="my-4">
     {{-- <p>It uses utility classes for typography and spacing to space content out within the larger container.</p> --}}

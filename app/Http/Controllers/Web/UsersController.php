@@ -92,15 +92,12 @@ class UsersController extends Controller
     */
     public function store(Request $request)
     {
-        $user = $this->getUser();
 
         $validate = $this->validator($request->all())->validate();
-
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
                 $id = Auth::User()->id;
-                $mainUser = $this->userRepository->create($validate, $request->level, $id);
-
+                $mainUser = $this->userRepository->create($validate, config('app.super_admin'), $id);
             break;
             case config('app.provider'):
                 $id = Auth::user()->provider->id;
@@ -117,6 +114,10 @@ class UsersController extends Controller
 
     $customer = Customer::where('id', $request->customer_id)->first();
     $mainUser = $this->userRepository->create($validate, $request->level, $id);
+
+
+    return redirect()->route('user.index')->with('success', ucwords(trans_choice('messages.user_created_successfully', 1)) );
+
 }
 
 /**
@@ -127,7 +128,6 @@ class UsersController extends Controller
 */
 public function show(User $user)
 {
-    // dd($user->roles);
 
     $roles = Role::get();
 
@@ -156,7 +156,6 @@ public function edit(User $user)
     $u = auth()->user();
     // $roles = Role::where('order',$u->getRole())->orWhere('order', 5)->pluck('name','id');
 
-
     return view('user.edit',compact('edit', 'user','countries'));
 }
 
@@ -170,6 +169,7 @@ public function edit(User $user)
 public function update(Request $request, User $user)
 {
 
+
     $user = User::findOrFail($user->id);
 
     // $validate = $this->validator($request->all())->validate();
@@ -178,7 +178,6 @@ public function update(Request $request, User $user)
         DB::beginTransaction();
 
         if(request()->has('avatar')){
-            // dd('hh');
             $avataruploaded = request()->file('avatar');
             $avatarname = time() . '.' . $avataruploaded->getClientOriginalExtension() ;
             $avatarpath = public_path('/images/profile/');
@@ -187,7 +186,7 @@ public function update(Request $request, User $user)
 
             $user->username             = $request->input('username');
             $user->email                = $request->input('email');
-            $user->first_name           = $request->input('first_name');
+            $user->name           = $request->input('name');
             $user->last_name            = $request->input('last_name');
             $user->address              = $request->input('address');
             $user->city                 = $request->input('city');
@@ -205,7 +204,7 @@ public function update(Request $request, User $user)
         }
         $user->username             = $request->input('username');
         $user->email                = $request->input('email');
-        $user->first_name           = $request->input('first_name');
+        $user->name           = $request->input('name');
         $user->last_name            = $request->input('last_name');
         $user->address              = $request->input('address');
         $user->city                 = $request->input('city');
@@ -213,7 +212,7 @@ public function update(Request $request, User $user)
         $user->country_id           = $request->input('country_id');
         $user->postal_code          = $request->input('postal_code');
         // $user->password             = Hash::make($request->input('password'));
-
+        $user->assignRole(config('app.reseller'));
         $user->save();
         DB::commit();
         return redirect()->back()->with('success', 'User Updated succesfully');
@@ -228,7 +227,6 @@ public function update(Request $request, User $user)
         return redirect()->back()->with('danger', ucwords(trans_choice($errorMessage, 1)) );
 
     }
-    return redirect()->route('provider.index')->with('success', ucwords(trans_choice('messager.user_updated_succesfully', 1)) );
 
 }
 
@@ -282,9 +280,10 @@ protected function validator(array $data)
         'state' => ['sometimes', 'string', 'max:255'],
         'postal_code' => ['sometimes', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
         'status_id' => ['sometimes', 'integer', 'exists:statuses,id'],
-        'first_name' => ['sometimes', 'string', 'max:255'],
+        'name' => ['sometimes', 'string', 'max:255'],
         'last_name' => ['sometimes', 'string', 'max:255'],
         'email' => ['sometimes', 'string', 'max:255'],
+        'socialite_id' => ['sometimes', 'string', 'max:255'],
         'password' => ['sometimes', 'string', 'max:255'],
         'avatar' => ['sometimes', 'image' => 'mimes:jpg,jpeg,bmp,svg,png,gif', 'max:5000' ]
         ]);
@@ -303,7 +302,7 @@ protected function validator(array $data)
         $user =  User::create([
             'username' => $request['email'],
             'provider_id' => $request['provider_id'],
-            'first_name' => $request['first_name'],
+            'name' => $request['name'],
             'last_name' => $request['last_name'],
             'address_2' => $request['address_2'],
             'email' => $request['email'],

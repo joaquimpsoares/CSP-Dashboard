@@ -1,83 +1,103 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
+@section('page-title', __('Users'))
+@section('page-heading', __('Users'))
+
+@section('breadcrumbs')
+    <li class="breadcrumb-item active">
+        @lang('Users')
+    </li>
+@stop
 
 @section('content')
-<div class="box">
-    <section class="section">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">{{ ucwords(trans_choice('messages.user_table', 1)) }}</h3>
-                <div class="card-options">
-                    <div class="btn-group ml-5 mb-0">
-                        <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fe fe-plus"></i> {{ ucwords(__('messages.options')) }}</button>
-                        <div class="dropdown-menu">
-                            @if(Auth::user()->userLevel->id === 4)
-                            <a class="dropdown-item" href="{{route('user.create')}}"><i class="fa fa-plus mr-2"></i>{{ ucwords(__('messages.new_user')) }}</a>
-                            @endif
 
-                            <a class="dropdown-item" href="{{route('invite')}}" >{{ ucwords(trans_choice('messages.invite', 2)) }}</a>
+@include('partials.messages')
 
-                            {{-- <a class="dropdown-item" href="#"><i class="fa fa-edit mr-2"></i>Edit Page</a>
-                            <a class="dropdown-item" href="#"><i class="fa fa-eye mr-2"></i>View all new tab</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#"><i class="fa fa-cog mr-2"></i> Settings</a> --}}
-                        </div>
+<div class="card">
+    <div class="card-body">
+
+        <form action="" method="GET" id="users-form" class="pb-2 mb-3 border-bottom-light">
+            <div class="row my-3 flex-md-row flex-column-reverse">
+                <div class="col-md-4 mt-md-0 mt-2">
+                    <div class="input-group custom-search-form">
+                        <input type="text"
+                               class="form-control input-solid"
+                               name="search"
+                               value="{{ Request::get('search') }}"
+                               placeholder="@lang('Search for users...')">
+
+                            <span class="input-group-append">
+                                @if (Request::has('search') && Request::get('search') != '')
+                                    <a href="{{ route('users.index') }}"
+                                           class="btn btn-light d-flex align-items-center text-muted"
+                                           role="button">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                @endif
+                                <button class="btn btn-light" type="submit" id="search-users-btn">
+                                    <i class="fas fa-search text-muted"></i>
+                                </button>
+                            </span>
                     </div>
+                </div>
+
+                <div class="col-md-2 mt-2 mt-md-0">
+                    {!!
+                        Form::select(
+                            'status',
+                            $statuses,
+                            Request::get('status'),
+                            ['id' => 'status', 'class' => 'form-control input-solid']
+                        )
+                    !!}
+                </div>
+
+                <div class="col-md-6">
+                    <a href="{{ route('users.create') }}" class="btn btn-primary btn-rounded float-right">
+                        <i class="fas fa-plus mr-2"></i>
+                        @lang('Add User')
+                    </a>
                 </div>
             </div>
-            @include('user.partials.table')
-            {{-- <div class="">
-                <i class="fab fa-product-hunt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
-                <div class="float-right">
-                    <a type="submit" class="btn btn-success">{{ ucwords(__('messages.new_customer')) }}</a>
-                </div>
-                <div class="card-body">
+        </form>
 
-                    <div class="table-responsive">
-                        <table id="example" class="table table-bordered text-nowrap key-buttons">
-                            <thead>
-                                <th>{{ ucwords(trans_choice('messages.email', 2)) }}</th>
-                                <th>{{ ucwords(trans_choice('messages.first_name', 2)) }}</th>
-                                <th class="text-center">{{ ucwords(trans_choice('messages.last_name', 1)) }}</th>
-                                <th class="text-center">{{ ucwords(trans_choice('messages.owner', 1)) }}</th>
-                                <th class="text-center">{{ ucwords(trans_choice('messages.status', 1)) }}</th>
-                                <th class="text-center">{{ ucwords(trans_choice('messages.action', 2)) }}</th>
-                            </thead>
-                            <tbody>
-                                @forelse($users as $user)
-                                <tr>
-                                    <td style="width: 1px; white-space: nowrap;">
-                                        {{$user['email']}}
-                                    </td>
-                                    <td style="width: 1px; white-space: nowrap;">
-                                        {{$user['first_name']}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{$user['last_name']}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{$user['provider']['company_name'] }}
-                                        {{$user['reseller']['company_name'] }}
-                                        {{$user['customer']['company_name'] }}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ ucwords(trans_choice($user->status->name,1)) }}
-                                    </td>
-                                    <td>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td></td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div> --}}
-        </section>
+        <div class="table-responsive" id="users-table-wrapper">
+            <table class="table table-borderless table-striped">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th class="min-width-80">@lang('Username')</th>
+                    <th class="min-width-150">@lang('Full Name')</th>
+                    <th class="min-width-100">@lang('Email')</th>
+                    <th class="min-width-80">@lang('Registration Date')</th>
+                    <th class="min-width-80">@lang('Status')</th>
+                    <th class="text-center min-width-150">@lang('Action')</th>
+                </tr>
+                </thead>
+                <tbody>
+                    @if (count($users))
+                        @foreach ($users as $user)
+                            @include('user.partials.row')
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="7"><em>@lang('No records found.')</em></td>
+                        </tr>
+                    @endif
+                </tbody>
+            </table>
+        </div>
     </div>
-    @endsection
+</div>
 
+{!! $users->render() !!}
 
+@stop
+
+@section('scripts')
+    <script>
+        $("#status").change(function () {
+            $("#users-form").submit();
+        });
+    </script>
+@stop

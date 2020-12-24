@@ -44,7 +44,7 @@ class DetailsController extends ApiController
         $data = collect($request->all());
 
         $data = $data->only([
-            'first_name', 'last_name', 'birthday',
+            'name', 'last_name', 'birthday',
             'phone', 'address', 'country_id'
         ])->toArray();
 

@@ -56,7 +56,7 @@
 												<div class="row">
 													<div class="col">
 														<div class="float-sm-right">
-															<button type="button" id="validateButton" class="main_btn" onclick="checkDomainAvailability()">{{ ucwords(trans_choice('messages.validate', 1)) }}</button>
+															<button type="button" id="validateButton" class="btn btn-primary" onclick="checkDomainAvailability()">{{ ucwords(trans_choice('messages.validate', 1)) }}</button>
 														</div>
 													</div>
 												</div>
@@ -69,7 +69,7 @@
 																<input type="hidden" name="token" value="{{ $cart->token }}" />
 																<h2>{{ ucwords(trans_choice('messages.sign_agreement_microsoft', 1)) }}</h2>
 																<div class="md-form mb-0">
-																	<label for="firstName">{{ ucwords(trans_choice('messages.first_name', 1)) }}</label>
+																	<label for="firstName">{{ ucwords(trans_choice('messages.name', 1)) }}</label>
 																	<input type="text" name="firstName" id="firstName" class="form-control" required="required" value="{{ $cart->agreement_firstname ?? null }}"/>
 																</div>
 																<div class="md-form mb-0">
@@ -86,8 +86,8 @@
 																</div>
 																<br>
 																<div class="float-sm-right">
-																	<button type="submit" class="main_btn" id="test">
-																		{{ ucwords(trans_choice('messages.review', 1)) }}
+																	<button type="submit" class="btn btn-secondary" id="test">
+																		{{ ucwords(trans_choice('messages.review', 1)) }} <i class="fe fe-arrow-right"></i>
 																	</button>
 																</div>
 															</form>
@@ -113,7 +113,7 @@
 																<input type="hidden" name="token" value="{{ $cart->token }}" />
 																<h2>{{ ucwords(trans_choice('messages.sign_agreement_microsoft', 1)) }}</h2>
 																<div class="md-form mb-0">
-																	<label for="firstName">{{ ucwords(trans_choice('messages.first_name', 1)) }}</label>
+																	<label for="firstName">{{ ucwords(trans_choice('messages.name', 1)) }}</label>
 																	<input type="text" name="firstName" id="firstName" class="form-control" required="required" value="{{ $cart->agreement_firstname ?? null }}" disabled="disabled" />
 																</div>
 																<div class="md-form mb-0">
@@ -130,8 +130,8 @@
 																</div>
 																<br>
 																<div class="float-sm-right">
-																	<button type="submit" class="main_btn" id="test">
-																		{{ ucwords(trans_choice('messages.review', 1)) }}
+																	<button type="submit" class="btn btn-secondary" id="test">
+																		{{ ucwords(trans_choice('messages.review', 1)) }} <i class="fe fe-arrow-right"></i>
 																	</button>
 																</div>
 															</form>
@@ -191,7 +191,7 @@
 		.done(function(data) {
 			console.log('success');
 
-			$('#firstName').val(data['first_name']);
+			$('#firstName').val(data['name']);
 			$('#lastName').val(data['last_name']);
 			$('#email').val(data['email']);
 			$('#phoneNumber').val(data['phone']);

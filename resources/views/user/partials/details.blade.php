@@ -1,121 +1,60 @@
-@extends('layouts.app')
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="first_name">@lang('Role')</label>
+            {!! Form::select('role_id', $roles, $edit ? $user->role->id : '',
+                ['class' => 'form-control input-solid', 'id' => 'role_id', $profile ? 'disabled' : '']) !!}
+        </div>
+        <div class="form-group">
+            <label for="status">@lang('Status')</label>
+            {!! Form::select('status', $statuses, $edit ? $user->status : '',
+                ['class' => 'form-control input-solid', 'id' => 'status', $profile ? 'disabled' : '']) !!}
+        </div>
+        <div class="form-group">
+            <label for="first_name">@lang('First Name')</label>
+            <input type="text" class="form-control input-solid" id="first_name"
+                   name="first_name" placeholder="@lang('First Name')" value="{{ $edit ? $user->first_name : '' }}">
+        </div>
+        <div class="form-group">
+            <label for="last_name">@lang('Last Name')</label>
+            <input type="text" class="form-control input-solid" id="last_name"
+                   name="last_name" placeholder="@lang('Last Name')" value="{{ $edit ? $user->last_name : '' }}">
+        </div>
+    </div>
 
-@section('content')
-
-<div class="container mt-5">
-    <section class="dark-grey-text">
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <form method="POST" action="{{ route('user.store') }}" class="col s12">
-                            {{-- <input type="hidden" name="level" value={{$level}}> --}}
-                            {{-- <input type="hidden" name="customer_id" value={{$customer_id}}> --}}
-                            @csrf              
-                            <h1>{{ ucwords(trans_choice('messages.new_user', 1)) }}</h1>
-                            <div class="row">
-                                <div class="col-md-6 mb-4">
-                                    <label for="first_name" class="">{{ ucwords(trans_choice('messages.first_name', 1)) }}</label>
-                                    <input type="text" id="first_name" name="first_name" class="form-control" value="{{ old('first_name') }}">
-                                </div>
-                                <div class="col-md-6 mb-2">
-                                    <label for="last_name">{{ ucwords(trans_choice('messages.last_name', 1)) }}</label>
-                                    <input type="text" id="last_name" name="last_name" class="form-control" value="{{ old('last_name') }}">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 mb-2">
-                                    <label for="country">{{ucwords(trans_choice('messages.country', 1))}}</label>
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <label class="input-group-text" for="country_id"><i class="fa fa-plane" aria-hidden="true"></i>
-                                            </label>
-                                        </div>
-                                        <select name="country_id" class="custom-select" id="country_id" required>
-                                            <option value="">Choose...</option>
-                                            {{-- @foreach ($countries as $country)    
-                                            <option value="{{$country->id}}">{{$country->name}}</option>
-                                            @endforeach --}}
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            {{ucwords(trans_choice('messages.Please_select_a_valid_country', 1))}}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <label for="address" class="">{{ucwords(trans_choice('messages.address_1', 1))}}</label>
-                            <input type="text" id="address_1" name="address_1" class="form-control mb-4" value="{{ old('address_1') }}" placeholder="1234 Main St">
-                            <label for="address-2" class="">{{ucwords(trans_choice('messages.address_2', 1))}} (optional)</label>
-                            <input type="text" id="address_2" name="address_2" class="form-control mb-4" value="{{ old('address_2') }}" placeholder="Appartment or numer">
-                            <div class="row">
-                                <div class="col-lg-4 col-md-6 mb-4">
-                                    <label for="address-2" class="">{{ucwords(trans_choice('messages.city', 1))}}</label>
-                                    <input type="text" id="city" name="city" class="form-control mb-4" value="{{ old('city') }}">
-                                </div>
-                                <div class="col-lg-4 col-md-6 mb-4">
-                                    <label for="zip">{{ucwords(trans_choice('messages.state', 1))}}</label>
-                                    <input name="state" type="text" class="form-control" id="zip" placeholder="" value="{{ old('state') }}" required >
-                                    <div class="invalid-feedback">
-                                        Zip code required.
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6 mb-4">
-                                    <label for="zip">Zip</label>
-                                    <input name="postal_code" type="text" class="form-control" id="zip" placeholder="" value="{{ old('postal_code') }}" required>
-                                    <div class="invalid-feedback">
-                                        Zip code required.
-                                    </div>
-                                </div>
-                                
-                            </div>
-                            <hr>
-                            <div class="input-group mb-4">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1">@</span>
-                                </div>
-                                <input name="email" type="text" class="form-control py-0" aria-describedby="basic-addon1" value="{{ old('email') }}" placeholder="youremail@example.com">
-                            </div>
-                            <div class="input-group mb-4">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-user" aria-hidden="true"></i>
-                                    </span>
-                                </div>
-                                <input name="username" type="text" class="form-control py-0" aria-describedby="basic-addon1" value="{{ old('username') }}" placeholder="Username (Optional)">
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
-                                    <div class="form-group">
-                                        {{-- <select name="status_id" class="form-select" sf-validate="required">
-                                            <option selected></option>
-                                            @foreach ($statuses as $status)    
-                                            <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
-                                            @endforeach
-                                        </select> --}}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 mb-4">
-                    <button class="button submit_btn right" type="submit">{{ucwords(trans_choice('messages.create', 1))}}</button>
-                </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="birthday">@lang('Date of Birth')</label>
+            <div class="form-group">
+                <input type="text"
+                       name="birthday"
+                       id='birthday'
+                       value="{{ $edit && $user->birthday ? $user->present()->birthday : '' }}"
+                       class="form-control input-solid" />
             </div>
         </div>
-    </section>
+        <div class="form-group">
+            <label for="phone">@lang('Phone')</label>
+            <input type="text" class="form-control input-solid" id="phone"
+                   name="phone" placeholder="@lang('Phone')" value="{{ $edit ? $user->phone : '' }}">
+        </div>
+        <div class="form-group">
+            <label for="address">@lang('Address')</label>
+            <input type="text" class="form-control input-solid" id="address"
+                   name="address" placeholder="@lang('Address')" value="{{ $edit ? $user->address : '' }}">
+        </div>
+        <div class="form-group">
+            <label for="address">@lang('Country')</label>
+            {!! Form::select('country_id', $countries, $edit ? $user->country_id : '', ['class' => 'form-control input-solid']) !!}
+        </div>
+    </div>
+
+    @if ($edit)
+        <div class="col-md-12 mt-2">
+            <button type="submit" class="btn btn-primary" id="update-details-btn">
+                <i class="fa fa-refresh"></i>
+                @lang('Update Details')
+            </button>
+        </div>
+    @endif
 </div>
-
-@endsection
-
-@section('scripts')
-<script>
-    .form-group.is-invalid {
-        .invalid-feedback {
-            display: block;
-        }
-    }
-</script>
-
-@endsection
-

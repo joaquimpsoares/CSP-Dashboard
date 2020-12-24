@@ -125,12 +125,12 @@
 	function getMainUserFromCustomer() {
 
 		$.get( "/cart/customer/mainUser?token={{ $cart->token }}", function() {
-					//action begining            
+					//action begining
 				})
 		.done(function(data) {
 			console.log('success');
 
-			$('#firstName').val(data['first_name']);
+			$('#firstName').val(data['name']);
 			$('#lastName').val(data['last_name']);
 			$('#email').val(data['email']);
 			$('#phoneNumber').val(data['phone']);

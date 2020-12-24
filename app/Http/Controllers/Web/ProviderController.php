@@ -215,8 +215,6 @@ class ProviderController extends Controller
     public function store(Request $request)
     {
 
-        // dd($request->all());
-
     $validate = $this->validator($request->all())->validate();
 
     try {
@@ -225,7 +223,6 @@ class ProviderController extends Controller
         $provider = $this->providerRepository->create($validate);
 
         $this->userRepository->create($validate, 'provider', $provider);
-        // dd($user);
 
         $priceList = PriceList::create([
             'name' => 'Price List - ' . $provider->company_name,

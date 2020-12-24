@@ -1,26 +1,44 @@
 <div class="form-group">
-    <label for="email">@lang('app.email')</label>
-    <input type="email" class="input" id="email"
-           name="email" placeholder="@lang('app.email')" value="{{ $edit ? $user->email : '' }}">
+    <label for="email">@lang('Email')</label>
+    <input type="email"
+           class="form-control input-solid"
+           id="email"
+           name="email"
+           placeholder="@lang('Email')"
+           value="{{ $edit ? $user->email : '' }}">
 </div>
+
 <div class="form-group">
-    <label for="username">@lang('app.username')</label>
-    <input type="text" class="input" id="username" placeholder="(@lang('app.optional'))"
-           name="username" value="{{ $edit ? $user->username : '' }}">
+    <label for="username">@lang('Username')</label>
+    <input type="text"
+           class="form-control input-solid"
+           id="username"
+           placeholder="(@lang('optional'))"
+           name="username"
+           value="{{ $edit ? $user->username : '' }}">
 </div>
+
 <div class="form-group">
-    <label for="password">{{ $edit ? trans("app.new_password") : trans('app.password') }}</label>
-    <input type="password" class="input" id="password"
-           name="password" @if ($edit) placeholder="@lang('app.leave_blank_if_you_dont_want_to_change')" @endif>
+    <label for="password">{{ $edit ? __("New Password") : __('Password') }}</label>
+    <input type="password"
+           class="form-control input-solid"
+           id="password"
+           name="password"
+           @if ($edit) placeholder="@lang("Leave field blank if you don't want to change it")" @endif>
 </div>
+
 <div class="form-group">
-    <label for="password_confirmation">{{ $edit ? trans("app.confirm_new_password") : trans('app.confirm_password') }}</label>
-    <input type="password" class="input" id="password_confirmation"
-           name="password_confirmation" @if ($edit) placeholder="@lang('app.leave_blank_if_you_dont_want_to_change')" @endif>
+    <label for="password_confirmation">{{ $edit ? __("Confirm New Password") : __('Confirm Password') }}</label>
+    <input type="password"
+           class="form-control input-solid"
+           id="password_confirmation"
+           name="password_confirmation"
+           @if ($edit) placeholder="@lang("Leave field blank if you don't want to change it")" @endif>
 </div>
+
 @if ($edit)
     <button type="submit" class="btn btn-primary mt-2" id="update-login-details-btn">
         <i class="fa fa-refresh"></i>
-        @lang('app.update_details')
+        @lang('Update Details')
     </button>
 @endif

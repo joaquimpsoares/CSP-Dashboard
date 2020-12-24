@@ -84,7 +84,6 @@ class Searchstore extends Component
         // // ->toSql();
         // ->paginate(9);
 
-        // dd($prices);
 
     }
 
@@ -96,7 +95,6 @@ class Searchstore extends Component
             ->groupBy('product_id')
             ->get();
 
-            // dd($result->max('product_id'));
 
         return view('livewire.store.searchstore',[
             'prices' => DB::table('prices')
