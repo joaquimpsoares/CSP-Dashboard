@@ -40,6 +40,7 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
             <li><a class="slide-item"  href="{{  route('home') }}"><span>Dashboard</span></a></li>
         </ul>
     </li>
+    {{-- @dd(Auth::user()->provider->instances->first()->external_type) --}}
     <li class="slide">
         <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}">
             <svg class="side-menu__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
@@ -49,9 +50,11 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
                     @can(config('app.provider_index'))
                     <li><a href="{{ route('provider.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.provider', 2)) }}</a></li>
                     @endcan
+                    @if (Auth::user()->provider->instances->first()->external_type == 'indirect')
                     @can(config('app.reseller_index'))
                     <li><a href="{{ route('reseller.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.reseller', 2)) }}</a></li>
                     @endcan
+                    @endif
                     @can(config('app.customer_index'))
                     <li><a href="{{ route('customer.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.customer', 2)) }}</a></li>
                     @endcan
