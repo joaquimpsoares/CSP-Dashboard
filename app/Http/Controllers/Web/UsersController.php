@@ -74,13 +74,14 @@ class UsersController extends Controller
     public function create(User $user, Request $request)
     {
 
-        $countries = Country::get();
-        $statuses = Status::get();
+        $countries = Country::pluck( 'name','id');
+        $statuses = Status::pluck( 'name','id');
+        $roles = Role::pluck( 'name','id');
 
         $level = $request->level;
         $customer_id = $request->customer_id;
 
-        return view('user.add', compact('user','countries','statuses','level','customer_id'));
+        return view('user.add', compact('user','countries','statuses','level','customer_id','roles'));
 
     }
 
@@ -94,13 +95,14 @@ class UsersController extends Controller
     {
 
         $validate = $this->validator($request->all())->validate();
+
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
                 $id = Auth::User()->id;
                 $mainUser = $this->userRepository->create($validate, config('app.super_admin'), $id);
             break;
             case config('app.provider'):
-                $id = Auth::user()->provider->id;
+                $id = Auth::user()->provider;
 
                 $mainUser = $this->userRepository->create($validate, $request->level, $id);
             break;
@@ -112,8 +114,8 @@ class UsersController extends Controller
 
 
 
-    $customer = Customer::where('id', $request->customer_id)->first();
-    $mainUser = $this->userRepository->create($validate, $request->level, $id);
+    // $customer = Customer::where('id', $request->customer_id)->first();
+    // $mainUser = $this->userRepository->create($validate, $request->level, $id);
 
 
     return redirect()->route('user.index')->with('success', ucwords(trans_choice('messages.user_created_successfully', 1)) );
@@ -273,15 +275,17 @@ protected function validator(array $data)
 {
     return Validator::make($data, [
         'email' => ['sometimes', 'email', 'max:255'],
-        'address_1' => ['sometimes', 'string', 'max:255'],
+        'address' => ['sometimes', 'string', 'max:255'],
         'address_2' => ['sometimes', 'string', 'max:255'],
         'country_id' => ['sometimes', 'integer', 'min:1'],
         'city' => ['sometimes', 'string', 'max:255'],
         'state' => ['sometimes', 'string', 'max:255'],
         'postal_code' => ['sometimes', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
-        'status_id' => ['sometimes', 'integer', 'exists:statuses,id'],
+        'status' => ['sometimes', 'integer', 'exists:statuses,id'],
+        'role_id' => ['sometimes', 'integer', 'exists:roles,id'],
         'name' => ['sometimes', 'string', 'max:255'],
         'last_name' => ['sometimes', 'string', 'max:255'],
+        'phone' => ['sometimes', 'string', 'max:20'],
         'email' => ['sometimes', 'string', 'max:255'],
         'socialite_id' => ['sometimes', 'string', 'max:255'],
         'password' => ['sometimes', 'string', 'max:255'],

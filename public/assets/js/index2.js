@@ -85,18 +85,32 @@ $(function (e) {
                     backgroundColor: [
                         "#2dce89",
                         "#4454c3",
-                        "#ff5b51"
+                        "#ff5b51",
+                        "#FFC300",
+                        "#9B59B6",
+                        "#7FB3D5",
+                        "#EB984E",
+                        "#512DA8",
+                        "#FFF176",
+                        "#fff",
                     ],
                     hoverBackgroundColor: [
                         "#2dce89",
                         "#4454c3",
-                        "#ff5b51"
+                        "#ff5b51",
+                        "#FFC300",
+                        "#9B59B6",
+                        "#7FB3D5",
+                        "#EB984E",
+                        "#512DA8",
+                        "#FFF176",
+                        "#fff",
                     ]
                 }]
             },
             options: {
                 legend: false,
-                responsive: false,
+                responsive: true,
                 cutoutPercentage: 70
             }
         }

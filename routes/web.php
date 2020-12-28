@@ -35,54 +35,7 @@ use Tagydes\MicrosoftConnection\Facades\Order as TagydesOrder;
 
 // Route::resource('/analytics', 'AnalyticController');
 
-Route::get('/analytics', [
-	'uses' => 'AnalyticController@index',
-	'as' => 'analytics.list'
-]);
 
-Route::get('/analytics/update', [
-	'uses' => 'AnalyticController@updateAZURE',
-	'as' => 'analytics.update'
-]);
-
-Route::get('/analytics/licenses', [
-	'uses' => 'AnalyticController@licenses',
-	'as' => 'analytics.licenses'
-]);
-
-
-Route::get('/customer/costs', [
-	'uses' => 'CustomerController@CustomerServiceCosts',
-	'as' => 'customer.costs'
-]);
-
-
-Route::post('/analytics/edit/', [
-	'uses' => 'AnalyticController@edit',
-	'as' => 'analytics.edit'
-]);
-
-Route::get('/analytics/show/', [
-	'uses' => 'AnalyticController@show',
-	'as' => 'analytics.show'
-]);
-
-Route::resource('/priceList', 'PriceListController');
-
-Route::resource('/price', 'PriceController');
-
-
-Route::get('jobs', 'JobsController@index')->name('jobs');
-Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
-Route::get('jobs/pending', 'JobsController@pending')->name('jobs.pending');
-Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
-
-Route::post('provider/register', 'ProviderController@store')->name('provider.register');
-
-Route::resource('/user', 'UsersController');
-
-Route::get('/user/profile/{user}', 'UsersController@profile')->name('user.profile');
-Route::post('/user/updatepassword/{user}', 'UsersController@updatepassword')->name('user.updatepassword');
 
 
 
@@ -181,7 +134,6 @@ Route::get('/test', function() {
 		"DeliveryEmail"=> "joaquim.soares@tagydes.com"
 		]);
 
-		// dd($newCustomer);
 
 		// $result =
 
@@ -474,7 +426,56 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('products/{id}', 'ProductController@show');
 
 	Route::resource('product', 'ProductController');
-	Route::resource('/order', 'OrderController');
+    Route::resource('/order', 'OrderController');
+
+    Route::get('/analytics', [
+        'uses' => 'AnalyticController@index',
+        'as' => 'analytics.list'
+    ]);
+
+    Route::get('/analytics/update', [
+        'uses' => 'AnalyticController@updateAZURE',
+        'as' => 'analytics.update'
+    ]);
+
+    Route::get('/analytics/licenses', [
+        'uses' => 'AnalyticController@licenses',
+        'as' => 'analytics.licenses'
+    ]);
+
+
+    Route::get('/customer/costs', [
+        'uses' => 'CustomerController@CustomerServiceCosts',
+        'as' => 'customer.costs'
+    ]);
+
+
+    Route::post('/analytics/edit/', [
+        'uses' => 'AnalyticController@edit',
+        'as' => 'analytics.edit'
+    ]);
+
+    Route::get('/analytics/show/', [
+        'uses' => 'AnalyticController@show',
+        'as' => 'analytics.show'
+    ]);
+
+    Route::resource('/priceList', 'PriceListController');
+
+    Route::resource('/price', 'PriceController');
+
+
+    Route::get('jobs', 'JobsController@index')->name('jobs');
+    Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
+    Route::get('jobs/pending', 'JobsController@pending')->name('jobs.pending');
+    Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
+
+    Route::post('provider/register', 'ProviderController@store')->name('provider.register');
+
+    Route::resource('/user', 'UsersController');
+
+    Route::get('/user/profile/{user}', 'UsersController@profile')->name('user.profile');
+    Route::post('/user/updatepassword/{user}', 'UsersController@updatepassword')->name('user.updatepassword');
 
 
 	// End of every authenticated user can access routes here

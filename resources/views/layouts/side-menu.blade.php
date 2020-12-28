@@ -50,11 +50,11 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
                     @can(config('app.provider_index'))
                     <li><a href="{{ route('provider.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.provider', 2)) }}</a></li>
                     @endcan
-                    @if (Auth::user()->provider->instances->first()->external_type == 'indirect')
+                    {{-- @if (Auth::user()->provider->instances->first()->external_type == 'indirect') --}}
                     @can(config('app.reseller_index'))
                     <li><a href="{{ route('reseller.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.reseller', 2)) }}</a></li>
                     @endcan
-                    @endif
+                    {{-- @endif --}}
                     @can(config('app.customer_index'))
                     <li><a href="{{ route('customer.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.customer', 2)) }}</a></li>
                     @endcan

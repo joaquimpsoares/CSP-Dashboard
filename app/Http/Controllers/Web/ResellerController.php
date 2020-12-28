@@ -73,11 +73,9 @@ class ResellerController extends Controller
 
     public function store(Request $request) {
 
-        // dd($request->all());
         $user = $this->getUser();
 
         $validate = $this->validator($request->all())->validate();
-        // dd($validate);
 
         try {
             DB::beginTransaction();
@@ -85,7 +83,6 @@ class ResellerController extends Controller
             $reseller = $this->resellerRepository->create($validate, $user);
 
             $mainUser = $this->userRepository->create($validate, 'reseller', $reseller);
-            // dd($mainUser);
 
             DB::commit();
         } catch (\PDOException $e) {
@@ -203,6 +200,5 @@ class ResellerController extends Controller
             'status_id' => ['required', 'integer', 'exists:statuses,id'],
             'sendInvitation' => ['nullable', 'integer'],
             ]);
-            // dd($tt);
         }
     }

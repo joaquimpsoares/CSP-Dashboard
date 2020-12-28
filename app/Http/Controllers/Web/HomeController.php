@@ -289,8 +289,6 @@ public function logActivity()
     return view('user.logactivity',compact('logs'));
 }
 }
-// dd($orders->count(),$orderMonth->count());
-// dd($countOrders);
 // $budget = cache()->remember('azure.budget', 260, function(){
 
     //     $customer = new TagydesCustomer([

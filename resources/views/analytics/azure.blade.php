@@ -59,7 +59,7 @@
             <div class="card-body">
                 <div class="row text-center">
                     <div class="col-md-12 mb-4 mt-sm-0">
-                        <div class="mx-auto chart-circle chart-circle-primary chart-circle-lg  mt-sm-0 mb-0 donutShadow" data-value="0.73" data-thickness="15" data-color="#4454c3">
+                        <div class="mx-auto chart-circle chart-circle-primary chart-circle-lg  mt-sm-0 mb-0 donutShadow" data-value="{{$average/100}}" data-thickness="15" data-color="#4454c3">
                             <div class="mx-auto chart-circle-value text-center mb-2"><h1 class="mb-0 mt-2">{{$average}}%</h1><small>Goal</small></div>
                         </div>
                     </div>
@@ -67,7 +67,7 @@
                         <h2 class="mb-0 fs-50 mt-3 counter  font-weight-bold">${{$budget}}</h2>
                         {{-- <span class=" fs-12 text-muted"><span class="text-danger mr-1"><i class="fe fe-arrow-down ml-1"></i>0.82%</span> since last week</span> --}}
                         {{-- <p class="mt-5 mb-2 text-muted">It is a long established fact that a ayout. </p> --}}
-                        <small class="mt-1 fs-12 text-muted">Updated {{$date->azure_updated_at ?? ' '}} ago</small>
+                        <small class="mt-1 fs-12 text-muted">Updated {{$date->azure_updated_at ?? ' '}}</small>
                     </div>
                 </div>
             </div>
@@ -107,7 +107,7 @@
             <div class="row">
                 <div class="col-xl-12 col-md-12 col-lg-12">
                     <div class="card-header">
-                        <h4 class="card-title">Top 5 Resources</h4>
+                        <h4 class="card-title">Top services by cost</h4>
                     </div>
                     <div class="card-body text-center">
                         <div class="table-responsive">
@@ -116,7 +116,7 @@
                                     <tr>
                                         <th >Name</th>
                                         <th>Category</th>
-                                        <th>Sub Category</th>
+                                        {{-- <th>Sub Category</th> --}}
                                         <th>Total</th>
                                     </tr>
                                 </thead>
@@ -125,7 +125,7 @@
                                     <tr>
                                         <td >{{$item->name}}</td>
                                         <td >{{$item->category}}</td>
-                                        <td >{{$item->subcategory}}</td>
+                                        {{-- <td >{{$item->subcategory}}</td> --}}
                                         <td >${{$item->sum}}</td>
                                     </tr>
                                     @endforeach
@@ -190,12 +190,12 @@
                 <div class="card-body">
                     <div class="">
                         <div class="table-responsive">
-                            <table id="example" class="table table-bordered text-nowrap key-buttons">
+                            <table id="example" class="table table-bordered text-wrap key-buttons">
                                 <thead class="thead-dark">
                                     <tr>
                                         <th >Name</th>
                                         <th>Category</th>
-                                        <th>Sub Category</th>
+                                        {{-- <th>Sub Category</th> --}}
                                         <th>Total</th>
                                     </tr>
                                 </thead>
@@ -204,7 +204,7 @@
                                     <tr>
                                         <td >{{$item->name}}</td>
                                         <td >{{$item->category}}</td>
-                                        <td >{{$item->subcategory}}</td>
+                                        {{-- <td >{{$item->subcategory}}</td> --}}
                                         <td >${{$item->sum}}</td>
                                     </tr>
                                     @endforeach

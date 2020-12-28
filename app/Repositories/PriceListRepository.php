@@ -42,7 +42,11 @@ class PriceListRepository implements PriceListRepositoryInterface
                     // $instances = Auth::user()->provider->instances;
                     // foreach ($instances as $instance)
                     // $priceLists = PriceList::where('instance_id',$instance->id)->get()->map->format();
-					$priceLists = PriceList::wherein('instance_id', Auth::user()->provider->instances->pluck('id'))->get()->map->format();
+
+                    // $priceLists = Auth::user()->provider->pricelist->format();
+
+                    // dd(Auth::user()->provider->pricelist->format());
+                    $priceLists = PriceList::wherein('instance_id', Auth::user()->provider->instances->pluck('id'))->get()->map->format();
 
 					// $provider_id=User::select('provider_id')->where('id', Auth::user()->id)->first();
 					// $provider=Provider::where('id', $provider_id->provider_id)->first();

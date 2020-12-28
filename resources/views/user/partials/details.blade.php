@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-6">
         <div class="form-group">
-            <label for="first_name">@lang('Role')</label>
+            <label for="name">@lang('Role')</label>
             {!! Form::select('role_id', $roles, $edit ? $user->role->id : '',
                 ['class' => 'form-control input-solid', 'id' => 'role_id', $profile ? 'disabled' : '']) !!}
         </div>
@@ -11,9 +11,9 @@
                 ['class' => 'form-control input-solid', 'id' => 'status', $profile ? 'disabled' : '']) !!}
         </div>
         <div class="form-group">
-            <label for="first_name">@lang('First Name')</label>
-            <input type="text" class="form-control input-solid" id="first_name"
-                   name="first_name" placeholder="@lang('First Name')" value="{{ $edit ? $user->first_name : '' }}">
+            <label for="name">@lang('First Name')</label>
+            <input type="text" class="form-control input-solid" id="name"
+                   name="name" placeholder="@lang('First Name')" value="{{ $edit ? $user->name : '' }}">
         </div>
         <div class="form-group">
             <label for="last_name">@lang('Last Name')</label>
@@ -24,12 +24,12 @@
 
     <div class="col-md-6">
         <div class="form-group">
-            <label for="birthday">@lang('Date of Birth')</label>
+            <label for="socialite_id">@lang('socialite_id')</label>
             <div class="form-group">
                 <input type="text"
-                       name="birthday"
-                       id='birthday'
-                       value="{{ $edit && $user->birthday ? $user->present()->birthday : '' }}"
+                       name="socialite_id"
+                       id='socialite_id'
+                       value="{{ $edit && $user->socialite_id ? $user->present()->socialite_id : '' }}"
                        class="form-control input-solid" />
             </div>
         </div>
@@ -45,6 +45,7 @@
         </div>
         <div class="form-group">
             <label for="address">@lang('Country')</label>
+
             {!! Form::select('country_id', $countries, $edit ? $user->country_id : '', ['class' => 'form-control input-solid']) !!}
         </div>
     </div>

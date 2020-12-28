@@ -163,7 +163,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         SocialiteProviders\Manager\ServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
-
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -250,6 +250,8 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'SchedulerKernel' => MatviiB\Scheduler\SchedulerServiceProvider::class,
         'LogActivity' => App\Helpers\LogActivity::class,
+        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
+        'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
     ],
 
     'super_admin' => env('SUPER_ADMIN_LEVEL'),

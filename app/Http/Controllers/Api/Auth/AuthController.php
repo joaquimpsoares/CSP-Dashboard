@@ -2,77 +2,119 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
-use App\Events\User\LoggedIn;
-use App\Events\User\LoggedOut;
-// use App\Services\Auth\Api\JWT;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use App\Http\Requests\Auth\LoginRequest;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use App\Http\Controllers\Api\ApiController;
 
-/**
- * Class LoginController
- * @package Tagydes\Http\Controllers\Api\Auth
- */
-class AuthController extends ApiController
+
+use Validator;
+use App\Models\User;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+
+
+class AuthController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('guest')->only('login');
-        $this->middleware('auth')->only('logout');
-    }
-
     /**
-     * Attempt to log the user in and generate unique
-     * JWT token on successful authentication.
-     * @param LoginRequest $request
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     * Create a new AuthController instance.
+     *
+     * @return void
      */
-    public function login(LoginRequest $request)
-    {
-        $credentials = $request->getCredentials();
-
-        try {
-            if (! $token = JWTAuth::attempt($credentials)) {
-                return $this->errorUnauthorized('Invalid credentials.');
-            }
-        } catch (JWTException $e) {
-            return $this->errorInternalError('Could not create token.');
-        }
-
-        $user = auth()->user();
-
-        // if ($user->isBanned()) {
-        //     $this->invalidateToken($token);
-        //     return $this->errorUnauthorized('Your account is banned by administrators.');
-        // }
-
-        // if ($user->isUnconfirmed()) {
-        //     $this->invalidateToken($token);
-        //     return $this->errorUnauthorized('Please confirm your email address first.');
-        // }
-
-        event(new LoggedIn);
-
-        return $this->respondWithArray(compact('token'));
-    }
-
-    private function invalidateToken($token)
-    {
-        JWTAuth::setToken($token);
-        JWTAuth::invalidate();
+    public function __construct() {
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
     /**
-     * Logout user and invalidate token.
+     * Get a JWT via given credentials.
+     *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout()
-    {
-        event(new LoggedOut);
+    public function login(Request $request){
+    	$validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required|string|min:6',
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        if (! $token = auth()->attempt($validator->validated())) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        return $this->createNewToken($token);
+    }
+
+    /**
+     * Register a User.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function register(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|between:2,100',
+            'email' => 'required|string|email|max:100|unique:users',
+            'password' => 'required|string|confirmed|min:6',
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        $user = User::create(array_merge(
+                    $validator->validated(),
+                    ['password' => bcrypt($request->password)]
+                ));
+
+        return response()->json([
+            'message' => 'User successfully registered',
+            'user' => $user
+        ], 201);
+    }
+
+
+    /**
+     * Log the user out (Invalidate the token).
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout() {
         auth()->logout();
 
-        return $this->respondWithSuccess();
+        return response()->json(['message' => 'User successfully signed out']);
     }
+
+    /**
+     * Refresh a token.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refresh() {
+        return $this->createNewToken(auth()->refresh());
+    }
+
+    /**
+     * Get the authenticated User.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function userProfile() {
+        return response()->json(auth()->user());
+    }
+
+    /**
+     * Get the token array structure.
+     *
+     * @param  string $token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function createNewToken($token){
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            'user' => auth()->user()
+        ]);
+    }
+
 }

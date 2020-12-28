@@ -29,7 +29,7 @@
                         <img src="{{ asset('/images/vendors/' . $product->product_vendor . '.png') }}"  title="{{ $product->name }}" class="img-fuid" style="max-width: 120px;max-height: 120px;" />
                     </div>
                     <div class="product-details">
-                        <span class="product-category">{{ $product->instance_id }}</span>
+                        <span class="product-category">{{ $product->sku }}</span>
                         <h4><a href="">{{ $product->name }}</a></h4>
                         <p class="text">{{ str_limit($product->description, 150) }}</p>
                         <div class="product-bottom-details">

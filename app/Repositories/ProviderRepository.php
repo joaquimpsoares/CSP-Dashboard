@@ -30,7 +30,7 @@ class ProviderRepository implements ProviderRepositoryInterface
 			'city' => $provider['city'],
 			'state' => $provider['state'],
 			'postal_code' => $provider['postal_code'],
-			'status_id' => $provider['status_id']
+			'status_id' => $provider['status']
 		]);
 
 		return $newProvider;

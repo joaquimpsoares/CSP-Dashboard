@@ -1,22 +1,16 @@
-@extends('layouts.app')
-
-@section('page-title', __('Add User'))
-@section('page-heading', __('Create New User'))
-
-@section('breadcrumbs')
-    <li class="breadcrumb-item">
-        <a href="{{ route('users.index') }}">@lang('Users')</a>
-    </li>
-    <li class="breadcrumb-item active">
-        @lang('Create')
-    </li>
-@stop
+@extends('layouts.master')
+@section('css')
+<!-- Data table css -->
+<link href="{{URL::asset('assets/plugins/datatable/css/dataTables.bootstrap4.min.css')}}" rel="stylesheet" />
+<link href="{{URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css')}}"  rel="stylesheet">
+<link href="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.css')}}" rel="stylesheet" />
+<!-- Slect2 css -->
+<link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
+@endsection
 
 @section('content')
 
-@include('partials.messages')
-
-{!! Form::open(['route' => 'users.store', 'files' => true, 'id' => 'user-form']) !!}
+{!! Form::open(['route' => 'user.store', 'files' => true, 'id' => 'user-form']) !!}
     <div class="card">
         <div class="card-body">
             <div class="row">
@@ -65,7 +59,7 @@
 <br>
 @stop
 
-@section('scripts')
+{{-- @section('scripts')
     {!! HTML::script('assets/js/as/profile.js') !!}
     {!! JsValidator::formRequest('Vanguard\Http\Requests\User\CreateUserRequest', '#user-form') !!}
-@stop
+@stop --}}

@@ -100,14 +100,15 @@ class AnalyticController extends Controller
         $subscriptions = Subscription::where('instance_id', '3')->first();
 
 
-        $instance = Instance::where('id', $subscriptions->instance_id)->first();
+        $instance = Instance::where('id', '2')->first();
         return (int) FacadesAzureResource::withCredentials(
             $instance->external_id,$instance->external_token
             )->budget($customer, $subscription);
         });
 
+
         $costSum = AzureResource::sum('cost');
-        $costSum = "3000";
+        // $costSum = "3000";
 
         $budget = "1000";
 
@@ -164,10 +165,11 @@ class AnalyticController extends Controller
     {
         $subscriptions = Subscription::select('instance_id')->first();
 
-            $instance = Instance::where('id', 4)->first();
+            $instance = Instance::where('id', 2)->first();
+
 
         $customer = new TagydesCustomer([
-            'id' => 'd163a580-2fe2-4f80-ba11-88d166109503',
+            'id' => '3bd72a86-a8ea-44a6-a899-f3cccbedf027',
             'username' => 'bill@tagydes.com',
             'password' => 'blabla',
             'firstName' => 'Nombre',
@@ -176,7 +178,7 @@ class AnalyticController extends Controller
             ]);
 
         $subscription = new TagydesSubscription([
-            'id'            => '0ABBD8ED-CDB8-4C3C-B1A3-8415F82F7D7A',
+            'id'            => '3159263E-B866-40ED-AB54-FD68638C9193',
             'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
             'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
             'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
@@ -189,14 +191,16 @@ class AnalyticController extends Controller
             ]);
 
 
-            $subscriptions = Subscription::select('instance_id')->first();
+            $subscriptions = Subscription::where('instance_id', '3')->first();
 
 
-            $instance = Instance::where('id', $subscriptions->instance_id)->first();
+            $instance = Instance::where('id', '2')->first();
+
 
         $resources = FacadesAzureResource::withCredentials(
             $instance->external_id,$instance->external_token
             )->all($customer, $subscription);
+
 
 
         $resources->each(function($resource){
