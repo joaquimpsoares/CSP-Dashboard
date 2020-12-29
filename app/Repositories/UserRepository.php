@@ -12,6 +12,7 @@ use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\Hash;
 use App\Repositories\UserRepositoryInterface;
 
+
 /**
  *
  */
@@ -110,12 +111,10 @@ class UserRepository implements UserRepositoryInterface
 
                     $newUser->assignRole($role->name);
 
-                    // dd($newUser);
 
                     break;
 
-                case 'reseller':
-                    dd('here');
+                case 'Reseller':
 
                     $resellerLevel = UserLevel::where('name', config('app.reseller'))->first();
                     $user['user_level_id'] = $resellerLevel->id;
@@ -128,13 +127,12 @@ class UserRepository implements UserRepositoryInterface
 
                     break;
 
-                case 'customer':
-                    dd('here');
+                case 'Customer':
 
                     $customerLevel = UserLevel::where('name', config('app.customer'))->first();
                     $user['user_level_id'] = $customerLevel->id;
 
-                    $user['customer_id'] = $model->id;
+                    $user['customer_id'] = $type->id;
 
                     $newUser = User::create($user);
 
@@ -152,6 +150,41 @@ class UserRepository implements UserRepositoryInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function paginate($perPage, $search = null, $status = null)
+    {
+
+        $query = User::query();
+        // dd($status);
+
+        if ($status) {
+            $query->with('status')->where('status_id', $status);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('username', "like", "%{$search}%");
+                $q->orWhere('email', 'like', "%{$search}%");
+                $q->orWhere('name', 'like', "%{$search}%");
+                $q->orWhere('last_name', 'like', "%{$search}%");
+            });
+        }
+
+        $result = $query->orderBy('id', 'desc')
+            ->paginate($perPage);
+
+        if ($search) {
+            $result->appends(['search' => $search]);
+        }
+
+        // if ($status) {
+        //     $result->appends(['status' => $status]);
+        // }
+
+        return $result;
+    }
 
 
 }

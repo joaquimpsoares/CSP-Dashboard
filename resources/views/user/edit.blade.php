@@ -1,15 +1,15 @@
-@extends('layouts.app')
+@extends('layouts.master')
 
 @section('page-title', __('Edit User'))
-@section('page-heading', $user->present()->nameOrEmail)
+@section('page-heading', $user->nameOrEmail)
 
 @section('breadcrumbs')
     <li class="breadcrumb-item">
-        <a href="{{ route('users.index') }}">@lang('Users')</a>
+        <a href="{{ route('user.index') }}">@lang('Users')</a>
     </li>
     <li class="breadcrumb-item">
-        <a href="{{ route('users.show', $user->id) }}">
-            {{ $user->present()->nameOrEmail }}
+        <a href="{{ route('user.show', $user->id) }}">
+            {{ $user->nameOrEmail }}
         </a>
     </li>
     <li class="breadcrumb-item active">
@@ -48,7 +48,7 @@
                             @lang('Login Details')
                         </a>
                     </li>
-                    @if (setting('2fa.enabled'))
+                    {{-- @if (setting('2fa.enabled'))
                         <li class="nav-item">
                             <a class="nav-link"
                                id="authentication-tab"
@@ -60,7 +60,7 @@
                                 @lang('Two-Factor Authentication')
                             </a>
                         </li>
-                    @endif
+                    @endif --}}
                 </ul>
 
                 <div class="tab-content mt-4" id="nav-tabContent">
@@ -68,7 +68,7 @@
                          id="details"
                          role="tabpanel"
                          aria-labelledby="nav-home-tab">
-                        <form action="{{ route('users.update.details', $user) }}" method="POST" id="details-form">
+                        {{-- <form action="{{ route('user.update.details', $user) }}" method="POST" id="details-form"> --}}
                             @csrf
                             @method('PUT')
                             @include('user.partials.details', ['profile' => false])
@@ -79,16 +79,16 @@
                          id="login-details"
                          role="tabpanel"
                          aria-labelledby="nav-profile-tab">
-                        <form action="{{ route('users.update.login-details', $user) }}"
+                        {{-- <form action="{{ route('users.update.login-details', $user) }}"
                               method="POST"
                               id="login-details-form">
                             @csrf
                             @method('PUT')
                             @include('user.partials.auth')
-                        </form>
+                        </form> --}}
                     </div>
 
-                    @if (setting('2fa.enabled'))
+                    {{-- @if (setting('2fa.enabled'))
                         <div class="tab-pane fade px-2" id="2fa" role="tabpanel" aria-labelledby="nav-profile-tab">
                             <?php $route = Authy::isEnabled($user) ? 'disable' : 'enable'; ?>
 
@@ -99,7 +99,7 @@
                                 @include('user.partials.two-factor')
                             </form>
                         </div>
-                    @endif
+                    @endif --}}
                 </div>
 
             </div>
@@ -109,12 +109,12 @@
     <div class="col-4">
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('user.update.avatar', $user->id) }}"
+                {{-- <form action="{{ route('user.update.avatar', $user->id) }}" --}}
                       method="POST"
                       id="avatar-form"
                       enctype="multipart/form-data">
                     @csrf
-                    @include('user.partials.avatar', ['updateUrl' => route('user.update.avatar.external', $user->id)])
+                    {{-- @include('user.partials.avatar', ['updateUrl' => route('user.update.avatar.external', $user->id)]) --}}
                 </form>
             </div>
         </div>
@@ -123,7 +123,7 @@
 
 @stop
 
-@section('scripts')
+{{-- @section('scripts')
     {!! HTML::script('assets/js/as/btn.js') !!}
     {!! HTML::script('assets/js/as/profile.js') !!}
     {!! JsValidator::formRequest('Vanguard\Http\Requests\User\UpdateDetailsRequest', '#details-form') !!}
@@ -132,4 +132,4 @@
     @if (setting('2fa.enabled'))
         {!! JsValidator::formRequest('Vanguard\Http\Requests\TwoFactor\EnableTwoFactorRequest', '#two-factor-form') !!}
     @endif
-@stop
+@stop --}}

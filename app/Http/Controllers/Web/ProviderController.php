@@ -207,6 +207,9 @@ class ProviderController extends Controller
 
     public function edit(Provider $provider)
     {
+        dd($provider);
+
+        // provider/{provider}/edit
 
         $countries = Country::all();
         return view('provider.edit', compact('countries'));

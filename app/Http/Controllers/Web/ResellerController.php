@@ -43,11 +43,6 @@ class ResellerController extends Controller
     }
 
 
-    public function getCustomersFromReseller(Reseller $reseller) {
-
-    }
-
-
     public function index()
     {
 
@@ -127,25 +122,18 @@ class ResellerController extends Controller
         }
 
 
-    // public function show(Reseller $reseller) {
+    public function edit(Reseller $reseller) {
 
-    //     $reseller = Reseller::with('country')->find($reseller->id);
+        $statuses = Status::get();
 
-    //     $statuses = Status::get();
-
-
-    //     $countries = Country::all();
-
-    //     return view('reseller.show', compact('reseller','countries','statuses'));
-    // }
-
-
-    public function edit(Reseller $reseller) { }
+        $countries = Country::all();
+        return view('reseller.edit', compact('countries','reseller','statuses'));
+    }
 
 
     public function update(Request $request, Reseller $reseller){
 
-        $this->validator($request->all())->validate();
+        $validate = $this->validator($request->all())->validate();
         $reseller = Reseller::findOrFail($reseller->id);
 
         $reseller->company_name         = $request->input('company_name');
@@ -187,18 +175,18 @@ class ResellerController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'company_name' => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-            'nif' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
-            'email' => ['sometimes', 'email', 'max:255'],
-            'mpnid' => ['nullable', 'integer'],
-            'address_1' => ['required', 'string', 'max:255'],
-            'address_2' => ['nullable', 'string', 'max:255'],
-            'country_id' => ['required', 'integer', 'min:1'],
-            'city' => ['required', 'string', 'max:255'],
-            'state' => ['required', 'string', 'max:255'],
-            'postal_code' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
-            'status_id' => ['required', 'integer', 'exists:statuses,id'],
-            'sendInvitation' => ['nullable', 'integer'],
+            'company_name'      => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
+            'nif'               => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
+            'email'             => ['sometimes', 'email', 'max:255'],
+            'mpnid'             => ['nullable', 'integer'],
+            'address_1'         => ['required', 'string', 'max:255'],
+            'address_2'         => ['nullable', 'string', 'max:255'],
+            'country_id'        => ['required', 'integer', 'min:1'],
+            'city'              => ['required', 'string', 'max:255'],
+            'state'             => ['required', 'string', 'max:255'],
+            'postal_code'       => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
+            'status_id'         => ['required', 'integer', 'exists:statuses,id'],
+            'sendInvitation'    => ['nullable', 'integer'],
             ]);
         }
     }

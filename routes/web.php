@@ -309,7 +309,7 @@ Route::group(['middleware' => 'auth'], function () {
 			Route::patch('/reseller/update/{reseller}', 'ResellerController@update')
 			->name('reseller.update');
 
-			Route::get('reseller/{reseller}-{slug}/edit', 'ResellerController@show')
+			Route::get('reseller/{reseller}-{slug}/edit', 'ResellerController@edit')
 			->middleware('permission:' . config('app.reseller_edit'))->name('reseller.edit');
 
 			Route::get('reseller/{reseller}-{slug}/customers', 'ResellerController@getCustomersFromReseller')
@@ -476,7 +476,6 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/user/profile/{user}', 'UsersController@profile')->name('user.profile');
     Route::post('/user/updatepassword/{user}', 'UsersController@updatepassword')->name('user.updatepassword');
-
 
 	// End of every authenticated user can access routes here
 	});

@@ -33,12 +33,17 @@ class UsersController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
-    public function index()
+    public function index(Request $request)
     {
-        $provider = Auth::user()->provider;
-        $users = $this->userRepository->all();
 
-        return view('user.list', compact('users','provider'));
+        // $users = $this->users->paginate($perPage = 20, $request->search, $request->status);
+
+        $statuses = Status::pluck('name','id');
+        $provider = Auth::user()->provider;
+        // $users = $this->userRepository->all();
+        $users = $this->userRepository->paginate($perPage = 20, $request->search, $request->status);
+
+        return view('user.list', compact('users','provider','statuses'));
     }
 
     /**
@@ -152,15 +157,43 @@ public function edit(User $user)
     $countries = Country::get();
 
 
-    // $roles = $roleRepository->lists();
-    // $statuses = UserStatus::lists();
+    $roles = Role::get();
+    $statuses = Status::get();
     // $socialLogins = $this->users->getUserSocialLogins($user->id);
     $u = auth()->user();
     // $roles = Role::where('order',$u->getRole())->orWhere('order', 5)->pluck('name','id');
 
-    return view('user.edit',compact('edit', 'user','countries'));
+    return view('user.edit',compact('edit', 'user','countries','roles','statuses'));
 }
 
+public function updatelogin(Request $request, User $user){
+
+
+$data = $request->all();
+
+        if (! $data['password']) {
+            unset($data['password']);
+            unset($data['password_confirmation']);
+        }
+
+        $this->users->update($user->id, $data);
+
+
+        return redirect()->route('users.edit', $user->id)
+            ->withSuccess(__('Login details updated successfully.'));
+
+    }
+
+    public function updatedetails(Request $request, User $user){
+
+
+        $this->users->update(auth()->id(), $request->except('role_id', 'status'));
+
+
+        return redirect()->back()
+            ->withSuccess(__('Profile updated successfully.'));
+
+            }
 /**
 * Update the specified resource in storage.
 *
