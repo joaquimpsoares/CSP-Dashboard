@@ -13,9 +13,23 @@
                     </form>
                 </div>
             </div>
-
+            <div class="col-md-4 mt-md-0 mt-2">
+                <div class="row">
+                    <div class="input-group custom-search-form">
+                        <input wire:model="search"  type="text"
+                        class="form-control input-solid"
+                        name="search"
+                        value="{{ Request::get('search') }}"
+                        placeholder="@lang('Search products/sku...')">
+                        <span class="input-group-append">
+                            <button class="btn btn-light" type="submit" id="search-users-btn">
+                                <i class="fa fa-search text-muted"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
             <div class="row">
-                <input wire:model="search" class="form-control" type="text" placeholder="Search products/sku..."/>
                 @if (!empty($prices))
                 @foreach($prices as $product)
                 <div class="product-card">
@@ -35,7 +49,7 @@
                         <div class="product-bottom-details">
                             @if(Auth::user()->userLevel->name == "Reseller")
                             <div class="product-price"><small>{{ $product->price}}$</small>
-                                    {{ $product->msrp}}$
+                                {{ $product->msrp}}$
                             </div>
                             @else
                             <div class="product-price"><small></small>{{ $product->msrp}}$</div>
@@ -60,7 +74,7 @@
                 <hr>
                 <div class="col">
                     <span class="float-right">
-                        {{ $prices->links() }}
+                        {!! $prices->links() !!}
                     </span>
                 </div>
             </div>
