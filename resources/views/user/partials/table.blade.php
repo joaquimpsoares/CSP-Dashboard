@@ -17,59 +17,44 @@
                     <div style="display: flex;">
                         <div style="flex-grow: 31;">
                         </div>
-                        {{-- Route::current()->getName()) --}}
-                        @if (Route::current()->getName() === "user.index")
-                        {{-- <div> --}}
-                            <a href="{{route('user.create', ['level' => 'provider', 'customer_id' ] )}}" style = "font-color:fffff" class="btn submit_btn">new user</a>
-                            {{-- </div> --}}
-                            @endif
-                            @if (Route::current()->getName() === "reseller.show")
-                            <div>
-                                <a href="{{route('user.create', ['level' => 'reseller', 'customer_id' => $reseller->id] )}}" style = "font-color:fffff" class="btn submit_btn">new user</a>
-                            </div>
-                            @endif
-                            @if (Route::current()->getName() === "customer.show")
-                            <div>
-                                <a href="{{route('user.create', ['level' => 'customer', 'customer_id' => $customer->id] )}}" style = "font-color:fffff" class="btn submit_btn">new user</a>
-                            </div>
-                            @endif
-                        </div>
-                        <h2 class="card-title"><a>{{ ucwords(trans_choice('messages.user_table', 1)) }}</a></h2>
-                        <div class="table-responsive">
-                            <table id="example" class="table table-bordered text-nowrap key-buttons">
-                                <thead>
-                                    <tr>
-                                        <th>{{ ucwords(trans_choice('messages.avatar', 1)) }}</th>
-                                        <th>{{ ucwords(trans_choice('messages.email', 1)) }}</th>
-                                        <th>{{ ucwords(trans_choice('messages.username', 1)) }}</th>
-                                        <th>{{ ucwords(trans_choice('messages.name', 1)) }}</th>
-                                        <th>{{ ucwords(trans_choice('messages.last_name', 1)) }}</th>
-                                        <th>{{ ucwords(trans_choice('messages.status', 1)) }}</th>
-                                        <th>{{ ucwords(trans_choice('messages.action', 1)) }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($users as $user)
-                                    <tr>
-                                        <td><img src="{{$user->avatar}}" class="rounded-circle z-depth-0" alt="avatar image"  width='50' Height ='auto'></td>
-                                        <td><a href="/user/{{$user->id }}">{{ $user['email'] }}</a></td>
-                                        <td><a href="/user/{{$user->id }}">{{ $user['username'] }}</a></td>
-                                        <td>{{ $user['name'] }}</td>
-                                        <td>{{ $user['last_name'] }}</td>
-                                        <td>{{ ucwords(trans_choice($user->status->name, 1)) }}</td>
-                                        <td>
-                                            @include('partials.actions', ['model' => $user, 'modelo' => 'user'])
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+
+                    </div>
+                    <h2 class="card-title"><a>{{ ucwords(trans_choice('messages.user_table', 1)) }}</a></h2>
+                    <div class="table-responsive">
+                        <table id="example" class="table table-bordered text-nowrap key-buttons">
+                            <thead>
+                                <tr>
+                                    <th>{{ ucwords(trans_choice('messages.avatar', 1)) }}</th>
+                                    <th>{{ ucwords(trans_choice('messages.email', 1)) }}</th>
+                                    <th>{{ ucwords(trans_choice('messages.username', 1)) }}</th>
+                                    <th>{{ ucwords(trans_choice('messages.name', 1)) }}</th>
+                                    <th>{{ ucwords(trans_choice('messages.last_name', 1)) }}</th>
+                                    <th>{{ ucwords(trans_choice('messages.status', 1)) }}</th>
+                                    <th>{{ ucwords(trans_choice('messages.action', 1)) }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($users as $user)
+                                <tr>
+                                    <td><img src="{{$user->avatar}}" class="rounded-circle z-depth-0" alt="avatar image"  width='50' Height ='auto'></td>
+                                    <td><a href="/user/{{$user->id }}">{{ $user['email'] }}</a></td>
+                                    <td><a href="/user/{{$user->id }}">{{ $user['username'] }}</a></td>
+                                    <td>{{ $user['name'] }}</td>
+                                    <td>{{ $user['last_name'] }}</td>
+                                    <td>{{ ucwords(trans_choice($user->status->name, 1)) }}</td>
+                                    <td>
+                                        @include('partials.actions', ['model' => $user, 'modelo' => 'user'])
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 

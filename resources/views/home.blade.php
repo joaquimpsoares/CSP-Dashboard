@@ -9,6 +9,7 @@
 @section('content')
 @auth
 @include('dashboard.home')
+
 {{--
 
 @if(Auth::user()->userLevel->id === 1)

@@ -76,13 +76,14 @@
         </div>
         <div class="col-lg-7 col-md-auto">
             <div class="text-lg-right mt-4 mt-lg-0">
+                {{-- @dd($reseller->format()['mainUser']) --}}
                 @canImpersonate
-                @if(!empty($model['mainUser']))
-                <a class="btn btn-sm btn-white btn-svg" href="{{ route('impersonate', $model['mainUser']->id) }}"><i class="fa fa-user-secret text-muted"></i></a>
+                @if(!empty($reseller->format()['mainUser']))
+                <a class="btn btn-white" href="{{ route('impersonate', $reseller->format()['mainUser']['id']) }}"><i class="fa fa-user-secret"></i>{{ ucwords(trans_choice('messages.impersonate', 1)) }}</a>
+                {{-- <a href="#" class="btn btn-white"><i class="fa fa-user-secret"></i> {{ ucwords(trans_choice('messages.impersonate', 1)) }}</a> --}}
                 @endif
                 @endCanImpersonate
-                <a href="#" class="btn btn-white"><i class="fa fa-user-secret"></i> {{ ucwords(trans_choice('messages.impersonate', 1)) }}</a>
-                <a href="#" class="btn btn-primary">{{ ucwords(trans_choice('messages.edit_reseller', 1)) }} </a>
+                <a href="{{$reseller->format()['path']}}/edit" class="btn btn-primary">{{ ucwords(trans_choice('messages.edit_reseller', 1)) }} </a>
             </div>
         </div>
         <div class="col-lg-12 col-md-auto">

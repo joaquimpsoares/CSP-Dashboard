@@ -56,11 +56,14 @@ class SubscriptionController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
-    public function index()
+    public function index(Request $request)
     {
+        // dd($request->all());
 
         $subscriptions = [];
-        $subscriptions = $this->subscriptionRepository->all();
+        // $subscriptions = $this->subscriptionRepository->all();
+        $subscriptions = $this->subscriptionRepository->paginate($perPage = 10, $request->search, $request->customer);
+
         switch ($this->getUserLevel()) {
 
             case 'Provider':
@@ -112,26 +115,6 @@ return view('subscriptions.customer', compact('subscriptions'));
 }
 
 
-/**
-* Show the form for creating a new resource.
-*
-* @return \Illuminate\Http\Response
-*/
-public function create()
-{
-    //
-}
-
-/**
-* Store a newly created resource in storage.
-*
-* @param  \Illuminate\Http\Request  $request
-* @return \Illuminate\Http\Response
-*/
-public function store(Request $request)
-{
-    //
-}
 
 /**
 * Display the specified resource.

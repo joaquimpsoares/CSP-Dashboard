@@ -35,9 +35,6 @@ class UsersController extends Controller
     */
     public function index(Request $request)
     {
-
-        // $users = $this->users->paginate($perPage = 20, $request->search, $request->status);
-
         $statuses = Status::pluck('name','id');
         $provider = Auth::user()->provider;
         // $users = $this->userRepository->all();

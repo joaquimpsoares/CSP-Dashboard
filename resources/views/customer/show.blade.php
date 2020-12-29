@@ -106,11 +106,22 @@
                 <div class="btn-group ml-5 mb-0">
                     <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fe fe-plus"></i> {{ ucwords(__('messages.options')) }}</button>
                     <div class="dropdown-menu">
-                        @if(Auth::user()->userLevel->id === 4)
-                        <a class="dropdown-item" href="{{route('user.create')}}"><i class="fa fa-plus mr-2"></i>{{ ucwords(__('messages.new_user')) }}</a>
+                        @if (Route::current()->getName() === "user.index")
+                        <a class="dropdown-item" href="{{route('user.create', ['level' => 'provider', 'customer_id' ] )}}" style = "font-color:fffff" class="btn submit_btn">new user</a>
                         @endif
-                        <a class="dropdown-item" href="{{route('invite')}}" >{{ ucwords(trans_choice('messages.invite', 2)) }}</a>
+                        @if (Route::current()->getName() === "reseller.show")
+                        <div>
+                            <a class="dropdown-item" href="{{route('user.create', ['level' => 'reseller', 'customer_id' => $reseller->id] )}}" style = "font-color:fffff" class="btn submit_btn">new user</a>
+                        </div>
+                        @endif
+                        @if (Route::current()->getName() === "customer.show")
+                        <div>
+                            <a class="dropdown-item" href="{{route('user.create', ['level' => 'customer', 'customer_id' => $customer->id] )}}" style = "font-color:fffff" class="btn submit_btn">new user</a>
+                        </div>
+                        @endif
                     </div>
+                    {{-- <a class="dropdown-item" href="{{route('invite')}}" >{{ ucwords(trans_choice('messages.invite', 2)) }}</a>
+                    <a class="dropdown-item" href="{{route('invite')}}" >{{ ucwords(trans_choice('messages.invite', 2)) }}</a> --}}
                 </div>
             </div>
         </div>

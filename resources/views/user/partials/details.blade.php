@@ -2,7 +2,8 @@
     <div class="col-md-6">
         <div class="form-group">
             <label for="name">@lang('Role')</label>
-            {!! Form::select('role_id', $roles, $edit ? $user->role->id : '',
+            {{-- @dd($user->roles) --}}
+            {!! Form::select('role_id', $roles, $edit ? $user->roles->first()->id : '',
                 ['class' => 'form-control input-solid', 'id' => 'role_id', $profile ? 'disabled' : '']) !!}
         </div>
         <div class="form-group">
@@ -29,7 +30,7 @@
                 <input type="text"
                        name="socialite_id"
                        id='socialite_id'
-                       value="{{ $edit && $user->socialite_id ? $user->present()->socialite_id : '' }}"
+                       value="{{ $edit && $user->socialite_id ? $user->socialite_id : '' }}"
                        class="form-control input-solid" />
             </div>
         </div>

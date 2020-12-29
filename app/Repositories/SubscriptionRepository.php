@@ -88,6 +88,37 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
 
         return $subscriptions;
     }
+    public function paginate($perPage, $search = null, $customer = null)
+    {
 
+        $query = Subscription::query();
+
+        if ($customer) {
+            $customer = Customer::where('company_name',"like", "%{$customer}%")->first();
+        if ($customer) {
+            $query->with('customer')->where('customer_id', $customer->id);
+            }
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', "like", "%{$search}%");
+                $q->orWhere('billing_period', 'like', "%{$search}%");
+            });
+        }
+
+        $result = $query->orderBy('id', 'desc')
+            ->paginate($perPage);
+
+        if ($search) {
+            $result->appends(['search' => $search]);
+        }
+
+        if ($customer) {
+            $result->appends(['customer' => $customer]);
+        }
+
+        return $result;
+    }
 
 }

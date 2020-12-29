@@ -6,6 +6,7 @@ use App\User;
 use App\Notifications\FailedJob;
 use App\Notifications\SuccessJob;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Support\ServiceProvider;
@@ -33,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
+        Paginator::useBootstrap();
 
         // View::'layouts.nav'('key', 'value');
         /**

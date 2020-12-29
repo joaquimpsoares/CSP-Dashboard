@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.master')
 
 @section('page-title', __('Users'))
 @section('page-heading', __('Users'))
@@ -28,14 +28,14 @@
 
                             <span class="input-group-append">
                                 @if (Request::has('search') && Request::get('search') != '')
-                                    <a href="{{ route('users.index') }}"
+                                    <a href="{{ route('user.index') }}"
                                            class="btn btn-light d-flex align-items-center text-muted"
                                            role="button">
-                                        <i class="fas fa-times"></i>
+                                        <i class="fa fa-times"></i>
                                     </a>
                                 @endif
                                 <button class="btn btn-light" type="submit" id="search-users-btn">
-                                    <i class="fas fa-search text-muted"></i>
+                                    <i class="fa fa-search text-muted"></i>
                                 </button>
                             </span>
                     </div>
@@ -53,8 +53,8 @@
                 </div>
 
                 <div class="col-md-6">
-                    <a href="{{ route('users.create') }}" class="btn btn-primary btn-rounded float-right">
-                        <i class="fas fa-plus mr-2"></i>
+                    <a href="{{ route('user.create') }}" class="btn btn-primary btn-rounded float-right">
+                        <i class="fa fa-plus mr-2"></i>
                         @lang('Add User')
                     </a>
                 </div>

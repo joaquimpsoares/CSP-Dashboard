@@ -99,14 +99,41 @@ class HomeController extends Controller
             break;
 
             case config('app.admin'):
+                $provider_id = Auth::getUser()->provider_id;
+                $orders= Order::first();
 
+                $orderMonth = Order::whereMonth(
+                    'created_at', '=', Carbon::now()->subMonth()->month
+                );
+                $countOrders = ($orders->count()-$orderMonth->count());
+
+                $statuses = Status::get();
+                $providers = $this->providerRepository->all();
+                $customersweek = Customer::whereMonth(
+                    'created_at', '=', Carbon::now()->subWeekdays('1')
+                )->get();
+
+                $topProducts = OrderProducts::with('Order')->get();
+                // foreach($topProducts as $t){
+
+                // }
+
+
+                $topProducts = OrderProducts::with(['Product' => function($query){
+                    $query->groupBy('name');
+                }])->get();
+
+
+                return view('home', compact('providers','orders','countOrders','customersweek','topProducts'));
 
             break;
 
             case config('app.provider'):
+                // dd('here');
 
                 $provider_id = Auth::getUser()->provider_id;
                 $orders= Order::first();
+                // dd($orders);
 
 
                 $orderMonth = Order::whereMonth(
