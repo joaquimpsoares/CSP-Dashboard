@@ -73,39 +73,27 @@ class Searchstore extends Component
         $price = Price::select('price_list_id')->groupby('price_list_id')->where('product_vendor',$this->category)
         ->wherein('instance_id',$this->instance)->first();
 
-        // $prices = Price::with('product')
-        // ->join('products', 'prices.product_sku', '=', 'products.sku')
-        // ->where('prices.name', 'like', "%azure%")
-        // // ->orwhere('prices.product_sku', 'LIKE', '%' . $this->search . '%')
-        // ->where('products.instance_id', $this->instance)
-        // ->where('price_list_id', $this->priceList)
-        // ->where('products.category', $this->category)
-        // ->where('product_vendor', $this->vendor)
-        // // ->toSql();
-        // ->paginate(9);
-
-
     }
 
     public function render()
     {
+        $search = $this->search;
 
-        $result = DB::table('subscriptions')
-            ->select(DB::raw('count(*) as count, product_id'))
-            ->groupBy('product_id')
-            ->get();
+        $query = Price::query();
 
-
-        return view('livewire.store.searchstore',[
-            'prices' => DB::table('prices')
-            ->join('products', 'prices.product_sku', '=', 'products.sku')
+        $prices = $query
+        ->join('products', 'prices.product_sku', '=', 'products.sku')
             ->where('products.instance_id', session()->get('instance_id'))
             ->where('price_list_id', $this->priceList)
             ->where('products.category', $this->category)
             ->where('product_vendor', $this->vendor)
-            ->where('products.name', 'like', '%'.$this->search.'%')
-            // ->orderBy($result->max('product_id'), 'desc')
-        ->paginate(10),
-        ]);
+            ->where(function ($q)  {
+                $q->where('products.name', "like", "%{$this->search}%");
+                $q->orWhere('products.sku', 'like', "%{$this->search}%");
+            })
+        ->paginate(10);
+
+        return view('livewire.store.searchstore', compact('prices'));
     }
+
 }
