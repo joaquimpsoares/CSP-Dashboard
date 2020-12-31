@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Role;
 use App\User;
 use App\Status;
 use App\Country;
@@ -59,10 +60,11 @@ class ResellerController extends Controller
 
     public function create() {
 
-        $countries = Country::get();
-        $statuses = Status::get();
+        $countries = Country::pluck( 'name','id');
+        $statuses = Status::pluck( 'name','id');
+        $roles = Role::pluck( 'name','id');
 
-        return view('reseller.create', compact('countries', 'statuses'));
+        return view('reseller.create', compact('countries', 'statuses','roles'));
     }
 
 
@@ -85,9 +87,9 @@ class ResellerController extends Controller
             if ($e->errorInfo[1] == 1062) {
                 $errorMessage = "message.user_already_exists";
             } else {
-                $errorMessage = "message.error";
+                $errorMessage = $e->getMessage();
             }
-            return redirect()->back()->with('danger', ucwords(trans_choice($errorMessage, 1)) );
+            return redirect()->back()->with('danger', $errorMessage );
         }
 
         return redirect()->route('reseller.index')->with('success', ucwords(trans_choice('messages.reseller_created_successfully', 1)) );
@@ -116,8 +118,6 @@ class ResellerController extends Controller
         }
 
         $users = User::where('reseller_id', $reseller->id)->get();
-
-
             return view('reseller.show', compact('reseller','customers', 'countries', 'subscriptions','statuses', 'users'));
         }
 
@@ -174,19 +174,26 @@ class ResellerController extends Controller
 
     protected function validator(array $data)
     {
-        return Validator::make($data, [
-            'company_name'      => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-            'nif'               => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
-            'email'             => ['sometimes', 'email', 'max:255'],
-            'mpnid'             => ['nullable', 'integer'],
-            'address_1'         => ['required', 'string', 'max:255'],
-            'address_2'         => ['nullable', 'string', 'max:255'],
-            'country_id'        => ['required', 'integer', 'min:1'],
-            'city'              => ['required', 'string', 'max:255'],
-            'state'             => ['required', 'string', 'max:255'],
-            'postal_code'       => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
-            'status_id'         => ['required', 'integer', 'exists:statuses,id'],
-            'sendInvitation'    => ['nullable', 'integer'],
-            ]);
+            return Validator::make($data, [
+                'company_name'      => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
+                'nif'               => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
+                'country_id'        => ['required', 'integer', 'min:1'],
+                'address_1'         => ['required', 'string', 'max:255'],
+                'address_2'         => ['nullable', 'string', 'max:255'],
+                'city'              => ['required', 'string', 'max:255'],
+                'state'             => ['required', 'string', 'max:255'],
+                'postal_code'       => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
+                'mpnid'             => ['sometimes', 'integer'],
+                'role_id'           => ['sometimes', 'integer', 'exists:roles,id'],
+                'status'            => ['required', 'integer', 'exists:statuses,id'],
+                'name'              => ['sometimes', 'string', 'max:255'],
+                'last_name'         => ['sometimes', 'string', 'max:255'],
+                'socialite_id'      => ['sometimes', 'string', 'max:255'],
+                'phone'             => ['sometimes', 'string', 'max:20'],
+                'address'           => ['sometimes', 'string', 'max:255'],
+                'email'             => ['nullable', 'email', 'max:255'],
+                'sendInvitation'    => ['nullable', 'integer'],
+                'password'          => ['sometimes', 'string', 'max:255'],
+                ]);
         }
     }

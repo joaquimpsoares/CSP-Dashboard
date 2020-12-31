@@ -70,11 +70,8 @@ class UserRepository implements UserRepositoryInterface
 
     public function create($user = null, $type = null, $model = null) {
 
-
         $role = Role::find($user['role_id']);
         $type= Role::find($user['role_id'])->name;
-
-        // dd($type);
 
         if (!empty($user) && !empty($type) && !empty($model)) {
 
@@ -93,7 +90,6 @@ class UserRepository implements UserRepositoryInterface
                 'notify' => $user['sendInvitation'] ?? false,
                 'status_id' => $user['status'],
             ];
-            // dd($type);
 
             switch ($type) {
                 case 'Super Admin':
@@ -157,7 +153,6 @@ class UserRepository implements UserRepositoryInterface
     {
 
         $query = User::query();
-        // dd($status);
 
         if ($status) {
             $query->with('status')->where('status_id', $status);
