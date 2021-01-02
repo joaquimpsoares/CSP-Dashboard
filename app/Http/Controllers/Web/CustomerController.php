@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Role;
 use App\User;
 use App\Status;
 use App\Country;
@@ -19,9 +20,9 @@ use Illuminate\Support\Facades\Validator;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\SubscriptionRepositoryInterface;
-use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
-use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Facades\ServiceCosts;
+use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
+use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 
 
@@ -54,13 +55,11 @@ class CustomerController extends Controller
 
     public function create(Customer $customer){
 
+        $countries = Country::pluck( 'name','id');
+        $roles = Role::pluck( 'name','id');
+        $statuses = Status::pluck( 'name','id');
 
-
-        $countries = Country::get()->sortByDesc('id');
-        $countryRules = AppCountryrules::get();
-        $statuses = Status::get();
-
-        return view('customer.create', compact('customer','countries','statuses','countryRules'));
+        return view('customer.create', compact('customer','countries','statuses','roles'));
 
     }
 
@@ -68,15 +67,12 @@ class CustomerController extends Controller
 
         $validate = $this->validator($request->all())->validate();
 
-
         $user = $this->getUser();
-
 
         try {
             DB::beginTransaction();
 
             $customer = $this->customerRepository->create($validate);
-
 
             $customer->resellers()->attach($user->reseller->id);
 
@@ -103,7 +99,6 @@ class CustomerController extends Controller
 
         return redirect()->route('customer.index')->with('success', ucwords(trans_choice('messages.customer_created_successfully', 1)) );
 
-        // return redirect()->route('customer.index')->with(['alert' => 'success', 'message' => trans('messages.customer_created_successfully')]);
     }
 
 
@@ -115,43 +110,6 @@ class CustomerController extends Controller
 
 
     }
-
-
-
-    // public function update(Request $request, Customer $customer) {
-
-
-    //     $validate = $this->validator($request->all())->validate();
-
-    //     $user = $this->getUser();
-
-    //     try {
-    //         DB::beginTransaction();
-
-    //         $customer = $this->customerRepository->create($validate);
-
-    //         $customer->resellers()->attach($user->reseller->id);
-
-    //         $mainUser = $this->userRepository->create($validate, 'customer', $customer);
-
-    //         DB::commit();
-    //     } catch (\PDOException $e) {
-    //         DB::rollBack();
-    //         if ($e->errorInfo[1] == 1062) {
-    //             $errorMessage = "message.user_already_exists";
-    //         } else {
-    //             $errorMessage = "message.error";
-    //         }
-    //         return redirect()->route('customer.index')
-    //         ->with([
-    //             'alert' => 'danger',
-    //             'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
-    //         ]);
-    //     }
-
-    //     return redirect()->route('customer.index')->with(['alert' => 'success', 'message' => trans('messages.Provider Created successfully')]);
-    // }
-
 
     public function show(Customer $customer) {
 
@@ -215,9 +173,6 @@ class CustomerController extends Controller
         $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCostsLineitems($customer);
 
         return $resources;
-
-
-
     }
 
 
@@ -286,17 +241,25 @@ class CustomerController extends Controller
         // $countryName = Country::where('id', $data['country_id'])->first();
         // $countryRules = AppCountryrules::where('iso2Code', $countryName->iso_3166_2)->first();
         return Validator::make($data, [
-            'company_name' => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-            'nif' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
-            'email' => ['nullable', 'email', 'max:255'],
-            'address_1' => ['required', 'string', 'max:255'],
-            'address_2' => ['nullable', 'string', 'max:255'],
-            'country_id' => ['required', 'integer', 'min:1'],
-            'city' => ['required', 'string', 'max:255'],
-            'state' => ['required', 'string', 'max:255'],
-            'postal_code' => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
-            'status_id' => ['required', 'integer', 'exists:statuses,id'],
-            // 'sendInvitation' => ['nullable', 'integer'],
+            'company_name'      => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
+            'nif'               => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
+            'country_id'        => ['required', 'integer', 'min:1'],
+            'address_1'         => ['required', 'string', 'max:255'],
+            'address_2'         => ['nullable', 'string', 'max:255'],
+            'city'              => ['required', 'string', 'max:255'],
+            'state'             => ['required', 'string', 'max:255'],
+            'postal_code'       => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
+            'mpnid'             => ['sometimes', 'integer'],
+            'role_id'           => ['sometimes', 'integer', 'exists:roles,id'],
+            'status'            => ['required', 'integer', 'exists:statuses,id'],
+            'name'              => ['sometimes', 'string', 'max:255'],
+            'last_name'         => ['sometimes', 'string', 'max:255'],
+            'socialite_id'      => ['sometimes', 'string', 'max:255'],
+            'phone'             => ['sometimes', 'string', 'max:20'],
+            'address'           => ['sometimes', 'string', 'max:255'],
+            'email'             => ['nullable', 'email', 'max:255'],
+            'sendInvitation'    => ['nullable', 'integer'],
+            'password'          => ['sometimes', 'string', 'max:255'],
             ]);
     }
 }
