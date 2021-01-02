@@ -195,7 +195,7 @@
                                     <tr>
                                         <th >Name</th>
                                         <th>Category</th>
-                                        {{-- <th>Sub Category</th> --}}
+                                        <th>Sub Category</th>
                                         <th>Total</th>
                                     </tr>
                                 </thead>
@@ -204,7 +204,7 @@
                                     <tr>
                                         <td >{{$item->name}}</td>
                                         <td >{{$item->category}}</td>
-                                        {{-- <td >{{$item->subcategory}}</td> --}}
+                                        <td >{{$item->subcategory}}</td>
                                         <td >${{$item->sum}}</td>
                                     </tr>
                                     @endforeach

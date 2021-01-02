@@ -23,6 +23,12 @@ class Searchstore extends Component
 
     use WithPagination;
 
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function mount($vendor,$category )
         {
             $this->vendor = $category;

@@ -12,5 +12,6 @@ interface SubscriptionRepositoryInterface
     public function subscriptionsOfCustomer(Customer $customer);
 
     public function paginate($perPage, $search = null, $status = null);
+    public function paginateProvider($perPage, $search = null, $status = null, $provider);
 
 }
