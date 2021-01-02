@@ -160,7 +160,9 @@
     </table>
 </div>
 <div class="card-footer d-flex text-right">
-    {{ $subscriptions->onEachSide(5)->links() }}
+    @if ($subscriptions->has('paginate'))
+    {!! $subscriptions->render() !!}
+    @endif
 </div>
 </div>
 
