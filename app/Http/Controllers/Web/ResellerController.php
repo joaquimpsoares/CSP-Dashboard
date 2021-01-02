@@ -133,8 +133,10 @@ class ResellerController extends Controller
 
     public function update(Request $request, Reseller $reseller){
 
+        // dd($request->all());
         $validate = $this->validator($request->all())->validate();
         $reseller = Reseller::findOrFail($reseller->id);
+        // dd($reseller)    ;
 
         $reseller->company_name         = $request->input('company_name');
         $reseller->nif                  = $request->input('nif');
@@ -145,6 +147,7 @@ class ResellerController extends Controller
         $reseller->state                = $request->input('state');
         $reseller->postal_code          = $request->input('postal_code');
         $reseller->mpnid                = $request->input('mpnid');
+        $reseller->status_id            = $request->input('status_id');
 
         $reseller->save();
 
@@ -185,7 +188,7 @@ class ResellerController extends Controller
                 'postal_code'       => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
                 'mpnid'             => ['sometimes', 'integer'],
                 'role_id'           => ['sometimes', 'integer', 'exists:roles,id'],
-                'status'            => ['required', 'integer', 'exists:statuses,id'],
+                'status_id'         => ['required', 'integer', 'exists:statuses,id'],
                 'name'              => ['sometimes', 'string', 'max:255'],
                 'last_name'         => ['sometimes', 'string', 'max:255'],
                 'socialite_id'      => ['sometimes', 'string', 'max:255'],
