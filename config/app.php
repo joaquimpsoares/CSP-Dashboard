@@ -179,6 +179,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\ProviderRepositoryServiceProvider::class,
         App\Providers\ResellerRepositoryServiceProvider::class,
+        App\Providers\AnalyticRepositoryServiceProvider::class,
         App\Providers\CustomerRepositoryServiceProvider::class,
         App\Providers\ProductRepositoryServiceProvider::class,
         App\Providers\PriceListRepositoryServiceProvider::class,
