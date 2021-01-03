@@ -57,11 +57,10 @@ class AnalyticController extends Controller
     public function index()
     {
         $resourceName = Subscription::where('billing_type', 'usage')
-        ->join('azure_resources', 'azure_resources.subscription_id', '=', 'subscriptions.id')
+        ->join('azure_resources', 'azure_resources.subscription_id', '=', 'subscriptions.subscription_id')
         ->join('customers', 'subscriptions.customer_id', '=', 'customers.id')
         ->selectRaw('subscriptions.name as subsname, customers.company_name as customername,sum(cost) as sum, subscriptions.budget as budget, subscriptions.id as subscription_id, customers.id as customer_id')
         ->orderBy('sum', 'DESC')->paginate('10');
-        // dd($resourceName);
 
 
         // $resourceName = AzureResource::groupBy('azure_resources.subscription_id')

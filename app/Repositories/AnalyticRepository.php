@@ -184,11 +184,7 @@ class AnalyticRepository implements AnalyticRepositoryInterface
     public function UpdateAZURE($customer_id, Subscription $subscription)
     {
 
-
-        $subscriptions = Subscription::select('instance_id')->first();
-
         $instance = Instance::where('id', $subscription->instance_id)->first();
-
 
         $customer = new TagydesCustomer([
             'id' => $customer_id,
@@ -213,11 +209,9 @@ class AnalyticRepository implements AnalyticRepositoryInterface
             ]);
 
 
-
         $resources = FacadesAzureResource::withCredentials(
             $instance->external_id,$instance->external_token
             )->all($customer, $subscription);
-
 
 
         $resources->each(function($resource) use($subscription){
@@ -236,7 +230,7 @@ class AnalyticRepository implements AnalyticRepositoryInterface
                 ]);
             });
 
-            return redirect()->back()->with('success', 'Resources Updated succesfully');
+        return redirect()->back()->with('success', 'Resources Updated succesfully');
     }
 
     public function update($customer, $validate)
@@ -261,66 +255,5 @@ class AnalyticRepository implements AnalyticRepositoryInterface
     }
 
 
-    public function canInteractWithCustomer(Customer $customer)
-    {
 
-            $user = $this->getUser();
-
-            switch ($this->getUserLevel()) {
-                case config('app.super_admin'):
-                    return true;
-                break;
-
-                case config('app.admin'):
-                    return true;
-                break;
-
-                case config('app.provider'):
-
-                break;
-
-                case config('app.reseller'):
-                    $reseller = $user->reseller;
-                    return $reseller->customers->contains($customer->id);
-                break;
-
-                case config('app.subreseller'):
-
-                break;
-
-                case config('app.customer'):
-                    return in_array($user->id, $customer->users->pluck('id')->toArray());
-                break;
-
-                default:
-                return false;
-
-            break;
-        }
-    }
-
-    public function customersOfReseller(Reseller $reseller)
-    {
-
-        $customers = $reseller->customers->map->format();
-
-        return $customers;
-    }
-
-    public function ResellerOfcustomer(Customer $customer)
-    {
-
-        $reseller = $customer->resellers;
-
-        return $reseller;
-    }
-
-    public function getSubscriptions(Customer $customer)
-    {
-
-        $subscriptions= $customer->subscriptions;
-
-        return $subscriptions;
-
-    }
 }
