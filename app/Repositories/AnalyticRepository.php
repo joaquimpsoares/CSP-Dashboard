@@ -216,9 +216,9 @@ class AnalyticRepository implements AnalyticRepositoryInterface
 
         $resources->each(function($resource) use($subscription){
             AzureResource::updateOrCreate([
-                'azure_id' => $resource->id,
                 'subscription_id' => $subscription->id
             ], [
+                'azure_id' => $resource->id,
                 'name' => $resource->name,
                 'category' => $resource->category,
                 'unit' => $resource->unit,

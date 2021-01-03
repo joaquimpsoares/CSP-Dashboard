@@ -91,6 +91,7 @@ class AnalyticController extends Controller
     {
         $msId= $customer->microsoftTenantInfo->first()->tenant_id;
 
+
         $details = $this->analyticRepository->all($msId, $subscription);
 
         return view('analytics.azuredetails', [
@@ -124,7 +125,6 @@ class AnalyticController extends Controller
         $msId= $customer->microsoftTenantInfo->first()->tenant_id;
 
         $details = $this->analyticRepository->UpdateAZURE($msId, $subscription);
-        // dd($details);
 
     }
 
