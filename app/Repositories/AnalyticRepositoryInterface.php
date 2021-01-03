@@ -10,9 +10,9 @@ interface AnalyticRepositoryInterface
 {
 	public function all($customer_id, Subscription $subscription);
 
-    public function UpdateAZURE($customer);
+    public function UpdateAZURE($customer_id, Subscription $subscription);
 
-	public function getbudget();
+	public function importBudget($customer_id, Subscription $subscription);
 
 	public function update($customer, $validate);
 

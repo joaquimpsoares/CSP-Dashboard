@@ -97,9 +97,9 @@
                     </tbody>
                 </table>
             </div>
-            <div class="card-footer">
+            {{-- <div class="card-footer">
                 <a href="{{ route('analytics.update') }}" class="btn btn-lg btn-block btn-white">Refresh Now</a>
-            </div>
+            </div> --}}
         </div>
     </div>
     <div class="col-xl-6 col-md-12 col-lg-12">

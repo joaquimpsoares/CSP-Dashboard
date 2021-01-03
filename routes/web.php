@@ -438,7 +438,7 @@ Route::group(['middleware' => 'auth'], function () {
         'as' => 'analytics.details'
     ]);
 
-    Route::get('/analytics/update', [
+    Route::get('/analytics/update/{customer}/{subscription}', [
         'uses' => 'AnalyticController@updateAZURE',
         'as' => 'analytics.update'
     ]);

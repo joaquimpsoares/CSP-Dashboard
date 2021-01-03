@@ -37,14 +37,12 @@ class AnalyticRepository implements AnalyticRepositoryInterface
     public function all($customer_id, Subscription $subscription)
     {
 
-        // dd($subscription);
         $query = AzureResource::groupBy('category')->selectRaw('sum(cost) as sum, category')->orderBy('sum', 'DESC')->get()->toArray();
         $top10Q = AzureResource::groupBy('category')->selectRaw('sum(cost) as sum, category')->orderBy('sum', 'DESC')->limit(10)->get()->toArray();
         $msdate = AzureResource::select('azure_updated_at')->first();
         $dateupdated = AzureResource::select('updated_at')->first();
         $resourceName = AzureResource::groupBy('name')->selectRaw('sum(cost) as sum, name, category, subcategory')->orderBy('sum', 'DESC')->get();
         $resourcet5Name = AzureResource::groupBy('name')->selectRaw('sum(cost) as sum, name, category, subcategory')->orderBy('sum', 'DESC')->limit(5)->get();
-        // $date = AzureResource::selectRaw('DATE_FORMAT(azure_updated_at, "%d-%b-%Y") as date')->first();
 
         $category = array_column($query, 'category');
         $sum = array_column($query, 'sum');
@@ -52,9 +50,10 @@ class AnalyticRepository implements AnalyticRepositoryInterface
         $top10C = array_column($top10Q, 'category');
         $top10S = array_column($top10Q, 'sum');
 
-
         // TODO: cache key should be dynamic by customer
         $budget = cache()->remember('azure.budget', 0, function() use($customer_id, $subscription){
+
+        $instance = Instance::where('id', $subscription->instance_id)->first();
 
         $customer = new TagydesCustomer([
             'id' => $customer_id,
@@ -64,8 +63,6 @@ class AnalyticRepository implements AnalyticRepositoryInterface
             'lastName' => 'Apellido',
             'email' => 'bill@tagydes.com',
             ]);
-
-            // dd($customer);
 
         $subscription = new TagydesSubscription([
             'id'            => $subscription->subscription_id,
@@ -80,16 +77,24 @@ class AnalyticRepository implements AnalyticRepositoryInterface
             'created_at'    => "5trvfvczdfv",
             ]);
 
-
-        $subscriptions = Subscription::where('instance_id', '3')->first();
-
-
-        $instance = Instance::where('id', '2')->first();
-
         return (int) FacadesAzureResource::withCredentials(
             $instance->external_id,$instance->external_token
             )->budget($customer, $subscription);
+
         });
+
+        $subscription->budget = $budget;
+
+        // $user = Subscription::find($subscription->subscription_id);
+        // dd($user);
+
+        // $user->budget = $budget;
+
+        $subscription->save();
+
+        // $subscription = Subscription::findorfail($subscription->subscription_id);
+        // dd($subscription);
+
 
 
         $costSum = AzureResource::sum('cost');
@@ -121,29 +126,30 @@ class AnalyticRepository implements AnalyticRepositoryInterface
 
 
 
-    return view('analytics.azure', [
-        'category' => json_encode($category, JSON_NUMERIC_CHECK),
-        'query' => json_encode($query, JSON_NUMERIC_CHECK),
-        'top10q'=> json_encode($top10Q, JSON_NUMERIC_CHECK),
-        'sum' => json_encode($sum, JSON_NUMERIC_CHECK),
-        'total' => $costSum,
-        'budgetAndTotal' => json_encode([$budget, $budget - $costSum ], JSON_NUMERIC_CHECK),
-        'budget' => $budget,
-        'date' => $msdate,
-        'dateupdated' => $dateupdated,
-        'resourceName' => $resourceName,
-        'average' => (int) ['0'],
-        'resourcet5Name' => $resourcet5Name,
-        'top10C' => json_encode($top10C, JSON_NUMERIC_CHECK),
-        'top10S' => json_encode($top10S, JSON_NUMERIC_CHECK)
-        ]);
-}
+        return view('analytics.azure', [
+            'category' => json_encode($category, JSON_NUMERIC_CHECK),
+            'query' => json_encode($query, JSON_NUMERIC_CHECK),
+            'top10q'=> json_encode($top10Q, JSON_NUMERIC_CHECK),
+            'sum' => json_encode($sum, JSON_NUMERIC_CHECK),
+            'total' => $costSum,
+            'budgetAndTotal' => json_encode([$budget, $budget - $costSum ], JSON_NUMERIC_CHECK),
+            'budget' => $budget,
+            'date' => $msdate,
+            'dateupdated' => $dateupdated,
+            'resourceName' => $resourceName,
+            'average' => (int) ['0'],
+            'resourcet5Name' => $resourcet5Name,
+            'top10C' => json_encode($top10C, JSON_NUMERIC_CHECK),
+            'top10S' => json_encode($top10S, JSON_NUMERIC_CHECK)
+            ]);
+    }
 
-    public function getbudget(){
-        $budget = cache()->remember('azure.budget', 0, function(){
+    public function importBudget($customer_id, Subscription $subscription){
+
+        $budget = cache()->remember('azure.budget', 0, function() use($customer_id,$subscription){
 
             $customer = new TagydesCustomer([
-                'id' => '3bd72a86-a8ea-44a6-a899-f3cccbedf027',
+                'id' => $customer_id,
                 'username' => 'bill@tagydes.com',
                 'password' => 'blabla',
                 'firstName' => 'Nombre',
@@ -152,7 +158,7 @@ class AnalyticRepository implements AnalyticRepositoryInterface
                 ]);
 
             $subscription = new TagydesSubscription([
-                'id'            => '3159263E-B866-40ED-AB54-FD68638C9193',
+                'id'            => $subscription->subscription_id,
                 'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
                 'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
                 'customerId'    => "3bd72a86-a8ea-44a6-a899-f3cccbedf027",
@@ -165,10 +171,7 @@ class AnalyticRepository implements AnalyticRepositoryInterface
                 ]);
 
 
-            $subscriptions = Subscription::where('instance_id', '3')->first();
-
-
-            $instance = Instance::where('id', '2')->first();
+            $instance = Instance::where('id', $subscription->instance_id)->first();
 
             return (int) FacadesAzureResource::withCredentials(
                 $instance->external_id,$instance->external_token
@@ -178,65 +181,62 @@ class AnalyticRepository implements AnalyticRepositoryInterface
     }
 
 
-    public function UpdateAZURE($validate)
+    public function UpdateAZURE($customer_id, Subscription $subscription)
     {
 
 
         $subscriptions = Subscription::select('instance_id')->first();
 
-        $instance = Instance::where('id', 2)->first();
+        $instance = Instance::where('id', $subscription->instance_id)->first();
 
 
-    $customer = new TagydesCustomer([
-        'id' => '3bd72a86-a8ea-44a6-a899-f3cccbedf027',
-        'username' => 'bill@tagydes.com',
-        'password' => 'blabla',
-        'firstName' => 'Nombre',
-        'lastName' => 'Apellido',
-        'email' => 'bill@tagydes.com',
-        ]);
-
-    $subscription = new TagydesSubscription([
-        'id'            => '3159263E-B866-40ED-AB54-FD68638C9193',
-        'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-        'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-        'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
-        'name'          => "5trvfvczdfv",
-        'status'        => "5trvfvczdfv",
-        'quantity'      => "1",
-        'currency'      => "EUR",
-        'billingCycle'  => "monthly",
-        'created_at'    => "5trvfvczdfv",
-        ]);
-
-
-        $subscriptions = Subscription::where('instance_id', '3')->first();
-
-
-        $instance = Instance::where('id', '2')->first();
-
-
-    $resources = FacadesAzureResource::withCredentials(
-        $instance->external_id,$instance->external_token
-        )->all($customer, $subscription);
-
-
-
-    $resources->each(function($resource){
-        AzureResource::updateOrCreate([
-            'azure_id' => $resource->id
-        ], [
-            'name' => $resource->name,
-            'category' => $resource->category,
-            'unit' => $resource->unit,
-            'subcategory' => $resource->subcategory,
-            'currency' => $resource->currencyLocale,
-            'cost' => $resource->totalCost,
-            'used' => $resource->quantityUsed,
-            'azure_updated_at' => Carbon::parse($resource->lastModifiedDate),
+        $customer = new TagydesCustomer([
+            'id' => $customer_id,
+            'username' => 'bill@tagydes.com',
+            'password' => 'blabla',
+            'firstName' => 'Nombre',
+            'lastName' => 'Apellido',
+            'email' => 'bill@tagydes.com',
             ]);
-        });
-    return back()->withInput();
+
+        $subscription = new TagydesSubscription([
+            'id'            => $subscription->subscription_id,
+            'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
+            'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
+            'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
+            'name'          => "5trvfvczdfv",
+            'status'        => "5trvfvczdfv",
+            'quantity'      => "1",
+            'currency'      => "EUR",
+            'billingCycle'  => "monthly",
+            'created_at'    => "5trvfvczdfv",
+            ]);
+
+
+
+        $resources = FacadesAzureResource::withCredentials(
+            $instance->external_id,$instance->external_token
+            )->all($customer, $subscription);
+
+
+
+        $resources->each(function($resource) use($subscription){
+            AzureResource::updateOrCreate([
+                'azure_id' => $resource->id,
+                'subscription_id' => $subscription->id
+            ], [
+                'name' => $resource->name,
+                'category' => $resource->category,
+                'unit' => $resource->unit,
+                'subcategory' => $resource->subcategory,
+                'currency' => $resource->currencyLocale,
+                'cost' => $resource->totalCost,
+                'used' => $resource->quantityUsed,
+                'azure_updated_at' => Carbon::parse($resource->lastModifiedDate),
+                ]);
+            });
+
+            return redirect()->back()->with('success', 'Resources Updated succesfully');
     }
 
     public function update($customer, $validate)
