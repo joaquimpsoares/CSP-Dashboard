@@ -54,6 +54,7 @@ class AnalyticRepository implements AnalyticRepositoryInterface
             break;
 
             case config('app.provider'):
+
                 $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
 
                 $customers = Customer::whereHas('resellers', function($query) use  ($resellers) {
@@ -64,8 +65,9 @@ class AnalyticRepository implements AnalyticRepositoryInterface
             break;
 
             case config('app.reseller'):
-                $reseller = $user->reseller;
-                $customers = $reseller->customers->map->format();
+
+                $azure = Subscription::where('billing_type', 'usage')->paginate('10');
+
             break;
 
             case config('app.subreseller'):
