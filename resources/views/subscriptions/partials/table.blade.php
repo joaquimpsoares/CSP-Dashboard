@@ -160,6 +160,8 @@
     </table>
 </div>
 <div class="card-footer d-flex text-right">
+
+    {{-- @dd($subscriptions) --}}
     @if ($subscriptions->total() >= '10')
     {!! $subscriptions->render() !!}
     @endif

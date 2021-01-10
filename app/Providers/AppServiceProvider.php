@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\User;
 use App\Notifications\FailedJob;
 use App\Notifications\SuccessJob;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Queue;
@@ -12,6 +13,7 @@ use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -35,6 +37,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Paginator::useBootstrap();
+
+        if (!Collection::hasMacro('paginate')) {
+
+            Collection::macro('paginate',
+                function ($perPage = 10, $page = null, $options = []) {
+                $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+                return (new LengthAwarePaginator(
+                    $this->forPage($page, $perPage), $this->count(), $perPage, $page, $options))
+                    ->withPath('');
+            });
+    }
 
         // View::'layouts.nav'('key', 'value');
         /**

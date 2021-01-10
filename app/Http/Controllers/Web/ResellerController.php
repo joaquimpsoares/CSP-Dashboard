@@ -116,6 +116,7 @@ class ResellerController extends Controller
 
             }
         }
+        $subscriptions = $subscriptions->paginate('10');
 
         $users = User::where('reseller_id', $reseller->id)->get();
             return view('reseller.show', compact('reseller','customers', 'countries', 'subscriptions','statuses', 'users'));
