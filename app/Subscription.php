@@ -24,7 +24,7 @@ class Subscription extends Model
     }
 
     public function azureresources() {
-        return $this->belongsToMany('App\azureresource');
+        return $this->belongsToMany('App\Models\AzureResource');
     }
 
 }
