@@ -56,7 +56,6 @@ class AnalyticController extends Controller
     */
     public function index()
     {
-        // $resourceName  'DESC')->paginate('10');
 
         $resourceName = $this->analyticRepository->getAzureSubscriptions();
 
@@ -67,32 +66,15 @@ class AnalyticController extends Controller
         // ->orderBy('sum', 'DESC')->paginate('10');
 
 
-        // $costSum = AzureResource::where('subscription_id', $subscription->id)->sum('cost');
-
-        // $increase = ($budget-$costSum);
-
-
-        // if($increase !== 0){
-        //     $average1 = ($increase/$budget)*100;
-        //     $average = 100-$average1;
-
-
         $resourceName->map(function($item, $key) {
-            // $item['costSum']=AzureResource::where('subscription_id', $item->id)->sum('cost');
             foreach($item->azureresources as $resource){
-                // dd($item->azureresources);
-                // dd($item->azureresources->sum('cost'));
+
                 $increase = ($item->budget-$item->azureresources->sum('cost'));
-        $increase = 0;
-        $item->budget = 0;
+
         if ($item->budget > '0'){
                 if ($increase !== '0') {
-                    // dd($increase);
                     $average1 = ($increase/$item->budget)*100;
-                    // dd
                     $item['calculated'] = 100-$average1;
-
-                    // $item['calculated']=(($resource->sum('cost'))-$item->budget)/$item->budget*100;
                 } else {
                     $item['calculated'] = '0';
                 }
@@ -100,11 +82,9 @@ class AnalyticController extends Controller
             }
             }
         });
-        // dd($resourceName);
 
         return view('analytics.azure', [
             'resourceName'  => $resourceName,
-            // 'costSum'       => $costSum,
             ]);
         }
 
