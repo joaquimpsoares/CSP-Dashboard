@@ -66,7 +66,13 @@ class AnalyticRepository implements AnalyticRepositoryInterface
 
             case config('app.reseller'):
 
-                $azure = Subscription::where('billing_type', 'usage')->paginate('10');
+                $customers = $user->reseller->customers;
+                foreach($customers as $customer){
+                    $azure = Subscription::where('customer_id', $customer->id)->where('billing_type', 'usage')->paginate('10');
+                    return $azure;
+                }
+
+                // $azure = Subscription::where('billing_type', 'usage')->paginate('10');
 
             break;
 

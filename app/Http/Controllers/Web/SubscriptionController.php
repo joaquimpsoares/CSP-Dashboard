@@ -76,11 +76,11 @@ class SubscriptionController extends Controller
             break;
             case 'Reseller':
                 $reseller = $this->getUser()->reseller;
-                $subscriptions = $this->listFromReseller($reseller);
+                $subscriptions = $this->listFromReseller($reseller)->paginate('10');
             break;
             case 'Customer':
                 $customer = $this->getUser()->customer;
-                $subscriptions = $this->listFromCustomer($customer);
+                $subscriptions = $this->listFromCustomer($customer)->paginate('10');
             break;
 
             default:
