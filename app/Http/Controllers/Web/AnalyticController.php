@@ -82,8 +82,11 @@ class AnalyticController extends Controller
             foreach($item->azureresources as $resource){
                 // dd($item->azureresources);
                 // dd($item->azureresources->sum('cost'));
-                if ($resource->used != '0') {
-                    $increase = ($item->budget-$item->azureresources->sum('cost'));
+                $increase = ($item->budget-$item->azureresources->sum('cost'));
+        $increase = 0;
+        $item->budget = 0;
+        if ($item->budget > '0'){
+                if ($increase !== '0') {
                     // dd($increase);
                     $average1 = ($increase/$item->budget)*100;
                     // dd
@@ -94,6 +97,7 @@ class AnalyticController extends Controller
                     $item['calculated'] = '0';
                 }
                 return $item;
+            }
             }
         });
         // dd($resourceName);
