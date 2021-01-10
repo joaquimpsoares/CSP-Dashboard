@@ -42,7 +42,7 @@ class AnalyticRepository implements AnalyticRepositoryInterface
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
 
-                $azure = Subscription::where('billing_type', 'usage')->get();
+                $azure = Subscription::where('billing_type', 'usage')->paginate('10');
 
             break;
 
