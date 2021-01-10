@@ -42,7 +42,6 @@ class Price extends Model
 	public function product() {
 		return $this->belongsTo('App\Product', 'product_sku', 'sku')
 		->where('vendor', $this->product_vendor)->where('instance_id', session()->get('instance_id'));
-
     }
 
     // public function products() {

@@ -49,7 +49,8 @@ class Customer extends Model
             'subscriptions' => $this->subscriptions->count(),
             'priceLists' => $this->priceLists()->first(),
             'mainUser' => $this->users()->first(),
-            'users' => $this->users()->get()
+            'users' => $this->users()->get(),
+            'azure' => $this->azure(),
         ];
 
     }
@@ -81,6 +82,10 @@ class Customer extends Model
     	return $this->belongsTo('App\Customer');
     }
 
+    public function azure(){
+        return Subscription::where('billing_type', 'usage')->paginate('10');
+    }
+
     public function path() {
         return url("/customer/{$this->id}-" . Str::slug($this->company_name, '-'));
     }
@@ -101,7 +106,6 @@ class Customer extends Model
         foreach ($resellers as $reseller) {
             $resellersList[] = $reseller->id;
         }
-
 
         return $resellersList;
     }

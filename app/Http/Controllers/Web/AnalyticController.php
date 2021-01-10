@@ -56,12 +56,9 @@ class AnalyticController extends Controller
     */
     public function index()
     {
-        $resourceName = Subscription::where('billing_type', 'usage')
-        ->join('azure_resources', 'azure_resources.subscription_id', '=', 'subscriptions.subscription_id')
-        ->join('customers', 'subscriptions.customer_id', '=', 'customers.id')
-        ->selectRaw('subscriptions.name as subsname, customers.company_name as customername,sum(cost) as sum, subscriptions.budget as budget, subscriptions.id as subscription_id, customers.id as customer_id')
-        ->orderBy('sum', 'DESC')->paginate('10');
+        // $resourceName  'DESC')->paginate('10');
 
+        $resourceName = $this->analyticRepository->getAzureSubscriptions();
 
         // $resourceName = AzureResource::groupBy('azure_resources.subscription_id')
         // ->join('subscriptions', 'azure_resources.subscription_id', '=', 'subscriptions.id')
@@ -69,17 +66,41 @@ class AnalyticController extends Controller
         // ->selectRaw('subscriptions.name as subsname, customers.company_name as customername,sum(cost) as sum, subscriptions.budget as budget, subscriptions.id as subscription_id, customers.id as customer_id')
         // ->orderBy('sum', 'DESC')->paginate('10');
 
+
+        // $costSum = AzureResource::where('subscription_id', $subscription->id)->sum('cost');
+
+        // $increase = ($budget-$costSum);
+
+
+        // if($increase !== 0){
+        //     $average1 = ($increase/$budget)*100;
+        //     $average = 100-$average1;
+
+
         $resourceName->map(function($item, $key) {
-            if ($item != '0') {
-                $item['calculated']=($item->sum)*100/$item->budget;
-            } else {
-                $item['calculated'] = '0';
+            // $item['costSum']=AzureResource::where('subscription_id', $item->id)->sum('cost');
+            foreach($item->azureresources as $resource){
+                // dd($item->azureresources);
+                // dd($item->azureresources->sum('cost'));
+                if ($resource->used != '0') {
+                    $increase = ($item->budget-$item->azureresources->sum('cost'));
+                    // dd($increase);
+                    $average1 = ($increase/$item->budget)*100;
+                    // dd
+                    $item['calculated'] = 100-$average1;
+
+                    // $item['calculated']=(($resource->sum('cost'))-$item->budget)/$item->budget*100;
+                } else {
+                    $item['calculated'] = '0';
+                }
+                return $item;
             }
-            return $item;
         });
+        // dd($resourceName);
 
         return view('analytics.azure', [
-            'resourceName' => $resourceName,
+            'resourceName'  => $resourceName,
+            // 'costSum'       => $costSum,
             ]);
         }
 
@@ -90,7 +111,6 @@ class AnalyticController extends Controller
     Public function getAzuredetails(Customer $customer, Subscription $subscription)
     {
         $msId= $customer->microsoftTenantInfo->first()->tenant_id;
-
 
         $details = $this->analyticRepository->all($msId, $subscription);
 
@@ -121,10 +141,12 @@ class AnalyticController extends Controller
     */
     public function updateAZURE(Customer $customer, Subscription $subscription)
     {
+        // dd($subscription);
 
         $msId= $customer->microsoftTenantInfo->first()->tenant_id;
 
         $details = $this->analyticRepository->UpdateAZURE($msId, $subscription);
+
 
     }
 

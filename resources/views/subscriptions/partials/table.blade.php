@@ -160,7 +160,7 @@
     </table>
 </div>
 <div class="card-footer d-flex text-right">
-    @if ($subscriptions->has('paginate'))
+    @if ($subscriptions->total() >= '10')
     {!! $subscriptions->render() !!}
     @endif
 </div>

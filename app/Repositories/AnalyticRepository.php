@@ -34,19 +34,68 @@ class AnalyticRepository implements AnalyticRepositoryInterface
 
     use UserTrait;
 
+    public function getAzureSubscriptions()
+    {
+
+        $user = $this->getUser();
+
+        switch ($this->getUserLevel()) {
+            case config('app.super_admin'):
+
+                $azure = Subscription::where('billing_type', 'usage')->get();
+
+            break;
+
+            case config('app.admin'):
+                $customers = Customer::with(['country', 'status'])
+                ->orderBy('company_name')
+                ->get()->map->format();
+
+            break;
+
+            case config('app.provider'):
+                $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
+
+                $customers = Customer::whereHas('resellers', function($query) use  ($resellers) {
+                    $query->whereIn('id', $resellers);
+                })->with(['country'])
+                ->orderBy('company_name')->get()->map->format();
+
+            break;
+
+            case config('app.reseller'):
+                $reseller = $user->reseller;
+                $customers = $reseller->customers->map->format();
+            break;
+
+            case config('app.subreseller'):
+                $reseller = $user->reseller;
+                $customers = $reseller->customers->format();
+            break;
+
+            default:
+            return abort(403, __('errors.unauthorized_action'));
+
+        break;
+    }
+
+    return $azure;
+}
+
+
     public function all($customer_id, Subscription $subscription)
     {
 
-        $query = AzureResource::groupBy('category')->selectRaw('sum(cost) as sum, category')->orderBy('sum', 'DESC')->get()->toArray();
-        $top10Q = AzureResource::groupBy('category')->selectRaw('sum(cost) as sum, category')->orderBy('sum', 'DESC')->limit(10)->get()->toArray();
-        $msdate = AzureResource::select('azure_updated_at')->first();
-        $dateupdated = AzureResource::select('updated_at')->first();
-        $resourceName = AzureResource::groupBy('name')->selectRaw('sum(cost) as sum, name, category, subcategory')->orderBy('sum', 'DESC')->get();
-        $resourcet5Name = AzureResource::groupBy('name')->selectRaw('sum(cost) as sum, name, category, subcategory')->orderBy('sum', 'DESC')->limit(5)->get();
+        $query = AzureResource::groupBy('category')->where('subscription_id', $subscription->id)->selectRaw('sum(cost) as sum, category')->orderBy('sum', 'DESC')->get()->toArray();
+        $top10Q = AzureResource::groupBy('category')->where('subscription_id', $subscription->id)->selectRaw('sum(cost) as sum, category')->orderBy('sum', 'DESC')->limit(10)->get()->toArray();
+        $msdate = AzureResource::select('azure_updated_at')->where('subscription_id', $subscription->id)->first();
+        $dateupdated = AzureResource::select('updated_at')->where('subscription_id', $subscription->id)->first();
+        $resourceName = AzureResource::groupBy('name')->where('subscription_id', $subscription->id)->selectRaw('sum(cost) as sum, name, category, subcategory')->orderBy('sum', 'DESC')->get();
+        $resourcet5Name = AzureResource::groupBy('name')->where('subscription_id', $subscription->id)->selectRaw('sum(cost) as sum, name, category, subcategory')->orderBy('sum', 'DESC')->limit(5)->get();
 
         $category = array_column($query, 'category');
         $sum = array_column($query, 'sum');
-
+        // dd($sum);
         $top10C = array_column($top10Q, 'category');
         $top10S = array_column($top10Q, 'sum');
 
@@ -84,20 +133,9 @@ class AnalyticRepository implements AnalyticRepositoryInterface
         });
 
         $subscription->budget = $budget;
-
-        // $user = Subscription::find($subscription->subscription_id);
-        // dd($user);
-
-        // $user->budget = $budget;
-
         $subscription->save();
 
-        // $subscription = Subscription::findorfail($subscription->subscription_id);
-        // dd($subscription);
-
-
-
-        $costSum = AzureResource::sum('cost');
+        $costSum = AzureResource::where('subscription_id', $subscription->id)->sum('cost');
 
         $increase = ($budget-$costSum);
 
@@ -181,10 +219,11 @@ class AnalyticRepository implements AnalyticRepositoryInterface
     }
 
 
-    public function UpdateAZURE($customer_id, Subscription $subscription)
+    public function UpdateAZURE($customer_id, Subscription $subscriptions)
     {
 
-        $instance = Instance::where('id', $subscription->instance_id)->first();
+        // dd($customer_id);
+        $instance = Instance::where('id', $subscriptions->instance_id)->first();
 
         $customer = new TagydesCustomer([
             'id' => $customer_id,
@@ -196,7 +235,7 @@ class AnalyticRepository implements AnalyticRepositoryInterface
             ]);
 
         $subscription = new TagydesSubscription([
-            'id'            => $subscription->subscription_id,
+            'id'            => $subscriptions->subscription_id,
             'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
             'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
             'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
@@ -213,13 +252,14 @@ class AnalyticRepository implements AnalyticRepositoryInterface
             $instance->external_id,$instance->external_token
             )->all($customer, $subscription);
 
+            // dd($resources);
 
-        $resources->each(function($resource) use($subscription){
-            AzureResource::updateOrCreate([
-                'subscription_id' => $subscription->id
+        $resources->each(function($resource) use($subscriptions){
+            $resource = AzureResource::updateOrCreate([
+                'subscription_id' => $subscriptions->id,
+                'azure_id' => $resource->meterId,
             ], [
-                'azure_id' => $resource->id,
-                'name' => $resource->name,
+                'name' => $resource->meterName,
                 'category' => $resource->category,
                 'unit' => $resource->unit,
                 'subcategory' => $resource->subcategory,
@@ -228,9 +268,9 @@ class AnalyticRepository implements AnalyticRepositoryInterface
                 'used' => $resource->quantityUsed,
                 'azure_updated_at' => Carbon::parse($resource->lastModifiedDate),
                 ]);
+                $subscriptions->azureresources()->attach($resource->id);
             });
 
-        return redirect()->back()->with('success', 'Resources Updated succesfully');
     }
 
     public function update($customer, $validate)

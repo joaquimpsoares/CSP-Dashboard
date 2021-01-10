@@ -46,14 +46,15 @@
                         </thead>
                         <tbody>
                             @foreach ($resourceName as $item)
+                            {{-- @dd($item->calculated) --}}
                             <tr>
-                                <td class="d-flex">{{$item->customername}}</td>
-                                <td>{{$item->subsname}}</td>
-                                <td>${{$item->sum}}</td>
+                                <td class="d-flex">{{$item->customer['company_name']}}</td>
+                                <td>{{$item->name}}</td>
+                                <td>${{$item->azureresources->sum('cost')}}</td>
                                 <td>${{$item->budget}}</td>
                                 <td>
                                     @if (($item->calculated/100) < '0.50')
-                                    <div class="mx-auto chart-circle chart-circle-xs chart-circle-primary mt-sm-0 mb-0 icon-dropshadow-primary" data-value="0.55" data-thickness="5" data-color="#4454c3">
+                                    <div class="mx-auto chart-circle chart-circle-xs chart-circle-primary mt-sm-0 mb-0 icon-dropshadow-primary" data-value="{{($item->calculated/100)}}" data-thickness="5" data-color="#4454c3">
                                         @else
                                         <div class="mx-auto chart-circle chart-circle-xs chart-circle-secondary mt-sm-0 mb-0 icon-dropshadow-secondary" data-value="{{($item->calculated/100)}}" data-thickness="5" data-color="#f72d66">
                                             @endif
@@ -61,15 +62,15 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <a class="btn btn-white btn-sm" href="/analytics/details/{{$item->customer_id}}/{{$item->subscription_id}}">View Details</a>
-                                        <a class="btn btn-white btn-sm" href="/analytics/update/{{$item->customer_id}}/{{$item->subscription_id}}">Update</a>
+                                        <a class="btn btn-white btn-sm" href="/analytics/details/{{$item->customer_id}}/{{$item->id}}">View Details</a>
+                                        <a class="btn btn-white btn-sm" href="/analytics/update/{{$item->customer_id}}/{{$item->id}}">Update</a>
                                     </td>
                                     </tr>
                                     @endforeach
                                 </tbody>
                             </table>
                             <div class="card-footer d-flex text-right">
-                                @if ($resourceName->has('paginate'))
+                                @if ($resourceName->has('paginator'))
                                 {!! $resourceName->render() !!}
                                 @endif
                             </div>
