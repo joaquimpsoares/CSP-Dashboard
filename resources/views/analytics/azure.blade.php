@@ -70,7 +70,7 @@
                                 </tbody>
                             </table>
                             <div class="card-footer d-flex text-right">
-                                @if ($resourceName->has('paginator'))
+                                @if ($resourceName->total() >= '10')
                                 {!! $resourceName->render() !!}
                                 @endif
                             </div>
