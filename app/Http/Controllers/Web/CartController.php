@@ -312,16 +312,19 @@ class CartController extends Controller
         }
 
         $hasTenant = $this->cartHasTenant($cart);
-
-        if (empty($cart->domain) && empty($cart->agreement_firstname) && $hasTenant) {
-            return view('order.tenant', compact('cart', 'canChangeTenant'));
-        } else {
-            if (empty($cart->agreement_firstname) && $hasTenant){
-                return view('order.tenant', compact('cart', 'canChangeTenant'));
-            } else {
+        
+        // MICROSOFT
+        if($hasTenant){
+            if($customer->subscriptions->where('billing_type', 'license')->whereNotNull('tenant_name')->count() > 0){
                 return view('order.review', compact('cart', 'canChangeTenant', 'hasTenant'));
             }
+
+            if( ! $cart->agreement_firstname || ! $cart->domain){
+                return view('order.tenant', compact('cart', 'canChangeTenant'));
+            }
         }
+
+        return view('order.review', compact('cart', 'canChangeTenant', 'hasTenant'));
     }
 
 
