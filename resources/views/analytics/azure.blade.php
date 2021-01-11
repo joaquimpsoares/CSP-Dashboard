@@ -25,240 +25,101 @@
 @endsection
 
 @section('content')
-{{-- <div class="row">
-    <div class="col-xl-6 col-md-12 col-lg-12">
-        <div class="card bg-primary text-white">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-xl-7 col-md-12 col-lg-6">
-                        <div class="d-block card-header border-0 text-center px-0">
-                            <h3 class="text-center mb-4">Congratulations <b>John!</b></h3>
-                            <small>You have reached Page Views</small>
-                        </div>
-                        <div class="row text-center">
-                            <div class="col-md-12">
-                                <h2 class="mb-0 fs-40 counter font-weight-bold">10M</h2>
-                                <h6 class="mt-4 text-white-50">You have done 100% reached target today.</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-5 col-md-12 col-lg-6">
-                        <img class="mx-auto text-center w-90 analytics-img" src="{{URL::asset('assets/images/photos/award.png')}}">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> --}}
-<div class="row row-deck">
-    <div class="col-xl-3 col-md-12 col-lg-6">
+<div class="row">
+    <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Budget Grow</h3>
+                <h3 class="card-title">Azure analytics</h3>
             </div>
             <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-md-12 mb-4 mt-sm-0">
-                        <div class="mx-auto chart-circle chart-circle-primary chart-circle-lg  mt-sm-0 mb-0 donutShadow" data-value="{{$average/100}}" data-thickness="15" data-color="#4454c3">
-                            <div class="mx-auto chart-circle-value text-center mb-2"><h1 class="mb-0 mt-2">{{$average}}%</h1><small>Goal</small></div>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <h2 class="mb-0 fs-50 mt-3 counter  font-weight-bold">${{$budget}}</h2>
-                        {{-- <span class=" fs-12 text-muted"><span class="text-danger mr-1"><i class="fe fe-arrow-down ml-1"></i>0.82%</span> since last week</span> --}}
-                        {{-- <p class="mt-5 mb-2 text-muted">It is a long established fact that a ayout. </p> --}}
-                        <small class="mt-1 fs-12 text-muted">Updated {{$date->azure_updated_at ?? ' '}}</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-3 col-md-12 col-lg-6">
-        <div class="card">
-            <div class="card-header mb-4">
-                <h3 class="card-title">Current Estimated Usage</h3>
-            </div>
-            <div class="p-2">
-                <h5 class="pl-4 font-weight-bold mb-4">This Current Estimated Usage</h5>
-                <table class="table card-table text-nowrap">
-                    <tbody>
-                        <tr>
-                            <td>Usage</td>
-                            <td class="w-3 text-right"><span class="">${{$total}}</span></td>
-                        </tr>
-                        <tr>
-                            <td>Budget</td>
-                            <td class="w-3 text-right"><span class="">${{$budget}}</span></td>
-                        </tr>
-                        <tr>
-                            <td>Percent</td>
-                            <td class="w-3 text-right"><span class="">{{$average}}%</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="card-footer">
-                <a href="{{ route('analytics.update') }}" class="btn btn-lg btn-block btn-white">Refresh Now</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-6 col-md-12 col-lg-12">
-        <div class="card">
-            <div class="row">
-                <div class="col-xl-12 col-md-12 col-lg-12">
-                    <div class="card-header">
-                        <h4 class="card-title">Top services by cost</h4>
-                    </div>
-                    <div class="card-body text-center">
-                        <div class="table-responsive">
-                            <table id="" class="table mg-b-0 text-nowrap">
-                                <thead>
-                                    <tr>
-                                        <th >Name</th>
-                                        <th>Category</th>
-                                        {{-- <th>Sub Category</th> --}}
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
-                                <body>
-                                    @foreach ($resourcet5Name as $item)
-                                    <tr>
-                                        <td >{{$item->name}}</td>
-                                        <td >{{$item->category}}</td>
-                                        {{-- <td >{{$item->subcategory}}</td> --}}
-                                        <td >${{$item->sum}}</td>
+                <div class="table-responsive">
+                    <table class="table table-vcenter text-nowrap mb-0 border">
+                        <thead>
+                            <tr>
+                                <th >{{ ucwords(trans_choice('messages.company_name', 1)) }}</th>
+                                <th>{{ ucwords(trans_choice('messages.subscription_name', 1)) }}</th>
+                                <th>{{ ucwords(trans_choice('messages.estimated_cost', 1)) }}</th>
+                                <th>{{ ucwords(trans_choice('messages.budget', 1)) }}</th>
+                                <th class="text-center">{{ ucwords(trans_choice('messages.budget_used%', 1)) }}<i class="fa fa-arrow-up mr-1"></i></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($resourceName as $item)
+                            {{-- @dd($item->calculated) --}}
+                            <tr>
+                                <td class="d-flex">{{$item->customer['company_name']}}</td>
+                                <td>{{$item->name}}</td>
+                                <td>${{$item->azureresources->sum('cost')}}</td>
+                                <td>${{$item->budget}}</td>
+                                <td>
+                                    @if (($item->calculated/100) < '0.50')
+                                    <div class="mx-auto chart-circle chart-circle-xs chart-circle-primary mt-sm-0 mb-0 icon-dropshadow-primary" data-value="{{($item->calculated/100)}}" data-thickness="5" data-color="#4454c3">
+                                        @else
+                                        <div class="mx-auto chart-circle chart-circle-xs chart-circle-secondary mt-sm-0 mb-0 icon-dropshadow-secondary" data-value="{{($item->calculated/100)}}" data-thickness="5" data-color="#f72d66">
+                                            @endif
+                                            <div class="mx-auto chart-circle-value text-center">{{(int)($item->calculated)}}%</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-white btn-sm" href="/analytics/details/{{$item->customer_id}}/{{$item->id}}">View Details</a>
+                                        <a class="btn btn-white btn-sm" href="/analytics/update/{{$item->customer_id}}/{{$item->id}}">Update</a>
+                                    </td>
                                     </tr>
                                     @endforeach
-                                </body>
+                                </tbody>
                             </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-8 col-md-12 col-lg-12">
-        <div class="card">
-            <div class="row">
-                <div class="col-xl-12 col-md-12 col-lg-12">
-                    <div class="card-header">
-                        <h4 class="card-title">Top 10 Resouces</h4>
-                    </div>
-                    <div class="card-body text-center">
-                        <div id="myfirstchart" class="BarChartShadow" style="height: 285px;"></div>
-                        <div class="row mt-5">
-                            <div class="col text-center">
-                                <span class="text-muted float-right"><div class="w-3 h-3 bg-primary br-3 mr-1 mt-1 float-left"></div> Value</span>
+                            <div class="card-footer d-flex text-right">
+                                @if ($resourceName->total() >= '10')
+                                {!! $resourceName->render() !!}
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-xl-4 col-md-12 col-lg-12">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Top 10 Resouces</h3>
-            </div>
-            <div class="card-body text-center mx-auto">
-                <div class="overflow-hidden">
-                    <canvas class="canvasDoughnut" height="240" width="310"></canvas>
-                </div>
-            </div>
-            <div class="card-body">
-                {{-- <div class="row no-gutters">
-                    <div class="col text-center">
-                        @php
-                        $query = collect($query)
-                        @endphp
-                        @foreach ($top10q as $key => $item)
-                        <span class="text-muted float-left"><div class="w-4 h-3 bg-success br-3 mr-1 mt-1 float-left"></div> {{$item['category']}}</span>
-                        @endforeach
-                    </div>
-                </div> --}}
-            </div>
-        </div>
-    </div>
 
-    <div class="col-xl-12 col-lg-12 col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">Resources name </h4>
-            </div>
-            <div class="card-body">
-                <div class="card-body">
-                    <div class="">
-                        <div class="table-responsive">
-                            <table id="example" class="table table-bordered text-wrap key-buttons">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th >Name</th>
-                                        <th>Category</th>
-                                        {{-- <th>Sub Category</th> --}}
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
-                                <body>
-                                    @foreach ($resourceName as $item)
-                                    <tr>
-                                        <td >{{$item->name}}</td>
-                                        <td >{{$item->category}}</td>
-                                        {{-- <td >{{$item->subcategory}}</td> --}}
-                                        <td >${{$item->sum}}</td>
-                                    </tr>
-                                    @endforeach
-                                </body>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-</div>
+        @endsection
 
-@endsection
+        {{-- <script>
 
-<script>
+            var t10Sum = {!! $top10S !!};
+            var t10Category = {!! $top10C !!};
 
-    var t10Sum = {!! $top10S !!};
-    var t10Category = {!! $top10C !!};
+            var sum = {!! $sum !!};
+            var category = {!! $category !!};
 
-    var sum = {!! $sum !!};
-    var category = {!! $category !!};
+        </script> --}}
+        @section('js')
 
-</script>
-@section('js')
+        <!--Moment js-->
+        <script src="{{URL::asset('assets/plugins/moment/moment.js')}}"></script>
+        <!-- Daterangepicker js-->
+        <script src="{{URL::asset('assets/plugins/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
+        <script src="{{URL::asset('assets/js/daterange.js')}}"></script>
+        <!--Chart js -->
+        <script src="{{URL::asset('assets/plugins/chart/chart.min.js')}}"></script>
+        <script src="{{URL::asset('assets/plugins/chart/chart.extension.js')}}"></script>
+        <!-- ECharts js-->
+        <script src="{{URL::asset('assets/plugins/echarts/echarts.js')}}"></script>
+        <script src="{{URL::asset('assets/js/index2.js')}}"></script>
 
-<!--Moment js-->
-<script src="{{URL::asset('assets/plugins/moment/moment.js')}}"></script>
-<!-- Daterangepicker js-->
-<script src="{{URL::asset('assets/plugins/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
-<script src="{{URL::asset('assets/js/daterange.js')}}"></script>
-<!--Chart js -->
-<script src="{{URL::asset('assets/plugins/chart/chart.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/chart/chart.extension.js')}}"></script>
-<!-- ECharts js-->
-<script src="{{URL::asset('assets/plugins/echarts/echarts.js')}}"></script>
-<script src="{{URL::asset('assets/js/index2.js')}}"></script>
-
-<!-- Data tables -->
-<script src="{{URL::asset('assets/plugins/datatable/js/jquery.dataTables.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/buttons.bootstrap4.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/jszip.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/pdfmake.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/vfs_fonts.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/buttons.html5.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/buttons.print.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/dataTables.responsive.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.js')}}"></script>
-<script src="{{URL::asset('assets/js/datatables.js')}}"></script>
-<!-- Select2 js -->
-<script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
-@endsection
+        <!-- Data tables -->
+        <script src="{{URL::asset('assets/plugins/datatable/js/jquery.dataTables.js')}}"></script>
+        <script src="{{URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js')}}"></script>
+        <script src="{{URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js')}}"></script>
+        <script src="{{URL::asset('assets/plugins/datatable/js/buttons.bootstrap4.min.js')}}"></script>
+        <script src="{{URL::asset('assets/plugins/datatable/js/jszip.min.js')}}"></script>
+        <script src="{{URL::asset('assets/plugins/datatable/js/pdfmake.min.js')}}"></script>
+        <script src="{{URL::asset('assets/plugins/datatable/js/vfs_fonts.js')}}"></script>
+        <script src="{{URL::asset('assets/plugins/datatable/js/buttons.html5.min.js')}}"></script>
+        <script src="{{URL::asset('assets/plugins/datatable/js/buttons.print.min.js')}}"></script>
+        <script src="{{URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js')}}"></script>
+        <script src="{{URL::asset('assets/plugins/datatable/dataTables.responsive.min.js')}}"></script>
+        <script src="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.js')}}"></script>
+        <script src="{{URL::asset('assets/js/datatables.js')}}"></script>
+        <!-- Select2 js -->
+        <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
+        @endsection

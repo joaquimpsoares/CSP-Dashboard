@@ -62,7 +62,7 @@ class ResellerRepository implements ResellerRepositoryInterface
             'city' => $validate['city'],
             'state' => $validate['state'],
             'postal_code' => $validate['postal_code'],
-            'status_id' => $validate['status_id'],
+            'status_id' => $validate['status'],
             'mpnid' => $validate['mpnid'],
             'provider_id' => $user->provider->id
             ]);

@@ -9,6 +9,7 @@ use App\Reseller;
 use App\UserLevel;
 use Illuminate\Support\Str;
 use App\Http\Traits\UserTrait;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Repositories\UserRepositoryInterface;
 
@@ -69,31 +70,29 @@ class UserRepository implements UserRepositoryInterface
     }
 
     public function create($user = null, $type = null, $model = null) {
-
+        // dd($user, $type, $model);
+        // // dd(Auth::user());
 
         $role = Role::find($user['role_id']);
-        $type= Role::find($user['role_id'])->name;
-
-        // dd($type);
+        $type = Role::find($user['role_id'])->name;
 
         if (!empty($user) && !empty($type) && !empty($model)) {
 
             $user = [
-                'email' => $user['email'],
-                'name' => $user['name'],
-                'last_name' => $user['last_name'],
-                'address' => $user['address'],
+                'email'             => $user['email'],
+                'name'              => $user['name'],
+                'last_name'         => $user['last_name'],
+                'address'           => $user['address'],
                 // 'city' => $user['city'],
                 // 'postal_code' => $user['postal_code'],
-                'phone' => $user['phone'],
-                'country_id' => $user['country_id'],
-                'socialite_id' => $user['socialite_id'],
-                'password' => Hash::make($user['password']),
-                'user_level_id' => $user['role_id'],
-                'notify' => $user['sendInvitation'] ?? false,
-                'status_id' => $user['status'],
+                'phone'             => $user['phone'],
+                'country_id'        => $user['country_id'],
+                'socialite_id'      => $user['socialite_id'],
+                'password'          => Hash::make($user['password']),
+                'user_level_id'     => $user['role_id'],
+                'notify'            => $user['sendInvitation'] ?? false,
+                'status_id'         => $user['status'],
             ];
-            // dd($type);
 
             switch ($type) {
                 case 'Super Admin':
@@ -132,7 +131,7 @@ class UserRepository implements UserRepositoryInterface
                     $customerLevel = UserLevel::where('name', config('app.customer'))->first();
                     $user['user_level_id'] = $customerLevel->id;
 
-                    $user['customer_id'] = $type->id;
+                    $user['customer_id'] = $model->id;
 
                     $newUser = User::create($user);
 
@@ -157,7 +156,6 @@ class UserRepository implements UserRepositoryInterface
     {
 
         $query = User::query();
-        // dd($status);
 
         if ($status) {
             $query->with('status')->where('status_id', $status);

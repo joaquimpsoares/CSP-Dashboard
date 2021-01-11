@@ -38,15 +38,15 @@ class ProviderRepository implements ProviderRepositoryInterface
 
 	public function getSubscriptions(Provider $provider){
 
-		$resellers= $provider->resellers;
+        $resellers= $provider->resellers;
 
 		$subscriptions = new Collection();
 
 		foreach ($resellers as $reseller){
-			$customers=$reseller->customers;
+            $customers=$reseller->customers;
 			foreach($customers as $customer)
 			{
-				$subscriptions = $subscriptions->merge($customer->subscriptions);
+                $subscriptions = $subscriptions->merge($customer->subscriptions);
 			}
 		}
 		return $subscriptions;

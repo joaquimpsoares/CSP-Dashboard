@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repositories\OrderRepositoryInterface;
+use App\Repositories\AnalyticRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProviderRepositoryInterface;
 use App\Repositories\ResellerRepositoryInterface;
@@ -33,18 +34,20 @@ class AnalyticController extends Controller
     private $resellerRepository;
 
     public function __construct(
+        AnalyticRepositoryInterface $analyticRepository,
         ResellerRepositoryInterface $resellerRepository,
         OrderRepositoryInterface $orderRepository,
         CustomerRepositoryInterface $customerRepository,
         SubscriptionRepositoryInterface $subscriptionRepository,
         ProviderRepositoryInterface $providerRepository)
-    {
-        $this->resellerRepository = $resellerRepository;
-        $this->customerRepository = $customerRepository;
-        $this->subscriptionRepository = $subscriptionRepository;
-        $this->providerRepository = $providerRepository;
-        $this->orderRepository = $orderRepository;
-    }
+        {
+            $this->analyticRepository = $analyticRepository;
+            $this->resellerRepository = $resellerRepository;
+            $this->customerRepository = $customerRepository;
+            $this->subscriptionRepository = $subscriptionRepository;
+            $this->providerRepository = $providerRepository;
+            $this->orderRepository = $orderRepository;
+        }
 
     /**
     * Display a listing of the resource.
@@ -54,170 +57,81 @@ class AnalyticController extends Controller
     public function index()
     {
 
+        $resourceName = $this->analyticRepository->getAzureSubscriptions();
 
-        $query = AzureResource::groupBy('category')->selectRaw('sum(cost) as sum, category')->orderBy('sum', 'DESC')->get()->toArray();
-        $top10Q = AzureResource::groupBy('category')->selectRaw('sum(cost) as sum, category')->orderBy('sum', 'DESC')->limit(10)->get()->toArray();
-        $msdate = AzureResource::select('azure_updated_at')->first();
-        $dateupdated = AzureResource::select('updated_at')->first();
-        $resourceName = AzureResource::groupBy('name')->selectRaw('sum(cost) as sum, name, category, subcategory')->orderBy('sum', 'DESC')->get();
-        $resourcet5Name = AzureResource::groupBy('name')->selectRaw('sum(cost) as sum, name, category, subcategory')->orderBy('sum', 'DESC')->limit(5)->get();
-        // $date = AzureResource::selectRaw('DATE_FORMAT(azure_updated_at, "%d-%b-%Y") as date')->first();
-
-
-        $category = array_column($query, 'category');
-        $sum = array_column($query, 'sum');
-
-        $top10C = array_column($top10Q, 'category');
-        $top10S = array_column($top10Q, 'sum');
+        // $resourceName = AzureResource::groupBy('azure_resources.subscription_id')
+        // ->join('subscriptions', 'azure_resources.subscription_id', '=', 'subscriptions.id')
+        // ->join('customers', 'subscriptions.customer_id', '=', 'customers.id')
+        // ->selectRaw('subscriptions.name as subsname, customers.company_name as customername,sum(cost) as sum, subscriptions.budget as budget, subscriptions.id as subscription_id, customers.id as customer_id')
+        // ->orderBy('sum', 'DESC')->paginate('10');
 
 
-        // TODO: cache key should be dynamic by customer
-        $budget = cache()->remember('azure.budget', 0, function(){
+        $resourceName->map(function($item, $key) {
+            foreach($item->azureresources as $resource){
 
-        $customer = new TagydesCustomer([
-            'id' => '3bd72a86-a8ea-44a6-a899-f3cccbedf027',
-            'username' => 'bill@tagydes.com',
-            'password' => 'blabla',
-            'firstName' => 'Nombre',
-            'lastName' => 'Apellido',
-            'email' => 'bill@tagydes.com',
-            ]);
+                $increase = ($item->budget-$item->azureresources->sum('cost'));
 
-        $subscription = new TagydesSubscription([
-            'id'            => '3159263E-B866-40ED-AB54-FD68638C9193',
-            'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-            'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-            'customerId'    => "3bd72a86-a8ea-44a6-a899-f3cccbedf027",
-            'name'          => "5trvfvczdfv",
-            'status'        => "5trvfvczdfv",
-            'quantity'      => "1",
-            'currency'      => "EUR",
-            'billingCycle'  => "monthly",
-            'created_at'    => "5trvfvczdfv",
-            ]);
-
-
-        $subscriptions = Subscription::where('instance_id', '3')->first();
-
-
-        $instance = Instance::where('id', '2')->first();
-        return (int) FacadesAzureResource::withCredentials(
-            $instance->external_id,$instance->external_token
-            )->budget($customer, $subscription);
+        if ($item->budget > '0'){
+                if ($increase !== '0') {
+                    $average1 = ($increase/$item->budget)*100;
+                    $item['calculated'] = 100-$average1;
+                } else {
+                    $item['calculated'] = '0';
+                }
+                return $item;
+            }
+            }
         });
 
-
-        $costSum = AzureResource::sum('cost');
-        // $costSum = "3000";
-
-        $budget = "1000";
-
-        $increase = ($budget-$costSum);
-
-
-        if($increase !== 0){
-            $average1 = ($increase/$budget)*100;
-            $average = 100-$average1;
-
         return view('analytics.azure', [
-            'category' => json_encode($category, JSON_NUMERIC_CHECK),
-            'query' => $query,
-            'top10q'=> collect($top10Q),
-            'sum' => json_encode($sum, JSON_NUMERIC_CHECK),
-            'total' => $costSum,
-            'budgetAndTotal' => json_encode([$budget, $budget - $costSum ], JSON_NUMERIC_CHECK),
-            'budget' => $budget,
-            'date' => $msdate,
-            'dateupdated' => $dateupdated,
-            'resourceName' => $resourceName,
-            'average' => (int) $average,
-            'resourcet5Name' => $resourcet5Name,
-            'top10C' => json_encode($top10C, JSON_NUMERIC_CHECK),
-            'top10S' => json_encode($top10S, JSON_NUMERIC_CHECK)
+            'resourceName'  => $resourceName,
             ]);
         }
-
-
-
-    return view('analytics.azure', [
-        'category' => json_encode($category, JSON_NUMERIC_CHECK),
-        'query' => json_encode($query, JSON_NUMERIC_CHECK),
-        'top10q'=> json_encode($top10Q, JSON_NUMERIC_CHECK),
-        'sum' => json_encode($sum, JSON_NUMERIC_CHECK),
-        'total' => $costSum,
-        'budgetAndTotal' => json_encode([$budget, $budget - $costSum ], JSON_NUMERIC_CHECK),
-        'budget' => $budget,
-        'date' => $msdate,
-        'dateupdated' => $dateupdated,
-        'resourceName' => $resourceName,
-        'average' => (int) ['0'],
-        'resourcet5Name' => $resourcet5Name,
-        'top10C' => json_encode($top10C, JSON_NUMERIC_CHECK),
-        'top10S' => json_encode($top10S, JSON_NUMERIC_CHECK)
-        ]);
-    }
 
 
     /**
     *
     */
-    Public function UpdateAZURE()
+    Public function getAzuredetails(Customer $customer, Subscription $subscription)
     {
-        $subscriptions = Subscription::select('instance_id')->first();
+        $msId= $customer->microsoftTenantInfo->first()->tenant_id;
 
-            $instance = Instance::where('id', 2)->first();
+        $details = $this->analyticRepository->all($msId, $subscription);
 
+        return view('analytics.azuredetails', [
+            'average' => $details->average,
+            'query' => $details->query,
+            'category' => $details->category,
+            'top10q' =>  $details->top10q,
+            'sum' =>  $details->sum,
+            'total' =>  $details->total,
+            'budgetAndTotal' => $details->budgetAndTotal,
+            'budget' =>  $details->budget,
+            'date' =>  $details->date,
+            'dateupdated' =>  $details->dateupdated,
+            'resourceName' => $details->resourceName,
+            'average' =>     $details->average,
+            'resourcet5Name' => $details->resourcet5Name,
+            'top10C' =>  $details->top10C,
+            'top10S' =>  $details->top10S,
 
-        $customer = new TagydesCustomer([
-            'id' => '3bd72a86-a8ea-44a6-a899-f3cccbedf027',
-            'username' => 'bill@tagydes.com',
-            'password' => 'blabla',
-            'firstName' => 'Nombre',
-            'lastName' => 'Apellido',
-            'email' => 'bill@tagydes.com',
             ]);
+    }
 
-        $subscription = new TagydesSubscription([
-            'id'            => '3159263E-B866-40ED-AB54-FD68638C9193',
-            'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-            'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-            'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
-            'name'          => "5trvfvczdfv",
-            'status'        => "5trvfvczdfv",
-            'quantity'      => "1",
-            'currency'      => "EUR",
-            'billingCycle'  => "monthly",
-            'created_at'    => "5trvfvczdfv",
-            ]);
+     /**
+    * Show the form for creating a new resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
+    public function updateAZURE(Customer $customer, Subscription $subscription)
+    {
+        // dd($subscription);
 
+        $msId= $customer->microsoftTenantInfo->first()->tenant_id;
 
-            $subscriptions = Subscription::where('instance_id', '3')->first();
+        $details = $this->analyticRepository->UpdateAZURE($msId, $subscription);
 
 
-            $instance = Instance::where('id', '2')->first();
-
-
-        $resources = FacadesAzureResource::withCredentials(
-            $instance->external_id,$instance->external_token
-            )->all($customer, $subscription);
-
-
-
-        $resources->each(function($resource){
-            AzureResource::updateOrCreate([
-                'azure_id' => $resource->id
-            ], [
-                'name' => $resource->name,
-                'category' => $resource->category,
-                'unit' => $resource->unit,
-                'subcategory' => $resource->subcategory,
-                'currency' => $resource->currencyLocale,
-                'cost' => $resource->totalCost,
-                'used' => $resource->quantityUsed,
-                'azure_updated_at' => Carbon::parse($resource->lastModifiedDate),
-                ]);
-            });
-        return back()->withInput();
     }
 
     /**
@@ -230,7 +144,7 @@ class AnalyticController extends Controller
 
         $subscriptions = Subscription::select('instance_id')->first();
 
-            $instance = Instance::where('id', 1)->first();
+        $instance = Instance::where('id', 1)->first();
 
         $value = $request->budget;
         $customer = new TagydesCustomer([
@@ -242,14 +156,14 @@ class AnalyticController extends Controller
             'email' => 'bill@tagydes.com',
             ]);
 
-    $result = FacadesAzureResource::withCredentials(
-        $instance->external_id,$instance->external_token
+        $result = FacadesAzureResource::withCredentials(
+            $instance->external_id,$instance->external_token
             )->changeBudget($customer, $value);
 
-        $budget = $result;
+            $budget = $result;
 
-        return back()->with(compact('budget'));
-    }
+            return back()->with(compact('budget'));
+        }
 
 
     /**
@@ -266,98 +180,96 @@ class AnalyticController extends Controller
 
         $budget = cache()->remember('azure.budget', 0, function(){
 
-            $customer = new TagydesCustomer([
-                'id' => '4e03835b-242f-441c-9958-ad3e5e05f55d',
-                'username' => 'bill@tagydes.com',
-                'password' => 'blabla',
-                'firstName' => 'Nombre',
-                'lastName' => 'Apellido',
-                'email' => 'bill@tagydes.com',
-                ]);
+        $customer = new TagydesCustomer([
+            'id' => '4e03835b-242f-441c-9958-ad3e5e05f55d',
+            'username' => 'bill@tagydes.com',
+            'password' => 'blabla',
+            'firstName' => 'Nombre',
+            'lastName' => 'Apellido',
+            'email' => 'bill@tagydes.com',
+            ]);
 
-                $subscription = new TagydesSubscription([
-                    'id'            => 'C01AD64D-6D65-45C4-B755-C11BD4F0DA0E',
-                    'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-                    'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-                    'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
-                    'name'          => "5trvfvczdfv",
-                    'status'        => "5trvfvczdfv",
-                    'quantity'      => "1",
-                    'currency'      => "EUR",
-                    'billingCycle'  => "monthly",
-                    'created_at'    => "5trvfvczdfv",
-                    ]);
+        $subscription = new TagydesSubscription([
+            'id'            => 'C01AD64D-6D65-45C4-B755-C11BD4F0DA0E',
+            'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
+            'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
+            'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
+            'name'          => "5trvfvczdfv",
+            'status'        => "5trvfvczdfv",
+            'quantity'      => "1",
+            'currency'      => "EUR",
+            'billingCycle'  => "monthly",
+            'created_at'    => "5trvfvczdfv",
+            ]);
 
-                    $instance = Instance::where('id', 4)->first();
-                return (int) FacadesAzureResource::withCredentials(
-                    $instance->external_id,$instance->external_token
+        $instance = Instance::where('id', 4)->first();
+        return (int) FacadesAzureResource::withCredentials(
+            $instance->external_id,$instance->external_token
             )->budget($customer, $subscription);
-                });
+        });
 
 
-                $costSum = AzureResource::sum('cost');
-                // $costSum = "500";
+        $costSum = AzureResource::sum('cost');
+        // $costSum = "500";
 
-                $increase = ($budget-$costSum);
-                $average1 = ($increase/$budget)*100;
-                $average = 100-$average1;
+        $increase = ($budget-$costSum);
+        $average1 = ($increase/$budget)*100;
+        $average = 100-$average1;
 
-                $customer = Customer::first();
-
-
-                $data = ([
-                    'customer'=> $customer,
-                    'average' => (int) $average,
-                    'costSum' => $costSum,
-                    'budget'  => $budget
-                    ]);
-
-        // if ($average > 80) {
-            //     Mail::to('joaquim.soares@tagydes.com')->send(new ScheduleNotifyAzure($data));
-
-            //     return redirect('analytics')
-            //         ->with('message', 'Thanks for your message. We\'ll be in touch.');
-            // }else{
-                // }
-
-            }
+        $customer = Customer::first();
 
 
+        $data = ([
+            'customer'=> $customer,
+            'average' => (int) $average,
+            'costSum' => $costSum,
+            'budget'  => $budget
+            ]);
+
+            // if ($average > 80) {
+                //     Mail::to('joaquim.soares@tagydes.com')->send(new ScheduleNotifyAzure($data));
+
+                //     return redirect('analytics')
+                //         ->with('messa.ge', 'Thanks for your message. We\'ll be in touch.');
+                // }else{
+                    // }
+
+    }
 
 
-        /**
-        * Remove the specified resource from storage.
-        *
-        * @param  int  $id
-        * @return \Illuminate\Http\Response
-        */
-        public function licenses()
-        {
 
 
+    /**
+    * Remove the specified resource from storage.
+    *
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
+    public function licenses()
+    {
 
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
 
-                $customer = Customer::all();
-                $serviceCosts = $customer->map(function($item, $key) {
-                    if($item->microsoftTenantInfo->first() == null){
-                        return ($serviceCosts = null);
-                    }else{
-                        $tenant = $item->microsoftTenantInfo->first()->tenant_id;
-                        $serviceCosts = $this->CustomerServiceCosts($tenant);
+        $customer = Customer::all();
+        $serviceCosts = $customer->map(function($item, $key) {
+            if($item->microsoftTenantInfo->first() == null){
+                return ($serviceCosts = null);
+            }else{
+                $tenant = $item->microsoftTenantInfo->first()->tenant_id;
+                $serviceCosts = $this->CustomerServiceCosts($tenant);
 
-                        return $serviceCosts;
-                    }
-                });
+                return $serviceCosts;
+            }
+        });
 
-                $serviceCosts = $serviceCosts->filter(function ($value) { return !is_null($value); });
+        $serviceCosts = $serviceCosts->filter(function ($value) { return !is_null($value); });
 
-                return view('analytics.licenses', compact('serviceCosts', 'customer'));
+        return view('analytics.licenses', compact('serviceCosts', 'customer'));
 
-            break;
+        break;
 
-            case config('app.admin'):
+        case config('app.admin'):
 
 
             break;
@@ -377,72 +289,72 @@ class AnalyticController extends Controller
                 $serviceCosts = $serviceCosts->filter(function ($value) { return !is_null($value); });;
 
                 return view('analytics.licenses', compact('serviceCosts', 'customer'));
-            break;
+                break;
 
-            case config('app.reseller'):
+                case config('app.reseller'):
 
-                $customer = $this->customerRepository->all();
-                $serviceCosts = $customer->map(function($item, $key) {
-                    if($item['tenant_id'] == null){
-                        return ($serviceCosts = null);
-                    }
-                    $tenant = $item['tenant_id']->tenant_id;
-                    $serviceCosts = $this->CustomerServiceCosts($tenant);
-                    return $serviceCosts;
-                });
+                    $customer = $this->customerRepository->all();
+                    $serviceCosts = $customer->map(function($item, $key) {
+                        if($item['tenant_id'] == null){
+                            return ($serviceCosts = null);
+                        }
+                        $tenant = $item['tenant_id']->tenant_id;
+                        $serviceCosts = $this->CustomerServiceCosts($tenant);
+                        return $serviceCosts;
+                    });
 
-                $serviceCosts = $serviceCosts->filter(function ($value) { return !is_null($value); });;
+                    $serviceCosts = $serviceCosts->filter(function ($value) { return !is_null($value); });;
 
-                return view('analytics.licenses', compact('serviceCosts', 'customer'));
+                    return view('analytics.licenses', compact('serviceCosts', 'customer'));
 
-            break;
+                    break;
 
-            case config('app.subreseller'):
+                    case config('app.subreseller'):
 
-            break;
+                        break;
 
-            case config('app.customer'):
+                        case config('app.customer'):
 
                 $customer = $this->getUser()->customer->format();
 
                 // $serviceCosts = $customer->map(function($item, $key) {
-                //     if($item['tenant_id'] == null){
-                //         return ($serviceCosts = null);
-                //     }
-                    $tenant = $customer['tenant_id']->tenant_id;
-                    $serviceCosts = $this->CustomerServiceCosts($tenant);
-                    return $serviceCosts;
+                    //     if($item['tenant_id'] == null){
+                        //         return ($serviceCosts = null);
+                        //     }
+                        $tenant = $customer['tenant_id']->tenant_id;
+                        $serviceCosts = $this->CustomerServiceCosts($tenant);
+                        return $serviceCosts;
 
 
-                // $serviceCosts = $serviceCosts->filter(function ($value) { return !is_null($value); });;
+                        // $serviceCosts = $serviceCosts->filter(function ($value) { return !is_null($value); });;
 
-                // return view('analytics.licenses', compact('serviceCosts', 'customer'));
+                        // return view('analytics.licenses', compact('serviceCosts', 'customer'));
 
-            break;
+                        break;
 
-            default:
-            return abort(403, __('errors.unauthorized_action'));
-
-
-            }
+                        default:
+                        return abort(403, __('errors.unauthorized_action'));
 
 
-        }
-
-        /**
-         * Undocumented function
-         *
-         * @param [type] $customer
-         * @return void
-         */
-        Public function CustomerServiceCosts($customer)
-    {
+                    }
 
 
-        $instance = session()->get('instance_id');
-        $instance = Instance::where('id', '3')->first();
+                }
 
-        try {
+/**
+* Undocumented function
+*
+* @param [type] $customer
+* @return void
+*/
+Public function CustomerServiceCosts($customer)
+{
+
+
+    $instance = session()->get('instance_id');
+    $instance = Instance::where('id', '3')->first();
+
+    try {
         $customer = new TagydesCustomer([
             'id' => $customer,
             'username' => 'bill@tagydes.com',
@@ -450,13 +362,13 @@ class AnalyticController extends Controller
             'firstName' => 'Nombre',
             'lastName' => 'Apellido',
             'email' => 'bill@tagydes.com',
-        ]);
-        $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCosts($customer);
+            ]);
+            $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCosts($customer);
 
-        return $resources;
+            return $resources;
 
         } catch (\Throwable $th) {
 
         }
     }
-    }
+}

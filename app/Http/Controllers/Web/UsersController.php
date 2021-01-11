@@ -78,7 +78,7 @@ class UsersController extends Controller
 
         $countries = Country::pluck( 'name','id');
         $statuses = Status::pluck( 'name','id');
-        $roles = Role::pluck( 'name','id');
+        $roles = Role::pluck('name','id');
 
         $level = $request->level;
         $customer_id = $request->customer_id;

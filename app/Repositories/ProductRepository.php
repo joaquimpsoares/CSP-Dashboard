@@ -15,8 +15,10 @@ class ProductRepository implements ProductRepositoryInterface
 	{
         if (empty($filters) && empty($quantity))
         {
-            $products = Product::with('instance')->where('addons', '<>', '[]')
-            ->orderBy('name')->paginate(10); //->get()->map->format();
+            $products = Product::with('instance')
+            ->where('addons', '<>', '[]')
+            ->orderBy('name')
+            ->paginate(10); //->get()->map->format();
         } else {
             if (isset($filters['search'])) {
                 $products = $this->searchFilter($filters, $quantity);

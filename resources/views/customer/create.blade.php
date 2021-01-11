@@ -26,8 +26,8 @@
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label for="nif">{{ ucwords(trans_choice('messages.nif', 1)) }}</label>
-                                    <input type="text" id="nif" name="nif" class="form-control @error('company_name') is-invalid @enderror" value="{{ old('nif') }}">
-                                    @error('company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    <input type="text" id="nif" name="nif" class="form-control @error('nif') is-invalid @enderror" value="{{ old('nif') }}">
+                                    @error('nif')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                             </div>
                             <div class="row">
@@ -35,95 +35,85 @@
                                     <label for="country">{{ucwords(trans_choice('messages.country', 1))}}</label>
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
-                                            <label class="input-group-text" for="country_id"><i class="fa fa-plane" aria-hidden="true"></i>
-                                            </label>
+                                            <label class="input-group-text" for="country_id"><i class="fa fa-plane" aria-hidden="true"></i></label>
                                         </div>
-                                        <select name="country_id" class="country_select @error('company_name') is-invalid @enderror" id="country_id" style="width: 95%" required>
+                                        <select name="country_id" class="country_select @error('country_id') is-invalid @enderror" id="country_id" style="width: 95%" required>
                                             <option value="">Choose...</option>
-                                            @foreach ($countries as $country)
-                                            <option value="{{$country->id}}">{{$country->name}}</option>
+                                            @foreach ($countries as $key => $country)
+                                            <option value="{{$key}}">{{$country}}</option>
                                             @endforeach
                                         </select>
-                                        @error('company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                        {{-- <div class="invalid-feedback">
-                                            {{ucwords(trans_choice('messages.Please_select_a_valid_country', 1))}}
-                                        </div> --}}
+                                        @error('country_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                     </div>
                                 </div>
                             </div>
-                            <label for="address" class="">{{ucwords(trans_choice('messages.address_1', 1))}}</label>
-                            <input type="text" id="address_1" name="address_1" class="form-control mb-4 @error('company_name') is-invalid @enderror" value="{{ old('address_1') }}" placeholder="1234 Main St">
-                            @error('company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                            <label for="address-2" class="">{{ucwords(trans_choice('messages.address_2', 1))}} (optional)</label>
-                            <input type="text" id="address_2" name="address_2" class="form-control mb-4 @error('company_name') is-invalid @enderror" value="{{ old('address_2') }}" placeholder="Appartment or numer">
-                            @error('company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                            <label for="address_1" class="">{{ucwords(trans_choice('messages.address_1', 1))}}</label>
+                            <input type="text" id="address_1" name="address_1" class="form-control mb-4 @error('address_1') is-invalid @enderror" value="{{ old('address_1') }}" placeholder="1234 Main St">
+                            @error('address_1')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                            <label for="address_2" class="">{{ucwords(trans_choice('messages.address_2', 1))}} (optional)</label>
+                            <input type="text" id="address_2" name="address_2" class="form-control mb-4 @error('address_2') is-invalid @enderror" value="{{ old('address_2') }}" placeholder="Appartment or numer">
+                            @error('company_namaddress_2e')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                             <div class="row">
                                 <div class="col-lg-4 col-md-6 mb-4">
-                                    <label for="address-2" class="">{{ucwords(trans_choice('messages.city', 1))}}</label>
-                                    <input type="text" id="city" name="city" class="form-control mb-4 @error('company_name') is-invalid @enderror" value="{{ old('city') }}">
-                                    @error('company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    <label for="city" class="">{{ucwords(trans_choice('messages.city', 1))}}</label>
+                                    <input type="text" id="city" name="city" class="form-control mb-4 @error('city') is-invalid @enderror" value="{{ old('city') }}">
+                                    @error('city')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                                 <div class="col-lg-4 col-md-6 mb-4">
-                                    <label for="zip">{{ucwords(trans_choice('messages.state', 1))}}</label>
-                                    {{-- <select name="country_id" class="custom-select" id="country_id" required>
-                                        <option value="">Choose...</option>
-                                        @foreach ($countryRules as $rules)
-                                        <option value="{{$rules->id}}">{{$rules->name}}</option>
-                                        @endforeach
-                                    </select> --}}
-                                    <input name="state" type="text" class="form-control @error('company_name') is-invalid @enderror" id="zip" placeholder="" value="{{ old('state') }}" required >
-                                    @error('company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                    <div class="invalid-feedback">
-                                        Zip code required.
-                                    </div>
+                                    <label for="state">{{ucwords(trans_choice('messages.state', 1))}}</label>
+                                    <input name="state" type="text" class="form-control @error('state') is-invalid @enderror" id="state" placeholder="" value="{{ old('state') }}" required >
+                                    @error('state')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                                 <div class="col-lg-4 col-md-6 mb-4">
-                                    <label for="zip">Zip</label>
-                                    <input name="postal_code" type="text" class="form-control @error('company_name') is-invalid @enderror" id="zip" placeholder="" value="{{ old('postal_code') }}" required>
-                                    @error('company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                    <div class="invalid-feedback">
-                                        Zip code required.
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="input-group mb-4">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1">@</span>
-                                </div>
-                                <input name="email" type="text" class="form-control py-0 @error('company_name') is-invalid @enderror" aria-describedby="basic-addon1" value="{{ old('email') }}" placeholder="youremail@example.com">
-                                @error('company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                            </div>
-                            <div class="input-group mb-4">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-user" aria-hidden="true"></i>
-                                    </span>
-                                </div>
-                                <input name="username" type="text" class="form-control py-0 " aria-describedby="basic-addon1" value="{{ old('username') }}" placeholder="Username (Optional)">
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
-                                    <div class="form-group">
-                                        <select name="status_id" class="custom-select @error('company_name') is-invalid @enderror" sf-validate="required">
-                                            <option selected></option>
-                                            @foreach ($statuses as $status)
-                                            <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                    </div>
+                                    <label for="postal_code">Zip</label>
+                                    <input name="postal_code" type="text" class="form-control @error('postal_code') is-invalid @enderror" id="postal_code" placeholder="" value="{{ old('postal_code') }}" required>
+                                    @error('postal_code')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 mb-4">
-                    <button class="btn btn-primary" type="submit">{{ucwords(trans_choice('messages.create', 1))}}</button>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h5 class="card-title">
+                                @lang('User Details')
+                            </h5>
+                            <p class="text-muted font-weight-light">
+                                @lang('A general user profile information.')
+                            </p>
+                        </div>
+                        <div class="col-md-9">
+                            @include('user.partials.details', ['edit' => false, 'profile' => false])
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h5 class="card-title">
+                                @lang('Login Details')
+                            </h5>
+                            <p class="text-muted font-weight-light">
+                                @lang('Details used for authenticating with the application.')
+                            </p>
+                        </div>
+                        <div class="col-md-9">
+                            @include('user.partials.auth', ['edit' => false])
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <button class="btn btn-primary" type="submit">{{ucwords(trans_choice('messages.create', 1))}}</button>
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 </div>
 
 @endsection

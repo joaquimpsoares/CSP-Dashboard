@@ -68,16 +68,19 @@ class SubscriptionController extends Controller
 
             case 'Provider':
                 $provider = $this->getUser()->provider;
-                $subscriptions = $this->listFromProvider($provider);
+                // $subscriptions = $this->listFromProvider($provider);
+                // dd($subscriptions);
+            $subscriptions = $this->subscriptionRepository->paginateProvider($perPage = 10, $request->search, $request->customer, $provider);
+
 
             break;
             case 'Reseller':
                 $reseller = $this->getUser()->reseller;
-                $subscriptions = $this->listFromReseller($reseller);
+                $subscriptions = $this->listFromReseller($reseller)->paginate('10');
             break;
             case 'Customer':
                 $customer = $this->getUser()->customer;
-                $subscriptions = $this->listFromCustomer($customer);
+                $subscriptions = $this->listFromCustomer($customer)->paginate('10');
             break;
 
             default:

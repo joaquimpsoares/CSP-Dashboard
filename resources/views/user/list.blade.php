@@ -4,9 +4,9 @@
 @section('page-heading', __('Users'))
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item active">
-        @lang('Users')
-    </li>
+<li class="breadcrumb-item active">
+    @lang('Users')
+</li>
 @stop
 
 @section('content')
@@ -21,34 +21,34 @@
                 <div class="col-md-4 mt-md-0 mt-2">
                     <div class="input-group custom-search-form">
                         <input type="text"
-                               class="form-control input-solid"
-                               name="search"
-                               value="{{ Request::get('search') }}"
-                               placeholder="@lang('Search for users...')">
+                        class="form-control input-solid"
+                        name="search"
+                        value="{{ Request::get('search') }}"
+                        placeholder="@lang('Search for users...')">
 
-                            <span class="input-group-append">
-                                @if (Request::has('search') && Request::get('search') != '')
-                                    <a href="{{ route('user.index') }}"
-                                           class="btn btn-light d-flex align-items-center text-muted"
-                                           role="button">
-                                        <i class="fa fa-times"></i>
-                                    </a>
-                                @endif
-                                <button class="btn btn-light" type="submit" id="search-users-btn">
-                                    <i class="fa fa-search text-muted"></i>
-                                </button>
-                            </span>
-                    </div>
+                        <span class="input-group-append">
+                            @if (Request::has('search') && Request::get('search') != '')
+                            <a href="{{ route('user.index') }}"
+                            class="btn btn-light d-flex align-items-center text-muted"
+                            role="button">
+                            <i class="fa fa-times"></i>
+                        </a>
+                        @endif
+                        <button class="btn btn-light" type="submit" id="search-users-btn">
+                            <i class="fa fa-search text-muted"></i>
+                        </button>
+                    </span>
                 </div>
+            </div>
 
-                <div class="col-md-2 mt-2 mt-md-0">
-                    {!!
-                        Form::select(
-                            'status',
-                            $statuses,
-                            Request::get('status'),
-                            ['id' => 'status', 'class' => 'form-control input-solid']
-                        )
+            <div class="col-md-2 mt-2 mt-md-0">
+                {!!
+                    Form::select(
+                    'status',
+                    $statuses,
+                    Request::get('status'),
+                    ['id' => 'status', 'class' => 'form-control input-solid']
+                    )
                     !!}
                 </div>
 
@@ -64,25 +64,25 @@
         <div class="table-responsive" id="users-table-wrapper">
             <table class="table table-borderless table-striped">
                 <thead>
-                <tr>
-                    <th></th>
-                    <th class="min-width-80">@lang('Username')</th>
-                    <th class="min-width-150">@lang('Full Name')</th>
-                    <th class="min-width-100">@lang('Email')</th>
-                    <th class="min-width-80">@lang('Registration Date')</th>
-                    <th class="min-width-80">@lang('Status')</th>
-                    <th class="text-center min-width-150">@lang('Action')</th>
-                </tr>
+                    <tr>
+                        <th></th>
+                        <th class="min-width-80">@lang('Username')</th>
+                        <th class="min-width-150">@lang('Full Name')</th>
+                        <th class="min-width-100">@lang('Email')</th>
+                        <th class="min-width-80">@lang('Registration Date')</th>
+                        <th class="min-width-80">@lang('Status')</th>
+                        <th class="text-center min-width-150">@lang('Action')</th>
+                    </tr>
                 </thead>
                 <tbody>
                     @if (count($users))
-                        @foreach ($users as $user)
-                            @include('user.partials.row')
-                        @endforeach
+                    @foreach ($users as $user)
+                    @include('user.partials.row')
+                    @endforeach
                     @else
-                        <tr>
-                            <td colspan="7"><em>@lang('No records found.')</em></td>
-                        </tr>
+                    <tr>
+                        <td colspan="7"><em>@lang('No records found.')</em></td>
+                    </tr>
                     @endif
                 </tbody>
             </table>
@@ -95,9 +95,9 @@
 @stop
 
 @section('scripts')
-    <script>
-        $("#status").change(function () {
-            $("#users-form").submit();
-        });
-    </script>
+<script>
+    $("#status").change(function () {
+        $("#users-form").submit();
+    });
+</script>
 @stop

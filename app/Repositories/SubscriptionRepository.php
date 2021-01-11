@@ -7,6 +7,7 @@ use App\Customer;
 use App\Reseller;
 use App\Subscription;
 use App\Http\Traits\UserTrait;
+use Illuminate\Support\Collection;
 use App\Repositories\SubscriptionRepositoryInterface;
 
 
@@ -119,6 +120,48 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
         }
 
         return $result;
+    }
+
+    public function paginateProvider($perPage, $search = null, $searchcustomer = null, $provider)
+    {
+        $query = Subscription::query();
+
+        $resellers= $provider->resellers;
+
+		foreach ($resellers as $reseller){
+            $customers=$reseller->customers;
+			foreach($customers as $customer)
+			{
+                if ($searchcustomer) {
+                    $searchcustomer = Customer::where('company_name',"like", "%{$searchcustomer}%")->first();
+                    if ($searchcustomer) {
+                        $query->where('customer_id', $searchcustomer->id);
+                    }
+                }
+
+                if ($search) {
+                    $query->where(function ($q) use ($search) {
+                        $q->orwhere('name', "like", "%{$search}%");
+                        $q->orWhere('billing_period', 'like', "%{$search}%");
+                    });
+                }
+                $result = $query
+                ->orwhere('customer_id', $customer->id)
+                ->orderBy('id', 'desc')
+                ->paginate($perPage);
+			}
+        }
+
+        if ($search) {
+            $result->appends(['search' => $search]);
+        }
+
+        if ($searchcustomer) {
+            $result->appends(['customer' => $searchcustomer]);
+        }
+// dd($result);
+        return $result;
+
     }
 
 }

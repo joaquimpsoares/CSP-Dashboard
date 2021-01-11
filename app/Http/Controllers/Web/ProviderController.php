@@ -207,7 +207,6 @@ class ProviderController extends Controller
 
     public function edit(Provider $provider)
     {
-        dd($provider);
 
         // provider/{provider}/edit
 

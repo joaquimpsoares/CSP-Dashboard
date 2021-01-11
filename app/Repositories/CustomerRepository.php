@@ -76,7 +76,7 @@ class CustomerRepository implements CustomerRepositoryInterface
             'city' => $validate['city'],
             'state' => $validate['state'],
             'postal_code' => $validate['postal_code'],
-            'status_id' => $validate['status_id']
+            'status_id' => $validate['status']
             ]);
 
             return $newCustomer;
@@ -97,7 +97,7 @@ class CustomerRepository implements CustomerRepositoryInterface
             'city' => $validate['city'],
             'state' => $validate['state'],
             'postal_code' => $validate['postal_code'],
-            'status_id' => $validate['status_id']
+            'status' => $validate['status']
         ]);
         return $updateCustomer;
 

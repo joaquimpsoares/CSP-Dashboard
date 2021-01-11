@@ -14,9 +14,6 @@
 @php
 $totalPrice = null;
 @endphp
-
-
-
 <section class="product_description_area">
     <div class="container">
         <div class="align-self-center">
@@ -66,16 +63,16 @@ $totalPrice = null;
                                                         </div>
                                                         <div class="dropdown-divider"></div>
                                                         <div class="row pt-4">
-                                                            <div class="col-lg-12 ">
+                                                            <div class="col-sm-6 ">
                                                                 <h3 class="text-muted font-weight-bold">{{ ucwords(trans_choice('messages.customer', 1)) }}</span><br></h3>
                                                                 <dl class="row">
-                                                                    <dd class="col-sm-4">
+                                                                    <dd class="col-sm-3">
                                                                         <p><b>{{ ucwords(trans_choice('messages.address_1', 1)) }}</b></p>
                                                                         <p><b>{{ ucwords(trans_choice('messages.city', 1)) }}</b></p>
                                                                         <p><b>{{ ucwords(trans_choice('messages.postal_code', 1)) }}</b></p>
                                                                         <p><b>{{ ucwords(trans_choice('messages.country', 1)) }}</b></p>
                                                                     </dd>
-                                                                    <dd class="col-sm-4">
+                                                                    <dd class="col-sm-8">
                                                                         <p>{{ $cart->customer->address_1 }}</p>
                                                                         <p>{{ $cart->customer->city }}</p>
                                                                         <p>{{ $cart->customer->postal_code }}</p>
@@ -84,17 +81,16 @@ $totalPrice = null;
                                                                 </dl>
                                                             </div>
 
-                                                            <div class="col-lg-12">
-                                                                <div class="dropdown-divider"></div>
+                                                            <div class="col-sm-6">
                                                                 <h3 class="text-muted font-weight-bold">{{ ucwords(trans_choice('messages.agreement_signed', 1)) }}</span><br></h3>
                                                                 <dl class="row">
-                                                                    <dd class="col-sm-4">
+                                                                    <dd class="col-sm-3">
                                                                         <p><b>{{ ucwords(trans_choice('messages.name', 1)) }}</b></p>
                                                                         <p><b>{{ ucwords(trans_choice('messages.last_name', 1)) }}</b></p>
                                                                         <p><b>{{ ucwords(trans_choice('messages.email', 1)) }}</b></p>
                                                                         <p><b>{{ ucwords(trans_choice('messages.phone_number', 1)) }}</b></p>
                                                                     </dd>
-                                                                    <dd class="col-sm-4">
+                                                                    <dd class="col-sm-8">
                                                                         <p>{{ $cart->agreement_firstname }}</p>
                                                                         <p>{{ $cart->agreement_lastname }}</p>
                                                                         <p>{{ $cart->agreement_email }}</p>

@@ -23,4 +23,8 @@ class Subscription extends Model
         return $this->hasMany('App\Product', 'sku', 'product_id');
     }
 
+    public function azureresources() {
+        return $this->belongsToMany('App\Models\AzureResource');
+    }
+
 }
