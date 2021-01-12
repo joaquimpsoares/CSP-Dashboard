@@ -262,8 +262,6 @@ class AnalyticRepository implements AnalyticRepositoryInterface
             $instance->external_id,$instance->external_token
             )->all($customer, $subscription);
 
-            // dd($resources);
-
         $resources->each(function($resource) use($subscriptions){
             $resource = AzureResource::updateOrCreate([
                 'subscription_id' => $subscriptions->id,
@@ -278,7 +276,9 @@ class AnalyticRepository implements AnalyticRepositoryInterface
                 'used' => $resource->quantityUsed,
                 'azure_updated_at' => Carbon::parse($resource->lastModifiedDate),
                 ]);
-                $subscriptions->azureresources()->attach($resource->id);
+                if ($resource->wasRecentlyCreated){
+                    $subscriptions->azureresources()->attach($resource->id);
+                }
             });
 
     }
