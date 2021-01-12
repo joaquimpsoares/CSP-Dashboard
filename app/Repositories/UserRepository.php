@@ -123,8 +123,8 @@ class UserRepository implements UserRepositoryInterface
 
                     $newUser = User::create($user);
 
-                    $newUser->assignRole($role->name);
-
+                    $newUser = $newUser->assignRole($role->name);
+                    // dd($newUser);
                     break;
 
                 case 'Customer':
