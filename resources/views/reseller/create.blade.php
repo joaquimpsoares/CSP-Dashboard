@@ -42,12 +42,12 @@
                             <div class="row">
                                 <div class="col-md-6 mb-4">
                                     <label for="company_name" class="">{{ ucwords(trans_choice('messages.company_name', 1)) }}</label>
-                                    <input type="text" id="company_name" name="company_name" class="form-control @error('company_name') is-invalid @enderror" value="{{ old('company_name') }}" >
+                                    <input type="text" id="company_name" name="company_name" class="form-control @error('company_name') is-invalid @enderror" value="{{ old('company_name') }}" required>
                                     @error('company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label for="nif">{{ ucwords(trans_choice('messages.nif', 1)) }}</label>
-                                    <input type="text" id="nif" name="nif" class="form-control @error('nif') is-invalid @enderror" value="{{ old('nif') }}">
+                                    <input type="text" id="nif" name="nif" class="form-control @error('nif') is-invalid @enderror" value="{{ old('nif') }}" required>
                                     @error('nif')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                             </div>
@@ -66,7 +66,8 @@
                                 </div>
                             </div>
                             <label for="address" class="">{{ucwords(trans_choice('messages.address_1', 1))}}</label>
-                            <input type="text" id="address_1" name="address_1" class="form-control mb-4 @error('address_1') is-invalid @enderror" value="{{ old('address_1') }}" placeholder="1234 Main St">
+                                    <input type="text" id="nif" name="nif" class="form-control @error('nif') is-invalid @enderror" value="{{ old('nif') }}"  required>
+                                    <input type="text" id="address_1" name="address_1" class="form-control mb-4 @error('address_1') is-invalid @enderror" value="{{ old('address_1') }}" placeholder="1234 Main St" required>
                             @error('address_1')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
 
                             <label for="address_2" class="">{{ucwords(trans_choice('messages.address_2', 1))}} (optional)</label>
@@ -76,7 +77,7 @@
                             <div class="row">
                                 <div class="col-lg-4 col-md-6 mb-4">
                                     <label for="city" class="">{{ucwords(trans_choice('messages.city', 1))}}</label>
-                                    <input type="text" id="city" name="city" class="form-control mb-4 @error('city') is-invalid @enderror" value="{{ old('city') }}">
+                                    <input type="text" id="city" name="city" class="form-control mb-4 @error('city') is-invalid @enderror" value="{{ old('city') }}" required>
                                     @error('city')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                                 <div class="col-lg-4 col-md-6 mb-4">

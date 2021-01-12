@@ -70,8 +70,6 @@ class UserRepository implements UserRepositoryInterface
     }
 
     public function create($user = null, $type = null, $model = null) {
-        // dd($user, $type, $model);
-        // // dd(Auth::user());
 
         $role = Role::find($user['role_id']);
         $type = Role::find($user['role_id'])->name;
@@ -83,8 +81,6 @@ class UserRepository implements UserRepositoryInterface
                 'name'              => $user['name'],
                 'last_name'         => $user['last_name'],
                 'address'           => $user['address'],
-                // 'city' => $user['city'],
-                // 'postal_code' => $user['postal_code'],
                 'phone'             => $user['phone'],
                 'country_id'        => $user['country_id'],
                 'socialite_id'      => $user['socialite_id'],
@@ -124,7 +120,7 @@ class UserRepository implements UserRepositoryInterface
                     $newUser = User::create($user);
 
                     $newUser = $newUser->assignRole($role->name);
-                    // dd($newUser);
+
                     break;
 
                 case 'Customer':
@@ -177,10 +173,6 @@ class UserRepository implements UserRepositoryInterface
         if ($search) {
             $result->appends(['search' => $search]);
         }
-
-        // if ($status) {
-        //     $result->appends(['status' => $status]);
-        // }
 
         return $result;
     }

@@ -12,35 +12,34 @@
         </div>
         <div class="form-group">
             <label for="name">@lang('First Name')</label>
-            <input type="text" class="form-control input-solid" id="name"
-            name="name" placeholder="@lang('First Name')" value="{{ $edit ? $user->name : '' }}">
+            <input type="text" class="form-control input-solid @error('name') is-invalid @enderror" id="name" name="name" placeholder="@lang('First Name')" value="{{ old('name')}}">
+            @error('name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
         </div>
         <div class="form-group">
             <label for="last_name">@lang('Last Name')</label>
-            <input type="text" class="form-control input-solid" id="last_name"
-            name="last_name" placeholder="@lang('Last Name')" value="{{ $edit ? $user->last_name : '' }}">
+            <input type="text" class="form-control input-solid @error('last_name') is-invalid @enderror" id="last_name" name="last_name" placeholder="@lang('Last Name')" value="{{old('last_name') }}">
+            @error('last_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-group">
             <label for="socialite_id">@lang('socialite_id')</label>
             <div class="form-group">
-                <input type="text"
-                name="socialite_id"
-                id='socialite_id'
-                value="{{ $edit && $user->socialite_id ? $user->socialite_id : '' }}"
-                class="form-control input-solid" />
+                <input type="text"name="socialite_id" id='socialite_id'  value="{{ $edit && $user->socialite_id ? $user->socialite_id : '' }}" class="form-control input-solid  @error('socialite_id') is-invalid @enderror" />
+                @error('socialite_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
             </div>
         </div>
         <div class="form-group">
             <label for="phone">@lang('Phone')</label>
-            <input type="text" class="form-control input-solid" id="phone_number"
-            name="phone" placeholder="@lang('Phone')" value="{{ $edit ? $user->phone : '' }}">
+            <input type="text" class="form-control input-solid @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="@lang('Phone')" value="{{old('phone')}}">
+            @error('phone')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
         </div>
         <div class="form-group">
             <label for="address">@lang('Address')</label>
-            <input type="text" class="form-control input-solid" id="address"
-            name="address" placeholder="@lang('Address')" value="{{ $edit ? $user->address : '' }}">
+            <input type="text" class="form-control input-solid @error('address') is-invalid @enderror" id="address"
+            name="address" placeholder="@lang('Address')" value="{{ old('address') }}">
+            @error('address')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
         </div>
         <div class="form-group">
             <label for="address">@lang('Country')</label>

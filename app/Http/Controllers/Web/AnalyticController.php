@@ -73,18 +73,16 @@ class AnalyticController extends Controller
 
         $resourceName->map(function($item, $key) {
             foreach($item->azureresources as $resource){
-
                 $increase = ($item->budget-$item->azureresources->sum('cost'));
-
-        if ($item->budget > '0'){
-                if ($increase !== '0') {
-                    $average1 = ($increase/$item->budget)*100;
-                    $item['calculated'] = 100-$average1;
-                } else {
-                    $item['calculated'] = '0';
+                if ($item->budget > '0'){
+                    if ($increase !== '0') {
+                        $average1 = ($increase/$item->budget)*100;
+                        $item['calculated'] = 100-$average1;
+                    } else {
+                        $item['calculated'] = '0';
+                    }
+                    return $item;
                 }
-                return $item;
-            }
             }
         });
 
@@ -137,7 +135,6 @@ class AnalyticController extends Controller
 
         $details = $this->analyticRepository->UpdateAZURE($msId, $subscription);
 
-        // return back();
         return redirect()->back()->with('success', ucwords(trans_choice('messages.resouces_updated', 1)) );
 
 
@@ -236,13 +233,6 @@ class AnalyticController extends Controller
             'budget'  => $budget
             ]);
 
-            // if ($average > 80) {
-                //     Mail::to('joaquim.soares@tagydes.com')->send(new ScheduleNotifyAzure($data));
-
-                //     return redirect('analytics')
-                //         ->with('messa.ge', 'Thanks for your message. We\'ll be in touch.');
-                // }else{
-                    // }
 
     }
 
@@ -438,14 +428,10 @@ class AnalyticController extends Controller
         $resources = FacadesAzureResource::withCredentials(
             $instance->external_id,$instance->external_token
             )->utilizations($customer, $subscriptions);
-            // dd($resources->items->first()->resource->quantity);
-            // dd(json_encode($price->rates[0]));
-            // dd($resources->items->first()->quantity);
-            // dd(json_encode($price->rates[0])*$resources->items->first()->quantity);
+
             $resources->items->each(function($resource) use($subscription){
                 $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
                 $price = AzurePriceList::where('resource_id', $resource->resource->id)->first('rates');
-                // dd(json_encode($price->rates[0])*$resource->quantity);
 
             $resource = AzureUsageReport::updateOrCreate([
                 'subscription_id'       => $subscription->id,
@@ -467,7 +453,27 @@ class AnalyticController extends Controller
 
     }
 
+    public function azurereport(Subscription $subscription)
+    {
 
+        $reports = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('resource_id')->get();
+
+        $reports->map(function($item, $key)  {
+
+            $azurepricelist = AzurePriceList::where('resource_id', $item->resource_id)->get('rates');
+            // dd($azurepricelist);
+            if ($azurepricelist->first()){
+                $item['sum'] = $item->quantity+$azurepricelist->first()->rates[0];
+            }
+
+            return $item;
+        });
+
+        // dd($reports->first());
+
+        return view('analytics.azurereports', compact('reports'));
+
+    }
 
 
 }

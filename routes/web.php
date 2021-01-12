@@ -433,6 +433,11 @@ Route::group(['middleware' => 'auth'], function () {
         'as' => 'analytics.list'
     ]);
 
+    Route::get('/analytics/azurepricelist', [
+        'uses' => 'AnalyticController@azurepricelist',
+        'as' => 'analytics.azurepricelist'
+    ]);
+
     Route::get('/analytics/details/{customer}/{subscription}', [
         'uses' => 'AnalyticController@getAzuredetails',
         'as' => 'analytics.details'
