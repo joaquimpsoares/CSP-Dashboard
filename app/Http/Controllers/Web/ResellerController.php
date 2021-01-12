@@ -178,6 +178,7 @@ class ResellerController extends Controller
 
     protected function validator(array $data)
     {
+        // dd($data);
             return Validator::make($data, [
                 'company_name'      => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
                 'nif'               => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
@@ -189,7 +190,7 @@ class ResellerController extends Controller
                 'postal_code'       => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
                 'mpnid'             => ['sometimes', 'integer'],
                 'role_id'           => ['sometimes', 'integer', 'exists:roles,id'],
-                'status_id'         => ['required', 'integer', 'exists:statuses,id'],
+                'status'            => ['required', 'integer', 'exists:statuses,id'],
                 'name'              => ['sometimes', 'string', 'max:255'],
                 'last_name'         => ['sometimes', 'string', 'max:255'],
                 'socialite_id'      => ['sometimes', 'string', 'max:255'],

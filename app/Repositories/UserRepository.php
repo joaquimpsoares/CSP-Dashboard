@@ -116,6 +116,7 @@ class UserRepository implements UserRepositoryInterface
                 case 'Reseller':
 
                     $resellerLevel = UserLevel::where('name', config('app.reseller'))->first();
+
                     $user['user_level_id'] = $resellerLevel->id;
 
                     $user['reseller_id'] = $model->id;
