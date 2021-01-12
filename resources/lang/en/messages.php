@@ -244,7 +244,7 @@ return [
     'mpn' => 'mpn id|mpn',
     'license_based' => 'license based',
     'budget_used%' => '% of budget ',
-    '' => '',
+    'resouces_updated' => 'resouces updated',
     '' => '',
     '' => '',
     '' => '',
