@@ -25,6 +25,7 @@
 @endsection
 
 @section('content')
+{{-- @dd($subscription); --}}
 {{-- <div class="row">
     <div class="col-xl-6 col-md-12 col-lg-12">
         <div class="card bg-primary text-white">
@@ -97,6 +98,10 @@
                     </tbody>
                 </table>
             </div>
+            <i class="fas fa-chart-pie"></i>
+            <div class="card-footer">
+                <a href="{{route('analytics.reports',$subscription)}}" class="btn btn-lg btn-block btn-white">  Reports</a>
+            </div>
             {{-- <div class="card-footer">
                 <a href="{{ route('analytics.update') }}" class="btn btn-lg btn-block btn-white">Refresh Now</a>
             </div> --}}
@@ -142,7 +147,7 @@
             <div class="row">
                 <div class="col-xl-12 col-md-12 col-lg-12">
                     <div class="card-header">
-                        <h4 class="card-title">Top 10 Resouces</h4>
+                        <h4 class="card-title"><i class="fab fa-chart-pie"></i> Top 10 Resouces</h4>
                     </div>
                     <div class="card-body text-center">
                         <div id="myfirstchart" class="BarChartShadow" style="height: 285px;"></div>
@@ -217,9 +222,6 @@
         </div>
     </div>
 </div>
-
-</div>
-
 @endsection
 
 <script>

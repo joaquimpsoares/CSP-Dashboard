@@ -443,6 +443,16 @@ Route::group(['middleware' => 'auth'], function () {
         'as' => 'analytics.update'
     ]);
 
+    Route::get('/analytics/export/{customer}/{subscription}', [
+        'uses' => 'AnalyticController@export',
+        'as' => 'analytics.export'
+    ]);
+
+    Route::get('/analytics/reports/{subscription}', [
+        'uses' => 'AnalyticController@azurereport',
+        'as' => 'analytics.reports'
+    ]);
+
     Route::get('/analytics/licenses', [
         'uses' => 'AnalyticController@licenses',
         'as' => 'analytics.licenses'

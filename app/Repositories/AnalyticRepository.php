@@ -8,14 +8,17 @@ use App\Reseller;
 use Carbon\Carbon;
 use App\Subscription;
 use App\AzureResource;
+use App\Exports\exportAzure;
 use App\MicrosoftTenantInfo;
 use App\Http\Traits\UserTrait;
 use App\Mail\ScheduleNotifyAzure;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repositories\OrderRepositoryInterface;
+use App\Repositories\AnalyticRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProviderRepositoryInterface;
 use App\Repositories\ResellerRepositoryInterface;
@@ -24,7 +27,6 @@ use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
-use App\Repositories\AnalyticRepositoryInterface;
 
 /**
 *
@@ -85,10 +87,10 @@ class AnalyticRepository implements AnalyticRepositoryInterface
             return abort(403, __('errors.unauthorized_action'));
 
         break;
-    }
+        }
 
-    return $azure;
-}
+        return $azure;
+    }
 
 
     public function all($customer_id, Subscription $subscription)
@@ -301,6 +303,7 @@ class AnalyticRepository implements AnalyticRepositoryInterface
         return $updateCustomer;
 
     }
+
 
 
 

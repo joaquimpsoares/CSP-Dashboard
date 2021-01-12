@@ -8,12 +8,16 @@ use App\Reseller;
 use Carbon\Carbon;
 use App\Subscription;
 use App\AzureResource;
+use Illuminate\Support\Str;
+use App\Exports\exportAzure;
 use App\MicrosoftTenantInfo;
 use App\Http\Traits\UserTrait;
 use App\Mail\ScheduleNotifyAzure;
 use App\Http\Controllers\Controller;
+use App\Models\AzureUsageReport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\AnalyticRepositoryInterface;
@@ -114,6 +118,7 @@ class AnalyticController extends Controller
             'resourcet5Name' => $details->resourcet5Name,
             'top10C' =>  $details->top10C,
             'top10S' =>  $details->top10S,
+            'subscription' => $subscription
 
             ]);
     }
@@ -341,34 +346,121 @@ class AnalyticController extends Controller
 
                 }
 
-/**
-* Undocumented function
-*
-* @param [type] $customer
-* @return void
-*/
-Public function CustomerServiceCosts($customer)
-{
+        /**
+        * Undocumented function
+        *
+        * @param [type] $customer
+        * @return void
+        */
+        Public function CustomerServiceCosts($customer)
+        {
 
 
-    $instance = session()->get('instance_id');
-    $instance = Instance::where('id', '3')->first();
+            $instance = session()->get('instance_id');
+            $instance = Instance::where('id', '3')->first();
 
-    try {
-        $customer = new TagydesCustomer([
-            'id' => $customer,
-            'username' => 'bill@tagydes.com',
-            'password' => 'blabla',
-            'firstName' => 'Nombre',
-            'lastName' => 'Apellido',
-            'email' => 'bill@tagydes.com',
-            ]);
-            $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCosts($customer);
+            try {
+                $customer = new TagydesCustomer([
+                    'id' => $customer,
+                    'username' => 'bill@tagydes.com',
+                    'password' => 'blabla',
+                    'firstName' => 'Nombre',
+                    'lastName' => 'Apellido',
+                    'email' => 'bill@tagydes.com',
+                    ]);
+                    $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCosts($customer);
 
-            return $resources;
+                    return $resources;
 
-        } catch (\Throwable $th) {
+                } catch (\Throwable $th) {
+
+                }
+            }
+
+            // public function updateAZURE(Customer $customer, Subscription $subscription)
+            // {
+            //     // dd($subscription);
+
+            //     $msId= $customer->microsoftTenantInfo->first()->tenant_id;
+
+            //     $details = $this->analyticRepository->UpdateAZURE($msId, $subscription);
+
+
+            // }
+            public function export(Customer $customer, Subscription $subscription)
+            {
+
+                $msId= $customer->microsoftTenantInfo->first()->tenant_id;
+
+        // $details = $this->analyticRepository->UpdateAZURE($msId, $subscription);
+            // dd($customer);
+            $instance = Instance::where('id', $subscription->instance_id)->first();
+
+            $customer = new TagydesCustomer([
+                'id' => $msId,
+                'username' => 'bill@tagydes.com',
+                'password' => 'blabla',
+                'firstName' => 'Nombre',
+                'lastName' => 'Apellido',
+                'email' => 'bill@tagydes.com',
+                ]);
+
+                // dd($subscription);
+
+            $subscriptions = new TagydesSubscription([
+                'id'            => $subscription->subscription_id,
+                'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
+                'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
+                'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
+                'name'          => "5trvfvczdfv",
+                'status'        => "5trvfvczdfv",
+                'quantity'      => "1",
+                'currency'      => "EUR",
+                'billingCycle'  => "monthly",
+                'created_at'    => "5trvfvczdfv",
+                ]);
+
+
+            $resources = FacadesAzureResource::withCredentials(
+                $instance->external_id,$instance->external_token
+                )->utilizations($customer, $subscriptions);
+
+            $resources->items->each(function($resource) use($subscription){
+                $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
+                $resource = AzureUsageReport::updateOrCreate([
+                    'subscription_id'       => $subscription->id,
+                    'resource_id'           => $resource->resource->id,
+                    'usageStartTime'        => $resource->usageStartTime,
+                    'usageEndTime'          => $resource->usageEndTime,
+                ], [
+                    'resource_group'        => $resourceGroup[4],
+                    'resource_location'     => $resource->instanceData->location,
+                    'resource_name'         => $resource->resource->name,
+                    'resource_category'     => $resource->resource->category,
+                    'resource_subcategory'  => $resource->resource->subcategory,
+                    'resource_region'       => $resource->resource->region,
+                    'quantity'              => $resource->quantity,
+                    'unit'                  => $resource->unit,
+                    ]);
+                });
+
+
+
+
+                }
+
+        public function azurereport(Subscription $subscription)
+        {
+            // dd($subscription);
+
+            $reports = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('resource_id')->get();
+
+            // dd($reports);
+
+
+            return view('analytics.azurereports', compact('reports'));
 
         }
-    }
+
+
 }
