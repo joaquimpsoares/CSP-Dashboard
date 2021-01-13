@@ -2,23 +2,20 @@
 
 namespace App\Http\Controllers\web;
 
+ini_set('memory_limit', '1024M');
+ini_set('max_execution_time', 300);
+
+
 use App\Customer;
 use App\Instance;
-use App\Reseller;
-use Carbon\Carbon;
 use App\Subscription;
 use App\AzureResource;
 use Illuminate\Support\Str;
-use App\Exports\exportAzure;
-use App\MicrosoftTenantInfo;
 use App\Http\Traits\UserTrait;
 use App\Models\AzurePriceList;
 use App\Models\AzureUsageReport;
-use App\Mail\ScheduleNotifyAzure;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\AnalyticRepositoryInterface;
@@ -63,13 +60,6 @@ class AnalyticController extends Controller
     {
 
         $resourceName = $this->analyticRepository->getAzureSubscriptions();
-
-        // $resourceName = AzureResource::groupBy('azure_resources.subscription_id')
-        // ->join('subscriptions', 'azure_resources.subscription_id', '=', 'subscriptions.id')
-        // ->join('customers', 'subscriptions.customer_id', '=', 'customers.id')
-        // ->selectRaw('subscriptions.name as subsname, customers.company_name as customername,sum(cost) as sum, subscriptions.budget as budget, subscriptions.id as subscription_id, customers.id as customer_id')
-        // ->orderBy('sum', 'DESC')->paginate('10');
-
 
         $resourceName->map(function($item, $key) {
             foreach($item->azureresources as $resource){
@@ -217,7 +207,6 @@ class AnalyticController extends Controller
 
 
         $costSum = AzureResource::sum('cost');
-        // $costSum = "500";
 
         $increase = ($budget-$costSum);
         $average1 = ($increase/$budget)*100;
@@ -235,8 +224,6 @@ class AnalyticController extends Controller
 
 
     }
-
-
 
 
     /**
@@ -373,10 +360,7 @@ class AnalyticController extends Controller
             $instance->external_id,$instance->external_token
             )->azurepricelist();
 
-            // dd($resources->meters->first());
-
         $resources->meters->each(function($resource){
-            // dd($resource);
             $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
             $resource = AzurePriceList::updateOrCreate([
             'resource_id'           => $resource->id,
@@ -458,20 +442,35 @@ class AnalyticController extends Controller
 
         $reports = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('resource_id')->get();
 
-        $reports->map(function($item, $key)  {
-
+        $reports->map(function($item, $key) {
             $azurepricelist = AzurePriceList::where('resource_id', $item->resource_id)->get('rates');
-            // dd($azurepricelist);
             if ($azurepricelist->first()){
-                $item['sum'] = $item->quantity+$azurepricelist->first()->rates[0];
+                $item['cost'] = $item->quantity+$azurepricelist->first()->rates[0];
             }
-
+            $item->cost;
+            $item->save();
             return $item;
         });
 
-        // dd($reports->first());
 
-        return view('analytics.azurereports', compact('reports'));
+        $top5Q = AzureUsageReport::groupBy('resource_group')->where('subscription_id', $subscription->id)->selectRaw('sum(cost) as sum, resource_group, resource_category')->orderBy('sum', 'DESC')->limit(5)->get()->toArray();
+
+
+        // dd($top10Q);
+
+
+        // $orders = DB::table('azure_usage_reports')
+        // ->select('*', DB::raw('SUM(cost) as total_sales'))
+        // ->groupBy('resource_id')
+        // ->get();
+
+        // dd($orders->sum('cost'));
+
+        return view('analytics.azurereports', [
+            'reports' => $reports,
+            // 'top10Q' => json_encode($top10Q, JSON_NUMERIC_CHECK),
+            'top5Q' => $top5Q,
+        ]);
 
     }
 

@@ -8,6 +8,7 @@ use App\Notifications\SuccessJob;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Support\ServiceProvider;
@@ -36,6 +37,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        Blade::directive('money', function ($amount) {
+            return "<?php echo number_format($amount , 2) ; ?>";
+        });
+
+
         Paginator::useBootstrap();
 
         if (!Collection::hasMacro('paginate')) {

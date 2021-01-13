@@ -6,7 +6,7 @@
                 <div class="page-rightheader ml-auto d-lg-flex d-none">
                     <div class="ml-6 mb-0">
                         <input wire:model="taskduedate" placeholder="Select Date" id="daterange-btn" type="text" class="datetimepicker form-control @error('date') is-invalid @enderror" name="date" >
-                            @dump($taskduedate)
+                            {{-- @dump($taskduedate) --}}
                         {{-- <a class="btn btn-white date-range-btn" name="date" href="#" id="daterange-btn">
                             <svg class="header-icon2 mr-3" x="1008" y="1248" viewBox="0 0 24 24"  height="100%" width="100%" preserveAspectRatio="xMidYMid meet" focusable="false">
                                 <path d="M5 8h14V6H5z" opacity=".3"/><path d="M7 11h2v2H7zm12-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-4 3h2v2h-2zm-4 0h2v2h-2z"/>
@@ -27,6 +27,7 @@
                                             <th>Category</th>
                                             <th>Resource Group</th>
                                             <th>Total Cost</th>
+                                            <th>Quantity</th>
                                             <th>start date</th>
                                             <th>end date</th>
                                         </tr>
@@ -38,12 +39,24 @@
                                             <td >{{$item->resource_name}}</td>
                                             <td >{{$item->resource_id}}</td>
                                             <td >{{$item->resource_group}}</td>
-                                            <td >${{$item->sum}}</td>
+                                            <td >$@money($item->cost)</td>
+                                            <td >{{$item->quantity}}</td>
                                             <td >{{$item->usageStartTime}}</td>
                                             <td >{{$item->usageEndTime}}</td>
                                         </tr>
                                         @endforeach
                                     </body>
+                                    {{-- <tfoot>
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th>Total: {{}}</th>
+                                            <th>#</th>
+                                            <th>#</th>
+                                        </tr>
+                                    </tfoot> --}}
                                 </table>
                             </div>
                         </div>
@@ -98,3 +111,4 @@
 
     </div>
 </div>
+
