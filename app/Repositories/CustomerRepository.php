@@ -97,7 +97,8 @@ class CustomerRepository implements CustomerRepositoryInterface
             'city' => $validate['city'],
             'state' => $validate['state'],
             'postal_code' => $validate['postal_code'],
-            'status' => $validate['status']
+            'status_id' => $validate['status'],
+            'markup' => $validate['markup']
         ]);
         return $updateCustomer;
 

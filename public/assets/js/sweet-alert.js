@@ -5,7 +5,7 @@ $(function(){
 	$("#but1").on("click", function(e){
 		var message = $("#message").val();
 		if(message == ""){
-			message  = "New Notification from Dashtic";
+			message  = "New Notification from Tagydes";
 		}
 		swal(message);
 	});
@@ -15,7 +15,7 @@ $(function(){
 		var message = $("#message").val();
 		var title = $("#title").val();
 		if(message == ""){
-			message  = "New Notification from Dashtic";
+			message  = "New Notification from Tagydes";
 		}
 		if(title == ""){
 			title = "Notifiaction Styles";
@@ -28,7 +28,7 @@ $(function(){
 		var message = $("#message").val();
 		var title = $("#title").val();
 		if(message == ""){
-			message  = "New Notification from Dashtic";
+			message  = "New Notification from Tagydes";
 		}
 		if(title == ""){
 			title = "Notifiaction Styles";
@@ -45,7 +45,7 @@ $(function(){
 		var message = $("#message").val();
 		var title = $("#title").val();
 		if(message == ""){
-			message  = "New Notification from Dashtic";
+			message  = "New Notification from Tagydes";
 		}
 		if(title == ""){
 			title = "Notifiaction Styles";
@@ -58,17 +58,17 @@ $(function(){
 			showConfirmButton: false
 		});
 	});
-	
+
 	//
 	$("#click").on("click", function(e){
 		var type = $("#type").val();
 		swal({
 			title: "Notifiaction Styles",
-			text: "New Notification from Dashtic",
+			text: "New Notification from Tagydes",
 			type: type
 		});
 	});
-	
+
 	// Prompt
 	$("#prompt").on("click", function(e){
 
@@ -93,7 +93,7 @@ $(function(){
 	$("#confirm").on("click", function(e){
 		swal({
 			title: "Notifiaction Styles",
-			text: "New Notification from Dashtic",
+			text: "New Notification from Tagydes",
 			type: "warning",
 			showCancelButton: true,
 			confirmButtonText: 'Exit',
@@ -101,7 +101,7 @@ $(function(){
 		});
 	});
 
-	
+
 	$("#click").on("click", function(e){
 		swal('Congratulations!', 'Your message has been succesfully sent', 'success');
 	});

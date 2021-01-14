@@ -183,8 +183,9 @@ class CustomerController extends Controller
 
     public function update(Request $request, Customer $customer) {
 
-
         $validate = $this->validator($request->all())->validate();
+
+        // dd($validate);
         $user = $this->getUser();
 
         try {
@@ -260,6 +261,7 @@ class CustomerController extends Controller
             'email'             => ['nullable', 'email', 'max:255'],
             'sendInvitation'    => ['nullable', 'integer'],
             'password'          => ['sometimes', 'string', 'max:255'],
+            'markup'            => ['sometimes', 'integer'],
             ]);
     }
 }

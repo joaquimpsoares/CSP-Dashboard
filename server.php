@@ -1,13 +1,11 @@
 <?php
 /*
-Project        :   Dashtic – Laravel Admin Template A PHP Framework
+Project        :   Tagydes – Automation platform
 @package       :   Laravel
 Version        :   7.0
 Create Date    :   20/08/2020
-Copyright      :   Spruko Technologies Private Limited
-Author         :   SprukoSoft
-Author URL     :   https://themeforest.net/user/sprukosoft
-Support        :   support@spruko.com
+Copyright      :   Tagydes Limited
+Author         :   Tagydes Limited
 License        :   Licensed under ThemeForest Licence
 */
 

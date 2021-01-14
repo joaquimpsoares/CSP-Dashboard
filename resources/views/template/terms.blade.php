@@ -23,7 +23,7 @@
 							<div class="col-md-12">
 								<div class="card overflow-hidden">
 									<div class="card-header bg-light">
-										<h4 class="card-title">Welcome to Dashtic</h4>
+										<h4 class="card-title">Welcome to Tagydes</h4>
 									</div>
 									<div class="card-body">
 

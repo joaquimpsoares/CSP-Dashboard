@@ -3,10 +3,10 @@
     <div class="container-fluid">
         <div class="d-flex">
             <a class="header-brand" href="/">
-                <img src="{{URL::asset('images/small_logo.png') }}" class="header-brand-img desktop-lgo" alt="Dashtic logo">
-                <img src="{{URL::asset('images/small_logo.png')}}" class="header-brand-img dark-logo" alt="Dashtic logo">
-                <img src="{{URL::asset('assets/images/brand/favicon.png')}}" class="header-brand-img mobile-logo" alt="Dashtic logo">
-                <img src="{{URL::asset('assets/images/brand/favicon1.png')}}" class="header-brand-img darkmobile-logo" alt="Dashtic logo">
+                <img src="{{URL::asset('images/small_logo.png') }}" class="header-brand-img desktop-lgo" alt="Tagydes logo">
+                <img src="{{URL::asset('images/small_logo.png')}}" class="header-brand-img dark-logo" alt="Tagydes logo">
+                <img src="{{URL::asset('assets/images/brand/favicon.png')}}" class="header-brand-img mobile-logo" alt="Tagydes logo">
+                <img src="{{URL::asset('assets/images/brand/favicon1.png')}}" class="header-brand-img darkmobile-logo" alt="Tagydes logo">
             </a>
             <div class="dropdown side-nav">
                 <div class="app-sidebar__toggle" data-toggle="sidebar">

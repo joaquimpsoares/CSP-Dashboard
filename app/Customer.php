@@ -25,7 +25,9 @@ class Customer extends Model
     'postal_code',
     'provider_id',
     'reseller_id',
-    'status_id'];
+    'status_id',
+    'markup'
+];
 
 
     public function format()
