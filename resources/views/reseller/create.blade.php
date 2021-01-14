@@ -65,8 +65,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <label for="address" class="">{{ucwords(trans_choice('messages.address_1', 1))}}</label>
-                                    <input type="text" id="nif" name="nif" class="form-control @error('nif') is-invalid @enderror" value="{{ old('nif') }}"  required>
+                            <label for="address_1" class="">{{ucwords(trans_choice('messages.address_1', 1))}}</label>
                                     <input type="text" id="address_1" name="address_1" class="form-control mb-4 @error('address_1') is-invalid @enderror" value="{{ old('address_1') }}" placeholder="1234 Main St" required>
                             @error('address_1')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
 

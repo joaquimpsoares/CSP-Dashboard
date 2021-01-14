@@ -181,7 +181,7 @@ class ResellerController extends Controller
         // dd($data);
             return Validator::make($data, [
                 'company_name'      => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-                'nif'               => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:20'],
+                'nif'               => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:30'],
                 'country_id'        => ['required', 'integer', 'min:1'],
                 'address_1'         => ['required', 'string', 'max:255'],
                 'address_2'         => ['nullable', 'string', 'max:255'],
