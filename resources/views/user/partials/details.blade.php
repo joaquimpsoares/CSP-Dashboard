@@ -32,7 +32,7 @@
         </div>
         <div class="form-group">
             <label for="phone">@lang('Phone')</label>
-            <input type="text" class="form-control input-solid @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="@lang('Phone')" value="{{old('phone')}}">
+            <input type="text" class="form-control input-solid @error('phone') is-invalid @enderror" id="phone_number" name="phone" placeholder="@lang('Phone')" value="{{old('phone')}}">
             @error('phone')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
         </div>
         <div class="form-group">
