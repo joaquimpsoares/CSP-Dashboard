@@ -18,7 +18,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
+use Illuminate\Support\Facades\Http;
 use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
+use Tagydes\MicrosoftConnection\Models\Customer as ModelsCustomer;
 
 class CartController extends Controller
 {
@@ -312,16 +314,19 @@ class CartController extends Controller
         }
 
         $hasTenant = $this->cartHasTenant($cart);
-
-        if (empty($cart->domain) && empty($cart->agreement_firstname) && $hasTenant) {
-            return view('order.tenant', compact('cart', 'canChangeTenant'));
-        } else {
-            if (empty($cart->agreement_firstname) && $hasTenant){
-                return view('order.tenant', compact('cart', 'canChangeTenant'));
-            } else {
+        
+        // MICROSOFT
+        if($hasTenant){
+            if($customer->subscriptions->where('billing_type', 'license')->whereNotNull('tenant_name')->count() > 0){
                 return view('order.review', compact('cart', 'canChangeTenant', 'hasTenant'));
             }
+
+            if( ! $cart->agreement_firstname || ! $cart->domain){
+                return view('order.tenant', compact('cart', 'canChangeTenant'));
+            }
         }
+
+        return view('order.review', compact('cart', 'canChangeTenant', 'hasTenant'));
     }
 
 
@@ -339,8 +344,9 @@ class CartController extends Controller
         $instance = Instance::where('id', '1')->first();
 
         if($instance->type === 'microsoft'){
+            $tenantCheckRequest = Http::get('https://login.windows.net/'.$domain.'/.well-known/openid-configuration');
 
-            if (MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->getDomainAvailability($domain)){
+            if ($tenantCheckRequest->failed()){
 
                 $cart->domain = $domain;
                 $cart->save();
@@ -348,7 +354,24 @@ class CartController extends Controller
                 return true;
 
             } else {
-                return abort(401);
+                $token = Str::of($tenantCheckRequest['token_endpoint'])->explode('/')[3];
+
+                $customer = new ModelsCustomer([
+                    'id' => $token,
+                    'username' => 's@s.com',
+                    'password' => 's',
+                    'firstName' => 's',
+                    'lastName' => 's',
+                    'email' => 's@s.com',
+                ]);
+
+                $agreed = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->CheckCommerceRelationship($customer);
+
+                if($agreed){
+                    return true;
+                } else {
+                    return response($token, 401);
+                }
             }
         }
     }

@@ -58,6 +58,10 @@
 														<div class="float-sm-right">
 															<button type="button" id="validateButton" class="btn btn-primary" onclick="checkDomainAvailability()">{{ ucwords(trans_choice('messages.validate', 1)) }}</button>
 														</div>
+														<div id="tenantAlreadyExists" style="visibility: hidden;">
+															Specified tenant already exists at Microsoft
+															<div id="tenantAlreadyExistsButton"></div>
+														</div>
 													</div>
 												</div>
 
@@ -177,9 +181,9 @@
 
 		})
 		.fail(function(data) {
-			console.log(data);
 			$("#validateButton").prop('disabled', false);
-
+			$("#tenantAlreadyExists").css('visibility', 'visible');
+			$("#tenantAlreadyExistsButton").html('¿Is it yours? Click <a class="btn btn-success btn-small" target="_blank" href="https://login.microsoftonline.com/common/oauth2/authorize?client_id='+data.responseText+'&response_type=code&redirect_uri=https://partnerconsent.tagydes.com/&prompt=admin_consent"> Add existing tenant to Tagydes </a>, follow the process and try again after');
 		});
 	}
 
