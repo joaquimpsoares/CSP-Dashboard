@@ -27,7 +27,7 @@
     <div class="card-body">
         <div class="">
             <div class="table-responsive">
-                <table id="example" class="table table-bordered text-nowrap key-buttons">
+                <table id="example" class="table table-bordered key-buttons">
                     {{-- <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.customer_table', 1)) }}</a></h4> --}}
                     <thead >
                         <tr>
