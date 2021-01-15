@@ -46,6 +46,7 @@ class ResellerController extends Controller
 
     public function index()
     {
+        $user = $this->getUser();
 
         $customers = new Collection();
 

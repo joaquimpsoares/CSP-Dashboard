@@ -24,6 +24,8 @@ use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProviderRepositoryInterface;
 use App\Repositories\ResellerRepositoryInterface;
 use App\Repositories\SubscriptionRepositoryInterface;
+use App\Repositories\OrderRepositoryInterface;
+use App\Repositories\ProductRepositoryInterface;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
@@ -47,12 +49,16 @@ class HomeController extends Controller
     *
     * @return void
     */
-    public function __construct(ProviderRepositoryInterface $providerRepository, SubscriptionRepositoryInterface $subscriptionRepository,ResellerRepositoryInterface $resellerRepository, CustomerRepositoryInterface $customerRepository)
+    public function __construct(ProviderRepositoryInterface $providerRepository, SubscriptionRepositoryInterface $subscriptionRepository,
+    ResellerRepositoryInterface $resellerRepository, CustomerRepositoryInterface $customerRepository,
+    ProductRepositoryInterface $productRepository, OrderRepositoryInterface $orderRepository)
     {
         $this->subscriptionRepository = $subscriptionRepository;
         $this->providerRepository = $providerRepository;
         $this->resellerRepository = $resellerRepository;
         $this->customerRepository = $customerRepository;
+        $this->productRepository = $productRepository;
+        $this->orderRepository = $orderRepository;
         $this->middleware('auth');
     }
 
@@ -194,39 +200,14 @@ class HomeController extends Controller
 
             case config('app.reseller'):
 
-
-                $statuses = Status::get();
-
-
-                $countries = Country::all();
-                $resellers = $this->resellerRepository->resellersOfProvider($provider);
-                $customers = new Collection();
-
-                foreach ($resellers as $reseller){
-                    $reseller = Reseller::find($reseller['id']);
-                    $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
-                }
-
-                $reseller = Reseller::get();
-                $countResellers = $reseller->count();
-
-                $instance = Instance::first();
-
-                $order = OrderProducts::get();
-
-                $users = User::where('provider_id', $provider->id)->first();
-
-                $subscriptions = $this->providerRepository->getSubscriptions($provider);
-                $countCustomers =  $customers->count();
+                $countCustomers = $user->reseller->customers->count();
+                $subscriptions = $this->resellerRepository->getSubscriptions($user->reseller);
                 $countSubscriptions = $subscriptions->count();
 
-                $countries = Country::all();
-                $providers = $this->providerRepository->all();
+                $orders = $this->orderRepository->all();
+                $countOrders = $orders->count();
 
-
-                return view('reseller.partials.home', compact('resellers','customers','instance','users',
-                'countries','subscriptions','order','statuses','countResellers',
-                'countCustomers','countSubscriptions','providers','countries'));
+                return view('reseller.partials.home', compact('countCustomers','countSubscriptions','countOrders'));
 
             break;
 
