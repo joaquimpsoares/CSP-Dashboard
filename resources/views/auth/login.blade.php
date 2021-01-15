@@ -52,7 +52,11 @@
                                                         <button type="button submit" value="submit" class="btn btn-lg btn-primary btn-block"><i class="fe fe-arrow-right"></i> Login</button>
                                                     </div>
                                                     <div class="col-12">
-                                                        <a href="{{ url('/' . $page='forgot-password-1') }}" class="btn btn-link box-shadow-0 px-0">Forgot password?</a>
+                                                        @if (Route::has('password.request'))
+                                                        <a class="btn btn-link align-items-center" href="{{ route('password.request') }}">
+                                                            {{ __('Forgot Your Password?') }}
+                                                        </a>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </form>
