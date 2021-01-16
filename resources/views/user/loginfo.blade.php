@@ -37,9 +37,8 @@
                             <td>{{ $log->subject }}</td>
                             <td class="text-success">{{ $log->url }}</td>
                             <td><span class="badge badge-pill badge-primary mt-2">{{ $log->method }}</span>
-                                {{-- <label class="label label-info">{{ $log->method }}</label></td> --}}
                             <td class="text-warning">{{ $log->ip }}</td>
-                            <td class="text-warning">{{ geoip($log->ip = null) }}</td>
+                            <td class="text-warning">{!! geoip()->getLocation($log->ip)->country !!}</td>
                             <td>{{ $log->user_id }}</td>
                             <td>{{ $log->created_at }}</td>
                             <td class="text-danger"> <button type="button" class="btn btn-info mr-2" data-container="body" data-toggle="popover" data-popover-color="popinfo" data-placement="top" title="alert info" data-content="{{ $log->agent }}">
