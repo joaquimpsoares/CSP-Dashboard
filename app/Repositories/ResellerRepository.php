@@ -54,20 +54,20 @@ class ResellerRepository implements ResellerRepositoryInterface
 	public function create($validate, $user)
     {
 		$newReseller =  Reseller::create([
-            'company_name' => $validate['company_name'],
-            'nif' => $validate['nif'],
-            'country_id' => $validate['country_id'],
-            'address_1' => $validate['address_1'],
-            'address_2' => $validate['address_2'],
-            'city' => $validate['city'],
-            'state' => $validate['state'],
-            'postal_code' => $validate['postal_code'],
-            'status_id' => $validate['status'],
-            'mpnid' => $validate['mpnid'],
-            'provider_id' => $user->provider->id
+            'company_name'  => $validate['company_name'],
+            'nif'           => $validate['nif'],
+            'country_id'    => $validate['country_id'],
+            'address_1'     => $validate['address_1'],
+            'address_2'     => $validate['address_2'],
+            'city'          => $validate['city'],
+            'state'         => $validate['state'],
+            'postal_code'   => $validate['postal_code'],
+            'status_id'     => $validate['status'],
+            'mpnid'         => $validate['mpnid'],
+            'provider_id'   => $user->provider->id
             ]);
 
-            return $newReseller;
+        return $newReseller;
 
     }
 	public function resellersOfProvider(Provider $provider){

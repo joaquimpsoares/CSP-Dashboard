@@ -135,10 +135,8 @@ class ResellerController extends Controller
 
     public function update(Request $request, Reseller $reseller){
 
-        // dd($request->all());
         $validate = $this->validator($request->all())->validate();
         $reseller = Reseller::findOrFail($reseller->id);
-        // dd($reseller)    ;
 
         $reseller->company_name         = $request->input('company_name');
         $reseller->nif                  = $request->input('nif');

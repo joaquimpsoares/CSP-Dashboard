@@ -2,9 +2,10 @@
 
 namespace App\Listeners;
 
-use Request;
-// use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Login;
+// use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 use App\Models\LogActivity as LogActivityModel;
 
 class LogSuccessfulLogin
@@ -28,6 +29,7 @@ class LogSuccessfulLogin
      */
     public function handle(Login $event)
     {
+
         $log['subject'] = 'Login';
     	$log['url'] = Request::fullUrl();
     	$log['method'] = Request::method();
@@ -35,5 +37,6 @@ class LogSuccessfulLogin
     	$log['agent'] = Request::header('user-agent');
     	$log['user_id'] = auth()->check() ? auth()->user()->id : 1;
         LogActivityModel::create($log);
+
     }
 }

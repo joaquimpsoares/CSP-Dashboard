@@ -190,9 +190,9 @@ class ProviderController extends Controller
             if ($e->errorInfo[1] == 1062) {
                 $errorMessage = "message.user_already_exists";
             } else {
-                $errorMessage = "message.error";
+                $errorMessage = $e->getMessage();
             }
-            return redirect()->back()->with('danger', ucwords(trans_choice($errorMessage, 1)) );
+            return redirect()->back()->with('danger', $errorMessage );
 
         }
         return redirect()->route('provider.index')->with('success', ucwords(trans_choice('messages.provider_created_successfully', 1)) );

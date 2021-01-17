@@ -36,7 +36,7 @@ use Tagydes\MicrosoftConnection\Facades\Order as TagydesOrder;
 // Route::resource('/analytics', 'AnalyticController');
 
 
-
+Route::get('/language/{lang}', 'LanguagePreferenceController@setLanguage');
 
 
 Route::post('registerInvitation', 'UsersController@registerInvitation')->name('registerInvitation');
@@ -496,6 +496,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/user/profile/{user}', 'UsersController@profile')->name('user.profile');
     Route::post('/user/updatepassword/{user}', 'UsersController@updatepassword')->name('user.updatepassword');
+
+    Route::put('update/login-details/{user}', 'UsersController@updatelogin')
+            ->name('user.update.login-details');
 
 	// End of every authenticated user can access routes here
 	});

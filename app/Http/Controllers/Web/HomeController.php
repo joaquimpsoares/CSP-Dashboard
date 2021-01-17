@@ -135,11 +135,9 @@ class HomeController extends Controller
             break;
 
             case config('app.provider'):
-                // dd('here');
 
                 $provider_id = Auth::getUser()->provider_id;
                 $orders= Order::first();
-                // dd($orders);
 
 
                 $orderMonth = Order::whereMonth(
@@ -204,8 +202,12 @@ class HomeController extends Controller
                 $subscriptions = $this->resellerRepository->getSubscriptions($user->reseller);
                 $countSubscriptions = $subscriptions->count();
 
+
                 $orders = $this->orderRepository->all();
+                if($orders != '0'){
                 $countOrders = $orders->count();
+                }
+                $countOrders = 0;
 
                 return view('reseller.partials.home', compact('countCustomers','countSubscriptions','countOrders'));
 

@@ -231,13 +231,9 @@ class CartController extends Controller
             if ($e->errorInfo[1] == 1062) {
                 $errorMessage = "messages.user_already_exists";
             } else {
-                $errorMessage = "messages.error";
+                $errorMessage = $e->getMessage();
             }
-            return redirect()->route('customer.index')
-            ->with([
-                'alert' => 'danger',
-                'message' => trans('messages.customer_not_created') . " (" . trans($errorMessage) . ")."
-            ]);
+            return redirect()->back()->with('danger', $errorMessage );
         }
 
         $cart = $this->getUserCart(null, $validate['cart']);
@@ -314,7 +310,7 @@ class CartController extends Controller
         }
 
         $hasTenant = $this->cartHasTenant($cart);
-        
+
         // MICROSOFT
         if($hasTenant){
             if($customer->subscriptions->where('billing_type', 'license')->whereNotNull('tenant_name')->count() > 0){

@@ -42,14 +42,12 @@
             </div>
 
             <div class="col-md-2 mt-2 mt-md-0">
-                {!!
-                    Form::select(
-                    'status',
-                    $statuses,
-                    Request::get('status'),
-                    ['id' => 'status', 'class' => 'form-control input-solid']
-                    )
-                    !!}
+                <select name="status" class="form-control SlectBox @error('status') is-invalid @enderror" sf-validate="required">
+                    @foreach ($statuses as $key => $status)
+                    @dump($status)
+                    <option value="{{$key}}">{{ucwords(trans_choice($status, 1))}}</option>
+                    @endforeach
+                </select>
                 </div>
 
                 <div class="col-md-6">
@@ -66,9 +64,8 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th class="min-width-80">@lang('Username')</th>
-                        <th class="min-width-150">@lang('Full Name')</th>
                         <th class="min-width-100">@lang('Email')</th>
+                        <th class="min-width-150">@lang('Full Name')</th>
                         <th class="min-width-80">@lang('Registration Date')</th>
                         <th class="min-width-80">@lang('Status')</th>
                         <th class="text-center min-width-150">@lang('Action')</th>

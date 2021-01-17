@@ -68,15 +68,15 @@ class CustomerRepository implements CustomerRepositoryInterface
     {
 
         $newCustomer =  Customer::create([
-            'company_name' => $validate['company_name'],
-            'nif' => $validate['nif'],
-            'country_id' => $validate['country_id'],
-            'address_1' => $validate['address_1'],
-            'address_2' => $validate['address_2'],
-            'city' => $validate['city'],
-            'state' => $validate['state'],
-            'postal_code' => $validate['postal_code'],
-            'status_id' => $validate['status']
+            'company_name'  => $validate['company_name'],
+            'nif'           => $validate['nif'],
+            'country_id'    => $validate['country_id'],
+            'address_1'     => $validate['address_1'],
+            'address_2'     => $validate['address_2'],
+            'city'          => $validate['city'],
+            'state'         => $validate['state'],
+            'postal_code'   => $validate['postal_code'],
+            'status_id'     => $validate['status']
             ]);
 
             return $newCustomer;

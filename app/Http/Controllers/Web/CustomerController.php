@@ -69,6 +69,7 @@ class CustomerController extends Controller
 
         $user = $this->getUser();
 
+
         try {
             DB::beginTransaction();
 
@@ -92,9 +93,9 @@ class CustomerController extends Controller
             if ($e->errorInfo[1] == 1062) {
                 $e = "errors.user_already_exists";
             } else {
-                $e = "errors.error";
+                $errorMessage = $e->getMessage();
             }
-            return redirect()->back()->with('danger', ucwords(trans_choice($e, 1)) );
+            return redirect()->back()->with('danger', $errorMessage );
         }
 
         return redirect()->route('customer.index')->with('success', ucwords(trans_choice('messages.customer_created_successfully', 1)) );
@@ -185,7 +186,6 @@ class CustomerController extends Controller
 
         $validate = $this->validator($request->all())->validate();
 
-        // dd($validate);
         $user = $this->getUser();
 
         try {
@@ -199,9 +199,9 @@ class CustomerController extends Controller
             if ($e->errorInfo[1] == 1062) {
                 $errorMessage = "message.user_already_exists";
             } else {
-                $errorMessage = "message.error";
+                $errorMessage = $e->getMessage();
             }
-            return redirect()->back()->with('danger', 'Customer Not Updated'. $errorMessage);
+            return redirect()->back()->with('danger', $errorMessage );
 
             }
 

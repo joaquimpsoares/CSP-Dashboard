@@ -119,7 +119,7 @@ class UserRepository implements UserRepositoryInterface
 
                     $newUser = User::create($user);
 
-                    $newUser = $newUser->assignRole($role->name);
+                    $newUser->assignRole($role->name);
 
                     break;
 
@@ -134,6 +134,8 @@ class UserRepository implements UserRepositoryInterface
 
                     $newUser->assignRole(config('app.customer'));
 
+            return $newUser;
+
                     break;
 
                 default:
@@ -142,6 +144,7 @@ class UserRepository implements UserRepositoryInterface
             }
 
             return $newUser;
+
 
         }
     }

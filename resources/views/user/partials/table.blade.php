@@ -26,7 +26,7 @@
                                 <tr>
                                     <th>{{ ucwords(trans_choice('messages.avatar', 1)) }}</th>
                                     <th>{{ ucwords(trans_choice('messages.email', 1)) }}</th>
-                                    <th>{{ ucwords(trans_choice('messages.username', 1)) }}</th>
+                                    {{-- <th>{{ ucwords(trans_choice('messages.username', 1)) }}</th> --}}
                                     <th>{{ ucwords(trans_choice('messages.name', 1)) }}</th>
                                     <th>{{ ucwords(trans_choice('messages.last_name', 1)) }}</th>
                                     <th>{{ ucwords(trans_choice('messages.status', 1)) }}</th>
@@ -38,7 +38,7 @@
                                 <tr>
                                     <td><img src="{{$user->avatar}}" class="rounded-circle z-depth-0" alt="avatar image"  width='50' Height ='auto'></td>
                                     <td><a href="/user/{{$user->id }}">{{ $user['email'] }}</a></td>
-                                    <td><a href="/user/{{$user->id }}">{{ $user['username'] }}</a></td>
+                                    {{-- <td><a href="/user/{{$user->id }}">{{ $user['username'] }}</a></td> --}}
                                     <td>{{ $user['name'] }}</td>
                                     <td>{{ $user['last_name'] }}</td>
                                     <td>{{ ucwords(trans_choice($user->status->name, 1)) }}</td>

@@ -68,7 +68,7 @@
                          id="details"
                          role="tabpanel"
                          aria-labelledby="nav-home-tab">
-                        {{-- <form action="{{ route('user.update.details', $user) }}" method="POST" id="details-form"> --}}
+                        <form action="{{ route('user.update', $user) }}" method="POST" id="details-form">
                             @csrf
                             @method('PUT')
                             @include('user.partials.details', ['profile' => false])
@@ -79,13 +79,13 @@
                          id="login-details"
                          role="tabpanel"
                          aria-labelledby="nav-profile-tab">
-                        {{-- <form action="{{ route('users.update.login-details', $user) }}"
+                        <form action="{{ route('user.update.login-details', $user) }}"
                               method="POST"
                               id="login-details-form">
                             @csrf
                             @method('PUT')
                             @include('user.partials.auth')
-                        </form> --}}
+                        </form>
                     </div>
 
                     {{-- @if (setting('2fa.enabled'))

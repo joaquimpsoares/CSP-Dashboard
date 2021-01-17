@@ -59,7 +59,6 @@ class UsersController extends Controller
 
         // instance $userlevel
 
-
         $notifications = explode(', ',$user->notifications_preferences);
 
         $countries = Country::get();
@@ -124,143 +123,163 @@ class UsersController extends Controller
 
 }
 
-/**
-* Display the specified resource.
-*
-* @param  \App\User  $user
-* @return \Illuminate\Http\Response
-*/
-public function show(User $user)
-{
+    /**
+    * Display the specified resource.
+    *
+    * @param  \App\User  $user
+    * @return \Illuminate\Http\Response
+    */
+    public function show(User $user)
+    {
 
-    $roles = Role::get();
+        $roles = Role::get();
 
-    // $notificaciont = Notification::all();
-    $countries = Country::get();
+        $countries = Country::get();
 
-    return view('user.profile',compact('user','countries','roles'));
+        return view('user.profile',compact('user','countries','roles'));
 
 }
 
-/**
-* Show the form for editing the specified resource.
-*
-* @param  \App\User  $user
-* @return \Illuminate\Http\Response
-*/
-public function edit(User $user)
-{
-    $edit = true;
-    $countries = Country::get();
+    /**
+    * Show the form for editing the specified resource.
+    *
+    * @param  \App\User  $user
+    * @return \Illuminate\Http\Response
+    */
+    public function edit(User $user)
+    {
+        $edit = true;
+        $countries = Country::pluck( 'name','id');
+        $statuses = Status::pluck( 'name','id');
+        $roles = Role::pluck('name','id');
+        // $socialLogins = $this->users->getUserSocialLogins($user->id);
+        $u = auth()->user();
+        // $roles = Role::where('order',$u->getRole())->orWhere('order', 5)->pluck('name','id');
 
+        return view('user.edit',compact('edit', 'user','countries','roles','statuses'));
+    }
 
-    $roles = Role::get();
-    $statuses = Status::get();
-    // $socialLogins = $this->users->getUserSocialLogins($user->id);
-    $u = auth()->user();
-    // $roles = Role::where('order',$u->getRole())->orWhere('order', 5)->pluck('name','id');
+    public function updatelogin(Request $request, User $user){
 
-    return view('user.edit',compact('edit', 'user','countries','roles','statuses'));
-}
-
-public function updatelogin(Request $request, User $user){
-
-
-$data = $request->all();
+        // dd($request->all());
+        $data = $request->all();
+        DB::beginTransaction();
 
         if (! $data['password']) {
             unset($data['password']);
             unset($data['password_confirmation']);
+            $user->email           = $request->input('email');
+            $user->username        = $request->input('username');
+            $user->update();
+        }else{
+
+            $user->email           = $request->input('email');
+            $user->username        = $request->input('username');
+            $user->password        = Hash::make($request->input('password'));
+            $user->update();
+
         }
 
-        $this->users->update($user->id, $data);
+            // $user->email           = $request->input('email');
+            // $user->username        = $request->input('username');
+            // $user->update();
+        DB::commit();
+            //    $tt = $user->update([$user->id = $data]);
 
+        return redirect()->back()->with('success', 'User Updated succesfully');
 
-        return redirect()->route('users.edit', $user->id)
-            ->withSuccess(__('Login details updated successfully.'));
 
     }
 
     public function updatedetails(Request $request, User $user){
 
-
-        $this->users->update(auth()->id(), $request->except('role_id', 'status'));
-
-
-        return redirect()->back()
-            ->withSuccess(__('Profile updated successfully.'));
-
-            }
-/**
-* Update the specified resource in storage.
-*
-* @param  \Illuminate\Http\Request  $userequest
-* @param  \App\User  $user
-* @returttn \Illuminate\Http\Response
-*/
-public function update(Request $request, User $user)
-{
+        $this->user->update(auth()->id(), $request->except('role_id', 'status'));
 
 
-    $user = User::findOrFail($user->id);
-
-    // $validate = $this->validator($request->all())->validate();
-
-    try {
-        DB::beginTransaction();
-
-        if(request()->has('avatar')){
-            $avataruploaded = request()->file('avatar');
-            $avatarname = time() . '.' . $avataruploaded->getClientOriginalExtension() ;
-            $avatarpath = public_path('/images/profile/');
-            $avataruploaded->move($avatarpath, $avatarname);
-
-
-            $user->username             = $request->input('username');
-            $user->email                = $request->input('email');
-            $user->name           = $request->input('name');
-            $user->last_name            = $request->input('last_name');
-            $user->address              = $request->input('address');
-            $user->city                 = $request->input('city');
-            $user->state                = $request->input('state');
-            $user->country_id           = $request->input('country_id');
-            $user->postal_code          = $request->input('postal_code');
-            // $user->password             = Hash::make($request->input('password'));
-            $user->avatar               = '/images/profile/' . $avatarname;
-
-            $user->save();
-            DB::commit();
-
-            return redirect()->back()->with('success', 'User Updated succesfully');
-
-        }
-        $user->username             = $request->input('username');
-        $user->email                = $request->input('email');
-        $user->name           = $request->input('name');
-        $user->last_name            = $request->input('last_name');
-        $user->address              = $request->input('address');
-        $user->city                 = $request->input('city');
-        $user->state                = $request->input('state');
-        $user->country_id           = $request->input('country_id');
-        $user->postal_code          = $request->input('postal_code');
-        // $user->password             = Hash::make($request->input('password'));
-        $user->assignRole(config('app.reseller'));
-        $user->save();
-        DB::commit();
         return redirect()->back()->with('success', 'User Updated succesfully');
 
-    } catch (\PDOException $e) {
-        DB::rollBack();
-        if ($e->errorInfo[1] == 1062) {
-            $errorMessage = "errors.user_already_exists";
-        } else {
-            $errorMessage = "errors.error";
-        }
-        return redirect()->back()->with('danger', ucwords(trans_choice($errorMessage, 1)) );
 
     }
 
-}
+    /**
+    * Update the specified resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $userequest
+    * @param  \App\User  $user
+    * @returttn \Illuminate\Http\Response
+    */
+    public function update(Request $request, User $user)
+    {
+
+        $user = User::findOrFail($user->id);
+        $role = Role::findOrFail($request->role_id);
+        $validate = $this->validator($request->all())->validate();
+
+        try {
+            DB::beginTransaction();
+
+            if(request()->has('avatar')){
+                $avataruploaded = request()->file('avatar');
+                $avatarname = time() . '.' . $avataruploaded->getClientOriginalExtension() ;
+                $avatarpath = public_path('/images/profile/');
+                $avataruploaded->move($avatarpath, $avatarname);
+
+
+                // $user->email            = $request->input('email');
+                $user->name             = $request->input('name');
+                $user->last_name        = $request->input('last_name');
+                $user->socialite_id     = $request->input('socialite_id');
+                $user->address          = $request->input('address');
+                $user->city             = $request->input('city');
+                $user->phone            = $request->input('phone');
+                $user->state            = $request->input('state');
+                $user->country_id       = $request->input('country_id');
+                $user->postal_code      = $request->input('postal_code');
+                $user->avatar           = '/images/profile/' . $avatarname;
+                $user->status_id        = $request->status;
+
+                $user->update();
+                DB::commit();
+                // $user->password         = Hash::make($request->input('password'));
+
+                return redirect()->back()->with('success', 'User Updated succesfully');
+
+            }
+
+            // $user->email            = $request->input('email');
+            $user->name             = $request->input('name');
+            $user->last_name        = $request->input('last_name');
+            $user->socialite_id     = $request->input('socialite_id');
+            $user->address          = $request->input('address');
+            $user->city             = $request->input('city');
+            $user->phone            = $request->input('phone');
+            $user->state            = $request->input('state');
+            $user->country_id       = $request->input('country_id');
+            $user->postal_code      = $request->input('postal_code');
+            $user                   = $user->assignRole($role->name);
+            $user->status_id        = $request->status;
+            $user->update();
+            // $user->password      = Hash::make($request->input('password'));
+            // dd($user);
+
+            DB::commit();
+            // dd($user);
+            return redirect()->back()->with('success', 'User Updated succesfully');
+
+        } catch (\PDOException $e) {
+
+            dd($e->getMessage());
+            DB::rollBack();
+            if ($e->errorInfo[1] == 1062) {
+                $errorMessage = "errors.user_already_exists";
+            } else {
+                $errorMessage = $e->getMessage();
+            }
+            return redirect()->back()->with('danger', $errorMessage );
+
+        }
+
+    }
 
 public function updatepassword(Request $request, User $user)
 {
@@ -281,9 +300,9 @@ public function updatepassword(Request $request, User $user)
         if ($e->errorInfo[1] == 1062) {
             $errorMessage = "errors.user_already_exists";
         } else {
-            $errorMessage = "errors.error";
+            $errorMessage = $e->getMessage();
         }
-        return redirect()->back()->with('danger', ucwords(trans_choice($errorMessage, 1)) );
+        return redirect()->back()->with('danger', $errorMessage );
 
     }
     return redirect()->back()->with('success', ucwords(trans_choice('messager.User Password Updated succesfully', 1)) );

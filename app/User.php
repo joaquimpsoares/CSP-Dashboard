@@ -15,9 +15,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements  JWTSubject
 {
-    use Notifiable;
-    use HasRoles;
-    use Impersonate;
+    use Notifiable, HasRoles, Impersonate;
     // use ActivityTrait;
 
     // protected $guard_name = 'web';
@@ -50,10 +48,11 @@ class User extends Authenticatable implements  JWTSubject
     public function format()
     {
         return [
-            'name' => $this->name,
+            'name'      => $this->name,
             'last_name' => $this->last_name,
-            'phone' => $this->phone,
-            'email' => $this->email
+            'phone'     => $this->phone,
+            'email'     => $this->email,
+            'country'   => $this->country
         ];
     }
 

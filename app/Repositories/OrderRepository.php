@@ -59,13 +59,19 @@ class OrderRepository implements OrderRepositoryInterface
 
                 $reseller = $user->reseller;
 
-                $customers = Customer::whereHas('resellers', function($query) use  ($reseller) {
-                    $query->whereIn('id', $reseller);
-                })->pluck('id');
+                if($reseller->customers->count() == 0){
+                    $customers = '0';
+                    $orders = '0';
+                }else{
+                    $customers = Customer::whereHas('resellers', function($query) use  ($reseller) {
+                        $query->whereIn('id', $reseller);
+                    })->pluck('id');
+                    $orders = Order::with(['status'])->whereHas('customer', function($query) use  ($customers) {
+                        $query->whereIn('id', $customers);
+                    })->get()->map->format()->sortDesc();
+                }
 
-                $orders = Order::with(['status'])->whereHas('customer', function($query) use  ($customers) {
-                    $query->whereIn('id', $customers);
-                })->get()->map->format()->sortDesc();
+
 
             break;
 

@@ -1,5 +1,5 @@
 <tr>
-    <td style="width: 40px;">
+    <td style="width: 60px;">
         <a href="{{ route('user.show', $user) }}">
             <img
                 class="rounded-circle img-responsive"
@@ -8,14 +8,10 @@
                 alt="{{ $user->name }}">
         </a>
     </td>
-    <td class="align-middle">
-        <a href="{{ route('user.show', $user) }}">
-            {{ $user->username ?: __('N/A') }}
-        </a>
-    </td>
-    <td class="align-middle">{{ $user->name . ' ' . $user->last_name }}</td>
+    {{-- @dd($user) --}}
     <td class="align-middle">{{ $user->email }}</td>
-    <td class="align-middle">{{ $user->created_at->format(config('app.date_format')) }}</td>
+    <td class="align-middle">{{ $user->name . ' ' . $user->last_name }}</td>
+    <td class="align-middle">{{ $user->created_at }}</td>
     <td class="align-middle">
         <span class="badge badge-lg badge-{{ $user->labelClass }}">
             {{ trans("{$user->status->name}") }}
@@ -31,12 +27,12 @@
             </a>
 
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                @if (config('session.driver') == 'database')
+                {{-- @if (config('session.driver') == 'database') --}}
                     {{-- <a href="{{ route('user.sessions', $user) }}" class="dropdown-item text-gray-500"> --}}
-                        <i class="fa fa-list mr-2"></i>
+                        {{-- <i class="fa fa-list mr-2"></i>
                         @lang('User Sessions')
                     </a>
-                @endif
+                @endif --}}
                 <a href="{{ route('user.show', $user) }}" class="dropdown-item text-gray-500">
                     <i class="fa fa-eye mr-2"></i>
                     @lang('View User')
