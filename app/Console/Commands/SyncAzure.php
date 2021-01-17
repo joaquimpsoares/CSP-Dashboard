@@ -53,11 +53,15 @@ class SyncAzure extends Command
 
         $subscriptions = Subscription::where('billing_type', 'usage')->get();
 
+
         foreach($subscriptions as $subscription){
 
+        if($subscription->product_id == 'MS-AZR-0145P'){
         $instance = Instance::where('id', $subscription->instance_id)->first();
 
         $msId = $subscription->customer->microsoftTenantInfo->first()->tenant_id;
+        
+        $this->info('Sync customer ' . $msId . ' Subscription ' . $subscription->subscription_id . ' subscription name '. $subscription->name);
 
         $customer = new TagydesCustomer([
             'id' => $msId,
@@ -81,6 +85,7 @@ class SyncAzure extends Command
             'billingCycle'  => "monthly",
             'created_at'    => "5trvfvczdfv",
             ]);
+
 
 
         $resources = FacadesAzureResource::withCredentials(
@@ -108,7 +113,7 @@ class SyncAzure extends Command
                 'cost'                  => (json_encode($price->rates[0])*$resource->quantity)
                 ]);
             });
-
+        }
         }
         Mail::raw("teste", function ($mail)  {
             $mail->from('digamber@positronx.com');

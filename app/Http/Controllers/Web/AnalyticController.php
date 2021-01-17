@@ -8,6 +8,7 @@ ini_set('max_execution_time', 300);
 
 use App\Customer;
 use App\Instance;
+use Carbon\Carbon;
 use App\Subscription;
 use App\AzureResource;
 use Illuminate\Support\Str;
@@ -58,11 +59,9 @@ class AnalyticController extends Controller
     */
     public function index()
     {
-        $customers = Customer::whereHas('subscriptions')->first();
-        // dd($customers->microsoftTenantInfo->first()->tenant_id);
-        $subscriptions = Subscription::where('billing_type', 'usage')->first();
-        dd($subscriptions->customer->microsoftTenantInfo->first()->tenant_id);
+      
 
+        $subscriptions = Subscription::where('billing_type', 'usage')->first();
 
         $resourceName = $this->analyticRepository->getAzureSubscriptions();
 

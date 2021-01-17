@@ -231,8 +231,6 @@ class AnalyticRepository implements AnalyticRepositoryInterface
 
     public function UpdateAZURE($customer_id, Subscription $subscriptions)
     {
-
-        // dd($customer_id);
         $instance = Instance::where('id', $subscriptions->instance_id)->first();
 
         $customer = new TagydesCustomer([

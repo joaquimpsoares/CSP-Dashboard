@@ -4950,16 +4950,16 @@
         },
         {
             "name": "romanzipp/laravel-queue-monitor",
-            "version": "2.0.22",
+            "version": "2.0.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romanzipp/Laravel-Queue-Monitor.git",
-                "reference": "4e48ec85f9d29e53aa4f5029acaf69b808d8bd69"
+                "reference": "6ff700985a01c457f81d76117feae31bbb5156a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romanzipp/Laravel-Queue-Monitor/zipball/4e48ec85f9d29e53aa4f5029acaf69b808d8bd69",
-                "reference": "4e48ec85f9d29e53aa4f5029acaf69b808d8bd69",
+                "url": "https://api.github.com/repos/romanzipp/Laravel-Queue-Monitor/zipball/6ff700985a01c457f81d76117feae31bbb5156a5",
+                "reference": "6ff700985a01c457f81d76117feae31bbb5156a5",
                 "shasum": ""
             },
             "require": {
@@ -4967,7 +4967,8 @@
                 "ext-mbstring": "*",
                 "illuminate/queue": "^5.5|^6.0|^7.0|^8.0",
                 "illuminate/support": "^5.5|^6.0|^7.0|^8.0",
-                "php": "^7.2|^8.0"
+                "php": "^7.2|^8.0",
+                "romanzipp/php-cs-fixer-config": "^1.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.17",
@@ -5001,7 +5002,48 @@
                 }
             ],
             "description": "Queue Monitoring for Laravel Database Job Queue",
-            "time": "2021-01-14T05:52:14+00:00"
+            "time": "2021-01-15T19:47:23+00:00"
+        },
+        {
+            "name": "romanzipp/php-cs-fixer-config",
+            "version": "1.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/romanzipp/PHP-CS-Fixer-Config.git",
+                "reference": "ef463b9091514774d6bc318a73e02a5cf6de1f3e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/romanzipp/PHP-CS-Fixer-Config/zipball/ef463b9091514774d6bc318a73e02a5cf6de1f3e",
+                "reference": "ef463b9091514774d6bc318a73e02a5cf6de1f3e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1|^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.12",
+                "phpunit/phpunit": "^7.0|^8.0|^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "romanzipp\\Fixer\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "romanzipp",
+                    "email": "ich@ich.wtf",
+                    "homepage": "https://ich.wtf"
+                }
+            ],
+            "description": "Personal PHP-CS-Fixer Configuration",
+            "time": "2021-01-15T19:55:15+00:00"
         },
         {
             "name": "socialiteproviders/manager",
@@ -9271,12 +9313,12 @@
             "source": {
                 "type": "git",
                 "url": "git@gitlab.com:tagydes/microsoft-connection.git",
-                "reference": "486af4255fec7ea9cd92ab05c2ff9086736df52d"
+                "reference": "c2dfbffafe9bad157e0731dd71b1e9db57894cf7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/tagydes%2Fmicrosoft-connection/repository/archive.zip?sha=486af4255fec7ea9cd92ab05c2ff9086736df52d",
-                "reference": "486af4255fec7ea9cd92ab05c2ff9086736df52d",
+                "url": "https://gitlab.com/api/v4/projects/tagydes%2Fmicrosoft-connection/repository/archive.zip?sha=c2dfbffafe9bad157e0731dd71b1e9db57894cf7",
+                "reference": "c2dfbffafe9bad157e0731dd71b1e9db57894cf7",
                 "shasum": ""
             },
             "require": {
@@ -9335,7 +9377,7 @@
             "support": {
                 "issues": "https://gitlab.com/api/v4/projects/14025965/issues"
             },
-            "time": "2021-01-14T13:10:35+00:00"
+            "time": "2021-01-17T21:28:55+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
@@ -11394,16 +11436,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "8.5.13",
+            "version": "8.5.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "8e86be391a58104ef86037ba8a846524528d784e"
+                "reference": "c25f79895d27b6ecd5abfa63de1606b786a461a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/8e86be391a58104ef86037ba8a846524528d784e",
-                "reference": "8e86be391a58104ef86037ba8a846524528d784e",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c25f79895d27b6ecd5abfa63de1606b786a461a3",
+                "reference": "c25f79895d27b6ecd5abfa63de1606b786a461a3",
                 "shasum": ""
             },
             "require": {
@@ -11483,7 +11525,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-12-01T04:53:52+00:00"
+            "time": "2021-01-17T07:37:30+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
