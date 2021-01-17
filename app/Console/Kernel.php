@@ -30,6 +30,8 @@ class Kernel extends ConsoleKernel
         // cut your commands from here
         // and write next line
         with(new SchedulerKernel())->schedule($schedule);
+        $schedule->command('SyncAzure:daily')
+        ->everyMinute();
     }
 
     /**

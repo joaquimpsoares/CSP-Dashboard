@@ -58,6 +58,11 @@ class AnalyticController extends Controller
     */
     public function index()
     {
+        $customers = Customer::whereHas('subscriptions')->first();
+        // dd($customers->microsoftTenantInfo->first()->tenant_id);
+        $subscriptions = Subscription::where('billing_type', 'usage')->first();
+        dd($subscriptions->customer->microsoftTenantInfo->first()->tenant_id);
+
 
         $resourceName = $this->analyticRepository->getAzureSubscriptions();
 
