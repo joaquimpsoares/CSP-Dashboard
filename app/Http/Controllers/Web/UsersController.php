@@ -39,6 +39,7 @@ class UsersController extends Controller
         $provider = Auth::user()->provider;
         // $users = $this->userRepository->all();
         $users = $this->userRepository->paginate($perPage = 20, $request->search, $request->status);
+        // dd($users);
 
         return view('user.list', compact('users','provider','statuses'));
     }

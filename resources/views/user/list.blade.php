@@ -86,8 +86,10 @@
         </div>
     </div>
 </div>
+@if($users->total() >= 10)
+    {!! $users->render() !!}
 
-{!! $users->render() !!}
+@endif
 
 @stop
 

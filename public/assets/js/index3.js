@@ -1,6 +1,6 @@
 ( function ( $ ) {
 	"use strict";
-	
+
 	/*----Chart----*/
 	var ctx = document.getElementById( "Chart" );
 	var myChart = new Chart( ctx, {
@@ -71,7 +71,7 @@
 		}
 	} );
 	/*----End Chart----*/
-	  
+
 	/*-----echart-----*/
 	var chartdata3 = [
 		{
@@ -79,8 +79,8 @@
 		  type: 'line',
 		  smooth:true,
 		  data: [7635, 5465, 6754, 5432, 5435, 6545, 4453, 3425, 7654, 3245, 4532, 5643],
-		  lineStyle:{  
-				normal:{  
+		  lineStyle:{
+				normal:{
 				   opacity:0.8,
 				   width:4,
 				   curveness:1
@@ -92,8 +92,8 @@
 		  type: 'line',
 		  smooth:true,
 		  data: [ 5435, 3452, 5432, 3452, 2564, 3456, 3123, 2435, 5463, 1245, 3245, 4534,],
-			lineStyle:{  
-				normal:{  
+			lineStyle:{
+				normal:{
 				   opacity:0.8,
 				   width:4,
 				   curveness:1
@@ -157,7 +157,7 @@
 	var chart5 = document.getElementById('echart1');
 	var barChart5 = echarts.init(chart5);
 	barChart5.setOption(option5);
-	
+
 	/*-----canvasDoughnut-----*/
 	if ($('.canvasDoughnut').length){
 
@@ -219,6 +219,6 @@
 	  suppressScrollX:true,
 	});
 	/*-----P-scrolling JS -----*/
-	
+
 })( jQuery );
 

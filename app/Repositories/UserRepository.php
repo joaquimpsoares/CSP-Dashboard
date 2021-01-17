@@ -155,6 +155,49 @@ class UserRepository implements UserRepositoryInterface
     public function paginate($perPage, $search = null, $status = null)
     {
 
+        $user = $this->getUser();
+
+		switch ($this->getUserLevel()) {
+            case config('app.super_admin'):
+            $users = User::with(['provider','status','customer','reseller','country' => function ($query) {
+                $query->where('name', 'messages.active');
+            }])
+            ->orderBy('username')
+            ->get();
+            break;
+
+            case config('app.admin'):
+            $users = User::with(['provider','status','customer','reseller','country' => function ($query) {
+                $query->where('name', 'messages.active');
+            }])
+            ->orderBy('username')
+            ->get();
+            break;
+
+            case config('app.provider'):
+
+            $provider = $user->provider;
+            $users = $provider->users()->with('status')->get();
+
+            break;
+
+            case config('app.reseller'):
+            $reseller = $user->reseller;
+            $users = $reseller->users()->with('status')->get();
+            break;
+
+            case config('app.subreseller'):
+            $reseller = $user->reseller;
+            $users = $reseller->users()->with('status')->get();
+            break;
+
+            default:
+            return abort(403, __('errors.unauthorized_action'));
+
+            break;
+        }
+
+        return $users->paginate($perPage);
         $query = User::query();
 
         if ($status) {

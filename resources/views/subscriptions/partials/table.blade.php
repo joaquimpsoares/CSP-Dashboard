@@ -158,13 +158,15 @@
             </div>
         </tbody>
     </table>
+    <div class="card-footer d-flex text-right">
+        @if ($subscriptions->total() >= '10')
+        {!! $subscriptions->render() !!}
+        @endif
+    </div>
 </div>
-<div class="card-footer d-flex text-right">
-    @if ($subscriptions->total() >= '10')
-    {!! $subscriptions->render() !!}
-    @endif
 </div>
 </div>
+
 
 @section('scripts')
 <script>

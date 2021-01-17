@@ -146,143 +146,47 @@
     <div class="col-xl-12 col-lg-12 col-md-12">
         <div class="border-0">
             <div class="tab-content">
-                {{-- <div class="tab-pane active" id="tab-7">
+                <div class="tab-pane active"  id="tab-7">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="font-weight-bold">Biography</h5>
-                            <div class="main-profile-bio mb-0">
-                                <p>simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy  when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries nchanged.</p>
-                                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p>
-                                <p class="mb-0">pleasure rationally encounter but because pursue consequences that are extremely painful.occur in which toil and pain can procure him some great pleasure.. <a href="">More</a></p>
-                            </div>
-                        </div>
-                        <div class="card-body border-top">
-                            <h5 class="font-weight-bold">Work & Education</h5>
-                            <div class="main-profile-contact-list d-lg-flex">
-                                <div class="media mr-5">
-                                    <div class="media-icon bg-success-transparent text-success mr-4">
-                                        <i class="fa fa-whatsapp"></i>
-                                    </div>
-                                    <div class="media-body">
-                                        <h6 class="font-weight-bold mb-1">Web Designer at <a href="" class="btn-link">Spruko</a></h6>
-                                        <span>2018 - present</span>
-                                        <p>Past Work: Spruko, Inc.</p>
-                                    </div>
-                                </div>
-                                <div class="media mr-5">
-                                    <div class="media-icon bg-danger-transparent text-danger mr-4">
-                                        <i class="fa fa-briefcase"></i>
-                                    </div>
-                                    <div class="media-body">
-                                        <h6 class="font-weight-bold mb-1">Studied at <a href=""  class="btn-link">University</a></h6>
-                                        <span>2004-2008</span>
-                                        <p>Graduation: Bachelor of Science in Computer Science</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body border-top">
-                            <h5 class="font-weight-bold">Skills</h5>
-                            <a class="btn btn-sm btn-white mt-1" href="#">HTML5</a>
-                            <a class="btn btn-sm btn-white mt-1" href="#">CSS</a>
-                            <a class="btn btn-sm btn-white mt-1" href="#">Java Script</a>
-                            <a class="btn btn-sm btn-white mt-1" href="#">Photo Shop</a>
-                            <a class="btn btn-sm btn-white mt-1" href="#">Php</a>
-                            <a class="btn btn-sm btn-white mt-1" href="#">Wordpress</a>
-                            <a class="btn btn-sm btn-white mt-1" href="#">Sass</a>
-                            <a class="btn btn-sm btn-white mt-1" href="#">Angular</a>
-                        </div>
-                        <div class="card-body border-top">
-                            <h5 class="font-weight-bold">Contact</h5>
-                            <div class="main-profile-contact-list d-lg-flex">
-                                <div class="media mr-4">
-                                    <div class="media-icon bg-primary-transparent text-primary mr-3 mt-1">
-                                        <i class="fa fa-phone"></i>
-                                    </div>
-                                    <div class="media-body">
-                                        <small class="text-muted">Mobile</small>
-                                        <div class="font-weight-bold">
-                                            +245 354 654
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="media mr-4">
-                                    <div class="media-icon bg-warning-transparent text-warning mr-3 mt-1">
-                                        <i class="fa fa-slack"></i>
-                                    </div>
-                                    <div class="media-body">
-                                        <small class="text-muted">Stack</small>
-                                        <div class="font-weight-bold">
-                                            @spruko.com
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="media-icon bg-info-transparent text-info mr-3 mt-1">
-                                        <i class="fa fa-map"></i>
-                                    </div>
-                                    <div class="media-body">
-                                        <small class="text-muted">Current Address</small>
-                                        <div class="font-weight-bold">
-                                            San Francisco, USA
-                                        </div>
-                                    </div>
-                                </div>
-                            </div><!-- main-profile-contact-list -->
+                            <h5 class="card-title">Details</h5>
+                            <p class="card-text">Content</p>
                         </div>
                     </div>
-                </div> --}}
+                </div>
                 <div class="tab-pane" id="tab-8">
                     @include('customer.partials.table', ['customers' => $customers])
                 </div>
                 <div class="tab-pane" id="tab-9">
                     @include('subscriptions.partials.table', ['subscriptions' => $subscriptions])
-
                 </div>
+
                 <div class="tab-pane" id="tab-10">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">{{ ucwords(trans_choice('messages.user_table', 2)) }}</h3>
-                            {{-- <div class="card-options">
+                            <div class="card-options">
                                 <div class="btn-group ml-5 mb-0">
                                     <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fe fe-plus"></i> {{ ucwords(__('messages.options')) }}</button>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="{{route('reseller.create')}}"><i class="fa fa-plus mr-2"></i>{{ ucwords(__('messages.new_reseller')) }}</a>
-                                        <a class="dropdown-item" href="#"><i class="fa fa-eye mr-2"></i>View all new tab</a>
+                                        <a class="dropdown-item" href="{{route('user.create')}}"><i class="fa fa-plus mr-2"></i>{{ ucwords(__('messages.new_user')) }}</a>
+                                        {{-- <a class="dropdown-item" href="#"><i class="fa fa-eye mr-2"></i>View all new tab</a>
                                         <a class="dropdown-item" href="#"><i class="fa fa-edit mr-2"></i>Edit Page</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#"><i class="fa fa-cog mr-2"></i> Settings</a>
+                                        <a class="dropdown-item" href="#"><i class="fa fa-cog mr-2"></i> Settings</a> --}}
                                     </div>
                                 </div>
-                            </div> --}}
+                            </div>
                         </div>
                         <div class="card-body">
                             @include('user.partials.table', ['users' => $users])
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
-</div>
-{{-- @dd(get_defined_vars()) --}}
-
-
-
-{{-- <div class="row row-deck">
-    <div class="col-xl-4 col-md-12 col-lg-6">
-        @include('reseller.partials.details')
-    </div>
-    <div class="col-xl-8 col-md-12 col-lg-6">
-        @include('customer.partials.table', ['customers' => $customers])
-
-    </div>
-    <div class="col-xl-12 col-md-12 col-lg-12">
-        @include('subscriptions.partials.table', ['subscriptions' => $subscriptions])
-    </div>
-</div> --}}
 
 @endsection
 

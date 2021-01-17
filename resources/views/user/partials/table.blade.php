@@ -19,7 +19,7 @@
                         </div>
 
                     </div>
-                    <h2 class="card-title"><a>{{ ucwords(trans_choice('messages.user_table', 1)) }}</a></h2>
+                    {{-- <h2 class="card-title"><a>{{ ucwords(trans_choice('messages.user_table', 1)) }}</a></h2> --}}
                     <div class="table-responsive">
                         <table id="example" class="table table-bordered text-nowrap key-buttons">
                             <thead>
@@ -55,7 +55,7 @@
         </div>
     </div>
 </div>
-</div>
+
 
 
 @section('js')

@@ -452,13 +452,13 @@ class AnalyticController extends Controller
             return $item;
         });
 
+        // dd($reports->first());
 
         $top5Q = AzureUsageReport::groupBy('resource_group')->where('subscription_id', $subscription->id)->selectRaw('sum(cost) as sum, resource_group, resource_category')->orderBy('sum', 'DESC')->limit(5)->get()->toArray();
-
-
-        // dd($top10Q);
-
-
+        $resourceGroups = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('resource_group')->pluck('resource_group');
+        $categories = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('resource_category')->pluck('resource_category');
+        $subcategories = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('resource_subcategory')->pluck('resource_subcategory');
+        $region = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('resource_region')->pluck('resource_region');
         // $orders = DB::table('azure_usage_reports')
         // ->select('*', DB::raw('SUM(cost) as total_sales'))
         // ->groupBy('resource_id')
@@ -470,6 +470,10 @@ class AnalyticController extends Controller
             'reports' => $reports,
             // 'top10Q' => json_encode($top10Q, JSON_NUMERIC_CHECK),
             'top5Q' => $top5Q,
+            'resourceGroups' => $resourceGroups,
+            'categories' => $categories,
+            'subcategories' => $subcategories,
+            'region' => $region,
         ]);
 
     }
