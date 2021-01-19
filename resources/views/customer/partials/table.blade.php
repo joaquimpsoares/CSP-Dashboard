@@ -28,7 +28,6 @@
         <div class="">
             <div class="table-responsive">
                 <table id="example" class="table table-bordered key-buttons">
-                    {{-- <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.customer_table', 1)) }}</a></h4> --}}
                     <thead >
                         <tr>
                             <th>{{ ucwords(trans_choice('messages.#', 1)) }}</th>
@@ -41,18 +40,16 @@
                     </thead>
                     <tbody>
                         @forelse($customers as $customer)
-                        {{-- @if($customer['status'] === 'messages.active') --}}
                         <tr>
                             <td width="3%" class="f-s-600"><a href="{{ $customer['path'] }}">{{ $customer['id'] }}</a></td>
                             <td><a href="{{ $customer['path'] }}">{{ $customer['company_name'] }}</a></td>
-                            <td>{{ $customer['reseller']['company_name'] }}</td>
+                                <td><a href="{{ $customer['reseller']->format()['path'] }}">{{ $customer['reseller']['company_name'] }}</a></td>
                             <td>{{ $customer['subscriptions'] }}</td>
                             <td>{{ $customer['created_at'] }}</td>
                             <td style="width: 150px">
                                 @include('partials.actions', ['model' => $customer, 'modelo' => 'customer'])
                             </td>
                         </tr>
-                        {{-- @endif --}}
                         @empty
                         <tr>
                             <td colspan="5">Empty</td>

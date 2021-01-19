@@ -6,6 +6,7 @@ ini_set('memory_limit', '1024M');
 ini_set('max_execution_time', 300);
 
 
+
 use App\Customer;
 use App\Instance;
 use Carbon\Carbon;
@@ -59,7 +60,7 @@ class AnalyticController extends Controller
     */
     public function index()
     {
-      
+
 
         $subscriptions = Subscription::where('billing_type', 'usage')->first();
 
@@ -76,6 +77,7 @@ class AnalyticController extends Controller
                         $item['calculated'] = '0';
                     }
                     return $item;
+
                 }
             }
         });
@@ -444,41 +446,37 @@ class AnalyticController extends Controller
     public function azurereport(Subscription $subscription)
     {
 
-        $reports = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('resource_id')->get();
 
-        $reports->map(function($item, $key) {
-            $azurepricelist = AzurePriceList::where('resource_id', $item->resource_id)->get('rates');
-            if ($azurepricelist->first()){
-                $item['cost'] = $item->quantity+$azurepricelist->first()->rates[0];
-            }
-            $item->cost;
-            $item->save();
-            return $item;
-        });
+        // $reports = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('resource_id')->get();
 
-        // dd($reports->first());
+        // $reports->map(function($item, $key) {
+        //     $azurepricelist = AzurePriceList::where('resource_id', $item->resource_id)->get('rates');
+        //     if ($azurepricelist->first()){
+        //         $item['cost'] = $item->quantity+$azurepricelist->first()->rates[0];
+        //     }
+        //     $item->cost;
+        //     $item->save();
+        //     return $item;
+        // });
 
-        $top5Q = AzureUsageReport::groupBy('resource_group')->where('subscription_id', $subscription->id)->selectRaw('sum(cost) as sum, resource_group, resource_category')->orderBy('sum', 'DESC')->limit(5)->get()->toArray();
-        $resourceGroups = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('resource_group')->pluck('resource_group');
-        $categories = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('resource_category')->pluck('resource_category');
-        $subcategories = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('resource_subcategory')->pluck('resource_subcategory');
-        $region = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('resource_region')->pluck('resource_region');
-        // $orders = DB::table('azure_usage_reports')
-        // ->select('*', DB::raw('SUM(cost) as total_sales'))
-        // ->groupBy('resource_id')
-        // ->get();
 
-        // dd($orders->sum('cost'));
+        // $top5Q = AzureUsageReport::groupBy('resource_group')->where('subscription_id', $subscription->id)->selectRaw('sum(cost) as sum, resource_group, resource_category')->orderBy('sum', 'DESC')->limit(5)->get()->toArray();
+        // $resourceGroups = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('usageStartTime')->pluck('resource_group');
+        // $categories = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('usageStartTime')->pluck('resource_category');
+        // $subcategories = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('usageStartTime')->pluck('resource_subcategory');
+        // $region = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('resource_region')->pluck('resource_region');
 
-        return view('analytics.azurereports', [
-            'reports' => $reports,
-            // 'top10Q' => json_encode($top10Q, JSON_NUMERIC_CHECK),
-            'top5Q' => $top5Q,
-            'resourceGroups' => $resourceGroups,
-            'categories' => $categories,
-            'subcategories' => $subcategories,
-            'region' => $region,
-        ]);
+
+        // return view('analytics.azurereports', [
+        //     'reports' => $reports,
+        //     'top5Q' => $top5Q,
+        //     'resourceGroups' => $resourceGroups,
+        //     'categories' => $categories,
+        //     'subcategories' => $subcategories,
+        //     'region' => $region,
+        //     'subscription' => $subscription,
+        // ]);
+        return view('analytics.azurereports', compact('subscription'));
 
     }
 

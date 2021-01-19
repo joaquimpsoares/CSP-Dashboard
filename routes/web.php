@@ -1,30 +1,16 @@
 <?php
 
-use App\Cart;
-use App\Tier;
-use App\Order;
+
 use App\Price;
-use App\Product;
 use App\Customer;
 use App\Instance;
-use App\PriceList;
 use Carbon\Carbon;
 use App\Subscription;
-use App\MicrosoftTenantInfo;
 use App\KasperskyLincenseInfo;
-use App\Jobs\PlaceOrderMicrosoft;
-use App\kaspersky_lincense_infos;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
-use Tagydes\KasperskyConnection\Facades\Order as KasOrder;
-use Tagydes\MicrosoftConnection\Models\Cart as TagydesCart;
-use Tagydes\MicrosoftConnection\Facades\Order as TagydesOrder;
 
 
 // Route::prefix('jobs')->group(function () {
@@ -457,6 +443,11 @@ Route::group(['middleware' => 'auth'], function () {
         'uses' => 'AnalyticController@azurereport',
         'as' => 'analytics.reports'
     ]);
+
+    // Route::get('/analytics/reports/{subscription}', [
+    //     \App\Http\Livewire\Azure\AzureReport::class,
+    //      'as' => 'analytics.reports'
+    //      ]);
 
     Route::get('/analytics/licenses', [
         'uses' => 'AnalyticController@licenses',

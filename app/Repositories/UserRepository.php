@@ -198,6 +198,7 @@ class UserRepository implements UserRepositoryInterface
         }
 
         return $users->paginate($perPage);
+
         $query = User::query();
 
         if ($status) {

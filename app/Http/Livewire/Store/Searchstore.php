@@ -61,14 +61,14 @@ class Searchstore extends Component
 
             switch ($this->level) {
 
-                case 'Customer':
-                    $this->instance = $this->user->customer->resellers->first()->provider->instances->pluck('id');
-                    $this->priceList = $this->user->customer->resellers->first()->price_list_id;
-                break;
-
                 case 'Reseller':
                     $this->instance = $this->user->reseller->provider->instances->pluck('id');
                     $this->priceList = $this->user->reseller->price_list_id;
+                break;
+
+                case 'Customer':
+                    $this->instance = $this->user->customer->resellers->first()->provider->instances->pluck('id');
+                    $this->priceList = $this->user->customer->resellers->first()->price_list_id;
                 break;
 
                 default:
