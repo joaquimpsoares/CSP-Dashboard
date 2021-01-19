@@ -5,11 +5,13 @@ namespace App\Http\Livewire\Azure;
 use App\Subscription;
 use Livewire\Component;
 use Illuminate\Support\Str;
+use Livewire\WithPagination;
 use App\Models\AzurePriceList;
 use App\Models\AzureUsageReport;
 
 class AzureReport extends Component
 {
+    use WithPagination;
 
     public $subscription;
     public $taskduedate;

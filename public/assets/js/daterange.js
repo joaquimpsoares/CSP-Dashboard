@@ -16,4 +16,3 @@
 	}, function(start, end) {
 		$('#daterange-btn span').html(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'))
     })
-
