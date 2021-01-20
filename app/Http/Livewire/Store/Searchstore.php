@@ -88,7 +88,7 @@ class Searchstore extends Component
         $query = Price::query();
 
         $prices = $query
-        ->join('products', 'prices.product_sku', '=', 'products.sku')
+            ->join('products', 'prices.product_sku', '=', 'products.sku')
             ->where('products.instance_id', session()->get('instance_id'))
             ->where('price_list_id', $this->priceList)
             ->where('products.category', $this->category)

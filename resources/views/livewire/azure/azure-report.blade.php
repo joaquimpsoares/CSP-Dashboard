@@ -10,7 +10,7 @@
 
     @endsection
     <div class="row row-deck">
-        <div class="col-xl-4 col-md-12 col-lg-12">
+        <div class="col-xl-3 col-md-12 col-lg-12">
             <div class="card">
                 <div class="row">
                     <div class="col-xl-12 col-md-12 col-lg-12">
@@ -43,7 +43,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-3">
+        <div class="col-lg-2">
             <div class="row">
                 <div class="col-md-12 col-lg-12">
                     <div class="card">
@@ -53,58 +53,64 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label class="form-label">Resource Groups</label>
-                                <select name="beast" id="select-beast" class="form-control custom-select select2">
+                                <select  wire:model="selectRgroup" name="beast" id="select-beast" class="form-control custom-select select2">
                                     <option value="0">--Select--</option>
                                     @foreach ($resourceGroups as $key => $item)
-                                    <option value={{$key}}>{{$item}}</option>
+                                    <option>{{$item}}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            {{-- <div class="form-group">
-                                <label class="form-label">Categories</label>
-                                <select name="beast" id="select-beast1" class="form-control custom-select select2">
-                                    <option value="0">--Select--</option>
-                                    @foreach ($categories as $key => $item)
-                                    <option value={{$key}}>{{$item}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            @if($selectRgroup)
                             <div class="form-group">
+                                <label class="form-label">Categories</label>
+                                <select wire:model="selectCategory" name="beast" id="select-beast1" class="form-control custom-select select2">
+                                    <option value="0">--Select--</option>
+                                    @foreach ($categories as $item)
+                                    <option>{{$item}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            @endif
+                            @if($selectCategory)
+                           <div class="form-group">
                                 <label class="form-label">Sub Categories</label>
-                                <select name="beast" id="select-beast2" class="form-control custom-select select2">
+                                <select wire:model="selectSubCategory" name="beast" id="select-beast2" class="form-control custom-select select2">
                                     <option value="0">--Select--</option>
                                     @foreach ($subcategories as $key => $item)
-                                    <option value={{$key}}>{{$item}}</option>
+                                    <option>{{$item}}</option>
                                     @endforeach
                                 </select>
                             </div>
+                            @endif
+                            @if($selectSubCategory)
                             <div class="form-group">
                                 <label class="form-label">Region</label>
-                                <select name="beast" id="select-beast3" class="form-control custom-select select2">
+                                <select wire:model="selectRegion" name="beast" id="select-beast3" class="form-control custom-select select2">
                                     <option value="0">--Select--</option>
                                     @foreach ($region as $key => $item)
-                                    <option value={{$key}}>{{$item}}</option>
+                                    <option>{{$item}}</option>
                                     @endforeach
                                 </select>
-                            </div> --}}
-                            <a class="btn btn-primary btn-block" href="#">Search</a>
+                            </div>
+                            @endif
+
+                            <a wire:click="resetFilters" class="btn btn-danger btn-block">Clear Filter</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-9">
+        <div class="col-lg-10">
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Resources name </h4>
-                    <div class="page-rightheader ml-auto d-lg-flex d-none">
+                    <div class="page-rightheader ml-auto d-lg-flex">
                         <div class="ml-6 mb-0">
                             <input
                             wire:model="taskduedate" class="datetimepicker form-control"
                             class="form-control datepicker" placeholder="Due Date" autocomplete="off" id="daterange-btn"
                             data-provide="datepicker" data-date-autoclose="true" data-date-format="yyyy-mm-dd" data-date-today-highlight="true"
-                            onchange="this.dispatchEvent(new InputEvent('input'))"
-                            >
+                            onchange="this.dispatchEvent(new InputEvent('input'))">
                         </div>
                     </div>
                 </div>
@@ -112,28 +118,96 @@
                     <div class="card-body">
                         <div class="">
                             <div class="table-responsive">
-                                <table id="example" class="table table-bordered text-wrap key-buttons">
+                                <table class="table table-bordered text-wrap key-buttons">
                                     <thead class="thead-dark">
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Category</th>
-                                            <th>Resource Group</th>
-                                            <th>Total Cost</th>
-                                            <th>Quantity</th>
-                                            <th>start date</th>
-                                            <th>end date</th>
+                                            <th class="w-25" wire:click="sortByColumn('resource_name')">
+                                                Name
+                                                @if ($sortColumn == 'resource_name')
+                                                    <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                    <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+                                            <th class="w-25" wire:click="sortByColumn('resource_group')">
+                                                Resource Group
+                                                @if ($sortColumn == 'resource_group')
+                                                    <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                    <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+                                            <th class="w-25" wire:click="sortByColumn('resource_category')">
+                                                Category
+                                                @if ($sortColumn == 'resource_category')
+                                                    <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                    <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+                                            <th class="w-25" wire:click="sortByColumn('resource_subcategory')">
+                                                Sub-Category
+                                                @if ($sortColumn == 'resource_subcategory')
+                                                    <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                    <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+                                            <th class="w-25" wire:click="sortByColumn('resource_region')">
+                                                Region
+                                                @if ($sortColumn == 'resource_region')
+                                                    <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                    <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+                                            <th class="w-25" wire:click="sortByColumn('quantity')">
+                                                Quantity
+                                                @if ($sortColumn == 'quantity')
+                                                    <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                    <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+                                            <th class="w-25" wire:click="sortByColumn('cost')">
+                                                Total Cost
+                                                @if ($sortColumn == 'cost')
+                                                    <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                    <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+                                            <th class="w-25" wire:click="sortByColumn('usageStartTime')">
+                                                start date
+                                                @if ($sortColumn == 'usageStartTime')
+                                                    <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                    <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+                                            <th class="w-25" wire:click="sortByColumn('usageEndTime')">
+                                                end date
+                                                @if ($sortColumn == 'usageEndTime')
+                                                    <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                    <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+
                                         </tr>
                                     </thead>
                                     <body>
                                         @foreach ($reports as $item)
                                         <tr>
                                             <td >{{$item->resource_name}}</td>
-                                            <td >{{$item->resource_id}}</td>
                                             <td >{{$item->resource_group}}</td>
-                                            <td >$@money($item->cost)</td>
-                                            <td >{{$item->quantity}}</td>
-                                            <td >{{$item->usageStartTime}}</td>
-                                            <td >{{$item->usageEndTime}}</td>
+                                            <td class="text-nowrap">{{$item->resource_category}}</td>
+                                            <td class="text-nowrap">{{$item->resource_subcategory}}</td>
+                                            <td class="text-nowrap">{{$item->resource_region}}</td>
+                                            <td >{{number_format($item->quantity , 4)}}</td>
+                                            <td class="text-nowrap">$@money($item->cost)</td>
+                                            <td class="text-nowrap">{{date('Y-m-d', strtotime($item->usageStartTime))}}</td>
+                                            <td class="text-nowrap">{{date('Y-m-d', strtotime($item->usageEndTime))}}</td>
                                         </tr>
                                         @endforeach
                                     </body>
