@@ -24,7 +24,7 @@ class AzureReport extends Component
     public $selectRgroup;
     public $selectCategory;
     public $selectSubCategory;
-    public $selectRegion;
+    public $selectLocation;
 
     public function mount(Subscription $subscription)
     {
@@ -33,7 +33,7 @@ class AzureReport extends Component
         $this->selectRgroup;
         $this->selectCategory;
         $this->selectSubCategory;
-        $this->selectRegion;
+        $this->selectLocation;
 
 
     }
@@ -87,8 +87,8 @@ class AzureReport extends Component
             $query->where('resource_subcategory', $this->selectSubCategory);
             $region = AzureUsageReport::where('resource_subcategory', $this->selectSubCategory)->where('resource_group', $this->selectRgroup)->groupBy('resource_region')->pluck('resource_region');
         }
-        if ($this->selectRegion) {
-            $query->where('resource_region', $this->selectRegion);
+        if ($this->selectLocation) {
+            $query->where('resource_location', $this->selectLocation);
         }
 
         // dd($this->sortColumn);

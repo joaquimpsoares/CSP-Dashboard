@@ -337,10 +337,14 @@ class CartController extends Controller
 
         $domain = $validate['domain'] . ".onmicrosoft.com";
 
-        $instance = Instance::where('id', '1')->first();
+        $instance = Instance::where('id', session('instance_id'))->first();
 
         if($instance->type === 'microsoft'){
+
             $tenantCheckRequest = Http::get('https://login.windows.net/'.$domain.'/.well-known/openid-configuration');
+
+            $cart->domain = $domain;
+            $cart->save();
 
             if ($tenantCheckRequest->failed()){
 

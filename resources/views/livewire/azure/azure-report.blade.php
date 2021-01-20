@@ -154,9 +154,9 @@
                                             <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
                                             @endif
                                         </th>
-                                        <th class="w-25" wire:click="sortByColumn('resource_region')">
+                                        <th class="w-25" wire:click="sortByColumn('resource_location')">
                                             Region
-                                            @if ($sortColumn == 'resource_region')
+                                            @if ($sortColumn == 'resource_location')
                                             <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
                                             @else
                                             <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
@@ -204,7 +204,7 @@
                                         <td >{{$item->resource_group}}</td>
                                         <td class="text-nowrap">{{$item->resource_category}}</td>
                                         <td class="text-nowrap">{{$item->resource_subcategory}}</td>
-                                        <td class="text-nowrap">{{$item->resource_region}}</td>
+                                        <td class="text-nowrap">{{$item->resource_location}}</td>
                                         <td >{{number_format($item->quantity , 4)}}</td>
                                         <td class="text-nowrap">$@money($item->cost)</td>
                                         <td class="text-nowrap">{{date('Y-m-d', strtotime($item->usageStartTime))}}</td>
