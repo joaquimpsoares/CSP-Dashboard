@@ -53,6 +53,11 @@ class AzureReport extends Component
         $this->reset(['selectRgroup', 'selectCategory', 'selectSubCategory', 'selectRegion', 'taskduedate']);
     }
 
+    public function resetDate()
+    {
+        $this->reset(['taskduedate']);
+    }
+
     public function render()
     {
         if($this->taskduedate){
