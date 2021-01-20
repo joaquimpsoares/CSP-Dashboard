@@ -48,13 +48,6 @@ class AnalyticRepository implements AnalyticRepositoryInterface
 
             break;
 
-            case config('app.admin'):
-                $customers = Customer::with(['country', 'status'])
-                ->orderBy('company_name')
-                ->get()->map->format();
-
-            break;
-
             case config('app.provider'):
 
                 $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
@@ -67,31 +60,24 @@ class AnalyticRepository implements AnalyticRepositoryInterface
             break;
 
             case config('app.reseller'):
-
-                $customers = $user->reseller->customers;
-                foreach($customers as $customer){
-                    $azure = Subscription::where('customer_id', $customer->id)->where('billing_type', 'usage')->paginate('10');
-                    return $azure;
-                }
-
-                $azure = Subscription::where('billing_type', 'usage')->paginate('10');
-
-            break;
-
-            case config('app.subreseller'):
                 $reseller = $user->reseller;
-                $customers = $reseller->customers->format();
+                $customer = $reseller->customers->pluck('id');
+                $azure = Subscription::with(['customer','products','status'])->where('billing_type', 'usage')->whereIn('customer_id', $customer)
+                ->orderBy('id')->paginate(10);
             break;
+
+            case config('app.customer'):
+                $customer = $user->customer;
+                $azure = Subscription::where('customer_id', $customer->id)->where('billing_type', 'usage')->paginate('10');
+            break;
+
 
             default:
             return abort(403, __('errors.unauthorized_action'));
 
         break;
 
-        case config('app.customer'):
-            $customer = $user->customer;
-            $azure = Subscription::where('customer_id', $customer->id)->where('billing_type', 'usage')->paginate('10');
-        break;
+
         }
 
         return $azure;
