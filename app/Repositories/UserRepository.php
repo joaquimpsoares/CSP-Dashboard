@@ -85,7 +85,7 @@ class UserRepository implements UserRepositoryInterface
                 'country_id'        => $user['country_id'],
                 'socialite_id'      => $user['socialite_id'],
                 'password'          => Hash::make($user['password']),
-                'user_level_id'     => $user['role_id'],
+                'user_level_id'     => '6',
                 'notify'            => $user['sendInvitation'] ?? false,
                 'status_id'         => $user['status'],
             ];
@@ -207,7 +207,7 @@ class UserRepository implements UserRepositoryInterface
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('username', "like", "%{$search}%");
+                $q->where('email', "like", "%{$search}%");
                 $q->orWhere('email', 'like', "%{$search}%");
                 $q->orWhere('name', 'like', "%{$search}%");
                 $q->orWhere('last_name', 'like', "%{$search}%");

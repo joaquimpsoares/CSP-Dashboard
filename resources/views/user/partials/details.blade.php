@@ -1,10 +1,10 @@
 <div class="row">
     <div class="col-md-6">
-        <div class="form-group">
+        {{-- <div class="form-group">
             <label for="name">@lang('Role')</label>
             {!! Form::select('role_id', $roles, $edit ? $user->roles->first()->id : '',
             ['class' => 'form-control input-solid', 'id' => 'role_id', $profile ? 'disabled' : '']) !!}
-        </div>
+        </div> --}}
         <div class="form-group">
             <label for="status">@lang('Status')</label>
             <select name="status" class="form-control @error('status') is-invalid @enderror" sf-validate="required">
@@ -49,10 +49,10 @@
             name="address" placeholder="@lang('Address')" value="{{  $edit && $user->address ? $user->address :  old('address')    }}">
             @error('address')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
         </div>
-        <div class="form-group">
+        {{-- <div class="form-group">
             <label for="address">@lang('Country')</label>
             {!! Form::select('country_id', $countries, $edit ? $user->country_id : '', ['class' => 'form-control input-solid']) !!}
-        </div>
+        </div> --}}
     </div>
     @if ($edit)
     <div class="col-md-12 mt-2">

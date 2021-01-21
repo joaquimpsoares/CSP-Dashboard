@@ -7,15 +7,9 @@ use App\User;
 use App\Status;
 use App\Country;
 use App\Customer;
-use App\Instance;
-use App\Reseller;
-use App\PriceList;
-use App\countryrules;
-use App\Subscription;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\DB;
-use App\Countryrules as AppCountryrules;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
@@ -251,7 +245,6 @@ class CustomerController extends Controller
             'state'             => ['required', 'string', 'max:255'],
             'postal_code'       => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
             'mpnid'             => ['sometimes', 'integer'],
-            'role_id'           => ['sometimes', 'integer', 'exists:roles,id'],
             'status'            => ['required', 'integer', 'exists:statuses,id'],
             'name'              => ['sometimes', 'string', 'max:255'],
             'last_name'         => ['sometimes', 'string', 'max:255'],

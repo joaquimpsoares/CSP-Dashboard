@@ -24,6 +24,8 @@
 @endsection
 
 @section('content')
+@livewire('reseller.create-reseller')
+{{--
 
 <div class="container mt-5">
     <section class="dark-grey-text">
@@ -140,7 +142,7 @@
             </div>
         </div>
     </div>
-</section>
+</section> --}}
 
 @endsection
 
