@@ -296,6 +296,14 @@ class CartController extends Controller
         $canChangeTenant = TRUE;
         $customer = $cart->customer;
 
+        foreach($cart->products as $product){
+            $count = $customer->subscriptions()->where('product_id', $product->sku)->count();
+
+            if($product->limit && $count >= $product->limit){
+                $cart->delete();
+                return redirect()->route('cart.index')->with('danger', 'The selected customer has reached the maxium licenses for the product: '.$product->name.'('.$product->sku.')');
+            }
+        }
 
         if (!empty($validate['customerTenant'])) {
             $domain = $validate['customerTenant'] . '.onmicrosoft.com';
@@ -387,6 +395,9 @@ class CartController extends Controller
 
         foreach ($validate['billing_cycle'] as $key => $id) {
             $cartItem = $cart->products()->wherePivot('id', $key)->first();
+            if($cartItem->minimum_quantity > $request->get($key) || $cartItem->maximum_quantity < $request->get($key)){
+                return redirect()->route('cart.index')->with('danger', 'Invalid quantity for item: '.$cartItem->name.'('.$cartItem->sku.')');
+            }
             $cartItem->pivot->billing_cycle = $id;
             $cartItem->pivot->quantity = $request->get($key);
             $cartItem->pivot->save();
