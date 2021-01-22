@@ -376,6 +376,9 @@ class CartController extends Controller
                 $agreed = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->CheckCommerceRelationship($customer);
 
                 if($agreed){
+                    $cart->domain = $domain;
+                    $cart->save();
+
                     return true;
                 } else {
                     return response($token, 401);
