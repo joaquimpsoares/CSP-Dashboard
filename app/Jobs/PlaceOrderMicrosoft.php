@@ -8,6 +8,7 @@ use App\Instance;
 use Carbon\Carbon;
 use App\Subscription;
 use App\MicrosoftTenantInfo;
+use App\Reseller;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
@@ -78,6 +79,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
             'password' => 'ljhbpirtf',
             'firstName' => 'name',
             'lastName' => 'name',
+            'PartnerIdOnRecord' => $this->order->customer->format()['mpnid'],
             'email' => 'name@email.com',
             ]);
 
@@ -98,10 +100,12 @@ class PlaceOrderMicrosoft implements ShouldQueue
             'maximumQuantity' => $product['maximum_quantity'],
             'term' => $product['term'],
             'limit' => $product['limit'],
+            'PartnerIdOnRecord' => $this->order->customer->format()['mpnid'],
             'isTrial' => $product['is_trial'],
             'uri' => $product['uri'],
             'supportedBillingCycles' => ['annual','monthly'],
             ]);
+
 
             $tagydescart->setCustomer($existingCustomer);
             Log::info('Setting Customer to Cart: '.$tagydescart);
@@ -126,6 +130,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 $subscriptions->billing_type =      $product->billing;
                 $subscriptions->order_id = 			$subscription->orderId;
                 $subscriptions->amount = 			$subscription->quantity;
+                $subscriptions->msrpid=             $this->order->customer->format()['mpnid'];
                 $subscriptions->expiration_data	=	Carbon::now()->addYear()->toDateTimeString(); //Set subscription expiration date
                 $subscriptions->billing_period = 	$subscription->billingCycle;
                 $subscriptions->currency = 			$subscription->currency;
