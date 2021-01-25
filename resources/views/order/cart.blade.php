@@ -77,7 +77,7 @@
                                             </td>
                                             <td>
                                                 <div class="product-quantity">
-                                                    <input onchange="updateCartProductItemsNumber(this)" type="number" value="{{ $product->pivot->quantity }}" name="{{ $product->pivot->id }}" id="quantity" class="form-control" step="1"  style="max-width: 10em;" required />{{-- min="{{ $product->minimum_quantity }}" max="{{ $product->maximum_quantity }}" --}}                                                </div>
+                                                    <input onchange="updateCartProductItemsNumber(this)" type="number" value="{{ $product->pivot->quantity }}" name="{{ $product->pivot->id }}" id="quantity" class="form-control" step="1"  style="max-width: 10em;" required min="{{ $product->minimum_quantity }}" max="{{ $product->maximum_quantity }}"/>                                                </div>
                                                 </td>
                                                 <td>
                                                     <select class="form-control SlectBox SumoUnder" onchange="updateCartProductCycle(this)" name="billing_cycle[{{ $product->pivot->id }}]" required="required" class="billing_cycle" id="{{ $product->pivot->id }}">
