@@ -83,7 +83,7 @@
     </div>
     <div class="card-group p-5">
         <div class="card  overflow-hidden shadow-none border border-right-0">
-            <img  src="{{URL::asset('images/store/store-management.png')}}" alt="image" height="300" width="auto">
+            <img  src="{{URL::asset('images/store/store-management.png')}}" alt="image" height="auto" width="auto">
             <div class="card-body">
                 <h5 class="card-title">Store</h5>
                 <p class="card-text"> Use the store to purchase products on behalf of your customers, select Microsoft of Kaspersky products.</p>
@@ -93,7 +93,7 @@
             </div>
         </div>
         <div class="card  overflow-hidden shadow-none border border-right-0">
-            <img  src="{{URL::asset('images/store/web-marketing-analytics.jpg')}}" alt="image" height="300" width="auto">
+            <img  src="{{URL::asset('images/store/web-marketing-analytics.jpg')}}" alt="image" height="auto" width="auto">
             <div class="card-body">
                 <h5 class="card-title">Analytics</h5>
                 <p class="card-text">Check your <Strong>Azure</Strong> analytics</p>
@@ -103,7 +103,7 @@
             </div>
         </div>
         <div class="card overflow-hidden shadow-none border">
-            <img  src="{{URL::asset('https://partners.kaspersky.com/s/sfsites/c/resource/KL_banner_loginMSP')}}" alt="image" height="300" width="auto">
+            <img  src="{{URL::asset('https://partners.kaspersky.com/s/sfsites/c/resource/KL_banner_loginMSP')}}" alt="image" height="auto" width="auto">
             <div class="card-body">
                 <h5 class="card-title">Kaspersky Onboard</h5>
                 <p class="card-text"> If you haven't done yet,
