@@ -134,7 +134,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 $subscriptions->expiration_data	=	Carbon::now()->addYear()->toDateTimeString(); //Set subscription expiration date
                 $subscriptions->billing_period = 	$subscription->billingCycle;
                 $subscriptions->currency = 			$subscription->currency;
-                $subscriptions->tenant_name	=		$this->order->domain ?? $this->order->customer->microsoftTenantInfo->tenant_domain;
+                $subscriptions->tenant_name	=		$this->order->domain ?? $this->order->customer->microsoftTenantInfo->first()->tenant_domain;
                 $subscriptions->status_id =         1;
                 $subscriptions->save();
             }
