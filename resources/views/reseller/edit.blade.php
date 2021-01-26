@@ -24,9 +24,9 @@
 @endsection
 
 @section('content')
+{{-- @dd($reseller) --}}
 
-
-@include('reseller.partials.details')
+@livewire('reseller.edit-reseller', ['reseller' => $reseller])
 
 @endsection
 
