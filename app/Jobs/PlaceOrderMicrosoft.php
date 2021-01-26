@@ -46,7 +46,6 @@ class PlaceOrderMicrosoft implements ShouldQueue
     */
     public function handle()
     {
-        // dd($this->order->customer->microsoftTenantInfo->tenant_domain);
         $products = $this->order->products;
         $customer = $this->order->customer;
 
@@ -56,9 +55,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
             $this->order->save();
         }
 
-        $tt = MicrosoftTenantInfo::where('tenant_domain', 'like', $this->order->domain.'%')->first();
-
-        Log::info('tenant Cart: '. $tt);
+        Log::info('tenant Cart: '. $this->order->customer->microsoftTenantInfo->first());
 
 
         $instanceid = $products->first()->instance_id;
@@ -71,10 +68,10 @@ class PlaceOrderMicrosoft implements ShouldQueue
         $quantity=0;
         $billing_cycle = null;
 
-        Log::info('ext_company_id: '.$tt->tenant_id);
+        Log::info('ext_company_id: '.$this->order->customer->microsoftTenantInfo->first()->tenant_id);
 
         $existingCustomer = new TagydesCustomer([
-            'id' => $tt->tenant_id,
+            'id' => $this->order->customer->microsoftTenantInfo->first()->tenant_id,
             'username' => 'name@email.com',
             'password' => 'ljhbpirtf',
             'firstName' => 'name',
@@ -85,76 +82,76 @@ class PlaceOrderMicrosoft implements ShouldQueue
 
             Log::info('Adding existingCustomer: '.$this->order->ext_company_id);
 
-        try {
-            $tagydescart = new TagydesCart();
-            foreach ($products as $product)
-            {
-                $quantity = $product->pivot->quantity;
-                $billing_cycle = $product->pivot->billing_cycle;
+            try {
+                $tagydescart = new TagydesCart();
+                foreach ($products as $product)
+                {
+                    $quantity = $product->pivot->quantity;
+                    $billing_cycle = $product->pivot->billing_cycle;
 
-        $TagydesProduct = new TagydesProduct([
-            'id' => $product['sku'],
-            'name' => $product['name'],
-            'description' => $product['description'],
-            'minimumQuantity' => $product['minimum_quantity'],
-            'maximumQuantity' => $product['maximum_quantity'],
-            'term' => $product['term'],
-            'limit' => $product['limit'],
-            'PartnerIdOnRecord' => $this->order->customer->format()['mpnid'],
-            'isTrial' => $product['is_trial'],
-            'uri' => $product['uri'],
-            'supportedBillingCycles' => ['annual','monthly'],
-            ]);
+                    $TagydesProduct = new TagydesProduct([
+                        'id' => $product['sku'],
+                        'name' => $product['name'],
+                        'description' => $product['description'],
+                        'minimumQuantity' => $product['minimum_quantity'],
+                        'maximumQuantity' => $product['maximum_quantity'],
+                        'term' => $product['term'],
+                        'limit' => $product['limit'],
+                        'PartnerIdOnRecord' => $this->order->customer->format()['mpnid'],
+                        'isTrial' => $product['is_trial'],
+                        'uri' => $product['uri'],
+                        'supportedBillingCycles' => ['annual','monthly'],
+                        ]);
 
 
-            $tagydescart->setCustomer($existingCustomer);
-            Log::info('Setting Customer to Cart: '.$tagydescart);
+                        $tagydescart->setCustomer($existingCustomer);
+                        Log::info('Setting Customer to Cart: '.$tagydescart);
 
-            $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
-            Log::info('Adding Product to Cart: '.$tagydescart);
+                        $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
+                        Log::info('Adding Product to Cart: '.$tagydescart);
 
-            $tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->create($tagydescart);
-            Log::info('Creating Cart: '.$tagydesorder);
+                        $tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->create($tagydescart);
+                        Log::info('Creating Cart: '.$tagydesorder);
 
-            $orderConfirm = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($tagydesorder);
-            Log::info('Confirmation of cart Cart: '.$orderConfirm);
+                        $orderConfirm = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($tagydesorder);
+                        Log::info('Confirmation of cart Cart: '.$orderConfirm);
 
-            foreach ($orderConfirm->subscriptions() as $subscription)
-            {
-                $subscriptions = new Subscription();
-                $subscriptions->name = 				$subscription->name;
-                $subscriptions->subscription_id = 	$subscription->id;
-                $subscriptions->customer_id = 		$customer->id; //customer id from request recieved from Microsoft
-                $subscriptions->product_id = 		$subscription->offerId;
-                $subscriptions->instance_id =		$instanceid;
-                $subscriptions->billing_type =      $product->billing;
-                $subscriptions->order_id = 			$subscription->orderId;
-                $subscriptions->amount = 			$subscription->quantity;
-                $subscriptions->msrpid=             $this->order->customer->format()['mpnid'];
-                $subscriptions->expiration_data	=	Carbon::now()->addYear()->toDateTimeString(); //Set subscription expiration date
-                $subscriptions->billing_period = 	$subscription->billingCycle;
-                $subscriptions->currency = 			$subscription->currency;
-                $subscriptions->tenant_name	=		$this->order->domain ?? $this->order->customer->microsoftTenantInfo->first()->tenant_domain;
-                $subscriptions->status_id =         1;
-                $subscriptions->save();
+                        foreach ($orderConfirm->subscriptions() as $subscription)
+                        {
+                            $subscriptions = new Subscription();
+                            $subscriptions->name = 				$subscription->name;
+                            $subscriptions->subscription_id = 	$subscription->id;
+                            $subscriptions->customer_id = 		$customer->id; //customer id from request recieved from Microsoft
+                            $subscriptions->product_id = 		$subscription->offerId;
+                            $subscriptions->instance_id =		$instanceid;
+                            $subscriptions->billing_type =      $product->billing;
+                            $subscriptions->order_id = 			$subscription->orderId;
+                            $subscriptions->amount = 			$subscription->quantity;
+                            $subscriptions->msrpid=             $this->order->customer->format()['mpnid'];
+                            $subscriptions->expiration_data	=	Carbon::now()->addYear()->toDateTimeString(); //Set subscription expiration date
+                            $subscriptions->billing_period = 	$subscription->billingCycle;
+                            $subscriptions->currency = 			$subscription->currency;
+                            $subscriptions->tenant_name	=		$this->order->domain ?? $this->order->customer->microsoftTenantInfo->first()->tenant_domain;
+                            $subscriptions->status_id =         1;
+                            $subscriptions->save();
+                        }
+                    }
+
+                    $this->order->ext_order_id = $subscription->orderId;
+                    $this->order->order_status_id = 4; //Order Completed state
+                    $this->order->save();
+
+                    Log::info('Subscription created Successfully: '.$subscription);
+
+                } catch (Exception $e) {
+
+                    Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+
+                    $this->order->details = ('Error Placing order to Microsoft: '.$e->getMessage());
+                    $this->order->save();
+
+                    $this->order->order_status_id = 3;
+                    $this->order->save();
+                }
             }
         }
-
-        $this->order->ext_order_id = $subscription->orderId;
-        $this->order->order_status_id = 4; //Order Completed state
-        $this->order->save();
-
-        Log::info('Subscription created Successfully: '.$subscription);
-
-        } catch (Exception $e) {
-
-            Log::info('Error Placing order to Microsoft: '.$e->getMessage());
-
-            $this->order->details = ('Error Placing order to Microsoft: '.$e->getMessage());
-            $this->order->save();
-
-            $this->order->order_status_id = 3;
-            $this->order->save();
-        }
-    }
-}
