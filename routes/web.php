@@ -22,7 +22,7 @@ use App\Http\Controllers\Auth\LoginController;
 // Route::resource('/analytics', 'AnalyticController');
 
 
-Route::get('/language/{lang}', 'LanguagePreferenceController@setLanguage');
+// /reRoute::get('/language/{lang}', 'LanguagePreferenceController@setLanguage');
 
 
 Route::post('registerInvitation', 'UsersController@registerInvitation')->name('registerInvitation');
