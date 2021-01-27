@@ -120,7 +120,7 @@ $totalPrice = null;
                                                                         {{-- <div class="text-muted">{{ $product->description }}</div> --}}
                                                                     </td>
                                                                     <td class="text-center">{{$product->pivot->quantity}}</td>
-                                                                    <td class="text-right">$60.00</td>
+                                                                    <td class="text-right">{{$product->pivot->retail_price}}</td>
                                                                     <td class="text-right">@php
                                                                         $price = floatval($product->pivot->retail_price * $product->pivot->quantity);
                                                                         echo "$ " . number_format($price, 2);
