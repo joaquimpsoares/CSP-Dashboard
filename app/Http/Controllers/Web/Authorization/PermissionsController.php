@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Web\Authorization;
 
+use App\Role;
 use Exception;
-use Illuminate\Contracts\View\Factory;
+use App\Permission;
 use Illuminate\View\View;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Support\Facades\Request;
 use App\Http\Requests\Permission\CreatePermissionRequest;
 use App\Http\Requests\Permission\UpdatePermissionRequest;
-use App\Permission;
-use App\Role;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class PermissionsController
@@ -67,7 +68,7 @@ class PermissionsController extends Controller
      * @param CreatePermissionRequest $request
      * @return mixed
      */
-    public function store(CreatePermissionRequest $request)
+    public function store(Request $request)
     {
         $this->permissions->create($request->all());
 
@@ -96,7 +97,7 @@ class PermissionsController extends Controller
      * @param UpdatePermissionRequest $request
      * @return mixed
      */
-    public function update(Permission $permission, UpdatePermissionRequest $request)
+    public function update(Permission $permission, Request $request)
     {
         $this->permissions->update($permission->id, $request->all());
 

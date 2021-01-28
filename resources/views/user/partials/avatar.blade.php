@@ -1,17 +1,16 @@
 <div class="avatar-wrapper">
-    <div class="spinner">
+    {{-- <div class="spinner">
         <div class="spinner-dot"></div>
         <div class="spinner-dot"></div>
         <div class="spinner-dot"></div>
-    </div>
+    </div> --}}
     <div id="avatar"></div>
     <div class="text-center">
         <div class="avatar-preview">
             <img class="avatar rounded-circle img-thumbnail img-responsive mt-5 mb-4"
                  width="150"
-                 src="{{ $edit ? $user->present()->avatar : url('assets/img/profile.png') }}">
-
-            <h5 class="text-muted">{{ $user->present()->nameOrEmail }}</h5>
+                 src="{{ $edit ? $user->avatar : url('assets/img/profile.png') }}">
+            <h5 class="text-muted">{{ $user->nameOrEmail }}</h5>
         </div>
 
         <div id="change-picture"
@@ -42,13 +41,14 @@
         <div class="modal-content">
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-4 avatar-source" id="no-photo"
-                         data-url="{{ $updateUrl }}">
+                    {{-- <div class="col-md-4 avatar-source" id="no-photo"
+                         data-url="{{ $updateUrl }}"
+                         >
                         <img src="{{ url('assets/img/profile.png') }}" class="rounded-circle img-thumbnail img-responsive">
                         <p class="mt-3">@lang('No Photo')</p>
-                    </div>
+                    </div> --}}
                     <div class="col-md-4 avatar-source">
-                        <div class="btn btn-light btn-upload">
+                        <div class="btn btn-light ">
                             <i class="fa fa-upload"></i>
                             <input type="file" name="avatar" id="avatar-upload">
                         </div>
@@ -56,14 +56,15 @@
                     </div>
                     @if ($edit)
                         <div class="col-md-4 avatar-source source-external"
-                             data-url="{{ $updateUrl }}">
-                            <img src="{{ $user->gravatar() }}" class="rounded-circle img-thumbnail img-responsive">
+                             {{-- data-url="{{ $updateUrl }}" --}}
+                             >
+                            <img src="{{ $user->avatar }}" class="rounded-circle img-thumbnail img-responsive">
                             <p class="mt-3">@lang('Gravatar')</p>
                         </div>
                     @endif
                 </div>
 
-                @if ($edit && count($socialLogins))
+                {{-- @if ($edit && count($socialLogins))
                     @foreach ($socialLogins->chunk(3) as $logins)
                         <br>
                         <div class="row">
@@ -78,7 +79,7 @@
                             @endforeach
                         </div>
                     @endforeach
-                @endif
+                @endif --}}
             </div>
         </div>
     </div>
