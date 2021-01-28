@@ -1828,6 +1828,13 @@
                 "framework",
                 "laravel"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+>>>>>>> a3a26795f6a63b97def960b73646674c9c137073
             "time": "2021-01-26T14:40:21+00:00"
         },
         {
@@ -2010,6 +2017,13 @@
                 "laravel",
                 "psysh"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "issues": "https://github.com/laravel/tinker/issues",
+                "source": "https://github.com/laravel/tinker/tree/v2.6.0"
+            },
+>>>>>>> a3a26795f6a63b97def960b73646674c9c137073
             "time": "2021-01-26T20:35:18+00:00"
         },
         {
@@ -2945,6 +2959,13 @@
                 "matrix",
                 "vector"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "issues": "https://github.com/MarkBaker/PHPMatrix/issues",
+                "source": "https://github.com/MarkBaker/PHPMatrix/tree/2.1.2"
+            },
+>>>>>>> a3a26795f6a63b97def960b73646674c9c137073
             "time": "2021-01-23T16:37:31+00:00"
         },
         {
@@ -5054,6 +5075,13 @@
                 }
             ],
             "description": "Personal PHP-CS-Fixer Configuration",
+<<<<<<< HEAD
+=======
+            "support": {
+                "issues": "https://github.com/romanzipp/PHP-CS-Fixer-Config/issues",
+                "source": "https://github.com/romanzipp/PHP-CS-Fixer-Config/tree/1.0.8"
+            },
+>>>>>>> a3a26795f6a63b97def960b73646674c9c137073
             "time": "2021-01-26T12:08:07+00:00"
         },
         {
@@ -10440,6 +10468,15 @@
                 "laravel",
                 "page"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "docs": "https://flareapp.io/docs/ignition-for-laravel/introduction",
+                "forum": "https://twitter.com/flareappio",
+                "issues": "https://github.com/facade/ignition/issues",
+                "source": "https://github.com/facade/ignition"
+            },
+>>>>>>> a3a26795f6a63b97def960b73646674c9c137073
             "time": "2021-01-26T14:45:19+00:00"
         },
         {
@@ -10550,6 +10587,13 @@
                 "throwable",
                 "whoops"
             ],
+<<<<<<< HEAD
+=======
+            "support": {
+                "issues": "https://github.com/filp/whoops/issues",
+                "source": "https://github.com/filp/whoops/tree/2.9.2"
+            },
+>>>>>>> a3a26795f6a63b97def960b73646674c9c137073
             "funding": [
                 {
                     "url": "https://github.com/denis-sokolov",
