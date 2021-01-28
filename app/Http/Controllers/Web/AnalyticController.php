@@ -430,12 +430,9 @@ class AnalyticController extends Controller
                     'resource_subcategory'  => $resource->resource->subcategory,
                     'resource_region'       => $resource->resource->region,
                     'unit'                  => $resource->unit,
-<<<<<<< HEAD
                     'name'                  => $resourceGroup[8],
 
-=======
-                    
->>>>>>> a3a26795f6a63b97def960b73646674c9c137073
+
                     "resourceType" => $resource->instanceData->additionalInfo->toArray()['resourceType'] ?? null,
                     "usageResourceKind" => $resource->instanceData->additionalInfo->toArray()['usageResourceKind'] ?? null,
                     "dataCenter" => $resource->instanceData->additionalInfo->toArray()['dataCenter'] ?? null,
