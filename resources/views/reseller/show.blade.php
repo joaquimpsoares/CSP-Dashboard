@@ -169,7 +169,7 @@
                                 <div class="btn-group ml-5 mb-0">
                                     <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fe fe-plus"></i> {{ ucwords(__('messages.options')) }}</button>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="{{route('user.create')}}"><i class="fa fa-plus mr-2"></i>{{ ucwords(__('messages.new_user')) }}</a>
+                                        <a class="dropdown-item" href="{{route('user.create', ['level' => 'reseller', 'reseller_id'=> $reseller->id])}}"><i class="fa fa-plus mr-2"></i>{{ ucwords(__('messages.new_user')) }}</a>
                                     </div>
                                 </div>
                             </div>

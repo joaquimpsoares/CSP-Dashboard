@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Web;
 
 use App\User;
 use App\Order;
-use Throwable;
 use App\Status;
 use App\Country;
 use App\Customer;
@@ -12,11 +11,9 @@ use App\Instance;
 use App\Provider;
 use App\Reseller;
 use Carbon\Carbon;
-use App\AzureResource;
 use App\OrderProducts;
 use App\Models\Activities;
 use App\Models\LogActivity;
-use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -85,22 +82,19 @@ class HomeController extends Controller
 
                 $statuses = Status::get();
                 $providers = $this->providerRepository->all();
+                $provider = Reseller::get();
                 $customersweek = Customer::whereMonth(
                     'created_at', '=', Carbon::now()->subWeekdays('1')
                 )->get();
 
                 $topProducts = OrderProducts::with('Order')->get();
-                // foreach($topProducts as $t){
-
-                // }
-
 
                 $topProducts = OrderProducts::with(['Product' => function($query){
                     $query->groupBy('name');
                 }])->get();
 
 
-                return view('home', compact('providers','orders','countOrders','customersweek','topProducts'));
+                return view('home', compact('providers','provider','orders','countOrders','customersweek','topProducts'));
 
             break;
 
@@ -115,30 +109,32 @@ class HomeController extends Controller
 
                 $statuses = Status::get();
                 $providers = $this->providerRepository->all();
+                $provider = $this->providerRepository->all();
                 $customersweek = Customer::whereMonth(
                     'created_at', '=', Carbon::now()->subWeekdays('1')
                 )->get();
 
                 $topProducts = OrderProducts::with('Order')->get();
-                // foreach($topProducts as $t){
-
-                // }
-
 
                 $topProducts = OrderProducts::with(['Product' => function($query){
                     $query->groupBy('name');
                 }])->get();
 
 
-                return view('home', compact('providers','orders','countOrders','customersweek','topProducts'));
+                return view('home', compact('providers','provider','orders','countOrders','customersweek','topProducts'));
 
             break;
 
             case config('app.provider'):
 
-                $provider_id = Auth::getUser()->provider_id;
                 $orders= Order::first();
+                $provider = Auth::getUser()->provider;
 
+                foreach ($provider->resellers as $reseller) {
+                    foreach ($reseller->customers()->get(['id']) as $customer) {
+                        $customers[] = $customer->id;
+                    }
+                }
 
                 $orderMonth = Order::whereMonth(
                     'created_at', '=', Carbon::now()->subMonth()->month
@@ -151,13 +147,14 @@ class HomeController extends Controller
                     'created_at', '=', Carbon::now()->subWeekdays('1')
                 )->get();
 
-                $topProducts = OrderProducts::with('Order')->get();
-                $topProducts = OrderProducts::with(['Product' => function($query){
-                    $query->groupBy('name');
-                }])->get();
 
 
-                return view('home', compact('resellers','orders','countOrders','customersweek','topProducts'));
+                // $topProducts = OrderProducts::with('Order')->get();
+                $topProducts = customer::with('orders')->get();
+                // dd($topProducts->first()->orders);
+
+
+                return view('home', compact('resellers','orders','countOrders','customersweek','topProducts','provider','customers'));
 
                 // $provider_id = Auth::getUser()->provider_id;
                 // $provider = Provider::where('id', $provider_id)->first();

@@ -7,8 +7,6 @@
 <link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
 @endsection
 
-
-
 <div class="col-lg-12">
     <div class="card-body">
         <div class="row">
@@ -17,16 +15,13 @@
                     <div style="display: flex;">
                         <div style="flex-grow: 31;">
                         </div>
-
                     </div>
-                    {{-- <h2 class="card-title"><a>{{ ucwords(trans_choice('messages.user_table', 1)) }}</a></h2> --}}
                     <div class="table-responsive">
                         <table id="example" class="table table-bordered text-nowrap key-buttons">
                             <thead>
                                 <tr>
                                     <th>{{ ucwords(trans_choice('messages.avatar', 1)) }}</th>
                                     <th>{{ ucwords(trans_choice('messages.email', 1)) }}</th>
-                                    {{-- <th>{{ ucwords(trans_choice('messages.username', 1)) }}</th> --}}
                                     <th>{{ ucwords(trans_choice('messages.name', 1)) }}</th>
                                     <th>{{ ucwords(trans_choice('messages.last_name', 1)) }}</th>
                                     <th>{{ ucwords(trans_choice('messages.status', 1)) }}</th>
@@ -38,7 +33,6 @@
                                 <tr>
                                     <td><img src="{{$user->avatar}}" class="rounded-circle z-depth-0" alt="avatar image"  width='50' Height ='auto'></td>
                                     <td><a href="/user/{{$user->id }}">{{ $user['email'] }}</a></td>
-                                    {{-- <td><a href="/user/{{$user->id }}">{{ $user['username'] }}</a></td> --}}
                                     <td>{{ $user['name'] }}</td>
                                     <td>{{ $user['last_name'] }}</td>
                                     <td>{{ ucwords(trans_choice($user->status->name, 1)) }}</td>

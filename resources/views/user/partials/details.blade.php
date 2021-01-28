@@ -5,6 +5,7 @@
             {!! Form::select('role_id', $roles, $edit ? $user->roles->first()->id : '',
             ['class' => 'form-control input-solid', 'id' => 'role_id', $profile ? 'disabled' : '']) !!}
         </div> --}}
+
         <div class="form-group">
             <label for="status">@lang('Status')</label>
             <select name="status" class="form-control @error('status') is-invalid @enderror" sf-validate="required">

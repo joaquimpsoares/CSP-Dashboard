@@ -71,6 +71,8 @@ class UserRepository implements UserRepositoryInterface
 
     public function create($user = null, $type = null, $model = null) {
 
+        dd($type);
+
         $role = Role::find($user['role_id']);
         $type = Role::find($user['role_id'])->name;
 

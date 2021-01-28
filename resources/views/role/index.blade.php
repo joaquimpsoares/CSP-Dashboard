@@ -1,60 +1,83 @@
-@extends('layouts.master')
+{{-- @extends('layouts.master')
 
 @section('styles')
 <link href="{{ asset('css/datatables_bootstrap.css') }}" rel="stylesheet" />
 @endsection
 
+@section('content') --}}
+@extends('layouts.master')
+
+@section('page-title', __('Roles'))
+@section('page-heading', __('Roles'))
+
+@section('breadcrumbs')
+    <li class="breadcrumb-item active">
+        @lang('Roles')
+    </li>
+@stop
+
 @section('content')
 
+    @include('partials.messages')
 
-@if($errors->any())
-{{ implode('', $errors->all('<div>:message</div>')) }}
-@endif
+    <div class="card">
+        <div class="card-body">
+            <div class="row mb-3 pb-3 border-bottom-light">
+                <div class="col-lg-12">
+                    <div class="float-right">
+                        <a href="{{ route('roles.create') }}" class="btn btn-primary btn-rounded">
+                            <i class="fas fa-plus mr-2"></i>
+                            @lang('Add Role')
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-<form method="post" action="{{ route('roles.update.all') }}">
-	@csrf
-	<div class="container">
-		<section class="section">
-			<div class="card">
-				<div class="">
-					<i class="fas fa-sliders-h fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
-					<div class="card-body">
-						<h4 class="card-title"><a>Roles Table</a></h4>
-						<table class="table table-striped table-bordered" id="roles">
-							<thead>
-								<th>&nbsp</th>
-								@foreach ($roles as $role)
-								<th class="text-center">{{ $role->name }}</th>
-								@endforeach
-							</thead>
-							@forelse ($permissions as $permission)
-							<tr style="{{ str_contains($permission->name, 'delete') ? 'background: rgba(255,0,0,0.1);' : '' }}">
-								<th><span class="{{ str_contains($permission->name, 'delete') ? 'has-text-danger' : 'has-text-grey' }}">{{ $permission->name }}</span></th>
-								@foreach ($roles as $role)
-								<?php
-								$hasPermission = false;
-								if ($role->hasPermissionTo($permission->name) || Auth::user()->hasDirectPermission($permission->name)) $hasPermission = true;
-								?>
-								<td class="text-center">
-									<div class="form-check">
-										<input class="form-check-input position-static" type="checkbox" id="permission[{{ $role->id }}][{{ $permission->id }}]" name="permission[{{ $role->id }}][{{ $permission->id }}]" aria-label="..." {{ $hasPermission ? 'checked' : '' }}  {{ $role->name === "Super Admin" ? 'disabled' : '' }}>
-									</div>
-								</td>
-								@endforeach
-							</tr>
-							@empty
-							@endforelse
-						</table>
-					</div>
-				</div>
-			</div>
-		</section>
-	</div>
-</form>
-
-@endsection
-
-@section('scripts')
-
-
-@endsection
+            <div class="table-responsive" id="users-table-wrapper">
+                <table class="table table-striped table-borderless">
+                    <thead>
+                    <tr>
+                        <th class="min-width-100">@lang('Name')</th>
+                        <th class="min-width-150">@lang('Display Name')</th>
+                        <th class="min-width-150">@lang('# of users with this role')</th>
+                        <th class="text-center">@lang('Action')</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @if (count($roles))
+                            @foreach ($roles as $role)
+                                <tr>
+                                    <td>{{ $role->name }}</td>
+                                    <td>{{ $role->display_name }}</td>
+                                    <td>{{ $role->users_count }}</td>
+                                    <td class="text-center">
+                                        <a href="{{ route('roles.edit', $role) }}" class="btn btn-icon"
+                                           title="@lang('Edit Role')" data-toggle="tooltip" data-placement="top">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        @if ($role->removable)
+                                            <a href="{{ route('roles.destroy', $role) }}" class="btn btn-icon"
+                                               title="@lang('Delete Role')"
+                                               data-toggle="tooltip"
+                                               data-placement="top"
+                                               data-method="DELETE"
+                                               data-confirm-title="@lang('Please Confirm')"
+                                               data-confirm-text="@lang('Are you sure that you want to delete this role?')"
+                                               data-confirm-delete="@lang('Yes, delete it!')">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="4"><em>@lang('No records found.')</em></td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+@stop

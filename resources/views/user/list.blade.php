@@ -12,6 +12,8 @@
 @section('content')
 
 @include('partials.messages')
+{{-- @dd(Auth::user()->roles->first()->name) --}}
+{{-- @dd(get_defined_vars()) --}}
 
 <div class="card">
     <div class="card-body">
@@ -51,10 +53,24 @@
                 </div>
 
                 <div class="col-md-6">
-                    <a href="{{ route('user.create') }}" class="btn btn-primary btn-rounded float-right">
+                    @if (Auth::user()->roles->first()->name === 'Reseller')
+                    <a href="{{ route('user.create', ['level' => 'reseller', 'reseller_id' => session('reseller_id')]) }}" class="btn btn-primary btn-rounded float-right">
                         <i class="fa fa-plus mr-2"></i>
                         @lang('Add User')
                     </a>
+                    @endif
+                    @if (Auth::user()->roles->first()->name === 'Provider')
+                    <a href="{{ route('user.create', ['level' => 'provider', 'provider_id' => session('provider_id')]) }}" class="btn btn-primary btn-rounded float-right">
+                        <i class="fa fa-plus mr-2"></i>
+                        @lang('Add User')
+                    </a>
+                    @endif
+                    @if (Auth::user()->roles->first()->name === 'Customer')
+                    <a href="{{ route('user.create', ['level' => 'customer', 'customer_id' => session('customer_id')]) }}" class="btn btn-primary btn-rounded float-right">
+                        <i class="fa fa-plus mr-2"></i>
+                        @lang('Add User')
+                    </a>
+                    @endif
                 </div>
             </div>
         </form>

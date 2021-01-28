@@ -69,7 +69,7 @@
                         <div class="col-md-12">
                             <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
                             <div class="form-group">
-                                <select name="status_id" class="form-control SlectBox @error('status') is-invalid @enderror" sf-validate="required">
+                                <select name="status" class="form-control SlectBox @error('status') is-invalid @enderror" sf-validate="required">
                                     <option value="{{$reseller->status->id}}" selected>{{ucwords(trans_choice($reseller->status->name, 1))}}</option>
                                     @foreach ($statuses as $status)
                                     <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>

@@ -44,12 +44,13 @@
                         <svg class="card-custom-icon text-secondary icon-dropshadow-secondary" x="1008" y="1248" viewBox="0 0 24 24" fit="" height="100%" width="100%" preserveAspectRatio="xMidYMid meet" focusable="false">
                             <path opacity=".0" d="M12.07,6.01 C8.2,6.01 5.07,9.14 5.07,13.01 C5.07,16.88 8.2,20.01 12.07,20.01 C15.94,20.01 19.07,16.88 19.07,13.01 C19.07,9.14 15.94,6.01 12.07,6.01 Z M13.07,14.01 L11.07,14.01 L11.07,8.01 L13.07,8.01 L13.07,14.01 Z"></path>
                             <path d="M9.07,1.01 L15.07,1.01 L15.07,3.01 L9.07,3.01 L9.07,1.01 Z M11.07,8.01 L13.07,8.01 L13.07,14.01 L11.07,14.01 L11.07,8.01 Z M19.1,7.39 L20.52,5.97 C20.09,5.46 19.62,4.98 19.11,4.56 L17.69,5.98 C16.14,4.74 14.19,4 12.07,4 C7.1,4 3.07,8.03 3.07,13 C3.07,17.97 7.09,22 12.07,22 C17.05,22 21.07,17.97 21.07,13 C21.07,10.89 20.33,8.93 19.1,7.39 Z M12.07,20.01 C8.2,20.01 5.07,16.88 5.07,13.01 C5.07,9.14 8.2,6.01 12.07,6.01 C15.94,6.01 19.07,9.14 19.07,13.01 C19.07,16.88 15.94,20.01 12.07,20.01 Z"></path></svg>
-                            <p class=" mb-1 ">Pending Orders</p>
-                            {{-- <h2 class="mb-1 font-weight-bold">{{$resellers->count()}}</h2> --}}
+                            <p class=" mb-1 ">Resellers</p>
+                            {{-- <h2 class="mb-1 font-weight-bold">{{$provider->resellers->count()}}</h2> --}}
                             <span class="mb-1 text-muted"><span class="text-success"><i class="fa fa-caret-up  mr-1"></i> 19.8</span> than last month</span>
+                            {{--
                             <div class="progress progress-sm mt-3 bg-secondary-transparent">
                                 <div class="progress-bar progress-bar-striped progress-bar-animated bg-secondary" style="width: 58%"></div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -58,12 +59,12 @@
                         <div class="card-body">
                             <svg class="card-custom-icon text-primary icon-dropshadow-primary" x="1008" y="1248" viewBox="0 0 24 24" fit="" height="100%" width="100%" preserveAspectRatio="xMidYMid meet" focusable="false">
                                 <path d="M17.65,6.35 C16.2,4.9 14.21,4 12,4 C7.58,4 4.01,7.58 4.01,12 C4.01,16.42 7.58,20 12,20 C15.73,20 18.84,17.45 19.73,14 L17.65,14 C16.83,16.33 14.61,18 12,18 C8.69,18 6,15.31 6,12 C6,8.69 8.69,6 12,6 C13.66,6 15.14,6.69 16.22,7.78 L13,11 L20,11 L20,4 L17.65,6.35 Z"></path></svg>
-                                <p class=" mb-1 ">Refund Requests</p>
-                                {{-- <h2 class="mb-1 font-weight-bold">{{$customers->count()}}</h2> --}}
+                                <p class=" mb-1 ">Customers</p>
+                                {{-- <h2 class="mb-1 font-weight-bold">{{count($customers)}}</h2> --}}
                                 <span class="mb-1 text-muted"><span class="text-success"><i class="fa fa-caret-up  mr-1"></i> 0.8%</span> than last month</span>
-                                <div class="progress progress-sm mt-3 bg-primary-transparent">
+                                {{-- <div class="progress progress-sm mt-3 bg-primary-transparent">
                                     <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" style="width: 58%"></div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -136,23 +137,23 @@
             <div class="col-xl-3 col-md-12 col-lg-6">
                 <div class="card">
                     <div class="d-block mt-4 card-header border-0 text-center">
-                        <h2 class="text-center">Congratulations <b>John!</b></h2>
+                        <h2 class="text-center">Welcome <b>{{Auth::user()->name}}</b></h2>
                     </div>
                     <div class="card-body">
                         <div class="row text-center">
                             <div class="col-md-12">
                                 <img src="{{URL::asset('assets/images/photos/award.png')}}" alt="img" class="sales-img">
-                                <h2 class="mb-0 mt-4 fs-40 counter font-weight-bold">$1000k</h2>
+                                {{-- <h2 class="mb-0 mt-4 fs-40 counter font-weight-bold">$1000k</h2>
                                 <span class="text-muted"><span class="text-green mr-1"><i class="fe fe-arrow-up ml-1"></i>0.82%</span> since last year</span>
                                 <p class="mt-5 mb-2 text-muted fs-18">You have done 99.9% target sales reached today. </p>
-                                <small class="mt-1 text-muted">Today 20 minutes ago</small>
+                                <small class="mt-1 text-muted">Today 20 minutes ago</small> --}}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-12 col-lg-6">
+            {{-- <div class="col-xl-12 col-lg-6">
                 <div class="row">
                     <div class="col-xl-4 col-md-12 col-lg-12">
                         <div class="card">
@@ -200,7 +201,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
 
         <!--Row-->
@@ -213,18 +214,19 @@
                     <div class="card-body">
                         <div class="scrollbar h-400" id="scrollbar">
                             @foreach ($topProducts as $item)
+                            {{-- @dd($item->product) --}}
                             {{-- @dd($item->product->groupBy('name')) --}}
                             {{-- @dd($item->product->name) --}}
-                            @endforeach
                             <div class="d-flex mb-5">
                                 <a href="#" class="mr-4">
                                     <img class="w-8 h-8 rounded shadow" src="{{URL::asset('assets/images/orders/1.jpg')}}" alt="media1">
                                 </a>
                                 <div class="mt-3">
-                                    <h5 class="mb-1 font-weight-semibold">Latest Books</h5>
-                                    <small class="text-muted">2,30,400 times</small>
+                                    {{-- <h5 class="mb-1 font-weight-semibold">{{$item->product->name}}</h5> --}}
+                                    {{-- <small class="text-muted">{{$item->product->count('name')}} times</small> --}}
                                 </div>
                             </div>
+                            @endforeach
                             <div class="d-flex mb-5">
                                 <a href="#" class="mr-4">
                                     <img class="w-8 h-8 rounded shadow" src="{{URL::asset('assets/images/orders/2.jpg')}}" alt="media1">

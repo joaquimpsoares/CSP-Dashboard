@@ -70,7 +70,7 @@ class CreateReseller extends Component
     public function save()
     {
         $user = $this->getUser();
-
+        $this->validate();
     try {
         DB::beginTransaction();
         $newReseller =  Reseller::create([
@@ -119,7 +119,6 @@ class CreateReseller extends Component
         session()->flash('success','Customer ' . $this->company_name . ' created successfully');
         return redirect()->to('/reseller');
 
-            $this->messageText  = 'Product ' . $this->company_name . ' is saved';
 
         }
 

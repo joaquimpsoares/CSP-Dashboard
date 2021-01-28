@@ -1,6 +1,6 @@
 <div>
     <div class="row row-deck">
-        <div class="col-xl-3 col-md-12 col-lg-12">
+        <div class="col-xl-6 col-md-12 col-lg-12">
             <div class="card">
                 <div class="row">
                     <div class="col-xl-12 col-md-12 col-lg-12">

@@ -112,7 +112,6 @@
                                         </div>
                                         @else
                                         Customer already selected
-
                                         <form action="{{ route('cart.add_customer') }}" method="post">
                                             <div class="row">
                                                 @csrf

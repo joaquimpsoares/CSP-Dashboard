@@ -207,31 +207,4 @@ abstract class ApiController extends Controller
             ->respondWithError($message);
     }
 
-
-    public function udpateUserBranch(Request $request){
-
-        //var_dump($request->input('user_lists'));
-
-        if(Input::get('checked') != null && Input::get('user_id') != null){
-            if(Input::get('checked')) {
-                $row = DB::table('user_branch')->where('user_id', Input::get('user_id'))->where('branch_id', Input::get('branch_id'))->get();
-                if(!$row){
-                    DB::table('user_branch')->insert(
-                        array('user_id' => Input::get('user_id'), 'branch_id' => Input::get('branch_id'))
-                    );
-                }
-            }else{
-                DB::table('user_branch')->where('user_id', Input::get('user_id'))->where('branch_id', Input::get('branch_id'))->delete();
-            }
-
-            $a = array('results'=>200);
-            return Response::json($a);
-        }else{
-            $a = array('results'=>300);
-            return Response::json($a);
-        }
-
-    }
-
-
 }

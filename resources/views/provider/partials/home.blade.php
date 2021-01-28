@@ -29,14 +29,14 @@
                         <div class="mb-2 fs-18 text-muted">
                             Customers
                         </div>
-                        <h1 class="font-weight-bold mb-1">{{$countCustomers}}</h1>
+                        <h1 class="font-weight-bold mb-1">{{$customers->count()}}</h1>
                         <span class="text-success"><i class="fa fa-arrow-up mr-1"></i> +1.8%</span>
                     </div>
-                    <div class="col col-auto">
+                    {{-- <div class="col col-auto">
                         <div class="mx-auto chart-circle chart-circle-md chart-circle-success mt-sm-0 mb-0" data-value="0.60" data-thickness="12" data-color="#2dce89">
                             <div class="mx-auto chart-circle-value text-center fs-20">60%</div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

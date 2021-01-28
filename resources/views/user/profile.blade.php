@@ -123,7 +123,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label class="form-label">Users Roles</label>
                                 <select class="form-control SlectBox" data-placeholder="Choose Browser" multiple>
                                     <option value="{{$user->roles->first()->id ?? ' ' }}" selected>{{$user->roles->first()->name ?? ' ' }}</option>
@@ -133,7 +133,7 @@
                                     </option>
                                     @endforeach
                                 </select>
-                            </div>
+                            </div> --}}
                             <br>
                             <div class="float-right">
                                 <button type="submit" class="btn btn-primary">{{ ucwords(trans_choice('messages.update', 1)) }}</button>

@@ -37,8 +37,9 @@ class UsersController extends Controller
     {
         $statuses = Status::pluck('name','id');
         $provider = Auth::user()->provider;
-        // $users = $this->userRepository->all();
         $users = $this->userRepository->paginate($perPage = 20, $request->search, $request->status);
+
+        // $users = $this->userRepository->all();
         // dd($users);
 
         return view('user.list', compact('users','provider','statuses'));
@@ -57,8 +58,6 @@ class UsersController extends Controller
         $provider = $user->provider;
 
         $user= User::where('id', $user->id)->with('country')->first();
-
-        // instance $userlevel
 
         $notifications = explode(', ',$user->notifications_preferences);
 
@@ -93,36 +92,38 @@ class UsersController extends Controller
     * @param  \Illuminate\Http\Request  $userequest
     * @return \Illuminate\Http\Response
     */
-    public function store(Request $request)
-    {
+//     public function store(Request $request)
+//     {
 
-        $validate = $this->validator($request->all())->validate();
+//         // dd($request->all());
 
-        switch ($this->getUserLevel()) {
-            case config('app.super_admin'):
-                $id = Auth::User()->id;
-                $mainUser = $this->userRepository->create($validate, config('app.super_admin'), $id);
-            break;
-            case config('app.provider'):
-                $id = Auth::user()->provider;
+//         $validate = $this->validator($request->all())->validate();
 
-                $mainUser = $this->userRepository->create($validate, $request->level, $id);
-            break;
+//         switch ($this->getUserLevel()) {
+//             case config('app.super_admin'):
+//                 $id = Auth::User()->id;
+//                 $mainUser = $this->userRepository->create($validate, config('app.super_admin'), $id);
+//             break;
+//             case config('app.provider'):
+//                 $id = Auth::user()->provider;
 
-            default:
-            # code...
-        break;
-    }
+//                 $mainUser = $this->userRepository->create($validate, $request->level, $id);
+//             break;
 
-
-
-    // $customer = Customer::where('id', $request->customer_id)->first();
-    // $mainUser = $this->userRepository->create($validate, $request->level, $id);
+//             default:
+//             # code...
+//         break;
+//     }
 
 
-    return redirect()->route('user.index')->with('success', ucwords(trans_choice('messages.user_created_successfully', 1)) );
 
-}
+//     // $customer = Customer::where('id', $request->customer_id)->first();
+//     // $mainUser = $this->userRepository->create($validate, $request->level, $id);
+
+
+//     return redirect()->route('user.index')->with('success', ucwords(trans_choice('messages.user_created_successfully', 1)) );
+
+// }
 
     /**
     * Display the specified resource.
@@ -212,9 +213,10 @@ class UsersController extends Controller
     public function update(Request $request, User $user)
     {
 
-        $user = User::findOrFail($user->id);
-        $role = Role::findOrFail($request->role_id);
-        $validate = $this->validator($request->all())->validate();
+        // dd($user);
+        // $user = User::findOrFail($user->id);
+        // $role = Role::findOrFail($request->role_id);
+        // $validate = $this->validator($request->all())->validate();
 
         try {
             DB::beginTransaction();
@@ -226,7 +228,7 @@ class UsersController extends Controller
                 $avataruploaded->move($avatarpath, $avatarname);
 
 
-                // $user->email            = $request->input('email');
+                $user->email            = $request->input('email');
                 $user->name             = $request->input('name');
                 $user->last_name        = $request->input('last_name');
                 $user->socialite_id     = $request->input('socialite_id');
@@ -237,7 +239,6 @@ class UsersController extends Controller
                 $user->country_id       = $request->input('country_id');
                 $user->postal_code      = $request->input('postal_code');
                 $user->avatar           = '/images/profile/' . $avatarname;
-                $user->status_id        = $request->status;
 
                 $user->update();
                 DB::commit();
@@ -247,7 +248,7 @@ class UsersController extends Controller
 
             }
 
-            // $user->email            = $request->input('email');
+            $user->email            = $request->input('email');
             $user->name             = $request->input('name');
             $user->last_name        = $request->input('last_name');
             $user->socialite_id     = $request->input('socialite_id');
@@ -257,8 +258,6 @@ class UsersController extends Controller
             $user->state            = $request->input('state');
             $user->country_id       = $request->input('country_id');
             $user->postal_code      = $request->input('postal_code');
-            $user                   = $user->assignRole($role->name);
-            $user->status_id        = $request->status;
             $user->update();
             // $user->password      = Hash::make($request->input('password'));
             // dd($user);
@@ -282,65 +281,66 @@ class UsersController extends Controller
 
     }
 
-public function updatepassword(Request $request, User $user)
-{
-    $user = User::findOrFail($user->id);
+    public function updatepassword(Request $request, User $user)
+    {
+        $user = User::findOrFail($user->id);
 
-     try {
-        DB::beginTransaction();
+        try {
+            DB::beginTransaction();
 
-        $user->password = Hash::make($request->input('password'));
+            $user->password = Hash::make($request->input('password'));
 
-        $user->save();
-        DB::commit();
+            $user->save();
+            DB::commit();
 
-        return redirect()->back()->with('success', 'User Password Updated succesfully');
+            return redirect()->back()->with('success', 'User Password Updated succesfully');
 
-    } catch (\PDOException $e) {
-        DB::rollBack();
-        if ($e->errorInfo[1] == 1062) {
-            $errorMessage = "errors.user_already_exists";
-        } else {
-            $errorMessage = $e->getMessage();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            if ($e->errorInfo[1] == 1062) {
+                $errorMessage = "errors.user_already_exists";
+            } else {
+                $errorMessage = $e->getMessage();
+            }
+            return redirect()->back()->with('danger', $errorMessage );
+
         }
-        return redirect()->back()->with('danger', $errorMessage );
+        return redirect()->back()->with('success', ucwords(trans_choice('messager.User Password Updated succesfully', 1)) );
 
     }
-    return redirect()->back()->with('success', ucwords(trans_choice('messager.User Password Updated succesfully', 1)) );
 
-}
+    /**
+    * Remove the specified resource from storage.
+    *
+    * @param  \App\User  $user
+    * @return \Illuminate\Http\Response
+    */
+    public function destroy(User $user)
+    {
+        //
+    }
 
-/**
-* Remove the specified resource from storage.
-*
-* @param  \App\User  $user
-* @return \Illuminate\Http\Response
-*/
-public function destroy(User $user)
-{
-    //
-}
-
-protected function validator(array $data)
-{
-    return Validator::make($data, [
-        'email' => ['sometimes', 'email', 'max:255'],
-        'address' => ['sometimes', 'string', 'max:255'],
-        'address_2' => ['sometimes', 'string', 'max:255'],
-        'country_id' => ['sometimes', 'integer', 'min:1'],
-        'city' => ['sometimes', 'string', 'max:255'],
-        'state' => ['sometimes', 'string', 'max:255'],
-        'postal_code' => ['sometimes', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
-        'status' => ['sometimes', 'integer', 'exists:statuses,id'],
-        'role_id' => ['sometimes', 'integer', 'exists:roles,id'],
-        'name' => ['sometimes', 'string', 'max:255'],
-        'last_name' => ['sometimes', 'string', 'max:255'],
-        'phone' => ['sometimes', 'string', 'max:20'],
-        'email' => ['sometimes', 'string', 'max:255'],
-        'socialite_id' => ['sometimes', 'string', 'max:255'],
-        'password' => ['sometimes', 'string', 'max:255'],
-        'avatar' => ['sometimes', 'image' => 'mimes:jpg,jpeg,bmp,svg,png,gif', 'max:5000' ]
-        ]);
+    protected function validator(array $data)
+    {
+        return Validator::make($data,
+        [
+            'email'         => ['sometimes', 'email', 'max:255'],
+            'address'       => ['sometimes', 'string', 'max:255'],
+            'address_2'     => ['sometimes', 'string', 'max:255'],
+            'country_id'    => ['sometimes', 'integer', 'min:1'],
+            'city'          => ['sometimes', 'string', 'max:255'],
+            'state'         => ['sometimes', 'string', 'max:255'],
+            'postal_code'   => ['sometimes', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
+            'status'        => ['sometimes', 'integer', 'exists:statuses,id'],
+            'role_id'       => ['sometimes', 'integer', 'exists:roles,id'],
+            'name'          => ['sometimes', 'string', 'max:255'],
+            'last_name'     => ['sometimes', 'string', 'max:255'],
+            'phone'         => ['sometimes', 'string', 'max:20'],
+            'email'         => ['sometimes', 'string', 'max:255'],
+            'socialite_id'  => ['sometimes', 'string', 'max:255'],
+            'password'      => ['sometimes', 'string', 'max:255'],
+            'avatar'        => ['sometimes', 'image' => 'mimes:jpg,jpeg,bmp,svg,png,gif', 'max:5000' ]
+            ]);
     }
 
 
