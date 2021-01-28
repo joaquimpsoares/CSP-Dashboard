@@ -10,8 +10,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Permission\CreatePermissionRequest;
 use App\Http\Requests\Permission\UpdatePermissionRequest;
 use App\Permission;
-use App\Repositories\Permission\PermissionRepository;
-use App\Repositories\Role\RoleRepository;
 use App\Role;
 
 /**

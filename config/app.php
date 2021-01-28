@@ -186,7 +186,6 @@ return [
         App\Providers\UserRepositoryServiceProvider::class,
         App\Providers\SubscriptionRepositoryServiceProvider::class,
         App\Providers\OrderRepositoryServiceProvider::class,
-        App\Repositories\Role\RoleRepository::class,
 
         Spatie\Permission\PermissionServiceProvider::class,
         Webpatser\Countries\CountriesServiceProvider::class,
