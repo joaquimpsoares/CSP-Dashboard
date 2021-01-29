@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\MicrosoftTenantInfo;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
@@ -374,10 +375,19 @@ class CartController extends Controller
                 ]);
 
                 $agreed = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->CheckCommerceRelationship($customer);
-
                 if($agreed){
                     $cart->domain = $domain;
                     $cart->save();
+
+                if(MicrosoftTenantInfo::where('tenant_id',$token)->first() == null){
+
+                MicrosoftTenantInfo::create([
+                    'customer_id'   => $cart->customer_id,
+                    'tenant_id'     => $token,
+                    'tenant_domain' => $domain,
+                    ]);
+                }
+
 
                     return true;
                 } else {
