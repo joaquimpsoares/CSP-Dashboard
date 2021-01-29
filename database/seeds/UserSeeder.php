@@ -32,7 +32,7 @@ class UserSeeder extends Seeder
         $customerLevel = UserLevel::where('name', config('app.customer'))->first();
 
         $userSuperAdmin = User::create([
-            'first_name' => 'Super Admin',
+            'name' => 'Super Admin',
             'last_name' => 'User',
             'email' => 'superadmin@admin.com',
             'username' => 'SuperAdmin',
@@ -46,7 +46,7 @@ class UserSeeder extends Seeder
         ]);
 
         $userAdmin = User::create([
-            'first_name' => 'Admin',
+            'name' => 'Admin',
             'last_name' => 'User',
             'email' => 'admin@admin.com',
             'username' => 'admin',
@@ -60,7 +60,7 @@ class UserSeeder extends Seeder
         ]);
 
         $userProvider = User::create([
-            'first_name' => 'Provider',
+            'name' => 'Provider',
             'last_name' => 'User',
             'email' => 'provider@admin.com',
             'username' => 'Provider',
@@ -74,7 +74,7 @@ class UserSeeder extends Seeder
         ]);
 
         $userProvider2 = User::create([
-            'first_name' => 'Provider',
+            'name' => 'Provider',
             'last_name' => 'User 2',
             'email' => 'provider2@admin.com',
             'username' => 'Provider',
@@ -88,7 +88,7 @@ class UserSeeder extends Seeder
         ]);
 
         $userReseller = User::create([
-            'first_name' => 'Reseller',
+            'name' => 'Reseller',
             'last_name' => 'User',
             'email' => 'reseller@admin.com',
             'username' => 'Reseller',
@@ -103,7 +103,7 @@ class UserSeeder extends Seeder
         ]);
 
         $userReseller2 = User::create([
-            'first_name' => 'Reseller 2',
+            'name' => 'Reseller 2',
             'last_name' => 'User',
             'email' => 'reseller2@admin.com',
             'username' => 'Reseller2',
@@ -118,7 +118,7 @@ class UserSeeder extends Seeder
         ]);
 
         $userReseller3 = User::create([
-            'first_name' => 'Reseller 3',
+            'name' => 'Reseller 3',
             'last_name' => 'User',
             'email' => 'reseller3@admin.com',
             'username' => 'Reseller3',
@@ -133,7 +133,7 @@ class UserSeeder extends Seeder
         ]);
 
         $userSubReseller = User::create([
-            'first_name' => 'Sub Reseller',
+            'name' => 'Sub Reseller',
             'last_name' => 'User',
             'email' => 'subreseller@admin.com',
             'username' => 'SubReseller',
@@ -148,7 +148,7 @@ class UserSeeder extends Seeder
         ]);
 
         $userCustomer = User::create([
-            'first_name' => 'Customer User',
+            'name' => 'Customer User',
             'last_name' => 'User',
             'email' => 'customer@admin.com',
             'username' => 'Customer',

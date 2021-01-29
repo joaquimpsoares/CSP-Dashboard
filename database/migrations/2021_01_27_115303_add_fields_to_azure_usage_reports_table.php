@@ -32,7 +32,7 @@ class AddFieldsToAzureUsageReportsTable extends Migration
     public function down()
     {
         Schema::table('azure_resources', function (Blueprint $table) {
-            //
+            $table->dropColumn(['resourceType', 'usageResourceKind','dataCenter','networkBucket','pipelineType','name']);
         });
     }
 }

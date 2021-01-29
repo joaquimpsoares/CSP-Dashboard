@@ -29,9 +29,9 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="status">@lang('Status')</label>
-                                                <select wire:model="status" name="status" class="form-control @error('status') is-invalid @enderror" sf-validate="required">
+                                                <select wire:model="status_id" name="status" class="form-control @error('status') is-invalid @enderror" sf-validate="required">
                                                     @if ($edit)
-                                                    <option wire:model="status" value="{{ $edit && $user->status->id ? $user->status->id : ''}}" selected>{{ucwords(trans_choice($user->status->name, 1))}}</option>
+                                                    <option wire:model="status_id" value="{{ $edit && $user->status->id ? $user->status->id : ''}}" selected>{{ucwords(trans_choice($user->status->name, 1))}}</option>
                                                     @endif
                                                     @foreach ($statuses as $key => $status)
                                                     <option value="{{$key}}">{{ucwords(trans_choice($status, 1))}}</option>
@@ -48,7 +48,6 @@
                                                 <label for="last_name">@lang('Last Name')</label>
                                                 <input wire:model="last_name" type="text" class="form-control input-solid @error('last_name') is-invalid @enderror" id="last_name" name="last_name" placeholder="@lang('Last Name')">
                                                 @error('last_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -65,7 +64,14 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="address">@lang('Country')</label>
-                                                {!! Form::select('country_id', $countries, $edit ? $user->country_id : '', ['class' => 'form-control input-solid']) !!}
+                                                <select wire:model="country_id" name="country" class="form-control @error('country') is-invalid @enderror" sf-validate="required">
+                                                    @if ($edit)
+                                                    <option wire:model="country_id" value="{{ $edit && $user->country->id ? $user->country->id : ''}}" selected>{{ucwords(trans_choice($user->country->name, 1))}}</option>
+                                                    @endif
+                                                    @foreach ($countries as $key => $country)
+                                                    <option value="{{$key}}">{{$country}}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
                                         @if ($edit)
@@ -88,33 +94,31 @@
                                     </div>
                                     @endif
                                 </div>
-                                <form wire:submit.prevent="saveauth">
+                                <form wire:submit.prevent="saveauth" autocomplete="off">
+                                    <div class="form-group">
+                                        <label for="email">@lang('Email')</label>
+                                        <input autocomplete="off" wire:model="email" type="email" class="form-control input-solid @error('email') is-invalid @enderror" id="email" placeholder="@lang('Email')">
+                                        @error('email')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">{{ $edit ? __("New Password") : __('Password') }}</label>
+                                        <input wire:model="password"  type="password" class="form-control input-solid @error('password') is-invalid @enderror" id="password" name="password"  value="{{ old('password') }}" required autocomplete="new-password"
+                                        @if ($edit) placeholder="@lang("Leave field blank if you don't want to change it")" @endif>
+                                        @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password_confirm">{{ $edit ? __("Confirm New Password") : __('Confirm Password') }}</label>
+                                        <input wire:model="password_confirmation" type="password" class="form-control input-solid @error('password_confirm') is-invalid @enderror" id="password_confirm" name="password_confirm"  value="{{ old('password_confirm') }}" required autocomplete="new-password"
+                                        @if ($edit) placeholder="@lang("Leave field blank if you don't want to change it")" @endif>
+                                        @error('password_confirm')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
                                     <div class="form-group">
                                         <label for="socialite_id">@lang('socialite_id')</label>
                                         <div class="form-group">
                                             <input wire:model="socialite_id" type="text" name="socialite_id"   class="form-control   @error('socialite_id') is-invalid @enderror" />
                                             @error('socialite_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                         </div>
-                                    </div>
-                                    <div class="form-group">
-                                        @dump($socialite_id)
-                                        <label for="email">@lang('Email')</label>
-                                        <input wire:model="email" type="email" class="form-control input-solid @error('email') is-invalid @enderror" id="email" placeholder="@lang('Email')">
-                                        @error('email')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password">{{ $edit ? __("New Password") : __('Password') }}</label>
-                                        <input wire:model="password"  type="password" class="form-control input-solid @error('password') is-invalid @enderror" id="password" name="password"  value="{{ old('password') }}"
-                                        @if ($edit) placeholder="@lang("Leave field blank if you don't want to change it")" @endif>
-                                        @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password_confirmation">{{ $edit ? __("Confirm New Password") : __('Confirm Password') }}</label>
-                                        <input type="password" class="form-control input-solid @error('password') is-invalid @enderror" id="password_confirmation" name="password_confirmation"  value="{{ old('password_confirmation') }}"
-                                        @if ($edit) placeholder="@lang("Leave field blank if you don't want to change it")" @endif>
-                                        @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-
                                     </div>
                                     @if ($edit)
                                     <button type="submit" class="btn btn-primary mt-2" id="update-login-details-btn">

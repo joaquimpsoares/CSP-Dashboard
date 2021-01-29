@@ -78,7 +78,12 @@ class HomeController extends Controller
                 $orderMonth = Order::whereMonth(
                     'created_at', '=', Carbon::now()->subMonth()->month
                 );
-                $countOrders = ($orders->count()-$orderMonth->count());
+
+                if($orders){
+                    $countOrders = ($orders->count()-$orderMonth->count());
+                }
+                $countOrders = 0;
+                // $countOrders = ($orders->count()-$orderMonth->count());
 
                 $statuses = Status::get();
                 $providers = $this->providerRepository->all();
@@ -105,7 +110,11 @@ class HomeController extends Controller
                 $orderMonth = Order::whereMonth(
                     'created_at', '=', Carbon::now()->subMonth()->month
                 );
-                $countOrders = ($orders->count()-$orderMonth->count());
+                if($orders){
+                    $countOrders = ($orders->count()-$orderMonth->count());
+                }
+                $countOrders = 0;
+
 
                 $statuses = Status::get();
                 $providers = $this->providerRepository->all();
@@ -136,11 +145,10 @@ class HomeController extends Controller
                     }
                 }
 
-                $orderMonth = Order::whereMonth(
-                    'created_at', '=', Carbon::now()->subMonth()->month
-                );
-                $countOrders = ($orders->count()-$orderMonth->count());
-
+                if($orders){
+                    $countOrders = ($orders->count()-$orderMonth->count());
+                }
+                $countOrders = 0;
                 $statuses = Status::get();
                 $resellers = $this->resellerRepository->all();
                 $customersweek = Customer::whereMonth(

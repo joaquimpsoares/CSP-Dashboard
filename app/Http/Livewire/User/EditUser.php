@@ -23,7 +23,7 @@ class EditUser extends Component
     public $city;
     public $state;
     public $postal_code;
-    public $status;
+    public $status_id;
     public $name;
     public $last_name;
     public $socialite_id;
@@ -36,22 +36,23 @@ class EditUser extends Component
 
 
     protected $rules = [
-        'name'                  => ['sometimes', 'string', 'max:255', 'min:3'],
-        'status'                => ['sometimes', 'integer', 'exists:statuses,id'],
-        'last_name'             => ['sometimes', 'string', 'max:255', 'min:3'],
-        // 'socialite_id'          => ['sometimes', 'string', 'max:255', 'min:3'],
-        'city'                  => ['sometimes', 'string', 'max:20', 'min:3'],
-        'phone'                 => ['sometimes', 'string', 'max:20', 'min:3'],
-        'address'               => ['sometimes', 'string', 'max:255', 'min:3'],
-        'email'                 => ['nullable', 'email','unique:users', 'max:255', 'min:3'],
-        'sendInvitation'        => ['nullable', 'integer'],
-        'password'              => ['same:password_confirmation','required', 'min:6'],
+        'name'              => ['sometimes', 'string', 'max:255', 'min:3'],
+        'status'            => ['sometimes', 'integer', 'exists:statuses,id'],
+        'last_name'         => ['sometimes', 'string', 'max:255', 'min:3'],
+        'socialite_id'      => ['sometimes', 'string', 'max:255', 'min:3'],
+        'city'              => ['sometimes', 'string', 'max:20', 'min:3'],
+        'phone'             => ['sometimes', 'string', 'max:20', 'min:3'],
+        'address'           => ['sometimes', 'string', 'max:255', 'min:3'],
+        'email'             => ['nullable', 'email', 'max:255', 'min:3'],
+        'sendInvitation'    => ['nullable', 'integer'],
+        'password'          => ['sometimes','confirmed','min:8'],
     ];
 
     public function mount(){
 
         $this->name          = $this->user->name;
-        $this->status        = $this->user->status->id;
+        $this->email          = $this->user->email;
+        $this->status_id        = $this->user->status->id;
         $this->last_name     = $this->user->last_name;
         $this->socialite_id  = $this->user->socialite_id;
         $this->address       = $this->user->address;
@@ -60,6 +61,7 @@ class EditUser extends Component
         $this->state         = $this->user->state;
         $this->country_id    = $this->user->country_id;
         $this->postal_code   = $this->user->postal_code;
+
     }
 
 
@@ -73,16 +75,27 @@ class EditUser extends Component
 
     public function savedetails()
     {
-        // $this->validate();
+        $this->validate([
+            'name'              => ['sometimes', 'string', 'max:255', 'min:3'],
+            'status_id'         => ['sometimes', 'integer', 'exists:statuses,id'],
+            // 'country_id'        => ['sometimes', 'integer', 'exists:countries,id'],
+            'last_name'         => ['sometimes', 'string', 'max:255', 'min:3'],
+            // 'city'              => ['sometimes', 'string', 'max:20', 'min:3'],
+            'phone'             => ['sometimes', 'string', 'max:20', 'min:3'],
+            'address'           => ['sometimes', 'string', 'max:255', 'min:3'],
+            'sendInvitation'    => ['nullable', 'integer'],
+            ]);
+
+
         $this->user->name             = $this->name;
-        $this->user->status_id        = $this->status;
-        $this->user->last_name        = $this->last_name;
-        $this->user->address          = $this->address;
-        $this->user->city             = $this->city;
-        $this->user->phone            = $this->phone;
-        $this->user->state            = $this->state;
+        $this->user->status_id        = $this->status_id;
         $this->user->country_id       = $this->country_id;
-        $this->user->postal_code      = $this->postal_code;
+        $this->user->last_name        = $this->last_name;
+        // $this->user->city             = $this->city;
+        $this->user->phone            = $this->phone;
+        $this->user->address          = $this->address;
+        // $this->user->state            = $this->state;
+        // $this->user->postal_code      = $this->postal_code;
         $this->user->update();
 
 
@@ -91,6 +104,12 @@ class EditUser extends Component
 
     public function saveauth()
     {
+
+        $this->validate([
+            'socialite_id'  => ['sometimes', 'string', 'max:255', 'min:3'],
+            'email'         => ['nullable', 'email', 'max:255', 'min:3'],
+            'password'      => ['sometimes','confirmed','min:8'],
+        ]);
 
         $this->user->email          = $this->email;
         $this->user->socialite_id   = $this->socialite_id;

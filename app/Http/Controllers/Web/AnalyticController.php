@@ -432,11 +432,11 @@ class AnalyticController extends Controller
                     'name'                  => $resourceGroup[8],
 
 
-                    "resourceType" => $resource->instanceData->additionalInfo->toArray()['resourceType'] ?? null,
-                    "usageResourceKind" => $resource->instanceData->additionalInfo->toArray()['usageResourceKind'] ?? null,
-                    "dataCenter" => $resource->instanceData->additionalInfo->toArray()['dataCenter'] ?? null,
-                    "networkBucket" => $resource->instanceData->additionalInfo->toArray()['networkBucket'] ?? null,
-                    "pipelineType" => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
+                    "resourceType"          => $resource->instanceData->additionalInfo->toArray()['resourceType'] ?? null,
+                    "usageResourceKind"     => $resource->instanceData->additionalInfo->toArray()['usageResourceKind'] ?? null,
+                    "dataCenter"            => $resource->instanceData->additionalInfo->toArray()['dataCenter'] ?? null,
+                    "networkBucket"         => $resource->instanceData->additionalInfo->toArray()['networkBucket'] ?? null,
+                    "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
                 ], [
                     'quantity'              => $resource->quantity,
                     'cost'                  => (json_encode($price->rates[0])*$resource->quantity)

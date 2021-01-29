@@ -24,15 +24,19 @@
                             <path d="M22,9 L17.21,9 L12.83,2.44 C12.64,2.16 12.32,2.02 12,2.02 C11.68,2.02 11.36,2.16 11.17,2.45 L6.79,9 L2,9 C1.45,9 1,9.45 1,10 C1,10.09 1.01,10.18 1.04,10.27 L3.58,19.54 C3.81,20.38 4.58,21 5.5,21 L18.5,21 C19.42,21 20.19,20.38 20.43,19.54 L22.97,10.27 L23,10 C23,9.45 22.55,9 22,9 Z M12,4.8 L14.8,9 L9.2,9 L12,4.8 Z M18.5,19 L5.51,19.01 L3.31,11 L20.7,11 L18.5,19 Z M12,13 C10.9,13 10,13.9 10,15 C10,16.1 10.9,17 12,17 C13.1,17 14,16.1 14,15 C14,13.9 13.1,13 12,13 Z"></path>
                         </svg>
                         <p class=" mb-1 ">All Orders</p>
-                        <h2 class="mb-1 font-weight-bold">{{$orders->count()}}</h2>
-                        @if ($orders->count() > $countOrders)
+                        @if ($orders)
+                            <h2 class="mb-1 font-weight-bold">{{$orders->count()}}</h2>
+                        
+                            
+                            @if ($orders->count() > $countOrders)
+                            
+                            <span class="mb-1 text-muted"><span class="text-danger"><i class="fa fa-caret-down  mr-1"></i> {{$orders->count()-$countOrders}}</span> than last month</span>
+                            @else
+                            <span class="mb-1 text-muted"><span class="text-success"><i class="fa fa-caret-up  mr-1"></i> {{$orders->count() -$countOrders}}</span> than last month</span>
 
-                        <span class="mb-1 text-muted"><span class="text-danger"><i class="fa fa-caret-down  mr-1"></i> {{$orders->count()-$countOrders}}</span> than last month</span>
-                        @else
-                        <span class="mb-1 text-muted"><span class="text-success"><i class="fa fa-caret-up  mr-1"></i> {{$orders->count() -$countOrders}}</span> than last month</span>
-
-                        @endif
-                        {{-- <div class="progress progress-sm mt-3 bg-success-transparent">
+                            @endif
+                            @endif
+                            {{-- <div class="progress progress-sm mt-3 bg-success-transparent">
                             <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width: 78%"></div>
                         </div> --}}
                     </div>
@@ -339,12 +343,15 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @if($orders)
                                         @forelse ($orders->where('details', '!=', "Importing MS Products") as $order)
                                         {{-- $order->where('details', '!=', "Importing MS Products")->first()->status->name --}}
                                         <tr>
+                                            @if($order)
                                             @foreach ($order->products as $product)
                                             <td class="font-weight-bold"><img class="w-7 h-7 rounded shadow mr-3" src="{{URL::asset('assets/images/orders/7.jpg')}}" alt="media1"> {{$product->name}}</td>
                                             @endforeach
+                                            @endif
                                             <td>#12323423</td>
                                             <td>11th July, 10am</td>
                                             <td class="font-weight-bold">$13,206</td>
@@ -360,6 +367,7 @@
                                         @empty
 
                                         @endforelse
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>
@@ -367,7 +375,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xl-4 col-lg-4 col-md-12">
+            <div class="col-xl-4 col-lg-4 col-md-12">   
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Recent Customers</h3>

@@ -36,15 +36,15 @@
                         @forelse($resellers as $reseller)
                         <tr class="odd gradeX">
                             <td width="3%" class="f-s-600"><a href="{{ $reseller['path'] }}">{{ $reseller['id'] }}</a></td>
-                            <td><a href="{{ $reseller['path'] }}">{{ $reseller['company_name'] }}</a></td>
+                            <td><a href="{{ $reseller['path'] }}/edit">{{ $reseller['company_name'] }}</a></td>
                             <td>{{ $reseller['customers'] }}</td>
                             <td><a href="{{$reseller['provider']->format()['path']}}">{{ $reseller['provider']['company_name'] }}</td>
                                 <td>{{ $reseller['country'] }}</td>
-                                {{-- @if($reseller['provider']['instances']->first()['external_type'] == 'indirect') --}}
+                                @if($reseller['provider']['instances']->first()['external_type'] == 'indirect')
                                 <td>{{ $reseller['mpnid'] }}</td>
-                                {{-- @else
+                                @else
                                 <td></td>
-                                @endif --}}
+                                @endif
                                 <td>{{ $reseller['created_at'] }}</td>
                                 <td style="width: 150px">
                                     <div class="row text-nowrap">

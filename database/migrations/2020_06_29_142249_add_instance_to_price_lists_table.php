@@ -15,7 +15,6 @@ class AddInstanceToPriceListsTable extends Migration
     {
         Schema::table('price_lists', function (Blueprint $table) {
             $table->unsignedBigInteger('instance_id')->after('id')->nullable();
-
             $table->foreign('instance_id')->references('id')->on('instances');
         });
     }
