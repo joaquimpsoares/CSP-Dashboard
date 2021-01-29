@@ -36,7 +36,7 @@
                         @forelse($resellers as $reseller)
                         <tr class="odd gradeX">
                             <td width="3%" class="f-s-600"><a href="{{ $reseller['path'] }}">{{ $reseller['id'] }}</a></td>
-                            <td><a href="{{ $reseller['path'] }}/edit">{{ $reseller['company_name'] }}</a></td>
+                            <td><a href="{{ $reseller['path'] }}">{{ $reseller['company_name'] }}</a></td>
                             <td>{{ $reseller['customers'] }}</td>
                             <td><a href="{{$reseller['provider']->format()['path']}}">{{ $reseller['provider']['company_name'] }}</td>
                                 <td>{{ $reseller['country'] }}</td>
