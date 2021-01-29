@@ -145,6 +145,9 @@ class HomeController extends Controller
                     }
                 }
 
+                $orderMonth = Order::whereMonth(
+                    'created_at', '=', Carbon::now()->subMonth()->month
+                );
                 if($orders){
                     $countOrders = ($orders->count()-$orderMonth->count());
                 }
