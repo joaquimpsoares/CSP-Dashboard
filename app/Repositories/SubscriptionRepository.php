@@ -159,7 +159,6 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
         if ($searchcustomer) {
             $result->appends(['customer' => $searchcustomer]);
         }
-// dd($result);
         return $result;
 
     }

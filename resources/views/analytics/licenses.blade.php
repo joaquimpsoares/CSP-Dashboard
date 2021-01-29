@@ -37,7 +37,6 @@
                             </thead>
                             <tbody>
                                 @foreach ($serviceCosts as $item)
-                                {{-- @dd($serviceCosts) --}}
                                 @php
                                 if(!empty($item)){
                                     $customer = App\MicrosoftTenantInfo::where('tenant_id',$item->customerId)->first();

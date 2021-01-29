@@ -46,7 +46,6 @@
 @endsection
 
 @section('content')
-{{-- @dd($user); --}}
 
 <section class="section team-section">
     <form  method="POST" action="{{ route('user.update', $user->id) }}" class="col s12" enctype="multipart/form-data">

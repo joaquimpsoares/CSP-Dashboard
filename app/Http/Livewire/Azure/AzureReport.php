@@ -91,18 +91,12 @@ class AzureReport extends Component
             $query->where('resource_location', $this->selectLocation);
         }
 
-        // dd($this->sortColumn);
 
         $reports = $query->where('subscription_id', $this->subscription->id)
         ->whereBetween('usageStartTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
         ->whereBetween('usageEndTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
         ->orderBy($this->sortColumn, $this->sortDirection)
         ->paginate('10');
-
-        // dd($this->sortColumn);
-
-        // dd($query);
-
 
         $reports->map(function($item, $key) {
             $azurepricelist = AzurePriceList::where('resource_id', $item->resource_id)->get('rates');
@@ -113,7 +107,6 @@ class AzureReport extends Component
             $item->save();
             return $item;
         });
-
 
 
     return view('livewire.azure.azure-report', [

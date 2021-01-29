@@ -1,3 +1,4 @@
+
 <div class="row">
     <div class="col-xl-8 col-lg-5">
         <div class="card">
@@ -15,7 +16,7 @@
                     </div>
                     <div class="panel-body tabs-menu-body">
                         <div class="tab-content">
-                            <div class="tab-pane active " id="tab5">
+                            <div class="tab-pane active " id="tab5" wire:ignore.self>
                                 <div>
                                     @if(session()->has('message-details'))
                                     <div class="alert alert-success">
@@ -79,82 +80,92 @@
 
                                 </form>
                             </div>
-                            <div class="tab-pane " id="tab6">
-                                <form action="{{ route('user.update.login-details', $user) }}"
-                                method="POST"
-                                id="login-details-form">
-                                @csrf
-                                @method('PUT')
-                                <div class="form-group">
-                                    <label for="socialite_id">@lang('socialite_id')</label>
-                                    <div class="form-group">
-                                        <input wire:model="socialite_id" type="text" name="socialite_id" id='socialite_id'  value="{{ $edit && $user->socialite_id ? $user->socialite_id : old('socialite_id') }}" class="form-control input-solid  @error('socialite_id') is-invalid @enderror" />
-                                        @error('socialite_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                            <div class="tab-pane " id="tab6" wire:ignore.self>
+                                <div>
+                                    @if(session()->has('message-auth'))
+                                    <div class="alert alert-success">
+                                        {{ session('message-auth') }}
                                     </div>
+                                    @endif
                                 </div>
-                                <div class="form-group">
-                                    <label for="email">@lang('Email')</label>
-                                    <input wire:model="email" type="email" class="form-control input-solid @error('email') is-invalid @enderror" id="email" name="email" placeholder="@lang('Email')" value="{{ $edit && $user->email ? $user->email : old('email') }}">
-                                    @error('email')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                </div>
-                                <div class="form-group">
-                                    <label for="password">{{ $edit ? __("New Password") : __('Password') }}</label>
-                                    <input wire:model="password"  type="password" class="form-control input-solid @error('password') is-invalid @enderror" id="password" name="password"  value="{{ old('password') }}"
-                                    @if ($edit) placeholder="@lang("Leave field blank if you don't want to change it")" @endif>
-                                    @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                <form wire:submit.prevent="saveauth">
+                                    <div class="form-group">
+                                        <label for="socialite_id">@lang('socialite_id')</label>
+                                        <div class="form-group">
+                                            <input wire:model="socialite_id" type="text" name="socialite_id"   class="form-control   @error('socialite_id') is-invalid @enderror" />
+                                            @error('socialite_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @dump($socialite_id)
+                                        <label for="email">@lang('Email')</label>
+                                        <input wire:model="email" type="email" class="form-control input-solid @error('email') is-invalid @enderror" id="email" placeholder="@lang('Email')">
+                                        @error('email')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">{{ $edit ? __("New Password") : __('Password') }}</label>
+                                        <input wire:model="password"  type="password" class="form-control input-solid @error('password') is-invalid @enderror" id="password" name="password"  value="{{ old('password') }}"
+                                        @if ($edit) placeholder="@lang("Leave field blank if you don't want to change it")" @endif>
+                                        @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
 
-                                </div>
-                                <div class="form-group">
-                                    <label for="password_confirmation">{{ $edit ? __("Confirm New Password") : __('Confirm Password') }}</label>
-                                    <input type="password" class="form-control input-solid @error('password') is-invalid @enderror" id="password_confirmation" name="password_confirmation"  value="{{ old('password_confirmation') }}"
-                                    @if ($edit) placeholder="@lang("Leave field blank if you don't want to change it")" @endif>
-                                    @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password_confirmation">{{ $edit ? __("Confirm New Password") : __('Confirm Password') }}</label>
+                                        <input type="password" class="form-control input-solid @error('password') is-invalid @enderror" id="password_confirmation" name="password_confirmation"  value="{{ old('password_confirmation') }}"
+                                        @if ($edit) placeholder="@lang("Leave field blank if you don't want to change it")" @endif>
+                                        @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
 
-                                </div>
-                                @if ($edit)
-                                <button type="submit" class="btn btn-primary mt-2" id="update-login-details-btn">
-                                    <i class="fa fa-refresh"></i>
-                                    @lang('Update Details')
-                                </button>
-                                @endif
-                            </form>
+                                    </div>
+                                    @if ($edit)
+                                    <button type="submit" class="btn btn-primary mt-2" id="update-login-details-btn">
+                                        <i class="fa fa-refresh"></i>
+                                        @lang('Update Details')
+                                    </button>
+                                    @endif
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="col-xl-4 col-lg-5">
-    <div class="card box-widget widget-user">
-        <div>
-            @if(session()->has('message'))
-            <div class="alert alert-success">
-                {{ session('message') }}
-            </div>
-            @endif
-        </div>
-        <div class="widget-user-image mx-auto mt-5">
-            <form wire:submit.prevent="savephoto">
-                @if ($photo)
-                <img alt="User Avatar" class="rounded-circle" src="{{ $photo->temporaryUrl() }}" width="128px" height="128px"></div>
-                @else
-                <img alt="User Avatar" class="rounded-circle" src="{{ $edit ? $user->avatar : url('assets/img/profile.png')  }}" width="128px" height="128px"></div>
+    <div class="col-xl-4 col-lg-5">
+        <div class="card box-widget widget-user">
+            <div>
+                @if(session()->has('message'))
+                <div class="alert alert-success">
+                    {{ session('message') }}
+                </div>
                 @endif
-                <div class="btn btn-light ">
-                    <i class="fa fa-upload"></i>
-                    <input wire:model="photo" type="file" name="avatar" id="avatar-upload">
-                </div>
-                @error('photo') <span class="error">{{ $message }}</span> @enderror
-                <div class="card-body text-center">
-                    <div class="pro-user">
-                        <h3 class="pro-user-username text-dark mb-1">{{ $user->name ?? $user->email }} </h3>
-                        {{-- <h6 class="pro-user-desc text-muted">{{ $user->role->first()['name'] }}</h6> --}}
-                        <button type="submit" id="change-picture" class="btn btn-outline-secondary btn-block mt-5"><i class="fa fa-camera"></i> @lang('Save Photo')
-                        </button>
+            </div>
+            <div class="widget-user-image mx-auto mt-5">
+                <form wire:submit.prevent="savephoto">
+                    @if ($photo)
+                    <img alt="User Avatar" class="rounded-circle" src="{{ $photo->temporaryUrl() }}" width="128px" height="128px"></div>
+                    @else
+                    <img alt="User Avatar" class="rounded-circle" src="{{ $edit ? $user->avatar : url('assets/img/profile.png')  }}" width="128px" height="128px"></div>
+                    @endif
+                    @error('photo') <span class="error">{{ $message }}</span> @enderror
+                    <div class="card-body text-center">
+                        <div class="card-body pt-0 mt-0">
+                            <div class="custom-file">
+                                <label class="custom-file-label" for="customFileLang">Select file</label>
+                                <input wire:model="photo" type="file" name="avatar" class="custom-file-input" id="customFileLang">
+                            </div>
+                            <div class="row">
+                                <div class=" col-xs-12">
+                                    <h6 class="font-weight-bold cyan-text mb-4"></h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pro-user">
+                            <h3 class="pro-user-username text-dark mb-1">{{ $user->name ?? $user->email }} </h3>
+                            {{-- <h6 class="pro-user-desc text-muted">{{ $user->role->first()['name'] }}</h6> --}}
+                            <button type="submit" id="change-picture" class="btn btn-outline-secondary btn-block mt-5"><i class="fa fa-camera"></i> @lang('Save Photo')
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </form>
-        </div>
-
+                </form>
+            </div>

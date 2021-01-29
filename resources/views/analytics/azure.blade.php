@@ -46,7 +46,6 @@
                         </thead>
                         <tbody>
                             @foreach ($resourceName as $item)
-                            {{-- @dd($item->calculated) --}}
                             <tr>
                                 <td class="d-flex">{{$item->customer['company_name']}}</td>
                                 <td>{{$item->name}}</td>

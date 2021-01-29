@@ -8,7 +8,6 @@
                 alt="{{ $user->name }}">
         </a>
     </td>
-    {{-- @dd($user) --}}
     <td class="align-middle">{{ $user->email }}</td>
     <td class="align-middle">{{ $user->name . ' ' . $user->last_name }}</td>
     <td class="align-middle">{{ $user->created_at }}</td>

@@ -124,7 +124,6 @@ class AnalyticController extends Controller
      */
     public function updateAZURE(Customer $customer, Subscription $subscription)
     {
-        // dd($subscription);
 
         $msId = $customer->microsoftTenantInfo->first()->tenant_id;
 

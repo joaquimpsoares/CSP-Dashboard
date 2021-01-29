@@ -214,9 +214,6 @@
                     <div class="card-body">
                         <div class="scrollbar h-400" id="scrollbar">
                             @foreach ($topProducts as $item)
-                            {{-- @dd($item->product) --}}
-                            {{-- @dd($item->product->groupBy('name')) --}}
-                            {{-- @dd($item->product->name) --}}
                             <div class="d-flex mb-5">
                                 <a href="#" class="mr-4">
                                     <img class="w-8 h-8 rounded shadow" src="{{URL::asset('assets/images/orders/1.jpg')}}" alt="media1">

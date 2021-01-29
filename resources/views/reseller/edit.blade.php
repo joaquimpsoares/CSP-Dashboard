@@ -24,7 +24,6 @@
 @endsection
 
 @section('content')
-{{-- @dd($reseller) --}}
 
 @livewire('reseller.edit-reseller', ['reseller' => $reseller])
 

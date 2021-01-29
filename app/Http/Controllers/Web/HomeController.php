@@ -151,7 +151,6 @@ class HomeController extends Controller
 
                 // $topProducts = OrderProducts::with('Order')->get();
                 $topProducts = customer::with('orders')->get();
-                // dd($topProducts->first()->orders);
 
 
                 return view('home', compact('resellers','orders','countOrders','customersweek','topProducts','provider','customers'));

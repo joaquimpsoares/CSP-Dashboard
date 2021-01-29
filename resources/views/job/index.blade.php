@@ -48,7 +48,6 @@
                 <tbody class="bg-white">
                     @forelse($jobs as $job)
 
-                    {{-- @dd($job) --}}
                     <tr class="font-sm leading-relaxed">
                         <td class="">
                             @if(!$job->isFinished())
@@ -91,7 +90,6 @@
                     @endif
                     <td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">
                         @if($job->progress !== null)
-                        {{-- @dd($job->progress.'%') --}}
                         <div class="w-32">
                             <div class="progress progress-md mb-3">
                                 <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" style={{"width:".$job->progress.'%'}}></div>

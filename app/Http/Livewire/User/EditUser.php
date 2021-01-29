@@ -85,7 +85,8 @@ class EditUser extends Component
         $this->user->postal_code      = $this->postal_code;
         $this->user->update();
 
-        session()->flash('message-details', 'user details successfully Updated.');
+
+        session()->flash('message-details', 'user '. $this->user->name . ' successfully Updated.');
     }
 
     public function saveauth()
@@ -96,7 +97,7 @@ class EditUser extends Component
         $this->user->password       = Hash::make($this->password);
         $this->user->update();
 
-        session()->flash('message-auth', 'User Auth successfully Updated.');
+        session()->flash('message-auth', 'User '. $this->user->name . ' successfully Updated.');
     }
 
 
@@ -113,16 +114,14 @@ class EditUser extends Component
         $this->user->avatar = '/storage/'.$validatedData['name'];
         $this->user->save();
         $this->photo = '';
-        // dd($this->user->avatar);
 
-        session()->flash('message', 'Image successfully Uploaded.');
+        session()->flash('message', 'Avatar for '. $this->user->name . ' successfully Uploaded.');
 
 
     }
 
     public function render()
     {
-
         $user = $this->user;
         $edit = true;
         $countries = Country::pluck( 'name','id');

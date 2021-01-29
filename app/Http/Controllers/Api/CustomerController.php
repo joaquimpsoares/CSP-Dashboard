@@ -85,7 +85,6 @@ class CustomerController extends ApiController
         return $request->all();
             // return $request->all();
             // return $country_id;
-            // dd($request->company_name,
             // $request->address_1,
             // $request->address_2,
             // $country_id,

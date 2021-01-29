@@ -134,7 +134,6 @@ class ResellerController extends Controller
 
 
     public function update(Request $request, Reseller $reseller){
-        dd($reseller);
 
         $validate = $this->validator($request->all())->validate();
         $reseller = Reseller::findOrFail($reseller->id);
@@ -178,7 +177,6 @@ class ResellerController extends Controller
 
     protected function validator(array $data)
     {
-        // dd($data);
             return Validator::make($data, [
                 'company_name'      => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
                 'nif'               => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:30'],

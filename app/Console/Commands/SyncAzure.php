@@ -94,8 +94,6 @@ class SyncAzure extends Command
                 $instance->external_id,$instance->external_token
                 )->utilizations($customer, $subscriptions);
 
-                // dd($resources);
-
                 try{
 
                     $resources->items->each(function($resource) use($subscription){
@@ -125,7 +123,6 @@ class SyncAzure extends Command
                     });
                 }
                 catch (Exception $e) {
-                    dd($e->getMessage());
                     $this->info($e->getMessage());
                 }
 

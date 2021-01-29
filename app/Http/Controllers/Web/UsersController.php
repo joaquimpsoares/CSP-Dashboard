@@ -40,7 +40,6 @@ class UsersController extends Controller
         $users = $this->userRepository->paginate($perPage = 20, $request->search, $request->status);
 
         // $users = $this->userRepository->all();
-        // dd($users);
 
         return view('user.list', compact('users','provider','statuses'));
     }
@@ -95,7 +94,6 @@ class UsersController extends Controller
 //     public function store(Request $request)
 //     {
 
-//         // dd($request->all());
 
 //         $validate = $this->validator($request->all())->validate();
 
@@ -163,7 +161,6 @@ class UsersController extends Controller
 
     public function updatelogin(Request $request, User $user){
 
-        // dd($request->all());
         $data = $request->all();
         DB::beginTransaction();
 
@@ -213,7 +210,6 @@ class UsersController extends Controller
     public function update(Request $request, User $user)
     {
 
-        // dd($user);
         // $user = User::findOrFail($user->id);
         // $role = Role::findOrFail($request->role_id);
         // $validate = $this->validator($request->all())->validate();
@@ -260,15 +256,12 @@ class UsersController extends Controller
             $user->postal_code      = $request->input('postal_code');
             $user->update();
             // $user->password      = Hash::make($request->input('password'));
-            // dd($user);
 
             DB::commit();
-            // dd($user);
             return redirect()->back()->with('success', 'User Updated succesfully');
 
         } catch (\PDOException $e) {
 
-            dd($e->getMessage());
             DB::rollBack();
             if ($e->errorInfo[1] == 1062) {
                 $errorMessage = "errors.user_already_exists";

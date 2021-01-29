@@ -76,7 +76,6 @@
         </div>
         <div class="col-lg-7 col-md-auto">
             <div class="text-lg-right mt-4 mt-lg-0">
-                {{-- @dd($reseller->format()['mainUser']) --}}
                 @canImpersonate
                 @if(!empty($reseller->format()['mainUser']))
                 <a class="btn btn-white" href="{{ route('impersonate', $reseller->format()['mainUser']['id']) }}"><i class="fa fa-user-secret"></i>{{ ucwords(trans_choice('messages.impersonate', 1)) }}</a>

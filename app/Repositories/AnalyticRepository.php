@@ -96,7 +96,6 @@ class AnalyticRepository implements AnalyticRepositoryInterface
 
         $category = array_column($query, 'category');
         $sum = array_column($query, 'sum');
-        // dd($sum);
         $top10C = array_column($top10Q, 'category');
         $top10S = array_column($top10Q, 'sum');
 

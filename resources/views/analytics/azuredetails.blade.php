@@ -25,7 +25,6 @@
 @endsection
 
 @section('content')
-{{-- @dd($subscription); --}}
 {{-- <div class="row">
     <div class="col-xl-6 col-md-12 col-lg-12">
         <div class="card bg-primary text-white">

@@ -31,7 +31,6 @@ class exportAzure implements FromCollection, WithHeadings
     // public function map($azureresources): array
     // {
 
-    //     dd($azureresources);
     //     // This example will return 3 rows.
     //     // First row will have 2 column, the next 2 will have 1 column
     //     return [

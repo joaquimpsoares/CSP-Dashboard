@@ -58,7 +58,6 @@ class SubscriptionController extends Controller
     */
     public function index(Request $request)
     {
-        // dd($request->all());
 
         $subscriptions = [];
         // $subscriptions = $this->subscriptionRepository->all();
