@@ -47,14 +47,13 @@ class CreateCustomer extends Component
         'city'                  => ['required', 'string', 'max:255', 'min:3'],
         'state'                 => ['required', 'string', 'max:255', 'min:3'],
         'postal_code'           => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255', 'min:3'],
-        'mpnid'                 => ['sometimes', 'integer', 'min:3'],
         'status'                => ['required', 'integer', 'exists:statuses,id'],
+        'email'                 => ['nullable', 'email','unique:users', 'max:255', 'min:3'],
         'name'                  => ['sometimes', 'string', 'max:255', 'min:3'],
         'last_name'             => ['sometimes', 'string', 'max:255', 'min:3'],
         'socialite_id'          => ['sometimes', 'string', 'max:255', 'min:3'],
         'phone'                 => ['sometimes', 'string', 'max:20', 'min:3'],
         'address'               => ['sometimes', 'string', 'max:255', 'min:3'],
-        'email'                 => ['nullable', 'email','unique:users', 'max:255', 'min:3'],
         'sendInvitation'        => ['nullable', 'integer'],
         'password'              => ['same:password_confirmation','required', 'min:6'],
         'markup'                => ['nullable', 'integer', 'min:3'],
@@ -68,7 +67,7 @@ class CreateCustomer extends Component
 
     public function save()
     {
-        $this->validate();
+        // $this->validate();
         $user = $this->getUser();
 
     try {
