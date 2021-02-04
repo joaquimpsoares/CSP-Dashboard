@@ -109,123 +109,128 @@
                                     role="button">
                                     <i class="fa fa-times"></i>
                                 </a>
-                                @endif
-                            </span>
+                                @endif</span>
+                            </div>
                         </div>
                     </div>
+                    <a href="#" class="dropdown-item" type="button"
+                        onclick="confirm('Are you sure you want to export these Records?') || event.stopImmediatePropagation()"
+                        wire:click="exportSelected()">
+                        Export
+                    </a>
                 </div>
-            </div>
-            <div class="card-body">
                 <div class="card-body">
-                    <div class="">
-                        <div class="table-responsive">
-                            <table class="table table-bordered text-wrap key-buttons">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th class="w-25" wire:click="sortByColumn('resource_name')">
-                                            Name
-                                            @if ($sortColumn == 'resource_name')
-                                            <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
-                                            @else
-                                            <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
-                                            @endif
-                                        </th>
-                                        <th class="w-25" wire:click="sortByColumn('resource_group')">
-                                            Resource Group
-                                            @if ($sortColumn == 'resource_group')
-                                            <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
-                                            @else
-                                            <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
-                                            @endif
-                                        </th>
-                                        <th class="w-25" wire:click="sortByColumn('resource_category')">
-                                            Category
-                                            @if ($sortColumn == 'resource_category')
-                                            <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
-                                            @else
-                                            <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
-                                            @endif
-                                        </th>
-                                        <th class="w-25" wire:click="sortByColumn('resource_subcategory')">
-                                            Sub-Category
-                                            @if ($sortColumn == 'resource_subcategory')
-                                            <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
-                                            @else
-                                            <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
-                                            @endif
-                                        </th>
-                                        <th class="w-25" wire:click="sortByColumn('resource_location')">
-                                            Region
-                                            @if ($sortColumn == 'resource_location')
-                                            <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
-                                            @else
-                                            <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
-                                            @endif
-                                        </th>
-                                        <th class="w-25" wire:click="sortByColumn('name')">
-                                            Name
-                                            @if ($sortColumn == 'name')
-                                            <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
-                                            @else
-                                            <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
-                                            @endif
-                                        </th>
-                                        <th class="w-25" wire:click="sortByColumn('quantity')">
-                                            Quantity
-                                            @if ($sortColumn == 'quantity')
-                                            <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
-                                            @else
-                                            <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
-                                            @endif
-                                        </th>
-                                        <th class="w-25" wire:click="sortByColumn('cost')">
-                                            Total Cost
-                                            @if ($sortColumn == 'cost')
-                                            <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
-                                            @else
-                                            <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
-                                            @endif
-                                        </th>
-                                        <th class="w-25" wire:click="sortByColumn('usageStartTime')">
-                                            start date
-                                            @if ($sortColumn == 'usageStartTime')
-                                            <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
-                                            @else
-                                            <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
-                                            @endif
-                                        </th>
-                                        <th class="w-25" wire:click="sortByColumn('usageEndTime')">
-                                            end date
-                                            @if ($sortColumn == 'usageEndTime')
-                                            <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
-                                            @else
-                                            <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
-                                            @endif
-                                        </th>
+                    <div class="card-body">
+                        <div class="">
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-wrap key-buttons">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th class="w-25" wire:click="sortByColumn('resource_name')">
+                                                Name
+                                                @if ($sortColumn == 'resource_name')
+                                                <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+                                            <th class="w-25" wire:click="sortByColumn('resource_group')">
+                                                Resource Group
+                                                @if ($sortColumn == 'resource_group')
+                                                <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+                                            <th class="w-25" wire:click="sortByColumn('resource_category')">
+                                                Category
+                                                @if ($sortColumn == 'resource_category')
+                                                <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+                                            <th class="w-25" wire:click="sortByColumn('resource_subcategory')">
+                                                Sub-Category
+                                                @if ($sortColumn == 'resource_subcategory')
+                                                <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+                                            <th class="w-25" wire:click="sortByColumn('resource_location')">
+                                                Region
+                                                @if ($sortColumn == 'resource_location')
+                                                <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+                                            <th class="w-25" wire:click="sortByColumn('name')">
+                                                Name
+                                                @if ($sortColumn == 'name')
+                                                <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+                                            <th class="w-25" wire:click="sortByColumn('quantity')">
+                                                Quantity
+                                                @if ($sortColumn == 'quantity')
+                                                <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+                                            <th class="w-25" wire:click="sortByColumn('cost')">
+                                                Total Cost
+                                                @if ($sortColumn == 'cost')
+                                                <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+                                            <th class="w-25" wire:click="sortByColumn('usageStartTime')">
+                                                start date
+                                                @if ($sortColumn == 'usageStartTime')
+                                                <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
+                                            <th class="w-25" wire:click="sortByColumn('usageEndTime')">
+                                                end date
+                                                @if ($sortColumn == 'usageEndTime')
+                                                <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
+                                                @else
+                                                <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
+                                                @endif
+                                            </th>
 
-                                    </tr>
-                                </thead>
-                                <body>
-                                    @foreach ($reports as $item)
-                                    <tr>
-                                        <td >{{$item->resource_name}}</td>
-                                        <td >{{$item->resource_group}}</td>
-                                        <td class="text-nowrap">{{$item->resource_category}}</td>
-                                        <td class="text-nowrap">{{$item->resource_subcategory}}</td>
-                                        <td class="text-nowrap">{{$item->resource_location}}</td>
-                                        <td class="text-nowrap">{{$item->name}}</td>
-                                        <td >{{number_format($item->quantity , 4)}}</td>
-                                        <td class="text-nowrap">$@money($item->cost)</td>
-                                        <td class="text-nowrap">{{date('Y-m-d', strtotime($item->usageStartTime))}}</td>
-                                        <td class="text-nowrap">{{date('Y-m-d', strtotime($item->usageEndTime))}}</td>
-                                    </tr>
-                                    @endforeach
-                                </body>
-                            </table>
-                            <div class="card-footer d-flex text-right">
-                                @if ($reports->total() >= '10')
-                                {{ $reports->links() }}
-                                @endif
+                                        </tr>
+                                    </thead>
+                                    <body>
+                                        @foreach ($reports as $item)
+                                        <tr>
+                                            <td >{{$item->resource_name}}</td>
+                                            <td >{{$item->resource_group}}</td>
+                                            <td class="text-nowrap">{{$item->resource_category}}</td>
+                                            <td class="text-nowrap">{{$item->resource_subcategory}}</td>
+                                            <td class="text-nowrap">{{$item->resource_location}}</td>
+                                            <td class="text-nowrap">{{$item->name}}</td>
+                                            <td >{{number_format($item->quantity , 4)}}</td>
+                                            <td class="text-nowrap">$@money($item->cost)</td>
+                                            <td class="text-nowrap">{{date('Y-m-d', strtotime($item->usageStartTime))}}</td>
+                                            <td class="text-nowrap">{{date('Y-m-d', strtotime($item->usageEndTime))}}</td>
+                                        </tr>
+                                        @endforeach
+                                    </body>
+                                </table>
+                                <div class="card-footer d-flex text-right">
+                                    @if ($reports->total() >= '10')
+                                    {{ $reports->links() }}
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -233,7 +238,6 @@
             </div>
         </div>
     </div>
-</div>
 </div>
 
 
