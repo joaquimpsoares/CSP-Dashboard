@@ -22,7 +22,6 @@ class exportAzure implements
     public function query()
     {
 
-        // dd($this->students);
         return AzureUsageReport::query()->whereKey($this->students);
     }
 }
