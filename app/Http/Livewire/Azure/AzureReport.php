@@ -22,6 +22,7 @@ class AzureReport extends Component
 
     public $dates;
     public $selectRgroup;
+    public $resource_name;
     public $selectCategory;
     public $selectSubCategory;
     public $selectLocation;
