@@ -22,7 +22,6 @@ class AzureReport extends Component
     public $sortDirection = 'asc';
 
     public $dates;
-    public $query;
     public $selectRgroup;
     public $selectCategory;
     public $selectSubCategory;
