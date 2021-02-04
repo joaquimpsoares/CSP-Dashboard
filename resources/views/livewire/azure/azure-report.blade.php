@@ -162,9 +162,9 @@
                                             <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
                                             @endif
                                         </th>
-                                        <th class="w-25" wire:click="sortByColumn('resource_name')">
+                                        <th class="w-25" wire:click="sortByColumn('name')">
                                             Name
-                                            @if ($sortColumn == 'resource_name')
+                                            @if ($sortColumn == 'name')
                                             <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
                                             @else
                                             <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
