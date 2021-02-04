@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Student;
+use App\Models\AzureUsageReport;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\Exportable;
 
@@ -21,7 +22,7 @@ class exportAzure implements
     public function query()
     {
 
-        dd($this->students);
-        return Student::query()->whereKey($this->students);
+        // dd($this->students);
+        return AzureUsageReport::query()->whereKey($this->students);
     }
 }

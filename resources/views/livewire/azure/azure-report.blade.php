@@ -83,7 +83,6 @@
                                 </select>
                             </div>
                             @endif
-
                             <a wire:click="resetFilters" class="btn btn-danger btn-block">Clear Filter</a>
                         </div>
                     </div>
@@ -95,6 +94,11 @@
                 <div class="card-header">
                     <h4 class="card-title">Resources name </h4>
                     <div class="page-rightheader ml-auto d-lg-flex">
+                        <a href="#" class="btn btn-success btn-block" type="button"
+                        onclick="confirm('Are you sure you want to export these Records?') || event.stopImmediatePropagation()"
+                        wire:click="exportSelected()">
+                        Export to xlsx
+                    </a>
                         <div class="ml-6 mb-0">
                             <div class="input-group custom-search-form">
                                 <input
@@ -113,11 +117,6 @@
                             </div>
                         </div>
                     </div>
-                    <a href="#" class="dropdown-item" type="button"
-                        onclick="confirm('Are you sure you want to export these Records?') || event.stopImmediatePropagation()"
-                        wire:click="exportSelected()">
-                        Export
-                    </a>
                 </div>
                 <div class="card-body">
                     <div class="card-body">
