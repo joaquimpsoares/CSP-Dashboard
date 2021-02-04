@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Azure;
 use App\Subscription;
 use Livewire\Component;
 use Illuminate\Support\Str;
+use App\Exports\exportAzure;
 use Livewire\WithPagination;
 use App\Models\AzurePriceList;
 use App\Models\AzureUsageReport;
@@ -21,6 +22,7 @@ class AzureReport extends Component
     public $sortDirection = 'asc';
 
     public $dates;
+    public $query;
     public $selectRgroup;
     public $selectCategory;
     public $selectSubCategory;
@@ -58,6 +60,12 @@ class AzureReport extends Component
         $this->reset(['taskduedate']);
     }
 
+    public function exportSelected()
+    {
+        return (new exportAzure($this->query))->download('azureReports.xlsx');
+    }
+
+
     public function render()
     {
         if($this->taskduedate){
@@ -74,6 +82,7 @@ class AzureReport extends Component
 
 
         $query = AzureUsageReport::query();
+        $this->query = $query;
 
         if ($this->selectRgroup) {
             $query->where('resource_group', $this->selectRgroup);

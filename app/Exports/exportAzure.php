@@ -1,54 +1,27 @@
 <?php
 
-
-use App\AzureResource;
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use App\Models\Student;
+use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\Exportable;
 
-class exportAzure implements FromCollection, WithHeadings
 
+class exportAzure implements
+    FromQuery
 {
-    protected $azureresources;
+    use Exportable;
+    protected $students;
 
-    public function headings(): array
+    public function __construct($students)
     {
-        return [
-            '#',
-            'User',
-            'Date',
-        ];
+        $this->students = $students;
     }
 
-    // public function __construct(array $azureresources)
-    // {
-    //     $this->azureresources = $azureresources;
-    // }
-
-    // public function map($azureresources): array
-    // {
-
-    //     // This example will return 3 rows.
-    //     // First row will have 2 column, the next 2 will have 1 column
-    //     return [
-    //         [
-    //             $azureresources->usageStartTime,
-
-    //         ],
-    //         // [
-    //         //     $azureresources->lines->first()->description,
-    //         // ],
-    //         // [
-    //         //     $azureresources->lines->last()->description,
-    //         // ]
-    //     ];
-    // }
-
-    public function collection(): array
+    public function query()
     {
-        return $this->azureresources;
+
+        dd($this->students);
+        return Student::query()->whereKey($this->students);
     }
 }
