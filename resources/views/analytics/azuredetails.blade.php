@@ -18,38 +18,13 @@
 <!--Page header-->
 <div class="page-header">
     <div class="page-leftheader">
-        <h4 class="page-title">Analytics Dashboard</h4>
+        <h4 class="page-title">Analytics Dashboard - {{$subscription->customer->company_name}}</h4>
     </div>
 </div>
 <!--End Page header-->
 @endsection
 
 @section('content')
-{{-- <div class="row">
-    <div class="col-xl-6 col-md-12 col-lg-12">
-        <div class="card bg-primary text-white">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-xl-7 col-md-12 col-lg-6">
-                        <div class="d-block card-header border-0 text-center px-0">
-                            <h3 class="text-center mb-4">Congratulations <b>John!</b></h3>
-                            <small>You have reached Page Views</small>
-                        </div>
-                        <div class="row text-center">
-                            <div class="col-md-12">
-                                <h2 class="mb-0 fs-40 counter font-weight-bold">10M</h2>
-                                <h6 class="mt-4 text-white-50">You have done 100% reached target today.</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-5 col-md-12 col-lg-6">
-                        <img class="mx-auto text-center w-90 analytics-img" src="{{URL::asset('assets/images/photos/award.png')}}">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> --}}
 <div class="row row-deck">
     <div class="col-xl-3 col-md-12 col-lg-6">
         <div class="card">
@@ -65,8 +40,6 @@
                     </div>
                     <div class="col-md-12">
                         <h2 class="mb-0 fs-50 mt-3 counter  font-weight-bold">${{$budget}}</h2>
-                        {{-- <span class=" fs-12 text-muted"><span class="text-danger mr-1"><i class="fe fe-arrow-down ml-1"></i>0.82%</span> since last week</span> --}}
-                        {{-- <p class="mt-5 mb-2 text-muted">It is a long established fact that a ayout. </p> --}}
                         <small class="mt-1 fs-12 text-muted">Updated {{$date->azure_updated_at ?? ' '}}</small>
                     </div>
                 </div>
@@ -171,16 +144,6 @@
                 </div>
             </div>
             <div class="card-body">
-                {{-- <div class="row no-gutters">
-                    <div class="col text-center">
-                        @php
-                        $query = collect($query)
-                        @endphp
-                        @foreach ($top10q as $key => $item)
-                        <span class="text-muted float-left"><div class="w-4 h-3 bg-success br-3 mr-1 mt-1 float-left"></div> {{$item['category']}}</span>
-                        @endforeach
-                    </div>
-                </div> --}}
             </div>
         </div>
     </div>
