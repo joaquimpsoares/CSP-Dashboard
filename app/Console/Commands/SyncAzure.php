@@ -102,21 +102,29 @@ class SyncAzure extends Command
                         // Log::info($price);
                         Log::info(json_encode($resource->resource->id));
 
-                    $resource = AzureUsageReport::updateOrCreate([
-                        'subscription_id'       => $subscription->id,
-                        'resource_id'           => $resource->resource->id,
-                        'usageStartTime'        => $resource->usageStartTime,
-                        'usageEndTime'          => $resource->usageEndTime,
-                    ], [
-                        'resource_group'        => $resourceGroup[4],
-                        'resource_location'     => $resource->instanceData->location,
-                        'resource_name'         => $resource->resource->name,
-                        'resource_category'     => $resource->resource->category,
-                        'resource_subcategory'  => $resource->resource->subcategory,
-                        'resource_region'       => $resource->resource->region,
-                        'quantity'              => $resource->quantity,
-                        'unit'                  => $resource->unit,
-                        'cost'                  => (json_encode($price->rates[0])*$resource->quantity)
+                        $resource = AzureUsageReport::updateOrCreate([
+                            'subscription_id'       => $subscription->id,
+                            'resource_id'           => $resource->resource->id,
+                            'usageStartTime'        => $resource->usageStartTime,
+                            'usageEndTime'          => $resource->usageEndTime,
+                            'resource_group'        => $resourceGroup[4],
+                            'resource_location'     => $resource->instanceData->location,
+                            'resource_name'         => $resource->resource->name,
+                            'resource_category'     => $resource->resource->category,
+                            'resource_subcategory'  => $resource->resource->subcategory,
+                            'resource_region'       => $resource->resource->region,
+                            'unit'                  => $resource->unit,
+                            'name'                  => $resourceGroup[8],
+
+
+                            "resourceType"          => $resource->instanceData->additionalInfo->toArray()['resourceType'] ?? null,
+                            "usageResourceKind"     => $resource->instanceData->additionalInfo->toArray()['usageResourceKind'] ?? null,
+                            "dataCenter"            => $resource->instanceData->additionalInfo->toArray()['dataCenter'] ?? null,
+                            "networkBucket"         => $resource->instanceData->additionalInfo->toArray()['networkBucket'] ?? null,
+                            "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
+                        ], [
+                            'quantity'              => $resource->quantity,
+                            'cost'                  => (json_encode($price->rates[0])*$resource->quantity)
                         ]);
                         Log::info(json_encode($price->rates[0])*$resource->quantity);
                         // $this->info($resource);

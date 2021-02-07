@@ -91,9 +91,7 @@ class AzureReport extends Component
         ->pluck('id')->toArray();
 
 
-        // dd($reports);
-
-        return (new exportAzure($reports))->download('azureReports.xlsx');
+        return (new exportAzure($reports))->download('azureReports '.$this->subscription->customer->company_name.'.xlsx');
     }
 
 
