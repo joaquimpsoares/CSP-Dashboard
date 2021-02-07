@@ -1,15 +1,18 @@
 <?php
 
 namespace App\Exports;
-
+ini_set('memory_limit', '1024M');
+ini_set('max_execution_time', 300);
 use App\Models\Student;
 use App\Models\AzureUsageReport;
+use Illuminate\Support\Facades\Date;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
 
-class exportAzure implements FromQuery, WithHeadings
+class exportAzure implements FromQuery, WithHeadings, WithMapping
 
 {
     use Exportable;
@@ -18,8 +21,8 @@ class exportAzure implements FromQuery, WithHeadings
     {
         return [
             '#',
-            'subscription_id',
-            'Resource Group',
+            'name',
+            'Resource_Group',
             'resource_location',
             'resource_id',
             'resource_name',
@@ -28,18 +31,14 @@ class exportAzure implements FromQuery, WithHeadings
             'resource_region',
             'quantity',
             'unit',
-            'ext_order_id',
-            'usageStartTime',
-            'usageEndTime',
-            'cost',
-            'created_at',
-            'updated_at',
             'resourceType',
             'usageResourceKind',
             'dataCenter',
             'networkBucket',
             'pipelineType',
-            'name',
+            'cost',
+            'usageStartTime',
+            'usageEndTime',
         ];
     }
 
@@ -49,6 +48,33 @@ class exportAzure implements FromQuery, WithHeadings
     {
         $this->students = $students;
     }
+
+    public function map($students): array
+    {
+        return [
+            $students->subscription_id,
+            $students->name,
+            $students->resource_group,
+            $students->resource_location,
+            $students->resource_id,
+            $students->resource_name,
+            $students->resource_category,
+            $students->resource_subcategory,
+            $students->resource_region,
+            $students->quantity,
+            $students->unit,
+            $students->resourceType,
+            $students->usageResourceKind,
+            $students->dataCenter,
+            $students->networkBucket,
+            $students->pipelineType,
+            $students->cost,
+            $students->usageStartTime,
+            $students->usageEndTime,
+
+        ];
+    }
+
 
     public function query()
     {
