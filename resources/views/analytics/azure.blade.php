@@ -48,8 +48,13 @@
                             @foreach ($resourceName as $item)
                             <tr>
                                 <td class="d-flex">{{$item->customer['company_name']}}</td>
+                                @dd($item->customer['markup'])
                                 <td>{{$item->name}}</td>
-                                <td>${{$item->azureresources->sum('cost')}}</td>
+                                @php
+                                $percentage =($item->customer['markup']/100)*$item->azureresources->sum('cost');
+                                $markup = $percentage+$item->azureresources->sum('cost');
+                                @endphp
+                                <td>${{$markup}}</td>
                                 <td>${{$item->budget}}</td>
                                 <td>
                                     @if (($item->calculated/100) < '0.50')

@@ -29,7 +29,6 @@ use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
-// use Tagydes\MicrosoftConnection\Repositories\AzureResource\RestV1AzureResourceRepository;
 
 class AnalyticController extends Controller
 {

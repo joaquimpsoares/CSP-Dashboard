@@ -139,10 +139,10 @@ class SyncAzure extends Command
         }
 
 
-            Mail::raw("teste", function ($mail)  {
+            Mail::raw("Just finished Azure Syncronization", function ($mail)  {
                 $mail->from('digamber@positronx.com');
                 $mail->to('joaquim.soares@tagydes.com')
-                ->subject('Daily New Quote!');
+                ->subject('Daily imported Azure reports');
             });
 
             $this->info('Successfully sent daily quote to everyone.');

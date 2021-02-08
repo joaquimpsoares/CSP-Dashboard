@@ -25,6 +25,11 @@
 @endsection
 
 @section('content')
+@php
+$percentage =($item->customer['markup']/100)*$item->azureresources->sum('cost');
+$markup = $percentage+$item->azureresources->sum('cost');
+@endphp
+
 <div class="row row-deck">
     <div class="col-xl-3 col-md-12 col-lg-6">
         <div class="card">
