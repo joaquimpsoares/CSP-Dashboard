@@ -43,7 +43,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
 
-        Paginator::useBootstrap();
+        // Paginator::useBootstrap();
 
         if (!Collection::hasMacro('paginate')) {
 
