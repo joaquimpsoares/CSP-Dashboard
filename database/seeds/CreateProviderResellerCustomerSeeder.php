@@ -5,6 +5,7 @@ use App\PriceList;
 use App\Provider;
 use App\Reseller;
 use App\Status;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
 class CreateProviderResellerCustomerSeeder extends Seeder
@@ -16,6 +17,8 @@ class CreateProviderResellerCustomerSeeder extends Seeder
      */
     public function run()
     {
+        Provider::unsetEventDispatcher();
+        
         $active = Status::where('name', 'messages.active')->first();
 
         $provider = Provider::create([
