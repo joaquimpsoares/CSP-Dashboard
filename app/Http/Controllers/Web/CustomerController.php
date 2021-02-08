@@ -170,10 +170,11 @@ class CustomerController extends Controller
         return $resources;
     }
 
+    public function edit(Customer $customer) {
 
+        return view('customer.edit', compact('customer'));
+    }
 
-
-    public function edit(Customer $customer) { }
 
 
     public function update(Request $request, Customer $customer) {

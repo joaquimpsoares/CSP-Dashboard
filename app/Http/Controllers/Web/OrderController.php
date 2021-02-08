@@ -39,7 +39,6 @@ class OrderController extends Controller
 
     public function index()
     {
-
         $orders = $this->orderRepository->all();
 
         return view('order.index', compact('orders'));
@@ -55,35 +54,29 @@ class OrderController extends Controller
 
             $tt = MicrosoftTenantInfo::where('tenant_domain', 'like', $order->domain.'%')->first();
 
-            // order->customer->format()['mpnid']);
-        if($tt == null){
+            if($tt == null){
 
-            Bus::chain([new CreateCustomerMicrosoft($order), new PlaceOrderMicrosoft($order)])->onQueue('PlaceordertoMS')->dispatch();
+                Bus::chain([new CreateCustomerMicrosoft($order), new PlaceOrderMicrosoft($order)])->onQueue('PlaceordertoMS')->dispatch();
+            }
+            else{
 
-        // CreateCustomerMicrosoft::withChain([
-        //     new PlaceOrderMicrosoft($order)
-        //     ])->dispatch($order)->allOnQueue('PlaceordertoMS');
+                PlaceOrderMicrosoft::dispatch($order)->OnQueue('PlaceordertoMS');
+                Log::info('Data to Place order: '.$order);
+            }
 
+            return view('store.index')->with(['alert' => 'success', 'message' => trans('messages.order_placed_susscessfully')]);
         }
-        else{
 
-        PlaceOrderMicrosoft::dispatch($order)->OnQueue('PlaceordertoMS');
-        Log::info('Data to Place order: '.$order);
+        public function syncproducts(Request $request)
+        {
+
+            $order = $this->orderRepository->ImportProductsMicrosoftOrder();
+
+            ImportProductsMicrosoftJob::dispatch($request, $order)->onQueue('SyncProducts')
+            ->delay(now()->addSeconds(10));
+
+            return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
+        }
+
+
     }
-
-        return view('store.index')->with(['alert' => 'success', 'message' => trans('messages.order_placed_susscessfully')]);
-    }
-
-    public function syncproducts(Request $request)
-    {
-
-        $order = $this->orderRepository->ImportProductsMicrosoftOrder();
-
-        ImportProductsMicrosoftJob::dispatch($request, $order)->onQueue('SyncProducts')
-        ->delay(now()->addSeconds(10));
-
-        return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
-    }
-
-
-}

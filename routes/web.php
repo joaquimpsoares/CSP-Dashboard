@@ -1,39 +1,23 @@
 <?php
 
 
-use App\Price;
-use App\Customer;
-use App\Instance;
-use Carbon\Carbon;
-use App\Subscription;
-use App\KasperskyLincenseInfo;
+
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\Auth\LoginController;
-
-
-// Route::prefix('jobs')->group(function () {
-    //     Route::queueMonitor();
-    // });
-
-    //Marco verifica aqui esta linha... para a importação dos productos!
-
-    // Route::resource('/analytics', 'AnalyticController');
-
-
-    // /reRoute::get('/language/{lang}', 'LanguagePreferenceController@setLanguage');
-
 
     Route::post('registerInvitation', 'UsersController@registerInvitation')->name('registerInvitation');
 
+    Route::get('exportexcel', 'AnalyticController@exportexcel')->name('exportexcel');
 
     Route::get('invite', 'InviteController@invite')->name('invite');
     Route::post('invite', 'InviteController@process')->name('process');
     // {token} is a required parameter that will be exposed to us in the controller method
     Route::get('accept/{token}', 'InviteController@accept')->name('accept');
 
-
+    // Route::livewire('/home', 'counter');
+    // Route::livewire('/check', Cart::class)->name('check');
 
     /**********************************************************************************
     Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
@@ -215,6 +199,10 @@ use App\Http\Controllers\Auth\LoginController;
                 Route::get('/customer/{customer}-{slug}', 'CustomerController@show')
                 ->middleware('permission:' . config('app.customer_show'), 'check_customer')
                 ->name('customer.show');
+
+                Route::get('/customer/{customer}-{slug}/edit', 'CustomerController@edit')
+                ->middleware('permission:' . config('app.customer_show'), 'check_customer')
+                ->name('customer.edit');
 
                 //need to check permissions has a reseller to be able tp edit.... customer_update
                 Route::post('customer/update/{customer}', 'CustomerController@update')

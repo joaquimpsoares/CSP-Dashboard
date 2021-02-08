@@ -10,7 +10,7 @@
 <section class="dark-grey-text">
     <div class="">
         <div class="table-responsive">
-            <table id="example1" class="table table-bordered text-nowrap key-buttons">
+            <table id="example1" class="table table-bordered text-wrap key-buttons">
                 <thead class="thead-dark">
                     <tr>
                         <th>{{ ucwords(trans_choice('messages.avatar', 1)) }}</th>

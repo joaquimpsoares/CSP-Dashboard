@@ -7,8 +7,6 @@ use Exception;
 use App\Instance;
 use Carbon\Carbon;
 use App\Subscription;
-use App\MicrosoftTenantInfo;
-use App\Reseller;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
@@ -48,7 +46,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
     {
         $products = $this->order->products;
         $customer = $this->order->customer;
-
+        // dd($customer);
         foreach ($products as $product)
         {
             $this->order->details = ('Stage 2 - Placing Order for: '.$product['name']. ' for Customer: '. $customer->company_name);
@@ -76,11 +74,12 @@ class PlaceOrderMicrosoft implements ShouldQueue
             'password' => 'ljhbpirtf',
             'firstName' => 'name',
             'lastName' => 'name',
-            'PartnerIdOnRecord' => $this->order->customer->format()['mpnid'],
+            'PartnerIdOnRecord' => $this->order->customer->format()['mpnid'] ?? null,
             'email' => 'name@email.com',
             ]);
 
-            Log::info('Adding existingCustomer: '.$this->order->ext_company_id);
+            Log::info('Adding existing Customer: '.$this->order->customer->microsoftTenantInfo->first()->tenant_id );
+            Log::info('Adding existing Customer: '.$existingCustomer );
 
             try {
                 $tagydescart = new TagydesCart();
@@ -97,7 +96,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
                         'maximumQuantity' => $product['maximum_quantity'],
                         'term' => $product['term'],
                         'limit' => $product['limit'],
-                        'PartnerIdOnRecord' => $this->order->customer->format()['mpnid'],
+                        'PartnerIdOnRecord' => $this->order->customer->format()['mpnid']  ?? null,
                         'isTrial' => $product['is_trial'],
                         'uri' => $product['uri'],
                         'supportedBillingCycles' => ['annual','monthly'],
@@ -116,12 +115,15 @@ class PlaceOrderMicrosoft implements ShouldQueue
                         $orderConfirm = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($tagydesorder);
                         Log::info('Confirmation of cart Cart: '.$orderConfirm);
 
+                        // Log::info('a', $orderConfirm->subscriptions()->toArray());
+
                         foreach ($orderConfirm->subscriptions() as $subscription)
                         {
+
                             $subscriptions = new Subscription();
                             $subscriptions->name = 				$subscription->name;
                             $subscriptions->subscription_id = 	$subscription->id;
-                            $subscriptions->customer_id = 		$customer->id; //customer id from request recieved from Microsoft
+                            $subscriptions->customer_id = 		$customer->id; //Local customer id
                             $subscriptions->product_id = 		$subscription->offerId;
                             $subscriptions->instance_id =		$instanceid;
                             $subscriptions->billing_type =      $product->billing;
@@ -136,9 +138,11 @@ class PlaceOrderMicrosoft implements ShouldQueue
                             $subscriptions->save();
                         }
                     }
+                    Log::info('Subscription created Successfully: before writing to order table'.$subscription );
 
-                    $this->order->ext_order_id = $subscription->orderId;
-                    $this->order->order_status_id = 4; //Order Completed state
+
+                    $this->order->ext_order_id      = $subscription->orderId;
+                    $this->order->order_status_id   = 4; //Order Completed state
                     $this->order->save();
 
                     Log::info('Subscription created Successfully: '.$subscription);

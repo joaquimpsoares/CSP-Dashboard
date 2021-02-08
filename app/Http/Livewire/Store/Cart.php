@@ -40,6 +40,11 @@ class Cart extends Component
             $this->qty++;
         }
 
+        public function checkdomainavailability()
+        {
+
+        }
+
         // protected $listeners = ['qtyupadated' => 'update'];
 
         // public function postAdded()

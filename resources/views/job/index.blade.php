@@ -31,136 +31,138 @@
     </div>
     <div class="card-body">
         <table id="example" class="table table-bordered text-nowrap key-buttons">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="">Status</th>
-                        <th class="">Job</th>
-                        <th class="">Details</th>
-                        @if(config('queue-monitor.ui.show_custom_data'))
-                        <th class="">Custom Data</th>
-                        @endif
-                        <th class="">Progress</th>
-                        <th class="">Duration</th>
-                        <th class="">Started</th>
-                        <th class="">Error</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white">
-                    @forelse($jobs as $job)
-
-                    <tr class="font-sm leading-relaxed">
-                        <td class="">
-                            @if(!$job->isFinished())
-                            <div class="">
-                                <span class="badge badge-info mt-2">Running</span>
-                            </div>
-                            @elseif($job->hasSucceeded())
-                            <div class="inline-flex flex-1 px-2 text-xs font-medium leading-5 rounded-full bg-green-200 text-green-800">
-                                <span class="badge badge-success mt-2">Success</span>
-                            </div>
-                            @else
-                            <div class="inline-flex flex-1 px-2 text-xs font-medium leading-5 rounded-full bg-red-200 text-red-800">
-                                <span class="badge badge-danger mt-2">Failed</span>
-                            </div>
-                            @endif
-                        </td>
-                        <td class="p-4 text-gray-800 text-sm leading-5 font-medium border-b border-gray-200">
-                            {{ $job->getBaseName() }}
-                            <span class="ml-1 text-xs text-gray-600">
-                                #{{ $job->job_id }}
-                            </span>
-                        </td>
-                        <td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">
-                            <div class="text-xs">
-                                <span class="text-gray-600 font-medium">Queue:</span>
-                                <span class="font-semibold">{{ $job->queue }}</span>
-                            </div>
-                            <div class="text-xs">
-                                <span class="text-gray-600 font-medium">Attempt:</span>
-                                <span class="font-semibold">{{ $job->attempt }}</span>
-                            </div>
-                        </td>
-                        @if(config('queue-monitor.ui.show_custom_data'))
-                        <td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">
-                            <textarea rows="4"
-                            class="w-64 text-xs p-1 border rounded"
-                            readonly>{{ json_encode($job->getData(), JSON_PRETTY_PRINT) }}
-                        </textarea>
-                    </td>
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="">ids</th>
+                    <th class="">Status</th>
+                    <th class="">Job</th>
+                    <th class="">Details</th>
+                    @if(config('queue-monitor.ui.show_custom_data'))
+                    <th class="">Custom Data</th>
                     @endif
-                    <td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">
-                        @if($job->progress !== null)
-                        <div class="w-32">
-                            <div class="progress progress-md mb-3">
-                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" style={{"width:".$job->progress.'%'}}></div>
-                            </div>
-                            <div class="flex justify-center mt-1 text-xs text-gray-800 font-semibold">
-                                {{ $job->progress }}%
-                            </div>
+                    <th class="">Progress</th>
+                    <th class="">Duration</th>
+                    <th class="">Started</th>
+                    <th class="">Error</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white">
+                @forelse($jobs as $job)
+                <tr class="font-sm leading-relaxed">
+                    <td>{{$job->id}}</td>
+                    <td class="">
+                        @if(!$job->isFinished())
+                        <div class="">
+                            <span class="badge badge-info mt-2">Running</span>
+                        </div>
+                        @elseif($job->hasSucceeded())
+                        <div class="inline-flex flex-1 px-2 text-xs font-medium leading-5 rounded-full bg-green-200 text-green-800">
+                            <span class="badge badge-success mt-2">Success</span>
                         </div>
                         @else
-                        -
+                        <div class="inline-flex flex-1 px-2 text-xs font-medium leading-5 rounded-full bg-red-200 text-red-800">
+                            <span class="badge badge-danger mt-2">Failed</span>
+                        </div>
                         @endif
                     </td>
-                    <td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">
-                        {{ sprintf('%02.2f', (float) $job->time_elapsed) }} s
+                    <td class="p-4 text-gray-800 text-sm leading-5 font-medium border-b border-gray-200">
+                        {{ $job->getBaseName() }}
+                        <span class="ml-1 text-xs text-gray-600">
+                            #{{ $job->job_id }}
+                        </span>
                     </td>
                     <td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">
-                        {{ $job->started_at->diffForHumans() }}
-                    </td>
-                    <td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">
-                        @if($job->hasFailed() && $job->exception_message !== null)
-                        <button type="button" class="btn btn-info mr-2" data-container="body" data-toggle="popover" data-popover-color="popinfo" data-placement="top" title="alert error" data-content="{{ $job->exception_message }}">
-                            Show Error
-                        </button>
-                        <a type="button" class="btn btn-secondary" href="/jobs/retry/{{$job->job_id}}">retry job</a>
-                        @else
-                        -
-                        @endif
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="100" class="">
-                        <div class="my-6">
-                            <div class="text-center">
-                                <div class="text-gray-500 text-lg">
-                                    No Jobs
-                                </div>
-                            </div>
+                        <div class="text-xs">
+                            <span class="text-gray-600 font-medium">Queue:</span>
+                            <span class="font-semibold">{{ $job->queue }}</span>
+                        </div>
+                        <div class="text-xs">
+                            <span class="text-gray-600 font-medium">Attempt:</span>
+                            <span class="font-semibold">{{ $job->attempt }}</span>
                         </div>
                     </td>
-                </tr>
-                @endforelse
-            </tbody>
-            {{-- <tfoot class="bg-white">
-                <tr>
-                    <td colspan="100" class="px-6 py-4 text-gray-700 font-sm border-t-2 border-gray-200">
-                        <div class="flex justify-between">
-                            <div>
-                                Showing
-                                @if($jobs->total() > 0)
-                                <span class="font-medium">{{ $jobs->firstItem() }}</span> to
-                                <span class="font-medium">{{ $jobs->lastItem() }}</span> of
-                                @endif
-                                <span class="font-medium">{{ $jobs->total() }}</span> result
-                            </div>
-                            <div>
-                                <a class="py-2 px-4 mx-1 text-xs font-medium @if(!$jobs->onFirstPage()) bg-gray-200 hover:bg-gray-300 cursor-pointer @else text-gray-600 bg-gray-100 cursor-not-allowed @endif rounded"
-                                    @if(!$jobs->onFirstPage()) href="{{ $jobs->previousPageUrl() }}" @endif>
-                                    Previous
-                                </a>
-                                <a class="py-2 px-4 mx-1 text-xs font-medium @if($jobs->hasMorePages()) bg-gray-200 hover:bg-gray-300 cursor-pointer @else text-gray-600 bg-gray-100 cursor-not-allowed @endif rounded"
-                                    @if($jobs->hasMorePages()) href="{{ $jobs->url($jobs->currentPage() + 1) }}" @endif>
-                                    Next
-                                </a>
+                    @if(config('queue-monitor.ui.show_custom_data'))
+                    <td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">
+                        <textarea rows="4"
+                        class="w-64 text-xs p-1 border rounded"
+                        readonly>{{ json_encode($job->getData(), JSON_PRETTY_PRINT) }}
+                    </textarea>
+                </td>
+                @endif
+                <td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">
+                    @if($job->progress !== null)
+                    <div class="w-32">
+                        <div class="progress progress-md mb-3">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" style={{"width:".$job->progress.'%'}}></div>
+                        </div>
+                        <div class="flex justify-center mt-1 text-xs text-gray-800 font-semibold">
+                            {{ $job->progress }}%
+                        </div>
+                    </div>
+                    @else
+                    -
+                    @endif
+                </td>
+                <td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">
+                    {{ sprintf('%02.2f', (float) $job->time_elapsed) }} s
+                </td>
+                <td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">
+                    {{ $job->started_at }}
+                    {{-- {{ $job->started_at->diffForHumans() }} --}}
+                </td>
+                <td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">
+                    @if($job->hasFailed() && $job->exception_message !== null)
+                    <button type="button" class="btn btn-info mr-2" data-container="body" data-toggle="popover" data-popover-color="popinfo" data-placement="top" title="alert error" data-content="{{ $job->exception_message }}">
+                        Show Error
+                    </button>
+                    <a type="button" class="btn btn-secondary" href="/jobs/retry/{{$job->job_id}}">retry job</a>
+                    @else
+                    -
+                    @endif
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="100" class="">
+                    <div class="my-6">
+                        <div class="text-center">
+                            <div class="text-gray-500 text-lg">
+                                No Jobs
                             </div>
                         </div>
-                    </td>
-                </tr>
-            </tfoot> --}}
-        </table>
-    </div>
+                    </div>
+                </td>
+            </tr>
+            @endforelse
+        </tbody>
+        {{-- <tfoot class="bg-white">
+            <tr>
+                <td colspan="100" class="px-6 py-4 text-gray-700 font-sm border-t-2 border-gray-200">
+                    <div class="flex justify-between">
+                        <div>
+                            Showing
+                            @if($jobs->total() > 0)
+                            <span class="font-medium">{{ $jobs->firstItem() }}</span> to
+                            <span class="font-medium">{{ $jobs->lastItem() }}</span> of
+                            @endif
+                            <span class="font-medium">{{ $jobs->total() }}</span> result
+                        </div>
+                        <div>
+                            <a class="py-2 px-4 mx-1 text-xs font-medium @if(!$jobs->onFirstPage()) bg-gray-200 hover:bg-gray-300 cursor-pointer @else text-gray-600 bg-gray-100 cursor-not-allowed @endif rounded"
+                                @if(!$jobs->onFirstPage()) href="{{ $jobs->previousPageUrl() }}" @endif>
+                                Previous
+                            </a>
+                            <a class="py-2 px-4 mx-1 text-xs font-medium @if($jobs->hasMorePages()) bg-gray-200 hover:bg-gray-300 cursor-pointer @else text-gray-600 bg-gray-100 cursor-not-allowed @endif rounded"
+                                @if($jobs->hasMorePages()) href="{{ $jobs->url($jobs->currentPage() + 1) }}" @endif>
+                                Next
+                            </a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tfoot> --}}
+    </table>
+</div>
 </div>
 @endsection
 
