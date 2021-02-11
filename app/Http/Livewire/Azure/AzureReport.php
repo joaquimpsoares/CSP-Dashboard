@@ -14,6 +14,8 @@ class AzureReport extends Component
 {
     use WithPagination;
 
+    protected $paginationTheme = 'bootstrap';
+
     public $subscription;
     public $taskduedate;
     public $startdate;
