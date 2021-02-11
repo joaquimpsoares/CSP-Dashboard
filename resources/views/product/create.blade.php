@@ -1,96 +1,15 @@
-@extends('layouts.app')
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script> 
-<style>
-    .number-input input[type="number"] {
-        -webkit-appearance: textfield;
-        -moz-appearance: textfield;
-        appearance: textfield;
-    }
-    
-    .number-input input[type=number]::-webkit-inner-spin-button,
-    .number-input input[type=number]::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-    }
-    
-    .number-input {
-        margin-bottom: 3rem;
-    }
-    
-    .number-input button {
-        -webkit-appearance: none;
-        background-color: transparent;
-        border: none;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        margin: 0;
-        position: relative;
-    }
-    
-    .number-input button:before,
-    .number-input button:after {
-        display: inline-block;
-        position: absolute;
-        content: '';
-        height: 2px;
-        transform: translate(-50%, -50%);
-    }
-    
-    .number-input button.plus:after {
-        transform: translate(-50%, -50%) rotate(90deg);
-    }
-    
-    .number-input input[type=number] {
-        text-align: center;
-    }
-    
-    .number-input.number-input {
-        border: 1px solid #ced4da;
-        width: 10rem;
-        border-radius: .25rem;
-    }
-    
-    .number-input.number-input button {
-        width: 2.6rem;
-        height: .7rem;
-    }
-    
-    .number-input.number-input button.minus {
-        padding-left: 10px;
-    }
-    
-    .number-input.number-input button:before,
-    .number-input.number-input button:after {
-        width: .7rem;
-        background-color: #495057;
-    }
-    
-    .number-input.number-input input[type=number] {
-        max-width: 4rem;
-        padding: .5rem;
-        border: 1px solid #ced4da;
-        border-width: 0 1px;
-        font-size: 1rem;
-        height: 2rem;
-        color: #495057;
-    }
-    
-    @media not all and (min-resolution:.001dpcm) {
-        @supports (-webkit-appearance: none) and (stroke-color:transparent) {
-            
-            .number-input.def-number-input.safari_only button:before,
-            .number-input.def-number-input.safari_only button:after {
-                margin-top: -.3rem;
-            }
-        }
-    }   
-</style>
-
+@extends('layouts.master')
+@section('css')
+<!-- Data table css -->
+<link href="{{URL::asset('assets/plugins/datatable/css/dataTables.bootstrap4.min.css')}}" rel="stylesheet" />
+<link href="{{URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css')}}"  rel="stylesheet">
+<link href="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.css')}}" rel="stylesheet" />
+<!-- Slect2 css -->
+<link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
+@endsection
 @section('content')
-
 <div class="container">
-    
+
     <div class="box">
         <section class="section">
             <div class="card">
@@ -102,18 +21,18 @@
                             <div class="row">
                                 <form method="POST" action="{{ route('product.store') }}" class="col s12">
                                     @method('POST')
-                                    @csrf    
+                                    @csrf
                                     <form class="col s12">
                                         <div class="row">
                                             <div class="input-field col s4">
-                                                
+
                                                 <div class="form-group">
                                                     <div class="single-element-widget">
                                                         <label for="my-select">{{ ucwords(trans_choice('messages.instance', 2)) }}</label>
                                                         <div class="default-select" id="default-select">
-                                                            <select>
-                                                                @foreach ($instances as $instance)
-                                                                <option {{$instance->id}}>{{$instance->name}}</option>
+                                                            <select name="instance_id">
+                                                                @foreach ($instances as  $instance)
+                                                                <option value="{{$instance->id}}">{{$instance->name}}</option>
                                                                 @endforeach
                                                             </select>
                                                         </div>
@@ -176,29 +95,29 @@
                                         </div>
                                         <div class="row">
                                             <div class="input-field col s4">
-                                                <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.product_mininum', 1)) }}</label>  
+                                                <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.product_mininum', 1)) }}</label>
                                                 <div class="def-number-input number-input safari_only">
-                                                    <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus"></button>
+                                                    {{-- <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus"></button> --}}
                                                     <input class="quantity" min="0" name="minimum_quantity" value="{{old('minimum_quantity')}}" type="number">
-                                                    <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus"></button>
+                                                    {{-- <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus"></button> --}}
                                                 </div>
                                             </div>
                                             <div class="input-field col s4">
-                                                <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.product_maximum', 1)) }}</label>  
+                                                <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.product_maximum', 1)) }}</label>
                                                 <div class="def-number-input number-input safari_only">
-                                                    <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus"></button>
+                                                    {{-- <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus"></button> --}}
                                                     <input class="quantity" min="0" name="maximum_quantity" type="number" value="{{old('maximum_quantity')}}">
-                                                    <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus"></button>
+                                                    {{-- <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus"></button> --}}
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="input-field col s4">
-                                                <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.subscription_limit', 1)) }}</label>  
+                                                <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.subscription_limit', 1)) }}</label>
                                                 <div class="def-number-input number-input safari_only">
-                                                    <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus"></button>
+                                                    {{-- <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus"></button> --}}
                                                     <input class="limit" min="0" name="quantity" value="{{old('limit')}}" type="number">
-                                                    <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus"></button>
+                                                    {{-- <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus"></button> --}}
                                                 </div>
                                             </div>
                                         </div>
@@ -225,7 +144,7 @@
                                                     <input type="text" id="form1" name="limit"  class="form-control" value="{{old('limit')}}">
                                                 </div>
                                             </div>
-                                        </div>  
+                                        </div>
                                         <div class="row">
                                             <div class="input-field col s4">
                                                 <div class="md-form">
@@ -236,7 +155,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="input-field col s4">
-                                                <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.trial', 1)) }}</label>  
+                                                <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.trial', 1)) }}</label>
                                                 <div class="primary-switch">
                                                     <input type="checkbox" id="default-switch">
                                                     <label for="default-switch"></label>
@@ -267,7 +186,7 @@
                         <div class="col-lg-4 mb-4">
                             <button class="button submit_btn right" type="submit">{{ucwords(trans_choice('messages.update', 1))}}</button>
                         </div>
-                    </div>	  
+                    </div>
                 </div>
             </div>
         </div>
@@ -275,13 +194,21 @@
 </div>
 @endsection
 
-@section('scripts')
-
-
-<script>
-    $(document).ready(function() {
-        $('.country_select').select2();
-    });
-</script>
-
+@section('js')
+<!-- Data tables -->
+<script src="{{URL::asset('assets/plugins/datatable/js/jquery.dataTables.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/buttons.bootstrap4.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/jszip.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/pdfmake.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/vfs_fonts.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/buttons.html5.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/buttons.print.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/dataTables.responsive.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.js')}}"></script>
+<script src="{{URL::asset('assets/js/datatables.js')}}"></script>
+<!-- Select2 js -->
+<script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
 @endsection

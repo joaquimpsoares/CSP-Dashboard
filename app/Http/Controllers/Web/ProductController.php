@@ -52,12 +52,13 @@ class ProductController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(Instance $instance, Request $request)
     {
-        $product = new Product();
-            $product->vendor       = $request->vendor;
-            $product->instance_id       = '3';
 
+        // dd($request->all());
+        $product = new Product();
+            $product->vendor                    = $request->vendor;
+            $product->instance_id               = $request->instance;
             $product->sku                       = $request->sku;
             $product->name                      = $request->name;
             $product->description               = $request->description;
@@ -67,12 +68,9 @@ class ProductController extends Controller
             $product->maximum_quantity              = $request->maximum_quantity;
             $product->limit                         = $request->limit;
             $product->billing                        = $request->billing;
-            $product->supported_billing_cycles       = $request->supported_billing_cycles;
+            $product->supported_billing_cycles       = json_encode($request->supported_billing_cycles);
             $product->category                       = $request->category;
             $product->resellee_qualifications        = $request->resellee_qualifications;
-            // $product->name       = $request->name;
-            // $product->name       = $request->name;
-            // $product->name       = $request->name;
 
             $product->save();
 
