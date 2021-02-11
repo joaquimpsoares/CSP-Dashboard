@@ -227,7 +227,7 @@
                                 </table>
                                 <div class="card-footer d-flex text-right">
                                     @if ($reports->total() >= '10')
-                                    {{ $reports->links() }}
+                                    {!! $reports->render() !!}
                                     @endif
                                 </div>
                             </div>
