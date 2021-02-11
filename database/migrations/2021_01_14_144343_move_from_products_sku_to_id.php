@@ -8,8 +8,8 @@ class MoveFromProductsSkuToId extends Migration
 {
     public function up()
     {
-        Schema::table('', function (Blueprint $table) {
-            //
+        Schema::table('prices', function (Blueprint $table) {
+            $table->unsignedBigInteger('product_id')->nullable();
         });
     }
 }
