@@ -58,7 +58,7 @@ class ProductController extends Controller
         // dd($request->all());
         $product = new Product();
             $product->vendor                    = $request->vendor;
-            $product->instance_id               = $request->instance;
+            $product->instance_id               = $request->instance_id;
             $product->sku                       = $request->sku;
             $product->name                      = $request->name;
             $product->description               = $request->description;
