@@ -2,13 +2,13 @@
 
 namespace App;
 
+use App\Models\Metafield;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
     protected $guarded = [];
-
 
     protected $casts = [
         'has_addons' => 'boolean',
@@ -83,5 +83,9 @@ class Product extends Model
 
     public function tiers() {
         return $this->hasMany('App\Tier', 'product_sku', 'sku');
+    }
+
+    public function metafields(){
+        return $this->morphMany(Metafield::class, 'metafieldable');
     }
 }

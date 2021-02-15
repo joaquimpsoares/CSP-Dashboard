@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Price;
+use App\Product;
 
 class MovePriceSkuToId extends Command
 {
@@ -26,9 +26,9 @@ class MovePriceSkuToId extends Command
 
     public function handle()
     {
-        Price::with('product')->eachById(function(Price $price){
-            $price->update([
-                'product_id' => $price->product->id
+        Product::eachById(function(Product $product){
+            $product->prices()->update([
+                'product_id' => $product->id
             ]);
         });
 
