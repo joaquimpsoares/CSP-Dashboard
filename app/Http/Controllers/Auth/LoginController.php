@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Redirect;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Support\Facades\Redirect;
 
 class LoginController extends Controller
 {
@@ -62,11 +63,6 @@ class LoginController extends Controller
     public function handleProviderCallback(Request $request)
     {
 
-        if ($request->has('error')){
-            return Redirect::route('login')->with('danger','Please ask for the correct permissions to access the app: '.$request);
-        };
-
-
         $socialiteUser = Socialite::driver('graph')
         ->setTenantId(env('GRAPH_TENANT_ID'))
         ->stateless()
@@ -74,9 +70,15 @@ class LoginController extends Controller
 
         $user = User::where('socialite_id', $socialiteUser->getId())->first();
 
-        Auth()->login($user, true);
+        if(empty($user)){
 
-        return redirect('/');
+            return Redirect::route('login')->with('danger','Please ask for the correct permissions to access the app: ');
+
+        }else {
+
+            Auth()->login($user, true);
+            return redirect('/');
+        }
     }
 
 
