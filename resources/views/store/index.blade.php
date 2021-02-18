@@ -1,5 +1,6 @@
 @extends('layouts.master')
 @section('css')
+<link href="{{ asset('css/app.css') }}" rel="stylesheet">
 <!-- Data table css -->
 <link href="{{URL::asset('assets/plugins/datatable/css/dataTables.bootstrap4.min.css')}}" rel="stylesheet" />
 <link href="{{URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css')}}"  rel="stylesheet">
@@ -9,11 +10,7 @@
 @endsection
 
 @section('content')
-<div class="container">
-	<livewire:store.store/>
-</div>
-
-
+<livewire:store.store/>
 @endsection
 
 @section('scripts')

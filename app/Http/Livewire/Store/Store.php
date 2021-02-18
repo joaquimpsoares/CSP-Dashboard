@@ -4,49 +4,51 @@ namespace App\Http\Livewire\Store;
 
 use App\Product;
 use Livewire\Component;
-use App\Http\Traits\UserTrait;
-use App\Price;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class Store extends Component
 {
-    use UserTrait;
+    public String $search = '';
+    public String $vendor = '';
+    public String $category = '';
 
-    public function mount(){
+    public function render()
+    {
+        $user = Auth::user();
 
-        $this->user = $this->getUser();
-
-        $this->level = $this->getUserLevel();
-
-        switch ($this->level) {
-
-            case 'Provider':
-                return abort(403, __('errors.access_with_resellers_credentials'));
-                $this->instance = $this->user->provider->instances->pluck('id');
-                $this->priceList = Price::get('product_vendor')->groupby('product_vendor');
-            break;
-
+        switch ($user->userLevel->name) {
             case 'Reseller':
-                $this->instance = $this->user->reseller->provider->instances->pluck('id');
-                $this->priceList = Price::get('product_vendor')->groupby('product_vendor');
-            break;
+                $priceList = $user->reseller->priceList;
+                break;
+
             case 'Customer':
-                $this->instance = $this->user->customer->resellers->first()->provider->instances->pluck('id');
-                $this->priceList = Price::get('product_vendor')->groupby('product_vendor');
-            break;
+                $priceList = $user->customer->resellers->first()->priceList;
+                break;
+
             default:
-            # code...
-        break;
-    }
-    // $this->priceList = $this->user->reseller->priceLists->first()->id;
-}
+                return abort(403, __('errors.access_with_resellers_credentials'));
+        }
 
-public function render()
-{
-    return view('livewire.store.store', [
+        $products = Product::whereHas('prices', function(Builder $query)use($priceList){
+            $query->where('price_list_id', $priceList->id);
+        })->where(function(Builder $query){
+            if(! $this->vendor) return;
 
-        'products' => Product::select('vendor')
-        ->wherein('instance_id', $this->instance)
-        ->groupby('vendor')->get(),
+            $query->where('vendor', $this->vendor);
+        })->where(function(Builder $query){
+            if(! $this->category) return;
+
+            $query->where('category', $this->category);
+        })->where(function (Builder $query)  {
+            $query->where('name', "LIKE", "%{$this->search}%");
+            $query->orWhere('sku', 'LIKE', "%{$this->search}%");
+        })->get();
+
+        return view('livewire.store.store', [
+            'products' => $products,
+            'vendors' => Product::pluck('vendor')->unique(),
+            'categories' => Product::pluck('category')->unique(),
         ]);
     }
 }
