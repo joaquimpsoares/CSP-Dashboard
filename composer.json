@@ -39,6 +39,7 @@
         "socialiteproviders/microsoft": "^4.0",
         "socialiteproviders/microsoft-graph": "^4.0",
         "spatie/laravel-permission": "^3.11",
+        "spatie/simple-excel": "^1.13",
         "tagydes/kaspersky-connection": "dev-master",
         "tagydes/microsoft-connection": "dev-master",
         "tymon/jwt-auth": "^1.0",
