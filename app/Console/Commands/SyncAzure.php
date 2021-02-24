@@ -17,6 +17,7 @@ use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
 
+ini_set('memory_limit', '-1');
 
 class SyncAzure extends Command
 {
@@ -127,7 +128,7 @@ class SyncAzure extends Command
                             'cost'                  => (json_encode($price->rates[0])*$resource->quantity)
                         ]);
                         Log::info(json_encode($price->rates[0])*$resource->quantity);
-                        // $this->info($resource);
+                        $this->info($resource);
                     });
                 }
                 catch (Exception $e) {

@@ -2,13 +2,18 @@
 
 namespace App\Http\Livewire\Store;
 
-use App\Cart as StoreCart;
 use Livewire\Component;
+use App\Cart as StoreCart;
+use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 
 
 class Cart extends Component
 {
+
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
 
     public $qty = 1;
     public $cart = [];

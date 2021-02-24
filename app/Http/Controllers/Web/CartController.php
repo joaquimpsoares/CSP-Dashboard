@@ -537,7 +537,7 @@ class CartController extends Controller
 
         if (empty($token)) {
             if (empty($id)) {
-                $cart = Cart::where('user_id', $user->id)->whereNull('customer_id')->with(['products', 'customer'])->first();
+                $cart = Cart::where('user_id', $user->id)->orWhere('customer_id', session('customer_id'))->with(['products', 'customer'])->first();
             } else {
                 $cart = Cart::where('user_id', $user->id)->where('id', $id)->with(['products', 'customer'])->first();
             }

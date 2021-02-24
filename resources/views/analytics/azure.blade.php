@@ -36,7 +36,7 @@
                     <table class="table table-vcenter text-nowrap mb-0 border">
                         <thead>
                             <tr>
-                                <th >{{ ucwords(trans_choice('messages.company_name', 1)) }}</th>
+                                <th>{{ ucwords(trans_choice('messages.company_name', 1)) }}</th>
                                 <th>{{ ucwords(trans_choice('messages.subscription_name', 1)) }}</th>
                                 <th>{{ ucwords(trans_choice('messages.estimated_cost', 1)) }}</th>
                                 <th>{{ ucwords(trans_choice('messages.budget', 1)) }}</th>
@@ -47,8 +47,7 @@
                         <tbody>
                             @foreach ($resourceName as $item)
                             <tr>
-                                <td class="d-flex">{{$item->customer['company_name']}}</td>
-                                @dd($item->customer['markup'])
+                                <td class="d-flex"><a href="{{ $item->customer->format()['path'] }}">{{$item->customer['company_name']}}</a></td>
                                 <td>{{$item->name}}</td>
                                 @php
                                 $percentage =($item->customer['markup']/100)*$item->azureresources->sum('cost');
@@ -69,61 +68,52 @@
                                         <a class="btn btn-white btn-sm" href="/analytics/details/{{$item->customer_id}}/{{$item->id}}">View Details</a>
                                         <a class="btn btn-white btn-sm" href="/analytics/update/{{$item->customer_id}}/{{$item->id}}">Update</a>
                                     </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            <div class="card-footer d-flex text-right">
-                                @if ($resourceName->total() >= '10')
-                                {!! $resourceName->render() !!}
-                                @endif
-                            </div>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <div class="card-footer d-flex text-right">
+                            @if ($resourceName->total() >= '10')
+                            {!! $resourceName->render() !!}
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
 
-        @endsection
+    @endsection
 
-        {{-- <script>
+    @section('js')
 
-            var t10Sum = {!! $top10S !!};
-            var t10Category = {!! $top10C !!};
+    <!--Moment js-->
+    <script src="{{URL::asset('assets/plugins/moment/moment.js')}}"></script>
+    <!-- Daterangepicker js-->
+    <script src="{{URL::asset('assets/plugins/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
+    <script src="{{URL::asset('assets/js/daterange.js')}}"></script>
+    <!--Chart js -->
+    <script src="{{URL::asset('assets/plugins/chart/chart.min.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/chart/chart.extension.js')}}"></script>
+    <!-- ECharts js-->
+    <script src="{{URL::asset('assets/plugins/echarts/echarts.js')}}"></script>
+    <script src="{{URL::asset('assets/js/index2.js')}}"></script>
 
-            var sum = {!! $sum !!};
-            var category = {!! $category !!};
-
-        </script> --}}
-        @section('js')
-
-        <!--Moment js-->
-        <script src="{{URL::asset('assets/plugins/moment/moment.js')}}"></script>
-        <!-- Daterangepicker js-->
-        <script src="{{URL::asset('assets/plugins/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
-        <script src="{{URL::asset('assets/js/daterange.js')}}"></script>
-        <!--Chart js -->
-        <script src="{{URL::asset('assets/plugins/chart/chart.min.js')}}"></script>
-        <script src="{{URL::asset('assets/plugins/chart/chart.extension.js')}}"></script>
-        <!-- ECharts js-->
-        <script src="{{URL::asset('assets/plugins/echarts/echarts.js')}}"></script>
-        <script src="{{URL::asset('assets/js/index2.js')}}"></script>
-
-        <!-- Data tables -->
-        <script src="{{URL::asset('assets/plugins/datatable/js/jquery.dataTables.js')}}"></script>
-        <script src="{{URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js')}}"></script>
-        <script src="{{URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js')}}"></script>
-        <script src="{{URL::asset('assets/plugins/datatable/js/buttons.bootstrap4.min.js')}}"></script>
-        <script src="{{URL::asset('assets/plugins/datatable/js/jszip.min.js')}}"></script>
-        <script src="{{URL::asset('assets/plugins/datatable/js/pdfmake.min.js')}}"></script>
-        <script src="{{URL::asset('assets/plugins/datatable/js/vfs_fonts.js')}}"></script>
-        <script src="{{URL::asset('assets/plugins/datatable/js/buttons.html5.min.js')}}"></script>
-        <script src="{{URL::asset('assets/plugins/datatable/js/buttons.print.min.js')}}"></script>
-        <script src="{{URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js')}}"></script>
-        <script src="{{URL::asset('assets/plugins/datatable/dataTables.responsive.min.js')}}"></script>
-        <script src="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.js')}}"></script>
-        <script src="{{URL::asset('assets/js/datatables.js')}}"></script>
-        <!-- Select2 js -->
-        <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
-        @endsection
+    <!-- Data tables -->
+    <script src="{{URL::asset('assets/plugins/datatable/js/jquery.dataTables.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/datatable/js/buttons.bootstrap4.min.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/datatable/js/jszip.min.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/datatable/js/pdfmake.min.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/datatable/js/vfs_fonts.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/datatable/js/buttons.html5.min.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/datatable/js/buttons.print.min.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/datatable/dataTables.responsive.min.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.js')}}"></script>
+    <script src="{{URL::asset('assets/js/datatables.js')}}"></script>
+    <!-- Select2 js -->
+    <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
+    @endsection

@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\DB;
 
 class Searchstore extends Component
 {
+
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
     use UserTrait;
 
     public $search = '';

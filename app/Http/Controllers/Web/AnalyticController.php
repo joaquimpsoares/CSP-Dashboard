@@ -79,6 +79,7 @@ class AnalyticController extends Controller
                 }
             }
         });
+        // dd();
 
         return view('analytics.azure', [
             'resourceName'  => $resourceName,

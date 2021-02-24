@@ -26,8 +26,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('SyncAzure:daily')->daily();
-        $schedule->command('syncAzureBudget:daily')->daily();
+        $schedule->command('SyncAzure:daily')->dailyAt('20:00');
+        $schedule->command('syncAzureBudget:daily')->everyMinute();
 
     }
 

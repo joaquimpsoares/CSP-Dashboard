@@ -100,40 +100,40 @@ class AnalyticRepository implements AnalyticRepositoryInterface
         $top10S = array_column($top10Q, 'sum');
 
         // TODO: cache key should be dynamic by customer
-        // $budget = cache()->remember('azure.budget', 0, function() use($customer_id, $subscription){
+        $budget = cache()->remember('azure.budget', 0, function() use($customer_id, $subscription){
 
-        // $instance = Instance::where('id', $subscription->instance_id)->first();
+        $instance = Instance::where('id', $subscription->instance_id)->first();
 
-        // $customer = new TagydesCustomer([
-        //     'id' => $customer_id,
-        //     'username' => 'bill@tagydes.com',
-        //     'password' => 'blabla',
-        //     'firstName' => 'Nombre',
-        //     'lastName' => 'Apellido',
-        //     'email' => 'bill@tagydes.com',
-        //     ]);
+        $customer = new TagydesCustomer([
+            'id' => $customer_id,
+            'username' => 'bill@tagydes.com',
+            'password' => 'blabla',
+            'firstName' => 'Nombre',
+            'lastName' => 'Apellido',
+            'email' => 'bill@tagydes.com',
+            ]);
 
-        // $subscription = new TagydesSubscription([
-        //     'id'            => $subscription->subscription_id,
-        //     'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-        //     'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-        //     'customerId'    => "3bd72a86-a8ea-44a6-a899-f3cccbedf027",
-        //     'name'          => "5trvfvczdfv",
-        //     'status'        => "5trvfvczdfv",
-        //     'quantity'      => "1",
-        //     'currency'      => "EUR",
-        //     'billingCycle'  => "monthly",
-        //     'created_at'    => "5trvfvczdfv",
-        //     ]);
+        $subscription = new TagydesSubscription([
+            'id'            => $subscription->subscription_id,
+            'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
+            'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
+            'customerId'    => "3bd72a86-a8ea-44a6-a899-f3cccbedf027",
+            'name'          => "5trvfvczdfv",
+            'status'        => "5trvfvczdfv",
+            'quantity'      => "1",
+            'currency'      => "EUR",
+            'billingCycle'  => "monthly",
+            'created_at'    => "5trvfvczdfv",
+            ]);
 
-        // return (int) FacadesAzureResource::withCredentials(
-        //     $instance->external_id,$instance->external_token
-        //     )->budget($customer, $subscription);
+        return (int) FacadesAzureResource::withCredentials(
+            $instance->external_id,$instance->external_token
+            )->budget($customer, $subscription);
 
-        // });
+        });
 
-        // $subscription->budget = $budget;
-        // $subscription->save();
+        $subscription->budget = $budget;
+        $subscription->save();
         $budget = $subscription->budget;
 
         $costSum = AzureResource::where('subscription_id', $subscription->id)->sum('cost');

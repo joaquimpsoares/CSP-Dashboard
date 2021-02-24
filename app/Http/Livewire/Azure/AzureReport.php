@@ -148,8 +148,6 @@ class AzureReport extends Component
             return $item;
         });
 
-        // dd($reports);
-
     return view('livewire.azure.azure-report', [
         'reports' => $reports,
         'resourceGroups' => $resourceGroups,
