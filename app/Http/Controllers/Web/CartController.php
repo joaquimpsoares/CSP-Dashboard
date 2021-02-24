@@ -51,6 +51,13 @@ class CartController extends Controller
         return view('order.pending_carts', compact('carts'));
     }
 
+    public static function getPendingCart() {
+        $user = Auth::user();
+        $carts = Cart::where('user_id', $user->id)->get();
+// dd($carts);
+        return $carts;
+    }
+
     public function addProductToCart(Request $request)
     {
 

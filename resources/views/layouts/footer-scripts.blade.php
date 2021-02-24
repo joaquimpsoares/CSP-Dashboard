@@ -28,3 +28,5 @@
 @yield('js')
 <!-- Custom js-->
 <script src="{{URL::asset('assets/js/custom.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
+

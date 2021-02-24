@@ -39,15 +39,15 @@ class Price extends Model
 		return $this->belongsTo('App\PriceList', 'price_list_id', 'id');
 	}
 
-	public function product() {
-		return $this->belongsTo('App\Product', 'product_sku', 'sku')
-		->where('vendor', $this->product_vendor)->where('instance_id', session()->get('instance_id'));
-    }
+	// public function product() {
+	// 	return $this->belongsTo('App\Product', 'product_sku', 'sku')
+	// 	->where('vendor', $this->product_vendor)->where('instance_id', session()->get('instance_id'));
+    // }
 
 	// Uncomment and remove the method before after step 1 of migrating SKUs to Ids on prices table
-	// public function product() {
-	// 	return $this->belongsTo('App\Product')->where('vendor', $this->product_vendor)->where('instance_id', session()->get('instance_id'));
-    // }
+	public function product() {
+		return $this->belongsTo('App\Product')->where('vendor', $this->product_vendor)->where('instance_id', session()->get('instance_id'));
+    }
 
     // public function products() {
     //     return $this->hasOne('App\Product', 'sku', 'product_sku');

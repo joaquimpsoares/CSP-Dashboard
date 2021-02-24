@@ -2,16 +2,74 @@
 
 namespace App\Http\Livewire\Store;
 
+use App\Cart;
+use App\Price;
 use App\Product;
 use Livewire\Component;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
+use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 
 class Store extends Component
 {
-    public String $search = '';
-    public String $vendor = '';
-    public String $category = '';
+    use WithPagination;
+    protected $paginationTheme = 'bootstrap';
+
+    public $showModal = false;
+    public $search;
+    public $vendor;
+    public $category;
+    public $cartProducts = [];
+
+    public function addToCart(Product $productId)
+    {
+
+        $price= Price::where('product_id', $productId)->get();
+        $cart = $this->getUserCart();
+
+
+        if (! $cart) {
+            $cart = new Cart();
+            $cart->save();
+        }
+
+
+        $cart->products()->attach($productId, [
+            'price' => $productId->prices->price,
+            'retail_price' => $productId->prices->msrp,
+            'id' => Str::uuid(),
+            'quantity' => $productId->minimum_quantity
+            ]);
+            // dd($productId);
+
+            $this->showModal = true;
+            session()->flash('success','Added: "' . $productId->name . '" to your your shopping cart');
+        $this->emit('updateCart');
+    }
+
+    public function close()
+        {
+            $this->showModal = false;
+        }
+
+    public static  function getUserCart($id = null, $token = null)
+    {
+
+        $user = Auth::user();
+
+        if (empty($token)) {
+            if (empty($id)) {
+                $cart = Cart::where('user_id', $user->id)->whereNull('customer_id')->with(['products', 'customer'])->first();
+            } else {
+                $cart = Cart::where('user_id', $user->id)->where('id', $id)->with(['products', 'customer'])->first();
+            }
+        } else {
+            $cart = Cart::where('user_id', $user->id)->where('token', $token)->with(['products', 'customer'])->first();
+        }
+
+        return $cart;
+    }
 
     public function render()
     {
@@ -43,9 +101,9 @@ class Store extends Component
         })->where(function (Builder $query)  {
             $query->where('name', "LIKE", "%{$this->search}%");
             $query->orWhere('sku', 'LIKE', "%{$this->search}%");
-        })->get();
+        })->paginate(10);
 
-        return view('livewire.store.store', [
+         return view('livewire.store.store', [
             'products' => $products,
             'vendors' => Product::pluck('vendor')->unique(),
             'categories' => Product::pluck('category')->unique(),

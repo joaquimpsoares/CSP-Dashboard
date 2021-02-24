@@ -2,16 +2,14 @@
 @php
 $cartcount = App\Http\Controllers\Web\CartController::CountCart();
 @endphp
-{{-- $cartcount) --}}
 
-{{-- ) --}}
 <div class="app-sidebar app-sidebar2">
     <div class="app-sidebar__logo">
         <a class="header-brand" href="/">
             <img src="{{URL::asset('images/tagydes_logo.png')}}" class="header-brand-img desktop-lgo" alt="Covido logo">
             <img src="{{URL::asset('assets/images/brand/logo1.png')}}" class="header-brand-img dark-logo" alt="Covido logo">
             <img src="{{URL::asset('assets/images/brand/favicon.png')}}" class="header-brand-img mobile-logo" alt="Covido logo">
-            <img src="{{URL::asset('assets/images/brand/favicon1.png')}}" class="header-brand-img darkmobile-logo" alt="Covido logo">
+            {{-- <img src="{{URL::asset('assets/images/brand/favicon1.png')}}" class="header-brand-img darkmobile-logo" alt="Covido logo"> --}}
         </a>
     </div>
 </div>
