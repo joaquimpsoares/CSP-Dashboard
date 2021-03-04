@@ -82,7 +82,7 @@ class CustomerController extends ApiController
         //     'email', 'password', 'username', 'first_name', 'last_name',
         //     'phone', 'address', 'country_id', 'birthday', 'role_id'
         // ]);
-        return $request->all();
+        // return $request->all();
             // return $request->all();
             // return $country_id;
             // $request->address_1,
@@ -95,6 +95,8 @@ class CustomerController extends ApiController
             $user = $this->getUser();
 
             $country_id = Country::where('name', $request->country)->first();
+
+            // return $country_id->id;
 
     try {
         DB::beginTransaction();
@@ -110,7 +112,8 @@ class CustomerController extends ApiController
             'status_id'     => 1
             ]);
 
-            $newCustomer->resellers()->attach($request->reseller);
+            $newCustomer->save();
+            $newCustomer->resellers()->attach($request->reseller_id);
 
 
         $user = User::create ([
@@ -130,7 +133,9 @@ class CustomerController extends ApiController
 
             $user->assignRole(config('app.customer'));
 
+            $user->save();
 
+            DB::commit();
         } catch (\PDOException $e) {
             DB::rollBack();
             if ($e->errorInfo[1] == 1062) {
@@ -141,7 +146,7 @@ class CustomerController extends ApiController
             }
 
         }
-        return  response()->json($newCustomer, 201);
+        return  response()->json([$newCustomer, $user], 201);
 
 
     }

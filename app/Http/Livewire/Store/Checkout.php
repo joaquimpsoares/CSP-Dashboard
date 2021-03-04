@@ -3,28 +3,30 @@
 namespace App\Http\Livewire\Store;
 
 use App\Cart;
+use App\Product;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Web\CartController;
 
-class CartCounter extends Component
+
+class Checkout extends Component
 {
-    protected $listeners = ['updateCart' => 'open'];
 
-    public $cartOpen = false;
-    public $isOpen = false;
+    public $currentProduct = 1;
 
-    public function close()
+    public function mount()
     {
-        $this->cartOpen = false;
-        $this->isOpen = false;
+        $this->currentProduct = new Product();
     }
 
-    public function open()
+    public function increment()
     {
-        $this->cartOpen = true;
-        $this->isOpen = true;
+
+        $this->currentProduct++;
+
     }
+
+
 
     public function removeItem($item_pivot_id)
     {
@@ -33,10 +35,9 @@ class CartCounter extends Component
         $cart->products()->wherePivot('id', $item_pivot_id)->detach();
     }
 
-
     public function render()
     {
-        return view('livewire.store.cart-counter', [
+        return view('livewire.store.checkout', [
             'cart' => CartController::getPendingCart(),
         ]);
     }

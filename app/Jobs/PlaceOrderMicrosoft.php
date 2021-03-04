@@ -121,19 +121,19 @@ class PlaceOrderMicrosoft implements ShouldQueue
                         {
 
                             $subscriptions = new Subscription();
-                            $subscriptions->name = 				$subscription->name;
-                            $subscriptions->subscription_id = 	$subscription->id;
-                            $subscriptions->customer_id = 		$customer->id; //Local customer id
-                            $subscriptions->product_id = 		$subscription->offerId;
-                            $subscriptions->instance_id =		$instanceid;
+                            $subscriptions->name =                              $subscription->name;
+                            $subscriptions->subscription_id =   $subscription->id;
+                            $subscriptions->customer_id =               $customer->id; //Local customer id
+                            $subscriptions->product_id =                $subscription->offerId;
+                            $subscriptions->instance_id =               $instanceid;
                             $subscriptions->billing_type =      $product->billing;
-                            $subscriptions->order_id = 			$subscription->orderId;
-                            $subscriptions->amount = 			$subscription->quantity;
+                            $subscriptions->order_id =                  $subscription->orderId;
+                            $subscriptions->amount =                    $subscription->quantity;
                             $subscriptions->msrpid=             $this->order->customer->format()['mpnid'];
-                            $subscriptions->expiration_data	=	Carbon::now()->addYear()->toDateTimeString(); //Set subscription expiration date
-                            $subscriptions->billing_period = 	$subscription->billingCycle;
-                            $subscriptions->currency = 			$subscription->currency;
-                            $subscriptions->tenant_name	=		$this->order->domain ?? $this->order->customer->microsoftTenantInfo->first()->tenant_domain;
+                            $subscriptions->expiration_data     =       Carbon::now()->addYear()->toDateTimeString(); //Set subscription expiration date
+                            $subscriptions->billing_period =    $subscription->billingCycle;
+                            $subscriptions->currency =                  $subscription->currency;
+                            $subscriptions->tenant_name =               $this->order->domain ?? $this->order->customer->microsoftTenantInfo->first()->tenant_domain;
                             $subscriptions->status_id =         1;
                             $subscriptions->save();
                         }

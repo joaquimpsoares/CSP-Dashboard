@@ -28,11 +28,6 @@ class Cart extends Component
         // $this->update();
     }
 
-    // public function update(){
-        //     $this->qty = array_sum($this->amount);
-
-
-        // }
 
         public function remove()
         {

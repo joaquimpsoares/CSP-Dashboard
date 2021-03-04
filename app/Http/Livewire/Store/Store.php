@@ -16,7 +16,6 @@ class Store extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
-    public $showModal = false;
     public $search;
     public $vendor;
     public $category;
@@ -28,12 +27,10 @@ class Store extends Component
         $price= Price::where('product_id', $productId)->get();
         $cart = $this->getUserCart();
 
-
         if (! $cart) {
             $cart = new Cart();
             $cart->save();
         }
-
 
         $cart->products()->attach($productId, [
             'price' => $productId->prices->price,
@@ -41,11 +38,8 @@ class Store extends Component
             'id' => Str::uuid(),
             'quantity' => $productId->minimum_quantity
             ]);
-            // dd($productId);
 
-            $this->showModal = true;
-            session()->flash('success','Added: "' . $productId->name . '" to your your shopping cart');
-        $this->emit('updateCart');
+            $this->emit('updateCart');
     }
 
     public function close()
@@ -77,10 +71,12 @@ class Store extends Component
 
         switch ($user->userLevel->name) {
             case 'Reseller':
+                $instance = $user->reseller->provider->instances->pluck('id');
                 $priceList = $user->reseller->priceList;
                 break;
 
             case 'Customer':
+                $instance = $user->customer->resellers->first()->provider->instances->pluck('id');
                 $priceList = $user->customer->resellers->first()->priceList;
                 break;
 
@@ -89,9 +85,11 @@ class Store extends Component
         }
 
         $products = Product::whereHas('prices', function(Builder $query)use($priceList){
-            $query->where('price_list_id', $priceList->id);
+            $query->where('price_list_id', $priceList->id)
+            ->where('instance_id', session()->get('instance_id'));
         })->where(function(Builder $query){
             if(! $this->vendor) return;
+
 
             $query->where('vendor', $this->vendor);
         })->where(function(Builder $query){
