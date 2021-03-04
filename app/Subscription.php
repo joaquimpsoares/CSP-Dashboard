@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Subscription extends Model
 {
-    use ActivityTrait;
+    //use ActivityTrait;
 
     protected $guarded = [];
 
