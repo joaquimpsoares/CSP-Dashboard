@@ -15,13 +15,13 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
 </div>
 <aside class="app-sidebar app-sidebar3">
     <div class="app-sidebar__user">
-        <div class="dropdown user-pro-body text-center">
+        <div class="text-center dropdown user-pro-body">
             <div class="user-pic">
-                <img src="{{Auth::user()->avatar}}" alt="user-img" class="avatar-xl rounded-circle mb-1">
+                <img src="{{Auth::user()->avatar}}" alt="user-img" class="mb-1 avatar-xl rounded-circle">
             </div>
             <div class="user-info">
-                <h5 class=" mb-1 font-weight-bold">{{Auth::user()->name}} {{Auth::user()->last_name}}</h5>
-                <span class="text-muted app-sidebar__user-name text-sm">{{Auth::user()->resellers}}</span>
+                <h5 class="mb-1 font-weight-bold">{{Auth::user()->name}} {{Auth::user()->last_name}}</h5>
+                <span class="text-sm text-muted app-sidebar__user-name">{{Auth::user()->resellers}}</span>
             </div>
         </div>
     </div>
@@ -81,7 +81,7 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
 
                 <span class="side-menu__label">{{ ucwords(__('messages.marketplace')) }}
                     {{-- <span class="pulse"></span> --}}
-                    <span class="ml-auto badge-pill badge-success">{{$cartcount}}</span>
+                    {{-- <span class="ml-auto badge-pill badge-success">{{$cartcount}}</span> --}}
                 </span><i class="angle fa fa-angle-right"></i>
             </a>
 
@@ -90,7 +90,8 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
                 <li><a href="{{ url('/' . $page='order') }}" class="slide-item">{{ ucwords(trans_choice('messages.order', 2)) }}</a></li>
 
                 <li><a href="{{ url('/' . $page='cart') }}" class="slide-item"> Shopping Cart
-                    <span class="ml-auto badge-pill badge-success">{{$cartcount}}</span></li></a>
+                    {{-- <span class="ml-auto badge-pill badge-success">{{$cartcount}}</span></li> --}}
+                </a>
                 </ul>
             </li>
             <li class="slide">
@@ -117,19 +118,19 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
             {{-- @endcan --}}
         </ul>
         <div class="app-sidebar-help">
-            <div class="dropdown text-center">
+            <div class="text-center dropdown">
                 <div class="help d-flex">
-                    <a href="{{ url('/' . $page='#') }}" class="nav-link p-0 help-dropdown" data-toggle="dropdown">
-                        <span class="font-weight-bold">Help Info</span> <i class="fa fa-angle-down ml-2"></i>
+                    <a href="{{ url('/' . $page='#') }}" class="p-0 nav-link help-dropdown" data-toggle="dropdown">
+                        <span class="font-weight-bold">Help Info</span> <i class="ml-2 fa fa-angle-down"></i>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow p-4">
-                        <div class="border-bottom pb-3">
+                    <div class="p-4 dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                        <div class="pb-3 border-bottom">
                             <h4 class="font-weight-bold">Help</h4>
                             <a class="btn btn-secondary" style="color: white" href="{{ url('/' . $page='tickets') }}">Support Tickets</a>
                             <a class="text-primary d-block" href="{{ url('/' . $page='#') }}">Support@tagydes.com</a>
                             {{-- <a class="text-primary d-block" href="{{ url('/' . $page='#') }}">88 8888 8888</a> --}}
                         </div>
-                        <div class="border-bottom pb-3 pt-3 mb-3">
+                        <div class="pt-3 pb-3 mb-3 border-bottom">
                             {{-- <p class="mb-1">Your Fax Number</p>
                             <a class="font-weight-bold" href="{{ url('/' . $page='#') }}">88 8888 8888</a> --}}
                         </div>
@@ -140,7 +141,7 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
                         </a>
                     </div>
                     <div class="ml-auto">
-                        <a class="nav-link icon p-0" href="{{ url('/' . $page='#') }}">
+                        <a class="p-0 nav-link icon" href="{{ url('/' . $page='#') }}">
                             <svg class="header-icon" x="1008" y="1248" viewBox="0 0 24 24"  height="100%" width="100%" preserveAspectRatio="xMidYMid meet" focusable="false"><path opacity=".3" d="M12 6.5c-2.49 0-4 2.02-4 4.5v6h8v-6c0-2.48-1.51-4.5-4-4.5z"></path><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-11c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2v-5zm-2 6H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6zM7.58 4.08L6.15 2.65C3.75 4.48 2.17 7.3 2.03 10.5h2a8.445 8.445 0 013.55-6.42zm12.39 6.42h2c-.15-3.2-1.73-6.02-4.12-7.85l-1.42 1.43a8.495 8.495 0 013.54 6.42z"></path></svg>
                             <span class="pulse "></span>
                         </a>
