@@ -16,13 +16,24 @@ class Store extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
+    public $showModal = false;
+
+    public $details;
     public $search;
     public $vendor;
     public $category;
     public $cartProducts = [];
 
+    public $productName;
+    public $productCategory;
+    public $productSku;
+    public $productDescription;
+    public $productMSRP;
+
+
     public function addToCart(Product $productId)
     {
+        $this->showModal = false;
 
         $price= Price::where('product_id', $productId)->get();
         $cart = $this->getUserCart();
@@ -39,13 +50,30 @@ class Store extends Component
             'quantity' => $productId->minimum_quantity
             ]);
 
-            $this->emit('updateCart');
+        $this->emit('updateCart');
+        $this->showModal = false;
+
+    }
+
+    public function showDetails($id)
+    {
+        $this->showModal = true;
+        $details = Product::where('id', $id)->first();
+
+        // dd($details);
+        $this->productName      = $details->name;
+        $this->productCategory  = $details->category;
+        $this->productSku = $details->sku;
+        $this->productDescription = $details->description;
+        $this->productName = $details->name;
+        $this->productMSRP = $details->prices->msrp;
+
     }
 
     public function close()
-        {
-            $this->showModal = false;
-        }
+    {
+        $this->showModal = false;
+    }
 
     public static  function getUserCart($id = null, $token = null)
     {
