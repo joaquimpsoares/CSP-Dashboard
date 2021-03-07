@@ -2,14 +2,16 @@
 
 namespace App\Mail;
 
+use App\User;
 use App\Invite;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class InviteCreated extends Mailable
-{    
+{
     use Queueable, SerializesModels;
 
     /**
@@ -29,10 +31,7 @@ class InviteCreated extends Mailable
      */
     public function build()
     {
+           return $this->from(Auth::user()->email)->subject('Welcome to Tagydes')->view('emails.invite', ['invite' => $this->invite]);
 
-        return $this->from('hello@gexample.com')->view('emails.invite', ['invite' => $this->invite]);   
-
-        // return $this->from('you@example.com')
-        //             ->view('emails.invite');
     }
 }

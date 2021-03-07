@@ -1,3 +1,4 @@
+
 <div class="col-xl-12 col-lg-7">
     <div class="card">
         <div class="card-header">
@@ -54,8 +55,8 @@
 
 
 
-<div class="card-body table-responsive p-0 mx-313 scroll-3">
-    <table class="table card-table table-vcenter text-nowrap table-borderedless border-0 inde4-table">
+<div class="p-0 card-body table-responsive mx-313 scroll-3">
+    <table class="table border-0 card-table table-vcenter text-nowrap table-borderedless inde4-table">
         <thead>
             <tr>
                 <th>{{ ucwords(trans_choice('messages.#', 1)) }}</th>
@@ -89,8 +90,8 @@
             <tr style="display:none">
                 <td colspan="9">
                     <div class="">
-                        <div class="panel panel-primary receipts-inline-table border-0">
-                            <div class="panel-body tabs-menu-body p-0 border-0">
+                        <div class="border-0 panel panel-primary receipts-inline-table">
+                            <div class="p-0 border-0 panel-body tabs-menu-body">
                                 <div class="tab-content">
                                     <table class="table">
                                         <tbody>
@@ -158,14 +159,13 @@
             </div>
         </tbody>
     </table>
-    <div class="card-footer d-flex text-right">
+    <div class="text-right card-footer d-flex">
         @if ($subscriptions->total() >= '10')
         {!! $subscriptions->render() !!}
         @endif
     </div>
 </div>
-</div>
-</div>
+
 
 
 @section('scripts')

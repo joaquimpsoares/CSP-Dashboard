@@ -127,9 +127,12 @@
 </div>
 <!--/app header-->
 @if (app('impersonate')->isImpersonating())
-<div class="text-center alert alert-info" role="alert">Currently impersonating user <strong>{{Auth::user()->name}} {{Auth::user()->last_name}}</strong>
-    <a href="{{ route('impersonate.leave') }} ">
-        <span style="color: red" >{{ ucwords(trans_choice('messages.stop_impersonation', 2)) }} &rarr;</i></span>
-    </a>
+<div class="px-4 py-1 md:max-w-6xl md:mx-auto">
+    <div class="text-center alert alert-info" role="alert">
+        Currently impersonating user <strong>{{Auth::user()->name}} {{Auth::user()->last_name}}</strong>
+        <a href="{{ route('impersonate.leave') }} ">
+            <span style="color: red" >{{ ucwords(trans_choice('messages.stop_impersonation', 2)) }} &rarr;</i></span>
+        </a>
+    </div>
 </div>
 @endif

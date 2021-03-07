@@ -7,23 +7,19 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Auth\LoginController;
 
-    Route::post('registerInvitation', 'UsersController@registerInvitation')->name('registerInvitation');
 
-    Route::get('exportexcel', 'AnalyticController@exportexcel')->name('exportexcel');
 
-    Route::get('invite', 'InviteController@invite')->name('invite');
-    Route::post('invite', 'InviteController@process')->name('process');
-    // {token} is a required parameter that will be exposed to us in the controller method
-    Route::get('accept/{token}', 'InviteController@accept')->name('accept');
+/**********************************************************************************
+ Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
-    // Route::livewire('/home', 'counter');
-    // Route::livewire('/check', Cart::class)->name('check');
+ **********************************************************************************/
 
-    /**********************************************************************************
-    Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
+// Route::post('registerInvitation', 'UsersController@registerInvitation')->name('registerInvitation');
 
-    **********************************************************************************/
+Route::get('exportexcel', 'AnalyticController@exportexcel')->name('exportexcel');
 
+Route::get('accept/{token}', 'InviteController@accept')->name('accept');
+Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('resetinvitationpassword');
 
 
     /**********************************************************************************

@@ -35,21 +35,21 @@ class ProductRepository implements ProductRepositoryInterface
     }
 
     public function showall($filters = null, $quantity = null)
-	{
-        if (empty($filters) && empty($quantity))
-        {
-            $products = Product::with('instance')->
-            orderBy('name')->get();
-        } else {
-            if (isset($filters['search'])) {
-                $products = $this->searchFilter($filters, $quantity);
-            } else {
-                $products = Product::with('instance')->where('addons', '<>', '[]')
+    {
+        // if (empty($filters) && empty($quantity))
+        // {
+        //     $products = Product::with('instance')->
+        //     orderBy('name')->get();
+        // } else {
+        //     if (isset($filters['search'])) {
+        //         $products = $this->searchFilter($filters, $quantity);
+        //     } else {
+                $products = Product::where('instance_id', session('instance_id'))->where('addons', '<>', '[]')
                 ->orderBy('vendor')
                 ->orderBy('name')
                 ->get();
-            }
-        }
+        //     }
+        // }
 
         return $products;
 

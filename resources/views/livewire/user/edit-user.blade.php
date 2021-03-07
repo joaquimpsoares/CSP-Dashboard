@@ -4,7 +4,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="panel panel-primary">
-                    <div class=" tab-menu-heading p-0 bg-light">
+                    <div class="p-0 tab-menu-heading bg-light">
                         <div class="tabs-menu1 ">
                             <!-- Tabs -->
                             <ul class="nav panel-tabs">
@@ -75,7 +75,7 @@
                                             </div>
                                         </div>
                                         @if ($edit)
-                                        <div class="col-md-12 mt-2">
+                                        <div class="mt-2 col-md-12">
                                             <button type="submit" class="btn btn-primary" id="update-details-btn">
                                                 <i class="fa fa-refresh"></i>
                                                 @lang('Update Details')
@@ -83,7 +83,6 @@
                                         </div>
                                         @endif
                                     </div>
-
                                 </form>
                             </div>
                             <div class="tab-pane " id="tab6" wire:ignore.self>
@@ -97,8 +96,22 @@
                                 <form wire:submit.prevent="saveauth" autocomplete="off">
                                     <div class="form-group">
                                         <label for="email">@lang('Email')</label>
-                                        <input autocomplete="off" wire:model="email" type="email" class="form-control input-solid @error('email') is-invalid @enderror" id="email" placeholder="@lang('Email')">
-                                        @error('email')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        <div>
+                                            <div class="flex mt-1 rounded-md shadow-sm">
+                                                <div class="relative flex items-stretch flex-grow focus-within:z-10">
+                                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                    </div>
+                                                    <input autocomplete="off" wire:model="email" type="text" name="email" id="email" class="block w-full border-gray-300 rounded-none focus:ring-indigo-500 focus:border-indigo-500 rounded-l-md sm:text-sm @error('email') is-invalid @enderror" id="email" placeholder="@lang('Email')" placeholder="John Doe">
+                                                   @error('email')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                                </div>
+                                                <a wire:click="sendInvitation" class="relative inline-flex items-center px-4 py-2 -ml-px space-x-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-r-md bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+                                                    <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                        <path d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z" />
+                                                    </svg>
+                                                    <span>Send Invitation</span>
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="password">{{ $edit ? __("New Password") : __('Password') }}</label>
@@ -121,7 +134,7 @@
                                         </div>
                                     </div>
                                     @if ($edit)
-                                    <button type="submit" class="btn btn-primary mt-2" id="update-login-details-btn">
+                                    <button type="submit" class="mt-2 btn btn-primary" id="update-login-details-btn">
                                         <i class="fa fa-refresh"></i>
                                         @lang('Update Details')
                                     </button>
@@ -144,7 +157,7 @@
                 </div>
                 @endif
             </div>
-            <div class="widget-user-image mx-auto mt-5">
+            <div class="mx-auto mt-5 widget-user-image">
                 <form wire:submit.prevent="savephoto">
                     @if ($photo)
                     <img alt="User Avatar" class="rounded-circle" src="{{ $photo->temporaryUrl() }}" width="128px" height="128px"></div>
@@ -152,22 +165,22 @@
                     <img alt="User Avatar" class="rounded-circle" src="{{ $edit ? $user->avatar : url('assets/img/profile.png')  }}" width="128px" height="128px"></div>
                     @endif
                     @error('photo') <span class="error">{{ $message }}</span> @enderror
-                    <div class="card-body text-center">
-                        <div class="card-body pt-0 mt-0">
+                    <div class="text-center card-body">
+                        <div class="pt-0 mt-0 card-body">
                             <div class="custom-file">
                                 <label class="custom-file-label" for="customFileLang">Select file</label>
                                 <input wire:model="photo" type="file" name="avatar" class="custom-file-input" id="customFileLang">
                             </div>
                             <div class="row">
                                 <div class=" col-xs-12">
-                                    <h6 class="font-weight-bold cyan-text mb-4"></h6>
+                                    <h6 class="mb-4 font-weight-bold cyan-text"></h6>
                                 </div>
                             </div>
                         </div>
                         <div class="pro-user">
-                            <h3 class="pro-user-username text-dark mb-1">{{ $user->name ?? $user->email }} </h3>
+                            <h3 class="mb-1 pro-user-username text-dark">{{ $user->name ?? $user->email }} </h3>
                             {{-- <h6 class="pro-user-desc text-muted">{{ $user->role->first()['name'] }}</h6> --}}
-                            <button type="submit" id="change-picture" class="btn btn-outline-secondary btn-block mt-5"><i class="fa fa-camera"></i> @lang('Save Photo')
+                            <button type="submit" id="change-picture" class="mt-5 btn btn-outline-secondary btn-block"><i class="fa fa-camera"></i> @lang('Save Photo')
                             </button>
                         </div>
                     </div>

@@ -3,12 +3,16 @@
 namespace App\Http\Livewire\User;
 
 use App\Role;
+use App\Invite;
 use App\Status;
 use App\Country;
 use Livewire\Component;
 use Illuminate\Http\File;
+use App\Mail\InviteCreated;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 
 class EditUser extends Component
@@ -135,9 +139,33 @@ class EditUser extends Component
         $this->photo = '';
 
         session()->flash('message', 'Avatar for '. $this->user->name . ' successfully Uploaded.');
-
-
     }
+
+    public function sendInvitation()
+    {
+
+        $user = Auth::user()->id;
+        // validate the incoming request data
+        do {
+            //generate a random string using Laravel's str_random helper
+            $token = str_random();
+        } //check if the token already exists and if it does, try again
+        while (Invite::where('token', $token)->first());
+
+        //create a new invite record
+        $invite = Invite::create([
+            'email' => $this->email,
+            'token' => $token,
+            'provider_id' => $user
+            ]);
+
+            // send the email
+        Mail::to($this->email)->send(new InviteCreated($invite));
+
+        session()->flash('message', 'Message sent to '. $this->user->email . ' successfully.');
+        // redirect back where we came from
+        return redirect()->back();
+        }
 
     public function render()
     {

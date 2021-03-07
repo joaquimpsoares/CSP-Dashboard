@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.master')
 
 
 @section('content')
@@ -8,7 +8,7 @@
     <section class="section">
         <div class="card">
             <div class="">
-                <i class="fab fa-product-hunt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
+                <i class="p-4 ml-2 text-white rounded fab fa-product-hunt fa-lg primary-color z-depth-2 mt-n3"></i>
                 <div class="card-body">
                     <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.product_card', 2)) }}</a></h4>
                     <div class="row">
@@ -17,7 +17,7 @@
                             <div class="row">
                                 <form action="{{ route('invite') }}" method="post">
                                     {{ csrf_field() }}
-                                    <input hidden="hiden" name="provider" value="{{$provider}}">
+                                    <input hidden="hiden" name="provider" value="{{Auth::user()->id}}">
                                     <input type="email" name="email" />
                                     <button type="submit">Send invite</button>
                                 </form>
