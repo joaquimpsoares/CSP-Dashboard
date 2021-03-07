@@ -337,27 +337,27 @@ class UsersController extends Controller
     }
 
 
-    /**
-    * Register user for provider.
-    *
-    * @return void
-    */
-    public function registerInvitation(Request $request){
+    // /**
+    // * Register user for provider.
+    // *
+    // * @return void
+    // */
+    // public function registerInvitation(Request $request){
 
-        $this->validator($request->all())->validate();
+    //     $this->validator($request->all())->validate();
 
-        $user =  User::create([
-            'username' => $request['email'],
-            'provider_id' => $request['provider_id'],
-            'name' => $request['name'],
-            'last_name' => $request['last_name'],
-            'address_2' => $request['address_2'],
-            'email' => $request['email'],
-            'password' => Hash::make($request['password']),
-            'user_level_id' => "3"
-            ]);
+    //     $user =  User::create([
+    //         'username' => $request['email'],
+    //         'provider_id' => $request['provider_id'],
+    //         'name' => $request['name'],
+    //         'last_name' => $request['last_name'],
+    //         'address_2' => $request['address_2'],
+    //         'email' => $request['email'],
+    //         'password' => Hash::make($request['password']),
+    //         'user_level_id' => "3"
+    //         ]);
 
 
-            return view('home');
-        }
+    //         return view('home');
+    //     }
     }

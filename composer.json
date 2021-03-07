@@ -9,8 +9,8 @@
     "license": "MIT",
     "repositories": [
         {
-            "type": "path",
-            "url": "../microsoft-connection"
+            "type": "vcs",
+            "url": "https://gitlab.com/tagydes/microsoft-connection.git"
         },
         {
             "type": "vcs",
