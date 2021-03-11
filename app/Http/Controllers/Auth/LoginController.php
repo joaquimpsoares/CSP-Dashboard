@@ -6,6 +6,7 @@ use App\User;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Socialite\Facades\Socialite;
@@ -76,7 +77,7 @@ class LoginController extends Controller
 
         }else {
 
-            Auth()->login($user, true);
+            Auth::login($user, $remember = true);
             return redirect('/');
         }
     }

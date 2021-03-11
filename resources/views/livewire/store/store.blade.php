@@ -49,12 +49,14 @@
                     </div>
                     <div class="flex items-center flex-1 pt-6">
                         <div>
+                            @if(Auth::user()->userLevel->name == "Reseller")
                             <div class="text-sm font-bold text-white">
                                 Reseller
                                 <p class="inline text-sm font-normal text-white">
                                     {{ $product->prices->price }}
                                 </p>
                             </div>
+                            @endif
                             <div class="text-sm font-bold text-white">
                                 Price
                                 <p class="inline text-sm font-normal text-white">

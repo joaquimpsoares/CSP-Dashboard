@@ -248,7 +248,7 @@ return [
     'edit_customer' => 'Edit customer',
     'markup' => 'azure markup %',
     'ticket' => 'ticket|tickets|sumbit ticket',
-    '' => '',
+    'sendinvitation' => 'send invitation',
     '' => '',
     '' => '',
     '' => '',

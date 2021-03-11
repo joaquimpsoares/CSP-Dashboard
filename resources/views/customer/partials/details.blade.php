@@ -40,21 +40,21 @@
                     @csrf
                     <h1>{{ ucwords(trans_choice('messages.customer_form', 1)) }}</h1>
                     <div class="row">
-                        <div class="col-md-6 mb-4">
+                        <div class="mb-4 col-md-6">
                             <label for="company_name" class="">{{ ucwords(trans_choice('messages.company_name', 1)) }}</label>
                             <input type="text" id="company_name" name="company_name" class="form-control @error('company_name') is-invalid @enderror" value="{{$customer->company_name}}">
                             @error('company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                         </div>
-                        <div class="col-md-6 mb-2">
+                        <div class="mb-2 col-md-6">
                             <label for="nif">{{ ucwords(trans_choice('messages.nif', 1)) }}</label>
                             <input type="text" id="nif" name="nif" class="form-control @error('nif') is-invalid @enderror" value="{{$customer->nif}}">
                             @error('nif')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12 mb-2">
+                        <div class="mb-2 col-md-12">
                             <label for="country">{{ucwords(trans_choice('messages.country', 1))}}</label>
-                            <div class="input-group mb-3">
+                            <div class="mb-3 input-group">
                                 <select name="country_id" class="search-box @error('country') is-invalid @enderror" id="country_id" required>
                                     <option value="{{$customer->country->id}}" selected>{{$customer->country->name}}</option>
                                     @foreach ($countries as $country)
@@ -75,17 +75,17 @@
                     <input type="text" id="address_2" name="address_2" class="form-control mb-4 @error('address_2') is-invalid @enderror" value="{{$customer->address_2}}" placeholder="Appartment or numer">
                     @error('address_2')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                     <div class="row">
-                        <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="mb-4 col-lg-4 col-md-6">
                             <label for="city" class="">{{ucwords(trans_choice('messages.city', 1))}}</label>
                             <input type="text" id="city" name="city" class="form-control mb-4 @error('city') is-invalid @enderror" value="{{$customer->city}}">
                             @error('city')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                         </div>
-                        <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="mb-4 col-lg-4 col-md-6">
                             <label for="state" class="">{{ucwords(trans_choice('messages.state', 1))}}</label>
                             <input name="state" type="text" class="form-control @error('state') is-invalid @enderror" id="state" placeholder="" value="{{$customer->state}}" required >
                             @error('state')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                         </div>
-                        <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="mb-4 col-lg-4 col-md-6">
                             <label for="city" class="">{{ucwords(trans_choice('messages.postal_code', 1))}}</label>
 
                             <input name="postal_code" type="text" class="form-control @error('postal_code') is-invalid @enderror" id="postal_code" placeholder="" value="{{$customer->postal_code}}" required>
@@ -114,13 +114,13 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-lg-12 mb-4">
-            <div class="text-center text-md-left">
                 <div class="float-sm-right">
                     <a data-toggle="modal" data-target="#centralModalInfo" class="btn btn-primary">{{ ucwords(trans_choice('messages.update', 1)) }}</a>
                 </div>
+            </div>
+        </div>
+        <div class="mb-4 col-lg-12">
+            <div class="text-center text-md-left">
                 <div class="modal fade" id="centralModalInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"aria-hidden="true" data-backdrop="false">
                     <div class="modal-dialog modal-notify modal-info" role="document">
                         <div class="modal-content">
@@ -132,7 +132,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="text-center">
-                                    <i class="fa fa-check fa-4x mb-3 animated rotateIn"></i>
+                                    <i class="mb-3 fa fa-check fa-4x animated rotateIn"></i>
                                     <p>You are about to update customer {{$customer->company_name}}</p>
                                     <p>Are you sure?</p>
                                 </div>

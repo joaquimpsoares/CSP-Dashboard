@@ -32,7 +32,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                <h1 class="mb-4 mt-1 h5 text-center font-weight-bold"></h1>
+                <h1 class="mt-1 mb-4 text-center h5 font-weight-bold"></h1>
                 <section id="services" class="services section-bg">
                     <div class="card-header">
                         <div class="card-title">
@@ -103,7 +103,7 @@
             <div class="card-header">
                 <h3 class="card-title">{{ ucwords(trans_choice('messages.user_table', 1)) }}</h3>
                 <div class="card-options">
-                    <div class="btn-group ml-5 mb-0">
+                    <div class="mb-0 ml-5 btn-group">
                         <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fe fe-plus"></i> {{ ucwords(__('messages.options')) }}</button>
                         <div class="dropdown-menu">
                             @if (Route::current()->getName() === "user.index")
@@ -146,11 +146,11 @@
                 aria-selected="false">{{ ucwords(trans_choice('messages.account', 1)) }}</a>
             </li>
         </ul>
-        <div class="tab-content pt-5" id="myTabContentMD">
+        <div class="pt-5 tab-content" id="myTabContentMD">
             <div class="tab-pane fade show active" id="home-md" role="tabpanel" aria-labelledby="home-tab-md">
                 <div class="card">
                     <div class="card-body">
-                        <h1 class="mb-4 mt-1 h5 text-center font-weight-bold"></h1>
+                        <h1 class="mt-1 mb-4 text-center h5 font-weight-bold"></h1>
                         <section id="services" class="services section-bg">
                             <div class="card-header">
                                 <div class="card-title">

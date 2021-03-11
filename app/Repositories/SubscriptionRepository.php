@@ -38,18 +38,21 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
             break;
 
             case config('app.provider'):
+                $reseller =$user->provider->resellers;
 
-                $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
 
-                $subscriptions = Subscription::with(['customer','products','status'])->get();
+                foreach ($reseller as $resellers){
 
-                // $subscriptions = Customer::whereHas('resellers', function($query) use  ($resellers) {
-                // 	$query->whereIn('id', $resellers);
-                // })->with(['country', 'status' => function ($query) {
-				// 	$query->where('name', 'messages.active');
-				// }])
-                // ->orderBy('company_name')->get();
-
+                    $reseller = Reseller::find($resellers['id']);
+                    $customers = $this->customersOfReseller($reseller);
+                    $subscriptions = $customers->flatMap(function ($values) {
+                        $customer = Customer::find($values['id']);
+                        // dd($customer->subscriptions);
+                        $subscriptions = $this->subscriptionsOfCustomer($customer);
+                        return $subscriptions;
+                    });
+                    return $subscriptions;
+                }
             break;
 
             case config('app.reseller'):
@@ -83,12 +86,25 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
     return $subscriptions;
     }
 
+
+
+
+    public function customersOfReseller(Reseller $reseller)
+    {
+
+        $customers = $reseller->customers->map->format();
+
+        return $customers;
+    }
+
+
     public function subscriptionsOfCustomer(Customer $customer){
 
         $subscriptions = $customer->subscriptions;
 
         return $subscriptions;
     }
+
     public function paginate($perPage, $search = null, $customer = null)
     {
 
