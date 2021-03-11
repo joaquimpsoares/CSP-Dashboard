@@ -11,18 +11,19 @@ use App\Instance;
 use App\Provider;
 use App\Reseller;
 use Carbon\Carbon;
+use App\Subscription;
 use App\OrderProducts;
 use App\Models\Activities;
 use App\Models\LogActivity;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use App\Repositories\OrderRepositoryInterface;
+use App\Repositories\ProductRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProviderRepositoryInterface;
 use App\Repositories\ResellerRepositoryInterface;
 use App\Repositories\SubscriptionRepositoryInterface;
-use App\Repositories\OrderRepositoryInterface;
-use App\Repositories\ProductRepositoryInterface;
 
 class HomeController extends Controller
 {
@@ -65,34 +66,14 @@ class HomeController extends Controller
 
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
-
-                $provider_id = Auth::getUser()->provider_id;
                 $orders= Order::first();
 
-                $orderMonth = Order::whereMonth(
-                    'created_at', '=', Carbon::now()->subMonth()->month
-                );
+                $subscriptions = $subscriptions = Subscription::with(['customer','products','status'])->get();
+                $resellers = Reseller::all();
+                $providers = Provider::get();
+                $customers = Customer::get();
 
-                if($orders){
-                    $countOrders = ($orders->count()-$orderMonth->count());
-                }
-                $countOrders = 0;
-
-                $statuses = Status::get();
-                $providers = $this->providerRepository->all();
-                $provider = Reseller::get();
-                $customersweek = Customer::whereMonth(
-                    'created_at', '=', Carbon::now()->subWeekdays('1')
-                )->get();
-
-                $topProducts = OrderProducts::with('Order')->get();
-
-                $topProducts = OrderProducts::with(['Product' => function($query){
-                    $query->groupBy('name');
-                }])->get();
-
-
-                return view('home', compact('providers','provider','orders','countOrders','customersweek','topProducts'));
+                return view('home', compact('orders','providers','resellers','customers','subscriptions'));
 
             break;
 
@@ -108,6 +89,7 @@ class HomeController extends Controller
                 }
                 $countOrders = 0;
 
+                $resellers = $this->resellerRepository->all();
 
                 $statuses = Status::get();
                 $providers = $this->providerRepository->all();
@@ -129,7 +111,7 @@ class HomeController extends Controller
 
             case config('app.provider'):
 
-                $orders= Order::first();
+                $orders = $this->orderRepository->all();
                 $provider = Auth::getUser()->provider;
 
                 foreach ($provider->resellers as $reseller) {
@@ -137,6 +119,7 @@ class HomeController extends Controller
                         $customers[] = $customer->id;
                     }
                 }
+
 
                 $orderMonth = Order::whereMonth(
                     'created_at', '=', Carbon::now()->subMonth()->month
@@ -147,17 +130,17 @@ class HomeController extends Controller
                 $countOrders = 0;
                 $statuses = Status::get();
                 $resellers = $this->resellerRepository->all();
+                $customers = $this->customerRepository->all();
+                // dd($resellers);
                 $customersweek = Customer::whereMonth(
                     'created_at', '=', Carbon::now()->subWeekdays('1')
                 )->get();
 
+                $subscriptions = $this->subscriptionRepository->all();
+                // dd($subscriptions->count());
 
 
-                // $topProducts = OrderProducts::with('Order')->get();
-                $topProducts = customer::with('orders')->get();
-
-
-                return view('home', compact('resellers','orders','countOrders','customersweek','topProducts','provider','customers'));
+                return view('home', compact('resellers','orders','countOrders','customersweek','provider','customers','subscriptions'));
 
 
             break;
@@ -169,11 +152,7 @@ class HomeController extends Controller
                 $countSubscriptions = $subscriptions->count();
 
 
-                $orders = $this->orderRepository->all();
-                if($orders != '0'){
-                $countOrders = $orders->count();
-                }
-                $countOrders = 0;
+                $countOrders = $this->orderRepository->all()->count();
 
                 return view('reseller.partials.home', compact('countCustomers','countSubscriptions','countOrders'));
 

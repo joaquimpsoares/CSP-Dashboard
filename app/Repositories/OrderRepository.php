@@ -71,8 +71,6 @@ class OrderRepository implements OrderRepositoryInterface
                     })->get()->map->format()->sortDesc();
                 }
 
-
-
             break;
 
             default:

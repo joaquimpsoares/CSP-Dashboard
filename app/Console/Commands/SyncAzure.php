@@ -99,6 +99,7 @@ class SyncAzure extends Command
 
                     $resources->items->each(function($resource) use($subscription){
                         $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
+                        Log::info($resource->resource->id);
                         $price = AzurePriceList::where('resource_id', $resource->resource->id)->first('rates');
                         // Log::info($price);
                         Log::info(json_encode($resource->resource->id));
@@ -127,8 +128,8 @@ class SyncAzure extends Command
                             'quantity'              => $resource->quantity,
                             'cost'                  => (json_encode($price->rates[0])*$resource->quantity)
                         ]);
-                        Log::info(json_encode($price->rates[0])*$resource->quantity);
-                        $this->info($resource);
+                        // Log::info(json_encode($price->rates[0])*$resource->quantity);
+                        // $this->info($resource);
                     });
                 }
                 catch (Exception $e) {
