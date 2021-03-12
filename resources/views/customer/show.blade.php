@@ -246,7 +246,7 @@
                                     {{ ucwords(trans_choice('messages.billing_start_date', 1)) }}
                                 </dt>
                                 <dd class="mt-1 text-sm text-gray-900">
-                                    {{ date('d-m-Y', strtotime($serviceCosts->billingStartDate))}} }}
+                                    {{ date('d-m-Y', strtotime($serviceCosts->billingStartDate))}}
                                 </dd>
                             </div>
                             <div class="sm:col-span-1">

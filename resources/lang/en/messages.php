@@ -255,7 +255,7 @@ return [
     'pretax_total' => 'pretax total',
     'tax_total' => 'tax total',
     'after_total' => 'after total',
-    '' => '',
+    'estimated_billing' => 'estimated billing',
     '' => '',
     '' => '',
     '' => '',
