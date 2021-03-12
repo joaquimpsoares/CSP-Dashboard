@@ -7,6 +7,7 @@ use App\User;
 use App\Status;
 use App\Country;
 use App\Customer;
+use App\Instance;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\DB;
@@ -133,7 +134,7 @@ class CustomerController extends Controller
     {
 
         $instance =session()->get('instance_id');
-
+        $instance = Instance::where('id', $instance)->first();
         try {
             $customer = new TagydesCustomer([
                 'id' => $customer->microsoftTenantInfo->first()->tenant_id,
@@ -153,8 +154,8 @@ class CustomerController extends Controller
 
     Public function serviceCostsLineitems($id)
     {
-
         $instance = session()->get('instance_id');
+        $instance = Instance::where('id', $instance)->first();
 
             $customer = new TagydesCustomer([
                 'id' => $id,

@@ -17,7 +17,7 @@
                     <a class="btn btn-white" href="{{ route('impersonate', $customer->format()['mainUser']['id']) }}"><i class="fa fa-user-secret"></i>{{ ucwords(trans_choice('messages.impersonate', 1)) }}</a>
                     @endif
                     @endCanImpersonate
-                    <a href="{{$customer->format()['path']}}/edit" class="btn btn-primary">{{ ucwords(trans_choice('messages.edit_reseller', 1)) }} </a>
+                    {{-- <a href="{{$customer->format()['path']}}/edit" class="btn btn-primary">{{ ucwords(trans_choice('messages.edit_reseller', 1)) }} </a> --}}
                 </div>
             </div>
         </div>
@@ -265,14 +265,14 @@
                                     {{number_format($costs->pretaxTotal, 2)}}{{$costs->currencySymbol}}
                                 </dd>
                             </div>
-                            <div class="sm:col-span-1">
+                            {{-- <div class="sm:col-span-1">
                                 <dt class="text-sm font-medium text-gray-500">
                                     {{ ucwords(trans_choice('messages.tax_total', 1)) }}
                                 </dt>
                                 <dd class="mt-1 text-sm text-gray-900">
                                     {{number_format($costs->tax, 2)}}{{$costs->currencySymbol}}
                                 </dd>
-                            </div>
+                            </div> --}}
                             <div class="sm:col-span-1">
                                 <dt class="text-sm font-medium text-gray-500">
                                     {{ ucwords(trans_choice('messages.after_total', 1)) }}
@@ -284,7 +284,7 @@
                         </dl>
                     </div>
                     <div>
-                        <a href="{{$customer->format()['path']}}/edit" class="block px-4 py-4 text-sm font-medium text-center text-gray-500 bg-gray-50 hover:text-gray-700 sm:rounded-b-lg">{{ ucwords(trans_choice('messages.edit_customer', 1)) }}</a>
+                        {{-- <a href="{{$customer->format()['path']}}/edit" class="block px-4 py-4 text-sm font-medium text-center text-gray-500 bg-gray-50 hover:text-gray-700 sm:rounded-b-lg">{{ ucwords(trans_choice('messages.edit_customer', 1)) }}</a> --}}
                     </div>
                     @endif
                 </div>
