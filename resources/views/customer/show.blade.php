@@ -15,7 +15,6 @@
                     @canImpersonate
                     @if(!empty($customer->format()['mainUser']))
                     <a class="btn btn-white" href="{{ route('impersonate', $customer->format()['mainUser']['id']) }}"><i class="fa fa-user-secret"></i>{{ ucwords(trans_choice('messages.impersonate', 1)) }}</a>
-                    <a href="#" class="btn btn-white"><i class="fa fa-user-secret"></i> {{ ucwords(trans_choice('messages.impersonate', 1)) }}</a>
                     @endif
                     @endCanImpersonate
                     <a href="{{$customer->format()['path']}}/edit" class="btn btn-primary">{{ ucwords(trans_choice('messages.edit_reseller', 1)) }} </a>

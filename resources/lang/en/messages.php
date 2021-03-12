@@ -187,6 +187,7 @@ return [
     'manage_role' => 'manage role|manage roles',
     'reseller' => 'reseller|resellers',
     'customer' => 'customer|customers',
+    'customer_details' => 'customer details',
     'logout' => 'logout',
     'login' => 'log in',
     'register' => 'register',
