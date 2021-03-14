@@ -37,6 +37,7 @@ class EditUser extends Component
     public $sendInvitation;
     public $password;
     public $password_confirmation;
+    public $locale;
 
 
     protected $rules = [
@@ -49,10 +50,12 @@ class EditUser extends Component
         'address'           => ['sometimes', 'string', 'max:255', 'min:3'],
         'email'             => ['nullable', 'email', 'max:255', 'min:3'],
         'sendInvitation'    => ['nullable', 'integer'],
-        'password'          => ['sometimes','confirmed','min:8'],
+        'password'          => ['sometimes', 'confirmed', 'min:8'],
+        'locale' => ['sometimes', 'string', 'in:es,en']
     ];
 
-    public function mount(){
+    public function mount()
+    {
 
         $this->name          = $this->user->name;
         $this->email          = $this->user->email;
@@ -65,7 +68,7 @@ class EditUser extends Component
         $this->state         = $this->user->state;
         $this->country_id    = $this->user->country_id;
         $this->postal_code   = $this->user->postal_code;
-
+        $this->locale = $this->user->locale;
     }
 
 
@@ -88,7 +91,8 @@ class EditUser extends Component
             'phone'             => ['sometimes', 'string', 'max:20', 'min:3'],
             'address'           => ['sometimes', 'string', 'max:255', 'min:3'],
             'sendInvitation'    => ['nullable', 'integer'],
-            ]);
+            'locale' => ['sometimes', 'string', 'in:es,en']
+        ]);
 
 
         $this->user->name             = $this->name;
@@ -98,12 +102,13 @@ class EditUser extends Component
         // $this->user->city             = $this->city;
         $this->user->phone            = $this->phone;
         $this->user->address          = $this->address;
+        $this->user->locale = $this->locale;
         // $this->user->state            = $this->state;
         // $this->user->postal_code      = $this->postal_code;
         $this->user->update();
 
 
-        session()->flash('message-details', 'user '. $this->user->name . ' successfully Updated.');
+        session()->flash('message-details', 'user ' . $this->user->name . ' successfully Updated.');
     }
 
     public function saveauth()
@@ -112,7 +117,7 @@ class EditUser extends Component
         $this->validate([
             'socialite_id'  => ['sometimes', 'string', 'max:255', 'min:3'],
             'email'         => ['nullable', 'email', 'max:255', 'min:3'],
-            'password'      => ['sometimes','confirmed','min:8'],
+            'password'      => ['sometimes', 'confirmed', 'min:8'],
         ]);
 
         $this->user->email          = $this->email;
@@ -120,7 +125,7 @@ class EditUser extends Component
         $this->user->password       = Hash::make($this->password);
         $this->user->update();
 
-        session()->flash('message-auth', 'User '. $this->user->name . ' successfully Updated.');
+        session()->flash('message-auth', 'User ' . $this->user->name . ' successfully Updated.');
     }
 
 
@@ -134,11 +139,11 @@ class EditUser extends Component
         $validatedData['name'] = $this->photo->store('profile', 'public');
 
 
-        $this->user->avatar = '/storage/'.$validatedData['name'];
+        $this->user->avatar = '/storage/' . $validatedData['name'];
         $this->user->save();
         $this->photo = '';
 
-        session()->flash('message', 'Avatar for '. $this->user->name . ' successfully Uploaded.');
+        session()->flash('message', 'Avatar for ' . $this->user->name . ' successfully Uploaded.');
     }
 
     public function sendInvitation()
@@ -157,23 +162,23 @@ class EditUser extends Component
             'email' => $this->email,
             'token' => $token,
             'provider_id' => $user
-            ]);
+        ]);
 
-            // send the email
+        // send the email
         Mail::to($this->email)->send(new InviteCreated($invite));
 
-        session()->flash('message', 'Message sent to '. $this->user->email . ' successfully.');
+        session()->flash('message', 'Message sent to ' . $this->user->email . ' successfully.');
         // redirect back where we came from
         return redirect()->back();
-        }
+    }
 
     public function render()
     {
         $user = $this->user;
         $edit = true;
-        $countries = Country::pluck( 'name','id');
-        $statuses = Status::pluck( 'name','id');
-        $roles = Role::pluck('name','id');
-        return view('livewire.user.edit-user', compact('edit', 'user','countries','roles','statuses'));
+        $countries = Country::pluck('name', 'id');
+        $statuses = Status::pluck('name', 'id');
+        $roles = Role::pluck('name', 'id');
+        return view('livewire.user.edit-user', compact('edit', 'user', 'countries', 'roles', 'statuses'));
     }
 }

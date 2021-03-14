@@ -2,8 +2,9 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class AlterUsersTable extends Migration
+class AddLocaleToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +14,7 @@ class AlterUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('ticketit_admin')->default(0);
-            $table->boolean('ticketit_agent')->default(0);
+            $table->string('locale')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AlterUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['ticketit_admin', 'ticketit_agent']);
+            $table->removeColumn('locale');
         });
     }
 }
