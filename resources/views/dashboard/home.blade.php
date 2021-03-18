@@ -51,7 +51,10 @@
                             </dt>
                             <dd class="flex items-baseline">
                                 <div class="text-2xl font-semibold text-gray-900">
+                                    @if($orders)
                                     {{$orders->count()}}
+                                    @endif
+                                    0
                                 </div>
                             </dd>
                         </div>
