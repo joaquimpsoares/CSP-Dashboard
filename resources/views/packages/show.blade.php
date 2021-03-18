@@ -89,11 +89,12 @@
     }
 </style>
 @section('content')
+
 <div class="container">
     <section class="section">
         <div class="card">
             <div class="">
-                <i class="fab fa-product-hunt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
+                <i class="p-4 ml-2 text-white rounded fab fa-product-hunt fa-lg primary-color z-depth-2 mt-n3"></i>
                 <div class="card-body">
                     <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.product_card', 2)) }}</a></h4>
                     <div class="row">
@@ -133,7 +134,7 @@
                                     </div>
                                     <div class="row">
                                         <label class="mb-0 ml-2" for="material-url">{{ ucwords(trans_choice('messages.external_type', 1)) }}</label>
-                                        <div class="md-form input-group mt-0 mb-3">
+                                        <div class="mt-0 mb-3 md-form input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text md-addon" id="external_url">https://</span>
                                             </div>

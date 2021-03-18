@@ -114,37 +114,38 @@ class InstanceController extends Controller
             * @param  int  $id
             * @return \Illuminate\Http\Response
             */
-            public function edit($id)
+            public function edit(Instance $instance)
             {
+                // dd($instance);
 
-                $instances = Instance::findOrFail($id);
+                // $instances = Instance::findOrFail($id);
 
-                switch ($instances->type) {
+                switch ($instance->type) {
                     case 'kaspersky':
 
                         try {
-                            $certificate = Crypt::decryptString($instances->certificate);
+                            $certificate = Crypt::decryptString($instance->certificate);
                         } catch (DecryptException $e) {
                             //
                         }
-                        return view('packages.kaspersky.kaspersky', compact('instances','certificate'));
+                        return view('packages.kaspersky.kaspersky', compact('instance','certificate'));
                         break;
 
                     default:
-                    if ($instances->external_token_updated_at == null)
+                    if ($instance->external_token_updated_at == null)
 
-                    $expiration = $instances->external_token_updated_at;
+                    $expiration = $instance->external_token_updated_at;
 
                     else
 
-                    $expiration = $instances->external_token_updated_at->addDays(90);
-                    return view('packages.microsoft.microsoft', compact('instances', 'expiration'));
+                    $expiration = $instance->external_token_updated_at->addDays(90);
+                    return view('packages.microsoft.microsoft', compact('instance', 'expiration'));
                         break;
                 }
 
 
 
-                return view('packages.microsoft.microsoft', compact('instances', 'expiration'));
+                return view('packages.microsoft.microsoft', compact('instance', 'expiration'));
             }
 
             /**
