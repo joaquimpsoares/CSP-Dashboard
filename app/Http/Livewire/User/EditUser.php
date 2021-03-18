@@ -91,7 +91,7 @@ class EditUser extends Component
             'phone'             => ['sometimes', 'string', 'max:20', 'min:3'],
             'address'           => ['sometimes', 'string', 'max:255', 'min:3'],
             'sendInvitation'    => ['nullable', 'integer'],
-            'locale' => ['sometimes', 'string', 'in:es,en']
+            'locale' => ['sometimes', 'string', 'in:es,en,fr']
         ]);
 
 
