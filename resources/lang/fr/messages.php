@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 return [
   'importproducts' => 'Importer des produits Microsoft, planifiés',
   'jobrescheduled' => 'Travail reporté',
