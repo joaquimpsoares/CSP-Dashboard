@@ -47,7 +47,6 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
                     $customers = $this->customersOfReseller($reseller);
                     $subscriptions = $customers->flatMap(function ($values) {
                         $customer = Customer::find($values['id']);
-                        // dd($customer->subscriptions);
                         $subscriptions = $this->subscriptionsOfCustomer($customer);
                         return $subscriptions;
                     });

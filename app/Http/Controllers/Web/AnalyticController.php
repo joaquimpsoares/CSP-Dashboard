@@ -17,6 +17,7 @@ use App\Http\Traits\UserTrait;
 use App\Models\AzurePriceList;
 use App\Models\AzureUsageReport;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repositories\OrderRepositoryInterface;
@@ -379,10 +380,12 @@ class AnalyticController extends Controller
             ]);
         });
     }
+
     public function export(Customer $customer, Subscription $subscription)
     {
 
         $msId = $customer->microsoftTenantInfo->first()->tenant_id;
+        dd($msId);
 
         $instance = Instance::where('id', $subscription->instance_id)->first();
 
@@ -440,9 +443,14 @@ class AnalyticController extends Controller
                 ], [
                     'quantity'              => $resource->quantity,
                     'cost'                  => (json_encode($price->rates[0])*$resource->quantity)
-                ]);
+
+
+                    ]);
+                    Log::info(json_encode($resource));
+                    Log::info(json_encode($price->rates[0])*$resource->quantity);
+                        $this->info($resource);
+                });
             });
-        });
     }
 
     public function azurereport(Subscription $subscription)

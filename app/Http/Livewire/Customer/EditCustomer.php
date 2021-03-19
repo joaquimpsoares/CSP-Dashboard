@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Customer;
 use App\Status;
 use App\Country;
 use App\Customer;
+use App\Reseller;
 use Livewire\Component;
 use App\Http\Traits\UserTrait;
 
@@ -73,13 +74,18 @@ class EditCustomer extends Component
 
     }
 
+    public function changereseller(Customer $customer, Reseller $reseller)
+    {
+        $customer->resellers()->attach($reseller->id);
+    }
+
     public function render()
     {
         $customer = $this->customer;
 
-
+        $resellers  = Reseller::pluck( 'company_name','id');
         $countries  = Country::pluck( 'name','id');
         $statuses   = Status::pluck( 'name','id');
-        return view('livewire.customer.edit-customer', compact('customer','countries','statuses'));
+        return view('livewire.customer.edit-customer', compact('customer','countries','statuses','resellers'));
     }
 }
