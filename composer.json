@@ -42,6 +42,7 @@
         "spatie/simple-excel": "^1.13",
         "tagydes/kaspersky-connection": "dev-master",
         "tagydes/microsoft-connection": "dev-master",
+        "tanmuhittin/laravel-google-translate": "^2.0",
         "tymon/jwt-auth": "^1.0",
         "webpatser/laravel-countries": "^1.5",
         "yajra/laravel-datatables": "^1.5"

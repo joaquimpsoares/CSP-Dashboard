@@ -180,10 +180,6 @@ return [
     'estimated_cost' => 'estimated  cost',
     'price_list_table' => 'price list table',
     'order_table' => 'order table|orders table',
-
-
-
-
     'provider' => 'provider|providers',
     'manage_role' => 'manage role|manage roles',
     'reseller' => 'reseller|resellers',
@@ -192,7 +188,6 @@ return [
     'logout' => 'logout',
     'login' => 'log in',
     'register' => 'register',
-
     'home' => 'home',
     'active' => 'active',
     'inactive' => 'inactive',

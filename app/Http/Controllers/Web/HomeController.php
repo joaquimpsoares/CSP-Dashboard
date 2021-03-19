@@ -120,7 +120,6 @@ class HomeController extends Controller
                     }
                 }
 
-
                 $orderMonth = Order::whereMonth(
                     'created_at', '=', Carbon::now()->subMonth()->month
                 );
@@ -131,13 +130,12 @@ class HomeController extends Controller
                 $statuses = Status::get();
                 $resellers = $this->resellerRepository->all();
                 $customers = $this->customerRepository->all();
-                // dd($resellers);
+
                 $customersweek = Customer::whereMonth(
                     'created_at', '=', Carbon::now()->subWeekdays('1')
                 )->get();
 
                 $subscriptions = $this->subscriptionRepository->all();
-                // dd($subscriptions->count());
 
 
                 return view('home', compact('resellers','orders','countOrders','customersweek','provider','customers','subscriptions'));

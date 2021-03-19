@@ -7,16 +7,14 @@
     <meta content="Tagydes - CSP Automation Platform" name="description">
     <meta content="Tagydes Limited" name="author">
     <meta name="keywords" content="Admin, Admin Dashboard, Automation, Microsoft CSP, Admin Resellers, O354 Automation Platform, Kaspersky, license management"/>
+
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
     @include('layouts.head')
 </head>
 
 <body class="app sidebar-mini light-mode default-sidebar">
-    @livewireStyles
 
-    <!---Global-loader-->
-    {{-- <div id="global-loader" >
-        <img src="{{URL::asset('assets/images/svgs/loader.svg')}}" alt="loader">
-    </div> --}}
+    @livewireStyles
 
     <div class="page">
         <div class="page-main">

@@ -72,15 +72,17 @@ class CreateUser extends Component
     public function save(Request $request)
     {
 
-        switch ($this->level) {
+    switch ($this->level) {
             case 'Super Admin':
-
+                dd('here');
                 // $newUser = User::create($user);
 
                 // $newUser->assignRole($role->name);
 
                 break;
             case 'provider':
+                dd('here');
+
                 $this->validate();
 
                 $user = User::create ([
