@@ -40,6 +40,12 @@
                                                 @error('status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                             </div>
                                             <div class="form-group">
+                                                <label for="locale">@lang('Locale')</label>
+                                                <input wire:model="locale" type="text" class="form-control input-solid @error('locale') is-invalid @enderror" id="locale"
+                                                name="address" placeholder="en,es" >
+                                                @error('locale')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="name">@lang('First Name')</label>
                                                 <input wire:model="name" type="text" class="form-control input-solid @error('name') is-invalid @enderror" id="name" name="name" placeholder="@lang('First Name')"  >
                                                 @error('name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror

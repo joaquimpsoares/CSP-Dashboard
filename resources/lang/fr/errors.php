@@ -1,8 +1,26 @@
-<?php 
+<?php
+
 return [
-  'unauthorized_action' => '',
-  'access_with_resellers_credentials' => '',
-  'user_already_exists' => '',
-  'error' => '',
-  '' => '',
+
+    'unauthorized_action' => 'Unauthorized Action',
+    'access_with_resellers_credentials' => 'access with resellers credentials',
+    'user_already_exists' => 'user already exists',
+    'error' => 'error',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
 ];
