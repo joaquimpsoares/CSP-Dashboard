@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Notifications\FailedJob;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Artisan;
 use romanzipp\QueueMonitor\Models\Monitor;
@@ -52,10 +53,12 @@ class JobsController extends Controller
                 ->appends(
                     $request->all()
                 );
+            // $failedJobs = FailedJob::get();
 
             return view('job.index', [
                 'jobs' => $jobs,
                 'filters' => $filters,
+                // 'failedJobs' => $failedJobs,
             ]);
         }
         // $jobs =  $this->jobs->get();

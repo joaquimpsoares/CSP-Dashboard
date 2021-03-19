@@ -108,82 +108,96 @@
                         </div>
                         <div class="col-md-6">
                             <label for="markup">{{ ucwords(trans_choice('messages.markup', 1)) }}</label>
-                                <input name="markup" type="text" class="form-control @error('markup') is-invalid @enderror" id="markup" placeholder="%" value="{{$customer->markup}}">
-                                @error('markup')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                            <input name="markup" type="text" class="form-control @error('markup') is-invalid @enderror" id="markup" placeholder="%" value="{{$customer->markup}}">
+                            @error('markup')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-4 col-lg-4 col-md-6">
+                            <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
+                            <div class="form-group">
+                                <select name="status" class="search-box @error('status') is-invalid @enderror" sf-validate="required">
+                                    <option value="{{$customer->status->id}}" selected>{{ucwords(trans_choice($customer->status->name, 1))}}</option>
+                                    @foreach ($statuses as $status)
+                                    <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
+                                    @endforeach
+                                </select>
+                                @error('status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="float-sm-right">
-                    <a data-toggle="modal" data-target="#centralModalInfo" class="btn btn-primary">{{ ucwords(trans_choice('messages.update', 1)) }}</a>
-                </div>
+            </div>
+            <div class="float-sm-right">
+                <a data-toggle="modal" data-target="#centralModalInfo" class="btn btn-primary">{{ ucwords(trans_choice('messages.update', 1)) }}</a>
             </div>
         </div>
-        <div class="mb-4 col-lg-12">
-            <div class="text-center text-md-left">
-                <div class="modal fade" id="centralModalInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"aria-hidden="true" data-backdrop="false">
-                    <div class="modal-dialog modal-notify modal-info" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <p class="heading lead">{{ ucwords(trans_choice('messages.are_you_sure', 1)) }}</p>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true" class="white-text">&times;</span>
-                                </button>
+    </div>
+    <div class="mb-4 col-lg-12">
+        <div class="text-center text-md-left">
+            <div class="modal fade" id="centralModalInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"aria-hidden="true" data-backdrop="false">
+                <div class="modal-dialog modal-notify modal-info" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <p class="heading lead">{{ ucwords(trans_choice('messages.are_you_sure', 1)) }}</p>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true" class="white-text">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="text-center">
+                                <i class="mb-3 fa fa-check fa-4x animated rotateIn"></i>
+                                <p>You are about to update customer {{$customer->company_name}}</p>
+                                <p>Are you sure?</p>
                             </div>
-                            <div class="modal-body">
-                                <div class="text-center">
-                                    <i class="mb-3 fa fa-check fa-4x animated rotateIn"></i>
-                                    <p>You are about to update customer {{$customer->company_name}}</p>
-                                    <p>Are you sure?</p>
-                                </div>
-                            </div>
-                            <div class="modal-footer justify-content-center">
-                                <button type="submit" class="btn btn-primary">yes </button>
-                                <a type="button" class="btn btn-secondary" data-dismiss="modal">No, thanks</a>
-                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-center">
+                            <button type="submit" class="btn btn-primary">yes </button>
+                            <a type="button" class="btn btn-secondary" data-dismiss="modal">No, thanks</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
-    @section('js')
-    <!--Select2 js -->
-    <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
-    <script src="{{URL::asset('assets/js/select2.js')}}"></script>
-    <!-- Timepicker js -->
-    <script src="{{URL::asset('assets/plugins/time-picker/jquery.timepicker.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/time-picker/toggles.min.js')}}"></script>
-    <!-- Datepicker js -->
-    <script src="{{URL::asset('assets/plugins/date-picker/date-picker.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/date-picker/jquery-ui.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/input-mask/jquery.maskedinput.js')}}"></script>
-    <!--File-Uploads Js-->
-    <script src="{{URL::asset('assets/plugins/fancyuploder/jquery.ui.widget.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/fancyuploder/jquery.fileupload.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/fancyuploder/jquery.iframe-transport.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/fancyuploder/jquery.fancy-fileupload.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/fancyuploder/fancy-uploader.js')}}"></script>
-    <!-- File uploads js -->
-    <script src="{{URL::asset('assets/plugins/fileupload/js/dropify.js')}}"></script>
-    <script src="{{URL::asset('assets/js/filupload.js')}}"></script>
-    <!-- Multiple select js -->
-    <script src="{{URL::asset('assets/plugins/multipleselect/multiple-select.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/multipleselect/multi-select.js')}}"></script>
-    <!--Sumoselect js-->
-    <script src="{{URL::asset('assets/plugins/sumoselect/jquery.sumoselect.js')}}"></script>
-    <!--intlTelInput js-->
-    <script src="{{URL::asset('assets/plugins/intl-tel-input-master/intlTelInput.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/intl-tel-input-master/country-select.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/intl-tel-input-master/utils.js')}}"></script>
-    <!--jquery transfer js-->
-    <script src="{{URL::asset('assets/plugins/jQuerytransfer/jquery.transfer.js')}}"></script>
-    <!--multi js-->
-    <script src="{{URL::asset('assets/plugins/multi/multi.min.js')}}"></script>
-    <!-- Form Advanced Element -->
-    <script src="{{URL::asset('assets/js/formelementadvnced.js')}}"></script>
-    <script src="{{URL::asset('assets/js/form-elements.js')}}"></script>
-    <script src="{{URL::asset('assets/js/file-upload.js')}}"></script>
-    @endsection
+@section('js')
+<!--Select2 js -->
+<script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
+<script src="{{URL::asset('assets/js/select2.js')}}"></script>
+<!-- Timepicker js -->
+<script src="{{URL::asset('assets/plugins/time-picker/jquery.timepicker.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/time-picker/toggles.min.js')}}"></script>
+<!-- Datepicker js -->
+<script src="{{URL::asset('assets/plugins/date-picker/date-picker.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/date-picker/jquery-ui.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/input-mask/jquery.maskedinput.js')}}"></script>
+<!--File-Uploads Js-->
+<script src="{{URL::asset('assets/plugins/fancyuploder/jquery.ui.widget.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/fancyuploder/jquery.fileupload.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/fancyuploder/jquery.iframe-transport.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/fancyuploder/jquery.fancy-fileupload.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/fancyuploder/fancy-uploader.js')}}"></script>
+<!-- File uploads js -->
+<script src="{{URL::asset('assets/plugins/fileupload/js/dropify.js')}}"></script>
+<script src="{{URL::asset('assets/js/filupload.js')}}"></script>
+<!-- Multiple select js -->
+<script src="{{URL::asset('assets/plugins/multipleselect/multiple-select.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/multipleselect/multi-select.js')}}"></script>
+<!--Sumoselect js-->
+<script src="{{URL::asset('assets/plugins/sumoselect/jquery.sumoselect.js')}}"></script>
+<!--intlTelInput js-->
+<script src="{{URL::asset('assets/plugins/intl-tel-input-master/intlTelInput.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/intl-tel-input-master/country-select.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/intl-tel-input-master/utils.js')}}"></script>
+<!--jquery transfer js-->
+<script src="{{URL::asset('assets/plugins/jQuerytransfer/jquery.transfer.js')}}"></script>
+<!--multi js-->
+<script src="{{URL::asset('assets/plugins/multi/multi.min.js')}}"></script>
+<!-- Form Advanced Element -->
+<script src="{{URL::asset('assets/js/formelementadvnced.js')}}"></script>
+<script src="{{URL::asset('assets/js/form-elements.js')}}"></script>
+<script src="{{URL::asset('assets/js/file-upload.js')}}"></script>
+@endsection

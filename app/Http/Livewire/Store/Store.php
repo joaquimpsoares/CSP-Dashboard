@@ -112,9 +112,10 @@ class Store extends Component
                 return abort(403, __('errors.access_with_resellers_credentials'));
         }
 
-        $products = Product::whereHas('prices', function(Builder $query)use($priceList){
-            $query->where('price_list_id', $priceList->id)
-            ->where('instance_id', session()->get('instance_id'));
+        $products = Product::whereHas('prices', function(Builder $query)use($priceList,$instance){
+            // dd($instance->first());
+            $query->where('price_list_id', $priceList->id);
+            // ->where('instance_id', $priceList->instance_id);
         })->where(function(Builder $query){
             if(! $this->vendor) return;
 

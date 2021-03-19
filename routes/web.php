@@ -67,6 +67,7 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
         Route::group(['middleware' => ['role:Super Admin|Admin|Provider']], function ()
         {
 
+            Route::get('/profile/show-profile', 'ProviderController@showProfile')->name('profile.show-profile');
             Route::get('/instances/kascreate', 'InstanceController@kascreate')->name('instances.kascreate');
             Route::resource('/instances', 'InstanceController');
 

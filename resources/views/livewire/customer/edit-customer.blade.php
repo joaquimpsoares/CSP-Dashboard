@@ -70,7 +70,7 @@
                             </div>
                             <hr>
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
                                     <div class="form-group">
                                         <select wire:model="status" name="status" class="form-control @error('status') is-invalid @enderror" sf-validate="required">
@@ -88,12 +88,27 @@
                                     @error('markup')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                             </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
+                                    <div class="form-group">
+                                        <select wire:model="status" name="status" class="form-control @error('status') is-invalid @enderror" sf-validate="required">
+                                            {{-- <option value="{{$customer->reseller}}" selected>{{$customer->resellers->company_name}}</option> --}}
+                                            @foreach ($resellers  as $key => $status)
+                                            <option value="{{$key}}">{{ucwords(trans_choice($status, 1))}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="text-center text-md-left">
-                        <div class="float-sm-right">
-                            <a data-toggle="modal" data-target="#centralModalInfo" class="btn btn-primary">{{ ucwords(trans_choice('messages.update', 1)) }}</a>
-                        </div>
+                </div>
+                <div class="text-center text-md-left">
+                    <div class="float-sm-right">
+                        <a data-toggle="modal" data-target="#centralModalInfo" class="btn btn-primary">{{ ucwords(trans_choice('messages.update', 1)) }}</a>
                     </div>
                 </div>
             </div>

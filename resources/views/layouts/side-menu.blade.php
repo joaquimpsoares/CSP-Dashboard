@@ -7,7 +7,7 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
     <div class="app-sidebar__logo">
         <a class="header-brand" href="/">
             <img src="{{URL::asset('images/tagydes_logo.png')}}" class="header-brand-img desktop-lgo" alt="Covido logo">
-            <img src="{{URL::asset('assets/images/brand/logo1.png')}}" class="header-brand-img dark-logo" alt="Covido logo">
+            {{-- <img src="{{URL::asset('assets/images/brand/logo1.png')}}" class="header-brand-img dark-logo" alt="Covido logo"> --}}
             <img src="{{URL::asset('assets/images/brand/favicon.png')}}" class="header-brand-img mobile-logo" alt="Covido logo">
             {{-- <img src="{{URL::asset('assets/images/brand/favicon1.png')}}" class="header-brand-img darkmobile-logo" alt="Covido logo"> --}}
         </a>
@@ -134,11 +134,11 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
                             {{-- <p class="mb-1">Your Fax Number</p>
                             <a class="font-weight-bold" href="{{ url('/' . $page='#') }}">88 8888 8888</a> --}}
                         </div>
-                        <a class="text-primary" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" >Logout
+                        {{-- <a class="text-primary" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" >Logout
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                 @csrf
                             </form>
-                        </a>
+                        </a> --}}
                     </div>
                     <div class="ml-auto">
                         <a class="p-0 nav-link icon" href="{{ url('/' . $page='#') }}">
