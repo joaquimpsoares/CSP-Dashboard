@@ -42,6 +42,7 @@
         "spatie/simple-excel": "^1.13",
         "tagydes/kaspersky-connection": "dev-master",
         "tagydes/microsoft-connection": "dev-master",
+        "tanmuhittin/laravel-google-translate": "^2.0",
         "tymon/jwt-auth": "^1.0",
         "webpatser/laravel-countries": "^1.5",
         "yajra/laravel-datatables": "^1.5"
@@ -51,8 +52,7 @@
         "fzaninotto/faker": "^1.9.1",
         "mockery/mockery": "^1.3.1",
         "nunomaduro/collision": "^4.1",
-        "phpunit/phpunit": "^8.5",
-        "tanmuhittin/laravel-google-translate": "^2.0"
+        "phpunit/phpunit": "^8.5"
     },
     "config": {
         "optimize-autoloader": true,
