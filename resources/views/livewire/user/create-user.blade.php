@@ -4,6 +4,8 @@
         {{ $messageText }}
     </div>
     @endif
+@include('partials.messages')
+
     {{-- @dd(get_defined_vars()) --}}
     <div class="container mt-5">
         <section class="dark-grey-text">
@@ -117,7 +119,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 mb-4">
+            <div class="mb-4 col-lg-4">
                 <button class="btn btn-primary" type="submit">{{ucwords(trans_choice('messages.create', 1))}}</button>
             </div>
         </div>

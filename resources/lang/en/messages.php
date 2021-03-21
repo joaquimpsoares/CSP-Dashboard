@@ -254,7 +254,7 @@ return [
     'estimated_billing' => 'estimated billing',
     'provider_details' => 'provider details',
     'edit_provider' => 'edit provider',
-    '' => '',
+    'provider_details' => 'provider details',
     '' => '',
     '' => '',
     '' => '',

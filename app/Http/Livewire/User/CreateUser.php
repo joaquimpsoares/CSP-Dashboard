@@ -49,7 +49,7 @@ class CreateUser extends Component
         'address'               => ['sometimes', 'string', 'max:255', 'min:3'],
         'email'                 => ['nullable', 'email','unique:users', 'max:255', 'min:3'],
         'sendInvitation'        => ['nullable', 'integer'],
-        'password'              => ['same:password_confirmation','required', 'min:6'],
+        'password'              => ['same:password_confirmation','required', 'min:8'],
 
     ];
 
@@ -74,14 +74,14 @@ class CreateUser extends Component
 
     switch ($this->level) {
             case 'Super Admin':
-                dd('here');
+
+                dd($this->validate());
                 // $newUser = User::create($user);
 
                 // $newUser->assignRole($role->name);
 
                 break;
             case 'provider':
-                dd('here');
 
                 $this->validate();
 
@@ -145,7 +145,7 @@ class CreateUser extends Component
                     'user_level_id'     => 6, //customer role id = 6
                     'notify'            => $this->sendInvitation ?? false,
                     'status_id'         => $this->status,
-                    'reseller_id'       => $this->reseller_id,
+                    'customer_id'       => $this->customer_id,
                     ]);
 
                     $user->assignRole(config('app.customer'));
@@ -156,9 +156,11 @@ class CreateUser extends Component
 
             default:
                 # code...
+
                 break;
         }
 
+        session()->flash('success','User ' . $this->name . ' created successfully');
 
         // return $newUser;
     }
