@@ -53,8 +53,9 @@
                                 <div class="text-2xl font-semibold text-gray-900">
                                     @if($orders)
                                     {{$orders->count()}}
-                                    @endif
+                                    @else
                                     0
+                                    @endif
                                 </div>
                             </dd>
                         </div>
