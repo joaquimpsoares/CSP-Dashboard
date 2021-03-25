@@ -149,10 +149,9 @@ class HomeController extends Controller
                 $subscriptions = $this->resellerRepository->getSubscriptions($user->reseller);
                 $countSubscriptions = $subscriptions->count();
 
+                $orders = $this->orderRepository->all();
 
-                $countOrders = $this->orderRepository->all()->count();
-
-                return view('reseller.partials.home', compact('countCustomers','countSubscriptions','countOrders'));
+                return view('reseller.partials.home', compact('countCustomers','countSubscriptions','orders'));
 
             break;
 

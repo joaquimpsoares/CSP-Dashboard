@@ -53,8 +53,8 @@
                         </dt>
                         <dd class="flex items-baseline">
                             <div class="text-2xl font-semibold text-gray-900">
-                                @if($countOrders)
-                                {{$countOrders}}
+                                @if($orders)
+                                {{$orders->count()}}
                                 @else
                                 0
                                 @endif
