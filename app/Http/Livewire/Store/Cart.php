@@ -45,13 +45,6 @@ class Cart extends Component
 
         }
 
-        // protected $listeners = ['qtyupadated' => 'update'];
-
-        // public function postAdded()
-        // {
-            //     $this->subtotal = $this->amount ;
-            // }
-
 
             private function getUserCart($id = null, $token = null)
             {

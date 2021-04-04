@@ -1,4 +1,4 @@
-<?php 
+<?php
 return [
   'importproducts' => 'Importar productos de Microsoft, programado',
   'jobrescheduled' => 'Trabajo reprogramado',
@@ -243,4 +243,8 @@ return [
   'after_total' => 'después del total',
   'estimated_billing' => 'Facturación estimada - INFO',
   'go_to_store' => 'ir a la tienda',
+  'no_instance' => 'Por favor, crear una nueva instancia',
+  'new_instance'=>'nueva instancia',
+  'provider_details' =>'detalles del proovedor',
+  'isv'=>'isv',
 ];

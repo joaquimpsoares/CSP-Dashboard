@@ -48,7 +48,7 @@ class PriceListController extends Controller
         return view('priceList.create', compact('priceLists', 'prices', 'products'));
     }
 
-    public function getPrices($priceList)
+    public function getPrices(PriceList $priceList)
     {
         $user = $this->getUser();
 
@@ -57,10 +57,10 @@ class PriceListController extends Controller
 
                 $prices = $this->priceListRepository->listPrices();
 
-                $priceList = PriceList::where('id', $priceList)->first();
-                $provider = $priceList->provider;
+                // $priceList = PriceList::where('id', $priceList)->first();
+                // $provider = $priceList->provider;
 
-                $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
+                $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku', $prices->pluck('product_sku'))->get();
 
                 $prices = $priceList->prices;
 
@@ -131,44 +131,43 @@ class PriceListController extends Controller
 
             }
 
-            public function store(Request $request)
-            {
-
-                $pricelist = PriceList::find($request->priceList);
-
-                // $price = Price::where('price_list_id', $pricelist->id)->get()->map->format();
-
-                $product = Product::where('sku', $request->sku)->where('instance_id', $pricelist->instance_id)->first();
+            // public function store(Request $request)
+            // {
+            //     $pricelist = PriceList::find($request->priceList);
 
 
-                $validatedData = $request->validate([
-                    'sku' => 'required|max:255',
-                    'price' => 'required',
-                    'msrp' => 'required|numeric',
-                    'product_vendor' => 'required',
-                    'currency' => 'required',
-                    ]);
+            //     $product = Product::where('sku', $request->sku)->where('instance_id', $pricelist->instance_id)->first();
 
 
-                    $price = new Price();
-                    $price->name            = $product->name;
-                    $price->price           = $validatedData['price'];
-                    $price->msrp            = $validatedData['msrp'];
-                    $price->product_vendor  = $validatedData['product_vendor'];
-                    $price->currency        = $validatedData['currency'];
-                    $price->instance_id     = $pricelist->instance_id;
-                    $price->price_list_id   = $request->price_list_id;
+            //     $validatedData = $request->validate([
+            //         'sku' => 'required|max:255',
+            //         'price' => 'required',
+            //         'msrp' => 'required|numeric',
+            //         'product_vendor' => 'required',
+            //         'currency' => 'required',
+            //         ]);
 
 
-                    $price->product()->associate($product);
+            //         $price = new Price();
+            //         $price->product_sku     = $validatedData['sku'];
+            //         $price->name            = $product->name;
+            //         $price->price           = $validatedData['price'];
+            //         $price->msrp            = $validatedData['msrp'];
+            //         $price->product_vendor  = $validatedData['product_vendor'];
+            //         $price->currency        = $validatedData['currency'];
+            //         $price->instance_id     = $pricelist->instance_id;
+            //         $price->price_list_id   = $request->price_list_id;
 
-                    $price->pricelist()->associate($pricelist);
 
-                    $price->save();
+            //         // $price->product()->associate($validatedData['sku']);
 
-                    return back()->with('success', 'Excel Data Imported successfully');
+            //         $price->pricelist()->associate($pricelist);
 
-                }
+            //         $price->save();
+
+            //         return back()->with('success', 'Excel Data Imported successfully');
+
+            //     }
 
 
                 public function clone($id)

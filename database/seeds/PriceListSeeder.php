@@ -13,14 +13,16 @@ class PriceListSeeder extends Seeder
      */
     public function run()
     {
-    	
+
         PriceList::create([
             'name' => 'Default',
+            'instance_id' => '1',
             'description' => 'Default Price List Provider 1.'
         ]);
 
         PriceList::create([
             'name' => 'Default',
+            'instance_id' => '1',
             'description' => 'Default Price List Provider 2.'
         ]);
 

@@ -22,11 +22,11 @@
                             <h1>{{ ucwords(trans_choice('messages.create_pricelist', 1)) }}</h1>
                             @if (Auth::user()->userLevel->name == 'Reseller')
                             <div class="row">
-                                <div class="col-md-6 mb-4">
+                                <div class="mb-4 col-md-6">
                                     <label for="name"  class="">{{ ucwords(trans_choice('messages.name', 1)) }}</label>
                                     <input type="text" disabled id="name" name="name" class="form-control" value="{{old('name')}}">
                                 </div>
-                                <div class="col-md-6 mb-2">
+                                <div class="mb-2 col-md-6">
                                     <label for="description">{{ ucwords(trans_choice('messages.description', 1)) }}</label>
                                     <input type="text" disabled id="description" name="description" class="form-control" value="{{old('name')}}">
                                 </div>
@@ -34,7 +34,6 @@
                                     <label for="my-select">Text</label>
                                     <select id="my-select" class="custom-select" name="">
                                         @foreach (Auth::User()->provider->instances as $item)
-
                                         <option>{{$item}}</option>
                                         @endforeach
                                     </select>
@@ -42,11 +41,11 @@
                             </div>
                             @else
                             <div class="row">
-                                <div class="col-md-6 mb-4">
+                                <div class="mb-4 col-md-6">
                                     <label for="name" class="">{{ ucwords(trans_choice('messages.name', 1)) }}</label>
                                     <input type="text" id="name" name="name" class="form-control" value="{{old('name')}}">
                                 </div>
-                                <div class="col-md-6 mb-2">
+                                <div class="mb-2 col-md-6">
                                     <label for="description">{{ ucwords(trans_choice('messages.description', 1)) }}</label>
                                     <input type="text" id="description" name="description" class="form-control" value="{{old('name')}}">
                                 </div>
@@ -63,7 +62,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 mb-4">
+                <div class="mb-4 col-lg-4">
                     <div class="text-center text-md-left">
                         @if (Auth::user()->userLevel->name == 'Reseller')
                         @else
@@ -80,7 +79,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="text-center">
-                                            <i class="fa fa-check fa-4x mb-3 animated rotateIn"></i>
+                                            <i class="mb-3 fa fa-check fa-4x animated rotateIn"></i>
                                             <p>Are you sure?</p>
                                         </div>
                                     </div>

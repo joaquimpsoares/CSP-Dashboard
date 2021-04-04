@@ -80,7 +80,6 @@ class AnalyticController extends Controller
                 }
             }
         });
-        // dd();
 
         return view('analytics.azure', [
             'resourceName'  => $resourceName,
@@ -385,7 +384,6 @@ class AnalyticController extends Controller
     {
 
         $msId = $customer->microsoftTenantInfo->first()->tenant_id;
-        dd($msId);
 
         $instance = Instance::where('id', $subscription->instance_id)->first();
 

@@ -10,13 +10,14 @@
 
 @section('content')
 
+
 <div class="container">
     <section class="section">
         <div class="card bd-callout-info">
             <div class="">
-                <i class="fas fa-tasks fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
+                <i class="p-4 ml-2 text-white rounded fas fa-tasks fa-lg primary-color z-depth-2 mt-n3"></i>
                 <div class="card-body">
-                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    <ul class="mb-3 nav nav-pills" id="pills-tab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active btn blue-gradient" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab"
                             aria-controls="pills-home" aria-selected="true"><span class="badge badge-pill badge-success" style="float:right;margin-bottom:-10px;">{{ $running }}</span>Active Tasks</a>
@@ -27,7 +28,7 @@
                             {{ ucwords(trans_choice('messages.failed_task', 2)) }}</a>
                         </li>
                     </ul>
-                    <div class="tab-content pt-2 pl-1" id="pills-tabContent">
+                    <div class="pt-2 pl-1 tab-content" id="pills-tabContent">
                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                             <livewire:jobs.indexjobs/>
 

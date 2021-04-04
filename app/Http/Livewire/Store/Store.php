@@ -60,13 +60,12 @@ class Store extends Component
         $this->showModal = true;
         $details = Product::where('id', $id)->first();
 
-        // dd($details);
         $this->productName      = $details->name;
         $this->productCategory  = $details->category;
-        $this->productSku = $details->sku;
+        $this->productSku       = $details->sku;
         $this->productDescription = $details->description;
-        $this->productName = $details->name;
-        $this->productMSRP = $details->prices->msrp;
+        $this->productName      = $details->name;
+        $this->productMSRP      = $details->prices->msrp;
 
     }
 
@@ -113,17 +112,13 @@ class Store extends Component
         }
 
         $products = Product::whereHas('prices', function(Builder $query)use($priceList,$instance){
-            // dd($instance->first());
             $query->where('price_list_id', $priceList->id);
-            // ->where('instance_id', $priceList->instance_id);
+            $query->where('instance_id', $priceList->instance_id);
         })->where(function(Builder $query){
             if(! $this->vendor) return;
-
-
             $query->where('vendor', $this->vendor);
         })->where(function(Builder $query){
             if(! $this->category) return;
-
             $query->where('category', $this->category);
         })->where(function (Builder $query)  {
             $query->where('name', "LIKE", "%{$this->search}%");

@@ -116,9 +116,6 @@ class InstanceController extends Controller
             */
             public function edit(Instance $instance)
             {
-                // dd($instance);
-
-                // $instances = Instance::findOrFail($id);
 
                 switch ($instance->type) {
                     case 'kaspersky':

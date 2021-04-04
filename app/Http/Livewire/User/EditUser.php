@@ -91,7 +91,7 @@ class EditUser extends Component
             'phone'             => ['sometimes', 'string', 'max:20', 'min:3'],
             'address'           => ['sometimes', 'string', 'max:255', 'min:3'],
             'sendInvitation'    => ['nullable', 'integer'],
-            'locale' => ['sometimes', 'string', 'in:es,en,fr,pt']
+            'locale'            => ['sometimes', 'string', 'in:es,en,fr,pt']
         ]);
 
 
@@ -115,9 +115,9 @@ class EditUser extends Component
     {
 
         $this->validate([
-            'socialite_id'  => ['sometimes', 'string', 'max:255', 'min:3'],
+            'socialite_id'  => ['nullable', 'string', 'max:255', 'min:3'],
             'email'         => ['nullable', 'email', 'max:255', 'min:3'],
-            'password'      => ['sometimes', 'confirmed', 'min:8'],
+            'password'      => ['nullable', 'confirmed', 'min:8'],
         ]);
 
         $this->user->email          = $this->email;

@@ -92,9 +92,9 @@ class PriceListRepository implements PriceListRepositoryInterface
 
 		switch ($this->getUserLevel()) {
 			case config('app.super_admin'):
-
 				$priceLists = PriceList::orderBy('name')->get()->map->format();
 				$prices = Price::get();
+
 		break;
 
 		case config('app.provider'):
@@ -125,6 +125,7 @@ class PriceListRepository implements PriceListRepositoryInterface
 				# code...
 				break;
 		}
+
 		return $prices;
 	}
 }
