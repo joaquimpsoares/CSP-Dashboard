@@ -23,14 +23,20 @@ class ShowPricelist extends Component
     use UserTrait;
     public $showModal = false;
     public $editMargin = false;
+    public $editPriceList = false;
     public $priceListRepository;
     public $price;
+    public $name;
+    public $description;
     public $margin;
     public $sku;
     public $msrp;
     public $product_vendor;
     public $currency;
     public $priceList;
+
+    public $selectedProducts = [];
+    public bool $bulkDisabled = true;
 
     protected $rules = [
         'sku' => 'required|max:255',
@@ -50,6 +56,11 @@ class ShowPricelist extends Component
         $this->editMargin = true;
     }
 
+    public function editPriceList()
+    {
+        $this->editPriceList = true;
+    }
+
     public function close()
     {
         $this->showModal = false;
@@ -57,8 +68,19 @@ class ShowPricelist extends Component
 
     public function mount()
     {
-        
+
         $this->margin = $this->priceList->margin;
+        $this->name = $this->priceList->name;
+        $this->description = $this->priceList->description;
+    }
+
+    public function deleteSelected()
+    {
+        $price = Price::query()
+            ->whereIn('id', $this->selectedProducts)
+            ->delete();
+            // $price->pricelist()->dissociate($this->priceList);
+        $this->selectedProducts = [];
     }
 
     public function save()
@@ -66,7 +88,7 @@ class ShowPricelist extends Component
 
         $this->validate();
 
-        $product = Product::where('sku', $this->sku)->where('instance_id', $this->priceList->instance_id)->first();
+        $product = Product::where('sku', $this->sku)->first();
 
         $price = new Price();
         $price->product_sku     = $this->sku;
@@ -92,11 +114,20 @@ class ShowPricelist extends Component
     {
         $price = Price::find($price->id);
         $price->delete();
-        session()->flash('success','Price ' . $price->name . ' Removed successfully');
         $price->pricelist()->dissociate($this->priceList);
+        session()->flash('success','Price ' . $price->name . ' Removed successfully');
     }
 
+    public function savePriceList(PriceList $priceList)
+    {
+        $priceList->name = $this->name;
+        $priceList->description = $this->description;
+        $priceList->save();
 
+        $this->editPriceList = false;
+
+        session()->flash('success','Price ' . $priceList->name . ' Removed successfully');
+    }
 
     public function saveMargin(PriceList $priceList)
     {
@@ -112,7 +143,7 @@ class ShowPricelist extends Component
     {
         $user = $this->getUser();
 
-
+        $this->bulkDisabled = count($this->selectedProducts) < 1;
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
                 $priceList = $this->priceList;
@@ -127,12 +158,12 @@ class ShowPricelist extends Component
 
             case config('app.provider'):
 
-                $prices = $this->priceListRepository->listPrices();
-
                 $provider = $user->provider;
+
                 $priceList = $provider->priceList;
-                $products = Product::where('instance_id', $this->priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
+
                 $prices = $priceList->prices;
+                $products = Product::whereIn('instance_id', $provider->instances->pluck('id'))->whereNotIn('sku',$prices->pluck('product_sku'))->get();
 
             break;
 
