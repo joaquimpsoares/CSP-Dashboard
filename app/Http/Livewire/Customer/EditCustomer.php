@@ -8,6 +8,7 @@ use App\Customer;
 use App\Reseller;
 use Livewire\Component;
 use App\Http\Traits\UserTrait;
+use Illuminate\Support\Facades\DB;
 
 class EditCustomer extends Component
 {
@@ -15,6 +16,7 @@ class EditCustomer extends Component
     use UserTrait;
 
     public $customer;
+    public $company_name;
     public $nif;
     public $messageText = '';
     public $country_id;
@@ -36,6 +38,8 @@ class EditCustomer extends Component
     public $password_confirmation;
     public $markup;
 
+    public $customerRepository;
+
     protected $rules = [
         'company_name'          => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
         'nif'                   => ['required', 'min:3'],
@@ -46,20 +50,11 @@ class EditCustomer extends Component
         'state'                 => ['required', 'string', 'max:255', 'min:3'],
         'postal_code'           => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255', 'min:3'],
         'status'                => ['required', 'integer', 'exists:statuses,id'],
-        'email'                 => ['nullable', 'email','unique:users', 'max:255', 'min:3'],
-        'name'                  => ['sometimes', 'string', 'max:255', 'min:3'],
-        'last_name'             => ['sometimes', 'string', 'max:255', 'min:3'],
-        'socialite_id'          => ['sometimes', 'string', 'max:255', 'min:3'],
-        'phone'                 => ['sometimes', 'string', 'max:20', 'min:3'],
-        'address'               => ['sometimes', 'string', 'max:255', 'min:3'],
-        'sendInvitation'        => ['nullable', 'integer'],
-        'password'              => ['same:password_confirmation','required', 'min:6'],
         'markup'                => ['nullable', 'integer', 'min:3'],
     ];
 
     public function mount(Customer $customer)
     {
-        // dd($customer);
 
         $this->company_name = $customer->company_name;
         $this->nif          = $customer->nif;
@@ -70,9 +65,50 @@ class EditCustomer extends Component
         $this->state        = $customer->state;
         $this->postal_code  = $customer->postal_code;
         $this->status       = $customer->status->id;
+        $this->markup       = $customer->markup;
 
 
     }
+
+    public function save(Customer $customer){
+
+        $validate = $this->validate();
+
+        $user = $this->getUser();
+
+        try {
+            DB::beginTransaction();
+            // dd($validate['company_name']);
+
+            $updateCustomer = $customer->update([
+                'company_name' => $validate['company_name'],
+                'nif' => $validate['nif'],
+                'country_id' => $validate['country_id'],
+                'address_1' => $validate['address_1'],
+                'address_2' => $validate['address_2'],
+                'city' => $validate['city'],
+                'state' => $validate['state'],
+                'postal_code' => $validate['postal_code'],
+                'status_id' => $validate['status'],
+                'markup' => $validate['markup']
+            ]);
+            // dd($customer->company_name);
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            if ($e->errorInfo[1] == 1062) {
+                $errorMessage = "message.user_already_exists";
+            } else {
+                $errorMessage = $e->getMessage();
+            }
+            return redirect()->back()->with('danger', $errorMessage );
+
+            }
+            // dd('hehre');
+            return redirect()->back()->with('success', 'Customer Updated succesfully');
+        }
+
 
     public function changereseller(Customer $customer, Reseller $reseller)
     {

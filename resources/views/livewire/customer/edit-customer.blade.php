@@ -1,4 +1,4 @@
-<form wire:submit.prevent="save">
+<form wire:submit.prevent="save({{ $customer->id }})">
     @if ($messageText != '')
     <div class="alert alert-info">
         {{ $messageText }}
@@ -21,12 +21,12 @@
                             <div class="row">
                                 <div class="mb-4 col-md-6">
                                     <label for="company_name" class="">{{ ucwords(trans_choice('messages.company_name', 1)) }}</label>
-                                    <input type="text" id="company_name" name="company_name" class="form-control @error('company_name') is-invalid @enderror" value="{{$customer->company_name}}">
+                                    <input wire:model="company_name" type="text" id="company_name" name="company_name" class="form-control @error('company_name') is-invalid @enderror">
                                     @error('company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                                 <div class="mb-2 col-md-6">
                                     <label for="nif">{{ ucwords(trans_choice('messages.nif', 1)) }}</label>
-                                    <input type="text" id="nif" name="nif" class="form-control @error('nif') is-invalid @enderror" value="{{$customer->nif}}">
+                                    <input wire:model="nif" type="text" id="nif" name="nif" class="form-control @error('nif') is-invalid @enderror" >
                                     @error('nif')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                             </div>
@@ -45,26 +45,25 @@
                                 </div>
                             </div>
                             <label for="address" class="">{{ucwords(trans_choice('messages.address_1', 1))}}</label>
-                            <input type="text" id="address_1" name="address_1" class="form-control mb-4 @error('address_1') is-invalid @enderror" value="{{$customer->address_1}}" placeholder="1234 Main St">
+                            <input wire:model="address_1"  type="text" id="address_1" name="address_1" class="form-control mb-4 @error('address_1') is-invalid @enderror" placeholder="1234 Main St">
                             @error('address_1')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                             <label for="address_2" class="">{{ucwords(trans_choice('messages.address_2', 1))}} (optional)</label>
-                            <input type="text" id="address_2" name="address_2" class="form-control mb-4 @error('address_2') is-invalid @enderror" value="{{$customer->address_2}}" placeholder="Appartment or numer">
+                            <input wire:model="address_2" type="text" id="address_2" name="address_2" class="form-control mb-4 @error('address_2') is-invalid @enderror" placeholder="Appartment or number">
                             @error('address_2')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                             <div class="row">
                                 <div class="mb-4 col-lg-4 col-md-6">
                                     <label for="city" class="">{{ucwords(trans_choice('messages.city', 1))}}</label>
-                                    <input type="text" id="city" name="city" class="form-control mb-4 @error('city') is-invalid @enderror" value="{{$customer->city}}">
+                                    <input wire:model="city" type="text" id="city" name="city" class="form-control mb-4 @error('city') is-invalid @enderror" value="{{$customer->city}}">
                                     @error('city')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                                 <div class="mb-4 col-lg-4 col-md-6">
                                     <label for="state" class="">{{ucwords(trans_choice('messages.state', 1))}}</label>
-                                    <input name="state" type="text" class="form-control @error('state') is-invalid @enderror" id="state" placeholder="" value="{{$customer->state}}" required >
+                                    <input wire:model="state" name="state" type="text" class="form-control @error('state') is-invalid @enderror" id="state" placeholder="" value="{{$customer->state}}" required >
                                     @error('state')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                                 <div class="mb-4 col-lg-4 col-md-6">
                                     <label for="city" class="">{{ucwords(trans_choice('messages.postal_code', 1))}}</label>
-
-                                    <input name="postal_code" type="text" class="form-control @error('postal_code') is-invalid @enderror" id="postal_code" placeholder="" value="{{$customer->postal_code}}" required>
+                                    <input wire:model="postal_code" name="postal_code" type="text" class="form-control @error('postal_code') is-invalid @enderror" id="postal_code" placeholder="" value="{{$customer->postal_code}}" required>
                                     @error('postal_code')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                             </div>
@@ -84,31 +83,16 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label for="markup">{{ ucwords(trans_choice('messages.markup', 1)) }}</label>
-                                    <input name="markup" type="text" class="form-control @error('markup') is-invalid @enderror" id="markup" placeholder="%" value="{{$customer->markup}}">
+                                    <input wire:model="markup" name="markup" type="text" class="form-control @error('markup') is-invalid @enderror" id="markup" placeholder="%" value="{{$customer->markup}}">
                                     @error('markup')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
-                                    <div class="form-group">
-                                        <select wire:model="status" name="status" class="form-control @error('status') is-invalid @enderror" sf-validate="required">
-                                            {{-- <option value="{{$customer->reseller}}" selected>{{$customer->resellers->company_name}}</option> --}}
-                                            @foreach ($resellers  as $key => $status)
-                                            <option value="{{$key}}">{{ucwords(trans_choice($status, 1))}}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="text-center text-md-left">
-                    <div class="float-sm-right">
-                        <a data-toggle="modal" data-target="#centralModalInfo" class="btn btn-primary">{{ ucwords(trans_choice('messages.update', 1)) }}</a>
+                    <div class="text-center text-md-left">
+                        <div class="float-sm-right">
+                            <a data-toggle="modal" data-target="#centralModalInfo" class="btn btn-primary">{{ ucwords(trans_choice('messages.update', 1)) }}</a>
+                        </div>
                     </div>
                 </div>
             </div>

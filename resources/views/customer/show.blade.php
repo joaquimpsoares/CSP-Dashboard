@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="max-w-2xl px-4 mx-auto sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-7xl lg:px-8">
+<div class="max-w-2xl px-4 mx-auto sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-full lg:px-8">
     <div class="flex items-center space-x-5">
 
     </div>
@@ -18,7 +18,7 @@
         </div>
     </div>
 </div>
-<div class="grid max-w-3xl grid-cols-1 gap-6 mx-auto mt-6 sm:px-6 lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-3">
+<div class="grid max-w-3xl grid-cols-1 gap-6 mx-auto mt-6 sm:px-6 lg:max-w-full lg:grid-flow-col-dense lg:grid-cols-3">
     <div class="space-y-6 lg:col-start-1 lg:col-span-2">
         <!-- Description list-->
         <div class="overflow-hidden bg-white shadow sm:rounded-md">

@@ -1,7 +1,13 @@
+<button wire:click.prevent="deleteSelected"
+            onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
+            class="@if ($bulkDisabled) opacity-50 @endif bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Delete Selected
+    </button>
 <div class="table-responsive">
     <table id="tagydes_table_buttons" class="hover key-buttons" style="width:100%; padding-top: 1em;  padding-bottom: 1em;">
         <thead class="thead-dark">
             <tr>
+                <th></th>
                 <th>{{ ucwords(trans_choice('messages.#', 1)) }}</th>
                 <th>{{ ucwords(trans_choice('messages.product_sku', 1)) }}</th>
                 <th>{{ ucwords(trans_choice('messages.product_name', 1)) }}</th>
@@ -13,6 +19,9 @@
         <tbody>
             @forelse($prices as $price)
             <tr>
+                <td class="px-6 py-4 text-sm leading-5 whitespace-no-wrap border-gray-500">
+                    <input type="checkbox" wire:model="selectedProducts" value="{{ $price->id }}">
+                </td>
                 <td>{{ $price->id }}</td>
                 <td>{{ $price->product_sku }}</td>
                 <td><a href="{{ route('price.edit', $price->id)}}"> {{ $price->name }}</a></td>
