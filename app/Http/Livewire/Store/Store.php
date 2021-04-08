@@ -98,12 +98,10 @@ class Store extends Component
 
         switch ($user->userLevel->name) {
             case 'Reseller':
-                $instance = $user->reseller->provider->instances->pluck('id');
                 $priceList = $user->reseller->priceList;
                 break;
 
             case 'Customer':
-                $instance = $user->customer->resellers->first()->provider->instances->pluck('id');
                 $priceList = $user->customer->resellers->first()->priceList;
                 break;
 
@@ -111,9 +109,8 @@ class Store extends Component
                 return abort(403, __('errors.access_with_resellers_credentials'));
         }
 
-        $products = Product::whereHas('prices', function(Builder $query)use($priceList,$instance){
+        $products = Product::whereHas('prices', function(Builder $query)use($priceList){
             $query->where('price_list_id', $priceList->id);
-            $query->where('instance_id', $priceList->instance_id);
         })->where(function(Builder $query){
             if(! $this->vendor) return;
             $query->where('vendor', $this->vendor);
@@ -123,6 +120,8 @@ class Store extends Component
         })->where(function (Builder $query)  {
             $query->where('name', "LIKE", "%{$this->search}%");
             $query->orWhere('sku', 'LIKE', "%{$this->search}%");
+        })->where(function (Builder $query) use($priceList) {
+            $query->where('instance_id', $priceList->instance_id);
         })->paginate(10);
 
          return view('livewire.store.store', [
