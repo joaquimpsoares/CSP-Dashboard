@@ -6,7 +6,7 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
 <div class="app-sidebar app-sidebar2">
     <div class="app-sidebar__logo">
         <a class="header-brand" href="/">
-            {{-- @dd(Auth::user()->userlevel->name == 'Reseller') --}}
+            {{-- @dd(Auth::user()->userlevelx->name == "Super Admin") --}}
             @if(Auth::user()->userlevel->name == 'Reseller')
             <img src="{{URL::asset(Auth::user()->reseller->provider->logo)}}" class="header-brand-img desktop-lgo" alt="Covido logo">
             @endif
@@ -16,7 +16,9 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
             @if(Auth::user()->userlevel->name == 'Customer')
             <img src="{{URL::asset(Auth::user()->customer->resellers->first()->provider->logo)}}" class="header-brand-img desktop-lgo" alt="Covido logo">
             @endif
-            {{-- <img src="{{URL::asset('assets/images/brand/logo1.png')}}" class="header-brand-img dark-logo" alt="Covido logo"> --}}
+            @if(Auth::user()->userlevel->name == "Super Admin")
+            <img src="{{URL::asset('/images/logos/tagydes.png')}}" class="header-brand-img desktop-lgo" alt="Covido logo">
+            @endif
             <img src="{{URL::asset('assets/images/brand/favicon.png')}}" class="header-brand-img mobile-logo" alt="Covido logo">
             {{-- <img src="{{URL::asset('assets/images/brand/favicon1.png')}}" class="header-brand-img darkmobile-logo" alt="Covido logo"> --}}
         </a>
