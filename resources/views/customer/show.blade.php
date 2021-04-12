@@ -145,160 +145,209 @@
                                                     <td>{{ $user['last_name'] }}</td>
                                                     <td>{{ ucwords(trans_choice($user->status->name, 1)) }}</td>
                                                     <td>
-                                                        <a href="{{ route('user.edit', $user) }}" class="btn btn-sm btn-white btn-svg" type="button" >Edit</a>
-                                                        <a class="btn btn-sm btn-white btn-svg" type="button"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M8 9h8v10H8z" opacity=".3"/><path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z"/></svg></a>
+                                                        <div x-cloak x-data="{ open: false }">
+                                                            <a href="{{ route('user.edit', $user) }}" class="btn btn-icon edit">
+                                                                <i class="fa fa-edit"></i>
+                                                            </a>
+                                                            <a href="#" class="btn btn-icon"  @click="open = true">
+                                                                <i class="fa fa-trash"></i>
+                                                            </a>
+                                                            @canBeImpersonated($user)
+                                                            <a href="{{ route('impersonate', $user) }}"class="btn btn-icon edit">
+                                                                <i class="mr-2 fa fa-user-secret"></i>
+                                                            </a>
+                                                            @endCanBeImpersonated
+                                                            <div x-cloak x-show="open" class="fixed z-10 items-center justify-center overflow-y-auto inset-20" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                                                                <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                                                                    <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" aria-hidden="true"></div>
+                                                                    <div class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                                                                        <div class="px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4">
+                                                                            <div class="sm:flex sm:items-start">
+                                                                                <div class="flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto bg-red-100 rounded-full sm:mx-0 sm:h-10 sm:w-10">
+                                                                                    <!-- Heroicon name: outline/exclamation -->
+                                                                                    <svg class="w-6 h-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                                                    </svg>
+                                                                                </div>
+                                                                                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                                                                    <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
+                                                                                        Delete account
+                                                                                    </h3>
+                                                                                    <div class="mt-2">
+                                                                                        <p class="text-sm text-gray-500">
+                                                                                            Are you sure you want to <strong>Delete {{$user->name}} </strong> account? All of your data will be permanently removed. This action cannot be undone.
+                                                                                        </p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="px-4 py-3 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse">
+                                                                            <form action="{{ route('user.destroy', $user) }}" method="POST">
+                                                                                @method('DELETE')
+                                                                                @csrf
+                                                                                <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                                                                    Delete
+                                                                                </button>
+                                                                            </form>
+                                                                            {{-- <button type="button" class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false" >
+                                                                                Cancel
+                                                                            </button> --}}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </section>
+            </div>
+            <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
+                <div class="bg-white shadow sm:rounded-lg">
+                    <div class="px-4 py-5 bg-white border-b border-gray-200 sm:px-6">
+                        <div class="flex flex-wrap items-center justify-between -mt-2 -ml-4 sm:flex-nowrap">
+                            <div class="mt-2 ml-4">
+                                <h3 class="text-lg font-medium leading-6 text-gray-900">
+                                    {{ ucwords(trans_choice('messages.customer_details', 1)) }}
+                                </h3>
+                            </div>
+                            @canImpersonate
+                            @if(!empty($customer->format()['mainUser']))
+                            <a href="{{ route('impersonate', $customer->format()['mainUser']['id']) }}" type="button"
+                                class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                <i class="fa fa-user-secret"></i>{{ ucwords(trans_choice('messages.impersonate', 1)) }}
+                            </a>
+                            @endif
+                            @endCanImpersonate
+                            <div class="flex-shrink-0 mt-2 ml-4">
+                                <p class="inline-flex px-2 text-xs ml-3 font-semibold leading-5 {{ $customer->status->name == 'messages.active' ? ' text-green-800 bg-green-100' : ' text-yellow-800 bg-yellow-100'  }} rounded-full">
+                                    {{ ucwords(trans_choice($customer->status->name, 1)) }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <div class="sm:col-span-1">
+                                <dd class="text-xs text-gray-500">
+                                    {{$customer->subscriptions->first()->tenant_name }}
+                                </dd>
+                                <dd class="text-xs text-gray-500">
+                                    {{$customer->microsoftTenantInfo->first()->tenant_id }}
+                                </dd>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-4 py-5 border-t border-gray-200 sm:px-6">
+                        <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">
+                                    {{ ucwords(trans_choice('messages.company_name', 1)) }}
+                                </dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    {{$customer->company_name}}
+                                </dd>
+                            </div>
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">
+                                    {{ ucwords(trans_choice('messages.nif', 1)) }}
+                                </dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    {{$customer->nif}}
+                                </dd>
+                            </div>
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">
+                                    {{ ucwords(trans_choice('messages.country', 1)) }}
+                                </dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    {{$customer->country->name}}
+                                </dd>
+                            </div>
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">
+                                    {{ ucwords(trans_choice('messages.city', 1)) }}
+                                </dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    {{$customer->city}}
+                                </dd>
+                            </div>
+                        </dl>
+                        <div class="border-t sm:col-span-1">
+                            <dt class="mt-3 text-sm font-medium text-gray-500">
+                                {{ ucwords(trans_choice('messages.markup', 1)) }}
+                            </dt>
+                            <dd class="mt-1 text-sm text-gray-900">
+                                {{$customer->markup}} %
+                            </dd>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="{{$customer->format()['path']}}/edit" class="block px-4 py-4 text-sm font-medium text-center text-gray-500 bg-gray-50 hover:text-gray-700 sm:rounded-b-lg">{{ ucwords(trans_choice('messages.edit_customer', 1)) }}</a>
+                    </div>
+                </div>
+                @if(!@empty($serviceCosts))
+                <div class="mt-4 bg-white shadow sm:rounded-lg">
+                    <div class="px-4 py-5 bg-white border-b border-gray-200 sm:px-6">
+                        <div class="flex flex-wrap items-center justify-between -mt-2 -ml-4 sm:flex-nowrap">
+                            <div class="mt-2 ml-4">
+                                <h3 class="text-lg font-medium leading-6 text-gray-900">
+                                    {{ ucwords(trans_choice('messages.estimated_billing', 1)) }}
+                                </h3>
+                            </div>
+                            <div class="flex-shrink-0 mt-2 ml-4">
+                                <p class="inline-flex px-2 text-xs ml-3 font-semibold leading-5 {{ $customer->status->name == 'messages.active' ? ' text-green-800 bg-green-100' : ' text-yellow-800 bg-yellow-100'  }} rounded-full">
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-4 py-5 border-gray-200 sm:px-6">
+                        <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">
+                                    {{ ucwords(trans_choice('messages.billing_start_date', 1)) }}
+                                </dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    {{ date('d-m-Y', strtotime($serviceCosts->billingStartDate))}}
+                                </dd>
+                            </div>
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">
+                                    {{ ucwords(trans_choice('messages.billing_end_date', 1)) }}
+                                </dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    {{date('d-m-Y', strtotime($costs->billingEndDate))}}
+                                </dd>
+                            </div>
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">
+                                    {{ ucwords(trans_choice('messages.pretax_total', 1)) }}
+                                </dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    {{number_format($costs->pretaxTotal, 2)}}{{$costs->currencySymbol}}
+                                </dd>
+                            </div>
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">
+                                    {{ ucwords(trans_choice('messages.after_total', 1)) }}
+                                </dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    {{number_format($costs->afterTaxTotal, 2)}}{{$costs->currencySymbol}}
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                    @endif
                 </div>
             </section>
         </div>
-        <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
-            <div class="bg-white shadow sm:rounded-lg">
-                <div class="px-4 py-5 bg-white border-b border-gray-200 sm:px-6">
-                    <div class="flex flex-wrap items-center justify-between -mt-2 -ml-4 sm:flex-nowrap">
-                        <div class="mt-2 ml-4">
-                            <h3 class="text-lg font-medium leading-6 text-gray-900">
-                                {{ ucwords(trans_choice('messages.customer_details', 1)) }}
-                            </h3>
-                        </div>
-                        @canImpersonate
-                        @if(!empty($customer->format()['mainUser']))
-                        <a href="{{ route('impersonate', $customer->format()['mainUser']['id']) }}" type="button"
-                            class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            <i class="fa fa-user-secret"></i>{{ ucwords(trans_choice('messages.impersonate', 1)) }}
-                        </a>
-                        @endif
-                        @endCanImpersonate
-                        <div class="flex-shrink-0 mt-2 ml-4">
-                            <p class="inline-flex px-2 text-xs ml-3 font-semibold leading-5 {{ $customer->status->name == 'messages.active' ? ' text-green-800 bg-green-100' : ' text-yellow-800 bg-yellow-100'  }} rounded-full">
-                                {{ ucwords(trans_choice($customer->status->name, 1)) }}
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-6">
-                        <div class="sm:col-span-1">
-                            <dd class="text-xs text-gray-500">
-                                {{$customer->subscriptions->first()->tenant_name }}
-                            </dd>
-                            <dd class="text-xs text-gray-500">
-                                {{$customer->microsoftTenantInfo->first()->tenant_id }}
-                            </dd>
-                        </div>
-                    </div>
-                </div>
-                <div class="px-4 py-5 border-t border-gray-200 sm:px-6">
-                    <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">
-                                {{ ucwords(trans_choice('messages.company_name', 1)) }}
-                            </dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                {{$customer->company_name}}
-                            </dd>
-                        </div>
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">
-                                {{ ucwords(trans_choice('messages.nif', 1)) }}
-                            </dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                {{$customer->nif}}
-                            </dd>
-                        </div>
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">
-                                {{ ucwords(trans_choice('messages.country', 1)) }}
-                            </dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                {{$customer->country->name}}
-                            </dd>
-                        </div>
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">
-                                {{ ucwords(trans_choice('messages.city', 1)) }}
-                            </dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                {{$customer->city}}
-                            </dd>
-                        </div>
-                    </dl>
-                    <div class="border-t sm:col-span-1">
-                        <dt class="mt-3 text-sm font-medium text-gray-500">
-                            {{ ucwords(trans_choice('messages.markup', 1)) }}
-                        </dt>
-                        <dd class="mt-1 text-sm text-gray-900">
-                            {{$customer->markup}} %
-                        </dd>
-                    </div>
-                </div>
-                <div>
-                    <a href="{{$customer->format()['path']}}/edit" class="block px-4 py-4 text-sm font-medium text-center text-gray-500 bg-gray-50 hover:text-gray-700 sm:rounded-b-lg">{{ ucwords(trans_choice('messages.edit_customer', 1)) }}</a>
-                </div>
-            </div>
-            @if(!@empty($serviceCosts))
-            <div class="mt-4 bg-white shadow sm:rounded-lg">
-                <div class="px-4 py-5 bg-white border-b border-gray-200 sm:px-6">
-                    <div class="flex flex-wrap items-center justify-between -mt-2 -ml-4 sm:flex-nowrap">
-                        <div class="mt-2 ml-4">
-                            <h3 class="text-lg font-medium leading-6 text-gray-900">
-                                {{ ucwords(trans_choice('messages.estimated_billing', 1)) }}
-                            </h3>
-                        </div>
-                        <div class="flex-shrink-0 mt-2 ml-4">
-                            <p class="inline-flex px-2 text-xs ml-3 font-semibold leading-5 {{ $customer->status->name == 'messages.active' ? ' text-green-800 bg-green-100' : ' text-yellow-800 bg-yellow-100'  }} rounded-full">
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="px-4 py-5 border-gray-200 sm:px-6">
-                    <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">
-                                {{ ucwords(trans_choice('messages.billing_start_date', 1)) }}
-                            </dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                {{ date('d-m-Y', strtotime($serviceCosts->billingStartDate))}}
-                            </dd>
-                        </div>
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">
-                                {{ ucwords(trans_choice('messages.billing_end_date', 1)) }}
-                            </dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                {{date('d-m-Y', strtotime($costs->billingEndDate))}}
-                            </dd>
-                        </div>
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">
-                                {{ ucwords(trans_choice('messages.pretax_total', 1)) }}
-                            </dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                {{number_format($costs->pretaxTotal, 2)}}{{$costs->currencySymbol}}
-                            </dd>
-                        </div>
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">
-                                {{ ucwords(trans_choice('messages.after_total', 1)) }}
-                            </dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                {{number_format($costs->afterTaxTotal, 2)}}{{$costs->currencySymbol}}
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-                @endif
-            </div>
-        </section>
     </div>
-</div>
 
-@endsection
+    @endsection
 
 
