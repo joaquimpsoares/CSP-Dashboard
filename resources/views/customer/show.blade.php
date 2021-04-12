@@ -6,9 +6,7 @@
 
 <div class="max-w-2xl px-4 mx-auto sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-full lg:px-8">
     <div class="flex items-center space-x-5">
-
     </div>
-
 </div>
 <div class="grid max-w-3xl grid-cols-1 gap-6 mx-auto mt-6 sm:px-6 lg:max-w-full lg:grid-flow-col-dense lg:grid-cols-3">
     <div class="space-y-6 lg:col-start-1 lg:col-span-2">
@@ -46,15 +44,19 @@
                                         {{$item->subscription_id}}
                                     </p>
                                 </div>
-
                             </div>
                             <div class="sm:flex sm:justify-between">
+                                @if($item->billing_type == 'license')
                                 <div class="sm:flex">
                                     <p class="text-sm font-medium"> {{ ucwords(trans_choice('quantity', 1)) }}  </p>
                                     <p class="flex ml-1 text-gray-500 items-right text-xm">
                                         {{$item->amount}}
                                     </p>
                                 </div>
+                                @else
+                                <div class="sm:flex">
+                                </div>
+                                @endif
                                 <div class="sm:flex">
                                     <p class="text-sm font-medium"> Expires On:  </p>
                                     <p class="flex ml-1 text-gray-500 items-right text-xm">
@@ -227,6 +229,14 @@
                             </dd>
                         </div>
                     </dl>
+                    <div class="border-t sm:col-span-1">
+                        <dt class="mt-3 text-sm font-medium text-gray-500">
+                            {{ ucwords(trans_choice('messages.markup', 1)) }}
+                        </dt>
+                        <dd class="mt-1 text-sm text-gray-900">
+                            {{$customer->markup}} %
+                        </dd>
+                    </div>
                 </div>
                 <div>
                     <a href="{{$customer->format()['path']}}/edit" class="block px-4 py-4 text-sm font-medium text-center text-gray-500 bg-gray-50 hover:text-gray-700 sm:rounded-b-lg">{{ ucwords(trans_choice('messages.edit_customer', 1)) }}</a>
@@ -287,11 +297,8 @@
             </div>
         </section>
     </div>
+</div>
 
-
-
-
-
-    @endsection
+@endsection
 
 
