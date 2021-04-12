@@ -52,15 +52,17 @@
                     <td>{{$job->id}}</td>
                     <td class="">
                         @if(!$job->isFinished())
-                        <div class="">
-                            <span class="mt-2 badge badge-info">Running</span>
+                        {{-- <div class="">
+                        </div> --}}
+                        <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 md:mt-2 lg:mt-0">
+                            <span >Running</span>
                         </div>
                         @elseif($job->hasSucceeded())
-                        <div class="inline-flex flex-1 px-2 text-xs font-medium leading-5 text-green-800 bg-green-200 rounded-full">
-                            <span class="mt-2 badge badge-success">Success</span>
+                        <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 md:mt-2 lg:mt-0">
+                            <span >Success</span>
                         </div>
                         @else
-                        <div class="inline-flex flex-1 px-2 text-xs font-medium leading-5 text-red-800 bg-red-200 rounded-full">
+                        <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 md:mt-2 lg:mt-0">
                             <span class="mt-2 badge badge-danger">Failed</span>
                         </div>
                         @endif
@@ -161,6 +163,49 @@
                 </td>
             </tr>
         </tfoot> --}}
+    </table>
+    <table class="table table-striped table-bordered" id="customers">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Queue Name</th>
+                <th>Payload</th>
+                <th>Exception</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($failedJobs as $failedJob)
+            {{-- @if($customer->status->name === 'message.active') --}}
+            <tr>
+                <col width="13">
+                <col width="80">
+                <td>
+                    <a href="·">{{ $failedJob->id }}</a>
+                </td>
+                <td>{{ $failedJob->queue }}</td>
+                <td style="width: 15px">{{ Str::limit($failedJob->payload, 100, $end='[...]')  }}</td>
+                <td style="width: 15px">{{ Str::limit($failedJob->exception, 100, $end='[...]') }}</td>
+                <td >
+                    <div class="col-2">
+                        <a href="{{route('jobs.retry', $failedJob->id)}}">
+                            <i class="fas fa-redo-alt text-primary }}"></i>
+                        </a>
+                    </div>
+
+                    <div class="col-2">
+                        <a href="{{route('jobs.destroy', $failedJob->id)}}">
+                            <i class="fas fa-trash-alt text-primary }}"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="5">Empty</td>
+            </tr>
+            @endforelse
+        </tbody>
     </table>
 </div>
 </div>
