@@ -142,13 +142,12 @@ class ProviderController extends Controller
             $reseller = Reseller::find($reseller['id']);
             $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
         }
-        // $countResellers = $reseller->count();
 
         $instance = Instance::first();
 
         $order = OrderProducts::get();
 
-        $users = User::where('provider_id', $provider->id)->get();
+        $users = User::where('provider_id', $provider->id)->paginate(10);
 
         $subscriptions = $this->providerRepository->getSubscriptions($provider);
         $countCustomers =  $customers->count();

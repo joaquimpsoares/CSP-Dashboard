@@ -36,20 +36,56 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function showall($filters = null, $quantity = null)
     {
-        // if (empty($filters) && empty($quantity))
-        // {
-        //     $products = Product::with('instance')->
-        //     orderBy('name')->get();
-        // } else {
-        //     if (isset($filters['search'])) {
-        //         $products = $this->searchFilter($filters, $quantity);
-        //     } else {
-                $products = Product::where('instance_id', session('instance_id'))->where('addons', '<>', '[]')
-                ->orderBy('vendor')
-                ->orderBy('name')
-                ->get();
-        //     }
-        // }
+        $user = $this->getUser();
+        switch ($this->getUserLevel()) {
+            case 'Provider':
+                $instance = $user->provider->instances->pluck('id');
+                $products = Product::whereIn('instance_id', $instance)->where('addons', '<>', '[]')->get();
+            break;
+
+            case 'Customer':
+                $product = Product::where('id', $product_id)->first();
+                $priceList = Price::where('product_sku',$product->sku)->first()->price_list_id;
+                $prices = Price::where('price_list_id', $priceList)->where('product_sku', $product->sku)->where('product_vendor', $product->vendor)->first();
+                // $instance = $user->customer->resellers->first()->provider->instances->first()->id;
+                // $product = Product::where('id', $product_id)->where('instance_id', $instance)->first();
+                // $priceList = $user->customer->priceLists->first();
+                // $prices = Price::where('price_list_id', $priceList->id)->where('product_sku', $product->sku)->where('product_vendor', $product->vendor)->first();
+            break;
+
+            case 'Reseller':
+                // $instance = $user->reseller->provider->instances->first()->id;
+                $product = Product::where('id', $product_id)->first();
+
+                // If product has tiers check the lowest price on tiers relationship
+                if (!$product->tiers->isEmpty()) {
+
+                    $prices = $product->tiers()->orderBy('min_quantity', 'ASC')->first();
+
+                } else {
+
+                    $priceList = Price::where('product_sku',$product->sku)->first()->price_list_id;
+                    $prices = Price::where('price_list_id', $priceList)->where('product_sku', $product->sku)->where('product_vendor', $product->vendor)->first();
+                }
+
+
+                break;
+
+            case 'Sub Reseller':
+                # code...
+                break;
+
+            default:
+                # code...
+                break;
+        }
+
+
+                // $products = Product::where('instance_id', session('instance_id'))->where('addons', '<>', '[]')
+                // ->orderBy('vendor')
+                // ->orderBy('name')
+                // ->get();
+
 
         return $products;
 
