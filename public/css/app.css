@@ -31606,6 +31606,10 @@ select {
           animation: bounce 1s infinite;
 }
 
+[x-cloak] {
+  display: none !important;
+}
+
 .dataTables_wrapper {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem

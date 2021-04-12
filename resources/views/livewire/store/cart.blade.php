@@ -1,5 +1,4 @@
 <div>
-    {{-- The whole world belongs to you --}}
     <div class="container">
         <section class="section">
             <div class="row">
@@ -91,10 +90,10 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div class=" float-right">
-                                            <a href="{{ route('store.index') }}" class="btn btn-info mt-2"><i class="fe fe-arrow-left"></i> {{ ucwords(__('messages.continue_shopping')) }}</a>
-                                            <a href="{{ route('cart.clear') }}" class="btn btn-primary mt-2">{{ ucwords(__('messages.clear_cart')) }}</a>
-                                            <button type="submit"  class="btn btn-secondary mt-2">{{ ucwords(__('messages.checkout')) }} <i class="fe fe-arrow-right"></i></a>
+                                        <div class="float-right ">
+                                            <a href="{{ route('store.index') }}" class="mt-2 btn btn-info"><i class="fe fe-arrow-left"></i> {{ ucwords(__('messages.continue_shopping')) }}</a>
+                                            <a href="{{ route('cart.clear') }}" class="mt-2 btn btn-primary">{{ ucwords(__('messages.clear_cart')) }}</a>
+                                            <button type="submit"  class="mt-2 btn btn-secondary">{{ ucwords(__('messages.checkout')) }} <i class="fe fe-arrow-right"></i></a>
                                             </div>
                                             {{-- <div class="float-sm-right">
                                                 <a href="{{ route('store.index') }}" role="button" class="btn btn-primary">

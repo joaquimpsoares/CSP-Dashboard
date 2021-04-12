@@ -18,8 +18,8 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
             @endif
             @if(Auth::user()->userlevel->name == "Super Admin")
             <img src="{{URL::asset('/images/logos/tagydes.png')}}" class="header-brand-img desktop-lgo" alt="Covido logo">
-            @endif
             <img src="{{URL::asset('assets/images/brand/favicon.png')}}" class="header-brand-img mobile-logo" alt="Covido logo">
+            @endif
             {{-- <img src="{{URL::asset('assets/images/brand/favicon1.png')}}" class="header-brand-img darkmobile-logo" alt="Covido logo"> --}}
         </a>
     </div>

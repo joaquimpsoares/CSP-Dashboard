@@ -5,12 +5,11 @@
     $color-green: #00FF00;
     $color-blue: #0000FF;
     .badge-primary {
-    color: #fff;
-    background-color: $color-red;
-}
+        color: #fff;
+        background-color: $color-red;
+    }
 </style>
 <header class="header_area">
-
     <div class="main_menu">
         <nav class="navbar navbar-expand-lg navbar-light main_box">
             <div class="container">
@@ -22,12 +21,9 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-
                 <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                     @auth
-
-                    <ul class="nav navbar-nav menu_nav ml-auto">
-
+                    <ul class="ml-auto nav navbar-nav menu_nav">
                         <li class="nav-item {{ (request()->segment('1') == null) ? 'active' : ''}}">
                             <a class="nav-link" href="{{ route('home') }}">
                                 Home
@@ -95,13 +91,12 @@
                                 </li>
                             </ul>
                         </li>
-
                         @can(config('app.manage_roles'))
                         <li class="nav-item submenu dropdown {{
-                        (request()->segment(1) == 'roles'
-                        ||request()->segment(1) == 'priceList'
-                        ||request()->segment(1) == 'product'
-                        ||request()->segment(1) == 'jobs') ? 'active' : ''}}">
+                            (request()->segment(1) == 'roles'
+                            ||request()->segment(1) == 'priceList'
+                            ||request()->segment(1) == 'product'
+                            ||request()->segment(1) == 'jobs') ? 'active' : ''}}">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                 {{ ucwords(__('messages.manage')) }}
                             </a>
@@ -129,7 +124,6 @@
                             </ul>
                         </li>
                         @endcan
-
                         {{-- @can(config('app.settings.general'))
                         <li class="nav-item submenu dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -149,7 +143,6 @@
                             </ul>
                         </li>
                         @endcan --}}
-
                         @if (app('impersonate')->isImpersonating())
                         <li class="nav-item">
                             <a class="nav-link text-danger" href="{{ route('impersonate.leave') }}">
@@ -161,7 +154,7 @@
                         <ul class="nav navbar-nav navbar-right">
                             <li class="nav-item">
                                 <a href="{{ route('cart.pending') }}" class="cart">
-                                    <i class="lnr lnr lnr-cart"></i>
+                                    <i class="lnr lnr-cart"></i>
                                     <span class="badge badge-pill badge-primary aqua-gradient">{{ Auth::user()->unreadnotifications->count() }}</span>
                                 </a>
                             </li>
@@ -172,7 +165,6 @@
                                 </a>
                             </li>
                         </ul>
-
                         <li class="nav-item submenu dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                 <img src="{{Auth::user()->avatar}}" class="rounded-circle z-depth-0" alt="avatar image"  width='50' Height ='auto'>
@@ -193,14 +185,10 @@
                                 </li>
                             </ul>
                         </li>
-
                     </ul>
-
-
                     @endauth
-
                     @guest
-                    <ul class="nav navbar-nav menu_nav ml-auto">
+                    <ul class="ml-auto nav navbar-nav menu_nav">
                         {{-- <li class="nav-item active">
                             <a class="nav-link" href="#">
                                 Menu Guest 1
@@ -232,7 +220,6 @@
                         </li>
                     </ul>
                     @endguest
-
                 </div>
             </div>
         </nav>

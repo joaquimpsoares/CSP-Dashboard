@@ -310,7 +310,10 @@ class UsersController extends Controller
     */
     public function destroy(User $user)
     {
-        //
+        $user = User::find($user)->first();
+        $user->delete();
+        return redirect()->back()->with('success', ucwords(trans_choice('User '.$user->name . ' Deleted succesfully', 1)) );
+
     }
 
     protected function validator(array $data)
