@@ -50,7 +50,7 @@ class EditCustomer extends Component
         'state'                 => ['required', 'string', 'max:255', 'min:3'],
         'postal_code'           => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255', 'min:3'],
         'status'                => ['required', 'integer', 'exists:statuses,id'],
-        'markup'                => ['nullable', 'integer', 'min:3'],
+        'markup'                => ['nullable', 'numeric', 'min:3'],
     ];
 
     public function mount(Customer $customer)

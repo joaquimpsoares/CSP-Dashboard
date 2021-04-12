@@ -8,15 +8,7 @@
     <div class="flex items-center space-x-5">
 
     </div>
-    <div class="flex flex-col-reverse mt-6 space-y-4 space-y-reverse justify-stretch sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
-        <div class="mt-4 text-lg-right mt-lg-0">
-            @canImpersonate
-            @if(!empty($customer->format()['mainUser']))
-            <a class="btn btn-white" href="{{ route('impersonate', $customer->format()['mainUser']['id']) }}"><i class="fa fa-user-secret"></i>{{ ucwords(trans_choice('messages.impersonate', 1)) }}</a>
-            @endif
-            @endCanImpersonate
-        </div>
-    </div>
+
 </div>
 <div class="grid max-w-3xl grid-cols-1 gap-6 mx-auto mt-6 sm:px-6 lg:max-w-full lg:grid-flow-col-dense lg:grid-cols-3">
     <div class="space-y-6 lg:col-start-1 lg:col-span-2">
@@ -24,31 +16,15 @@
         <div class="overflow-hidden bg-white shadow sm:rounded-md">
             <div class="px-4 py-3 sm:px-6">
                 <h2 id="" class="text-lg font-medium leading-6 text-gray-900">
-                    Subscriptions
+                    {{ ucwords(trans_choice('subscription', 2)) }}
                 </h2>
                 <p class="max-w-2xl text-sm text-gray-500">
                     Manage customer Subscription
                 </p>
             </div>
-            <ul class="divide-gray-200 ">
-                @forelse($subscriptions as $key => $item)
+            @forelse($subscriptions as $key => $item)
+            <ul class="border-t divide-gray-200 ">
                 <li>
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                            <div class="w-full border-t border-gray-300"></div>
-                        </div>
-                        <div class="relative flex justify-center">
-                            <span class="relative z-0 inline-flex -space-x-px rounded-md shadow-sm">
-                                <a href="{{route('subscription.show', $item->id)}}" type="button" class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-400 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
-                                    <span class="sr-only">Edit</span>
-                                    <!-- Heroicon name: solid/pencil -->
-                                    <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                                    </svg>
-                                </a>
-                            </span>
-                        </div>
-                    </div>
                     <a href="{{route('subscription.show', $item->id)}}" class="block hover:bg-gray-50">
                         <div class="px-4 py-1 sm:px-8">
                             <div class="flex items-center justify-between">
@@ -64,9 +40,17 @@
                                     </p>
                                 </div>
                             </div>
+                            <div class="-mt-4 sm:flex sm:justify-between">
+                                <div class="sm:flex">
+                                    <p class="flex text-xs text-gray-500 items-right">
+                                        {{$item->subscription_id}}
+                                    </p>
+                                </div>
+
+                            </div>
                             <div class="sm:flex sm:justify-between">
                                 <div class="sm:flex">
-                                    <p class="text-sm font-medium"> Quantity:  </p>
+                                    <p class="text-sm font-medium"> {{ ucwords(trans_choice('quantity', 1)) }}  </p>
                                     <p class="flex ml-1 text-gray-500 items-right text-xm">
                                         {{$item->amount}}
                                     </p>
@@ -174,7 +158,6 @@
                 </div>
             </section>
         </div>
-
         <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
             <div class="bg-white shadow sm:rounded-lg">
                 <div class="px-4 py-5 bg-white border-b border-gray-200 sm:px-6">
@@ -184,10 +167,28 @@
                                 {{ ucwords(trans_choice('messages.customer_details', 1)) }}
                             </h3>
                         </div>
+                        @canImpersonate
+                        @if(!empty($customer->format()['mainUser']))
+                        <a href="{{ route('impersonate', $customer->format()['mainUser']['id']) }}" type="button"
+                            class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <i class="fa fa-user-secret"></i>{{ ucwords(trans_choice('messages.impersonate', 1)) }}
+                        </a>
+                        @endif
+                        @endCanImpersonate
                         <div class="flex-shrink-0 mt-2 ml-4">
                             <p class="inline-flex px-2 text-xs ml-3 font-semibold leading-5 {{ $customer->status->name == 'messages.active' ? ' text-green-800 bg-green-100' : ' text-yellow-800 bg-yellow-100'  }} rounded-full">
                                 {{ ucwords(trans_choice($customer->status->name, 1)) }}
                             </p>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <div class="sm:col-span-1">
+                            <dd class="text-xs text-gray-500">
+                                {{$customer->subscriptions->first()->tenant_name }}
+                            </dd>
+                            <dd class="text-xs text-gray-500">
+                                {{$customer->microsoftTenantInfo->first()->tenant_id }}
+                            </dd>
                         </div>
                     </div>
                 </div>
@@ -242,7 +243,6 @@
                         </div>
                         <div class="flex-shrink-0 mt-2 ml-4">
                             <p class="inline-flex px-2 text-xs ml-3 font-semibold leading-5 {{ $customer->status->name == 'messages.active' ? ' text-green-800 bg-green-100' : ' text-yellow-800 bg-yellow-100'  }} rounded-full">
-
                             </p>
                         </div>
                     </div>
@@ -273,14 +273,6 @@
                                 {{number_format($costs->pretaxTotal, 2)}}{{$costs->currencySymbol}}
                             </dd>
                         </div>
-                        {{-- <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">
-                                {{ ucwords(trans_choice('messages.tax_total', 1)) }}
-                            </dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                {{number_format($costs->tax, 2)}}{{$costs->currencySymbol}}
-                            </dd>
-                        </div> --}}
                         <div class="sm:col-span-1">
                             <dt class="text-sm font-medium text-gray-500">
                                 {{ ucwords(trans_choice('messages.after_total', 1)) }}
@@ -291,13 +283,11 @@
                         </div>
                     </dl>
                 </div>
-                <div>
-                    {{-- <a href="{{$customer->format()['path']}}/edit" class="block px-4 py-4 text-sm font-medium text-center text-gray-500 bg-gray-50 hover:text-gray-700 sm:rounded-b-lg">{{ ucwords(trans_choice('messages.edit_customer', 1)) }}</a> --}}
-                </div>
                 @endif
             </div>
         </section>
     </div>
+
 
 
 
