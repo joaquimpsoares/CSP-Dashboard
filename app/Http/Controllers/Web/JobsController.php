@@ -4,17 +4,16 @@ namespace App\Http\Controllers\web;
 
 
 use App\Jobs;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Notifications\FailedJob;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Livewire\Jobs\Failedjobs;
 use Illuminate\Support\Facades\Artisan;
-use romanzipp\QueueMonitor\Models\Monitor;
-use Maatwebsite\Excel\Concerns\ToCollection;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Arr;
+use romanzipp\QueueMonitor\Models\Monitor;
+
 class JobsController extends Controller
 {
 
@@ -53,12 +52,13 @@ class JobsController extends Controller
                 ->appends(
                     $request->all()
                 );
-            // $failedJobs = FailedJob::get();
+
+                $failedJobs= DB::table('failed_jobs')->get();
 
             return view('job.index', [
                 'jobs' => $jobs,
                 'filters' => $filters,
-                // 'failedJobs' => $failedJobs,
+                'failedJobs' => $failedJobs,
             ]);
         }
         // $jobs =  $this->jobs->get();
