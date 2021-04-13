@@ -17,6 +17,7 @@ use romanzipp\QueueMonitor\Traits\IsMonitored;
 use Tagydes\MicrosoftConnection\Models\Cart as TagydesCart;
 use Tagydes\MicrosoftConnection\Facades\Order as TagydesOrder;
 use Tagydes\MicrosoftConnection\Models\Product as TagydesProduct;
+use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 
 
@@ -87,8 +88,10 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 $quantity = $product->pivot->quantity;
                 $billing_cycle = $product->pivot->billing_cycle;
 
-                $TagydesProduct = new TagydesProduct([
-                    'id' => $product['sku'],
+                $tagydescart->setCustomer($existingCustomer);
+                Log::info('Setting Customer to Cart: ' . $tagydescart);
+
+                $productData = [
                     'name' => $product['name'],
                     'description' => $product['description'],
                     'minimumQuantity' => $product['minimum_quantity'],
@@ -99,14 +102,26 @@ class PlaceOrderMicrosoft implements ShouldQueue
                     'isTrial' => $product['is_trial'],
                     'uri' => $product['uri'],
                     'supportedBillingCycles' => ['annual', 'monthly'],
-                ]);
+                ];
 
+                if($product['is_perpetual']){
+                    $catalogItemId = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)->getPerpetualCatalogItemId($product['uri']);
+                    
+                    $TagydesProduct = new TagydesProduct([
+                        'id' => $catalogItemId
+                    ] + $productData);
 
-                $tagydescart->setCustomer($existingCustomer);
-                Log::info('Setting Customer to Cart: ' . $tagydescart);
+                    $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
+                    Log::info('Adding Perpetual Product to Cart: ' . $tagydescart);
+                    
+                } else {
+                    $TagydesProduct = new TagydesProduct([
+                        'id' => $product['sku'],
+                    ] + $productData);
 
-                $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
-                Log::info('Adding Product to Cart: ' . $tagydescart);
+                    $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
+                    Log::info('Adding Product to Cart: ' . $tagydescart);
+                }
 
                 $tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->create($tagydescart);
                 Log::info('Creating Cart: ' . $tagydesorder);
