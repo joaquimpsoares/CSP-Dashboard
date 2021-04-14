@@ -97,11 +97,11 @@ class PlaceOrderMicrosoft implements ShouldQueue
                     'minimumQuantity' => $product['minimum_quantity'],
                     'maximumQuantity' => $product['maximum_quantity'],
                     'term' => $product['term'],
-                    'limit' => $product['limit'],
+                    'limit' => $product['limit'] ?? 0,
                     'PartnerIdOnRecord' => $this->order->customer->format()['mpnid']  ?? null,
                     'isTrial' => $product['is_trial'],
                     'uri' => $product['uri'],
-                    'supportedBillingCycles' => ['annual', 'monthly'],
+                    'supportedBillingCycles' => ['annual', 'monthly', 'one_time'],
                 ];
 
                 if($product['is_perpetual']){
