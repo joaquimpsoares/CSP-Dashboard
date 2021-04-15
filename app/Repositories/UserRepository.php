@@ -4,12 +4,8 @@ namespace App\Repositories;
 
 use App\Role;
 use App\User;
-use App\Provider;
-use App\Reseller;
 use App\UserLevel;
-use Illuminate\Support\Str;
 use App\Http\Traits\UserTrait;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Repositories\UserRepositoryInterface;
 
@@ -59,6 +55,8 @@ class UserRepository implements UserRepositoryInterface
             $reseller = $user->reseller;
             $users = $reseller->users()->with('status')->get();
             break;
+
+
 
             default:
             return abort(403, __('errors.unauthorized_action'));
@@ -191,6 +189,10 @@ class UserRepository implements UserRepositoryInterface
             $reseller = $user->reseller;
             $users = $reseller->users()->with('status')->get();
             break;
+            case config('app.customer'):
+                $customer = $user->customer;
+                $users = $customer->users()->with('status')->get();
+                break;
 
             default:
             return abort(403, __('errors.unauthorized_action'));

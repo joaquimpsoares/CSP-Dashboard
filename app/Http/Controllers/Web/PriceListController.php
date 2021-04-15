@@ -68,12 +68,9 @@ class PriceListController extends Controller
 
             case config('app.provider'):
 
-                $prices = $this->priceListRepository->listPrices();
-
                 $provider = $user->provider;
-                $priceList = $provider->priceList;
-                $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
                 $prices = $priceList->prices;
+                $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
 
             break;
 
@@ -81,14 +78,12 @@ class PriceListController extends Controller
 
                 $priceList = PriceList::where('id', $priceList)->first();
 
+
                 $prices = $priceList->prices;
                 $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
 
             break;
         }
-
-        // $user = $this->getUser();
-
 
         return view('priceList.prices', compact('prices','priceList', 'products'));
     }

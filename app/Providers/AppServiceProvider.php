@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\User;
+use App\PriceList;
 use App\Notifications\FailedJob;
 use App\Notifications\SuccessJob;
 use Illuminate\Support\Collection;
@@ -41,7 +42,6 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('money', function ($amount) {
             return "<?php echo number_format($amount , 2) ; ?>";
         });
-
 
         Paginator::useBootstrap();
 

@@ -72,7 +72,7 @@
                                                 <label for="address">@lang('Country')</label>
                                                 <select wire:model="country_id" name="country" class="form-control @error('country') is-invalid @enderror" sf-validate="required">
                                                     @if ($edit)
-                                                    <option wire:model="country_id" value="{{ $edit && $user->country->id ? $user->country->id : ''}}" selected>{{ucwords(trans_choice($user->country->name, 1))}}</option>
+                                                    {{-- <option wire:model="country_id" value="{{ $edit && $user->country->id ? $user->country->id : ''}}" selected>{{ucwords(trans_choice($user->country->name, 1))}}</option> --}}
                                                     @endif
                                                     @foreach ($countries as $key => $country)
                                                     <option value="{{$key}}">{{$country}}</option>

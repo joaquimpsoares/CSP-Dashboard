@@ -7,16 +7,6 @@ use App\Product;
 use App\PriceList;
 use Livewire\Component;
 use App\Http\Traits\UserTrait;
-use App\Repositories\PriceListRepositoryInterface;
-
-class Facilities extends Component {
-
-
-    public function mount(PriceListRepositoryInterface $priceListRepository)
-    {
-        $this->priceListRepository = $priceListRepository;
-    }
-}
 
 class ShowPricelist extends Component
 {
@@ -24,7 +14,6 @@ class ShowPricelist extends Component
     public $showModal = false;
     public $editMargin = false;
     public $editPriceList = false;
-    public $priceListRepository;
     public $price;
     public $name;
     public $description;
@@ -36,7 +25,7 @@ class ShowPricelist extends Component
     public $priceList;
 
     public $selectedProducts = [];
-    public bool $bulkDisabled = true;
+    public $bulkDisabled = true;
 
     protected $rules = [
         'sku' => 'required|max:255',
@@ -139,16 +128,15 @@ class ShowPricelist extends Component
 
     }
 
-    public function render(PriceListRepositoryInterface $priceListRepository)
+    public function render()
     {
         $user = $this->getUser();
 
         $this->bulkDisabled = count($this->selectedProducts) < 1;
+
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
                 $priceList = $this->priceList;
-
-                $provider = $this->priceList->provider;
 
                 $products = Product::where('instance_id', $this->priceList->instance_id)->whereNotIn('sku', $this->priceList->prices->pluck('product_sku'))->get();
 
@@ -179,6 +167,6 @@ class ShowPricelist extends Component
         }
 
 
-        return view('livewire.price.show-pricelist', compact('priceList', 'prices', 'products'));
+        return view('livewire.price.show-pricelist', compact('prices', 'products'));
     }
 }
