@@ -62,11 +62,13 @@ $markup = $percentage+$subscription->azureresources->sum('cost');
                     <tbody>
                         <tr>
                             <td>Usage</td>
-                            <td class="w-3 text-right"><span class="">${{$markup}}</span></td>
+                            <td class="w-3 text-right"><span class="">{{$subscription->customer->country->currency_symbol}}@money($markup)
+                                {{-- ${{$markup}} --}}
+                            </span></td>
                         </tr>
                         <tr>
                             <td>Budget</td>
-                            <td class="w-3 text-right"><span class="">${{$budget}}</span></td>
+                            <td class="w-3 text-right"><span class="">{{$subscription->customer->country->currency_symbol}}{{$budget}}</span></td>
                         </tr>
                         <tr>
                             <td>Percent</td>
@@ -95,7 +97,6 @@ $markup = $percentage+$subscription->azureresources->sum('cost');
                                     <tr>
                                         <th >Name</th>
                                         <th>Category</th>
-                                        {{-- <th>Sub Category</th> --}}
                                         <th>Total</th>
                                     </tr>
                                 </thead>
@@ -108,8 +109,7 @@ $markup = $percentage+$subscription->azureresources->sum('cost');
                                     <tr>
                                         <td >{{$item->name}}</td>
                                         <td >{{$item->category}}</td>
-                                        {{-- <td >{{$item->subcategory}}</td> --}}
-                                        <td >${{$markup}}</td>
+                                        <td >{{$subscription->customer->country->currency_symbol}}@money($markup)</td>
                                     </tr>
                                     @endforeach
                                 </body>
@@ -182,7 +182,7 @@ $markup = $percentage+$subscription->azureresources->sum('cost');
                                         <td >{{$item->name}}</td>
                                         <td >{{$item->category}}</td>
                                         <td >{{$item->subcategory}}</td>
-                                        <td >${{$markup}}</td>
+                                        <td >{{$subscription->customer->country->currency_symbol}}@money($markup)</td>
                                     </tr>
                                     @endforeach
                                 </body>

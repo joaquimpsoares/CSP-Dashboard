@@ -27,14 +27,7 @@
     @section('content')
 
     @livewire('azure.azure-report', ['subscription' => $subscription])
-    @endsection
-    {{-- <script>
 
-        var t10Sum = {!! $top10Q !!};
-
-    </script> --}}
-
-    @section('js')
 
     <!--Moment js-->
     <script src="{{URL::asset('assets/plugins/moment/moment.js')}}"></script>

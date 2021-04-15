@@ -33,14 +33,14 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-vcenter text-nowrap mb-0 border">
+                    <table class="table mb-0 border table-vcenter text-nowrap">
                         <thead>
                             <tr>
                                 <th>{{ ucwords(trans_choice('messages.company_name', 1)) }}</th>
                                 <th>{{ ucwords(trans_choice('messages.subscription_name', 1)) }}</th>
                                 <th>{{ ucwords(trans_choice('messages.estimated_cost', 1)) }}</th>
                                 <th>{{ ucwords(trans_choice('messages.budget', 1)) }}</th>
-                                <th class="text-center">{{ ucwords(trans_choice('messages.budget_used%', 1)) }}<i class="fa fa-arrow-up mr-1"></i></th>
+                                <th class="text-center">{{ ucwords(trans_choice('messages.budget_used%', 1)) }}<i class="mr-1 fa fa-arrow-up"></i></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -53,15 +53,16 @@
                                 $percentage =($item->customer['markup']/100)*$item->azureresources->sum('cost');
                                 $markup = $percentage+$item->azureresources->sum('cost');
                                 @endphp
-                                <td>${{$markup}}</td>
-                                <td>${{$item->budget}}</td>
+                                       <td >{{$item->customer->country->currency_symbol}}@money($markup)</td>
+
+                                <td>{{$item->customer->country->currency_symbol}}{{$item->budget}}</td>
                                 <td>
                                     @if (($item->calculated/100) < '0.50')
-                                    <div class="mx-auto chart-circle chart-circle-xs chart-circle-primary mt-sm-0 mb-0 icon-dropshadow-primary" data-value="{{($item->calculated/100)}}" data-thickness="5" data-color="#4454c3">
+                                    <div class="mx-auto mb-0 chart-circle chart-circle-xs chart-circle-primary mt-sm-0 icon-dropshadow-primary" data-value="{{($item->calculated/100)}}" data-thickness="5" data-color="#4454c3">
                                         @else
-                                        <div class="mx-auto chart-circle chart-circle-xs chart-circle-secondary mt-sm-0 mb-0 icon-dropshadow-secondary" data-value="{{($item->calculated/100)}}" data-thickness="5" data-color="#f72d66">
+                                        <div class="mx-auto mb-0 chart-circle chart-circle-xs chart-circle-secondary mt-sm-0 icon-dropshadow-secondary" data-value="{{($item->calculated/100)}}" data-thickness="5" data-color="#f72d66">
                                             @endif
-                                            <div class="mx-auto chart-circle-value text-center">{{(int)($item->calculated)}}%</div>
+                                            <div class="mx-auto text-center chart-circle-value">{{(int)($item->calculated)}}%</div>
                                         </div>
                                     </td>
                                     <td>
@@ -72,7 +73,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        <div class="card-footer d-flex text-right">
+                        <div class="text-right card-footer d-flex">
                             @if ($resourceName->total() >= '10')
                             {!! $resourceName->render() !!}
                             @endif
