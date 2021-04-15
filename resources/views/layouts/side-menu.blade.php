@@ -48,6 +48,7 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
             <li><a class="slide-item"  href="{{  route('home') }}"><span>Dashboard</span></a></li>
         </ul>
     </li>
+    @canany([config('app.provider_index'),config('app.reseller_index'),config('app.customer_index'),config('app.subscription_index')])
     <li class="slide">
         <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}">
             <svg class="side-menu__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
@@ -63,12 +64,13 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
                     @can(config('app.customer_index'))
                     <li><a href="{{ route('customer.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.customer', 2)) }}</a></li>
                     @endcan
-                    @can(config('app.subscription'))
+                    @can(config('app.subscription_index'))
                     <li><a href="{{ route('subscription.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.subscription', 2)) }}</a></li>
                     @endcan
                 </li>
             </ul>
         </li>
+        @endcanany
         <li class="slide">
             <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}">
                 <svg class="side-menu__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>

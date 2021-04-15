@@ -55,15 +55,15 @@
                         {{-- <div class="">
                         </div> --}}
                         <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 md:mt-2 lg:mt-0">
-                            <span >Running</span>
+                            <span>Running</span>
                         </div>
                         @elseif($job->hasSucceeded())
                         <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 md:mt-2 lg:mt-0">
-                            <span >Success</span>
+                            <span>Success</span>
                         </div>
                         @else
                         <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 md:mt-2 lg:mt-0">
-                            <span class="mt-2 badge badge-danger">Failed</span>
+                            <span>Failed</span>
                         </div>
                         @endif
                     </td>
@@ -137,34 +137,8 @@
             </tr>
             @endforelse
         </tbody>
-        {{-- <tfoot class="bg-white">
-            <tr>
-                <td colspan="100" class="px-6 py-4 text-gray-700 border-t-2 border-gray-200 font-sm">
-                    <div class="flex justify-between">
-                        <div>
-                            Showing
-                            @if($jobs->total() > 0)
-                            <span class="font-medium">{{ $jobs->firstItem() }}</span> to
-                            <span class="font-medium">{{ $jobs->lastItem() }}</span> of
-                            @endif
-                            <span class="font-medium">{{ $jobs->total() }}</span> result
-                        </div>
-                        <div>
-                            <a class="py-2 px-4 mx-1 text-xs font-medium @if(!$jobs->onFirstPage()) bg-gray-200 hover:bg-gray-300 cursor-pointer @else text-gray-600 bg-gray-100 cursor-not-allowed @endif rounded"
-                                @if(!$jobs->onFirstPage()) href="{{ $jobs->previousPageUrl() }}" @endif>
-                                Previous
-                            </a>
-                            <a class="py-2 px-4 mx-1 text-xs font-medium @if($jobs->hasMorePages()) bg-gray-200 hover:bg-gray-300 cursor-pointer @else text-gray-600 bg-gray-100 cursor-not-allowed @endif rounded"
-                                @if($jobs->hasMorePages()) href="{{ $jobs->url($jobs->currentPage() + 1) }}" @endif>
-                                Next
-                            </a>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        </tfoot> --}}
     </table>
-    <table class="table table-striped table-bordered" id="customers">
+    <table id="example" class="table table-striped table-bordered" id="customers">
         <thead>
             <tr>
                 <th>id</th>
@@ -176,29 +150,21 @@
         </thead>
         <tbody>
             @forelse($failedJobs as $failedJob)
-            {{-- @if($customer->status->name === 'message.active') --}}
             <tr>
-                <col width="13">
-                <col width="80">
-                <td>
-                    <a href="·">{{ $failedJob->id }}</a>
-                </td>
+                <td><a href="·">{{ $failedJob->id }}</a></td>
                 <td>{{ $failedJob->queue }}</td>
                 <td style="width: 15px">{{ Str::limit($failedJob->payload, 100, $end='[...]')  }}</td>
                 <td style="width: 15px">{{ Str::limit($failedJob->exception, 100, $end='[...]') }}</td>
-                <td >
-                    <div class="col-2">
+                <td ><div class="col-2">
                         <a href="{{route('jobs.retry', $failedJob->id)}}">
                             <i class="fas fa-redo-alt text-primary }}"></i>
                         </a>
                     </div>
-
                     <div class="col-2">
                         <a href="{{route('jobs.destroy', $failedJob->id)}}">
                             <i class="fas fa-trash-alt text-primary }}"></i>
                         </a>
-                    </div>
-                </td>
+                    </div></td>
             </tr>
             @empty
             <tr>
@@ -207,7 +173,6 @@
             @endforelse
         </tbody>
     </table>
-</div>
 </div>
 @endsection
 

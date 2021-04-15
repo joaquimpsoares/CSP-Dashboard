@@ -74,7 +74,7 @@
                 <td width="1%" class="f-s-600"><a href="{{route('subscription.show', $subscription->id)}}">{{$subscription['id']}}</a></td>
                 <td>{{$subscription->name}}</td>
                 <td>{{$subscription->customer->company_name}}</td>
-                @if ($subscription->products->first()->billing === 'usage')
+                @if ($subscription->billing_type === 'usage' )
                 <td></td>
                 @else
                 <td>{{$subscription->amount}}</td>
@@ -87,6 +87,7 @@
                     </span>
                 </td>
             </tr>
+            @can('subscription_edit')
             <tr style="display:none">
                 <td colspan="9">
                     <div class="">
@@ -106,7 +107,7 @@
                                                 <form class="form-horizontal form-bordered" method="POST" action="{{ route('subscription.update', $subscription->id) }}">
                                                     @method('PATCH')
                                                     <td>{{$subscription->name}}</td>
-                                                    @if ($subscription->products->first()->billing === 'usage')
+                                                    @if ($subscription->billing_type === 'usage')
                                                     <td></td>
                                                     @else
                                                     @csrf
@@ -124,12 +125,14 @@
                                                         </select>
                                                     </td>
                                                     <td class="align-middle">
+                                                        @can('subscription_delete')
                                                         <div name="status" class="select is-info">
                                                             <select name="status" class="form-control SlectBox SumoUnder">
                                                                 <option  value="1" {{ $subscription->status_id == "1" ? "selected":"" }}> Active</option>
                                                                 <option  value="2" {{ $subscription->status_id == "2" ? "selected":"" }}> Suspended</option>
                                                             </select>
                                                         </div>
+                                                        @endcan
                                                     </td>
                                                     <td><button type="submit" class="btn btn-primary" type="submit">Change</button></td>
                                                     @foreach ($subscription->products->first()->getaddons()->all() as $item)
@@ -151,6 +154,7 @@
                     </div>
                 </td>
             </tr>
+            @endcan
             @empty
             @endforelse
             <div class="col">

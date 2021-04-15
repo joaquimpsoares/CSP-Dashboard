@@ -21,28 +21,28 @@
                                 @method('PATCH')
                                 @csrf
                                 <tr>
-                                    <td class="py-2 px-0">
+                                    <td class="px-0 py-2">
                                         <span class="font-weight-semibold w-50">{{ ucwords(trans_choice('messages.subscription_name', 1)) }} </span>
                                     </td>
-                                    <td class="py-2 px-0">{{ $subscriptions->name }}</td>
+                                    <td class="px-0 py-2">{{ $subscriptions->name }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="py-2 px-0">
+                                    <td class="px-0 py-2">
                                         <span class="font-weight-semibold w-50">{{ ucwords(trans_choice('messages.tenant_name', 1)) }} </span>
                                     </td>
-                                    <td class="py-2 px-0">{{ $subscriptions->tenant_name }}</td>
+                                    <td class="px-0 py-2">{{ $subscriptions->tenant_name }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="py-2 px-0">
+                                    <td class="px-0 py-2">
                                         <span class="font-weight-semibold w-50">{{ ucwords(trans_choice('messages.owner', 1)) }} </span>
                                     </td>
-                                    <td class="py-2 px-0">{{ $subscriptions->customer->resellers->first()->company_name }}</td>
+                                    <td class="px-0 py-2">{{ $subscriptions->customer->resellers->first()->company_name }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="py-2 px-0">
+                                    <td class="px-0 py-2">
                                         <span class="font-weight-semibold w-50">{{ ucwords(trans_choice('messages.licenses', 1)) }} </span>
                                     </td>
-                                    <td class="py-2 px-0">
+                                    <td class="px-0 py-2">
                                         <div class="control">
                                             @if ($subscriptions->status == "1")
                                             <input readonly="readonly" class="input is-warning" name="amount" type="number" placeholder="Text input" value="{{ $subscriptions->amount }}">
@@ -53,10 +53,10 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="py-2 px-0">
+                                    <td class="px-0 py-2">
                                         <span class="font-weight-semibold w-50">{{ ucwords(trans_choice('messages.billing_cycle', 1)) }} </span>
                                     </td>
-                                    <td class="py-2 px-0">
+                                    <td class="px-0 py-2">
                                         @if ($subscriptions->status == "1")
                                         <div  readonly="readonly">
                                             @else
@@ -71,19 +71,23 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="py-2 px-0">
+                                    <td class="px-0 py-2">
                                         <span class="font-weight-semibold w-50">{{ ucwords(trans_choice('messages.status', 1)) }} </span>
                                     </td>
-                                    <td class="py-2 px-0">
+                                    <td class="px-0 py-2">
                                         <div name="status" class="select is-info">
+                                            @can('subscription_delete')
                                             <select name="status" class="form-control SlectBox SumoUnder">
                                                 <option  value="1" {{ $subscriptions->status_id == "1" ? "selected":"" }}> Active</option>
                                                 <option  value="2" {{ $subscriptions->status_id == "2" ? "selected":"" }}> Suspended</option>
                                             </select>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>
+                                @can('subscription_edit')
                                 <td><button type="submit" class="btn btn-primary" type="submit">Change</button></td>
+                                @endcan
                                 <td><button type="" class="btn btn-danger" type="submit">Cancel</button></td>
                             </form>
                         </tbody>

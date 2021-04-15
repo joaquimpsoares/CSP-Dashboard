@@ -10,6 +10,7 @@ use App\UserLevel;
 use Livewire\Component;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Hash;
 
 class CreateUser extends Component
@@ -38,6 +39,7 @@ class CreateUser extends Component
     public $reseller_id;
     public $provider_id;
     public $customer_id;
+    public $previous;
 
 
     protected $rules = [
@@ -61,6 +63,7 @@ class CreateUser extends Component
 
     public function mount(Request $request)
     {
+        $this->previous = URL::previous();
         $this->level = $request->level;
         $this->reseller_id = $request->reseller_id;
         $this->provider_id = $request->provider_id;
@@ -72,37 +75,35 @@ class CreateUser extends Component
     public function save(Request $request)
     {
 
-    switch ($this->level) {
-            case 'Super Admin':
+        switch ($this->level) {
+        case 'Super Admin':
 
-                dd($this->validate());
-                // $newUser = User::create($user);
+            // $newUser = User::create($user);
 
-                // $newUser->assignRole($role->name);
+            // $newUser->assignRole($role->name);
 
-                break;
-            case 'provider':
+            break;
+        case 'provider':
 
-                $this->validate();
+            $this->validate();
 
-                $user = User::create ([
-                    'email'             => $this->email,
-                    'name'              => $this->name,
-                    'last_name'         => $this->last_name,
-                    'socialite_id'      => $this->socialite_id,
-                    'address'           => $this->address,
-                    'phone'             => $this->phone,
-                    'country_id'        => $this->country_id,
-                    'password'          => Hash::make($this->password),
-                    'user_level_id'     => 3, //provider role id = 3
-                    'notify'            => $this->sendInvitation ?? false,
-                    'status_id'         => $this->status,
-                    'provider_id'       => $this->provider_id,
-                    ]);
+            $user = User::create ([
+                'email'             => $this->email,
+                'name'              => $this->name,
+                'last_name'         => $this->last_name,
+                'socialite_id'      => $this->socialite_id,
+                'address'           => $this->address,
+                'phone'             => $this->phone,
+                'country_id'        => $this->country_id,
+                'password'          => Hash::make($this->password),
+                'user_level_id'     => 3, //provider role id = 3
+                'notify'            => $this->sendInvitation ?? false,
+                'status_id'         => $this->status,
+                'provider_id'       => $this->provider_id,
+                ]);
 
-                    $user->assignRole(config('app.provider'));
+                $user->assignRole(config('app.provider'));
 
-                    session()->flash('success','User ' . $this->name . ' created successfully');
 
                 break;
 
@@ -126,44 +127,43 @@ class CreateUser extends Component
 
                     $user->assignRole(config('app.reseller'));
 
+                    break;
+
+                case 'customer':
+
+                    $this->validate();
+
+                    $user = User::create ([
+                        'email'             => $this->email,
+                        'name'              => $this->name,
+                        'last_name'         => $this->last_name,
+                        'address'           => $this->address,
+                        'phone'             => $this->phone,
+                        'country_id'        => $this->country_id,
+                        'password'          => Hash::make($this->password),
+                        'user_level_id'     => 6, //customer role id = 6
+                        'notify'            => $this->sendInvitation ?? false,
+                        'status_id'         => $this->status,
+                        'customer_id'       => $this->customer_id,
+                        ]);
+
+                        $user->assignRole(config('app.customer'));
+                        // return redirect()->back();
+
+                        // session()->flash('success','User ' . $this->name . ' created successfully');
+
+                        break;
+
+                        default:
+
+                        break;
+                    }
+
                     session()->flash('success','User ' . $this->name . ' created successfully');
+                    return redirect($this->previous);
 
-                break;
 
-            case 'customer':
-
-                $this->validate();
-
-                $user = User::create ([
-                    'email'             => $this->email,
-                    'name'              => $this->name,
-                    'last_name'         => $this->last_name,
-                    'address'           => $this->address,
-                    'phone'             => $this->phone,
-                    'country_id'        => $this->country_id,
-                    'password'          => Hash::make($this->password),
-                    'user_level_id'     => 6, //customer role id = 6
-                    'notify'            => $this->sendInvitation ?? false,
-                    'status_id'         => $this->status,
-                    'customer_id'       => $this->customer_id,
-                    ]);
-
-                    $user->assignRole(config('app.customer'));
-
-                    session()->flash('success','User ' . $this->name . ' created successfully');
-
-                break;
-
-            default:
-                # code...
-
-                break;
-        }
-
-        session()->flash('success','User ' . $this->name . ' created successfully');
-
-        // return $newUser;
-    }
+                }
 
 
     public function render()

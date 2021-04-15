@@ -7,10 +7,11 @@ use App\User;
 use App\Status;
 use App\Country;
 use App\Reseller;
+use App\PriceList;
 use Livewire\Component;
 use App\Http\Traits\UserTrait;
-use App\PriceList;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Hash;
 
 class CreateReseller extends Component
@@ -116,11 +117,13 @@ class CreateReseller extends Component
             }
         }
 
-        session()->flash('success','Customer ' . $this->company_name . ' created successfully');
+        session()->flash('success','Reseller ' . $this->company_name . ' created successfully');
         return redirect()->to('/reseller');
 
 
         }
+
+
 
         public function render()
         {

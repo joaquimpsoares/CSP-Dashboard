@@ -2,15 +2,11 @@
 
 namespace App;
 
-use App\Http\Traits\ActivityTrait;
 use Webpatser\Countries\Countries;
 use Spatie\Permission\Traits\HasRoles;
-
-use App\Services\Auth\Api\TokenFactory;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements  JWTSubject
