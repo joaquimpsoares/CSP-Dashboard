@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Web\Authorization;
 
-use App\Role;
+
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\Controller;
 use App\Events\Role\PermissionsUpdated;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Class RolePermissionsController

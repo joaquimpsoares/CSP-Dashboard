@@ -69,7 +69,6 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
                 </li>
             </ul>
         </li>
-        {{-- @can(config('app.provider_index')) --}}
         <li class="slide">
             <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}">
                 <svg class="side-menu__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
@@ -80,12 +79,10 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
                 <li><a href="{{ url('/' . $page='analytics/licenses') }}" class="slide-item">{{ ucwords(trans_choice('messages.license_based', 1)) }}</a></li>
             </ul>
         </li>
-        {{-- @endcan --}}
-        {{-- @can(config('app.customer_index')) --}}
+        @can('marketplace.index')
         <li class="slide">
             <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="side-menu__icon"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-
                 <span class="side-menu__label">{{ ucwords(__('messages.marketplace')) }}
                 </span><i class="angle fa fa-angle-right"></i>
             </a>
@@ -97,6 +94,7 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
                 </a>
             </ul>
         </li>
+        @endcan
         <li class="slide">
             <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}">
                 <svg class="side-menu__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
@@ -111,7 +109,7 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
                 @can(config('app.provider_index'))
                 <li><a href="{{ route('jobs') }}" class="slide-item"> {{ ucwords(trans_choice('messages.job', 2)) }}</a></li>
                 @endcan
-                @can('settings.general')
+                @can('users.manage')
                 <li><a href="{{ route('user.index') }}" class="slide-item"> {{ ucwords(trans_choice('messages.user', 2)) }}</a></li>
                 @endcan
                 @can(config('app.provider_index'))
@@ -120,7 +118,6 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
                 @endcan
             </ul>
         </li>
-        {{-- @endcan --}}
     </ul>
     <div class="app-sidebar-help">
         <div class="text-center dropdown">
@@ -133,17 +130,10 @@ $cartcount = App\Http\Controllers\Web\CartController::CountCart();
                         <h4 class="font-weight-bold">Help</h4>
                         <a class="btn btn-secondary" style="color: white" href="{{ url('/' . $page='tickets') }}">Support Tickets</a>
                         <a class="text-primary d-block" href="{{ url('/' . $page='#') }}">Support@tagydes.com</a>
-                        {{-- <a class="text-primary d-block" href="{{ url('/' . $page='#') }}">88 8888 8888</a> --}}
                     </div>
                     <div class="pt-3 pb-3 mb-3 border-bottom">
-                        {{-- <p class="mb-1">Your Fax Number</p>
-                        <a class="font-weight-bold" href="{{ url('/' . $page='#') }}">88 8888 8888</a> --}}
+
                     </div>
-                    {{-- <a class="text-primary" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" >Logout
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                    </a> --}}
                 </div>
                 <div class="ml-auto">
                     <a class="p-0 nav-link icon" href="{{ url('/' . $page='#') }}">

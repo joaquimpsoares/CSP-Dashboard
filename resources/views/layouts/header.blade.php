@@ -123,7 +123,9 @@
             </div>
         </div>
     </div>
+    @can('marketplace.index')
     <livewire:store.cart-counter/>
+    @endcan
 </div>
 <!--/app header-->
 @if (app('impersonate')->isImpersonating())

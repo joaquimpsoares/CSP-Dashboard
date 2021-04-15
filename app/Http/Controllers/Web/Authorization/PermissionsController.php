@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Web\Authorization;
 
-use App\Role;
 use Exception;
-use App\Permission;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\Factory;
-use Illuminate\Support\Facades\Request;
+use Spatie\Permission\Models\Permission;
 use App\Http\Requests\Permission\CreatePermissionRequest;
 use App\Http\Requests\Permission\UpdatePermissionRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -70,7 +70,7 @@ class PermissionsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->permissions->create($request->all());
+        Permission::create($request->all());
 
         return redirect()->route('permissions.index')
             ->withSuccess(__('Permission created successfully.'));
