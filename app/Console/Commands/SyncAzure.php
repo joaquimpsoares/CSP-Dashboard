@@ -53,6 +53,11 @@ class SyncAzure extends Command
     */
     public function handle()
     {
+        Mail::raw("Starting Azure Syncronization", function ($mail)  {
+            $mail->from('digamber@positronx.com');
+            $mail->to('joaquim.soares@tagydes.com')
+            ->subject('Daily importing Started Azure reports');
+        });
 
         $subscriptions = Subscription::where('billing_type', 'usage')->get();
 
