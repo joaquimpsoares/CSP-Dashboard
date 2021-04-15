@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\DB;
  */
 class RolePermissionsController extends Controller
 {
-
-
     /**
      * Update permissions for each role.
      *
@@ -27,16 +25,9 @@ class RolePermissionsController extends Controller
     {
         $roles = $request->get('roles');
 
-        $allRoles = DB::table('roles')->pluck('id')->all();
-
-        foreach ($allRoles as $roleId) {
-            $permissions = Arr::get($roles, $roleId, []);
-            collect($permissions);
-            dd(collect($roles));
-            collect($roles->dd())->syncPermissions($permissions);
+        foreach ($roles as $roleId => $permissions) {
+            Role::find($roleId)->permissions()->sync($permissions);
         }
-
-        event(new PermissionsUpdated);
 
         return redirect()->route('permissions.index')
             ->withSuccess(__('Permissions saved successfully.'));

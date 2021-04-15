@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\web;
 
-use App\Role;
 use App\User;
 use App\Status;
 use App\Country;
-use App\Customer;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\DB;
@@ -14,8 +12,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Notifications\Notification;
 use App\Repositories\UserRepositoryInterface;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class UsersController extends Controller
 {
@@ -35,11 +34,12 @@ class UsersController extends Controller
     */
     public function index(Request $request)
     {
+        $user = Auth::user();
+
         $statuses = Status::pluck('name','id');
         $provider = Auth::user()->provider;
-        $users = $this->userRepository->paginate($perPage = 20, $request->search, $request->status);
+        $users = $this->userRepository->paginate($perPage = 10, $request->search, $request->status);
 
-        // $users = $this->userRepository->all();
 
         return view('user.list', compact('users','provider','statuses'));
     }
@@ -85,43 +85,6 @@ class UsersController extends Controller
 
     }
 
-    /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $userequest
-    * @return \Illuminate\Http\Response
-    */
-//     public function store(Request $request)
-//     {
-
-
-//         $validate = $this->validator($request->all())->validate();
-
-//         switch ($this->getUserLevel()) {
-//             case config('app.super_admin'):
-//                 $id = Auth::User()->id;
-//                 $mainUser = $this->userRepository->create($validate, config('app.super_admin'), $id);
-//             break;
-//             case config('app.provider'):
-//                 $id = Auth::user()->provider;
-
-//                 $mainUser = $this->userRepository->create($validate, $request->level, $id);
-//             break;
-
-//             default:
-//             # code...
-//         break;
-//     }
-
-
-
-//     // $customer = Customer::where('id', $request->customer_id)->first();
-//     // $mainUser = $this->userRepository->create($validate, $request->level, $id);
-
-
-//     return redirect()->route('user.index')->with('success', ucwords(trans_choice('messages.user_created_successfully', 1)) );
-
-// }
 
     /**
     * Display the specified resource.
@@ -152,9 +115,7 @@ class UsersController extends Controller
         $countries = Country::pluck( 'name','id');
         $statuses = Status::pluck( 'name','id');
         $roles = Role::pluck('name','id');
-        // $socialLogins = $this->users->getUserSocialLogins($user->id);
-        $u = auth()->user();
-        // $roles = Role::where('order',$u->getRole())->orWhere('order', 5)->pluck('name','id');
+
 
         return view('user.edit',compact('edit', 'user','countries','roles','statuses'));
     }
@@ -176,14 +137,9 @@ class UsersController extends Controller
             $user->username        = $request->input('username');
             $user->password        = Hash::make($request->input('password'));
             $user->update();
-
         }
 
-            // $user->email           = $request->input('email');
-            // $user->username        = $request->input('username');
-            // $user->update();
         DB::commit();
-            //    $tt = $user->update([$user->id = $data]);
 
         return redirect()->back()->with('success', 'User Updated succesfully');
 
@@ -210,9 +166,6 @@ class UsersController extends Controller
     public function update(Request $request, User $user)
     {
 
-        // $user = User::findOrFail($user->id);
-        // $role = Role::findOrFail($request->role_id);
-        // $validate = $this->validator($request->all())->validate();
 
         try {
             DB::beginTransaction();
@@ -238,7 +191,6 @@ class UsersController extends Controller
 
                 $user->update();
                 DB::commit();
-                // $user->password         = Hash::make($request->input('password'));
 
                 return redirect()->back()->with('success', 'User Updated succesfully');
 
@@ -255,7 +207,6 @@ class UsersController extends Controller
             $user->country_id       = $request->input('country_id');
             $user->postal_code      = $request->input('postal_code');
             $user->update();
-            // $user->password      = Hash::make($request->input('password'));
 
             DB::commit();
             return redirect()->back()->with('success', 'User Updated succesfully');

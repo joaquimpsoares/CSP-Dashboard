@@ -26,7 +26,10 @@
 
 @section('content')
 
-
+@php
+$percentage =($subscription->customer->markup/100)*$subscription->azureresources->sum('cost');
+$markup = $percentage+$subscription->azureresources->sum('cost');
+@endphp
 <div class="row row-deck">
     <div class="col-xl-3 col-md-12 col-lg-6">
         <div class="card">
@@ -34,14 +37,14 @@
                 <h3 class="card-title">Budget Grow</h3>
             </div>
             <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-md-12 mb-4 mt-sm-0">
-                        <div class="mx-auto chart-circle chart-circle-primary chart-circle-lg  mt-sm-0 mb-0 donutShadow" data-value="{{$average/100}}" data-thickness="15" data-color="#4454c3">
-                            <div class="mx-auto chart-circle-value text-center mb-2"><h1 class="mb-0 mt-2">{{$average}}%</h1><small>Goal</small></div>
+                <div class="text-center row">
+                    <div class="mb-4 col-md-12 mt-sm-0">
+                        <div class="mx-auto mb-0 chart-circle chart-circle-primary chart-circle-lg mt-sm-0 donutShadow" data-value="{{$average/100}}" data-thickness="15" data-color="#4454c3">
+                            <div class="mx-auto mb-2 text-center chart-circle-value"><h1 class="mt-2 mb-0">{{$average}}%</h1><small>Goal</small></div>
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <h2 class="mb-0 fs-50 mt-3 counter  font-weight-bold">${{$budget}}</h2>
+                        <h2 class="mt-3 mb-0 fs-50 counter font-weight-bold">${{$budget}}</h2>
                         <small class="mt-1 fs-12 text-muted">Updated {{$date->azure_updated_at ?? ' '}}</small>
                     </div>
                 </div>
@@ -50,16 +53,16 @@
     </div>
     <div class="col-xl-3 col-md-12 col-lg-6">
         <div class="card">
-            <div class="card-header mb-4">
+            <div class="mb-4 card-header">
                 <h3 class="card-title">Current Estimated Usage</h3>
             </div>
             <div class="p-2">
-                <h5 class="pl-4 font-weight-bold mb-4">This Current Estimated Usage</h5>
+                <h5 class="pl-4 mb-4 font-weight-bold">This Current Estimated Usage</h5>
                 <table class="table card-table text-nowrap">
                     <tbody>
                         <tr>
                             <td>Usage</td>
-                            <td class="w-3 text-right"><span class="">${{$total}}</span></td>
+                            <td class="w-3 text-right"><span class="">${{$markup}}</span></td>
                         </tr>
                         <tr>
                             <td>Budget</td>
@@ -76,9 +79,6 @@
             <div class="card-footer">
                 <a href="{{route('analytics.reports',$subscription)}}" class="btn btn-lg btn-block btn-white">  Reports</a>
             </div>
-            {{-- <div class="card-footer">
-                <a href="{{ route('analytics.update') }}" class="btn btn-lg btn-block btn-white">Refresh Now</a>
-            </div> --}}
         </div>
     </div>
     <div class="col-xl-6 col-md-12 col-lg-12">
@@ -88,7 +88,7 @@
                     <div class="card-header">
                         <h4 class="card-title">Top services by cost</h4>
                     </div>
-                    <div class="card-body text-center">
+                    <div class="text-center card-body">
                         <div class="table-responsive">
                             <table id="" class="table mg-b-0 text-nowrap">
                                 <thead>
@@ -101,11 +101,15 @@
                                 </thead>
                                 <body>
                                     @foreach ($resourcet5Name as $item)
+                                    @php
+                                    $percentage =($subscription->customer->markup/100)*$item->sum;
+                                    $markup = $percentage+$item->sum;
+                                    @endphp
                                     <tr>
                                         <td >{{$item->name}}</td>
                                         <td >{{$item->category}}</td>
                                         {{-- <td >{{$item->subcategory}}</td> --}}
-                                        <td >${{$item->sum}}</td>
+                                        <td >${{$markup}}</td>
                                     </tr>
                                     @endforeach
                                 </body>
@@ -123,11 +127,11 @@
                     <div class="card-header">
                         <h4 class="card-title"><i class="fab fa-chart-pie"></i> Top 10 Resouces</h4>
                     </div>
-                    <div class="card-body text-center">
+                    <div class="text-center card-body">
                         <div id="myfirstchart" class="BarChartShadow" style="height: 285px;"></div>
-                        <div class="row mt-5">
-                            <div class="col text-center">
-                                <span class="text-muted float-right"><div class="w-3 h-3 bg-primary br-3 mr-1 mt-1 float-left"></div> Value</span>
+                        <div class="mt-5 row">
+                            <div class="text-center col">
+                                <span class="float-right text-muted"><div class="float-left w-3 h-3 mt-1 mr-1 bg-primary br-3"></div> Value</span>
                             </div>
                         </div>
                     </div>
@@ -140,7 +144,7 @@
             <div class="card-header">
                 <h3 class="card-title">Top 10 Resouces</h3>
             </div>
-            <div class="card-body text-center mx-auto">
+            <div class="mx-auto text-center card-body">
                 <div class="overflow-hidden">
                     <canvas class="canvasDoughnut" height="240" width="310"></canvas>
                 </div>
@@ -170,11 +174,15 @@
                                 </thead>
                                 <body>
                                     @foreach ($resourceName as $item)
+                                    @php
+                                    $percentage =($subscription->customer->markup/100)*$item->sum;
+                                    $markup = $percentage+$item->sum;
+                                    @endphp
                                     <tr>
                                         <td >{{$item->name}}</td>
                                         <td >{{$item->category}}</td>
                                         <td >{{$item->subcategory}}</td>
-                                        <td >${{$item->sum}}</td>
+                                        <td >${{$markup}}</td>
                                     </tr>
                                     @endforeach
                                 </body>

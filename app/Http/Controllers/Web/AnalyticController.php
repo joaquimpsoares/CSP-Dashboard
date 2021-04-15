@@ -446,7 +446,7 @@ class AnalyticController extends Controller
                     ]);
                     Log::info(json_encode($resource));
                     Log::info(json_encode($price->rates[0])*$resource->quantity);
-                        $this->info($resource);
+                        // $this->info($resource);
                 });
             });
     }
