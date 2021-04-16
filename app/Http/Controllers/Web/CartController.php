@@ -407,7 +407,7 @@ class CartController extends Controller
     {
         $validate = $request->validate([
             'token' => 'required|uuid',
-            'billing_cycle.*' => 'required|in:annual,monthly,PAYG,none'
+            'billing_cycle.*' => 'required|in:annual,monthly,PAYG,none,one_time'
         ]);
 
         $cart = $this->getByToken($validate['token']);
