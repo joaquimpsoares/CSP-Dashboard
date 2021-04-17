@@ -157,8 +157,6 @@ class ShowPricelist extends Component
 
             case config('app.reseller'):
 
-                $priceList = PriceList::where('id', $this->priceList->id)->first();
-
                 $prices = $this->priceList->prices;
                 $products = Product::where('instance_id',  $this->priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
 

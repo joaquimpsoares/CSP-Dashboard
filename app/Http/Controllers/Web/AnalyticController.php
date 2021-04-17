@@ -416,6 +416,7 @@ class AnalyticController extends Controller
         $pages->each(function ($page) use ($subscription) {
             $page->items->each(function ($resource) use ($subscription) {
                 $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
+
                 $price = AzurePriceList::where('resource_id', $resource->resource->id)->first('rates');
 
                 $resource = AzureUsageReport::updateOrCreate([
@@ -432,7 +433,6 @@ class AnalyticController extends Controller
                     'unit'                  => $resource->unit,
                     'name'                  => $resourceGroup[8],
 
-
                     "resourceType"          => $resource->instanceData->additionalInfo->toArray()['resourceType'] ?? null,
                     "usageResourceKind"     => $resource->instanceData->additionalInfo->toArray()['usageResourceKind'] ?? null,
                     "dataCenter"            => $resource->instanceData->additionalInfo->toArray()['dataCenter'] ?? null,
@@ -440,13 +440,12 @@ class AnalyticController extends Controller
                     "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
                 ], [
                     'quantity'              => $resource->quantity,
-                    'cost'                  => (json_encode($price->rates[0])*$resource->quantity)
+                    'cost'                  => (json_encode($price->rates[0])*$resource->quantity) ?? '0'
 
 
                     ]);
                     Log::info(json_encode($resource));
                     Log::info(json_encode($price->rates[0])*$resource->quantity);
-                        // $this->info($resource);
                 });
             });
     }

@@ -104,10 +104,10 @@ class SyncAzure extends Command
 
                     $resources->items->each(function($resource) use($subscription){
                         $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
-                        Log::info($resource->resource->id);
                         $price = AzurePriceList::where('resource_id', $resource->resource->id)->first('rates');
+                        // Log::info($resource->resource->id);
                         // Log::info($price);
-                        Log::info(json_encode($resource->resource->id));
+                        // Log::info(json_encode($resource->resource->id));
 
                         $resource = AzureUsageReport::updateOrCreate([
                             'subscription_id'       => $subscription->id,
@@ -131,10 +131,10 @@ class SyncAzure extends Command
                             "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
                         ], [
                             'quantity'              => $resource->quantity,
-                            'cost'                  => (json_encode($price->rates[0])*$resource->quantity)
+                            'cost'                  => (json_encode($price->rates[0])*$resource->quantity) ?? '0'
                         ]);
-                        // Log::info(json_encode($price->rates[0])*$resource->quantity);
-                        // $this->info($resource);
+                        Log::info(json_encode($resource));
+                        Log::info(json_encode($price->rates[0])*$resource->quantity);
                     });
                 }
                 catch (Exception $e) {
