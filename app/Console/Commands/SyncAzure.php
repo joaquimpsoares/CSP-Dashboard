@@ -107,7 +107,7 @@ class SyncAzure extends Command
                         $price = AzurePriceList::where('resource_id', $resource->resource->id)->first('rates');
                         // Log::info($resource->resource->id);
                         // Log::info($price);
-                        // Log::info(json_encode($resource->resource->id));
+                        Log::info(json_encode($resource->resource->id));
 
                         $resource = AzureUsageReport::updateOrCreate([
                             'subscription_id'       => $subscription->id,
@@ -133,8 +133,8 @@ class SyncAzure extends Command
                             'quantity'              => $resource->quantity,
                             'cost'                  => (json_encode($price->rates[0])*$resource->quantity) ?? '0'
                         ]);
-                        Log::info(json_encode($resource));
-                        Log::info(json_encode($price->rates[0])*$resource->quantity);
+                        // Log::info(json_encode($resource));
+                        // Log::info(json_encode($price->rates[0])*$resource->quantity);
                     });
                 }
                 catch (Exception $e) {
