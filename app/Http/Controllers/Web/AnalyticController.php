@@ -419,10 +419,6 @@ class AnalyticController extends Controller
 
                 $price = AzurePriceList::find('resource_id', $resource->resource->id)->first('rates');
                 Log::info($resource->resource->id);
-                // if(empty($price->rates[0]))
-                // {
-                //     dd('he');
-                // }
                 $cost = (json_encode($price->rates[0])*$resource->quantity);
 
                 $resource = AzureUsageReport::updateOrCreate([
