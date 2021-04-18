@@ -162,8 +162,16 @@ class HomeController extends Controller
             case config('app.customer'):
                 $customer = $this->getUser()->customer;
                 $subscriptions = $this->listFromCustomer($customer);
+                $expired = Carbon::now()->addDays(90);
+                $abouttoexpire = $subscriptions->map(function ($name) use($expired) {
+                    if ($name->expiration_data <= $expired){
+                        return $name;
+                    }
+                });
+                $abouttoexpire = $abouttoexpire->filter();
 
-                return view('subscriptions.customer', compact('subscriptions', 'customer'));
+
+                return view('subscriptions.customer', compact('subscriptions', 'customer','abouttoexpire'));
 
             break;
 
