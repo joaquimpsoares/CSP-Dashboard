@@ -146,7 +146,7 @@
                                                             <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
                                                             @endif
                                                         </th>
-                                                        <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase" wire:click="sortByColumn('resource_category')">
+                                                        {{-- <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase" wire:click="sortByColumn('resource_category')">
                                                             Category
                                                             @if ($sortColumn == 'resource_category')
                                                             <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
@@ -161,7 +161,7 @@
                                                             @else
                                                             <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
                                                             @endif
-                                                        </th>
+                                                        </th> --}}
                                                         <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase" wire:click="sortByColumn('resource_location')">
                                                             Region
                                                             @if ($sortColumn == 'resource_location')
@@ -170,7 +170,7 @@
                                                             <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
                                                             @endif
                                                         </th>
-                                                        <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase" wire:click="sortByColumn('name')">
+                                                       {{-- <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase" wire:click="sortByColumn('name')">
                                                             Name
                                                             @if ($sortColumn == 'name')
                                                             <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
@@ -178,14 +178,14 @@
                                                             <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
                                                             @endif
                                                         </th>
-                                                        <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase" wire:click="sortByColumn('quantity')">
+                                                        {{-- <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase" wire:click="sortByColumn('quantity')">
                                                             Quantity
                                                             @if ($sortColumn == 'quantity')
                                                             <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
                                                             @else
                                                             <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
                                                             @endif
-                                                        </th>
+                                                        </th> --}}
                                                         <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase" wire:click="sortByColumn('cost')">
                                                             Total Cost
                                                             @if ($sortColumn == 'cost')
@@ -216,13 +216,14 @@
                                                 <body>
                                                     @foreach ($reports as $item)
                                                     <tr>
-                                                        <td class="px-6 py-4 whitespace-nowrap">{{$item->resource_name}}</td>
-                                                        <td class="px-6 py-4 whitespace-nowrap">{{$item->resource_group}}</td>
-                                                        <td class="px-6 py-4 whitespace-nowrap">{{$item->resource_category}}</td>
-                                                        <td class="px-6 py-4 whitespace-nowrap">{{$item->resource_subcategory}}</td>
+                                                        <td class="px-6 py-4 whitespace-wrap">{{$item->resource_name}}</td>
+                                                        <td class="px-6 py-4 whitespace-wrap">{{$item->resource_group}}</td>
+                                                        {{-- <td class="px-6 py-4 whitespace-nowrap">{{$item->resource_category}}</td>
+                                                        <td class="px-6 py-4 whitespace-nowrap">{{$item->resource_subcategory}}</td> --}}
                                                         <td class="px-6 py-4 whitespace-nowrap">{{$item->resource_location}}</td>
-                                                        <td class="px-6 py-4 whitespace-nowrap">{{$item->name}}</td>
-                                                        <td class="px-6 py-4 whitespace-nowrap">{{number_format($item->quantity , 4)}}</td>
+                                                        {{--
+                                                        <td class="px-6 py-4 whitespace-nowrap">{{$item->name}}</td> --}}
+                                                        {{-- <td class="px-6 py-4 whitespace-nowrap">{{number_format($item->quantity , 4)}}</td> --}}
                                                         <td class="px-6 py-4 whitespace-nowrap">$@money($item->cost)</td>
                                                         <td class="px-6 py-4 whitespace-nowrap">{{date('Y-m-d', strtotime($item->usageStartTime))}}</td>
                                                         <td class="px-6 py-4 whitespace-nowrap">{{date('Y-m-d', strtotime($item->usageEndTime))}}</td>
