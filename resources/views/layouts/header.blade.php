@@ -57,7 +57,7 @@
         </div>
         {{-- <button  @click="cartOpen = !cartOpen" class="text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"> --}}
 
-            <div x-cloak :class="cartOpen ? 'translate-x-0 ease-out' : 'translate-x-full ease-in'" class="fixed top-0 right-0 z-40 w-screen h-full max-w-2xl px-6 py-4 transition duration-300 transform bg-white border-l-2 border-gray-300">
+            {{-- <div x-cloak :class="cartOpen ? 'translate-x-0 ease-out' : 'translate-x-full ease-in'" class="fixed top-0 right-0 z-40 w-screen h-full max-w-2xl px-6 py-4 transition duration-300 transform bg-white border-l-2 border-gray-300">
                 <div class="absolute inset-0 overflow-hidden">
                     <div x-description="Background overlay, show/hide based on slide-over state." class="absolute inset-0" @click="cartOpen = !cartOpen" aria-hidden="true"></div>
                     <div class="fixed inset-y-0 right-0 flex pl-10 sm:pl-16">
@@ -85,7 +85,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
+            <livewire:store.cart-counter/>
 
             @if (app('impersonate')->isImpersonating())
             <div class="px-4 py-8 md:max-w-6xl md:mx-auto">
