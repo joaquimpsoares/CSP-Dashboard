@@ -12,24 +12,21 @@
     @include('layouts.head')
 </head>
 
-<body class="app sidebar-mini light-mode default-sidebar">
-
+<body  class="antialiased bg-gray-200">
     @livewireStyles
-
     <div class="page">
         <div class="page-main">
-
             @include('layouts.side-menu')
-            <div class="app-content main-content">
-                <div class="side-app">
-                    @include('layouts.header')
-                    @include('layouts.messages')
-                    @include('layouts.bread')
-                    @yield('page-header')
-                    @yield('content')
-                    {{-- @include('layouts.footer') --}}
-                </div><!-- End Page -->
-                @include('layouts.footer-scripts')
+            @include('layouts.header')
+            <div class="px-4 py-8 md:max-w-8xl md:mx-auto">
+                        @include('layouts.messages')
+                        {{-- @include('layouts.bread') --}}
+                        @yield('page-header')
+                        @yield('content')
+                        {{-- @include('layouts.footer') --}}
+                    </div><!-- End Page -->
+                    @include('layouts.footer-scripts')
+                </div>
             </div>
         </div>
     </div>

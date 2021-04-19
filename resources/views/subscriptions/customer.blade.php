@@ -34,7 +34,7 @@
                     </p>
                     <div class="absolute inset-x-0 bottom-0 px-4 py-4 bg-gray-50 sm:px-6">
                         <div class="text-sm">
-                            <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Total Subscribers stats</span></a>
+                            <a href="{{route('subscription.index')}}" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Total Subscribers stats</span></a>
                         </div>
                     </div>
                 </dd>
@@ -56,13 +56,13 @@
                     </p>
                     <div class="absolute inset-x-0 bottom-0 px-4 py-4 bg-gray-50 sm:px-6">
                         <div class="text-sm">
-                            <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Avg. Open Rate stats</span></a>
+                            <a href="{{route('subscription.index')}}" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Avg. Open Rate stats</span></a>
                         </div>
                     </div>
                 </dd>
             </div>
 
-            <div class="relative px-4 pt-5 pb-12 overflow-hidden bg-white rounded-lg shadow sm:pt-6 sm:px-6">
+            {{-- <div class="relative px-4 pt-5 pb-12 overflow-hidden bg-white rounded-lg shadow sm:pt-6 sm:px-6">
                 <dt>
                     <div class="absolute p-3 bg-indigo-500 rounded-md">
                         <!-- Heroicon name: outline/cursor-click -->
@@ -92,7 +92,7 @@
                         </div>
                     </div>
                 </dd>
-            </div>
+            </div> --}}
         </dl>
     </div>
 

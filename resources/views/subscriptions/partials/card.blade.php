@@ -1,62 +1,27 @@
 {{-- <div class="row"> --}}
     <div class="col-md-12 col-lg-12 col-xl-12 ">
         <div class="row">
-            <!-- This example requires Tailwind CSS v2.0+ -->
-            <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                @foreach ($subscriptions as $item)
-                <li class="col-span-1 bg-white divide-y divide-gray-200 rounded-lg shadow">
-                    <div class="flex items-center justify-between w-full p-6 space-x-6">
-                        <div class="flex-1 truncate">
-                            <div class="flex items-center space-x-3">
-                                <h3 class="text-sm font-medium text-gray-900 truncate">{{$item->name}}</h3>
-                                <span class="flex-shrink-0 inline-block px-2 py-0.5 text-green-800 text-xs font-medium bg-green-100 rounded-full">{{ ucwords(trans_choice( $item->status->name, 1)) }}</span>
-                            </div>
-                            <p class="mt-1 text-xs text-gray-500 truncate">{{$item->subscription_id}}</p>
-                        </div>
-                        <img class="flex-shrink-0 w-10 h-10 bg-gray-300 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixqx=uonr10FSf0&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60" alt="">
-                    </div>
-                    <div>
-                        <div class="flex -mt-px divide-x divide-gray-200">
-                            <div class="flex flex-1 w-0">
-                                <a href="mailto:janecooper@example.com" class="relative inline-flex items-center justify-center flex-1 w-0 py-4 -mr-px text-sm font-medium text-gray-700 border border-transparent rounded-bl-lg hover:text-gray-500">
-                                    <!-- Heroicon name: solid/mail -->
-                                    <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                                    </svg>
-                                    <span class="ml-3">Email</span>
-                                </a>
-                            </div>
-                            <div class="flex flex-1 w-0 -ml-px">
-                                <a href="tel:+1-202-555-0170" class="relative inline-flex items-center justify-center flex-1 w-0 py-4 text-sm font-medium text-gray-700 border border-transparent rounded-br-lg hover:text-gray-500">
-                                    <!-- Heroicon name: solid/phone -->
-                                    <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                                    </svg>
-                                    <span class="ml-3">Call</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                @endforeach
-
-                <!-- More people... -->
-            </ul>
-
+            @foreach ($subscriptions as $item)
+            <!-- col -->
             <div class="col-xl-4 col-lg-6">
                 <div class="card">
                     <div class="p-0 card-body">
                         <div class="p-4 pb-2 todo-widget-header d-flex">
                             <h6 class="pro-user-desc text-muted"><span class="mt-2 badge badge-success">{{ ucwords(trans_choice( $item->status->name, 1)) }}</span></h6>
                             <div class="ml-auto">
+                                {{-- <div class="">
+                                    <a class="option-dots new-list" data-toggle="dropdown"><svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></a>
+                                    <div class="dropdown-menu tx-13 dropdown-menu-right">
+                                        <a class="dropdown-item" href="#">Disable</a>
+                                    </div>
+                                </div> --}}
                             </div>
                         </div>
                         <div class="px-4 pb-4">
                             <a class="p-0 text-muted" data-toggle="dropdown">
                                 <div class="font-weight-bold d-flex">
                                     <div class="mr-4 media-icon bg-success-transparent text-success">
-                                        <i class="fa fa-suitcase"></i>
+                                    <i class="fa fa-suitcase"></i>
                                     </div>
                                     {{-- <img  class="mr-2 avatat avatar-md brround" src="https://img.pngio.com/microsoft-corporate-logo-guidelines-trademarks-microsoft-logo-png-2008_900.jpg" alt="img"> --}}
                                     <div class="mt-1">
@@ -65,6 +30,12 @@
                                     </div>
                                 </div>
                             </a>
+                            {{-- <div class="dropdown-menu tx-13">
+                                <a class="dropdown-item" href="#">View Total Tasks</a>
+                                <a class="dropdown-item" href="#">Completed Tasks</a>
+                                <a class="dropdown-item" href="#">Delete Tasks</a>
+                                <a class="dropdown-item" href="#">Settings</a>
+                            </div> --}}
                         </div>
                         <div class="card-body border-top">
                             <div class="main-profile-contact-list d-lg-flex">
@@ -96,13 +67,78 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        @can('subscription_edit')
-                        <a class="float-right ml-auto btn btn-primary btn-sm px-xl-5" href="{{route('subscription.show', [$item['id']])}}" >Edit</a>
-                        @endcan
+
+                        {{-- <a class="btn btn-primary btn-sm px-xl-5" href="#" title="Assign Task">Edit</a> --}}
+                        <a class="float-right ml-auto btn btn-primary btn-sm px-xl-5" href="{{route('subscription.show', [$item['id']])}}" data-placement="top" data-toggle="tooltip" title="" data-original-title="View Task">Edit</a>
                     </div>
                 </div>
             </div>
             <!-- /col -->
+            @endforeach
         </div>
     </div>
 </div>
+
+
+{{-- <div class="row row-deck">
+    @foreach ($subscriptions as $item)
+    <div class="col-xl-6 col-lg-5 col-md-12">
+        <div class="overflow-hidden card">
+            <a href="{{route('subscription.show', [$item['id']])}}">
+                <img  src="https://img.pngio.com/microsoft-corporate-logo-guidelines-trademarks-microsoft-logo-png-2008_900.jpg" alt="image">
+            </a>
+            <div class="card-body">
+                <div class="text-center row">
+                    <div class="col-sm-6 border-right">
+                        <h4 class="mb-1 pro-user-username text-dark font-weight-bold">{{ ucwords(trans_choice('messages.subscription_name', 1)) }}</h4>
+                        <h6 class="pro-user-desc text-muted">{{$item->name}}</h6>
+                    </div>
+                    <div class="col-sm-6">
+                        <h3><p>{{ ucwords(trans_choice('messages.tenant_name', 1)) }}</p>
+                            <p class="pro-user-desc text-muted"> <a href="{{route('subscription.show', [$item['id']])}}"> {{$item->tenant_name}}  </a></p>
+                        </h3>
+                    </div>
+                </div>
+                <div class="p-0 ">
+                    <div class="text-center row ">
+                        <div class="text-center col-sm-6 border-right">
+                            <div class="p-4 description-block">
+                                <h5 class="mb-1 description-header font-weight-bold">{{ ucwords(trans_choice('messages.licenses', 1)) }}</h5>
+                                <span class="text-muted">{{$item->amount}}  {{ ucwords(trans_choice('messages.licenses', 1)) }}</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="p-4 text-center description-block">
+                                <h5 class="mb-1 description-header font-weight-bold">{{ ucwords(trans_choice('messages.billing_cycle', 1)) }}</h5>
+                                <span class="text-muted">{{$item->billing_period}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="text-center pro-user">
+                            <h4 class="mb-1 pro-user-username text-dark font-weight-bold">{{ ucwords(trans_choice('messages.subscription_status', 1)) }}</h4>
+                            <h6 class="pro-user-desc text-muted"><span class="mt-2 badge badge-success">{{ ucwords(trans_choice( $item->status->name, 1)) }}</span></h6>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-0 card-footer">
+                    <div class="row">
+                        <div class="text-center col-sm-6 border-right">
+                            <div class="p-4 description-block">
+                                <h5 class="mb-1 description-header font-weight-bold">{{ ucwords(trans_choice('messages.licenses', 1)) }}</h5>
+                                <span class="text-muted">{{$item->amount}}  {{ ucwords(trans_choice('messages.licenses', 1)) }}</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endforeach
+</div> --}}
