@@ -29,11 +29,11 @@
                         <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
                     </svg>
                 </a>
-                <a @click="cartOpen = !cartOpen"  href="#" class="p-2 mr-4 text-gray-500 rounded-full cursor-pointer hover:text-blue-600 hover:bg-gray-200">
+                {{-- <a @click="cartOpen = !cartOpen"  href="#" class="p-2 mr-4 text-gray-500 rounded-full cursor-pointer hover:text-blue-600 hover:bg-gray-200">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     </svg>
-                </a>
+                </a> --}}
                 <div class="relative" x-data="{ open: false }">
                     <div  @click="open = !open" class="flex items-center justify-center w-10 h-10 font-bold text-blue-600 bg-blue-200 rounded-full cursor-pointer">
                         <img class="flex-shrink-0 w-10 h-10 bg-gray-300 rounded-full" src="{{Auth::user()->avatar}}" alt="">
@@ -55,6 +55,8 @@
                 </div>
             </div>
         </div>
+        <livewire:store.cart-counter/>
+
         {{-- <button  @click="cartOpen = !cartOpen" class="text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"> --}}
 
             {{-- <div x-cloak :class="cartOpen ? 'translate-x-0 ease-out' : 'translate-x-full ease-in'" class="fixed top-0 right-0 z-40 w-screen h-full max-w-2xl px-6 py-4 transition duration-300 transform bg-white border-l-2 border-gray-300">
@@ -86,7 +88,6 @@
                     </div>
                 </div>
             </div> --}}
-            <livewire:store.cart-counter/>
 
             @if (app('impersonate')->isImpersonating())
             <div class="px-4 py-8 md:max-w-6xl md:mx-auto">
