@@ -42,8 +42,9 @@ class ImportPerpetualCSV extends Command
         try {
             Instance::eachById(function(Instance $instance)
             {
+
                 $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)
-                ->forCountry('es')->softwarePrepetualAll('es');
+                ->forCountry($instance->provider->country->iso_3166_2)->softwarePrepetualAll($instance->provider->country->iso_3166_2);
 
                 $products->each(function($importedProduct)use($instance)
                 {
