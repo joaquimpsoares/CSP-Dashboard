@@ -31,7 +31,7 @@ class PriceListController extends Controller
     {
 
         $products = Product::get();
-        $priceLists = $this->priceListRepository->all();
+        $priceLists = $this->priceListRepository->all()->paginate(10);
         $prices = Price::get();
 
 
@@ -55,14 +55,15 @@ class PriceListController extends Controller
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
 
-                $prices = $this->priceListRepository->listPrices();
+                // $prices = $this->priceListRepository->listPrices()->paginate(10);
 
                 // $priceList = PriceList::where('id', $priceList)->first();
                 // $provider = $priceList->provider;
 
-                $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku', $prices->pluck('product_sku'))->get();
 
-                $prices = $priceList->prices;
+                $prices = $priceList->prices->paginate('10');
+
+                $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku', $prices->pluck('product_sku'))->get();
 
             break;
 

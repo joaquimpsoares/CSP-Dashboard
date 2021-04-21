@@ -1,10 +1,10 @@
 <button wire:click.prevent="deleteSelected"
-            onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
-            class="@if ($bulkDisabled) opacity-50 @endif bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Delete Selected
-    </button>
+onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
+class="@if ($bulkDisabled) opacity-50 @endif bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+Delete Selected
+</button>
 <div class="table-responsive">
-    <table id="tagydes_table_buttons" class="hover key-buttons" style="width:100%; padding-top: 1em;  padding-bottom: 1em;">
+    <table id="" class="table hover key-buttons" style="width:100%; padding-top: 1em;  padding-bottom: 1em;">
         <thead class="thead-dark">
             <tr>
                 <th></th>
@@ -39,4 +39,7 @@
             @endforelse
         </tbody>
     </table>
+    @if ($prices->total() >= '10')
+    {!! $prices->render() !!}
+    @endif
 </div>

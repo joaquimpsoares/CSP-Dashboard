@@ -234,12 +234,15 @@
                         </div>
                         <div class="mt-6">
                             <div class="sm:col-span-1">
+                                @if($customer->subscriptions->count() >= 1)
                                 <dd class="text-xs text-gray-500">
                                     {{$customer->subscriptions->first()->tenant_name }}
+
                                 </dd>
                                 <dd class="text-xs text-gray-500">
                                     {{$customer->microsoftTenantInfo->first()->tenant_id }}
                                 </dd>
+                                @endif
                             </div>
                         </div>
                     </div>

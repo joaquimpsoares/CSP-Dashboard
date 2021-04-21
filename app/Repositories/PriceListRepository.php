@@ -92,8 +92,7 @@ class PriceListRepository implements PriceListRepositoryInterface
 
 		switch ($this->getUserLevel()) {
 			case config('app.super_admin'):
-				$priceLists = PriceList::orderBy('name')->get()->map->format();
-				$prices = Price::get();
+				$prices = Price::paginate(10);
 
 		break;
 

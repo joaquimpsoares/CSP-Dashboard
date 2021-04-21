@@ -271,5 +271,14 @@ return [
     'export_to_xlsx' => 'Excel Export',
     'report' => 'report',
     'about_to_expire' => 'about to expire',
+    'subscription_id' => 'subscription id',
+    'renew_subs_automatically' => 'Renew subscription automatically',
+    'subscription_status' => 'Subscription Status',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+
 
 ];

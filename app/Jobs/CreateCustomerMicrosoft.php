@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\User;
 use App\Order;
 use Exception;
 use App\Customer;
@@ -11,9 +12,11 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 use App\Events\MSCustomerCreationEvent;
+use App\Notifications\UserNotification;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Notification;
 use romanzipp\QueueMonitor\Traits\IsMonitored;
 use Tagydes\MicrosoftConnection\Facades\Customer as TagydesCustomer;
 
@@ -37,6 +40,8 @@ class CreateCustomerMicrosoft implements ShouldQueue
         $this->order->details = ('Stage 1 - Creating Customer '. $this->order->customer->company_name);
         $this->order->order_status_id = 2; //Order running state
         $this->order->save();
+
+        // Notification::send($this->order->customer->users->first(), new UserNotification($this->order));
 
         // Log::info('Confirmation of products: '. $this->order->products->first()->instance_id)->first();
 
@@ -74,8 +79,9 @@ class CreateCustomerMicrosoft implements ShouldQueue
                 ]);
 
 
-
+                // dd($this->order->customer->users->first());
             // event(new MSCustomerCreationEvent($this->order));
+            Notification::send($this->order->customer->users, new UserNotification($newCustomer));
 
             Log::info('Customer Created: '.$newCustomer);
             Log::info('Tenant Created: '.$result);

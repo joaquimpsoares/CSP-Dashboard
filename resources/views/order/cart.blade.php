@@ -70,7 +70,6 @@
                                         $i = 1;
                                         @endphp
                                         @forelse($cart->products as $product)
-
                                         <tr class="product">
                                             <td>
                                                 {{ $product->name }}

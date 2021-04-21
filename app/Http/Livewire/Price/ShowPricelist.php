@@ -88,6 +88,7 @@ class ShowPricelist extends Component
         $price->currency        = $this->currency;
         $price->instance_id     = $this->priceList->instance_id;
         $price->price_list_id   = $this->priceList->id;
+
         $price->pricelist()->associate($this->priceList);
         $price->save();
 
@@ -140,7 +141,7 @@ class ShowPricelist extends Component
 
                 $products = Product::where('instance_id', $this->priceList->instance_id)->whereNotIn('sku', $this->priceList->prices->pluck('product_sku'))->get();
 
-                $prices = $this->priceList->prices;
+                $prices = $this->priceList->prices->paginate(10);
 
             break;
 
@@ -150,14 +151,14 @@ class ShowPricelist extends Component
 
                 $priceList = $provider->priceList;
 
-                $prices = $priceList->prices;
+                $prices = $priceList->prices->paginate(10);
                 $products = Product::whereIn('instance_id', $provider->instances->pluck('id'))->whereNotIn('sku',$prices->pluck('product_sku'))->get();
 
             break;
 
             case config('app.reseller'):
 
-                $prices = $this->priceList->prices;
+                $prices = $this->priceList->prices->paginate(10);
                 $products = Product::where('instance_id',  $this->priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
 
             break;

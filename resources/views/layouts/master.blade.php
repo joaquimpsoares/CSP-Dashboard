@@ -19,18 +19,18 @@
             @include('layouts.side-menu')
             @include('layouts.header')
             <div class="px-4 py-8 md:max-w-8xl md:mx-auto">
-                        @include('layouts.messages')
-                        {{-- @include('layouts.bread') --}}
-                        @yield('page-header')
-                        @yield('content')
-                        {{-- @include('layouts.footer') --}}
-                    </div><!-- End Page -->
-                    @include('layouts.footer-scripts')
-                </div>
-            </div>
+                @include('layouts.messages')
+                {{-- @include('layouts.bread') --}}
+                @yield('page-header')
+                @yield('content')
+                {{-- @include('layouts.footer') --}}
+            </div><!-- End Page -->
+            @include('layouts.footer-scripts')
         </div>
     </div>
-    @livewireScripts
-    @yield('footer')
+</div>
+
+@livewireScripts
+@yield('footer')
 </body>
 </html>
