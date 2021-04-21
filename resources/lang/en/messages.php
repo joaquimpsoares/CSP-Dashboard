@@ -274,11 +274,5 @@ return [
     'subscription_id' => 'subscription id',
     'renew_subs_automatically' => 'Renew subscription automatically',
     'subscription_status' => 'Subscription Status',
-    '' => '',
-    '' => '',
-    '' => '',
-    '' => '',
-    '' => '',
-
-
+    'go_to_store' => 'go to store',
 ];

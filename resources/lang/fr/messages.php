@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 return [
   'importproducts' => 'Importer des produits Microsoft, planifiés',
   'jobrescheduled' => 'Travail reporté',
@@ -104,6 +103,8 @@ return [
   'instance_id' => 'ID d\'instance',
   'avatar' => 'avatar',
   'add_new_instance' => 'Ajouter une nouvelle instance',
+  'isv' => 'isv',
+  0 => 'Service Internet Vendeur',
   'microsoft_instance' => 'instance Microsoft',
   'licenses' => 'licences',
   'subscription_name' => 'nom d\'abonnement',
@@ -243,5 +244,24 @@ return [
   'tax_total' => 'total de l\'impôt',
   'after_total' => 'après le total',
   'estimated_billing' => 'Facturation estimée - Info',
+  'provider_details' => 'Détails du fournisseur',
+  'edit_provider' => 'Modifier le fournisseur',
+  'no_instance' => 'S\'il vous plaît, créez une nouvelle instance',
+  'new_instance' => 'nouvelle instance',
+  'save' => 'sauvegarder',
+  'prices_in_list' => 'Prix ​​dans la liste',
+  'prices_not_list' => 'Prix ​​pas liste',
+  'top5_resource_group_cost' => 'Top5 Groupe de ressources par coût',
+  'resource_group_name' => 'Nom du groupe de ressources',
+  'resource_group' => 'groupe de ressources',
+  'region' => 'Région',
+  'total_cost' => 'coût total',
+  'start_date' => 'date de début',
+  'end_date' => 'date de fin',
+  'export_to_xlsx' => 'Exportation Excel',
+  'report' => 'rapport',
+  'about_to_expire' => 'sur le point d\'expirer',
+  'subscription_id' => 'ID d\'abonnement',
+  'renew_subs_automatically' => 'Renouveler l\'abonnement automatiquement',
   'go_to_store' => 'aller au magasin',
 ];

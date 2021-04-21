@@ -261,4 +261,7 @@ return [
   'export_to_xlsx' => 'Exclación de Excel',
   'report' => 'informe',
   'about_to_expire' => 'A punto de expirar',
+  'subscription_id' => 'ID de suscripción',
+  'renew_subs_automatically' => 'Renovar suscripción automáticamente',
+  'go_to_store' => 'ir a la tienda',
 ];
