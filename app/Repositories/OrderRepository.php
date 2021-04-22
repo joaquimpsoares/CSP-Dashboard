@@ -40,6 +40,8 @@ class OrderRepository implements OrderRepositoryInterface
                 $orders = Order::with(['status'])->get()->map->format()->sortDesc()->toArray();
             break;
 
+
+
             case config('app.provider'):
 
                 $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
@@ -70,6 +72,12 @@ class OrderRepository implements OrderRepositoryInterface
                         $query->whereIn('id', $customers);
                     })->get()->map->format()->sortDesc();
                 }
+
+            break;
+            case config('app.customer'):
+
+                $orders = $user->customer->orders->map->format()->sortDesc();
+                // dd($orders);
 
             break;
 

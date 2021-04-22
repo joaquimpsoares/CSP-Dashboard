@@ -69,26 +69,26 @@ class ImportPerpetualCSV extends Command
                         'is_perpetual' => true
                         ]);
 
-                        SimpleExcelReader::create(storage_path('app\perpetual.xlsx'))->getRows()->each(function(array $license) use ($product){
-                            $priceList = PriceList::first();
+                SimpleExcelReader::create(storage_path('app\perpetual.xlsx'))->getRows()->each(function(array $license) use ($product){
+                    $priceList = PriceList::first();
 
-                            $product->prices()->updateOrInsert([
-                                'product_sku' => $product->sku,
-                                'product_vendor' => 'microsoft',
-                                // 'price_list_id' => '1',
-                                'name' => $license['SkuTitle'],
-                                'price' => $license['ListPrice'],
-                                'msrp' => $license['Msrp'],
-                                'currency' => $license['Currency']
-                                ]);
-                                $product->pricelist()->associate($priceList);
-                            });
-                        });
+                    $product->pricelist()->associate($priceList);
+                    $product->prices()->updateOrCreate([
+                        'product_sku' => $product->sku,
+                        // 'price_list_id' => $priceList->id,
+                        'product_vendor' => 'microsoft',
+                        'name' => $license['SkuTitle'],
+                        'price' => $license['ListPrice'],
+                        'msrp' => $license['Msrp'],
+                        'currency' => $license['Currency']
+                        ]);
                     });
-                } catch (Exception $e)
-                {
-                    echo('Error importing products: '.$e->getMessage());
-                }
-            }
+                });
+            });
+        } catch (Exception $e)
+        {
+            echo('Error importing products: '.$e->getMessage());
         }
+    }
+}
 

@@ -278,7 +278,7 @@ class CartController extends Controller
             'email' => 'required|email:rfc,dns',
             'phoneNumber' => 'string|nullable',
             'token' => 'required|uuid'
-        ]);
+            ]);
 
 
         $cart = $this->getByToken($validate['token']);
@@ -314,14 +314,14 @@ class CartController extends Controller
 
         if (!empty($validate['customerTenant'])) {
             $domain = $validate['customerTenant'] . '.onmicrosoft.com';
-            // $order = $customer->orders()->where('domain', $domain)->first();
             $cart->domain = $validate['customerTenant'];
+            $canChangeTenant = FALSE;
+            // $order = $customer->orders()->where('domain', $domain)->first();
             // $cart->agreement_firstname = $order->agreement_firstname;
             // $cart->agreement_lastname = $order->agreement_lastname;
             // $cart->agreement_email = $order->agreement_email;
             // $cart->agreement_phone = $order->agreement_phone;
             // $cart->save();
-            $canChangeTenant = FALSE;
         }
 
         $hasTenant = $this->cartHasTenant($cart);
@@ -414,6 +414,7 @@ class CartController extends Controller
 
         foreach ($validate['billing_cycle'] as $key => $id) {
             $cartItem = $cart->products()->wherePivot('id', $key)->first();
+            dd($cartItem);
             if($cartItem->minimum_quantity > $request->get($key) || $cartItem->maximum_quantity < $request->get($key)){
                 return redirect()->route('cart.index')->with('danger', 'Invalid quantity for item: '.$cartItem->name.'('.$cartItem->sku.')');
             }
