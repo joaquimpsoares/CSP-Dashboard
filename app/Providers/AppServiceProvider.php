@@ -2,10 +2,7 @@
 
 namespace App\Providers;
 
-use App\User;
-use App\PriceList;
-use App\Notifications\FailedJob;
-use App\Notifications\SuccessJob;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Pagination\Paginator;
@@ -38,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
+        Model::unguard();
         Blade::directive('money', function ($amount) {
             return "<?php echo number_format($amount , 2) ; ?>";
         });
