@@ -19,6 +19,7 @@
     ],
     "require": {
         "php": "^7.2.5",
+        "algolia/algoliasearch-client-php": "2.2",
         "barryvdh/laravel-debugbar": "^3.5",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
@@ -28,6 +29,7 @@
         "lab404/laravel-impersonate": "^1.6",
         "laravel/framework": "^8.0",
         "laravel/helpers": "^1.2",
+        "laravel/scout": "^8.6",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.1",
         "league/fractal": "^0.19.2",

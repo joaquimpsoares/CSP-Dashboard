@@ -103,11 +103,11 @@ class EditReseller extends Component
 
     public function render()
     {
-        $reseller = $this->reseller;
-        $company_name = $reseller->company_name;
+        // $reseller = $this->reseller;
+        // $company_name = $reseller->company_name;
 
         $countries  = Country::pluck( 'name','id');
         $statuses   = Status::pluck( 'name','id');
-        return view('livewire.reseller.edit-reseller', compact('company_name','reseller','countries','statuses'));
+        return view('livewire.reseller.edit-reseller', compact('countries','statuses'));
     }
 }

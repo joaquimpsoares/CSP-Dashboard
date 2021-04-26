@@ -71,7 +71,7 @@
                                             <a  href="{{ route('product.edit' ,$product->id) }}">
                                                 {{$product->sku}}</a>
                                             </td>
-                                            <td style="width: 5px; ; white-space: nowrap;">
+                                            <td style="width: 5px; ">
                                                 {{$product->name}}
                                             </td>
                                             <td style="width: 1px; white-space: nowrap;">

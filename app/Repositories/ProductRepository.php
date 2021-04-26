@@ -38,6 +38,10 @@ class ProductRepository implements ProductRepositoryInterface
     {
         $user = $this->getUser();
         switch ($this->getUserLevel()) {
+            case 'Super Admin':
+
+                $products = Product::get();
+            break;
             case 'Provider':
                 $instance = $user->provider->instances->pluck('id');
                 $products = Product::whereIn('instance_id', $instance)->where('addons', '<>', '[]')->get();

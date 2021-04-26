@@ -22,6 +22,8 @@ Route::get('accept/{token}', 'InviteController@accept')->name('accept');
 Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('resetinvitationpassword');
 
 
+
+
     /**********************************************************************************
     Fim Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
@@ -223,6 +225,11 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
         /*****************************************************************************************************************/
 
         // Every authenticated user can access routes here
+        Route::get('DatabaseNotificationsMarkasRead', function () {
+            auth()->user()->unreadNotifications->markAsRead();
+            return redirect()->back();
+            })->name('databasenotifications.markasread');
+
         Route::get('/order/placeOrder', 'OrderController@placeOrder')->name('order.place_order');
 
         Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
