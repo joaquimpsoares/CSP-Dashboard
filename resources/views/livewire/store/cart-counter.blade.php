@@ -76,12 +76,8 @@
             </button>
         </form>
     </div>
+    @else
+    Cart is empty
     @endif
 </div>
-
-{{-- <a href="{{ url('/' . $page='cart') }}" class="flex items-center justify-center px-3 py-2 mt-8 text-sm font-medium text-white uppercase bg-blue-600 rounded hover:bg-blue-500 focus:outline-none focus:bg-blue-500">
-    <span>Chechout</span>
-    <svg class="w-5 h-5 mx-2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-</a> --}}
-
 
