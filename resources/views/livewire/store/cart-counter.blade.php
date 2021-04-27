@@ -8,9 +8,7 @@
         <h3 class="w-1/5 text-xs font-semibold text-center text-gray-600 uppercase">Total</h3>
     </div>
     @if (isset($carts))
-    @dd($carts->products->pivot)
     @forelse ($carts->products as $item)
-    @dd($item)
     <div class="flex items-center px-6 py-2 -mx-8 hover:bg-gray-100">
         <div class="flex w-2/5"> <!-- product -->
             <div class="flex flex-col justify-between flex-grow ml-4">
@@ -56,8 +54,7 @@
     @endforelse
 </div>
 
-{{--summary--}}
-{{-- <h1 class="pb-8 text-2xl font-semibold border-b"></h1>
+<h1 class="pb-8 text-2xl font-semibold border-b"></h1>
 <div>
     <label class="inline-block mb-3 text-sm font-medium uppercase">Enter Your Country</label>
     <select wire:model='selectedCountry' class="block w-full p-2 text-sm text-gray-600">
@@ -95,11 +92,11 @@
         Checkout
     </button>
 </div>
-</div> --}}
-{{-- </div> --}}
+</div>
+</div>
 
 @endif
-{{-- @if (isset($cart))
+@if (isset($cart))
     @forelse ($cart->products as $item)
     <hr class="my-3">
     <div class="flex justify-between mt-4">
@@ -122,6 +119,6 @@
     <a href="{{ url('/' . $page='cart') }}" class="flex items-center justify-center px-3 py-2 mt-8 text-sm font-medium text-white uppercase bg-blue-600 rounded hover:bg-blue-500 focus:outline-none focus:bg-blue-500">
         <span>Chechout</span>
         <svg class="w-5 h-5 mx-2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-    </a> --}}
-    {{-- </div> --}}
+    </a>
+</div>
 
