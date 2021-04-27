@@ -145,12 +145,14 @@ class CartController extends Controller
 
     public function addCustomer(Request $request)
     {
+        $cart = Cart::where('token', $request->cart)->first();
+        $customer = Customer::where('id', $cart->customer_id)->first();
+
         $validate = $request->validate([
-            'customer_id' => 'required|integer|exists:customers,id',
+            // 'customer_id' => 'required|integer|exists:customers,id',
             'cart' => 'required|uuid|exists:carts,token'
         ]);
 
-        $customer = Customer::find($validate['customer_id']);
         $customerTenant = null;
 
         $subscriptions = $customer->subscriptions;
@@ -414,7 +416,6 @@ class CartController extends Controller
 
         foreach ($validate['billing_cycle'] as $key => $id) {
             $cartItem = $cart->products()->wherePivot('id', $key)->first();
-            dd($cartItem);
             if($cartItem->minimum_quantity > $request->get($key) || $cartItem->maximum_quantity < $request->get($key)){
                 return redirect()->route('cart.index')->with('danger', 'Invalid quantity for item: '.$cartItem->name.'('.$cartItem->sku.')');
             }
@@ -538,7 +539,7 @@ class CartController extends Controller
         if (empty($token)) {
             if (empty($id)) {
                 // $cart = Cart::where('user_id', $user->id)->orWhere('customer_id', session('customer_id'))->with(['products', 'customer'])->first();
-                $cart = Cart::where('user_id', $user->id)->whereNull('customer_id')->with(['products', 'customer'])->first();
+                $cart = Cart::where('user_id', $user->id)->whereNull('verify')->with(['products', 'customer'])->first();
             } else {
                 $cart = Cart::where('user_id', $user->id)->where('id', $id)->with(['products', 'customer'])->first();
             }

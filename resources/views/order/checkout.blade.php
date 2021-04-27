@@ -104,7 +104,7 @@
                                                     <br>
                                                     <div class="float-sm-right">
                                                         <div class="col-sm-6">
-                                                            <button class="btn btn-secondary">{{ ucwords(trans_choice('messages.next', 1)) }} <i class="fe fe-arrow-right"></i></button>
+                                                            {{-- <button class="btn btn-secondary">{{ ucwords(trans_choice('messages.next', 1)) }} <i class="fe fe-arrow-right"></i></button> --}}
                                                         </div>
                                                     </div>
                                                 </form>

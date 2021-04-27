@@ -36,14 +36,9 @@ class CreateCustomerMicrosoft implements ShouldQueue
     public function handle()
     {
 
-
         $this->order->details = ('Stage 1 - Creating Customer '. $this->order->customer->company_name);
         $this->order->order_status_id = 2; //Order running state
         $this->order->save();
-
-        // Notification::send($this->order->customer->users->first(), new UserNotification($this->order));
-
-        // Log::info('Confirmation of products: '. $this->order->products->first()->instance_id)->first();
 
         $customer = $this->order->customer;
 
@@ -72,16 +67,28 @@ class CreateCustomerMicrosoft implements ShouldQueue
                 //mca agreement
             ]);
 
-            $result = MicrosoftTenantInfo::create([
-                'tenant_id' => $newCustomer->id,
-                'tenant_domain' => $this->order->domain,
-                'customer_id' => $customer->id
-                ]);
+
+        } catch (Exception $e) {
+
+            Log::info('Error creating Customer Microsoft: '.$e->getMessage());
+            // return redirect()->back()->with('alert', $e );
+
+            session()->flash('alert','Error Creating Customer ' . $newCustomer);
+
+            $this->order->details = ('Error creating Customer Microsoft: '.$e->getMessage());
+            $this->order->order_status_id = 3;
+            $this->order->save();
+
+        }
 
 
-                // dd($this->order->customer->users->first());
-            // event(new MSCustomerCreationEvent($this->order));
-            Notification::send($this->order->customer->users, new UserNotification($newCustomer));
+        $result = MicrosoftTenantInfo::create([
+            'tenant_id' => $newCustomer->id,
+            'tenant_domain' => $this->order->domain,
+            'customer_id' => $customer->id
+            ]);
+
+            // Notification::send($this->order->customer->users, new UserNotification($newCustomer));
 
             Log::info('Customer Created: '.$newCustomer);
             Log::info('Tenant Created: '.$result);
@@ -89,16 +96,6 @@ class CreateCustomerMicrosoft implements ShouldQueue
             $this->order->ext_company_id = $newCustomer->id;
             $this->order->save();
 
-        } catch (Exception $e) {
-            Log::info('Error creating Customer Microsoft: '.$e->getMessage());
-            $this->order->details = ('Error creating Customer Microsoft: '.$e->getMessage());
-            $this->order->save();
-
-
-            Log::info('Error: '.$e->getMessage());
-            $this->order->order_status_id = 3;
-            $this->order->save();
-        }
-
+            session()->flash('success','Customer ' . $newCustomer . ' created successfully');
     }
 }

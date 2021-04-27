@@ -95,7 +95,6 @@ class AnalyticRepository implements AnalyticRepositoryInterface
         $dateupdated = AzureResource::select('updated_at')->where('subscription_id', $subscription->id)->first();
         $resourceName = AzureResource::groupBy('name')->where('subscription_id', $subscription->id)->selectRaw('sum(cost) as sum, name, category, subcategory')->orderBy('sum', 'DESC')->get();
         $resourcet5Name = AzureResource::groupBy('name')->where('subscription_id', $subscription->id)->selectRaw('sum(cost) as sum, name, category, subcategory')->orderBy('sum', 'DESC')->limit(5)->get();
-
         $category = array_column($query, 'category');
         $sum = array_column($query, 'sum');
         $top10C = array_column($top10Q, 'category');

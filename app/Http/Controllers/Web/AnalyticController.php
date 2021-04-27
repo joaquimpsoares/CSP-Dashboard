@@ -60,8 +60,6 @@ class AnalyticController extends Controller
      */
     public function index()
     {
-
-
         $subscriptions = Subscription::where('billing_type', 'usage')->first();
 
         $resourceName = $this->analyticRepository->getAzureSubscriptions();
@@ -417,7 +415,7 @@ class AnalyticController extends Controller
             $page->items->each(function ($resource) use ($subscription) {
                 $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
 
-                $price = AzurePriceList::find('resource_id', $resource->resource->id)->first('rates');
+                $price = AzurePriceList::where('resource_id', $resource->resource->id)->first('rates');
                 Log::info($resource->resource->id);
                 $cost = (json_encode($price->rates[0])*$resource->quantity);
 
