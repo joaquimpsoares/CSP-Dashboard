@@ -13,7 +13,6 @@
             <div class="ml-2 text-xl font-bold tracking-tight text-gray-800 md:hidden">Dashing Admin.</div>
         </div>
         <div class="flex items-center">
-
             @if(Auth::user()->userLevel->name != 'Customer')
             <a href="https://partnercenter.microsoft.com/commerce/" target="_blank" class="p-2 mr-4 text-gray-500 cursor-pointer hover:text-blue-600 hover:bg-gray-200">
                 <svg xmlns="http://www.w3.org/2000/svg" width="75" height="34" viewBox="0 0 1033.746 220.695">
@@ -63,7 +62,7 @@
                         <div class="px-4 sm:px-6">
                             <div class="flex items-start justify-between">
                                 <h2 class="text-lg font-medium text-gray-900" id="slide-over-title">
-                                    Panel title
+                                    Cart
                                 </h2>
                                 <div class="flex items-center ml-3 h-7">
                                     <button class="text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" @click="cartOpen = !cartOpen">
@@ -84,22 +83,23 @@
         </div>
     </div>
 
-    @if (app('impersonate')->isImpersonating())
-    <div class="px-4 py-8 md:max-w-6xl md:mx-auto">
-        <div class="relative px-6 py-4 text-red-700 bg-red-200 rounded-lg" role="alert" x-data="{ open: true }" x-show.transition="open">
-            <div class="mr-4">
-                Currently impersonating user <strong class="font-bold">{{Auth::user()->name}} {{Auth::user()->last_name}}</strong>
-                <a href="{{ route('impersonate.leave') }} ">
-                    <span style="color: red" >{{ ucwords(trans_choice('messages.stop_impersonation', 2)) }} &rarr;</i></span>
-                </a>
-            </div>
-            <span class="absolute top-0 bottom-0 right-0 inline-flex items-center justify-center w-10 h-10 mt-2 mr-3 rounded-full cursor-pointer hover:bg-red-100 hover:text-red-600" x-on:click="open = false">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="0" y="0" width="24" height="24" stroke="none"></rect>
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-            </span>
+
+@if (app('impersonate')->isImpersonating())
+<div class="px-4 py-8 md:max-w-6xl md:mx-auto">
+    <div class="relative px-6 py-4 text-red-700 bg-red-200 rounded-lg" role="alert" x-data="{ open: true }" x-show.transition="open">
+        <div class="mr-4">
+            Currently impersonating user <strong class="font-bold">{{Auth::user()->name}} {{Auth::user()->last_name}}</strong>
+            <a href="{{ route('impersonate.leave') }} ">
+                <span style="color: red" >{{ ucwords(trans_choice('messages.stop_impersonation', 2)) }} &rarr;</i></span>
+            </a>
         </div>
+        <span class="absolute top-0 bottom-0 right-0 inline-flex items-center justify-center w-10 h-10 mt-2 mr-3 rounded-full cursor-pointer hover:bg-red-100 hover:text-red-600" x-on:click="open = false">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="0" y="0" width="24" height="24" stroke="none"></rect>
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+        </span>
     </div>
-    @endif
+</div>
+@endif

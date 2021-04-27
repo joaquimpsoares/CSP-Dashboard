@@ -87,6 +87,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
             foreach ($products as $product) {
                 $quantity = $product->pivot->quantity;
                 $billing_cycle = $product->pivot->billing_cycle;
+                Log::info('Billing cycle!: ' . $billing_cycle);
 
                 $tagydescart->setCustomer($existingCustomer);
                 Log::info('Setting Customer to Cart: ' . $tagydescart);
@@ -106,14 +107,14 @@ class PlaceOrderMicrosoft implements ShouldQueue
 
                 if($product['is_perpetual']){
                     $catalogItemId = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)->getPerpetualCatalogItemId($product['uri']);
-                    
+
                     $TagydesProduct = new TagydesProduct([
                         'id' => $catalogItemId
                     ] + $productData);
 
                     $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
                     Log::info('Adding Perpetual Product to Cart: ' . $tagydescart);
-                    
+
                 } else {
                     $TagydesProduct = new TagydesProduct([
                         'id' => $product['sku'],

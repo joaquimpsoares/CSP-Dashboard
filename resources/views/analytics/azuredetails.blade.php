@@ -30,6 +30,7 @@
 $percentage =($subscription->customer->markup/100)*$subscription->azureresources->sum('cost');
 $markup = $percentage+$subscription->azureresources->sum('cost');
 @endphp
+
 <div class="row row-deck">
     <div class="col-xl-3 col-md-12 col-lg-6">
         <div class="card">

@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
-
-use App\Order;
+use Throwable;
 use App\MicrosoftTenantInfo;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
@@ -56,7 +55,14 @@ class OrderController extends Controller
 
             if($tt == null){
 
-                Bus::chain([new CreateCustomerMicrosoft($order), new PlaceOrderMicrosoft($order)])->onQueue('PlaceordertoMS')->dispatch();
+                Bus::chain([
+                    new CreateCustomerMicrosoft($order),
+                    new PlaceOrderMicrosoft($order)])
+                    ->catch(function (Throwable $e) use($order){
+                        $order->details = ('Error placing order to Microsoft: '.$e->getMessage());
+                        $order->save();
+                    })->onQueue('PlaceordertoMS')
+                ->dispatch();
             }
             else{
 

@@ -100,14 +100,18 @@ class SyncAzure extends Command
                 $instance->external_id,$instance->external_token
                 )->utilizations($customer, $subscriptions);
 
-                try{
+try{
 
                     $resources->items->each(function($resource) use($subscription){
                         $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
-                        $price = AzurePriceList::where('resource_id', $resource->resource->id)->first('rates');
-                        // Log::info($resource->resource->id);
-                        // Log::info($price);
-                        Log::info(json_encode($resource->resource->id));
+
+
+                       dd($resource->resource);
+                        $price = AzurePriceList::firstOrCreate([
+                            'resource_id' => $resource->resource->id
+                        ],[
+                            'rates' => "[0]",
+                        ]);
 
                         $resource = AzureUsageReport::updateOrCreate([
                             'subscription_id'       => $subscription->id,
@@ -131,14 +135,19 @@ class SyncAzure extends Command
                             "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
                         ], [
                             'quantity'              => $resource->quantity,
-                            'cost'                  => (json_encode($price->rates[0])*$resource->quantity) ?? '0'
+                            // 'cost'                   => (json_encode($price->rates[0])*$resource->quantity),
                         ]);
                         // Log::info(json_encode($resource));
                         // Log::info(json_encode($price->rates[0])*$resource->quantity);
                     });
                 }
-                catch (Exception $e) {
-                    $this->info($e->getMessage());
+                catch (\PDOException $e) {
+                    Log::info($e->getMessage());
+                    Mail::raw($e, function ($mail) use($e) {
+                        $mail->from('digamber@positronx.com');
+                        $mail->to('joaquim.soares@tagydes.com')
+                        ->subject('Azure Sync Failed');
+                    });
                 }
 
             }

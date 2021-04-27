@@ -44,10 +44,11 @@ class Store extends Component
         }
 
         $cart->products()->attach($productId, [
+            'id' => Str::uuid(),
             'price' => $productId->prices->price,
             'retail_price' => $productId->prices->msrp,
-            'id' => Str::uuid(),
-            'quantity' => $productId->minimum_quantity
+            'quantity' => $productId->minimum_quantity,
+            'billing_cycle' => "annual"
             ]);
 
         $this->emit('updateCart');
