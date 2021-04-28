@@ -145,7 +145,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
                     $subscriptions->customer_id = $customer->id; //Local customer id
                     $subscriptions->product_id = $subscription->offerId;
                     $subscriptions->instance_id = $instanceid;
-                    $subscriptions->billing_type = $product->billing;
+                    $subscriptions->billing_type = $product->billing ?? 'license';
                     $subscriptions->order_id = $subscription->orderId;
                     $subscriptions->amount = $subscription->quantity;
                     $subscriptions->msrpid = $this->order->customer->format()['mpnid'];
