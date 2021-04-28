@@ -15,6 +15,7 @@ class Price extends Model
 		'price',
 		'msrp',
 		'currency',
+		'instance_id'
 	];
 
 	public function format()
