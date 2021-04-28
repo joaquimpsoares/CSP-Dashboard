@@ -25,7 +25,16 @@ class CartCounter extends Component
     public $customer;
     public $city_id = '';
     protected $listeners = ['updateCart' => 'render'];
+    protected $listener = ['updateCartCount' => 'open'];
 
+    public $cartOpen = false;
+    public $isOpen = false;
+
+    public function open()
+    {
+        $this->cartOpen = true;
+        $this->isOpen = true;
+    }
 
     protected $rules = [
         'company_name'          => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
@@ -33,7 +42,6 @@ class CartCounter extends Component
 
     public static  function getUserCart($id = null, $token = null)
     {
-        // $user = $this->getUser();
         $user = Auth::user();
 
         if (empty($token)) {

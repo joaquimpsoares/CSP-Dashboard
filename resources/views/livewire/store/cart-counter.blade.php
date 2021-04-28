@@ -1,5 +1,9 @@
 
 <div>
+    <span class="absolute inset-0 object-left-top -mr-7">
+        <div class="inline-flex items-center px-1.5 py-0.1 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-red-500 text-white">
+        </div>
+    </span>
     @if (isset($cart))
     <div class="flex mt-10 mb-3">
         <h3 class="w-2/5 text-xs font-semibold text-gray-600 uppercase">Product Details</h3>
@@ -50,7 +54,6 @@
     @empty
     Cart is empty
     @endforelse
-
     <!-- {{--summary--}} -->
     <h1 class="pb-8 text-2xl font-semibold border-b"></h1>
     <div >
