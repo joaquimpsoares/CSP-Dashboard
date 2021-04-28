@@ -122,7 +122,6 @@ class Store extends Component
             $query->where('name', "LIKE", "%{$this->search}%");
             $query->orWhere('sku', 'LIKE', "%{$this->search}%");
         })->where(function (Builder $query) use($priceList) {
-            $query->where('instance_id', $priceList->instance_id);
         })->paginate(10);
 
          return view('livewire.store.store', [
