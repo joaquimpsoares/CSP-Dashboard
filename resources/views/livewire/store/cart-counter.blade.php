@@ -50,8 +50,6 @@
     @empty
     Cart is empty
     @endforelse
-
-    <!-- {{--summary--}} -->
     <h1 class="pb-8 text-2xl font-semibold border-b"></h1>
     <div >
         <label class="inline-block mb-3 text-sm font-medium uppercase">Choose customer</label>
