@@ -1,31 +1,3 @@
-@extends('layouts.master')
-@section('css')
-<!-- Morris Charts css -->
-<link href="{{URL::asset('assets/plugins/morris/morris.css')}}" rel="stylesheet" />
-<!-- Data table css -->
-<link href="{{URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css')}}" rel="stylesheet" />
-<!--Daterangepicker css-->
-<link href="{{URL::asset('assets/plugins/bootstrap-daterangepicker/daterangepicker.css')}}" rel="stylesheet" />
-<!-- Data table css -->
-<link href="{{URL::asset('assets/plugins/datatable/css/dataTables.bootstrap4.min.css')}}" rel="stylesheet" />
-<link href="{{URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css')}}"  rel="stylesheet">
-<link href="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.css')}}" rel="stylesheet" />
-<!-- Slect2 css -->
-<link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
-@endsection
-
-@section('page-header')
-<!--Page header-->
-<div class="page-header">
-    <div class="page-leftheader">
-        <h4 class="page-title">Analytics Dashboard - {{$subscription->customer->company_name}}</h4>
-    </div>
-</div>
-<!--End Page header-->
-@endsection
-
-@section('content')
-
 @php
 $percentage =($subscription->customer->markup/100)*$subscription->azureresources->sum('cost');
 $markup = $percentage+$subscription->azureresources->sum('cost');
@@ -36,11 +8,11 @@ $markup = $percentage+$subscription->azureresources->sum('cost');
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">{{ ucwords(trans_choice('messages.budget_grow', 1)) }}</h3>
-                {{-- <div class="ml-20">
+                <div class="ml-20">
                     <button type="button" class="inline-flex items-center px-4 py-2 ml-30 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         {{ ucwords(trans_choice('messages.change_budget', 1)) }}
                     </button>
-                </div> --}}
+                </div>
             </div>
             <div class="card-body">
                 <div class="text-center row">
@@ -174,7 +146,7 @@ $markup = $percentage+$subscription->azureresources->sum('cost');
                                         <th >{{ ucwords(trans_choice('messages.name', 1)) }}</th>
                                         <th>{{ ucwords(trans_choice('messages.category', 1)) }}</th>
                                         <th>{{ ucwords(trans_choice('messages.sub_category', 1)) }}</th>
-                                        <th>{{ ucwords(trans_choice('messages.top_10_resources', 1)) }}</th>
+                                        <th>{{ ucwords(trans_choice('messages.total', 1)) }}</th>
                                     </tr>
                                 </thead>
                                 <body>
@@ -199,45 +171,3 @@ $markup = $percentage+$subscription->azureresources->sum('cost');
         </div>
     </div>
 </div>
-@endsection
-
-<script>
-
-    var t10Sum = {!! $top10S !!};
-    var t10Category = {!! $top10C !!};
-
-    var sum = {!! $sum !!};
-    var category = {!! $category !!};
-
-</script>
-@section('js')
-
-<!--Moment js-->
-<script src="{{URL::asset('assets/plugins/moment/moment.js')}}"></script>
-<!-- Daterangepicker js-->
-<script src="{{URL::asset('assets/plugins/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
-<script src="{{URL::asset('assets/js/daterange.js')}}"></script>
-<!--Chart js -->
-<script src="{{URL::asset('assets/plugins/chart/chart.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/chart/chart.extension.js')}}"></script>
-<!-- ECharts js-->
-<script src="{{URL::asset('assets/plugins/echarts/echarts.js')}}"></script>
-<script src="{{URL::asset('assets/js/index2.js')}}"></script>
-
-<!-- Data tables -->
-<script src="{{URL::asset('assets/plugins/datatable/js/jquery.dataTables.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/buttons.bootstrap4.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/jszip.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/pdfmake.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/vfs_fonts.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/buttons.html5.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/buttons.print.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/dataTables.responsive.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.js')}}"></script>
-<script src="{{URL::asset('assets/js/datatables.js')}}"></script>
-<!-- Select2 js -->
-<script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
-@endsection
