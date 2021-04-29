@@ -2,7 +2,6 @@
 <div>
     <span class="absolute inset-0 object-left-top -mr-7">
         <div class="inline-flex items-center px-1.5 py-0.1 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-red-500 text-white">
-            {{-- {{$cart->products->count( )}} --}}
         </div>
     </span>
     @if (isset($cart))
@@ -55,7 +54,6 @@
     @empty
     Cart is empty
     @endforelse
-
     <!-- {{--summary--}} -->
     <h1 class="pb-8 text-2xl font-semibold border-b"></h1>
     <div >
