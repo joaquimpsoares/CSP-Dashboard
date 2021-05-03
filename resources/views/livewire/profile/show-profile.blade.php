@@ -2,7 +2,6 @@
     <main class="pb-10 mx-auto max-w-7xl lg:py-12 lg:px-8">
         {{-- <div class="lg:grid lg:grid-cols-12 lg:gap-x-5"> --}}
             <div class="grid max-w-3xl grid-cols-1 gap-6 mx-auto mt-6 sm:px-6 lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-3">
-                {{-- @dd($account) --}}
                 <!-- Payment details -->
                 <div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-9">
                     <section aria-labelledby="payment_details_heading">
