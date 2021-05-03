@@ -60,28 +60,26 @@ class AnalyticController extends Controller
      */
     public function index()
     {
-        $subscriptions = Subscription::where('billing_type', 'usage')->first();
+        // $subscriptions = Subscription::where('billing_type', 'usage')->first();
 
-        $resourceName = $this->analyticRepository->getAzureSubscriptions();
+        // $resourceName = $this->analyticRepository->getAzureSubscriptions();
 
-        $resourceName->map(function ($item, $key) {
-            foreach ($item->azureresources as $resource) {
-                $increase = ($item->budget - $item->azureresources->sum('cost'));
-                if ($item->budget > '0') {
-                    if ($increase !== '0') {
-                        $average1 = ($increase / $item->budget) * 100;
-                        $item['calculated'] = 100 - $average1;
-                    } else {
-                        $item['calculated'] = '0';
-                    }
-                    return $item;
-                }
-            }
-        });
+        // $resourceName->map(function ($item, $key) {
+        //     foreach ($item->azureresources as $resource) {
+        //         $increase = ($item->budget - $item->azureresources->sum('cost'));
+        //         if ($item->budget > '0') {
+        //             if ($increase !== '0') {
+        //                 $average1 = ($increase / $item->budget) * 100;
+        //                 $item['calculated'] = 100 - $average1;
+        //             } else {
+        //                 $item['calculated'] = '0';
+        //             }
+        //             return $item;
+        //         }
+        //     }
+        // });
 
-        return view('analytics.azure', [
-            'resourceName'  => $resourceName,
-        ]);
+        return view('analytics.azure');
     }
 
 

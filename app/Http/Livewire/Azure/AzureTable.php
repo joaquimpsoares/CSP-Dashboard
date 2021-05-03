@@ -18,7 +18,7 @@ class AzureTable extends Component
 
     public $edit=false;
     public $budget;
-    public $resourceName = [];
+    public $resourceName;
 
     protected $analyticRepository;
 
@@ -99,7 +99,6 @@ class AzureTable extends Component
     public function render(AnalyticRepositoryInterface $analyticRepository)
 
     {
-
         return view('livewire.azure.azure-table', [
             'resourceName' => $this->resourceName
         ]);
