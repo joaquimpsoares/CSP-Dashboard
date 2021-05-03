@@ -69,7 +69,7 @@ class AzureTable extends Component
 
         $subscription = $this->resourceName[$productIndex]->toArray() ?? NULL;
 
-        $instance = Instance::find($subscription['instance_id'])->first();
+        $instance = Instance::where('id', $subscription['instance_id'])->first();
 
         $value =$subscription['budget'];
         $customer = new TagydesCustomer([
