@@ -1,9 +1,5 @@
-
-
 <!-- Notifications  Css -->
 <link href="{{URL::asset('assets/plugins/notify/css/notifIt.css')}}" rel="stylesheet" />
-
-{{-- <button onclick="not5()" class="btn btn-primary">Default</button> --}}
 
 <div>
     @if (session()->has('success'))
@@ -36,9 +32,6 @@
             </div>
         </div>
     </div>
-    {{-- <div class="alert alert-success">
-        {{ session('success') }}
-    </div> --}}
     @endif
     @if (session()->has('danger'))
     <div x-data="{ show: true }" aria-live="assertive" class="fixed z-30 flex items-end justify-center px-4 py-6 pointer-events-none inset-10 sm:p-6 sm:items-start sm:justify-end">

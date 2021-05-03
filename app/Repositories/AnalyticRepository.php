@@ -8,23 +8,9 @@ use App\Reseller;
 use Carbon\Carbon;
 use App\Subscription;
 use App\AzureResource;
-use App\Exports\exportAzure;
-use App\MicrosoftTenantInfo;
 use App\Http\Traits\UserTrait;
-use App\Mail\ScheduleNotifyAzure;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-use Maatwebsite\Excel\Facades\Excel;
-use Symfony\Component\HttpFoundation\Request;
-use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\AnalyticRepositoryInterface;
-use App\Repositories\CustomerRepositoryInterface;
-use App\Repositories\ProviderRepositoryInterface;
-use App\Repositories\ResellerRepositoryInterface;
-use App\Repositories\SubscriptionRepositoryInterface;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
-use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
 
@@ -38,13 +24,12 @@ class AnalyticRepository implements AnalyticRepositoryInterface
 
     public function getAzureSubscriptions()
     {
-
         $user = $this->getUser();
 
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
 
-                $azure = Subscription::where('billing_type', 'usage')->paginate('10');
+                $azure = Subscription::where('billing_type', 'usage')->get();
 
             break;
 

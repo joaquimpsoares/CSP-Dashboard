@@ -55,7 +55,6 @@
                         </div>
                     </div>
                     <a href="{{route('instances.edit', $item->id)}}" class="block hover:bg-gray-50">
-                        {{-- @dd($item) --}}
                         <div class="px-4 py-1 sm:px-8">
                             <div class="flex items-center justify-between">
                                 <p class="text-sm font-medium text-indigo-600 truncate">

@@ -1,4 +1,3 @@
-
 <div>
     @if (isset($cart))
     <div class="flex mt-10 mb-3">
@@ -75,6 +74,7 @@
             </button>
         </form>
     </div>
+    @else
+    Cart is empty
     @endif
 </div>
-

@@ -78,7 +78,6 @@ class EditCustomer extends Component
 
         try {
             DB::beginTransaction();
-            // dd($validate['company_name']);
 
             $updateCustomer = $customer->update([
                 'company_name' => $validate['company_name'],
@@ -92,7 +91,6 @@ class EditCustomer extends Component
                 'status_id' => $validate['status'],
                 'markup' => $validate['markup']
             ]);
-            // dd($customer->company_name);
 
             DB::commit();
         } catch (\PDOException $e) {
@@ -105,7 +103,6 @@ class EditCustomer extends Component
             return redirect()->back()->with('danger', $errorMessage );
 
             }
-            // dd('hehre');
             return redirect()->back()->with('success', 'Customer Updated succesfully');
         }
 

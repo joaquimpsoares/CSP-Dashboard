@@ -2,18 +2,18 @@
 
 namespace App\Http\Livewire\Store;
 
+
 use App\Cart;
 use Livewire\Component;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\Auth;
 
-class CartCounter extends Component
+class Products extends Component
 {
     use UserTrait;
 
-    private $cart;
-
     public $qty;
+    private $cart;
     public $cycle;
     public $monthly;
     public $annualy;
@@ -169,6 +169,6 @@ class CartCounter extends Component
         if(isset($cart)){
             $this->totalCartWithoutTax = $cart->sum('total');
         }
-        return view('livewire.store.cart-counter', compact('cart'));
+        return view('livewire.store.products', compact('cart'));
     }
 }

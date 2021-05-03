@@ -29,7 +29,7 @@
             </select>
         </div>
     </div>
-    <ul  class="mt-6 space-y-12 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 lg:grid-cols-5 lg:gap-x-8">
+    <ul  class="mt-6 space-y-12 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 lg:grid-cols-4 lg:gap-x-8">
         @forelse($products as $product)
         <li>
             <div  class="p-2 transition duration-300 transform bg-white roufnded-lg m-h-64 text-grey hover:translate-y-2 hover:shadow-xl">
