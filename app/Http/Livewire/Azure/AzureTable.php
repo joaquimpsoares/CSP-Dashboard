@@ -101,8 +101,6 @@ class AzureTable extends Component
     public function render(AnalyticRepositoryInterface $analyticRepository)
 
     {
-        // dd($analyticRepository->getAzureSubscriptions());
-
 
         return view('livewire.azure.azure-table', [
             'resourceName' => $this->resourceName

@@ -77,8 +77,6 @@ class OrderRepository implements OrderRepositoryInterface
             case config('app.customer'):
 
                 $orders = $user->customer->orders->map->format()->sortDesc();
-                // dd($orders);
-
             break;
 
             default:

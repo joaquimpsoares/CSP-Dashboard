@@ -4,7 +4,6 @@
         {{ $messageText }}
     </div>
     @endif
-    {{-- @dd($reseller) --}}
     <div class="container mt-5">
         <section class="dark-grey-text">
             <div class="col-md-12">

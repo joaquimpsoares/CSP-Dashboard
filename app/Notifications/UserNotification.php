@@ -37,7 +37,6 @@ class UserNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        // // dd($this->details);
         // return (new MailMessage)
         //             ->subject('Notification Subject')
         //             //->greeting('Hello!')

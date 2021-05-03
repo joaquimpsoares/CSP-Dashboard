@@ -44,6 +44,5 @@ class DatabaseNotifications extends Component
 
         Notification::send($user, new UserNotification($details));
 
-        dd('done');
     }
 }
