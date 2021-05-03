@@ -7,11 +7,9 @@ use App\User;
 use App\Status;
 use App\Country;
 use App\Reseller;
-use App\PriceList;
 use Livewire\Component;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Hash;
 
 class CreateReseller extends Component

@@ -81,86 +81,85 @@ class SyncAzure extends Command
                     'email' => 'bill@tagydes.com',
                     ]);
 
-            $subscriptions = new TagydesSubscription([
-                'id'            => $subscription->subscription_id,
-                'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-                'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-                'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
-                'name'          => "5trvfvczdfv",
-                'status'        => "5trvfvczdfv",
-                'quantity'      => "1",
-                'currency'      => "EUR",
-                'billingCycle'  => "monthly",
-                'created_at'    => "5trvfvczdfv",
-                ]);
-
-
-
-            $resources = FacadesAzureResource::withCredentials(
-                $instance->external_id,$instance->external_token
-                )->utilizations($customer, $subscriptions);
-
-try{
-
-                    $resources->items->each(function($resource) use($subscription){
-                        $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
-
-
-                       dd($resource->resource);
-                        $price = AzurePriceList::firstOrCreate([
-                            'resource_id' => $resource->resource->id
-                        ],[
-                            'rates' => "[0]",
+                    $subscriptions = new TagydesSubscription([
+                        'id'            => $subscription->subscription_id,
+                        'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
+                        'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
+                        'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
+                        'name'          => "5trvfvczdfv",
+                        'status'        => "5trvfvczdfv",
+                        'quantity'      => "1",
+                        'currency'      => "EUR",
+                        'billingCycle'  => "monthly",
+                        'created_at'    => "5trvfvczdfv",
                         ]);
 
-                        $resource = AzureUsageReport::updateOrCreate([
-                            'subscription_id'       => $subscription->id,
-                            'resource_id'           => $resource->resource->id,
-                            'usageStartTime'        => $resource->usageStartTime,
-                            'usageEndTime'          => $resource->usageEndTime,
-                            'resource_group'        => $resourceGroup[4],
-                            'resource_location'     => $resource->instanceData->location,
-                            'resource_name'         => $resource->resource->name,
-                            'resource_category'     => $resource->resource->category,
-                            'resource_subcategory'  => $resource->resource->subcategory,
-                            'resource_region'       => $resource->resource->region,
-                            'unit'                  => $resource->unit,
-                            'name'                  => $resourceGroup[8],
 
 
-                            "resourceType"          => $resource->instanceData->additionalInfo->toArray()['resourceType'] ?? null,
-                            "usageResourceKind"     => $resource->instanceData->additionalInfo->toArray()['usageResourceKind'] ?? null,
-                            "dataCenter"            => $resource->instanceData->additionalInfo->toArray()['dataCenter'] ?? null,
-                            "networkBucket"         => $resource->instanceData->additionalInfo->toArray()['networkBucket'] ?? null,
-                            "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
-                        ], [
-                            'quantity'              => $resource->quantity,
-                            // 'cost'                   => (json_encode($price->rates[0])*$resource->quantity),
-                        ]);
-                        // Log::info(json_encode($resource));
-                        // Log::info(json_encode($price->rates[0])*$resource->quantity);
-                    });
-                }
-                catch (\PDOException $e) {
-                    Log::info($e->getMessage());
-                    Mail::raw($e, function ($mail) use($e) {
-                        $mail->from('digamber@positronx.com');
-                        $mail->to('joaquim.soares@tagydes.com')
-                        ->subject('Azure Sync Failed');
-                    });
-                }
+                        $resources = FacadesAzureResource::withCredentials(
+                            $instance->external_id,$instance->external_token
+                            )->utilizations($customer, $subscriptions);
 
-            }
+                            try{
 
-        }
+                                $resources->items->each(function($resource) use($subscription){
+                                    $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
 
 
-            Mail::raw("Just finished Azure Syncronization", function ($mail)  {
-                $mail->from('digamber@positronx.com');
-                $mail->to('joaquim.soares@tagydes.com')
-                ->subject('Daily imported Azure reports');
-            });
+                                    $price = AzurePriceList::firstOrCreate([
+                                        'resource_id' => $resource->resource->id
+                                    ],[
+                                        'rates' => "[0]",
+                                        ]);
 
-            $this->info('Successfully sent daily quote to everyone.');
-        }
-    }
+                                        $resource = AzureUsageReport::updateOrCreate([
+                                            'subscription_id'       => $subscription->id,
+                                            'resource_id'           => $resource->resource->id,
+                                            'usageStartTime'        => $resource->usageStartTime,
+                                            'usageEndTime'          => $resource->usageEndTime,
+                                            'resource_group'        => $resourceGroup[4],
+                                            'resource_location'     => $resource->instanceData->location,
+                                            'resource_name'         => $resource->resource->name,
+                                            'resource_category'     => $resource->resource->category,
+                                            'resource_subcategory'  => $resource->resource->subcategory,
+                                            'resource_region'       => $resource->resource->region,
+                                            'unit'                  => $resource->unit,
+                                            'name'                  => $resourceGroup[8],
+
+
+                                            "resourceType"          => $resource->instanceData->additionalInfo->toArray()['resourceType'] ?? null,
+                                            "usageResourceKind"     => $resource->instanceData->additionalInfo->toArray()['usageResourceKind'] ?? null,
+                                            "dataCenter"            => $resource->instanceData->additionalInfo->toArray()['dataCenter'] ?? null,
+                                            "networkBucket"         => $resource->instanceData->additionalInfo->toArray()['networkBucket'] ?? null,
+                                            "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
+                                        ], [
+                                            'quantity'              => $resource->quantity,
+                                            // 'cost'                   => (json_encode($price->rates[0])*$resource->quantity),
+                                            ]);
+                                            // Log::info(json_encode($resource));
+                                            // Log::info(json_encode($price->rates[0])*$resource->quantity);
+                                        });
+                                    }
+                                    catch (\PDOException $e) {
+                                        Log::info($e->getMessage());
+                                        Mail::raw($e, function ($mail) use($e) {
+                                            $mail->from('digamber@positronx.com');
+                                            $mail->to('joaquim.soares@tagydes.com')
+                                            ->subject('Azure Sync Failed');
+                                        });
+                                    }
+
+                                }
+
+                            }
+
+
+                            Mail::raw("Just finished Azure Syncronization", function ($mail)  {
+                                $mail->from('digamber@positronx.com');
+                                $mail->to('joaquim.soares@tagydes.com')
+                                ->subject('Daily imported Azure reports');
+                            });
+
+                            $this->info('Successfully sent daily quote to everyone.');
+                        }
+                    }

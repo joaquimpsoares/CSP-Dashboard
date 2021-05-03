@@ -66,7 +66,9 @@ class Product extends Model
     }
 
     public function prices() {
-        return $this->hasOne('App\Price', 'product_id', 'id');
+        return $this->hasOne('App\Price', 'product_sku', 'sku');
+
+        // return $this->hasOne('App\Price', 'product_id', 'id');
     }
 
     public function instance() {

@@ -7,7 +7,6 @@ use App\Invite;
 use App\Status;
 use App\Country;
 use Livewire\Component;
-use Illuminate\Http\File;
 use App\Mail\InviteCreated;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
