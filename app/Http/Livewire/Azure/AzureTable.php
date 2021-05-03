@@ -65,8 +65,6 @@ class AzureTable extends Component
 
     public function saveBudget($productIndex){
 
-        //$this->validate();
-
         $subscription = $this->resourceName[$productIndex]->toArray() ?? NULL;
 
         $instance = Instance::where('id', $subscription['instance_id'])->first();

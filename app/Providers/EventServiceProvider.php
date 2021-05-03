@@ -34,6 +34,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         'Illuminate\Auth\Events\Login' => [
             'App\Listeners\SetLeveIdInSession',
+            'App\Listeners\AzureBudgetLogin',
         ],
         'Lab404\Impersonate\Events\TakeImpersonation' =>[
             'App\Listeners\SetImpersonationLeveIdInSession',
