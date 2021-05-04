@@ -19350,7 +19350,7 @@ module.exports = function(module) {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-// removed by extract-text-webpack-plugin
+throw new Error("Module build failed (from ./node_modules/css-loader/index.js):\nModuleBuildError: Module build failed (from ./node_modules/postcss-loader/src/index.js):\nReferenceError: colors is not defined\n    at Object.<anonymous> (/var/www/html/clean-dashboard/tailwind.config.js:11:21)\n    at Module._compile (/var/www/html/clean-dashboard/node_modules/v8-compile-cache/v8-compile-cache.js:192:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)\n    at Module.load (internal/modules/cjs/loader.js:653:32)\n    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)\n    at Function.Module._load (internal/modules/cjs/loader.js:585:3)\n    at Module.require (internal/modules/cjs/loader.js:692:17)\n    at require (/var/www/html/clean-dashboard/node_modules/v8-compile-cache/v8-compile-cache.js:159:20)\n    at /var/www/html/clean-dashboard/node_modules/tailwindcss/lib/index.js:80:107\n    at _postcss.default.plugin.config (/var/www/html/clean-dashboard/node_modules/tailwindcss/lib/index.js:90:36)\n    at creator (/var/www/html/clean-dashboard/node_modules/postcss/lib/postcss.js:133:35)\n    at Function.get (/var/www/html/clean-dashboard/node_modules/postcss/lib/postcss.js:142:27)\n    at Processor.normalize (/var/www/html/clean-dashboard/node_modules/postcss-loader/node_modules/postcss/lib/processor.js:151:13)\n    at new Processor (/var/www/html/clean-dashboard/node_modules/postcss-loader/node_modules/postcss/lib/processor.js:56:25)\n    at postcss (/var/www/html/clean-dashboard/node_modules/postcss-loader/node_modules/postcss/lib/postcss.js:55:10)\n    at Promise.resolve.then.then (/var/www/html/clean-dashboard/node_modules/postcss-loader/src/index.js:140:12)\n    at process._tickCallback (internal/process/next_tick.js:68:7)\n    at runLoaders (/var/www/html/clean-dashboard/node_modules/webpack/lib/NormalModule.js:316:20)\n    at /var/www/html/clean-dashboard/node_modules/loader-runner/lib/LoaderRunner.js:367:11\n    at /var/www/html/clean-dashboard/node_modules/loader-runner/lib/LoaderRunner.js:233:18\n    at context.callback (/var/www/html/clean-dashboard/node_modules/loader-runner/lib/LoaderRunner.js:111:13)\n    at Promise.resolve.then.then.catch (/var/www/html/clean-dashboard/node_modules/postcss-loader/src/index.js:208:9)\n    at process._tickCallback (internal/process/next_tick.js:68:7)");
 
 /***/ }),
 
@@ -19408,8 +19408,8 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Dev\Tagydes\Leftmenu-Icon-LightSidebar-ltr\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Dev\Tagydes\Leftmenu-Icon-LightSidebar-ltr\resources\css\app.css */"./resources/css/app.css");
+__webpack_require__(/*! /var/www/html/clean-dashboard/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /var/www/html/clean-dashboard/resources/css/app.css */"./resources/css/app.css");
 
 
 /***/ })
