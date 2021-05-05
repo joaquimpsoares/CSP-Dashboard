@@ -1,7 +1,11 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-  purge: [],
+    purge: [
+        './resources/**/*.blade.php',
+        './resources/**/*.js',
+        './resources/**/*.vue',
+      ],
   presets: [],
   darkMode: false, // or 'media' or 'class'
   theme: {
@@ -960,5 +964,8 @@ module.exports = {
     wordBreak: ['responsive'],
     zIndex: ['responsive', 'focus-within', 'focus'],
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/aspect-ratio')
+  ],
 }
