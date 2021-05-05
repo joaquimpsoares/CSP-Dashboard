@@ -92,8 +92,8 @@ class SyncAzure extends Command
 
                 $resources = FacadesAzureResource::withCredentials($instance->external_id,$instance->external_token)->utilizations($customer, $subscriptions);
 
-            try{
-                    $resources->items->each(function($resource) use($subscription){
+                try{
+                    $resources->first()->items->each(function($resource) use($subscription){
                         $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
 
                         $price = AzurePriceList::updateOrCreate(
@@ -117,7 +117,7 @@ class SyncAzure extends Command
                             'resource_subcategory'  => $resource->resource->subcategory,
                             'resource_region'       => $resource->resource->region,
                             'unit'                  => $resource->unit,
-                            'name'                  => $resourceGroup[8],
+                            'name'                  => $resourceGroup[8] ?? null,
 
 
                             "resourceType"          => $resource->instanceData->additionalInfo->toArray()['resourceType'] ?? null,
@@ -133,7 +133,7 @@ class SyncAzure extends Command
                             // Log::info(json_encode($price->rates[0])*$resource->quantity);
                     });
                 }
-                catch (\PDOException $e) {
+                catch (\Exception $e) {
                     Log::info($e->getMessage());
                     Mail::raw($e, function ($mail) use($e) {
                         $mail->from('digamber@positronx.com');
