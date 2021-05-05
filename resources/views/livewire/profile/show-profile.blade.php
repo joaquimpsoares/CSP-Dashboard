@@ -35,13 +35,14 @@
                                             <input wire:model="photo" id="photo" name="photo" type="file" class="absolute inset-0 w-full h-full border-gray-300 rounded-md opacity-0 cursor-pointer">
                                         </div>
                                         @if(isset($logo))
-                                        <x-button type="submit" wire:click.prevent='removePhoto' >
+                                        <x-button color="blue" type="submit" wire:click.prevent='removePhoto' >
                                             Remove
                                         </x-button>
                                         @endif
                                     </div>
                                 </div>
                             </div>
+
                             <div wire:loading wire:target="photo">Uploading...</div>
                             <div class="text-red-700">
                                 @error('photo') <span class="error">{{ $message }}</span> @enderror
@@ -58,7 +59,7 @@
             @endif
 
             <section aria-labelledby="payment_details_heading">
-                <form action="#" method="POST">
+                <form action="#" method="POST" wire:submit.prevent="save">
                     <div class="shadow sm:rounded-md sm:overflow-hidden">
                         <div class="px-4 py-6 bg-white sm:p-6">
                             <div>

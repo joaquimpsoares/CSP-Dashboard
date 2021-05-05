@@ -6,6 +6,7 @@ use App\Country;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Http\Traits\UserTrait;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class ShowProfile extends Component
@@ -36,19 +37,25 @@ class ShowProfile extends Component
     public $logo;
     public $photo;
 
+    protected $rules = [
+        'company_name'  => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
+        'nif'           => ['required', 'min:3'],
+        'country_id'    => ['required', 'integer', 'min:1'],
+        'address'       => ['required', 'string', 'max:255', 'min:3'],
+        'city'          => ['required', 'string', 'max:255', 'min:3'],
+        'state'         => ['required', 'string', 'max:255', 'min:3'],
+        'postal_code'   => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255', 'min:3'],
+    ];
 
     public function mount()
     {
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
-
-
             break;
 
             case config('app.provider'):
                 $this->account = Auth::user()->provider;
                 $this->logo = Auth::user()->provider->logo;
-
             break;
 
             case config('app.reseller'):
@@ -58,10 +65,7 @@ class ShowProfile extends Component
 
             case config('app.customer'):
                 $this->account = Auth::user()->customer;
-
             break;
-
-
             default:
             return abort(403, __('errors.unauthorized_action'));
 
@@ -73,13 +77,48 @@ class ShowProfile extends Component
         $this->address          = $this->account->address_1;
         $this->nif              = $this->account->nif;
         $this->city             = $this->account->city;
-        $this->state          = $this->account->state;
-        $this->country_id          = $this->account->country_id;
-        $this->postal_code          = $this->account->postal_code;
-        $this->country_id          = $this->account->country_id;
-        $this->country_id          = $this->account->country_id;
+        $this->state            = $this->account->state;
+        $this->country_id       = $this->account->country_id;
+        $this->postal_code      = $this->account->postal_code;
+        $this->country_id       = $this->account->country_id;
+        $this->country_id       = $this->account->country_id;
 
     }
+
+    public function save()
+    {
+        $validate = $this->validate();
+
+        $user = $this->getUser();
+
+        try {
+            DB::beginTransaction();
+
+            $updateCustomer = $this->account->update([
+                'company_name'  => $validate['company_name'],
+                'nif'           => $validate['nif'],
+                'country_id'    => $validate['country_id'],
+                'address_1'     => $validate['address'],
+                'city'          => $validate['city'],
+                'state'         => $validate['state'],
+                'postal_code'   => $validate['postal_code'],
+            ]);
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            if ($e->errorInfo[1] == 1062) {
+                $errorMessage = "message.user_already_exists";
+            } else {
+                $errorMessage = $e->getMessage();
+            }
+            return redirect()->back()->with('danger', $errorMessage );
+
+        }
+        session()->flash('success', 'Company details ' . $this->account->company_name . ' updated successfully Uploaded.');
+        return redirect()->back();
+    }
+
 
 
     public function savePhoto()
