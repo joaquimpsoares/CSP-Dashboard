@@ -20,6 +20,7 @@ module.exports = {
       transparent: 'transparent',
         current: 'currentColor',
 
+        rose: colors.rose,
       orange: colors.orange,
       black: colors.black,
       white: colors.white,
@@ -966,6 +967,8 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
     require('@tailwindcss/aspect-ratio')
+
   ],
 }
