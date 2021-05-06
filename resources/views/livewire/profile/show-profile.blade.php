@@ -4,7 +4,7 @@
 <main class="pb-10 mx-auto max-w-auto lg:py-12 lg:px-8">
     <div class="lg:grid lg:grid-cols-12 lg:gap-x-4">
         <!-- Payment details -->
-        <div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-9">
+        <div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-12">
             {{-- @dd(Auth::user()->userlevel->name != 'Reseller' or Auth::user()->userlevel->name != 'Customer' ) --}}
             @if(Auth::user()->userlevel->name == 'Provider')
             <section aria-labelledby="payment_details_heading">
@@ -35,9 +35,9 @@
                                             <input wire:model="photo" id="photo" name="photo" type="file" class="absolute inset-0 w-full h-full border-gray-300 rounded-md opacity-0 cursor-pointer">
                                         </div>
                                         @if(isset($logo))
-                                        <x-button color="blue" type="submit" wire:click.prevent='removePhoto' >
+                                        <x-a color="red" type="submit" wire:click.prevent='removePhoto'>
                                             Remove
-                                        </x-button>
+                                        </x-a>
                                         @endif
                                     </div>
                                 </div>
