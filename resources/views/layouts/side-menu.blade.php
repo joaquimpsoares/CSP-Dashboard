@@ -59,7 +59,7 @@
                 <a href="/user/{{Auth::user()->id }}/edit" class="block px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-blue-600">Edit
                     Profile
                 </a>
-                <a href="{{Route('profile.show-profile')}}" class="block px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-blue-600">Account
+                <a href="{{Route('profile.profile-show')}}" class="block px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-blue-600">Account
                     Settings
                 </a>
                 <a href="#" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="block px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-blue-600">

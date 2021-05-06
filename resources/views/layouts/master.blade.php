@@ -16,8 +16,8 @@
     @livewireStyles
     <div class="page">
         <div class="page-main">
-            @include('layouts.side-menu')
-            @include('layouts.header')
+            @include('layouts.sidemenu')
+            {{-- @include('layouts.header') --}}
             <div class="px-4 py-8 md:max-w-8xl md:mx-auto">
                 @include('layouts.messages')
                 {{-- @include('layouts.bread') --}}
