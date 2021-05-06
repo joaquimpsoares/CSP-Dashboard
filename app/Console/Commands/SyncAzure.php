@@ -99,8 +99,7 @@ class SyncAzure extends Command
                         $price = AzurePriceList::updateOrCreate(
                             [
                                 'resource_id'   => $resource->resource->id,
-                            ],[
-                                'rates' => "[0]"
+                                'rates' => [0]
                             ])->first('rates');
 
                         Log::info($resource->resource->id);

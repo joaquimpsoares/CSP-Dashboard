@@ -67,7 +67,6 @@ class CreateCustomer extends Component
 
     public function save()
     {
-        dd('je');
         // $this->validate();
         $user = $this->getUser();
 
