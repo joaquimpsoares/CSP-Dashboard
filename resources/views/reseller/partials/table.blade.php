@@ -17,8 +17,8 @@
                         </button>
                     </div>
                     <div>
-                        <a href="{{route('reseller.create')}}" type="button" class="px-2 py-1 ml-1 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="inline w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                        <button type="button" class="ml-2 bg-indigo-600 py-1 px-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="inline h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
                             </svg>
                             {{ ucwords(trans_choice('messages.create', 1)) }}
@@ -45,15 +45,15 @@
                             </thead>
                             <tbody>
                                 @forelse($resellers as $reseller)
-                                <tr class="{{ $loop->odd ? 'bg-white' : 'bg-gray-50' }}">
-                                    <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap"><a href="{{ $reseller['path'] }}">{{ $reseller['id'] }}</a></td>
-                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap"><a href="{{ $reseller['path'] }}">{{ $reseller['company_name'] }}</a></td>
-                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{ $reseller['customers'] }}</td>
-                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap"><a href="{{$reseller['provider']->format()['path']}}">{{ $reseller['provider']['company_name'] }}</a></td>
-                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{ $reseller['country'] }}</td>
-                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{ $reseller['mpnid'] }}</td>
-                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{ $reseller['created_at'] }}</td>
-                                    <td class="px-2 py-2 text-sm font-medium text-right whitespace-nowrap">
+                                <tr class="hover:bg-gray-100">
+                                    <td class="px-2 py-2 whitespace-nowrap text-sm font-medium text-gray-900"><a href="{{ $reseller['path'] }}">{{ $reseller['id'] }}</a></td>
+                                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500"><a href="{{ $reseller['path'] }}">{{ $reseller['company_name'] }}</a></td>
+                                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">{{ $reseller['customers'] }}</td>
+                                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500"><a href="{{$reseller['provider']->format()['path']}}">{{ $reseller['provider']['company_name'] }}</a></td>
+                                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">{{ $reseller['country'] }}</td>
+                                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">{{ $reseller['mpnid'] }}</td>
+                                    <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">{{ $reseller['created_at'] }}</td>
+                                    <td class="px-2 py-2 whitespace-nowrap text-right text-sm font-medium">
                                         <div class="z-10">
                                             <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
@@ -61,10 +61,20 @@
                                             </svg>
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item" href="#"><i class="mr-2 fa fa-edit"></i>Edit </a>
-                                                <a class="dropdown-item" href="#"><i class="mr-2 fa fa-eye"></i>Impersonate</a>
-                                                <div class="dropdown-divider"></div>
-                                                <a class="dropdown-item" href="#"><i class="mr-2 fa fa-cog"></i> Delete</a>
+                                                <a class="dropdown-item" href="{{ $reseller['path'] }}/edit">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="inline h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                                    </svg>
+                                                    Edit    
+                                                </a>
+                                                <a class="dropdown-item" href="{{ route('impersonate', $reseller['mainUser']->id) }}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="inline h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    Impersonate
+                                                </a>
+                                                {{-- <div class="dropdown-divider"></div> --}}
                                             </div>
                                         </div>
                                     </td>
