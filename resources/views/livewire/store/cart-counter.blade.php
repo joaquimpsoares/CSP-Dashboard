@@ -32,7 +32,7 @@
             </button>
         </div>
         <div class="flex justify-center w-1/5">
-            <select class="form-control block p-2 text-sm text-gray-600" wire:change="changeBilling($event.target.value, '{{$item->id}}')" >
+            <select class="block p-2 text-sm text-gray-600 form-control" wire:change="changeBilling($event.target.value, '{{$item->id}}')" >
                 <option value="" selected="selected" hidden>{{ ucfirst($item->billing_cycle) }}</option>
                 @foreach($item->cycle as $cycle)
                 <option  value="{{$cycle}}" >{{ucfirst($cycle) }}</option>
@@ -54,7 +54,7 @@
     <h1 class="pb-8 text-2xl font-semibold border-b"></h1>
     <div >
         <label class="inline-block mb-3 text-sm font-medium uppercase">Choose customer</label>
-        <select class="form-control block w-full p-2 text-sm text-gray-600" wire:change="setCustomer($event.target.value, '{{$item->id}}')" >
+        <select class="block w-full p-2 text-sm text-gray-600 form-control" wire:change="setCustomer($event.target.value, '{{$item->id}}')" >
             <option value="" selected disabled hidden>Choose here</option>
             @foreach($customers as $customer)
             <option value="{{ $customer->id }}">{{$customer->company_name}}</option>
@@ -75,8 +75,6 @@
             </button>
         </form>
     </div>
-    @else
-    Cart is empty
     @endif
 </div>
 

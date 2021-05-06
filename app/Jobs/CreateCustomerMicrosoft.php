@@ -71,7 +71,6 @@ class CreateCustomerMicrosoft implements ShouldQueue
         } catch (Exception $e) {
 
             Log::info('Error creating Customer Microsoft: '.$e->getMessage());
-            // return redirect()->back()->with('alert', $e );
 
             session()->flash('alert','Error Creating Customer ' . $newCustomer);
 
@@ -88,7 +87,7 @@ class CreateCustomerMicrosoft implements ShouldQueue
             'customer_id' => $customer->id
             ]);
 
-            // Notification::send($this->order->customer->users, new UserNotification($newCustomer));
+            Notification::send($this->order->customer->users, new UserNotification($newCustomer));
 
             Log::info('Customer Created: '.$newCustomer);
             Log::info('Tenant Created: '.$result);
