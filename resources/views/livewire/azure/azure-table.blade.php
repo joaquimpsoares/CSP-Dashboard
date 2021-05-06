@@ -47,7 +47,7 @@
                                     @endif
                                     @else
                                     <div class="cursor-pointer" wire:click="editProductField({{ $index }}, 'name')">
-                                        {{ $item->customer->country->currency_symbol}}@money($item->budget)
+                                        {{ $item->customer->country->currency_symbol}} {{$item->budget}}
                                     </div>
                                     @endif
                                 </td>

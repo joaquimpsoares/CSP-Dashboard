@@ -42,7 +42,7 @@ class AnalyticRepository implements AnalyticRepositoryInterface
                 })->with(['country'])
                 ->orderBy('company_name')->get()->map->format();
                 $azure = Subscription::with(['customer','products','status'])->where('billing_type', 'usage')->whereIn('customer_id', $customer)
-                ->orderBy('id')->paginate(10);
+                ->orderBy('id')->get();
 
             break;
 
@@ -50,12 +50,12 @@ class AnalyticRepository implements AnalyticRepositoryInterface
                 $reseller = $user->reseller;
                 $customer = $reseller->customers->pluck('id');
                 $azure = Subscription::with(['customer','products','status'])->where('billing_type', 'usage')->whereIn('customer_id', $customer)
-                ->orderBy('id')->paginate(10);
+                ->orderBy('id')->get();
             break;
 
             case config('app.customer'):
                 $customer = $user->customer;
-                $azure = Subscription::where('customer_id', $customer->id)->where('billing_type', 'usage')->paginate('10');
+                $azure = Subscription::where('customer_id', $customer->id)->where('billing_type', 'usage')->get();
             break;
 
 

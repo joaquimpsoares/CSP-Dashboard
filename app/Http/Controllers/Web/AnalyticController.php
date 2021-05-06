@@ -60,28 +60,26 @@ class AnalyticController extends Controller
      */
     public function index()
     {
-        $subscriptions = Subscription::where('billing_type', 'usage')->first();
+        // $subscriptions = Subscription::where('billing_type', 'usage')->first();
 
-        $resourceName = $this->analyticRepository->getAzureSubscriptions();
+        // $resourceName = $this->analyticRepository->getAzureSubscriptions();
 
-        $resourceName->map(function ($item, $key) {
-            foreach ($item->azureresources as $resource) {
-                $increase = ($item->budget - $item->azureresources->sum('cost'));
-                if ($item->budget > '0') {
-                    if ($increase !== '0') {
-                        $average1 = ($increase / $item->budget) * 100;
-                        $item['calculated'] = 100 - $average1;
-                    } else {
-                        $item['calculated'] = '0';
-                    }
-                    return $item;
-                }
-            }
-        });
+        // $resourceName->map(function ($item, $key) {
+        //     foreach ($item->azureresources as $resource) {
+        //         $increase = ($item->budget - $item->azureresources->sum('cost'));
+        //         if ($item->budget > '0') {
+        //             if ($increase !== '0') {
+        //                 $average1 = ($increase / $item->budget) * 100;
+        //                 $item['calculated'] = 100 - $average1;
+        //             } else {
+        //                 $item['calculated'] = '0';
+        //             }
+        //             return $item;
+        //         }
+        //     }
+        // });
 
-        return view('analytics.azure', [
-            'resourceName'  => $resourceName,
-        ]);
+        return view('analytics.azure');
     }
 
 
@@ -415,8 +413,15 @@ class AnalyticController extends Controller
             $page->items->each(function ($resource) use ($subscription) {
                 $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
 
-                $price = AzurePriceList::where('resource_id', $resource->resource->id)->first('rates');
+                $price = AzurePriceList::updateOrCreate(
+                    [
+                        'resource_id'   => $resource->resource->id,
+                    ],[
+                        'rates' => "[0]"
+                    ])->first('rates');
+
                 Log::info($resource->resource->id);
+
                 $cost = (json_encode($price->rates[0])*$resource->quantity);
 
                 $resource = AzureUsageReport::updateOrCreate([
@@ -444,8 +449,8 @@ class AnalyticController extends Controller
 
 
                     ]);
-                    Log::info(json_encode($resource));
-                    Log::info(json_encode($price->rates[0])*$resource->quantity);
+                    // Log::info(json_encode($resource));
+                    // Log::info(json_encode($price->rates[0])*$resource->quantity);
                 });
             });
     }

@@ -28,7 +28,7 @@
     @include('layouts.messages')
 
 
-    @livewire('azure.azure-table', ['resourceName' => $resourceName])
+    @livewire('azure.azure-table')
 
     @endsection
 

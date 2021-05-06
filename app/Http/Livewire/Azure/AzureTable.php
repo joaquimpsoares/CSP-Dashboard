@@ -18,7 +18,7 @@ class AzureTable extends Component
 
     public $edit=false;
     public $budget;
-    public $resourceName = [];
+    public $resourceName;
 
     protected $analyticRepository;
 
@@ -65,11 +65,9 @@ class AzureTable extends Component
 
     public function saveBudget($productIndex){
 
-        $this->validate();
-
         $subscription = $this->resourceName[$productIndex]->toArray() ?? NULL;
 
-        $instance = Instance::find($subscription['instance_id'])->first();
+        $instance = Instance::where('id', $subscription['instance_id'])->first();
 
         $value =$subscription['budget'];
         $customer = new TagydesCustomer([
@@ -101,7 +99,6 @@ class AzureTable extends Component
     public function render(AnalyticRepositoryInterface $analyticRepository)
 
     {
-
         return view('livewire.azure.azure-table', [
             'resourceName' => $this->resourceName
         ]);
