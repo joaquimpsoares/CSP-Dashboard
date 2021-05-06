@@ -1,6 +1,6 @@
-<body class="font-sans antialiased bg-gray-400"><div class="" style="">
+<body class="font-sans antialiased bg-gray-200"><div class="" style="">
     <div style="min-height: 480px;" class="bg-gray-200">
-        <div x-data="{ open: false }" @keydown.window.escape="open = false" class="flex h-screen overflow-hidden bg-white">
+        <div x-data="{ open: false }" @keydown.window.escape="open = false" class="flex h-screen overflow-hidden bg-gray-100">
             <div x-show="open" class="fixed inset-0 z-40 flex lg:hidden" x-description="Off-canvas menu for mobile, show/hide based on off-canvas menu state." x-ref="dialog" aria-modal="true" style="display: none;">
                 <div x-show="open" x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" x-description="Off-canvas menu overlay, show/hide based on off-canvas menu state." class="fixed inset-0 bg-gray-600 bg-opacity-75" @click="open = false" aria-hidden="true" style="display: none;"></div>
                 <div x-show="open" x-transition:enter="transition ease-in-out duration-300 transform" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in-out duration-300 transform" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full" x-description="Off-canvas menu, show/hide based on off-canvas menu state." class="relative flex flex-col flex-1 w-full max-w-xs pt-5 pb-4 bg-white" style="display: none;">

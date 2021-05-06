@@ -10,7 +10,7 @@
     @include('layouts.custom-head')
 	</head>
 
-	<body class="h-100vh page-style1 light-mode default-sidebar">
+    <body class="font-sans antialiased bg-gray-200"><div class="" style="">
 		@yield('content')
 		@include('layouts.custom-footer-scripts')
 	</body>
