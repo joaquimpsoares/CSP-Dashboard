@@ -13,26 +13,26 @@ use App\Repositories\AnalyticRepositoryInterface;
 class AzureBudgetLogin
 {
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
+    * Create the event listener.
+    *
+    * @return void
+    */
     public function __construct(AnalyticRepositoryInterface $analyticRepository)
     {
         $this->analyticRepository = $analyticRepository;
     }
 
     /**
-     * Handle the event.
-     *
-     * @param  IlluminateAuthEventsLogin  $event
-     * @return void
-     */
+    * Handle the event.
+    *
+    * @param  IlluminateAuthEventsLogin  $event
+    * @return void
+    */
     public function handle(login $event)
     {
-        Session::flash('success', 'Hello ' . $event->user->name . ', welcome back!');
+        // Session::flash('success', 'Hello ' . $event->user->name . ', welcome back!');
         $resourceName = $this->analyticRepository->getAzureSubscriptions();
-
+        dd($resourceName);
         $resourceName->map(function ($item, $key) {
             foreach ($item->azureresources as $resource) {
                 $increase = ($item->budget - $item->azureresources->sum('cost'));
@@ -47,9 +47,10 @@ class AzureBudgetLogin
                 }
             }
         });
-
-        if($resourceName->first()->percentage >= '90'){
-            Notification::send($event->user, new AzureBudgetNotification($resourceName));
+        if ($resourceName->first()->percentage){
+            if($resourceName->first()->percentage >= '90' ){
+                Notification::send($event->user, new AzureBudgetNotification($resourceName));
+            }
         }
 
     }
