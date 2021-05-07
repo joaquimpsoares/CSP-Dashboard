@@ -70,7 +70,7 @@
                         <label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</label>
                         <div class="form-group">
                             <select wire:model="status" name="status" class="form-control @error('status') is-invalid @enderror" sf-validate="required">
-                                <option value="{{$reseller['status']}}" selected>{{ucwords(trans_choice($reseller['status'], 1))}}</option>
+                                {{-- <option value="{{$reseller['status']}}" selected>{{ucwords(trans_choice($reseller['status'], 1))}}</option> --}}
                                 @foreach ($statuses  as $key => $status)
                                 <option value="{{$key}}">{{ucwords(trans_choice($status, 1))}}</option>
                                 @endforeach
@@ -112,7 +112,6 @@
             </div>
         </div>
     </div>
-</div>
 </form>
 
 
