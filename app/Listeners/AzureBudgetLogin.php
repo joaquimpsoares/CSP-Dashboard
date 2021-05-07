@@ -32,7 +32,6 @@ class AzureBudgetLogin
     {
         // Session::flash('success', 'Hello ' . $event->user->name . ', welcome back!');
         $resourceName = $this->analyticRepository->getAzureSubscriptions();
-        dd($resourceName);
         $resourceName->map(function ($item, $key) {
             foreach ($item->azureresources as $resource) {
                 $increase = ($item->budget - $item->azureresources->sum('cost'));
