@@ -57,17 +57,17 @@ class ResellerRepository implements ResellerRepositoryInterface
 
 		switch ($this->getUserLevel()) {
 			case config('app.super_admin'):
-			
+
 			return Reseller::with(['provider','customers','users'])->whereNull('main_office')
 			->with(['country', 'subResellers', 'status'])
-			->paginate(2);
+			->paginate(10);
 			break;
 
 			case config('app.admin'):
-			
+
 			return Reseller::with(['provider','customers'])->with('App\Reseller')->whereNull('main_office')
 			->with(['country', 'subResellers', 'status'])
-			->paginate();
+			->paginate(10);
 			break;
 
             case config('app.provider'):
@@ -75,7 +75,7 @@ class ResellerRepository implements ResellerRepositoryInterface
 			return $user->provider->resellers()->whereNull('main_office')
 			->with(['country', 'subResellers', 'status'])
 			->orderBy('company_name')
-			->paginate();
+			->paginate(10);
 			break;
 
 			default:
