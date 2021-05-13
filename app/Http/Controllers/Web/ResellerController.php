@@ -52,7 +52,12 @@ class ResellerController extends Controller
 
         $countCustomers =  $customers->count();
 
-        $resellers = $this->resellerRepository->all();
+        $resellers = $this->resellerRepository->paginate();
+
+        $resellers->getCollection()->map(function(Reseller $reseller){
+            $reseller->setRawAttributes($reseller->format());
+            return $reseller;
+        });
 
         return view('reseller.index', compact('resellers', 'countCustomers'));
 
