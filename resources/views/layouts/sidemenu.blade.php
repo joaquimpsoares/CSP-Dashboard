@@ -59,12 +59,14 @@
                     <div class="flex-1 h-0 mt-6 overflow-y-auto">
                         <nav class="px-2">
                             <div class="space-y-1">
-                                <a href="{{route('home')}}" class="flex items-center w-full py-2 pl-2 pr-1 mt-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:bg-gray-50 hover:text-gray-900 group focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
-                                    <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                    </svg>
-                                    Dashboard
-                                </a>
+                                <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0" >
+                                    <a href="{{route('home')}}" class="flex items-center w-full py-2 pl-2 pr-1 mt-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:bg-gray-50 hover:text-gray-900 group focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
+                                        <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                        </svg>
+                                        Dashboard
+                                    </a>
+                                </li>
                                 <hr class="my-2 border-t border-gray-200" aria-hidden="true">
                                 @can(config('app.provider_index'))
                                 <a href="{{ route('provider.index') }}"class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:bg-gray-50 hover:text-gray-900 group focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
@@ -364,21 +366,22 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
                         </svg>
                     </button>
-                    <div x-data="{ cartOpen: false , isOpen: false }" class="flex justify-between flex-1 px-4">
+                    <div x-data="{ cartOpen: false , isOpen: false }" @keydown.escape.stop="cartOpen = false; focusButton()" @click.away="onClickAway($event)" class="flex justify-between flex-1 px-4">
                         <div class="flex flex-1">
                         </div>
                         <div class="flex items-center ml-4 lg:ml-6">
                             <x-database-notifications/>
                             @can('marketplace.index')
-                            <a @click="cartOpen = !cartOpen"  @keydown.escape.stop="cartOpen = false; focusButton()" @click.away="onClickAway($event)" href="#" class="p-2 mr-4 text-gray-500 rounded-full cursor-pointer hover:text-blue-600 hover:bg-gray-200">
+                            <a @click="cartOpen = !cartOpen"  href="#" class="p-2 mr-4 text-gray-500 rounded-full cursor-pointer hover:text-blue-600 hover:bg-gray-200">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                 </svg>
                             </a>
                             @endcan
-                            <div x-cloak :class="cartOpen ? 'translate-x-0 ease-out' : 'translate-x-full ease-in'" class="fixed top-0 right-0 z-40 w-screen h-full max-w-2xl px-6 py-4 transition duration-300 transform bg-white border-l-2 border-gray-300">
+                            <div x-cloak :class="cartOpen ? 'translate-x-0 ease-out' : 'translate-x-full ease-in'" class="fixed top-0 right-0 w-screen h-full max-w-2xl px-6 py-4 transition duration-300 transform bg-white border-l-2 border-gray-300">
                                 <div class="absolute inset-0 overflow-hidden">
-                                    <div x-description="Background overlay, show/hide based on slide-over state." class="absolute inset-0" @click="cartOpen = !cartOpen" aria-hidden="true"></div>
+                                    <div x-description="Background overlay, show/hide based on slide-over state." class="absolute inset-0" @click="cartOpen = !cartOpen" aria-hidden="true">
+                                    </div>
                                     <div class="fixed inset-y-0 right-0 z-50 flex pl-10 sm:pl-16">
                                         <div x-show="open" x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transform transition ease-in-out duration-500 sm:duration-700" x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full" class="w-screen max-w-2xl" x-description="Slide-over panel, show/hide based on slide-over state.">
                                             <div class="flex flex-col h-full py-6 overflow-y-scroll bg-white shadow-xl">

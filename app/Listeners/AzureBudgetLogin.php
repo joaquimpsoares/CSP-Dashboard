@@ -46,7 +46,7 @@ class AzureBudgetLogin
                 }
             }
         });
-        if ($resourceName){
+        if ($resourceName->first() != null){
             if($resourceName->first()->percentage >= '90' ){
                 Notification::send($event->user, new AzureBudgetNotification($resourceName));
             }

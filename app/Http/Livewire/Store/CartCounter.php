@@ -65,6 +65,10 @@ class CartCounter extends Component
             return $value->pivot->id == $item_id;
         });
 
+        if ($cart->products->count() <= 1)
+        {
+            $cart->delete();
+        }
         $cart->products()->wherePivot('id', $item_id)->detach();
     }
 
