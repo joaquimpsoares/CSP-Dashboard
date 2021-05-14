@@ -103,6 +103,7 @@
                                                             </td>
                                                             @endif
                                                             <td>
+                                                                @if ($subscription->billing_type != 'software')
                                                                 <select name="billing_period" required="required" class="form-control SlectBox SumoUnder" id="{{ $subscription->products->first()->id }}">
                                                                     @foreach($subscription->products->first()->supported_billing_cycles as $cycle)
                                                                     <option value="{{ $cycle }}" @if($cycle == $subscription->billing_period) selected @endif>
@@ -110,6 +111,7 @@
                                                                     </option>
                                                                     @endforeach
                                                                 </select>
+                                                                @endif
                                                             </td>
                                                             <td class="align-middle">
                                                                 @can('subscription_delete')
@@ -122,6 +124,7 @@
                                                                 @endcan
                                                             </td>
                                                             <td><button type="submit" class="btn btn-primary" type="submit">Change</button></td>
+                                                            @if ($subscription->billing_type != 'software')
                                                             @foreach ($subscription->products->first()->getaddons()->all() as $item)
                                                             <tr>
                                                                 <td><strong>Add-on:</strong> {{$item->name}}</td>
@@ -131,6 +134,7 @@
                                                                 <td></td>
                                                             </tr>
                                                             @endforeach
+                                                            @endif
                                                         </form>
                                                     </tr>
                                                 </tbody>
@@ -162,10 +166,10 @@
 
 
 
-    @section('scripts')
-    <script>
-        $("#status").change(function () {
-            $("#users-form").submit();
-        });
-    </script>
-    @stop
+@section('scripts')
+<script>
+    $("#status").change(function () {
+        $("#users-form").submit();
+    });
+</script>
+@stop
