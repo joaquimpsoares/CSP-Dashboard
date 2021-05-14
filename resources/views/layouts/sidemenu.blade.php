@@ -42,18 +42,23 @@
                                 </svg>
                             </span>
                         </button>
-                        <div x-cloak x-show.transition="open" @click.away="open = false" class="absolute top-0 right-0 z-40 w-48 py-2 mt-12 bg-white border border-gray-100 rounded-lg shadow-md">
-                            <a href="/user/{{Auth::user()->id }}/edit" class="block px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-blue-600">Edit Profile
-                            </a>
-                            <a href="{{Route('profile.show-profile')}}" class="block px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-blue-600">
-                                Account Settings
-                            </a>
-                            <a href="#" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="block px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-blue-600">
-                                {{ ucwords(__('messages.logout')) }}
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                    @csrf
-                                </form>
-                            </a>
+
+                            <div x-cloak x-show.transition="open" @click.away="open = false" class="absolute top-0 right-0 z-40 w-48 py-2 mt-12 bg-white border border-gray-100 rounded-lg shadow-md">
+                            <div class="py-1" role="none">
+                                <a href="/user/{{Auth::user()->id }}/edit" class="block px-4 py-2 text-sm text-gray-700" x-state:on="Active" x-state:off="Not Active" :class="{ 'bg-gray-100 text-gray-900': activeIndex === 0, 'text-gray-700': !(activeIndex === 0) }" role="menuitem" tabindex="-1" id="options-menu-item-0" @mouseenter="activeIndex = 0" @mouseleave="activeIndex = -1" @click="open = false; focusButton()">
+                                    Edit Profile
+                                </a>
+                                <a href="{{Route('profile.show-profile')}}" class="block px-4 py-2 text-sm text-gray-700" x-state:on="Active" x-state:off="Not Active" :class="{ 'bg-gray-100 text-gray-900': activeIndex === 0, 'text-gray-700': !(activeIndex === 0) }" role="menuitem" tabindex="-1" id="options-menu-item-0" @mouseenter="activeIndex = 0" @mouseleave="activeIndex = -1" @click="open = false; focusButton()">
+                                    Account Settings
+                                </a>
+                                <a href="#" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="block px-4 py-2 text-sm text-gray-700" x-state:on="Active" x-state:off="Not Active" :class="{ 'bg-gray-100 text-gray-900': activeIndex === 0, 'text-gray-700': !(activeIndex === 0) }" role="menuitem" tabindex="-1" id="options-menu-item-0" @mouseenter="activeIndex = 0" @mouseleave="activeIndex = -1" @click="open = false; focusButton()">
+                                    {{ ucwords(__('messages.logout')) }}
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                </a>
+                            </div>
+
                         </div>
                     </div>
                     <div class="flex-1 h-0 mt-6 overflow-y-auto">
@@ -410,26 +415,26 @@
                     </div>
                 </div>
 
-                @if (app('impersonate')->isImpersonating())
-                <div class="px-4 py-8 md:max-w-6xl md:mx-auto">
-                    <div class="relative px-6 py-4 text-red-700 bg-red-200 rounded-lg" role="alert" x-data="{ open: true }" x-show.transition="open">
-                        <div class="mr-4">
-                            Currently impersonating user <strong class="font-bold">{{Auth::user()->name}} {{Auth::user()->last_name}}</strong>
-                            <a href="{{ route('impersonate.leave') }} ">
-                                <span style="color: red" >{{ ucwords(trans_choice('messages.stop_impersonation', 2)) }} &rarr;</i></span>
-                            </a>
-                        </div>
-                        <span class="absolute top-0 bottom-0 right-0 inline-flex items-center justify-center w-10 h-10 mt-2 mr-3 rounded-full cursor-pointer hover:bg-red-100 hover:text-red-600" x-on:click="open = false">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="0" y="0" width="24" height="24" stroke="none"></rect>
-                                <line x1="18" y1="6" x2="6" y2="18" />
-                                <line x1="6" y1="6" x2="18" y2="18" />
-                            </svg>
-                        </span>
-                    </div>
-                </div>
-                @endif
 
                 <main class="relative flex-1 overflow-y-auto focus:outline-none">
-                    <div class="py-8 xl:py-10">
+                    <div class="py-0 xl:py-0">
+                        @if (app('impersonate')->isImpersonating())
+                        <div class="px-4 py-4 md:max-w-6xl md:mx-auto">
+                            <div class="relative px-6 py-4 text-red-700 bg-red-200 rounded-lg" role="alert" x-data="{ open: true }" x-show.transition="open">
+                                <div class="mr-4">
+                                    Currently impersonating user <strong class="font-bold">{{Auth::user()->name}} {{Auth::user()->last_name}}</strong>
+                                    <a href="{{ route('impersonate.leave') }} ">
+                                        <span style="color: red" >{{ ucwords(trans_choice('messages.stop_impersonation', 2)) }} &rarr;</i></span>
+                                    </a>
+                                </div>
+                                <span class="absolute top-0 bottom-0 right-0 inline-flex items-center justify-center w-10 h-10 mt-2 mr-3 rounded-full cursor-pointer hover:bg-red-100 hover:text-red-600" x-on:click="open = false">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="0" y="0" width="24" height="24" stroke="none"></rect>
+                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                        @endif
 
