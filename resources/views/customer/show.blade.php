@@ -189,9 +189,9 @@
                                                                                     Delete
                                                                                 </button>
                                                                             </form>
-                                                                            {{-- <button type="button" class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false" >
+                                                                            <button type="button" class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false" >
                                                                                 Cancel
-                                                                            </button> --}}
+                                                                            </button>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -218,14 +218,7 @@
                                     {{ ucwords(trans_choice('messages.customer_details', 1)) }}
                                 </h3>
                             </div>
-                            @canImpersonate
-                            @if(!empty($customer->format()['mainUser']))
-                            <a href="{{ route('impersonate', $customer->format()['mainUser']['id']) }}" type="button"
-                                class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                <i class="fa fa-user-secret"></i>{{ ucwords(trans_choice('messages.impersonate', 1)) }}
-                            </a>
-                            @endif
-                            @endCanImpersonate
+
                             <div class="flex-shrink-0 mt-2 ml-4">
                                 <p class="inline-flex px-2 text-xs ml-3 font-semibold leading-5 {{ $customer->status->name == 'messages.active' ? ' text-green-800 bg-green-100' : ' text-yellow-800 bg-yellow-100'  }} rounded-full">
                                     {{ ucwords(trans_choice($customer->status->name, 1)) }}
@@ -247,7 +240,7 @@
                         </div>
                     </div>
                     <div class="px-4 py-5 border-t border-gray-200 sm:px-6">
-                        <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                        <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
                             <div class="sm:col-span-1">
                                 <dt class="text-sm font-medium text-gray-500">
                                     {{ ucwords(trans_choice('messages.company_name', 1)) }}
@@ -280,6 +273,14 @@
                                     {{$customer->city}}
                                 </dd>
                             </div>
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">
+                                    {{ ucwords(trans_choice('messages.price_list', 1)) }}
+                                </dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    {{$customer->priceLists}}
+                                </dd>
+                            </div>
                         </dl>
                         <div class="border-t sm:col-span-1">
                             <dt class="mt-3 text-sm font-medium text-gray-500">
@@ -290,8 +291,18 @@
                             </dd>
                         </div>
                     </div>
-                    <div>
+                    {{-- <div>
                         <a href="{{$customer->format()['path']}}/edit" class="block px-4 py-4 text-sm font-medium text-center text-gray-500 bg-gray-50 hover:text-gray-700 sm:rounded-b-lg">{{ ucwords(trans_choice('messages.edit_customer', 1)) }}</a>
+                    </div> --}}
+                    <div class="px-4 py-3 text-right bg-gray-50 sm:px-6">
+                        @canImpersonate
+                        @if(!empty($customer->format()['mainUser']))
+                        <x-a color="blue" href="{{ route('impersonate', $customer->format()['mainUser']['id']) }}"><i class="mt-0.5 mr-2 fa fa-user-secret"></i> {{ ucwords(trans_choice('messages.impersonate', 1)) }}</x-a>
+                        @endif
+                        @endCanImpersonate
+                        <x-a href="{{$customer->format()['path']}}/edit" >
+                            {{ ucwords(trans_choice('messages.edit', 1)) }}
+                        </x-a>
                     </div>
                 </div>
                 @if(!@empty($serviceCosts))

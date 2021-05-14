@@ -76,7 +76,9 @@
                                 <div class="sm:flex">
                                     <p class="text-sm font-medium"> Expires On:  </p>
                                     <p class="flex ml-1 text-gray-500 items-right text-xm">
+                                        @if($item->external_token_updated_at)
                                         <time datetime="2020-01-07">{{$item->external_token_updated_at->addDays(90)}}</time>
+                                        @endif
                                     </p>
                                 </div>
                             </div>
@@ -194,11 +196,6 @@
                             <h3 class="text-lg font-medium leading-6 text-gray-900">
                                 {{ ucwords(trans_choice('messages.provider_details', 1)) }}
                             </h3>
-                            @canImpersonate
-                            @if(!empty($provider->format()['mainUser']))
-                            <a class="btn btn-white" href="{{ route('impersonate', $provider->format()['mainUser']['id']) }}"><i class="fa fa-user-secret"></i>{{ ucwords(trans_choice('messages.impersonate', 1)) }}</a>
-                            @endif
-                            @endCanImpersonate
                         </div>
 
                         <div class="flex-shrink-0 mt-2 ml-4">
@@ -245,9 +242,19 @@
                         </div>
                     </dl>
                 </div>
-                <div>
-                    <a href="{{$provider->format()['path']}}/edit" class="block px-4 py-4 text-sm font-medium text-center text-gray-500 bg-gray-50 hover:text-gray-700 sm:rounded-b-lg">{{ ucwords(trans_choice('messages.edit', 1)) }}</a>
+                <div class="px-4 py-3 text-right bg-gray-50 sm:px-6">
+                    @canImpersonate
+                    @if(!empty($provider->format()['mainUser']))
+                    <x-a color="blue" href="{{ route('impersonate', $provider->format()['mainUser']['id']) }}"><i class="mt-0.5 mr-2 fa fa-user-secret"></i> {{ ucwords(trans_choice('messages.impersonate', 1)) }}</x-a>
+                    @endif
+                    @endCanImpersonate
+                    <x-a href="{{$provider->format()['path']}}/edit" >
+                        {{ ucwords(trans_choice('messages.edit', 1)) }}
+                    </x-a>
                 </div>
+                {{-- <div>
+                    <a href="{{$provider->format()['path']}}/edit" class="block px-4 py-4 text-sm font-medium text-center text-gray-500 bg-gray-50 hover:text-gray-700 sm:rounded-b-lg">{{ ucwords(trans_choice('messages.edit', 1)) }}</a>
+                </div> --}}
             </div>
             @if(!@empty($serviceCosts))
             <div class="mt-4 bg-white shadow sm:rounded-lg">

@@ -5,7 +5,6 @@
     <div class="lg:grid lg:grid-cols-12 lg:gap-x-4">
         <!-- Payment details -->
         <div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-12">
-            {{-- @dd(Auth::user()->userlevel->name != 'Reseller' or Auth::user()->userlevel->name != 'Customer' ) --}}
             @if(Auth::user()->userlevel->name == 'Provider')
             <section aria-labelledby="payment_details_heading">
                 <form wire:submit.prevent="savePhoto">
@@ -20,7 +19,6 @@
                                     Logo
                                 </label>
                                 <div class="flex items-center mt-1">
-                                    {{-- @dump($photo->temporaryUrl()) --}}
                                     @if ($photo)
                                     <img class="inline-block w-auto h-14 " src="{{$photo->temporaryUrl()}}" alt="">
                                     @else

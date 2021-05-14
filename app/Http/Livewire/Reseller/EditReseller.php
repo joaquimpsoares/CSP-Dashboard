@@ -24,7 +24,6 @@ class EditReseller extends Component
     public $status;
     public $markup;
 
-
     protected $rules = [
         'company_name'          => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
         'nif'                   => ['required', 'min:3'],
@@ -96,7 +95,7 @@ class EditReseller extends Component
         }
 
         session()->flash('success','Reseller ' . $this->company_name . ' Updated Successfully');
-        return redirect()->to('/reseller');
+        return redirect()->back();
 
         }
 

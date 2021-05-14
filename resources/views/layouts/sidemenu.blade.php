@@ -42,18 +42,23 @@
                                 </svg>
                             </span>
                         </button>
-                        <div x-cloak x-show.transition="open" @click.away="open = false" class="absolute top-0 right-0 z-40 w-48 py-2 mt-12 bg-white border border-gray-100 rounded-lg shadow-md">
-                            <a href="/user/{{Auth::user()->id }}/edit" class="block px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-blue-600">Edit Profile
-                            </a>
-                            <a href="{{Route('profile.show-profile')}}" class="block px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-blue-600">
-                                Account Settings
-                            </a>
-                            <a href="#" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="block px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-blue-600">
-                                {{ ucwords(__('messages.logout')) }}
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                    @csrf
-                                </form>
-                            </a>
+
+                            <div x-cloak x-show.transition="open" @click.away="open = false" class="absolute top-0 right-0 z-40 w-48 py-2 mt-12 bg-white border border-gray-100 rounded-lg shadow-md">
+                            <div class="py-1" role="none">
+                                <a href="/user/{{Auth::user()->id }}/edit" class="block px-4 py-2 text-sm text-gray-700" x-state:on="Active" x-state:off="Not Active" :class="{ 'bg-gray-100 text-gray-900': activeIndex === 0, 'text-gray-700': !(activeIndex === 0) }" role="menuitem" tabindex="-1" id="options-menu-item-0" @mouseenter="activeIndex = 0" @mouseleave="activeIndex = -1" @click="open = false; focusButton()">
+                                    Edit Profile
+                                </a>
+                                <a href="{{Route('profile.show-profile')}}" class="block px-4 py-2 text-sm text-gray-700" x-state:on="Active" x-state:off="Not Active" :class="{ 'bg-gray-100 text-gray-900': activeIndex === 0, 'text-gray-700': !(activeIndex === 0) }" role="menuitem" tabindex="-1" id="options-menu-item-0" @mouseenter="activeIndex = 0" @mouseleave="activeIndex = -1" @click="open = false; focusButton()">
+                                    Account Settings
+                                </a>
+                                <a href="#" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="block px-4 py-2 text-sm text-gray-700" x-state:on="Active" x-state:off="Not Active" :class="{ 'bg-gray-100 text-gray-900': activeIndex === 0, 'text-gray-700': !(activeIndex === 0) }" role="menuitem" tabindex="-1" id="options-menu-item-0" @mouseenter="activeIndex = 0" @mouseleave="activeIndex = -1" @click="open = false; focusButton()">
+                                    {{ ucwords(__('messages.logout')) }}
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                </a>
+                            </div>
+
                         </div>
                     </div>
                     <div class="flex-1 h-0 mt-6 overflow-y-auto">
@@ -364,10 +369,10 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
                         </svg>
                     </button>
-                    <div class="flex justify-between flex-1 px-4">
+                    <div x-data="{ cartOpen: false , isOpen: false }" @keydown.escape.stop="cartOpen = false; focusButton()" @click.away="onClickAway($event)" class="flex justify-between flex-1 px-4">
                         <div class="flex flex-1">
                         </div>
-                        <div x-data="{ cartOpen: false , isOpen: false }" class="flex items-center ml-4 lg:ml-6">
+                        <div class="flex items-center ml-4 lg:ml-6">
                             <x-database-notifications/>
                             @can('marketplace.index')
                             <a @click="cartOpen = !cartOpen"  href="#" class="p-2 mr-4 text-gray-500 rounded-full cursor-pointer hover:text-blue-600 hover:bg-gray-200">
@@ -376,10 +381,11 @@
                                 </svg>
                             </a>
                             @endcan
-                            <div x-cloak :class="cartOpen ? 'translate-x-0 ease-out' : 'translate-x-full ease-in'" class="fixed top-0 right-0 z-40 w-screen h-full max-w-2xl px-6 py-4 transition duration-300 transform bg-white border-l-2 border-gray-300">
+                            <div x-cloak :class="cartOpen ? 'translate-x-0 ease-out' : 'translate-x-full ease-in'" class="fixed top-0 right-0 w-screen h-full max-w-2xl px-6 py-4 transition duration-300 transform bg-white border-l-2 border-gray-300">
                                 <div class="absolute inset-0 overflow-hidden">
-                                    <div x-description="Background overlay, show/hide based on slide-over state." class="absolute inset-0" @click="cartOpen = !cartOpen" aria-hidden="true"></div>
-                                    <div class="fixed inset-y-0 right-0 flex pl-10 sm:pl-16">
+                                    <div x-description="Background overlay, show/hide based on slide-over state." class="absolute inset-0" @click="cartOpen = !cartOpen" aria-hidden="true">
+                                    </div>
+                                    <div class="fixed inset-y-0 right-0 z-50 flex pl-10 sm:pl-16">
                                         <div x-show="open" x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transform transition ease-in-out duration-500 sm:duration-700" x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full" class="w-screen max-w-2xl" x-description="Slide-over panel, show/hide based on slide-over state.">
                                             <div class="flex flex-col h-full py-6 overflow-y-scroll bg-white shadow-xl">
                                                 <div class="px-4 sm:px-6">
@@ -388,7 +394,7 @@
                                                             Cart
                                                         </h2>
                                                         <div class="flex items-center ml-3 h-7">
-                                                            <button class="text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" @click="cartOpen = !cartOpen">
+                                                            <button @click="cartOpen = !cartOpen" class="text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" >
                                                                 <span class="sr-only">Close panel</span>
                                                                 <svg class="w-6 h-6" x-description="Heroicon name: outline/x" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -409,26 +415,26 @@
                     </div>
                 </div>
 
-                @if (app('impersonate')->isImpersonating())
-                <div class="px-4 py-8 md:max-w-6xl md:mx-auto">
-                    <div class="relative px-6 py-4 text-red-700 bg-red-200 rounded-lg" role="alert" x-data="{ open: true }" x-show.transition="open">
-                        <div class="mr-4">
-                            Currently impersonating user <strong class="font-bold">{{Auth::user()->name}} {{Auth::user()->last_name}}</strong>
-                            <a href="{{ route('impersonate.leave') }} ">
-                                <span style="color: red" >{{ ucwords(trans_choice('messages.stop_impersonation', 2)) }} &rarr;</i></span>
-                            </a>
-                        </div>
-                        <span class="absolute top-0 bottom-0 right-0 inline-flex items-center justify-center w-10 h-10 mt-2 mr-3 rounded-full cursor-pointer hover:bg-red-100 hover:text-red-600" x-on:click="open = false">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="0" y="0" width="24" height="24" stroke="none"></rect>
-                                <line x1="18" y1="6" x2="6" y2="18" />
-                                <line x1="6" y1="6" x2="18" y2="18" />
-                            </svg>
-                        </span>
-                    </div>
-                </div>
-                @endif
 
                 <main class="relative flex-1 overflow-y-auto focus:outline-none">
-                    <div class="py-8 xl:py-10">
+                    <div class="py-0 xl:py-0">
+                        @if (app('impersonate')->isImpersonating())
+                        <div class="px-4 py-4 md:max-w-6xl md:mx-auto">
+                            <div class="relative px-6 py-4 text-red-700 bg-red-200 rounded-lg" role="alert" x-data="{ open: true }" x-show.transition="open">
+                                <div class="mr-4">
+                                    Currently impersonating user <strong class="font-bold">{{Auth::user()->name}} {{Auth::user()->last_name}}</strong>
+                                    <a href="{{ route('impersonate.leave') }} ">
+                                        <span style="color: red" >{{ ucwords(trans_choice('messages.stop_impersonation', 2)) }} &rarr;</i></span>
+                                    </a>
+                                </div>
+                                <span class="absolute top-0 bottom-0 right-0 inline-flex items-center justify-center w-10 h-10 mt-2 mr-3 rounded-full cursor-pointer hover:bg-red-100 hover:text-red-600" x-on:click="open = false">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="0" y="0" width="24" height="24" stroke="none"></rect>
+                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                        @endif
 

@@ -51,6 +51,40 @@ class ResellerRepository implements ResellerRepositoryInterface
 		return $resellers;
 	}
 
+	public function paginate()
+	{
+		$user = $this->getUser();
+
+		switch ($this->getUserLevel()) {
+			case config('app.super_admin'):
+
+			return Reseller::with(['provider','customers','users'])->whereNull('main_office')
+			->with(['country', 'subResellers', 'status'])
+			->paginate(10);
+			break;
+
+			case config('app.admin'):
+
+			return Reseller::with(['provider','customers'])->with('App\Reseller')->whereNull('main_office')
+			->with(['country', 'subResellers', 'status'])
+			->paginate(10);
+			break;
+
+            case config('app.provider'):
+
+			return $user->provider->resellers()->whereNull('main_office')
+			->with(['country', 'subResellers', 'status'])
+			->orderBy('company_name')
+			->paginate(10);
+			break;
+
+			default:
+
+			return abort(403, __('errors.unauthorized_action'));
+			break;
+		}
+	}
+
 	public function create($validate, $user)
     {
 		$newReseller =  Reseller::create([

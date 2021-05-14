@@ -86,6 +86,18 @@
                                     <input wire:model="markup" name="markup" type="text" class="form-control @error('markup') is-invalid @enderror" id="markup" placeholder="%" value="{{$customer->markup}}">
                                     @error('markup')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
+                                <div class="col-md-6">
+                                    <label for="status">{{ ucwords(trans_choice('messages.price_list', 1)) }}</label>
+                                    <div class="form-group">
+                                        <select wire:model="status" name="status" class="form-control @error('status') is-invalid @enderror" sf-validate="required">
+                                            <option value="{{$customer->priceLists}}" selected>{{$customer->priceLists}}</option>
+                                            @foreach ($customer->resellers->first()->priceList  as $key => $pricelist)
+                                            <option value="{{$key}}">{{$pricelist}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

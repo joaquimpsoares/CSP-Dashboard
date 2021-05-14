@@ -7,13 +7,14 @@
     <meta content="Tagydes - CSP Automation Platform" name="description">
     <meta content="Tagydes Limited" name="author">
     <meta name="keywords" content="Admin, Admin Dashboard, Automation, Microsoft CSP, Admin Resellers, O354 Automation Platform, Kaspersky, license management"/>
+    @livewireStyles
 
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
     @include('layouts.head')
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
 </head>
 
+
 <body  class="antialiased bg-gray-200">
-    @livewireStyles
     <div class="page">
         <div class="page-main">
             @include('layouts.sidemenu')
@@ -32,5 +33,5 @@
 
 @livewireScripts
 @yield('footer')
-</body>
+{{-- </body> --}}
 </html>
