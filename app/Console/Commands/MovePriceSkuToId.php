@@ -29,6 +29,10 @@ class MovePriceSkuToId extends Command
     {
         Price::eachById(function(Price $price){
             $product = Product::where('instance_id', $price->instance_id)->where('sku', $price->product_sku)->firstOr(function()use($price){
+                if($price->instance_id === 1){
+                    $price->delete();
+                }
+
                 logger('Product not found for price: '.$price->id);
             });
             $price->update(['product_id' => $product->id]);
