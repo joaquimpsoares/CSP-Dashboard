@@ -63,7 +63,6 @@
                             </thead>
                             <tbody>
                                 @forelse($resellers as $reseller)
-                                <a href="#">
                                 <tr class="hover:bg-gray-100">
                                     <td class="px-2 py-2 whitespace-nowrap text-sm font-medium text-gray-900 hidden lg:table-cell"><a href="{{ $reseller['path'] }}">{{ $reseller['id'] }}</a></td>
                                     <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500"><a href="{{ $reseller['path'] }}">{{ $reseller['company_name'] }}</a></td>
@@ -98,7 +97,6 @@
                                         </div>
                                     </td>
                                 </tr>
-                                </a>
                                 @empty
                                 <tr>
                                     <td colspan="5">Empty</td>
