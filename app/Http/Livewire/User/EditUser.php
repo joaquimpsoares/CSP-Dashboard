@@ -90,7 +90,7 @@ class EditUser extends Component
             'phone'             => ['sometimes', 'string', 'max:20', 'min:3'],
             'address'           => ['sometimes', 'string', 'max:255', 'min:3'],
             'sendInvitation'    => ['nullable', 'integer'],
-            'locale'            => ['sometimes', 'string', 'in:es,en,fr,pt']
+            'locale'            => ['sometimes', 'string', 'in:es,en,fr,pt,el']
         ]);
 
 
@@ -106,8 +106,8 @@ class EditUser extends Component
         // $this->user->postal_code      = $this->postal_code;
         $this->user->update();
 
-
-        session()->flash('message-details', 'user ' . $this->user->name . ' successfully Updated.');
+        session()->flash('success','User ' . $this->user->name . ' updated successfully');
+        return redirect()->to('/');
     }
 
     public function saveauth()
@@ -124,7 +124,8 @@ class EditUser extends Component
         $this->user->password       = Hash::make($this->password);
         $this->user->update();
 
-        session()->flash('message-auth', 'User ' . $this->user->name . ' successfully Updated.');
+        session()->flash('success','User ' . $this->user->name . ' updated successfully');
+        return redirect()->to('/');
     }
 
 
@@ -144,6 +145,14 @@ class EditUser extends Component
 
         session()->flash('message', 'Avatar for ' . $this->user->name . ' successfully Uploaded.');
     }
+
+    public function getGDPR()
+    {
+
+
+    }
+
+
 
     public function sendInvitation()
     {

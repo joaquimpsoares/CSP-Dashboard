@@ -28,6 +28,8 @@ class Order extends Model
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'status' => $this->status,
+            'orderproducts' => $this->orderproduct,
+            'products' => $this->products,
 
         ];
 

@@ -286,4 +286,13 @@ return [
     'usage' => 'usage',
     'updated' => 'updated',
     'value' => 'value',
+    'password' => 'password|passwords',
+    'gdpr'  => 'GDPR',
+    'locale'  => 'locale',
+    'phone'  => 'phone',
+    'gdpr'  => 'GDPR',
+    'amount'  => 'amount',
+    'cost'  => 'cost',
+    'updated_at' => 'updated at',
+
 ];
