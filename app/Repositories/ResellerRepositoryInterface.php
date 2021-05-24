@@ -9,6 +9,8 @@ interface ResellerRepositoryInterface
 {
 	public function all();
 
+	public function paginate();
+
 	public function create($reseller, $user);
 
     public function resellersOfProvider(Provider $provider);

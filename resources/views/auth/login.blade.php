@@ -155,7 +155,7 @@
 
                             <div>
                                 <a href="/login/microsoft" class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
-                                    <span class="sr-only">Sign in with Twitter</span>
+                                    <span class="sr-only">Sign in with Microsoft</span>
                                     <svg class="w-25 h-25" xmlns="http://www.w3.org/2000/svg" fill="currentColor"  enable-background="new 0 0 2499.6 2500" viewBox="0 0 2499.6 2500">
                                         <path d="m1187.9 1187.9h-1187.9v-1187.9h1187.9z"/>
                                         <path d="m2499.6 1187.9h-1188v-1187.9h1187.9v1187.9z"/>

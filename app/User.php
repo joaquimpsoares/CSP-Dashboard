@@ -2,21 +2,38 @@
 
 namespace App;
 
+use Soved\Laravel\Gdpr\Portable;
 use Webpatser\Countries\Countries;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Soved\Laravel\Gdpr\Contracts\Portable as PortableContract;
 
-class User extends Authenticatable implements  JWTSubject
+class User extends Authenticatable implements  JWTSubject, PortableContract
 {
-    use Notifiable, HasRoles, Impersonate;
-    // use ActivityTrait;
 
-    // protected $guard_name = 'web';
+    use Notifiable;
+    use HasRoles;
+    use Impersonate;
+    use Portable;
 
-        /**
+
+
+    /**
+     * The attributes that should be visible in the downloadable data.
+     *
+     * @var array
+     */
+    // protected $gdprVisible = ['email','name', 'address_1', ];
+
+
+    protected $gdprWith = ['orders', 'customer','reseller','provider'];
+
+    protected $gdprHidden = ['password','markup'];
+
+     /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -103,4 +120,7 @@ class User extends Authenticatable implements  JWTSubject
         return [];
     }
 
+    public function news() {
+        return $this->hasMany('App\News');
+    }
 }

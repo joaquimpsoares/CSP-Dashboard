@@ -275,4 +275,11 @@ return [
   'usage' => 'uso',
   'updated' => 'Atualizada',
   'value' => 'valor',
+  'password' => 'Senha | Senhas',
+  'gdpr' => 'Gdpr.',
+  'locale' => 'localidade',
+  'phone' => 'telefone',
+  'amount' => 'resultar',
+  'cost' => 'custo',
+  'updated_at' => 'Atualizado em',
 ];

@@ -275,4 +275,11 @@ return [
   'usage' => 'usage',
   'updated' => 'mise à jour',
   'value' => 'valeur',
+  'password' => 'Mot de passe | mots de passe',
+  'gdpr' => 'GDPR',
+  'locale' => 'lieu',
+  'phone' => 'téléphoner',
+  'amount' => 'montant',
+  'cost' => 'Coût',
+  'updated_at' => 'mis à jour à',
 ];
