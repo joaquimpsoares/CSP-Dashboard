@@ -51,8 +51,8 @@
                         <tr>
                             <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.#', 1)) }}</th>
                             <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.user', 1)) }}</th>
-                            <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.customer', 2)) }}</th>
-                            <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.details', 1)) }}</th>
+                            <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.company_name', 1)) }}</th>
+                            <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase ">{{ ucwords(trans_choice('messages.details', 1)) }}</th>
                             <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.amount', 1)) }}</th>
                             <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.cost', 1)) }}</th>
                             <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.status', 1)) }}</th>
@@ -63,16 +63,17 @@
                     </thead>
                     <tbody>
                         @forelse($orders as $order)
+
                         <a href="#">
                             <tr class="hover:bg-gray-100">
                                 <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{ $order['id'] }}</td>
                                 <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{ $order['avatar']['email'] }}</td>
                                 @if ($order['customer'])
-                                <td class="hidden px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{  $order['customer']->company_name }}</td>
+                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{  $order['customer']->company_name }}</td>
                                 @else
                                 <td></td>
                                 @endif
-                                <td class="hidden px-2 py-2 text-sm text-gray-500 break-words whitespace-wrap lg:table-cell">{{ $order['details'] }}</td>
+                                <td class="hidden px-2 py-2 text-sm text-gray-500 break-words whitespace-wrap lg:table-cell">{{ \Illuminate\Support\Str::limit($order['details'], 100, $end='...') }}</td>
                                 @if ($order['orderproducts'])
                                 <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{ $order['orderproducts']->quantity }} </td>
                                 @else

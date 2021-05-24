@@ -16,6 +16,36 @@ use App\Http\Controllers\Auth\LoginController;
 
 // Route::post('registerInvitation', 'UsersController@registerInvitation')->name('registerInvitation');
 
+
+Route::get('news', [
+    'as' => 'news.list',
+    'uses' => 'AdminController@news'
+]);
+Route::post('news/create', [
+    'as' => 'news.create',
+    'uses' => 'AdminController@createNews'
+]);
+
+Route::get('news/{news}/edit', [
+    'as' => 'news.edit',
+    'uses' => 'AdminController@editNews'
+]);
+
+Route::get('news/{news}/view', [
+    'as' => 'news.view',
+    'uses' => 'AdminController@viewNews'
+]);
+
+Route::post('news/{news}/delete', [
+    'as' => 'news.delete',
+    'uses' => 'AdminController@deleteNews'
+]);
+
+Route::post('news/update', [
+    'as' => 'news.update',
+    'uses' => 'AdminController@updateNews'
+]);
+
 Route::get('exportexcel', 'AnalyticController@exportexcel')->name('exportexcel');
 
 Route::get('accept/{token}', 'InviteController@accept')->name('accept');

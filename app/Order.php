@@ -24,7 +24,7 @@ class Order extends Model
             'comments' => $this->comments,
             'details' => $this->details,
             'customer' => $this->customer()->first(),
-            'avatar' => $this->user->first(),
+            'avatar' => $this->user,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'status' => $this->status,
