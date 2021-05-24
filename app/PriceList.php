@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class PriceList extends Model
 {
-
-
 	protected $guarded = [];
 
     public function format()
@@ -20,7 +18,6 @@ class PriceList extends Model
             'provider' => $this->provider()->first(),
             'reseller' => $this->reseller()->get(),
             'customer' => $this->customer()->get()
-
         ];
     }
 
@@ -39,7 +36,4 @@ class PriceList extends Model
     public function customer() {
 		return $this->belongsTo('App\Customer', 'id', 'price_list_id');
     }
-
-
-
 }

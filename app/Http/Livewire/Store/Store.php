@@ -45,8 +45,8 @@ class Store extends Component
 
         $cart->products()->attach($productId, [
             'id' => Str::uuid(),
-            'price' => $productId->prices->price,
-            'retail_price' => $productId->prices->msrp,
+            'price' => $productId->price->price,
+            'retail_price' => $productId->price->msrp,
             'quantity' => $productId->minimum_quantity,
             'billing_cycle' => "annual"
             ]);
@@ -66,7 +66,7 @@ class Store extends Component
         $this->productSku       = $details->sku;
         $this->productDescription = $details->description;
         $this->productName      = $details->name;
-        $this->productMSRP      = $details->prices->msrp;
+        $this->productMSRP      = $details->price->msrp;
 
     }
 
@@ -110,7 +110,7 @@ class Store extends Component
                 return abort(403, __('errors.access_with_resellers_credentials'));
         }
 
-        $products = Product::whereHas('prices', function(Builder $query)use($priceList){
+        $products = Product::whereHas('price', function(Builder $query)use($priceList){
             $query->where('price_list_id', $priceList->id);
         })->where(function(Builder $query){
             if(! $this->vendor) return;

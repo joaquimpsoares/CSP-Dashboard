@@ -78,7 +78,7 @@ class LoginController extends Controller
         }else {
 
             Auth::login($user, $remember = true);
-            return redirect('/');
+            return redirect()->route('home');
         }
     }
 

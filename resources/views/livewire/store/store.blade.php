@@ -53,14 +53,14 @@
                             <div class="text-sm font-bold text-white">
                                 Reseller
                                 <p class="inline text-sm font-normal text-white">
-                                    {{ $product->prices->price }}
+                                    {{ $product->price->price }}
                                 </p>
                             </div>
                             @endif
                             <div class="text-sm font-bold text-white">
                                 Price
                                 <p class="inline text-sm font-normal text-white">
-                                    {{ $product->prices->msrp }}
+                                    {{ $product->price->msrp }}
                                 </p>
                             </div>
                         </div>
