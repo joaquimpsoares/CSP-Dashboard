@@ -26,6 +26,11 @@ Route::post('news/create', [
     'uses' => 'AdminController@createNews'
 ]);
 
+Route::get('news/create', [
+    'as' => 'news.create',
+    'uses' => 'AdminController@createNews'
+]);
+
 Route::get('news/{news}/edit', [
     'as' => 'news.edit',
     'uses' => 'AdminController@editNews'
