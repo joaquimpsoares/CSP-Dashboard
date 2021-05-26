@@ -338,6 +338,8 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
 
 
         // End of every authenticated user can access routes here
+
+        Route::get('/home', 'HomeController@index')->name('home');
     });
 
 
@@ -345,8 +347,6 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
 
     Route::impersonate();
 
-    Route::get('/', 'HomeController@index')->name('home');
-
-    Route::get('/home', 'HomeController@index')->name('home');
+    //Route::get('/', 'HomeController@index')->name('home');
 
     Auth::routes();

@@ -45,14 +45,12 @@ class HomeController extends Controller
     ResellerRepositoryInterface $resellerRepository, CustomerRepositoryInterface $customerRepository,
     ProductRepositoryInterface $productRepository, OrderRepositoryInterface $orderRepository)
     {
-        dd('hola');
         $this->subscriptionRepository = $subscriptionRepository;
         $this->providerRepository = $providerRepository;
         $this->resellerRepository = $resellerRepository;
         $this->customerRepository = $customerRepository;
         $this->productRepository = $productRepository;
         $this->orderRepository = $orderRepository;
-        $this->middleware('auth');
     }
 
     /**
