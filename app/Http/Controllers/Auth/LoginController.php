@@ -42,9 +42,14 @@ class LoginController extends Controller
     */
     public function __construct()
     {
-        if(Str::endsWith(request()->getUri(), '#')){
-            return redirect()->route('home');
-        }
+        $this->middleware(function(Request $request, $next){
+            logger($request->getUri());
+            if(Str::endsWith($request->getUri(), '#')){
+                return redirect()->route('home');
+            }
+
+            return $next($request);
+        });
 
         $this->middleware('guest')->except('logout');
     }
