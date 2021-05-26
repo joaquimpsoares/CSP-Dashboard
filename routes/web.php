@@ -347,6 +347,6 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
 
     Route::impersonate();
 
-    //Route::get('/', 'HomeController@index')->name('home');
+    Route::get('/', 'HomeController@index');
 
     Auth::routes();
