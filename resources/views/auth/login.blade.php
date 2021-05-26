@@ -175,7 +175,13 @@
         </div>
 
         @endsection
+
         @section('js')
+            <script>
+                if(window.location.href.endsWith('login#')){
+                    window.location.href = '/home';
+                }
+            </script>
         @endsection
 
 
