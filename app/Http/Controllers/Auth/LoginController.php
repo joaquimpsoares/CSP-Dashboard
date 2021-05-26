@@ -51,9 +51,7 @@ class LoginController extends Controller
     */
     public function redirectToProvider()
     {
-        return Socialite::with('graph')
-        ->setTenantId(env('GRAPH_TENANT_ID'))
-        ->redirect();
+        return Socialite::with('graph')->setTenantId(env('GRAPH_TENANT_ID'))->redirect();
     }
 
     /**
@@ -64,10 +62,7 @@ class LoginController extends Controller
     public function handleProviderCallback(Request $request)
     {
 
-        $socialiteUser = Socialite::driver('graph')
-        ->setTenantId(env('GRAPH_TENANT_ID'))
-        ->stateless()
-        ->user();
+        $socialiteUser = Socialite::driver('graph')->setTenantId(env('GRAPH_TENANT_ID'))->user();
 
         $user = User::where('socialite_id', $socialiteUser->getId())->first();
 
