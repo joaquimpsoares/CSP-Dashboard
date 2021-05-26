@@ -58,8 +58,6 @@ class User extends Authenticatable implements  JWTSubject, PortableContract
         'email_verified_at' => 'datetime',
     ];
 
-    protected $primaryKey = 'id';
-
     public function format()
     {
         return [
