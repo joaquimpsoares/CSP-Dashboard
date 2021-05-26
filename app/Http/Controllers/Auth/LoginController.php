@@ -75,7 +75,7 @@ class LoginController extends Controller
             return Redirect::route('login')->with('danger','Please ask for the correct permissions to access the app: ');
         }else {
             Auth::login($user, true);
-            return redirect()->to('/home');
+            return redirect()->intended(route('home'));
         }
     }
 
