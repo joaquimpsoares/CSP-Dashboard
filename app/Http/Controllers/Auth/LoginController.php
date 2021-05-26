@@ -51,7 +51,7 @@ class LoginController extends Controller
     */
     public function redirectToProvider()
     {
-        return Socialite::driver('graph')->redirectUrl(route('home'))->setTenantId(env('GRAPH_TENANT_ID'))->redirect();
+        return Socialite::driver('graph')->setTenantId(env('GRAPH_TENANT_ID'))->redirect();
     }
 
     /**
