@@ -67,10 +67,10 @@ class LoginController extends Controller
         $user = User::where('socialite_id', $socialiteUser->getId())->first();
 
         if(empty($user)){
-            return Redirect::route('login')->with('danger','Please ask for the correct permissions to access the app: ');
+            //return Redirect::route('login')->with('danger','Please ask for the correct permissions to access the app: ');
         }else {
             Auth::login($user, true);
-            return redirect()->route('home');
+            //return redirect()->route('home');
         }
     }
 
