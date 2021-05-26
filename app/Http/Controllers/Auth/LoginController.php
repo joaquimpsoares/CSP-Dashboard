@@ -69,9 +69,8 @@ class LoginController extends Controller
         if(empty($user)){
             return Redirect::route('login')->with('danger','Please ask for the correct permissions to access the app: ');
         }else {
-            $request->session()->regenerate();
             Auth::login($user, true);
-            return redirect()->route('home');
+            return redirect()->route('home')->withoutFragment();
         }
     }
 
