@@ -41,16 +41,7 @@ class LoginController extends Controller
     */
     public function __construct()
     {
-        if(Auth::check()){
-            return redirect()->route('home');
-        }
-
         $this->middleware('guest')->except('logout');
-    }
-
-    protected function authenticated(Request $request, $user)
-    {
-        return redirect()->route('home');
     }
 
     /**
@@ -60,7 +51,7 @@ class LoginController extends Controller
     */
     public function redirectToProvider()
     {
-        return Socialite::with('graph')->setTenantId(env('GRAPH_TENANT_ID'))->redirect();
+        return Socialite::driver('graph')->with(['redirect_uri' => route('home')])->setTenantId(env('GRAPH_TENANT_ID'))->redirect();
     }
 
     /**
