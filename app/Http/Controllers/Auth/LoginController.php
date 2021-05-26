@@ -62,7 +62,7 @@ class LoginController extends Controller
     public function handleProviderCallback(Request $request)
     {
 
-        $socialiteUser = Socialite::driver('graph')->setTenantId(env('GRAPH_TENANT_ID'))->user();
+        $socialiteUser = Socialite::driver('graph')->setTenantId(env('GRAPH_TENANT_ID'))->stateless()->user();
 
         $user = User::where('socialite_id', $socialiteUser->getId())->first();
 
@@ -70,7 +70,8 @@ class LoginController extends Controller
             return Redirect::route('login')->with('danger','Please ask for the correct permissions to access the app: ');
         }else {
             Auth::login($user, true);
-            return redirect()->intended($this->redirectPath());
+            session(['user' => Auth::user()]);
+            return redirect()->route('home');
         }
     }
 
