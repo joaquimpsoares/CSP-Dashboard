@@ -42,15 +42,6 @@ class LoginController extends Controller
     */
     public function __construct()
     {
-        $this->middleware(function(Request $request, $next){
-            logger($request->getUri());
-            if(Str::endsWith($request->getUri(), '#')){
-                return redirect()->route('home');
-            }
-
-            return $next($request);
-        });
-
         $this->middleware('guest')->except('logout');
     }
 
@@ -80,7 +71,7 @@ class LoginController extends Controller
             return Redirect::route('login')->with('danger','Please ask for the correct permissions to access the app: ');
         }else {
             Auth::login($user, true);
-            return redirect()->route('home');
+            return redirect()->route('login');
         }
     }
 
