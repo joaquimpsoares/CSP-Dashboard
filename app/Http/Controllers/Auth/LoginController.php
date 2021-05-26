@@ -41,7 +41,7 @@ class LoginController extends Controller
     */
     public function __construct()
     {
-        $this->middleware(['guest' => ['except' => 'logout']]);
+        $this->middleware('guest')->except('logout');
     }
 
     /**
@@ -75,6 +75,7 @@ class LoginController extends Controller
             return Redirect::route('login')->with('danger','Please ask for the correct permissions to access the app: ');
         }else {
             Auth::login($user, true);
+            dd(Auth::user());
             return redirect()->route('home')->withoutFragment();
         }
     }
