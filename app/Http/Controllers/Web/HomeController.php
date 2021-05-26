@@ -51,6 +51,8 @@ class HomeController extends Controller
         $this->customerRepository = $customerRepository;
         $this->productRepository = $productRepository;
         $this->orderRepository = $orderRepository;
+
+        $this->middleware('auth');
     }
 
     /**

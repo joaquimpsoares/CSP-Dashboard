@@ -338,13 +338,13 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
 
 
         // End of every authenticated user can access routes here
-
-        Route::get('/', 'HomeController@index');
-        Route::get('/home', 'HomeController@index')->name('home');
     });
 
 
     Auth::routes(['register' => true]);
+
+    Route::get('/', 'HomeController@index');
+    Route::get('/home', 'HomeController@index')->name('home');
 
     Route::impersonate();
 
