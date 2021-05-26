@@ -11,6 +11,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -41,6 +42,10 @@ class LoginController extends Controller
     */
     public function __construct()
     {
+        if(Str::endsWith('#', request()->getUri())){
+            return redirect()->route('home');
+        }
+
         $this->middleware('guest')->except('logout');
     }
 
@@ -70,7 +75,7 @@ class LoginController extends Controller
             return Redirect::route('login')->with('danger','Please ask for the correct permissions to access the app: ');
         }else {
             Auth::login($user, true);
-            return redirect()->route('home')->withoutFragment();
+            return redirect()->route('home');
         }
     }
 
