@@ -63,7 +63,6 @@
                     </thead>
                     <tbody>
                         @forelse($orders as $order)
-
                         <a href="#">
                             <tr class="hover:bg-gray-100">
                                 <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{ $order['id'] }}</td>
@@ -80,7 +79,7 @@
                                 <td></td>
                                 @endif
                                 @if ($order['orderproducts'])
-                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">Operation Ammount USD{{ ($order['orderproducts']->quantity*$order['orderproducts']->retail_price) }} </td>
+                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{ strtoupper($order['products']->first()->price->currency)}}{{ ($order['orderproducts']->quantity*$order['orderproducts']->retail_price) * ($order['orderproducts']->billing_cycle === 'annual' ? 12 : 1 ) }} </td>
                                 @else
                                 <td></td>
                                 @endif
@@ -135,13 +134,13 @@
                                         </div>
                                     </td>
                                 </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="5">Empty</td>
+                                </tr>
+                                @endforelse
+                                <!-- More people... -->
                             </a>
-                            @empty
-                            <tr>
-                                <td colspan="5">Empty</td>
-                            </tr>
-                            @endforelse
-                            <!-- More people... -->
                         </tbody>
                     </table>
                 </div>
