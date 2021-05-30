@@ -5,8 +5,10 @@ namespace App;
 use App\Status;
 use Illuminate\Support\Str;
 use App\Http\Traits\ActivityTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Webpatser\Countries\Countries;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Reseller extends Model
 {
@@ -71,5 +73,14 @@ class Reseller extends Model
 
     public function status() {
         return $this->belongsTo(Status::class);
+    }
+
+    protected static function booted(){
+        static::addGlobalScope('access_level', function(Builder $query){
+            $user = Auth::user();
+            if($user && $user->userLevel->name === config('app.provider')){
+                $query->where('provider_id', $user->provider->id);
+            }
+        });
     }
 }

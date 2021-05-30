@@ -52,10 +52,11 @@ class ResellerController extends Controller
 
         $countCustomers =  $customers->count();
 
-        $resellers = $this->resellerRepository->paginate();
+        // REMOVED REPOSITORY!!! NOW WORKING WITH A GLOBAL SCOPE, MUCH MUCH CLEANER
+        $resellers = Reseller::with(['country', 'subResellers', 'status'])->whereNull('main_office')->paginate(5);
 
         $resellers->getCollection()->map(function(Reseller $reseller){
-            $reseller->setRawAttributes($reseller->format());
+            $reseller->setRawAttributes(json_decode(json_encode($reseller->format()), true)); // Coverts to array recursively (make helper from it?)
             return $reseller;
         });
 

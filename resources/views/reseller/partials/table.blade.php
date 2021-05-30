@@ -43,71 +43,30 @@
                 </div>
             </div>
 
-            <div class="mt-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div class="inline-block min-w-full px-4 py-1 align-middle">
-                    <div class="overflow-hidden">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.#', 1)) }}</th>
-                                    <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.company_name', 1)) }}</th>
-                                    <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.customer', 2)) }}</th>
-                                    <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.provider', 1)) }}</th>
-                                    <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.country', 1)) }}</th>
-                                    <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.mpn', 1)) }}</th>
-                                    <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.created_at', 1)) }}</th>
-                                    <th scope="col" class="relative px-2 py-2"><span class="sr-only">{{ ucwords(trans_choice('messages.action', 1)) }}</span></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($resellers as $reseller)
-                                <tr class="hover:bg-gray-100">
-                                    <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell"><a href="{{ $reseller['path'] }}">{{ $reseller['id'] }}</a></td>
-                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap"><a href="{{ $reseller['path'] }}">{{ $reseller['company_name'] }}</a></td>
-                                    <td class="hidden px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">{{ $reseller['customers'] }}</td>
-                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap"><a href="{{$reseller['provider']->format()['path']}}">{{ $reseller['provider']['company_name'] }}</a></td>
-                                    <td class="hidden px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">{{ $reseller['country'] }}</td>
-                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{ $reseller['mpnid'] }}</td>
-                                    <td class="hidden px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">{{ $reseller['created_at'] }}</td>
-                                    <td class="px-2 py-2 text-sm font-medium text-right whitespace-nowrap">
-                                        <div class="z-10">
-                                            <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                                                </svg>
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <a class="dropdown-item" href="{{ $reseller['path'] }}/edit">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="inline w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                                                    </svg>
-                                                    Edit
-                                                </a>
-                                                <a class="dropdown-item" href="{{ route('impersonate', $reseller['mainUser']->id) }}">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="inline w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                                                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
-                                                    </svg>
-                                                    Impersonate
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="5">Empty</td>
-                                </tr>
-                                @endforelse
-                                <!-- More people... -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="flex justify-center mt-4">
-            {{ $resellers->links() }}
+            <x-table :list="$resellers" :mobileColumns="['id']"
+            :columns="[
+                'id' => function($reseller){
+                    return $reseller['path'];
+                },
+                'company_name' => null,
+                'provider.company_name' => null
+            ]"
+            :listElementActions="[
+                [
+                    'icon' => 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJpbmxpbmUgdy01IGgtNSBtci0yIiB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9ImN1cnJlbnRDb2xvciI+CjxwYXRoIGQ9Ik0xMy41ODYgMy41ODZhMiAyIDAgMTEyLjgyOCAyLjgyOGwtLjc5My43OTMtMi44MjgtMi44MjguNzkzLS43OTN6TTExLjM3OSA1Ljc5M0wzIDE0LjE3MlYxN2gyLjgyOGw4LjM4LTguMzc5LTIuODMtMi44Mjh6IiAvPgo8L3N2Zz4=',
+                    'textKey' => 'Edit', // To get the translation on the view
+                    'url' => function($reseller){
+                        return $reseller['path'].'/edit';
+                    }
+                ],
+                [
+                    'icon' => 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJpbmxpbmUgdy01IGgtNSBtci0yIiB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9ImN1cnJlbnRDb2xvciI+CjxwYXRoIGQ9Ik0xMCAxMmEyIDIgMCAxMDAtNCAyIDIgMCAwMDAgNHoiIC8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTS40NTggMTBDMS43MzIgNS45NDMgNS41MjIgMyAxMCAzczguMjY4IDIuOTQzIDkuNTQyIDdjLTEuMjc0IDQuMDU3LTUuMDY0IDctOS41NDIgN1MxLjczMiAxNC4wNTcuNDU4IDEwek0xNCAxMGE0IDQgMCAxMS04IDAgNCA0IDAgMDE4IDB6IiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIC8+Cjwvc3ZnPg==',
+                    'textKey' => 'Impersonate',
+                    'url' => function($reseller){
+                        return route('impersonate', $reseller['mainUser']['id']);
+                    }
+                ]
+            ]" />
         </div>
     </div>
 </div>
