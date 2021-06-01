@@ -71,97 +71,96 @@
         </section>
     </div>
 </div>
-    <div>
-        <dl class="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-2 lg:grid-cols-3">
-            <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-                <div class="flex-grow px-4 py-5 sm:p-6">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0 p-3 bg-indigo-500 rounded-md">
-                            <!-- Heroicon name: outline/users -->
-                            <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                            </svg>
-                        </div>
-                        <div class="flex-1 w-0 ml-5">
-                            <dt class="text-sm font-medium text-gray-500 truncate">
-                                {{ucwords(trans_choice('messages.order', 2))}}
-                            </dt>
-                            <dd class="flex items-baseline">
-                                <div class="text-2xl font-semibold text-gray-900">
-                                    @if($orders)
-                                    {{$orders->count()}}
-                                    @else
-                                    0
-                                    @endif
-                                </div>
-                            </dd>
-                        </div>
+<div class="p-6 mb-10 ">
+    <dl class="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
+            <div class="flex-grow px-4 py-5 sm:p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 p-3 bg-indigo-500 rounded-md">
+                        <!-- Heroicon name: outline/users -->
+                        <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                        </svg>
                     </div>
-                </div>
-                <div class="px-4 py-4 bg-gray-50 sm:px-6">
-                    <div class="text-sm">
-                        <a href="/order" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Total Subscribers stats</span></a>
+                    <div class="flex-1 w-0 ml-5">
+                        <dt class="text-sm font-medium text-gray-500 truncate">
+                            {{ucwords(trans_choice('messages.order', 2))}}
+                        </dt>
+                        <dd class="flex items-baseline">
+                            <div class="text-2xl font-semibold text-gray-900">
+                                @if($orders)
+                                {{$orders->count()}}
+                                @else
+                                0
+                                @endif
+                            </div>
+                        </dd>
                     </div>
                 </div>
             </div>
+            <div class="px-4 py-4 bg-gray-50 sm:px-6">
+                <div class="text-sm">
+                    <a href="/order" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Total Subscribers stats</span></a>
+                </div>
+            </div>
+        </div>
 
-            <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-                <div class="flex-grow px-4 py-5 sm:p-6">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0 p-3 bg-indigo-500 rounded-md">
-                            <!-- Heroicon name: outline/mail-open -->
-                            <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                            </svg>
-                        </div>
-                        <div class="flex-1 w-0 ml-5">
-                            <dt class="text-sm font-medium text-gray-500 truncate">
-                                {{ucwords(trans_choice('messages.customer', 2))}}
-                            </dt>
-                            <dd class="flex items-baseline">
-                                <div class="text-2xl font-semibold text-gray-900">
-                                    {{$countCustomers}}
-                                </div>
-                            </dd>
-                        </div>
+        <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
+            <div class="flex-grow px-4 py-5 sm:p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 p-3 bg-indigo-500 rounded-md">
+                        <!-- Heroicon name: outline/mail-open -->
+                        <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
                     </div>
-                </div>
-                <div class="px-4 py-4 bg-gray-50 sm:px-6">
-                    <div class="text-sm">
-                        <a href="/customer" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Avg. Open Rate stats</span></a>
+                    <div class="flex-1 w-0 ml-5">
+                        <dt class="text-sm font-medium text-gray-500 truncate">
+                            {{ucwords(trans_choice('messages.customer', 2))}}
+                        </dt>
+                        <dd class="flex items-baseline">
+                            <div class="text-2xl font-semibold text-gray-900">
+                                {{$countCustomers}}
+                            </div>
+                        </dd>
                     </div>
                 </div>
             </div>
+            <div class="px-4 py-4 bg-gray-50 sm:px-6">
+                <div class="text-sm">
+                    <a href="/customer" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Avg. Open Rate stats</span></a>
+                </div>
+            </div>
+        </div>
 
-            <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-                <div class="flex-grow px-4 py-5 sm:p-6">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0 p-3 bg-indigo-500 rounded-md">
-                            <!-- Heroicon name: outline/cursor-click -->
-                            <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                        </div>
-                        <div class="flex-1 w-0 ml-5">
-                            <dt class="text-sm font-medium text-gray-500 truncate">
-                                {{ucwords(trans_choice('messages.subscription', 2))}}
-                            </dt>
-                            <dd class="flex items-baseline">
-                                <div class="text-2xl font-semibold text-gray-900">
-                                    {{$countSubscriptions}}
-                                </div>
-                            </dd>
-                        </div>
+        <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
+            <div class="flex-grow px-4 py-5 sm:p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 p-3 bg-indigo-500 rounded-md">
+                        <!-- Heroicon name: outline/cursor-click -->
+                        <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
                     </div>
-                </div>
-                <div class="px-4 py-4 bg-gray-50 sm:px-6">
-                    <div class="text-sm">
-                        <a href="/subscription" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Avg. Click Rate stats</span></a>
+                    <div class="flex-1 w-0 ml-5">
+                        <dt class="text-sm font-medium text-gray-500 truncate">
+                            {{ucwords(trans_choice('messages.subscription', 2))}}
+                        </dt>
+                        <dd class="flex items-baseline">
+                            <div class="text-2xl font-semibold text-gray-900">
+                                {{$countSubscriptions}}
+                            </div>
+                        </dd>
                     </div>
                 </div>
             </div>
-        </dl>
-    </div>
+            <div class="px-4 py-4 bg-gray-50 sm:px-6">
+                <div class="text-sm">
+                    <a href="/subscription" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Avg. Click Rate stats</span></a>
+                </div>
+            </div>
+        </div>
+    </dl>
 
 
     <div class="overflow-hidden bg-gray-200 divide-y divide-gray-200 rounded-lg shadow sm:divide-y-0 sm:grid sm:grid-cols-2 sm:gap-px">
@@ -326,6 +325,8 @@
             </div>
         </div>
     </div>
+</div>
+
 
 
 

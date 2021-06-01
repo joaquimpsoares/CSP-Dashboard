@@ -75,9 +75,9 @@ class HomeController extends Controller
                 $providers = Provider::get();
                 $customers = Customer::get();
 
-                $news = News::get();
+                $news = News::take(2)->get();
 
-                return view('home', compact('orders','providers','resellers','customers','subscriptions'));
+                return view('home', compact('orders','providers','resellers','customers','subscriptions','news'));
 
             break;
 
@@ -146,9 +146,7 @@ class HomeController extends Controller
 
                 $subscriptions = $this->subscriptionRepository->all();
 
-                $news = News::whereHas('provider', function($query) use  ($provider) {
-                    $query->where('id', $provider->id)->where('provider',1)->where('user_id', );
-                })->get();
+                $news = News::take(2)->get();
 
                 return view('home', compact('resellers','orders','countOrders','customersweek','provider','customers','subscriptions','news'));
 
@@ -164,10 +162,7 @@ class HomeController extends Controller
 
                 $provider = $user->reseller->provider;
 
-                $news = News::whereHas('provider', function($query) use  ($provider) {
-                    $query->where('id', $provider->id)->where('reseller',true);
-                })->get();
-
+                $news = News::take(2)->get();
 
                 return view('reseller.partials.home', compact('countCustomers','countSubscriptions','orders','news'));
 
@@ -190,9 +185,7 @@ class HomeController extends Controller
 
                 $reseller = $user->customer->resellers->first()->provider;
 
-                $news = News::whereHas('provider', function($query) use  ($reseller) {
-                    $query->where('id', $reseller->id)->where('customer',true);
-                })->get();
+                $news = News::take(2)->get();
 
 
                 return view('subscriptions.customer', compact('subscriptions', 'customer','abouttoexpire','news'));

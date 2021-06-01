@@ -148,7 +148,7 @@
         </div>
     </div>
     <div class="flex justify-center mt-4">
-        {{ $orders->links() }}
+        {{-- {{ $orders->links() }} --}}
     </div>
 </div>
 {{-- <section class="dark-grey-text">

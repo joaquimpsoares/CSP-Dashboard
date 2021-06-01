@@ -42,14 +42,17 @@
                     </div>
                 </div>
             </div>
-
             <x-table :list="$resellers" :mobileColumns="['id']"
             :columns="[
+
                 'id' => function($reseller){
                     return $reseller['path'];
                 },
                 'company_name' => null,
-                'provider.company_name' => null
+                'provider.company_name' => null,
+                'mpnid' => null,
+                'country' => null,
+                'created_at' => null
             ]"
             :listElementActions="[
                 [
