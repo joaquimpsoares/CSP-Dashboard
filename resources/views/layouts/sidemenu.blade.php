@@ -28,38 +28,6 @@
                             @endif
                         </a>
                     </div>
-                    {{-- <div x-data="{ open: false }"   @keydown.escape.stop="open = false; focusButton()" @click.away="onClickAway($event)" class="relative inline-block px-3 mt-6 text-left">
-                        <button type="button" class="group w-full  rounded-md px-3.5 py-2 text-sm text-left font-smalltext-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500"  x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-2" @click="open = !open" aria-expanded="false" x-bind:aria-expanded="open.toString()" x-state-description="Current:"bg-gray-100 text-gray-900", Default:"bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900"">
-                            <span class="flex items-center justify-between w-full">
-                                <span class="flex items-center justify-between min-w-0 space-x-3">
-                                    <span class="flex flex-col flex-1 min-w-0">
-                                        <span class="text-sm text-gray-900 truncate font-small">{{Auth::user()->name}}</span>
-                                        <span class="text-sm text-gray-500 truncate">{{Auth::user()->email}}</span>
-                                    </span>
-                                </span>
-                                <svg class="flex-shrink-0 w-5 h-5 text-gray-400 group-hover:text-gray-500" x-description="Heroicon name: solid/selector" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                    <path fill-rule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                </svg>
-                            </span>
-                        </button>
-                        <div x-cloak x-show.transition="open" @click.away="open = false" class="absolute top-0 right-0 z-40 w-48 py-2 mt-12 bg-white border border-gray-100 rounded-lg shadow-md">
-                            <div class="py-1" role="none">
-                                <a href="/user/{{Auth::user()->id }}/edit" class="block px-4 py-2 text-sm text-gray-700" x-state:on="Active" x-state:off="Not Active" :class="{ 'bg-gray-100 text-gray-900': activeIndex === 0, 'text-gray-700': !(activeIndex === 0) }" role="menuitem" tabindex="-1" id="options-menu-item-0" @mouseenter="activeIndex = 0" @mouseleave="activeIndex = -1" @click="open = false; focusButton()">
-                                    Edit Profile
-                                </a>
-                                <a href="{{Route('profile.show-profile')}}" class="block px-4 py-2 text-sm text-gray-700" x-state:on="Active" x-state:off="Not Active" :class="{ 'bg-gray-100 text-gray-900': activeIndex === 0, 'text-gray-700': !(activeIndex === 0) }" role="menuitem" tabindex="-1" id="options-menu-item-0" @mouseenter="activeIndex = 0" @mouseleave="activeIndex = -1" @click="open = false; focusButton()">
-                                    Account Settings
-                                </a>
-                                <a href="#" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="block px-4 py-2 text-sm text-gray-700" x-state:on="Active" x-state:off="Not Active" :class="{ 'bg-gray-100 text-gray-900': activeIndex === 0, 'text-gray-700': !(activeIndex === 0) }" role="menuitem" tabindex="-1" id="options-menu-item-0" @mouseenter="activeIndex = 0" @mouseleave="activeIndex = -1" @click="open = false; focusButton()">
-                                    {{ ucwords(__('messages.logout')) }}
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        @csrf
-                                    </form>
-                                </a>
-                            </div>
-
-                        </div>
-                    </div> --}}
                     <div class="flex-1 h-0 mt-6 overflow-y-auto">
                         <nav class="px-2">
                             <div class="space-y-1">
@@ -234,7 +202,7 @@
                                     </form>
                                 </a>
                                 {{-- <a href="#" onclick="event.preventDefault(); document.getElementById('gdpr-form').submit();" class="block px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-blue-600"> --}}
-                                    <form id="gdpr-form" action="/gdpr/download" method="POST">
+                                    {{-- <form id="gdpr-form" action="/gdpr/download" method="POST">
                                         {{ ucwords(__('messages.gdpr')) }}
                                         @csrf
                                         <div class="col-md-6">
@@ -243,7 +211,7 @@
                                             @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                         </div>
                                         <button type="submit">sub</button>
-                                    </form>
+                                    </form> --}}
                                     {{-- </a> --}}
                                 </div>
                             </div>

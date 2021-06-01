@@ -13,29 +13,25 @@ class Order extends Model
 
     protected $guarded = [];
 
-    // public function status() {
-    //     return $this->belongsTo(OrderStatus::class);
-    // }
-
     public function format()
     {
         return [
-            'id' => $this->id,
-            'comments' => $this->comments,
-            'details' => $this->details,
-            'customer' => $this->customer()->first(),
-            'avatar' => $this->user,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'status' => $this->status,
+            'id'            => $this->id,
+            'comments'      => $this->comments,
+            'details'       => $this->details,
+            'customer'      => $this->customer()->first(),
+            'avatar'        => $this->user,
+            'created_at'    => $this->created_at,
+            'updated_at'    => $this->updated_at,
+            'status'        => $this->status,
             'orderproducts' => $this->orderproduct,
-            'products' => $this->products,
+            'products'      => $this->products,
 
         ];
-
     }
 
-    public function orderproduct() {
+    public function orderproduct()
+    {
     	return $this->belongsTo('App\OrderProducts', 'id', 'order_id');
     }
 

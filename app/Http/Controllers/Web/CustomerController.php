@@ -43,9 +43,13 @@ class CustomerController extends Controller
 
     public function index(Customer $customer) {
 
-        $customers = $this->customerRepository->all();
+        // $customers = Customer::with(['country', 'subscriptions','status'])->paginate(10);
 
-        return view('customer.index', compact('customers'));
+        // $customers->getCollection()->map(function(Customer $customer){
+        //     $customer->setRawAttributes(json_decode(json_encode($customer->format()), true)); // Coverts to array recursively (make helper from it?)
+        //     return $customer;
+        // });
+        return view('customer.index');
     }
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\News;
 use App\User;
 use App\Order;
 use App\Status;
@@ -74,11 +75,15 @@ class HomeController extends Controller
                 $providers = Provider::get();
                 $customers = Customer::get();
 
+                $news = News::get();
+
                 return view('home', compact('orders','providers','resellers','customers','subscriptions'));
 
             break;
 
             case config('app.admin'):
+                $news = News::get();
+
                 $provider_id = Auth::getUser()->provider_id;
                 $orders= Order::first();
 
@@ -124,10 +129,13 @@ class HomeController extends Controller
                 $orderMonth = Order::whereMonth(
                     'created_at', '=', Carbon::now()->subMonth()->month
                 );
+
                 if($orders){
                     $countOrders = ($orders->count()-$orderMonth->count());
+                }else{
+                    $countOrders = 0;
                 }
-                $countOrders = 0;
+
                 $statuses = Status::get();
                 $resellers = $this->resellerRepository->all();
                 $customers = $this->customerRepository->all();
@@ -138,8 +146,11 @@ class HomeController extends Controller
 
                 $subscriptions = $this->subscriptionRepository->all();
 
+                $news = News::whereHas('provider', function($query) use  ($provider) {
+                    $query->where('id', $provider->id)->where('provider',1)->where('user_id', );
+                })->get();
 
-                return view('home', compact('resellers','orders','countOrders','customersweek','provider','customers','subscriptions'));
+                return view('home', compact('resellers','orders','countOrders','customersweek','provider','customers','subscriptions','news'));
 
 
             break;
@@ -149,10 +160,16 @@ class HomeController extends Controller
                 $countCustomers = $user->reseller->customers->count();
                 $subscriptions = $this->resellerRepository->getSubscriptions($user->reseller);
                 $countSubscriptions = $subscriptions->count();
-
                 $orders = $this->orderRepository->all();
 
-                return view('reseller.partials.home', compact('countCustomers','countSubscriptions','orders'));
+                $provider = $user->reseller->provider;
+
+                $news = News::whereHas('provider', function($query) use  ($provider) {
+                    $query->where('id', $provider->id)->where('reseller',true);
+                })->get();
+
+
+                return view('reseller.partials.home', compact('countCustomers','countSubscriptions','orders','news'));
 
             break;
 
@@ -171,8 +188,14 @@ class HomeController extends Controller
                 });
                 $abouttoexpire = $abouttoexpire->filter();
 
+                $reseller = $user->customer->resellers->first()->provider;
 
-                return view('subscriptions.customer', compact('subscriptions', 'customer','abouttoexpire'));
+                $news = News::whereHas('provider', function($query) use  ($reseller) {
+                    $query->where('id', $reseller->id)->where('customer',true);
+                })->get();
+
+
+                return view('subscriptions.customer', compact('subscriptions', 'customer','abouttoexpire','news'));
 
             break;
 
@@ -183,41 +206,41 @@ class HomeController extends Controller
     }
 
 
-    $provider_id = Auth::getUser()->provider_id;
-    $provider = Provider::where('id', $provider_id)->first();
+    // $provider_id = Auth::getUser()->provider_id;
+    // $provider = Provider::where('id', $provider_id)->first();
 
 
 
-    $statuses = Status::get();
+    // $statuses = Status::get();
 
 
-    $countries = Country::all();
-    $resellers = $this->resellerRepository->resellersOfProvider($provider);
-    $customers = new Collection();
+    // $countries = Country::all();
+    // $resellers = $this->resellerRepository->resellersOfProvider($provider);
+    // $customers = new Collection();
 
-    foreach ($resellers as $reseller){
-        $reseller = Reseller::find($reseller['id']);
-        $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
-    }
+    // foreach ($resellers as $reseller){
+    //     $reseller = Reseller::find($reseller['id']);
+    //     $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
+    // }
 
-    $reseller = Reseller::get();
-    $countResellers = $reseller->count();
+    // $reseller = Reseller::get();
+    // $countResellers = $reseller->count();
 
-    $instance = Instance::first();
+    // $instance = Instance::first();
 
-    $order = OrderProducts::get();
+    // $order = OrderProducts::get();
 
-    $users = User::where('provider_id', $provider->id)->first();
+    // $users = User::where('provider_id', $provider->id)->first();
 
-    $subscriptions = $this->providerRepository->getSubscriptions($provider);
-    $countCustomers =  $customers->count();
-    $countSubscriptions = $subscriptions->count();
+    // $subscriptions = $this->providerRepository->getSubscriptions($provider);
+    // $countCustomers =  $customers->count();
+    // $countSubscriptions = $subscriptions->count();
 
-    $countries = Country::all();
-    $providers = $this->providerRepository->all();
-    return view('home', compact('provider','resellers','customers','instance','users',
-    'countries','subscriptions','order','statuses','countResellers',
-    'countCustomers','countSubscriptions','providers','countries'));
+    // $countries = Country::all();
+    // $providers = $this->providerRepository->all();
+    // return view('home', compact('provider','resellers','customers','instance','users',
+    // 'countries','subscriptions','order','statuses','countResellers',
+    // 'countCustomers','countSubscriptions','providers','countries'));
 }
 
     public function listFromCustomer(Customer $customer)

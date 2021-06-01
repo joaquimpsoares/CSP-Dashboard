@@ -32,12 +32,12 @@ class OrderRepository implements OrderRepositoryInterface
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
 
-                $orders = Order::with(['status'])->get()->map->format()->sortDesc()->paginate(10);
+                $orders = Order::with(['status'])->get()->map->format()->sortDesc()->toArray();
 
             break;
 
             case config('app.admin'):
-                $orders = Order::with(['status'])->get()->map->format()->sortDesc()->paginate(10);
+                $orders = Order::with(['status'])->get()->map->format()->sortDesc()->toArray();
             break;
 
 
@@ -53,7 +53,7 @@ class OrderRepository implements OrderRepositoryInterface
 
                 $orders = Order::with(['status'])->whereHas('customer', function($query) use  ($customers) {
                     $query->whereIn('id', $customers);
-                })->get()->map->format()->sortDesc()->paginate(10);
+                })->get()->map->format()->sortDesc();
 
             break;
 
@@ -61,18 +61,22 @@ class OrderRepository implements OrderRepositoryInterface
 
                 $reseller = $user->reseller;
 
+                if($reseller->customers->count() == 0){
+                    $customers = '0';
+                    $orders = '0';
+                }else{
                     $customers = Customer::whereHas('resellers', function($query) use  ($reseller) {
                         $query->whereIn('id', $reseller);
                     })->pluck('id');
                     $orders = Order::with(['status'])->whereHas('customer', function($query) use  ($customers) {
                         $query->whereIn('id', $customers);
-                    })->get()->map->format()->sortDesc()->paginate(10);
-
+                    })->get()->map->format()->sortDesc();
+                }
 
             break;
             case config('app.customer'):
 
-                $orders = $user->customer->orders->map->format()->sortDesc()->paginate(10);
+                $orders = $user->customer->orders->map->format()->sortDesc();
             break;
 
             default:

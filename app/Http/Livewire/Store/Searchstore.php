@@ -41,27 +41,6 @@ class Searchstore extends Component
 
             $this->level = $this->getUserLevel();
 
-            // switch ($this->category) {
-            //     case 'kaspersky':
-            //         $this->prices = Price::where('product_vendor',$this->category)->first();
-            //         // $this->priceList = PriceList::wherein('instance_id',$this->instance)
-            //         // ->join('products', 'prices.product_sku', '=', 'products.sku')
-            //         // ->pluck('id')
-            //         // ->toArray();
-            //         break;
-
-            //         case 'microsoft':
-
-            //             // $this->priceList = PriceList::wherein('instance_id',$this->instance)
-            //             // ->join('products', 'prices.product_sku', '=', 'products.sku')
-            //             // ->pluck('id')
-            //             // ->toArray();
-            //             break;
-
-            //     default:
-            //         # code...
-            //         break;
-            // }
 
             switch ($this->level) {
 
