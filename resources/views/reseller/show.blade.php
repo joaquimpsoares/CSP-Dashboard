@@ -60,77 +60,24 @@
                     <span>{{ ucwords(trans_choice('messages.user', 2)) }}</span>
                     <span aria-hidden="true" :class="openTab === 3 ? activeClasses : inactiveClasses"></span>
                 </a>
-                <a @click="openTab = 4" :class="{ '-mb-px': openTab === 4 }" href="#" class="relative flex-1 min-w-0 px-4 py-4 overflow-hidden text-sm font-medium text-center text-gray-500 bg-white rounded-r-lg hover:text-gray-700 group hover:bg-gray-50 focus:z-10">
+                {{-- <a @click="openTab = 4" :class="{ '-mb-px': openTab === 4 }" href="#" class="relative flex-1 min-w-0 px-4 py-4 overflow-hidden text-sm font-medium text-center text-gray-500 bg-white rounded-r-lg hover:text-gray-700 group hover:bg-gray-50 focus:z-10">
                     <span>Billing</span>
                     <span aria-hidden="true" :class="openTab === 4 ? activeClasses : inactiveClasses"></span>
-                </a>
+                </a> --}}
             </nav>
         </div>
         <div x-show="openTab === 1">
             <section class="py-5" aria-labelledby="applicant-information-title">
-                <div class="px-4 py-5 bg-white border-b border-gray-200 sm:px-6">
-                    <div class="flex flex-wrap items-center justify-between -mt-2 -ml-4 sm:flex-nowrap">
-                        <div class="mt-2 ml-4">
-                            <h3 class="text-lg font-medium leading-6 text-gray-900">
-                                {{ ucwords(trans_choice('messages.customer', 2)) }}
-                            </h3>
-                            <div class="flex-shrink-0 mt-2 ml-4">
-                                <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fe fe-plus"></i> {{ ucwords(__('messages.options')) }}</button>
-                                <div class="dropdown-menu">
-                                    @if(Auth::user()->userLevel->id === 4)
-                                    <a class="dropdown-item" href="{{route('customer.create')}}"><i class="mr-2 fa fa-plus"></i>{{ ucwords(__('messages.new_customer')) }}</a>
-                                    @endif
-                                </div>
-                            </div>
 
-                            <div class="flex-shrink-0 mt-2 ml-4">
-                                <div class="mb-0 ml-5 btn-group">
+                    @livewire('customer.customer-table', ['customers' => $customers])
 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="px-4 py-5 border-t border-gray-200 sm:px-6">
-                        <div class="flex flex-col">
-                            <div class="mb-5 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                <div class="inline-block min-w-full py-5 align-middle sm:px-6 lg:px-8">
-                                    <div class="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
-                                        @include('customer.partials.table', ['customers' => $customers])
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </section>
         </div>
         <div x-show="openTab === 2">
             <section class="py-5" aria-labelledby="applicant-information-title">
-                <div class="px-4 py-5 bg-white border-b border-gray-200 sm:px-6">
-                    <div class="flex flex-wrap items-center justify-between -mt-2 -ml-4 sm:flex-nowrap">
-                        <div class="mt-2 ml-4">
-                            <h3 class="text-lg font-medium leading-6 text-gray-900">
-                                {{ ucwords(trans_choice('messages.subscription', 2)) }}
-                            </h3>
-                            <div class="flex-shrink-0 mt-2 ml-4">
-                                <div class="mb-0 ml-5 btn-group">
 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="px-4 py-5 border-t sm:px-6">
-                        <div class="flex flex-col">
-                            <div class="mb-5 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                <div class="inline-block min-w-full py-5 align-middle sm:px-6 lg:px-8">
-                                    <div class="overflow-hidden border-b sm:rounded-lg">
                                         @include('subscriptions.partials.table', ['subscriptions' => $subscriptions])
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </section>
         </div>
         <div x-show="openTab === 3">
