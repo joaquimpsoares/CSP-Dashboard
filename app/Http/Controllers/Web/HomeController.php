@@ -117,7 +117,7 @@ class HomeController extends Controller
 
             case config('app.provider'):
 
-                $orders = $this->orderRepository->all();
+                $orders = Order::get();
                 $provider = Auth::getUser()->provider;
 
                 foreach ($provider->resellers as $reseller) {
