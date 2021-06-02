@@ -6,10 +6,8 @@
 <div class="panel panel-inverse">
     <!-- begin panel-heading -->
     <div class="panel-heading">
-
         <!-- end panel-heading -->
         <div class="panel-body">
-
             @if(auth()->user()->user_level_id == 1)
             <div class="my-3 row flex-md-row flex-column-reverse">
                 <div class="col-md-12">
@@ -20,12 +18,9 @@
                 </div>
             </div>
             @endif
-
             <!-- This example requires Tailwind CSS v2.0+ -->
             <div class="relative px-4 pt-16 pb-20 bg-gray-50 sm:px-6 lg:pt-24 lg:pb-28 lg:px-8">
-                <div class="absolute inset-0">
-                    <div class="bg-white h-1/3 sm:h-2/3"></div>
-                </div>
+
                 <div class="relative mx-auto max-w-7xl">
                     <div class="text-center">
                         <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
@@ -38,14 +33,14 @@
                             <div class="flex-shrink-0">
                                 <img class="object-cover w-full h-48" src="{{$new->image}}" alt="">
                             </div>
-                            <div class="flex flex-col justify-between flex-1 p-6 bg-white">
+                            <div class="flex flex-col justify-between flex-1 p-6 ">
                                 <div class="flex-1">
                                     <p class="text-sm font-medium text-indigo-600">
-                                        <a href="#" class="hover:underline">
-                                            Article
+                                        <a href="{{route('news.view', $new->id)}}" class="hover:underline">
+                                            {{$new->category}}
                                         </a>
                                     </p>
-                                    <a href="#" class="block mt-2">
+                                    <a href="{{route('news.view', $new->id)}}" class="block mt-2">
                                         <p class="text-xl font-semibold text-gray-900">
                                             {{$new->title}}
                                         </p>
@@ -58,7 +53,7 @@
                                 @endphp
                                 <div class="flex items-center mt-6">
                                     <div class="flex-shrink-0">
-                                        <a href="#">
+                                        <a href="{{route('news.view', $new->id)}}">
                                             <span class="sr-only">Roel Aufderehar</span>
                                             <img class="w-10 h-10 rounded-full" src="{{$user->avatar}}" alt="">
                                         </a>
@@ -92,6 +87,9 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
 
 
 

@@ -301,4 +301,5 @@ return [
     'reseller.company_name' => 'company name',
     'resellersCount' =>'resellers',
     'export' =>'export',
+    'download' =>'download',
 ];

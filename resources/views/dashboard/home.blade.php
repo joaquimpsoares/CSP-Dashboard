@@ -57,7 +57,7 @@
                                         </a>
                                     </h3>
                                     <p class="mt-1 text-sm text-gray-600 line-clamp-2">
-                                        {!! \Illuminate\Support\Str::limit(\Michelf\Markdown::defaultTransform($new->description), 230, $end='...') !!}
+                                        {!! \Illuminate\Support\Str::limit(\Michelf\Markdown::defaultTransform($new->description), 130, $end='...') !!}
                                     </p>
                                 </div>
                             </li>

@@ -12,7 +12,6 @@
                 <div class="md:flex">
                     <div class="md:w-1/2">
                         <h2 class="mb-2 text-xl font-bold leading-tight text-gray-800 md:text-2xl">Welcome {{Auth::user()->name}},</h2>
-
                         <p class="mb-4 text-gray-700">Great to have you here with us, {{Auth::user()->name}} we have setup for you this account so that you can manage your
                             customers and their subscriptions, you'll find here all that you need to make your life ease.</p>
                             <p class="mb-4 text-gray-700">If you have any questions, please contact us.</p>
@@ -54,7 +53,7 @@
                                         </a>
                                     </h3>
                                     <p class="mt-1 text-sm text-gray-600 line-clamp-2">
-                                        {!! \Illuminate\Support\Str::limit(\Michelf\Markdown::defaultTransform($new->description), 230, $end='...') !!}
+                                        {!! \Illuminate\Support\Str::limit(\Michelf\Markdown::defaultTransform($new->description), 130, $end='...') !!}
                                     </p>
                                 </div>
                             </li>
