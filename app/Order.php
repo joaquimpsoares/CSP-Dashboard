@@ -2,9 +2,9 @@
 
 namespace App;
 
-use App\OrderStatus;
-use App\Http\Traits\ActivityTrait;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;;
 
 class Order extends Model
 {
@@ -32,12 +32,12 @@ class Order extends Model
 
     public function orderproduct()
     {
-    	return $this->belongsTo('App\OrderProducts', 'id', 'order_id');
+        return $this->belongsTo('App\OrderProducts', 'id', 'order_id');
     }
 
     public function status()
     {
-    	return $this->hasOne('App\OrderStatus', 'id', 'order_status_id');
+        return $this->hasOne('App\OrderStatus', 'id', 'order_status_id');
     }
 
     public function products()
@@ -53,5 +53,23 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo('App\User');
+    }
+
+    protected static function booted(){
+        static::addGlobalScope('access_level', function(Builder $query){
+            $user = Auth::user();
+            if($user && $user->userLevel->name === config('app.provider')){
+                $query->whereHas('customer', function(Builder $query) use($user){
+                //     $query->whereHas('resellers', function(Builder $query) use($user){
+                //         $query->whereHas('provider', function(Builder $query) use($user){
+                //             $query->where('id', $user->id);
+                //         });
+                //     });
+                });
+            }
+            if($user && $user->userLevel->name === config('app.reseller')){
+                $query->whereHas('customer');
+            }
+        });
     }
 }

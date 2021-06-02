@@ -29,6 +29,7 @@ return [
   'city' => 'Cidade',
   'account' => 'Conta',
   'subscriptions' => 'Subscrição | Assinaturas.',
+  'subscription' => 'Subscrição | Assinaturas.',
   'customer_table' => 'Tabela de clientes | Tabela de Clientes',
   'do_you_have_any_question_text' => 'Você tem alguma pergunta? Por favor, não hesite em nos contatar diretamente. Nossa equipe voltará para você dentro
     uma questão de horas para ajudá-lo.',

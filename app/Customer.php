@@ -117,36 +117,36 @@ public function priceLists() {
 
     // public function priceList() {
         //     return $this->belongsTo('App\PriceList');
-        // }
+    // }
 
-        public function status() {
-            return $this->belongsTo(Status::class);
-        }
-
-        public function microsoftTenantInfo() {
-            return $this->hasMany('App\MicrosoftTenantInfo');
-        }
-
-        public function microsoftLincenseInfo() {
-            return $this->hasMany('App\MicrosoftLicenseInfo');
-        }
-
-        protected static function booted(){
-            static::addGlobalScope('access_level', function(Builder $query){
-                $user = Auth::user();
-                if($user && $user->userLevel->name === config('app.provider')){
-                    $query->whereHas('resellers', function(Builder $query) use($user){
-                        $query->whereHas('provider', function(Builder $query) use($user){
-                            $query->where('id', $user->provider->id);
-                        });
-                    });
-                }
-                if($user && $user->userLevel->name === config('app.reseller')){
-                    $query->whereHas('resellers', function(Builder $query) use($user){
-                        $query->where('id', $user->reseller->id);
-                    });
-                }
-            });
-        }
-
+    public function status() {
+        return $this->belongsTo(Status::class);
     }
+
+    public function microsoftTenantInfo() {
+        return $this->hasMany('App\MicrosoftTenantInfo');
+    }
+
+    public function microsoftLincenseInfo() {
+        return $this->hasMany('App\MicrosoftLicenseInfo');
+    }
+
+    protected static function booted(){
+        static::addGlobalScope('access_level', function(Builder $query){
+            $user = Auth::user();
+            if($user && $user->userLevel->name === config('app.provider')){
+                $query->whereHas('resellers', function(Builder $query) use($user){
+                    $query->whereHas('provider', function(Builder $query) use($user){
+                        $query->where('id', $user->provider->id);
+                    });
+                });
+            }
+            if($user && $user->userLevel->name === config('app.reseller')){
+                $query->whereHas('resellers', function(Builder $query) use($user){
+                    $query->where('id', $user->reseller->id);
+                });
+            }
+        });
+    }
+
+}

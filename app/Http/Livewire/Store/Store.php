@@ -52,7 +52,7 @@ class Store extends Component
             ]);
 
         $this->emit('updateCart');
-        $this->showModal = false;
+        $this->notify('Product added to cart: '. $productId->name );
 
     }
 

@@ -2,13 +2,14 @@
 
 namespace App\Providers;
 
-use Illuminate\Database\Eloquent\Model;
+use Livewire\Component;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
@@ -35,6 +36,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        Component::macro('notify', function ($message) {
+            $this->dispatchBrowserEvent('notify', $message);
+        });
+
         Model::unguard();
         Blade::directive('money', function ($amount) {
             return "<?php echo number_format($amount , 2) ; ?>";

@@ -9,13 +9,24 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class OrderTable extends Component
 {
+    public $search = '';
     public function exportSelected()
     {
-        return Excel::download(new OrdersExport, 'Providers.xlsx');
+        return Excel::download(new OrdersExport, 'Orders.xlsx');
     }
     public function render()
     {
-        $orders = Order::with(['customer', 'status'])->paginate(10);
+
+        $search = $this->search;
+
+        $query = Order::query();
+
+        $orders = $query
+        ->where(function ($q)  {
+            $q->where('details', "like", "%{$this->search}%");
+            $q->orWhere('id', 'like', "%{$this->search}%");
+        })->
+        with(['customer', 'status'])->paginate(10);
 
         $orders->getCollection()->map(function(Order $order){
             $order->setRawAttributes(json_decode(json_encode($order->format()), true)); // Coverts to array recursively (make helper from it?)

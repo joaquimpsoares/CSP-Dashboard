@@ -21,6 +21,7 @@
             {{-- @include('layouts.header') --}}
             <div class="px-4 py-8 md:max-w-8xl md:mx-auto">
                 @include('layouts.messages')
+                <x-messages></x-messages>
                 {{-- @include('layouts.bread') --}}
                 @yield('page-header')
                 @yield('content')

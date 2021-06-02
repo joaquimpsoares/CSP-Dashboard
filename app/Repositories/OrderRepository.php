@@ -32,12 +32,12 @@ class OrderRepository implements OrderRepositoryInterface
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
 
-                $orders = Order::with(['status'])->get()->map->format()->sortDesc()->toArray();
+                $orders = Order::with(['status'])->get()->map->format()->sortDesc()->paginate(10);
 
             break;
 
             case config('app.admin'):
-                $orders = Order::with(['status'])->get()->map->format()->sortDesc()->toArray();
+                $orders = Order::with(['status'])->get()->map->format()->sortDesc()->paginate(10);
             break;
 
 
@@ -53,7 +53,7 @@ class OrderRepository implements OrderRepositoryInterface
 
                 $orders = Order::with(['status'])->whereHas('customer', function($query) use  ($customers) {
                     $query->whereIn('id', $customers);
-                })->get()->map->format()->sortDesc();
+                })->get()->map->format()->sortDesc()->paginate(10);
 
             break;
 
@@ -70,13 +70,13 @@ class OrderRepository implements OrderRepositoryInterface
                     })->pluck('id');
                     $orders = Order::with(['status'])->whereHas('customer', function($query) use  ($customers) {
                         $query->whereIn('id', $customers);
-                    })->get()->map->format()->sortDesc();
+                    })->get()->map->format()->sortDesc()->paginate(10);
                 }
 
             break;
             case config('app.customer'):
 
-                $orders = $user->customer->orders->map->format()->sortDesc();
+                $orders = $user->customer->orders->map->format()->sortDesc()->paginate(10);
             break;
 
             default:

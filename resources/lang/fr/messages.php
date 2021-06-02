@@ -29,6 +29,7 @@ return [
   'city' => 'Ville',
   'account' => 'Compte',
   'subscriptions' => 'Abonnement | Abonnements',
+  'subscription' => 'Abonnement | Abonnements',
   'customer_table' => 'Table client | Table des clients',
   'do_you_have_any_question_text' => 'Avez-vous des questions? N\'hésitez pas à nous contacter directement. Notre équipe reviendra à vous dans
     une question d\'heures pour vous aider.',

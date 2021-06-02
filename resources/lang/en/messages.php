@@ -32,6 +32,7 @@ return [
     'city' => 'City',
     'account' => 'Account',
     'subscriptions' => 'Subscription|Subscriptions',
+    'subscription' => 'Subscription|Subscriptions',
     'customer_table' => 'Customer Table',
     'do_you_have_any_question_text' => 'Do you have any questions? Please do not hesitate to contact us directly. Our team will come back to you within
     a matter of hours to help you.',
