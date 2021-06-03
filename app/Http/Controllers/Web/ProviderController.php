@@ -71,13 +71,6 @@ class ProviderController extends Controller
 
     }
 
-    public function showProfile()
-    {
-
-        return view('profile.show-profile');
-
-    }
-
     public function index(Provider $provider)
     {
 

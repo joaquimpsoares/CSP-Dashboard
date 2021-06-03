@@ -35,8 +35,6 @@ class InstanceController extends Controller
     public function index()
     {
         $instances = Instance::all();
-        // $provider = Auth::user()->provider;
-        // $provider = Instance::where('provider_id', $provider->id)->get();
 
         return view('packages.cards', compact('instances'));
     }

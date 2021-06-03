@@ -185,16 +185,17 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
 
         // Routes that platform managers, providers, resellers and customers can access
         Route::group(['middleware' => ['role:Super Admin|Admin|Provider|Reseller|Sub Reseller|Customer']], function () {
-            Route::get('/profile/show-profile', 'ProviderController@showProfile')->name('profile.show-profile');
 
             //User Routes
             Route::resource('/user', 'UsersController');
             Route::get('/user/profile/{user}', 'UsersController@profile')->name('user.profile');
+            Route::get('/user/{user}/notifications', 'UsersController@notifications')->name('user.notifications');
+            Route::get('/profile/{user}/show-profile', 'UsersController@showprofile')->name('profile.showprofile');
+            // Route::get('/profile/{user}/show-profile', 'UsersController@showprofile')->name('profile.show-profile');
             Route::post('/user/updatepassword/{user}', 'UsersController@updatepassword')->name('user.updatepassword');
             Route::put('update/login-details/{user}', 'UsersController@updatelogin')->name('user.update.login-details');
 
-            Route::get('/customer/serviceCostsLineitems/{id}', 'CustomerController@serviceCostsLineitems')
-            ->name('customer.serviceCostsLineitems');
+            Route::get('/customer/serviceCostsLineitems/{id}', 'CustomerController@serviceCostsLineitems')->name('customer.serviceCostsLineitems');
             Route::group(['middleware' => ['check_customer']], function ()
             {
 

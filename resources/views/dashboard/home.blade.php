@@ -1,13 +1,14 @@
 @extends('layouts.master')
-@section('css')
-<!-- Data table css -->
+{{-- @section('css') --}}
 
-<!-- Slect2 css -->
-{{-- <link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" /> --}}
-@endsection
+
+{{-- @endsection --}}
 
 @section('content')
-{{-- @dd($news) --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+
 <div class="grid grid-cols-1 gap-6 mx-auto mt-8 sm:px-6 lg:grid-flow-col-dense lg:grid-cols-3">
     <div class="space-y-6 lg:col-start-1 lg:col-span-2">
         <section aria-labelledby="bignews-title">
@@ -74,6 +75,8 @@
         </section>
     </div>
 </div>
+
+
 
 <div class="p-6 mb-10 ">
     {{-- @dd(Auth::user()->userLevel->name == "Super Admin") --}}
@@ -223,7 +226,62 @@
             </div>
         </div>
     </dl>
-
+    <div class="container px-4 py-4 mx-auto">
+        <h3 class="block mb-3 text-xl font-semibold text-gray-700"></h3>
+        <div class="flex">
+            <div class="w-1/2">
+                <div class="p-6 bg-white rounded-md shadow">
+                    <div class="pb-2 mb-2">
+                        <h3 class="text-lg font-semibold text-gray-600">Bar Chart</h3>
+                        <p class="text-sm text-gray-500">Last Mont Orders</p>
+                    </div>
+                    <canvas id="chartjs-0" class="chartjs" width="undefined" height="undefined"></canvas>
+                    {{-- @dd($data) --}}
+                    <script>
+                        new Chart(document.getElementById("chartjs-0"), {
+                            "type": "bar",
+                            "data": {
+                                "labels": {!!$orderlabel!!},
+                                "datasets": [{
+                                    "label": "Orders",
+                                    "data": {!!$orderdata!!},
+                                    "fill": false,
+                                    "borderColor": "rgb(75, 192, 192)",
+                                    "lineTension": 0.1
+                                }]
+                            },
+                            "options": {}
+                        });
+                    </script>
+                </div>
+            </div>
+            <div class="w-1/2 ml-4">
+                <div class="p-6 bg-white rounded-md shadow">
+                    <div class="pb-2 mb-2">
+                        <h3 class="text-lg font-semibold text-gray-600">Bar Chart</h3>
+                        <p class="text-sm text-gray-500">Profit Share between customers</p>
+                    </div>
+                    <canvas id="chartjs-1" class="chartjs" width="undefined" height="undefined"></canvas>
+                    <script>
+                        new Chart(document.getElementById("chartjs-1"), {
+                            "type": "bar",
+                            "data": {
+                                "labels": {!!$customerlabel!!},
+                                "datasets": [{
+                                    "label": "Orders",
+                                    "data": {!!$customerdata!!},
+                                    "fill": false,
+                                    "borderColor": "rgb(75, 192, 192)",
+                                    "lineTension": 0.1
+                                }]
+                            },
+                            "options": {}
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="overflow-hidden bg-gray-200 divide-y divide-gray-200 rounded-lg shadow sm:divide-y-0 sm:grid sm:grid-cols-2 sm:gap-px">
         <div class="relative p-6 bg-white rounded-tl-lg rounded-tr-lg sm:rounded-tr-none group focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
@@ -390,11 +448,6 @@
 </div>
 
 
-
-
 @endsection
-
-{{-- @section('scripts') --}}
-
-
-{{-- @endsection --}}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js">
+</script>

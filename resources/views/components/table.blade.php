@@ -51,7 +51,7 @@
         </div>
     </div>
 
-    <div class="flex justify-center mt-4">
+    <div class="flex justify-center mt-4 card-footer">
         {{ $list->links() }}
     </div>
 </div>

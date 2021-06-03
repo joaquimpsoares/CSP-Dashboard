@@ -26,7 +26,7 @@ class SuccessJob extends Notification
     public function __construct(JobProcessed $event)
     {
         $this->event = $event;
-    
+
     }
 
     /**
@@ -38,7 +38,6 @@ class SuccessJob extends Notification
     public function via($notifiable)
     {
         return explode(', ', $notifiable->notifications_preferences);
-        // return ['msteams', 'mail', 'database'];
     }
 
     public function toMsTeams($notifiable)

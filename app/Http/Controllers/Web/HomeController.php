@@ -77,7 +77,36 @@ class HomeController extends Controller
 
                 $news = News::take(2)->get();
 
-                return view('home', compact('orders','providers','resellers','customers','subscriptions','news'));
+                $orderrecord = Order::select(\DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
+                ->where('created_at', '>', Carbon::today()->subDay(12))
+                ->groupBy('day_name','month')
+                ->orderBy('month')
+                ->get();
+
+                 foreach($orderrecord as $row) {
+                    $orderlabel['label'][] = json_encode($row->day_name);
+                    $orderdata['data'][] = (int) $row->count;
+                  }
+
+                  $orderlabel = json_encode($orderlabel['label']);
+                  $orderdata  = json_encode($orderdata['data']);
+
+                  $customerrecord = Customer::select(\DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
+                ->where('created_at', '>', Carbon::today()->subDay(12))
+                ->groupBy('day_name','month')
+                ->orderBy('month')
+                ->get();
+
+
+                 foreach($customerrecord as $row) {
+                    $customerlabel['label'][] = json_encode($row->day_name);
+                    $customerdata['data'][] = (int) $row->count;
+                  }
+
+                  $customerlabel = json_encode($customerlabel['label']);
+                  $customerdata  = json_encode($customerdata['data']);
+
+                return view('home', compact('orders','providers','resellers','customers','subscriptions','news','orderdata','orderlabel','customerlabel','customerdata'));
 
             break;
 

@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 
 class ShowProfile extends Component
 {
+    public $user;
+
     use UserTrait;
     use WithFileUploads;
 
@@ -147,7 +149,6 @@ class ShowProfile extends Component
     }
     public function render()
     {
-
         $account = $this->account;
         $countries  = Country::pluck( 'name','id');
 
