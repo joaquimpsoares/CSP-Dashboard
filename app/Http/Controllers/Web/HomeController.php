@@ -78,7 +78,7 @@ class HomeController extends Controller
                 $news = News::take(2)->get();
 
                 $orderrecord = Order::select(\DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
-                ->where('created_at', '>', Carbon::today()->subDay(12))
+                ->where('created_at', '>', Carbon::today()->subMonth(12))
                 ->groupBy('day_name','month')
                 ->orderBy('month')
                 ->get();
@@ -92,7 +92,7 @@ class HomeController extends Controller
                   $orderdata  = json_encode($orderdata['data']);
 
                   $customerrecord = Customer::select(\DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
-                ->where('created_at', '>', Carbon::today()->subDay(12))
+                ->where('created_at', '>', Carbon::today()->subMonth(12))
                 ->groupBy('day_name','month')
                 ->orderBy('month')
                 ->get();

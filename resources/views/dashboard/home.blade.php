@@ -78,8 +78,7 @@
 
 
 
-<div class="p-6 mb-10 ">
-    {{-- @dd(Auth::user()->userLevel->name == "Super Admin") --}}
+<div class="p-6 mb-10 -mt-10 ">
     <dl class="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-2 @if(Auth::user()->userLevel->name == "Super Admin") lg:grid-cols-5 @endif ?? lg:grid-cols-4 ">
         <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
             <div class="flex-grow px-4 py-5 sm:p-6">
@@ -226,17 +225,16 @@
             </div>
         </div>
     </dl>
-    <div class="container px-4 py-4 mx-auto">
+    <div class="mx-auto mb-3">
         <h3 class="block mb-3 text-xl font-semibold text-gray-700"></h3>
         <div class="flex">
             <div class="w-1/2">
                 <div class="p-6 bg-white rounded-md shadow">
                     <div class="pb-2 mb-2">
-                        <h3 class="text-lg font-semibold text-gray-600">Bar Chart</h3>
-                        <p class="text-sm text-gray-500">Last Mont Orders</p>
+                        <h3 class="text-lg font-semibold text-gray-600">Orders Evolution [Year]</h3>
+                        {{-- <p class="text-sm text-gray-500">Last Mont Orders</p> --}}
                     </div>
                     <canvas id="chartjs-0" class="chartjs" width="undefined" height="undefined"></canvas>
-                    {{-- @dd($data) --}}
                     <script>
                         new Chart(document.getElementById("chartjs-0"), {
                             "type": "bar",
@@ -245,7 +243,7 @@
                                 "datasets": [{
                                     "label": "Orders",
                                     "data": {!!$orderdata!!},
-                                    "fill": false,
+                                    "fill": true,
                                     "borderColor": "rgb(75, 192, 192)",
                                     "lineTension": 0.1
                                 }]
@@ -258,8 +256,8 @@
             <div class="w-1/2 ml-4">
                 <div class="p-6 bg-white rounded-md shadow">
                     <div class="pb-2 mb-2">
-                        <h3 class="text-lg font-semibold text-gray-600">Bar Chart</h3>
-                        <p class="text-sm text-gray-500">Profit Share between customers</p>
+                        <h3 class="text-lg font-semibold text-gray-600">Customers Evolution [Year]</h3>
+                        {{-- <p class="text-sm text-gray-500">Profit Share between customers</p> --}}
                     </div>
                     <canvas id="chartjs-1" class="chartjs" width="undefined" height="undefined"></canvas>
                     <script>
@@ -268,7 +266,7 @@
                             "data": {
                                 "labels": {!!$customerlabel!!},
                                 "datasets": [{
-                                    "label": "Orders",
+                                    "label": "Customers",
                                     "data": {!!$customerdata!!},
                                     "fill": false,
                                     "borderColor": "rgb(75, 192, 192)",
