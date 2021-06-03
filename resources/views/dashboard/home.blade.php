@@ -237,7 +237,7 @@
                     <canvas id="chartjs-0" class="chartjs" width="undefined" height="undefined"></canvas>
                     <script>
                         new Chart(document.getElementById("chartjs-0"), {
-                            "type": "bar",
+                            "type": "line",
                             "data": {
                                 "labels": {!!$orderlabel!!},
                                 "datasets": [{
@@ -262,7 +262,7 @@
                     <canvas id="chartjs-1" class="chartjs" width="undefined" height="undefined"></canvas>
                     <script>
                         new Chart(document.getElementById("chartjs-1"), {
-                            "type": "bar",
+                            "type": "line",
                             "data": {
                                 "labels": {!!$customerlabel!!},
                                 "datasets": [{
