@@ -5,8 +5,10 @@
 {{-- @endsection --}}
 
 @section('content')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<!-- Charting library -->
+<script src="https://unpkg.com/chart.js@2.9.3/dist/Chart.min.js"></script>
+<!-- Chartisan -->
+<script src="https://unpkg.com/@chartisan/chartjs@^2.1.0/dist/chartisan_chartjs.umd.js"></script>
 
 
 <div class="grid grid-cols-1 gap-6 mx-auto mt-8 sm:px-6 lg:grid-flow-col-dense lg:grid-cols-3">
@@ -241,7 +243,7 @@
                                 "label": "Orders",
                                 "data": {!!$orderdata!!},
                                 "fill": true,
-                                "borderColor": "rgb(75, 192, 192)",
+                                "borderColor": "rgb(99, 102, 241, 1)",
                                 "lineTension": 0.1
                             }]
                         },
@@ -266,7 +268,7 @@
                                 "label": "Customers",
                                 "data": {!!$customerdata!!},
                                 "fill": true,
-                                "borderColor": "rgb(75, 192, 192)",
+                                "borderColor": "rgb(99, 102, 241, 1)",
                                 "lineTension": 0.1
                             }]
                         },
