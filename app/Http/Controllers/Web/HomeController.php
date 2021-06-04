@@ -161,7 +161,7 @@ class HomeController extends Controller
                 $orderMonth = Order::whereMonth(
                     'created_at', '=', Carbon::now()->subMonth()->month
                 );
-
+                // dd($orderMonth);
                 if($orders){
                     $countOrders = ($orders->count()-$orderMonth->count());
                 }else{
@@ -186,13 +186,21 @@ class HomeController extends Controller
                 ->orderBy('month')
                 ->get();
 
-                 foreach($orderrecord as $row) {
+
+                foreach($orderrecord as $row) {
                     $orderlabel['label'][] = json_encode($row->day_name);
                     $orderdata['data'][] = (int) $row->count;
-                  }
+                }
 
-                  $orderlabel = json_encode($orderlabel['label']);
-                  $orderdata  = json_encode($orderdata['data']);
+                if($orderrecord){
+
+                }else{
+                    $orderlabel = json_encode($orderlabel['label']);
+                    $orderdata  = json_encode($orderdata['data']);
+                };
+
+                $orderlabel = json_encode(['0']);
+                $orderdata  = json_encode(['0']);
 
                   $customerrecord = Customer::select(\DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
                 ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
@@ -218,7 +226,7 @@ class HomeController extends Controller
                 $countCustomers = $user->reseller->customers->count();
                 $subscriptions = $this->resellerRepository->getSubscriptions($user->reseller);
                 $countSubscriptions = $subscriptions->count();
-                $orders = $this->orderRepository->all();
+                $orders = Order::get();
 
                 $provider = $user->reseller->provider;
 
@@ -241,14 +249,16 @@ class HomeController extends Controller
                         return $name;
                     }
                 });
+
                 $abouttoexpire = $abouttoexpire->filter();
 
                 $reseller = $user->customer->resellers->first()->provider;
+                $orders = Order::get();
 
                 $news = News::take(2)->get();
 
 
-                return view('subscriptions.customer', compact('subscriptions', 'customer','abouttoexpire','news'));
+                return view('subscriptions.customer', compact('subscriptions', 'customer','abouttoexpire','news','orders'));
 
             break;
 
