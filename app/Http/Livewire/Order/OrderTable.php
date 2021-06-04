@@ -19,7 +19,7 @@ class OrderTable extends Component
 
         $search = $this->search;
 
-        $query = Order::query();
+        $query = Order::query()->orderBy('id', 'DESC');
 
         $orders = $query
         ->where(function ($q)  {
@@ -32,6 +32,7 @@ class OrderTable extends Component
             $order->setRawAttributes(json_decode(json_encode($order->format()), true)); // Coverts to array recursively (make helper from it?)
             return $order;
         });
+
         return view('livewire.order.order-table',compact('orders'));
     }
 }
