@@ -78,12 +78,19 @@ class HomeController extends Controller
                 $news = News::take(2)->get();
 
                 $orderrecord = Order::select(\DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
-                ->where('created_at', '>', Carbon::today()->subMonth(12))
+                ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
                 ->groupBy('day_name','month')
                 ->orderBy('month')
                 ->get();
 
+
                  foreach($orderrecord as $row) {
+                    $orderlabel['label'][] = json_encode($row->day_name);
+                    $orderdata['data'][] = (int) $row->count;
+                  }
+
+                  foreach($orderrecord as $row) {
+                    $orderproduct['ordersproducts'][] = json_encode($row->orderproduct);
                     $orderlabel['label'][] = json_encode($row->day_name);
                     $orderdata['data'][] = (int) $row->count;
                   }
@@ -92,7 +99,7 @@ class HomeController extends Controller
                   $orderdata  = json_encode($orderdata['data']);
 
                   $customerrecord = Customer::select(\DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
-                ->where('created_at', '>', Carbon::today()->subMonth(12))
+                ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
                 ->groupBy('day_name','month')
                 ->orderBy('month')
                 ->get();
@@ -196,7 +203,6 @@ class HomeController extends Controller
                 ->groupBy('day_name','month')
                 ->orderBy('month')
                 ->get();
-
 
                  foreach($customerrecord as $row) {
                     $customerlabel['label'][] = json_encode($row->day_name);
