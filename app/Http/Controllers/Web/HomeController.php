@@ -189,14 +189,14 @@ class HomeController extends Controller
                     $orderdata['data'][] = (int) $row->count;
                 }
 
-                if($orderrecord){
+                if(!$orderrecord->isEmpty()){
                     $orderlabel = json_encode($orderlabel['label']);
                     $orderdata  = json_encode($orderdata['data']);
                 }else{
+                    $orderlabel = json_encode(['0']);
+                    $orderdata  = json_encode(['0']);
                 };
 
-                $orderlabel = json_encode(['0']);
-                $orderdata  = json_encode(['0']);
 
                   $customerrecord = Customer::select(\DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
                 ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
