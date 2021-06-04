@@ -77,8 +77,6 @@ class HomeController extends Controller
 
                 $news = News::take(2)->get();
 
-                // dd(Carbon::today()->month);
-
                 $orderrecord = Order::select(\DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
                 ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
                 ->groupBy('day_name','month')
@@ -161,7 +159,7 @@ class HomeController extends Controller
                 $orderMonth = Order::whereMonth(
                     'created_at', '=', Carbon::now()->subMonth()->month
                 );
-                // dd($orderMonth);
+
                 if($orders){
                     $countOrders = ($orders->count()-$orderMonth->count());
                 }else{
@@ -186,17 +184,15 @@ class HomeController extends Controller
                 ->orderBy('month')
                 ->get();
 
-
                 foreach($orderrecord as $row) {
                     $orderlabel['label'][] = json_encode($row->day_name);
                     $orderdata['data'][] = (int) $row->count;
                 }
 
                 if($orderrecord){
-
-                }else{
                     $orderlabel = json_encode($orderlabel['label']);
                     $orderdata  = json_encode($orderdata['data']);
+                }else{
                 };
 
                 $orderlabel = json_encode(['0']);
