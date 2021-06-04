@@ -70,8 +70,13 @@ class Order extends Model
             if($user && $user->userLevel->name === config('app.reseller')){
                 $query->whereHas('customer', function(Builder $query) use($user){
                     $query->whereHas('resellers', function(Builder $query) use($user){
+                    });
                 });
-            });
+            }
+            if($user && $user->userLevel->name === config('app.customer')){
+                $query->whereHas('customer', function(Builder $query) use($user){
+                    $query->where('customer_id', $user->customer->id);
+                });
             }
         });
     }
