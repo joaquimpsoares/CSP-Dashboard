@@ -58,18 +58,22 @@ class Order extends Model
     protected static function booted(){
         static::addGlobalScope('access_level', function(Builder $query){
             $user = Auth::user();
-            // if($user && $user->userLevel->name === config('app.provider')){
-            //     $query->whereHas('customer', function(Builder $query) use($user){
-            //     //     $query->whereHas('resellers', function(Builder $query) use($user){
-            //     //         $query->whereHas('provider', function(Builder $query) use($user){
-            //     //             $query->where('id', $user->id);
-            //     //         });
-            //     //     });
-            //     });
-            // }
+            if($user && $user->userLevel->name === config('app.provider')){
+                $query->whereHas('customer', function(Builder $query) use($user){
+                    $query->whereHas('resellers', function(Builder $query) use($user){
+                        $query->whereHas('provider', function(Builder $query) use($user){
+                            $query->where('id', $user->provider->id);
+                        });
+                    });
+                });
+            }
             if($user && $user->userLevel->name === config('app.reseller')){
-                $query->whereHas('customer');
+                $query->whereHas('customer', function(Builder $query) use($user){
+                    $query->whereHas('resellers', function(Builder $query) use($user){
+                });
+            });
             }
         });
     }
 }
+
