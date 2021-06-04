@@ -1,8 +1,3 @@
-@section('css')
-
-@endsection
-
-
 <div class="flex flex-col">
     <div class="flex flex-col items-center justify-between lg:flex-row">
         <div class="flex items-center">
@@ -37,7 +32,6 @@
             </div>
         </div>
     </div>
-
     <div class="mt-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="inline-block min-w-full px-4 py-1 align-middle">
             <div class="overflow-hidden">

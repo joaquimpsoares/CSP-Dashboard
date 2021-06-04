@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Order;
 use Throwable;
 use App\MicrosoftTenantInfo;
 use Illuminate\Http\Request;
@@ -38,9 +39,8 @@ class OrderController extends Controller
 
     public function index()
     {
-        $orders = $this->orderRepository->all();
-
-        return view('order.index', compact('orders'));
+        // $orders = Order::get()->sortDesc();
+        return view('order.index');
     }
 
     public function placeOrder(Request $request)
