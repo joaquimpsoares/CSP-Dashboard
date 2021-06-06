@@ -20,34 +20,33 @@ class MsftInvoicesController extends Controller
     */
     public function index()
     {
+            try {
+                Instance::eachById(function (Instance $instance) {
+                    $instance = Instance::where('id','2')->first();
+                    $invoices = MicrosoftInvoice::withCredentials($instance->external_id, $instance->external_token)->all();
+                    // dd($invoices);
+                    $invoices->each(function ($invoices) use ($instance) {
+                        $product = Msft_invoices::updateOrCreate([
+                            'provider_id'               => $instance->provider_id,
+                            'invoice_id'                => $invoices->invoice_id,
+                            'invoiceDate'               => $invoices->invoiceDate,
+                            'billingPeriodStartDate'    => $invoices->billingPeriodStartDate,
+                            'billingPeriodEndDate'      => $invoices->billingPeriodEndDate,
+                            'totalCharges'              => $invoices->totalCharges,
+                        ], [
+                            'instance_id'               => $instance->id,
+                            'paidAmount'                => $invoices->paidAmount,
+                            'currencyCode'              => $invoices->currencyCode,
+                            'currencySymbol'            => $invoices->currencySymbol,
+                            'pdfDownloadLink'           => $invoices->pdfDownloadLink,
+                            'invoiceDetails'            => $invoices->invoiceLineItemType,
+                            ]);
+                        });
+                    });
 
-            // try {
-            //     Instance::eachById(function (Instance $instance) {
-            //         $instance = Instance::where('id','2')->first();
-            //         $invoices = MicrosoftInvoice::withCredentials($instance->external_id, $instance->external_token)->all();
-            //         // dd($invoices);
-            //         $invoices->each(function ($invoices) use ($instance) {
-            //             $product = Msft_invoices::updateOrCreate([
-            //                 'provider_id'               => $instance->provider_id,
-            //                 'invoice_id'                => $invoices->invoice_id,
-            //                 'invoiceDate'               => $invoices->invoiceDate,
-            //                 'billingPeriodStartDate'    => $invoices->billingPeriodStartDate,
-            //                 'billingPeriodEndDate'      => $invoices->billingPeriodEndDate,
-            //                 'totalCharges'              => $invoices->totalCharges,
-            //             ], [
-            //                 'instance_id'               => $instance->id,
-            //                 'paidAmount'                => $invoices->paidAmount,
-            //                 'currencyCode'              => $invoices->currencyCode,
-            //                 'currencySymbol'            => $invoices->currencySymbol,
-            //                 'pdfDownloadLink'           => $invoices->pdfDownloadLink,
-            //                 'invoiceDetails'            => $invoices->invoiceLineItemType,
-            //                 ]);
-            //             });
-            //         });
-
-            //     } catch (Exception $e) {
-            //         echo ('Error importing products: ' . $e->getMessage());
-            // }
+                } catch (Exception $e) {
+                    echo ('Error importing products: ' . $e->getMessage());
+            }
 
                 $invoices = Msft_invoices::paginate(10);
 
@@ -58,8 +57,6 @@ class MsftInvoicesController extends Controller
                 ->orderBy('invoiceDate', 'asc')
                 ->get();
 
-                // dd($sales);
-
                  foreach($sales as $row) {
                     $customerlabel['label'][] = json_encode($row->date);
                     $customerdata['data'][] = (int) $row->total;
@@ -67,8 +64,8 @@ class MsftInvoicesController extends Controller
 
                   $customerlabel = json_encode($customerlabel['label']);
                   $customerdata  = json_encode($customerdata['data']);
-                // dd($invoices->first()->provider);
-                return view('msft/index', compact('invoices','customerlabel','customerdata'));
+
+                  return view('msft/index', compact('invoices','customerlabel','customerdata'));
 
             }
 
