@@ -304,5 +304,10 @@ return [
     'reseller.company_name' => 'company name',
     'resellersCount' =>'resellers',
     'export' =>'export',
-    'download' =>'download',
+    'invoice_id' =>'invoice id',
+    'provider_id' =>'provider',
+    'totalCharges' =>'total charges',
+    'paidAmount' =>'paid amount',
+    'invoiceDate' =>'invoice date',
+
 ];

@@ -39,7 +39,6 @@ class OrderController extends Controller
 
     public function index()
     {
-        // $orders = Order::get()->sortDesc();
         return view('order.index');
     }
 

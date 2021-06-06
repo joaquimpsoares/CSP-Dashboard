@@ -17,14 +17,6 @@ use App\Http\Controllers\Auth\LoginController;
 // Route::post('registerInvitation', 'UsersController@registerInvitation')->name('registerInvitation');
 
 
-Route::get('invoices/index', [
-    'as' => 'invoices.index',
-    'uses' => 'MsftInvoicesController@index'
-]);
-Route::get('invoices/downloadinvoice', [
-    'as' => 'invoices.downloadinvoice',
-    'uses' => 'MsftInvoicesController@downloadInvoice'
-]);
 
 Route::get('exportexcel', 'AnalyticController@exportexcel')->name('exportexcel');
 
@@ -78,6 +70,14 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
         // Routes that platform managers and providers can access
         Route::group(['middleware' => ['role:Super Admin|Admin|Provider']], function ()
         {
+            Route::get('invoices/index', [
+                'as' => 'invoices.index',
+                'uses' => 'MsftInvoicesController@index'
+            ]);
+            Route::get('invoices/downloadinvoice', [
+                'as' => 'invoices.downloadinvoice',
+                'uses' => 'MsftInvoicesController@downloadInvoice'
+            ]);
 
             Route::get('/instances/kascreate', 'InstanceController@kascreate')->name('instances.kascreate');
             Route::resource('/instances', 'InstanceController');
