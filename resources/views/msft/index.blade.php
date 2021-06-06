@@ -102,7 +102,6 @@
                                 'totalCharges' => null,
                                 'paidAmount' => null,
                                 'invoiceDate' => null,
-                                'created_at' => null
                                 ]"
                                 :listElementActions="[
                                 [
