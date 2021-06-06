@@ -48,12 +48,12 @@ class MsftInvoicesController extends Controller
             //         echo ('Error importing products: ' . $e->getMessage());
             // }
 
-                $invoices = Msft_invoices::paginate(10);
+                $invoices = Msft_invoices::sort('id', 'asc')->paginate(10);
 
                 $sales = DB::table('msft_invoices')
                 ->whereyear('invoiceDate', Carbon::today()->year)
                 ->select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
-                ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
+                // ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
                 ->orderBy('invoiceDate', 'asc')
                 ->get();
 
