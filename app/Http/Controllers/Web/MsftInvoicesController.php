@@ -34,11 +34,11 @@ class MsftInvoicesController extends Controller
                             'billingPeriodStartDate'    => $invoices->billingPeriodStartDate,
                             'billingPeriodEndDate'      => $invoices->billingPeriodEndDate,
                             'totalCharges'              => $invoices->totalCharges,
-                        ], [
                             'paidAmount'                => $invoices->paidAmount,
                             'currencyCode'              => $invoices->currencyCode,
                             'currencySymbol'            => $invoices->currencySymbol,
                             'pdfDownloadLink'           => $invoices->pdfDownloadLink,
+                        ], [
                             'invoiceDetails'            => $invoices->invoiceLineItemType,
                             ]);
                         });
