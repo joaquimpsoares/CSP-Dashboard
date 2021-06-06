@@ -17,7 +17,10 @@ use App\Http\Controllers\Auth\LoginController;
 // Route::post('registerInvitation', 'UsersController@registerInvitation')->name('registerInvitation');
 
 
-
+Route::get('invoices/index', [
+    'as' => 'invoices.index',
+    'uses' => 'MsftInvoicesController@index'
+]);
 
 Route::get('exportexcel', 'AnalyticController@exportexcel')->name('exportexcel');
 
