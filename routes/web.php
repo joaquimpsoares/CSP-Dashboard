@@ -21,6 +21,10 @@ Route::get('invoices/index', [
     'as' => 'invoices.index',
     'uses' => 'MsftInvoicesController@index'
 ]);
+Route::get('invoices/downloadinvoice', [
+    'as' => 'invoices.downloadinvoice',
+    'uses' => 'MsftInvoicesController@downloadInvoice'
+]);
 
 Route::get('exportexcel', 'AnalyticController@exportexcel')->name('exportexcel');
 

@@ -21,9 +21,60 @@ class MsftInvoicesController extends Controller
 
         try {
             Instance::eachById(function (Instance $instance) {
-dd($instance);
-                $products = MicrosoftInvoice::withCredentials($instance->external_id, $instance->external_token);
-// dd($products);
+                $instance = Instance::where('id','2')->first();
+                $products = MicrosoftInvoice::withCredentials($instance->external_id, $instance->external_token)->all();
+dd($products);
+                // $products->each(function ($importedProduct) use ($instance) {
+                //     $product = Product::updateOrCreate([
+                //         'sku'                       => $importedProduct[0]->productId,
+                //         'instance_id'               => $instance->id,
+                //         'billing'                   => "software",
+                //         'addons'                    => "[]",
+                //         'category'                  => "Perpetual Software",
+                //     ], [
+                //         'name'                      => $importedProduct[0]->title,
+                //         'description'               => $importedProduct[0]->description,
+                //         'uri'                       => $importedProduct[0]->uri,
+                //         'minimum_quantity'          => $importedProduct[0]->minimumQuantity,
+                //         'maximum_quantity'          => $importedProduct[0]->maximumQuantity,
+                //         'is_trial'                  => $importedProduct[0]->isTrial,
+                //         'limit'                     => $importedProduct[0]->limit,
+                //         'term'                      => $importedProduct[0]->term,
+                //         'locale'                    => $importedProduct[0]->locale,
+                //         'supported_billing_cycles'  => $importedProduct[0]->supportedBillingCycles,
+                //         'is_perpetual' => true
+                //     ]);
+
+                    // SimpleExcelReader::create(storage_path('app'.DIRECTORY_SEPARATOR.'perpetual.xlsx'))->getRows()->each(function (array $license) use ($product) {
+                    //     $priceList = PriceList::first();
+
+                    //     $product->price()->updateOrCreate([
+                    //         'product_vendor' => 'microsoft',
+                    //         'product_sku' => $product->sku,
+                    //         'price_list_id' => $priceList->id,
+                    //     ], [
+                    //         'name' => $license['SkuTitle'],
+                    //         'price' => $license['ListPrice'],
+                    //         'msrp' => $license['Msrp'],
+                    //         'currency' => $license['Currency'],
+                    //         'instance_id' => $product->instance_id,
+                    //     ]);
+                    // });
+            //     });
+            });
+        } catch (Exception $e) {
+            echo ('Error importing products: ' . $e->getMessage());
+        }
+    }
+
+    public function downloadInvoice()
+    {
+
+        try {
+            Instance::eachById(function (Instance $instance) {
+                $instance = Instance::where('id','2')->first();
+                $products = MicrosoftInvoice::withCredentials($instance->external_id, $instance->external_token)->downloadInvoice('/invoices/D0500036HO/documents/statement');
+dd($products);
                 // $products->each(function ($importedProduct) use ($instance) {
                 //     $product = Product::updateOrCreate([
                 //         'sku'                       => $importedProduct[0]->productId,
