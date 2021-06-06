@@ -27,9 +27,10 @@ class MsftInvoicesController extends Controller
                     // dd($invoices);
                     $invoices->each(function ($invoices) use ($instance) {
                         $product = Msft_invoices::updateOrCreate([
+                            'invoice_id'                => $invoices->invoice_id,
+                        ], [
                             'provider_id'               => $instance->provider_id,
                             'instance_id'               => $instance->id,
-                            'invoice_id'                => $invoices->invoice_id,
                             'invoiceDate'               => $invoices->invoiceDate,
                             'billingPeriodStartDate'    => $invoices->billingPeriodStartDate,
                             'billingPeriodEndDate'      => $invoices->billingPeriodEndDate,
@@ -38,7 +39,6 @@ class MsftInvoicesController extends Controller
                             'currencyCode'              => $invoices->currencyCode,
                             'currencySymbol'            => $invoices->currencySymbol,
                             'pdfDownloadLink'           => $invoices->pdfDownloadLink,
-                        ], [
                             'invoiceDetails'            => $invoices->invoiceLineItemType,
                             ]);
                         });
