@@ -97,7 +97,7 @@
                                 :columns="[
 
                                 'invoice_id' => null,
-                                'provider_id' => null,
+                                'instance_id' => null,
                                 'totalCharges' => null,
                                 'paidAmount' => null,
                                 'invoiceDate' => null,
