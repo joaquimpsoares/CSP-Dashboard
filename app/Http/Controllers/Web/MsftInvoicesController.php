@@ -28,13 +28,13 @@ class MsftInvoicesController extends Controller
                     $invoices->each(function ($invoices) use ($instance) {
                         $product = Msft_invoices::updateOrCreate([
                             'provider_id'               => $instance->provider_id,
+                            'instance_id'               => $instance->id,
                             'invoice_id'                => $invoices->invoice_id,
                             'invoiceDate'               => $invoices->invoiceDate,
                             'billingPeriodStartDate'    => $invoices->billingPeriodStartDate,
                             'billingPeriodEndDate'      => $invoices->billingPeriodEndDate,
                             'totalCharges'              => $invoices->totalCharges,
                         ], [
-                            'instance_id'               => $instance->id,
                             'paidAmount'                => $invoices->paidAmount,
                             'currencyCode'              => $invoices->currencyCode,
                             'currencySymbol'            => $invoices->currencySymbol,
