@@ -16,8 +16,10 @@ use App\Subscription;
 use App\OrderProducts;
 use App\Models\Activities;
 use App\Models\LogActivity;
+use App\Models\Msft_invoices;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
@@ -98,6 +100,22 @@ class HomeController extends Controller
                 ->orderBy('month')
                 ->get();
 
+                $sales = Msft_invoices::
+                select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
+                ->whereyear('invoiceDate', Carbon::today()->year)
+                ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
+                ->orderBy('invoiceDate', 'asc')
+                ->get();
+
+                foreach($sales as $row) {
+                    $invoicelabel['label'][] = json_encode($row->date);
+                    $invoicedata['data'][] = (int) $row->total;
+                  }
+
+                  $invoicelabel = json_encode($invoicelabel['label']);
+                  $invoicedata  = json_encode($invoicedata['data']);
+
+
 
                  foreach($customerrecord as $row) {
                     $customerlabel['label'][] = json_encode($row->day_name);
@@ -107,7 +125,8 @@ class HomeController extends Controller
                   $customerlabel = json_encode($customerlabel['label']);
                   $customerdata  = json_encode($customerdata['data']);
 
-                return view('home', compact('orders','providers','resellers','customers','subscriptions','news','orderdata','orderlabel','customerlabel','customerdata'));
+                return view('home', compact('orders','providers','resellers','customers','subscriptions','news',
+                    'orderdata','orderlabel','customerlabel','customerdata','invoicelabel','invoicedata'));
 
             break;
 
@@ -134,6 +153,23 @@ class HomeController extends Controller
                     'created_at', '=', Carbon::now()->subWeekdays('1')
                 )->get();
 
+                $sales = Msft_invoices::
+                select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
+                ->whereyear('invoiceDate', Carbon::today()->year)
+                ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
+                ->orderBy('invoiceDate', 'asc')
+                ->get();
+
+                foreach($sales as $row) {
+                    $invoicelabel['label'][] = json_encode($row->date);
+                    $invoicedata['data'][] = (int) $row->total;
+                  }
+
+                  $invoicelabel = json_encode($invoicelabel['label']);
+                  $invoicedata  = json_encode($invoicedata['data']);
+
+                  return view('msft/index', compact('invoices','invoicelabel','invoicedata'));
+
                 $topProducts = OrderProducts::with('Order')->get();
 
                 $topProducts = OrderProducts::with(['Product' => function($query){
@@ -141,7 +177,7 @@ class HomeController extends Controller
                 }])->get();
 
 
-                return view('home', compact('providers','provider','orders','countOrders','customersweek','topProducts'));
+                return view('home', compact('providers','provider','orders','countOrders','customersweek','topProducts','invoicelabel','invoicedata'));
 
             break;
 
