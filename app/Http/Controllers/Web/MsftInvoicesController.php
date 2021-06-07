@@ -58,14 +58,14 @@ class MsftInvoicesController extends Controller
                 ->get();
 
                  foreach($sales as $row) {
-                    $customerlabel['label'][] = json_encode($row->date);
-                    $customerdata['data'][] = (int) $row->total;
+                    $invoicelabel['label'][] = json_encode($row->date);
+                    $invoicedata['data'][] = (int) $row->total;
                   }
 
-                  $customerlabel = json_encode($customerlabel['label']);
-                  $customerdata  = json_encode($customerdata['data']);
+                  $invoicelabel = json_encode($invoicelabel['label']);
+                  $invoicedata  = json_encode($invoicedata['data']);
 
-                  return view('msft/index', compact('invoices','customerlabel','customerdata'));
+                  return view('msft/index', compact('invoices','invoicelabel','invoicedata'));
 
             }
 
