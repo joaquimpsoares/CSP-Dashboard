@@ -11,7 +11,7 @@
                 </svg>
                 <div class="ml-3 text-sm">
                     <p class="font-medium text-blue-gray-900">{{ucwords(trans_choice('messages.user_profile', 1))}}</p>
-                    <p class="mt-1 text-blue-gray-500">Ullamcorper id at suspendisse nec id volutpat vestibulum enim. Interdum blandit.</p>
+                    <p class="mt-1 text-blue-gray-500">{{ucwords(trans_choice('descriptions.manage_user_profile', 1))}}</p>
                 </div>
             </a>
 
@@ -22,7 +22,7 @@
                 </svg>
                 <div class="ml-3 text-sm">
                     <p class="font-medium text-blue-gray-900">{{ucwords(trans_choice('messages.account', 1))}}</p>
-                    <p class="mt-1 text-blue-gray-500">Ullamcorper id at suspendisse nec id volutpat vestibulum enim. Interdum blandit.</p>
+                    <p class="mt-1 text-blue-gray-500">{{ucwords(trans_choice('descriptions.manage_account', 1))}}</p>
                 </div>
             </a>
 
@@ -32,7 +32,7 @@
                 </svg>
                 <div class="ml-3 text-sm">
                     <p class="font-medium text-blue-gray-900">{{ucwords(trans_choice('messages.notifications', 1))}}</p>
-                    <p class="mt-1 text-blue-gray-500">Enim, nullam mi vel et libero urna lectus enim. Et sed in maecenas tellus.</p>
+                    <p class="mt-1 text-blue-gray-500">{{ucwords(trans_choice('descriptions.manage_notifications', 1))}}</p>
                 </div>
             </a>
 
@@ -42,11 +42,11 @@
                 </svg>
                 <div class="ml-3 text-sm">
                     <p class="font-medium text-blue-gray-900">{{ucwords(trans_choice('messages.security', 1))}}</p>
-                    <p class="mt-1 text-blue-gray-500">Semper accumsan massa vel volutpat massa. Non turpis ut nulla aliquet turpis.</p>
+                    <p class="mt-1 text-blue-gray-500">{{ucwords(trans_choice('descriptions.manage_security', 1))}}</p>
                 </div>
             </a>
 
-            <a href="#" class="flex p-6 border-b hover:bg-blue-50 hover:bg-opacity-50 border-blue-gray-200" x-state-description="undefined: &quot;bg-blue-50 bg-opacity-50&quot;, undefined: &quot;hover:bg-blue-50 hover:bg-opacity-50&quot;">
+            {{-- <a href="#" class="flex p-6 border-b hover:bg-blue-50 hover:bg-opacity-50 border-blue-gray-200" x-state-description="undefined: &quot;bg-blue-50 bg-opacity-50&quot;, undefined: &quot;hover:bg-blue-50 hover:bg-opacity-50&quot;">
                 <svg class="flex-shrink-0 -mt-0.5 h-6 w-6 text-blue-gray-400" x-description="Heroicon name: outline/photograph" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                 </svg>
@@ -54,15 +54,15 @@
                     <p class="font-medium text-blue-gray-900">Appearance</p>
                     <p class="mt-1 text-blue-gray-500">Magna nulla id sed ornare ipsum eget. Massa eget porttitor suscipit consequat.</p>
                 </div>
-            </a>
+            </a> --}}
 
             <a href="{{route('invoices.index')}}" class="@if(Request::path() == 'invoices/index') bg-indigo-50 @endif flex p-6 border-b hover:bg-blue-50 hover:bg-opacity-50 border-blue-gray-200" x-state-description="undefined: &quot;bg-blue-50 bg-opacity-50&quot;, undefined: &quot;hover:bg-blue-50 hover:bg-opacity-50&quot;">
                 <svg class="flex-shrink-0 -mt-0.5 h-6 w-6 text-blue-gray-400" x-description="Heroicon name: outline/cash" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
                 </svg>
                 <div class="ml-3 text-sm">
-                    <p class="font-medium text-blue-gray-900">Billing</p>
-                    <p class="mt-1 text-blue-gray-500">Orci aliquam arcu egestas turpis cursus. Lectus faucibus netus dui auctor mauris.</p>
+                    <p class="font-medium text-blue-gray-900">{{ucwords(trans_choice('messages.billing', 1))}}</p>
+                    <p class="mt-1 text-blue-gray-500">{{ucwords(trans_choice('descriptions.manage_billing', 1))}}</p>
                 </div>
             </a>
 
@@ -72,11 +72,11 @@
                 </svg>
                 <div class="ml-3 text-sm">
                     <p class="font-medium text-blue-gray-900">{{ucwords(trans_choice('messages.integrations', 1))}}</p>
-                    <p class="mt-1 text-blue-gray-500">Nisi, elit volutpat odio urna quis arcu faucibus dui. Mauris adipiscing pellentesque.</p>
+                    <p class="mt-1 text-blue-gray-500">{{ucwords(trans_choice('descriptions.manage_integrations', 1))}}</p>
                 </div>
             </a>
 
-            <a href="#" class="flex p-6 border-b hover:bg-blue-50 hover:bg-opacity-50 border-blue-gray-200" x-state-description="undefined: &quot;bg-blue-50 bg-opacity-50&quot;, undefined: &quot;hover:bg-blue-50 hover:bg-opacity-50&quot;">
+            {{-- <a href="#" class="flex p-6 border-b hover:bg-blue-50 hover:bg-opacity-50 border-blue-gray-200" x-state-description="undefined: &quot;bg-blue-50 bg-opacity-50&quot;, undefined: &quot;hover:bg-blue-50 hover:bg-opacity-50&quot;">
                 <svg class="flex-shrink-0 -mt-0.5 h-6 w-6 text-blue-gray-400" x-description="Heroicon name: outline/search-circle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16l2.879-2.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242zM21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
@@ -84,7 +84,7 @@
                     <p class="font-medium text-blue-gray-900">Additional Resources</p>
                     <p class="mt-1 text-blue-gray-500">Quis viverra netus donec ut auctor fringilla facilisis. Nunc sit donec cursus sit quis et.</p>
                 </div>
-            </a>
+            </a> --}}
 
         </div>
     </nav>

@@ -299,4 +299,6 @@ return [
   'invoiceDate' => 'fecha de la factura',
   'microsoft_invoices' => 'facturas de Microsoft',
   'microsoft_invoices_table' => 'Tabla de facturas de Microsoft',
+  'teams' => 'Equipos de Microsoft',
+  'billing' => 'facturación',
 ];
