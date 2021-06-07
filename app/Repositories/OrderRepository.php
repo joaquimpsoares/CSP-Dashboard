@@ -27,64 +27,64 @@ class OrderRepository implements OrderRepositoryInterface
     public function all()
     {
 
-        $user = $this->getUser();
+    //     $user = $this->getUser();
 
-        switch ($this->getUserLevel()) {
-            case config('app.super_admin'):
+    //     switch ($this->getUserLevel()) {
+    //         case config('app.super_admin'):
 
-                $orders = Order::with(['status'])->get()->map->format()->sortDesc()->paginate(10);
+    //             $orders = Order::with(['status'])->get()->map->format()->sortDesc()->paginate(10);
 
-            break;
+    //         break;
 
-            case config('app.admin'):
-                $orders = Order::with(['status'])->get()->map->format()->sortDesc()->paginate(10);
-            break;
-
-
-
-            case config('app.provider'):
-
-                $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
-
-                $customers = Customer::whereHas('resellers', function($query) use  ($resellers) {
-                    $query->whereIn('id', $resellers);
-                })->pluck('id');
+    //         case config('app.admin'):
+    //             $orders = Order::with(['status'])->get()->map->format()->sortDesc()->paginate(10);
+    //         break;
 
 
-                $orders = Order::with(['status'])->whereHas('customer', function($query) use  ($customers) {
-                    $query->whereIn('id', $customers);
-                })->get()->map->format()->sortDesc()->paginate(10);
 
-            break;
+    //         case config('app.provider'):
 
-            case config('app.reseller'):
+    //             $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
 
-                $reseller = $user->reseller;
+    //             $customers = Customer::whereHas('resellers', function($query) use  ($resellers) {
+    //                 $query->whereIn('id', $resellers);
+    //             })->pluck('id');
 
-                if($reseller->customers->count() == 0){
-                    $customers = '0';
-                    $orders = '0';
-                }else{
-                    $customers = Customer::whereHas('resellers', function($query) use  ($reseller) {
-                        $query->whereIn('id', $reseller);
-                    })->pluck('id');
-                    $orders = Order::with(['status'])->whereHas('customer', function($query) use  ($customers) {
-                        $query->whereIn('id', $customers);
-                    })->get()->map->format()->sortDesc()->paginate(10);
-                }
 
-            break;
-            case config('app.customer'):
+    //             $orders = Order::with(['status'])->whereHas('customer', function($query) use  ($customers) {
+    //                 $query->whereIn('id', $customers);
+    //             })->get()->map->format()->sortDesc()->paginate(10);
 
-                $orders = $user->customer->orders->map->format()->sortDesc()->paginate(10);
-            break;
+    //         break;
 
-            default:
-            return abort(403, __('errors.unauthorized_action'));
-        break;
-    }
+    //         case config('app.reseller'):
 
-    return $orders;
+    //             $reseller = $user->reseller;
+
+    //             if($reseller->customers->count() == 0){
+    //                 $customers = '0';
+    //                 $orders = '0';
+    //             }else{
+    //                 $customers = Customer::whereHas('resellers', function($query) use  ($reseller) {
+    //                     $query->whereIn('id', $reseller);
+    //                 })->pluck('id');
+    //                 $orders = Order::with(['status'])->whereHas('customer', function($query) use  ($customers) {
+    //                     $query->whereIn('id', $customers);
+    //                 })->get()->map->format()->sortDesc()->paginate(10);
+    //             }
+
+    //         break;
+    //         case config('app.customer'):
+
+    //             $orders = $user->customer->orders->map->format()->sortDesc()->paginate(10);
+    //         break;
+
+    //         default:
+    //         return abort(403, __('errors.unauthorized_action'));
+    //     break;
+    // }
+
+    // return $orders;
 }
 
 public function newFromCartToken($token)

@@ -15,10 +15,10 @@ class AzureTable extends Component
 
     public $editedProductIndex = null;
     public $editedProductField = null;
-
+    public $search = '';
+    private $resourceName =[];
     public $edit=false;
     public $budget;
-    public $resourceName;
 
     protected $analyticRepository;
 
@@ -37,6 +37,7 @@ class AzureTable extends Component
 
         $this->resourceName = $analyticRepository->getAzureSubscriptions();
 
+
         $this->resourceName->map(function ($item, $key) {
             foreach ($item->azureresources as $resource) {
                 $increase = ($item->budget - $item->azureresources->sum('cost'));
@@ -51,6 +52,7 @@ class AzureTable extends Component
                 }
             }
         });
+
     }
 
     public function editProduct($productIndex)
@@ -96,11 +98,11 @@ class AzureTable extends Component
 
     }
 
-    public function render(AnalyticRepositoryInterface $analyticRepository)
+    public function render()
 
     {
-        return view('livewire.azure.azure-table', [
-            'resourceName' => $this->resourceName
-        ]);
+        $resourceName= $this->resourceName;
+
+        return view('livewire.azure.azure-table',compact('resourceName'));
     }
 }

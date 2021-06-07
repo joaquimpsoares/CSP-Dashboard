@@ -7,7 +7,6 @@
     <div class="card">
         <div class="card-body">
             @livewire('order.order-table')
-            {{-- @include('order.partials.table', ['orders' => $orders]) --}}
         </div>
     </div>
 </section>

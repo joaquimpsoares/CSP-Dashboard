@@ -14,15 +14,7 @@
     <link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" /> --}}
     @endsection
 
-    @section('page-header')
-    <!--Page header-->
-    <div class="page-header">
-        <div class="page-leftheader">
-            <h4 class="page-title">Analytics Dashboard</h4>
-        </div>
-    </div>
-    <!--End Page header-->
-    @endsection
+
 
     @section('content')
     @include('layouts.messages')
