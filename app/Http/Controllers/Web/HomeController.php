@@ -115,8 +115,6 @@ class HomeController extends Controller
                   $invoicelabel = json_encode($invoicelabel['label']);
                   $invoicedata  = json_encode($invoicedata['data']);
 
-
-
                  foreach($customerrecord as $row) {
                     $customerlabel['label'][] = json_encode($row->day_name);
                     $customerdata['data'][] = (int) $row->count;
