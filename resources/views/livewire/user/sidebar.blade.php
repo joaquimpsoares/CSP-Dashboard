@@ -56,7 +56,7 @@
                 </div>
             </a>
 
-            <a href="#" class="flex p-6 border-b hover:bg-blue-50 hover:bg-opacity-50 border-blue-gray-200" x-state-description="undefined: &quot;bg-blue-50 bg-opacity-50&quot;, undefined: &quot;hover:bg-blue-50 hover:bg-opacity-50&quot;">
+            <a href="{{route('invoices.index')}}" class="@if(Request::path() == 'invoices/index') bg-indigo-50 @endif flex p-6 border-b hover:bg-blue-50 hover:bg-opacity-50 border-blue-gray-200" x-state-description="undefined: &quot;bg-blue-50 bg-opacity-50&quot;, undefined: &quot;hover:bg-blue-50 hover:bg-opacity-50&quot;">
                 <svg class="flex-shrink-0 -mt-0.5 h-6 w-6 text-blue-gray-400" x-description="Heroicon name: outline/cash" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
                 </svg>

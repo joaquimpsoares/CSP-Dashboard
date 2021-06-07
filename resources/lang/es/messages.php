@@ -297,4 +297,6 @@ return [
   'totalCharges' => 'cargos totales',
   'paidAmount' => 'monto de pago',
   'invoiceDate' => 'fecha de la factura',
+  'microsoft_invoices' => 'facturas de Microsoft',
+  'microsoft_invoices_table' => 'Tabla de facturas de Microsoft',
 ];

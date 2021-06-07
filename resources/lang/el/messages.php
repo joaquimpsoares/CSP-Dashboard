@@ -297,4 +297,6 @@ return [
   'totalCharges' => 'συνολικές χρεώσεις',
   'paidAmount' => 'πληρωμένο ποσό',
   'invoiceDate' => 'την ημερομηνία του τιμολογίου',
+  'microsoft_invoices' => 'Τιμολόγια της Microsoft',
+  'microsoft_invoices_table' => 'Πίνακας τιμολόγησης της Microsoft',
 ];

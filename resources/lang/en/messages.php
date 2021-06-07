@@ -309,5 +309,7 @@ return [
     'totalCharges' =>'total charges',
     'paidAmount' =>'paid amount',
     'invoiceDate' =>'invoice date',
+    'microsoft_invoices' => 'microsoft invoices',
+    'microsoft_invoices_table' => 'microsoft invoices Table',
 
 ];
