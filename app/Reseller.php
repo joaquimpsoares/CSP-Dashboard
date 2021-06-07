@@ -6,7 +6,9 @@ use App\Status;
 use Illuminate\Support\Str;
 use App\Http\Traits\ActivityTrait;
 use Webpatser\Countries\Countries;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Reseller extends Model
 {
@@ -42,15 +44,15 @@ class Reseller extends Model
     }
 
     public function country() {
-    	return $this->belongsTo(Countries::class, 'country_id');
+        return $this->belongsTo(Countries::class, 'country_id');
     }
 
     public function users() {
-    	return $this->hasMany(User::class);
+        return $this->hasMany(User::class);
     }
 
     public function provider() {
-    	return $this->belongsTo('App\Provider');
+        return $this->belongsTo('App\Provider');
     }
 
     public function customers() {
@@ -71,5 +73,18 @@ class Reseller extends Model
 
     public function status() {
         return $this->belongsTo(Status::class);
+    }
+
+    public function news() {
+        return $this->hasMany('App\News');
+    }
+
+    protected static function booted(){
+        static::addGlobalScope('access_level', function(Builder $query){
+            $user = Auth::user();
+            if($user && $user->userLevel->name === config('app.provider')){
+                $query->where('provider_id', $user->provider->id);
+            }
+        });
     }
 }

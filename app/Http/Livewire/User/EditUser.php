@@ -3,12 +3,14 @@
 namespace App\Http\Livewire\User;
 
 use App\Role;
+use Exception;
 use App\Invite;
 use App\Status;
 use App\Country;
 use Livewire\Component;
 use App\Mail\InviteCreated;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -81,33 +83,47 @@ class EditUser extends Component
 
     public function savedetails()
     {
+
         $this->validate([
             'name'              => ['sometimes', 'string', 'max:255', 'min:3'],
             'status_id'         => ['sometimes', 'integer', 'exists:statuses,id'],
-            // 'country_id'        => ['sometimes', 'integer', 'exists:countries,id'],
+            'country_id'        => ['sometimes', 'integer', 'exists:countries,id'],
             'last_name'         => ['sometimes', 'string', 'max:255', 'min:3'],
-            // 'city'              => ['sometimes', 'string', 'max:20', 'min:3'],
             'phone'             => ['sometimes', 'string', 'max:20', 'min:3'],
             'address'           => ['sometimes', 'string', 'max:255', 'min:3'],
             'sendInvitation'    => ['nullable', 'integer'],
-            'locale'            => ['sometimes', 'string', 'in:es,en,fr,pt,el']
+            'locale'            => ['sometimes', 'string', 'in:es,en,fr,pt,el'],
+            'city'              => ['sometimes', 'string', 'max:20', 'min:3'],
         ]);
 
+        try {
+            $this->user->name             = $this->name;
+            $this->user->status_id        = $this->status_id;
+            $this->user->city             = $this->city;
+            $this->user->country_id       = $this->country_id;
+            $this->user->last_name        = $this->last_name;
+            $this->user->phone            = $this->phone;
+            $this->user->address          = $this->address;
+            $this->user->locale           = $this->locale;
+            $this->user->update();
 
-        $this->user->name             = $this->name;
-        $this->user->status_id        = $this->status_id;
-        $this->user->country_id       = $this->country_id;
-        $this->user->last_name        = $this->last_name;
-        // $this->user->city             = $this->city;
-        $this->user->phone            = $this->phone;
-        $this->user->address          = $this->address;
-        $this->user->locale = $this->locale;
-        // $this->user->state            = $this->state;
-        // $this->user->postal_code      = $this->postal_code;
-        $this->user->update();
 
-        session()->flash('success','User ' . $this->user->name . ' updated successfully');
-        return redirect()->to('/');
+            // $this->user->city             = $this->city;
+            // $this->user->state            = $this->state;
+            // $this->user->postal_code      = $this->postal_code;
+
+
+        } catch (Exception $e) {
+
+            Log::info('Error creating Customer Microsoft: '.$e->getMessage());
+
+            session()->flash('alert','Error Creating Customer ');
+
+        }
+
+
+        $this->notify('User ' . $this->user->name . ' updated successfully');
+        // return redirect()->to('/');
     }
 
     public function saveauth()
@@ -145,14 +161,6 @@ class EditUser extends Component
 
         session()->flash('message', 'Avatar for ' . $this->user->name . ' successfully Uploaded.');
     }
-
-    public function getGDPR()
-    {
-
-
-    }
-
-
 
     public function sendInvitation()
     {

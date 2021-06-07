@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Schema;
 class CreateTiersTable extends Migration
 {
     /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+    * Run the migrations.
+    *
+    * @return void
+    */
     public function up()
     {
         Schema::create('tiers', function (Blueprint $table) {
@@ -25,20 +25,16 @@ class CreateTiersTable extends Migration
 
             $table->foreign('product_sku')->references('sku')->on('products')->onDelete('cascade');
 
-            
-            // $table->foreign('product_sku')->references('tiers_sku')->on('prices');
-
-            
         });
 
 
     }
 
     /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+    * Reverse the migrations.
+    *
+    * @return void
+    */
     public function down()
     {
         Schema::dropIfExists('tiers');

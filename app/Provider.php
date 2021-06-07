@@ -6,7 +6,9 @@ use App\Status;
 use Illuminate\Support\Str;
 use App\Http\Traits\ActivityTrait;
 use Webpatser\Countries\Countries;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Provider extends Model
 {
@@ -14,6 +16,12 @@ class Provider extends Model
     use ActivityTrait;
 
     protected $guarded = [];
+
+    protected $searchable = [
+        'company_name',
+
+    ];
+
 
     public function format()
     {
@@ -29,6 +37,7 @@ class Provider extends Model
             'nif' => $this->nif,
             'postal_code' => $this->postal_code,
             'resellers' => $this->resellers,
+            'resellersCount' => $this->resellers->count(),
             'customers' => $this->resellers,
             'status' => $this->status->name,
             'created_at' => $this->created_at,
@@ -79,4 +88,15 @@ class Provider extends Model
         return $this->belongsTo('App\PriceList');
     }
 
+    public function news() {
+        return $this->hasMany('App\News');
+    }
+
+    protected static function booted(){
+        static::addGlobalScope('access_level', function(Builder $query){
+            $user = Auth::user();
+            if($user && $user->userLevel->name === config('app.super_admin')){
+            }
+        });
+    }
 }

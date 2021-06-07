@@ -76,12 +76,9 @@ class CartCounter extends Component
     {
 
         $cart = $this->getUserCart();
-
         $product = $cart->products->first(function ($value) use ($id) {
             return $value->pivot->id == $id;
         });
-
-
         $product->pivot->quantity = $qty + 1;
         $product->pivot->save();
 
@@ -96,8 +93,6 @@ class CartCounter extends Component
         $product = $cart->products->first(function ($value) use ($id) {
             return $value->pivot->id == $id;
         });
-
-
         $product->pivot->quantity = $qty - 1;
         $product->pivot->save();
 
@@ -122,8 +117,6 @@ class CartCounter extends Component
         if($user->userLevel->name == 'Reseller'){
             $this->customers =$user->reseller->customers;
         }
-
-
     }
 
     public function changeBilling($value, $id)
@@ -166,9 +159,6 @@ class CartCounter extends Component
             });
 
         }
-
-
-
 
         if(isset($cart)){
             $this->totalCartWithoutTax = $cart->sum('total');

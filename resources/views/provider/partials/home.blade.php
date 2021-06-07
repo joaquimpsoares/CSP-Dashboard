@@ -53,7 +53,7 @@
                         </dt>
                         <dd class="flex items-baseline">
                             <div class="text-2xl font-semibold text-gray-900">
-                                {{$countOrders}}
+                                {{$orders->count()}}
                             </div>
                         </dd>
                     </div>

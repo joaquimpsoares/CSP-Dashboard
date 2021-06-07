@@ -2,7 +2,7 @@
 
 @section('content')
 
-    @include('customer.partials.table', ['customers' => $customers])
+@livewire('customer.customer-table')
 
 @endsection
 

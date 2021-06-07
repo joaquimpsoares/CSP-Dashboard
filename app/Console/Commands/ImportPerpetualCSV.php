@@ -69,7 +69,7 @@ class ImportPerpetualCSV extends Command
                     SimpleExcelReader::create(storage_path('app'.DIRECTORY_SEPARATOR.'perpetual.xlsx'))->getRows()->each(function (array $license) use ($product) {
                         $priceList = PriceList::first();
 
-                        $product->prices()->updateOrCreate([
+                        $product->price()->updateOrCreate([
                             'product_vendor' => 'microsoft',
                             'product_sku' => $product->sku,
                             'price_list_id' => $priceList->id,

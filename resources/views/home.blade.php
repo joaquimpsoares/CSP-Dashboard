@@ -9,22 +9,6 @@
 @section('content')
 @auth
 @include('dashboard.home')
-
-{{--
-
-@if(Auth::user()->userLevel->id === 1)
-@endif
-
-
-@if(Auth::user()->userLevel->id === 2)
-@include('provider.partials.home')
-@endif
-
-@if(Auth::user()->userLevel->id === 3)
-@include('provider.partials.home')
-@endif
-
---}}
 @endauth
 
 

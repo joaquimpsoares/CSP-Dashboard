@@ -1,10 +1,5 @@
 @section('css')
-<!-- Data table css -->
-<link href="{{URL::asset('assets/plugins/datatable/css/dataTables.bootstrap4.min.css')}}" rel="stylesheet" />
-<link href="{{URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css')}}"  rel="stylesheet">
-<link href="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.css')}}" rel="stylesheet" />
-<!-- Slect2 css -->
-<link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
+
 @endsection
 
 
@@ -51,8 +46,8 @@
                         <tr>
                             <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.#', 1)) }}</th>
                             <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.user', 1)) }}</th>
-                            <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.customer', 2)) }}</th>
-                            <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.details', 1)) }}</th>
+                            <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.company_name', 1)) }}</th>
+                            <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase ">{{ ucwords(trans_choice('messages.details', 1)) }}</th>
                             <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.amount', 1)) }}</th>
                             <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.cost', 1)) }}</th>
                             <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.status', 1)) }}</th>
@@ -63,23 +58,23 @@
                     </thead>
                     <tbody>
                         @forelse($orders as $order)
-                        <a href="#">
+                        <a href="/home">
                             <tr class="hover:bg-gray-100">
                                 <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{ $order['id'] }}</td>
                                 <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{ $order['avatar']['email'] }}</td>
                                 @if ($order['customer'])
-                                <td class="hidden px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{  $order['customer']->company_name }}</td>
+                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{  $order['customer']->company_name }}</td>
                                 @else
                                 <td></td>
                                 @endif
-                                <td class="hidden px-2 py-2 text-sm text-gray-500 break-words whitespace-wrap lg:table-cell">{{ $order['details'] }}</td>
+                                <td class="hidden px-2 py-2 text-sm text-gray-500 break-words whitespace-wrap lg:table-cell">{{ \Illuminate\Support\Str::limit($order['details'], 100, $end='...') }}</td>
                                 @if ($order['orderproducts'])
                                 <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{ $order['orderproducts']->quantity }} </td>
                                 @else
                                 <td></td>
                                 @endif
                                 @if ($order['orderproducts'])
-                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">Operation Ammount USD{{ ($order['orderproducts']->quantity*$order['orderproducts']->retail_price) }} </td>
+                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{ strtoupper($order['products']->first()->price->currency)}}{{ ($order['orderproducts']->quantity*$order['orderproducts']->retail_price) * ($order['orderproducts']->billing_cycle === 'annual' ? 12 : 1 ) }} </td>
                                 @else
                                 <td></td>
                                 @endif
@@ -134,13 +129,13 @@
                                         </div>
                                     </td>
                                 </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="5">Empty</td>
+                                </tr>
+                                @endforelse
+                                <!-- More people... -->
                             </a>
-                            @empty
-                            <tr>
-                                <td colspan="5">Empty</td>
-                            </tr>
-                            @endforelse
-                            <!-- More people... -->
                         </tbody>
                     </table>
                 </div>
@@ -151,59 +146,4 @@
         {{ $orders->links() }}
     </div>
 </div>
-{{-- <section class="dark-grey-text">
-    <div class="">
-        <div class="table-responsive">
-            <table id="example1" class="table table-bordered text-wrap key-buttons">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>{{ ucwords(trans_choice('messages.avatar', 1)) }}</th>
-                        <th>{{ ucwords(trans_choice('messages.company_name', 1)) }}</th>
-                        <th>{{ ucwords(trans_choice('messages.order_details', 1)) }}</th>
-                        <th>{{ ucwords(trans_choice('messages.comments', 1)) }}</th>
-                        <th>{{ ucwords(trans_choice('messages.placed_on', 1)) }}</th>
-                        <th>{{ ucwords(trans_choice('messages.last_updated', 1)) }}</th>
-                        <th>{{ ucwords(trans_choice('messages.status', 1)) }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($orders as $order)
 
-                    <tr>
-                        <td><img src="{{$order['avatar']['avatar']}}" alt="" width="50"></td>
-                        @if (!@empty($order['customer']->company_name))
-                        <td>{{ $order['customer']->company_name }}</td>
-                        @else
-                        <td></td>
-                        @endif
-                        <td>{{ $order['details'] }}</td>
-                        <td>{{ $order['comments'] }}</td>
-                        <td>{{ $order['created_at'] }}</td>
-                        <td>{{ $order['updated_at'] }}</td>
-                        @if ($order['status']['id']==4)
-                        <td>
-                            <p><span class="badge badge-primary">{{ $order['status']['name'] }}</span></p>
-                        </td>
-                        @endif
-                        @if ($order['status']['id']==1)
-                        <td>
-                            <p><span class="badge badge-info">{{ $order['status']['name'] }}</span></p>
-                        </td>
-                        @endif
-                        @if ($order['status']['id']==2)
-                        <td>
-                            <p><span class="badge badge-success">{{ $order['status']['name'] }}</span></p>
-                        </td>
-                        @endif
-                        @if ($order['status']['id']==3)
-                        <td>
-                            <p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 capitalize">{{ $order['status']['name'] }}</span></p>
-                        </td>
-                        @endif
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-</section> --}}

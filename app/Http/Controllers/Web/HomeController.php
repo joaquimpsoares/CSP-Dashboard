@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\News;
 use App\User;
 use App\Order;
 use App\Status;
@@ -15,8 +16,10 @@ use App\Subscription;
 use App\OrderProducts;
 use App\Models\Activities;
 use App\Models\LogActivity;
+use App\Models\Msft_invoices;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
@@ -51,6 +54,7 @@ class HomeController extends Controller
         $this->customerRepository = $customerRepository;
         $this->productRepository = $productRepository;
         $this->orderRepository = $orderRepository;
+
         $this->middleware('auth');
     }
 
@@ -73,11 +77,60 @@ class HomeController extends Controller
                 $providers = Provider::get();
                 $customers = Customer::get();
 
-                return view('home', compact('orders','providers','resellers','customers','subscriptions'));
+                $news = News::take(2)->get();
+
+                $orderrecord = Order::select(\DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
+                ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
+                ->groupBy('day_name','month')
+                ->orderBy('month')
+                ->get();
+
+
+                 foreach($orderrecord as $row) {
+                    $orderlabel['label'][] = json_encode($row->day_name);
+                    $orderdata['data'][] = (int) $row->count;
+                  }
+
+                 $orderlabel = json_encode($orderlabel['label']);
+                 $orderdata  = json_encode($orderdata['data']);
+
+                  $customerrecord = Customer::select(\DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
+                ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
+                ->groupBy('day_name','month')
+                ->orderBy('month')
+                ->get();
+
+                $sales = Msft_invoices::
+                select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
+                ->whereyear('invoiceDate', Carbon::today()->year)
+                ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
+                ->orderBy('invoiceDate', 'asc')
+                ->get();
+
+                foreach($sales as $row) {
+                    $invoicelabel['label'][] = json_encode($row->date);
+                    $invoicedata['data'][] = (int) $row->total;
+                  }
+
+                  $invoicelabel = json_encode($invoicelabel['label']);
+                  $invoicedata  = json_encode($invoicedata['data']);
+
+                 foreach($customerrecord as $row) {
+                    $customerlabel['label'][] = json_encode($row->day_name);
+                    $customerdata['data'][] = (int) $row->count;
+                  }
+
+                  $customerlabel = json_encode($customerlabel['label']);
+                  $customerdata  = json_encode($customerdata['data']);
+
+                return view('home', compact('orders','providers','resellers','customers','subscriptions','news',
+                    'orderdata','orderlabel','customerlabel','customerdata','invoicelabel','invoicedata'));
 
             break;
 
             case config('app.admin'):
+                $news = News::get();
+
                 $provider_id = Auth::getUser()->provider_id;
                 $orders= Order::first();
 
@@ -98,6 +151,23 @@ class HomeController extends Controller
                     'created_at', '=', Carbon::now()->subWeekdays('1')
                 )->get();
 
+                $sales = Msft_invoices::
+                select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
+                ->whereyear('invoiceDate', Carbon::today()->year)
+                ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
+                ->orderBy('invoiceDate', 'asc')
+                ->get();
+
+                foreach($sales as $row) {
+                    $invoicelabel['label'][] = json_encode($row->date);
+                    $invoicedata['data'][] = (int) $row->total;
+                  }
+
+                  $invoicelabel = json_encode($invoicelabel['label']);
+                  $invoicedata  = json_encode($invoicedata['data']);
+
+                  return view('msft/index', compact('invoices','invoicelabel','invoicedata'));
+
                 $topProducts = OrderProducts::with('Order')->get();
 
                 $topProducts = OrderProducts::with(['Product' => function($query){
@@ -105,13 +175,13 @@ class HomeController extends Controller
                 }])->get();
 
 
-                return view('home', compact('providers','provider','orders','countOrders','customersweek','topProducts'));
+                return view('home', compact('providers','provider','orders','countOrders','customersweek','topProducts','invoicelabel','invoicedata'));
 
             break;
 
             case config('app.provider'):
 
-                $orders = $this->orderRepository->all();
+                $orders = Order::get();
                 $provider = Auth::getUser()->provider;
 
                 foreach ($provider->resellers as $reseller) {
@@ -123,10 +193,13 @@ class HomeController extends Controller
                 $orderMonth = Order::whereMonth(
                     'created_at', '=', Carbon::now()->subMonth()->month
                 );
+
                 if($orders){
                     $countOrders = ($orders->count()-$orderMonth->count());
+                }else{
+                    $countOrders = 0;
                 }
-                $countOrders = 0;
+
                 $statuses = Status::get();
                 $resellers = $this->resellerRepository->all();
                 $customers = $this->customerRepository->all();
@@ -137,8 +210,68 @@ class HomeController extends Controller
 
                 $subscriptions = $this->subscriptionRepository->all();
 
+                $news = News::take(2)->get();
 
-                return view('home', compact('resellers','orders','countOrders','customersweek','provider','customers','subscriptions'));
+                $orderrecord = Order::select(\DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
+                ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
+                ->groupBy('day_name','month')
+                ->orderBy('month')
+                ->get();
+
+                foreach($orderrecord as $row) {
+                    $orderlabel['label'][] = json_encode($row->day_name);
+                    $orderdata['data'][] = (int) $row->count;
+                }
+
+                if(!$orderrecord->isEmpty()){
+                    $orderlabel = json_encode($orderlabel['label']);
+                    $orderdata  = json_encode($orderdata['data']);
+                }else{
+                    $orderlabel = json_encode(['0']);
+                    $orderdata  = json_encode(['0']);
+                };
+
+
+                  $customerrecord = Customer::select(\DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
+                ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
+                ->groupBy('day_name','month')
+                ->orderBy('month')
+                ->get();
+
+                 foreach($customerrecord as $row) {
+                    $customerlabel['label'][] = json_encode($row->day_name);
+                    $customerdata['data'][] = (int) $row->count;
+                  }
+                  if(!$customerrecord->isEmpty()){
+                  $customerlabel = json_encode($customerlabel['label']);
+                  $customerdata  = json_encode($customerdata['data']);
+                }else{
+                    $customerlabel = json_encode(['0']);
+                    $customerdata  = json_encode(['0']);
+                };
+
+                  $sales = Msft_invoices::
+                select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
+                ->whereyear('invoiceDate', Carbon::today()->year)
+                ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
+                ->orderBy('invoiceDate', 'asc')
+                ->get();
+
+
+                foreach($sales as $row) {
+                    $invoicelabel['label'][] = json_encode($row->date);
+                    $invoicedata['data'][] = (int) $row->total;
+                  }
+                  if(!$sales->isEmpty()){
+                  $invoicelabel = json_encode($invoicelabel['label']);
+                  $invoicedata  = json_encode($invoicedata['data']);
+                }else{
+                    $invoicelabel = json_encode(['0']);
+                    $invoicedata  = json_encode(['0']);
+                };
+
+                return view('home', compact('resellers','orders','countOrders','customersweek','provider','customers',
+                'subscriptions','news','orderdata','orderlabel','customerlabel','customerdata','invoicelabel','invoicedata'));
 
 
             break;
@@ -148,10 +281,13 @@ class HomeController extends Controller
                 $countCustomers = $user->reseller->customers->count();
                 $subscriptions = $this->resellerRepository->getSubscriptions($user->reseller);
                 $countSubscriptions = $subscriptions->count();
+                $orders = Order::get();
 
-                $orders = $this->orderRepository->all();
+                $provider = $user->reseller->provider;
 
-                return view('reseller.partials.home', compact('countCustomers','countSubscriptions','orders'));
+                $news = News::take(2)->get();
+
+                return view('reseller.partials.home', compact('countCustomers','countSubscriptions','orders','news'));
 
             break;
 
@@ -168,10 +304,16 @@ class HomeController extends Controller
                         return $name;
                     }
                 });
+
                 $abouttoexpire = $abouttoexpire->filter();
 
+                $reseller = $user->customer->resellers->first()->provider;
+                $orders = Order::get();
 
-                return view('subscriptions.customer', compact('subscriptions', 'customer','abouttoexpire'));
+                $news = News::take(2)->get();
+
+
+                return view('subscriptions.customer', compact('subscriptions', 'customer','abouttoexpire','news','orders'));
 
             break;
 
@@ -182,41 +324,41 @@ class HomeController extends Controller
     }
 
 
-    $provider_id = Auth::getUser()->provider_id;
-    $provider = Provider::where('id', $provider_id)->first();
+    // $provider_id = Auth::getUser()->provider_id;
+    // $provider = Provider::where('id', $provider_id)->first();
 
 
 
-    $statuses = Status::get();
+    // $statuses = Status::get();
 
 
-    $countries = Country::all();
-    $resellers = $this->resellerRepository->resellersOfProvider($provider);
-    $customers = new Collection();
+    // $countries = Country::all();
+    // $resellers = $this->resellerRepository->resellersOfProvider($provider);
+    // $customers = new Collection();
 
-    foreach ($resellers as $reseller){
-        $reseller = Reseller::find($reseller['id']);
-        $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
-    }
+    // foreach ($resellers as $reseller){
+    //     $reseller = Reseller::find($reseller['id']);
+    //     $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
+    // }
 
-    $reseller = Reseller::get();
-    $countResellers = $reseller->count();
+    // $reseller = Reseller::get();
+    // $countResellers = $reseller->count();
 
-    $instance = Instance::first();
+    // $instance = Instance::first();
 
-    $order = OrderProducts::get();
+    // $order = OrderProducts::get();
 
-    $users = User::where('provider_id', $provider->id)->first();
+    // $users = User::where('provider_id', $provider->id)->first();
 
-    $subscriptions = $this->providerRepository->getSubscriptions($provider);
-    $countCustomers =  $customers->count();
-    $countSubscriptions = $subscriptions->count();
+    // $subscriptions = $this->providerRepository->getSubscriptions($provider);
+    // $countCustomers =  $customers->count();
+    // $countSubscriptions = $subscriptions->count();
 
-    $countries = Country::all();
-    $providers = $this->providerRepository->all();
-    return view('home', compact('provider','resellers','customers','instance','users',
-    'countries','subscriptions','order','statuses','countResellers',
-    'countCustomers','countSubscriptions','providers','countries'));
+    // $countries = Country::all();
+    // $providers = $this->providerRepository->all();
+    // return view('home', compact('provider','resellers','customers','instance','users',
+    // 'countries','subscriptions','order','statuses','countResellers',
+    // 'countCustomers','countSubscriptions','providers','countries'));
 }
 
     public function listFromCustomer(Customer $customer)

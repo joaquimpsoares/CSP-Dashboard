@@ -2,9 +2,9 @@
 
 namespace App;
 
-use App\OrderStatus;
-use App\Http\Traits\ActivityTrait;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;;
 
 class Order extends Model
 {
@@ -13,35 +13,31 @@ class Order extends Model
 
     protected $guarded = [];
 
-    // public function status() {
-    //     return $this->belongsTo(OrderStatus::class);
-    // }
-
     public function format()
     {
         return [
-            'id' => $this->id,
-            'comments' => $this->comments,
-            'details' => $this->details,
-            'customer' => $this->customer()->first(),
-            'avatar' => $this->user->first(),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'status' => $this->status,
+            'id'            => $this->id,
+            'comments'      => $this->comments,
+            'details'       => $this->details,
+            'customer'      => $this->customer()->first(),
+            'avatar'        => $this->user,
+            'created_at'    => $this->created_at,
+            'updated_at'    => $this->updated_at,
+            'status'        => $this->status,
             'orderproducts' => $this->orderproduct,
-            'products' => $this->products,
+            'products'      => $this->products,
 
         ];
-
     }
 
-    public function orderproduct() {
-    	return $this->belongsTo('App\OrderProducts', 'id', 'order_id');
+    public function orderproduct()
+    {
+        return $this->belongsTo('App\OrderProducts', 'id', 'order_id');
     }
 
     public function status()
     {
-    	return $this->hasOne('App\OrderStatus', 'id', 'order_status_id');
+        return $this->hasOne('App\OrderStatus', 'id', 'order_status_id');
     }
 
     public function products()
@@ -58,4 +54,31 @@ class Order extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    protected static function booted(){
+        static::addGlobalScope('access_level', function(Builder $query){
+            $user = Auth::user();
+            if($user && $user->userLevel->name === config('app.provider')){
+                $query->whereHas('customer', function(Builder $query) use($user){
+                    $query->whereHas('resellers', function(Builder $query) use($user){
+                        $query->whereHas('provider', function(Builder $query) use($user){
+                            $query->where('id', $user->provider->id);
+                        });
+                    });
+                });
+            }
+            if($user && $user->userLevel->name === config('app.reseller')){
+                $query->whereHas('customer', function(Builder $query) use($user){
+                    $query->whereHas('resellers', function(Builder $query) use($user){
+                    });
+                });
+            }
+            if($user && $user->userLevel->name === config('app.customer')){
+                $query->whereHas('customer', function(Builder $query) use($user){
+                    $query->where('customer_id', $user->customer->id);
+                });
+            }
+        });
+    }
 }
+

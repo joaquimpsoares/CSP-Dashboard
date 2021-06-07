@@ -267,6 +267,17 @@ class UsersController extends Controller
 
     }
 
+    public function showprofile(User $user)
+    {
+        return view('profile.show-profile', compact('user'));
+    }
+
+    public function notifications(User $user)
+    {
+
+        return view('user.notifications', compact('user'));
+    }
+
     protected function validator(array $data)
     {
         return Validator::make($data,

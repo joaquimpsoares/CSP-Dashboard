@@ -278,7 +278,7 @@
                                     {{ ucwords(trans_choice('messages.price_list', 1)) }}
                                 </dt>
                                 <dd class="mt-1 text-sm text-gray-900">
-                                    {{$customer->priceLists}}
+                                    {{$customer->priceLists->first()->name}}
                                 </dd>
                             </div>
                         </dl>

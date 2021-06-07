@@ -16,6 +16,8 @@ use App\Http\Controllers\Auth\LoginController;
 
 // Route::post('registerInvitation', 'UsersController@registerInvitation')->name('registerInvitation');
 
+
+
 Route::get('exportexcel', 'AnalyticController@exportexcel')->name('exportexcel');
 
 Route::get('accept/{token}', 'InviteController@accept')->name('accept');
@@ -68,6 +70,14 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
         // Routes that platform managers and providers can access
         Route::group(['middleware' => ['role:Super Admin|Admin|Provider']], function ()
         {
+            Route::get('invoices/index', [
+                'as' => 'invoices.index',
+                'uses' => 'MsftInvoicesController@index'
+            ]);
+            Route::get('invoices/downloadinvoice', [
+                'as' => 'invoices.downloadinvoice',
+                'uses' => 'MsftInvoicesController@downloadInvoice'
+            ]);
 
             Route::get('/instances/kascreate', 'InstanceController@kascreate')->name('instances.kascreate');
             Route::resource('/instances', 'InstanceController');
@@ -182,16 +192,17 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
 
         // Routes that platform managers, providers, resellers and customers can access
         Route::group(['middleware' => ['role:Super Admin|Admin|Provider|Reseller|Sub Reseller|Customer']], function () {
-            Route::get('/profile/show-profile', 'ProviderController@showProfile')->name('profile.show-profile');
 
             //User Routes
             Route::resource('/user', 'UsersController');
             Route::get('/user/profile/{user}', 'UsersController@profile')->name('user.profile');
+            Route::get('/user/{user}/notifications', 'UsersController@notifications')->name('user.notifications');
+            Route::get('/profile/{user}/show-profile', 'UsersController@showprofile')->name('profile.showprofile');
+            // Route::get('/profile/{user}/show-profile', 'UsersController@showprofile')->name('profile.show-profile');
             Route::post('/user/updatepassword/{user}', 'UsersController@updatepassword')->name('user.updatepassword');
             Route::put('update/login-details/{user}', 'UsersController@updatelogin')->name('user.update.login-details');
 
-            Route::get('/customer/serviceCostsLineitems/{id}', 'CustomerController@serviceCostsLineitems')
-            ->name('customer.serviceCostsLineitems');
+            Route::get('/customer/serviceCostsLineitems/{id}', 'CustomerController@serviceCostsLineitems')->name('customer.serviceCostsLineitems');
             Route::group(['middleware' => ['check_customer']], function ()
             {
 
@@ -297,6 +308,40 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
         Route::get('jobs/pending', 'JobsController@pending')->name('jobs.pending');
         Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
 
+        Route::get('news', [
+            'as' => 'news.list',
+            'uses' => 'AdminController@news'
+        ]);
+        Route::post('news/create', [
+            'as' => 'news.create',
+            'uses' => 'AdminController@createNews'
+        ]);
+
+        Route::get('news/create', [
+            'as' => 'news.create',
+            'uses' => 'AdminController@createNews'
+        ]);
+
+        Route::get('news/{news}/edit', [
+            'as' => 'news.edit',
+            'uses' => 'AdminController@editNews'
+        ]);
+
+        Route::get('news/{news}/view', [
+            'as' => 'news.view',
+            'uses' => 'AdminController@viewNews'
+        ]);
+
+        Route::post('news/{news}/delete', [
+            'as' => 'news.delete',
+            'uses' => 'AdminController@deleteNews'
+        ]);
+
+        Route::post('news/{news}/update', [
+            'as' => 'news.update',
+            'uses' => 'AdminController@updateNews'
+        ]);
+
 
         // Route::post('provider/register', 'ProviderController@store')->name('provider.register');
 
@@ -308,10 +353,9 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
 
     Auth::routes(['register' => true]);
 
-    Route::impersonate();
-
-    Route::get('/', 'HomeController@index')->name('home');
-
+    Route::get('/', 'HomeController@index');
     Route::get('/home', 'HomeController@index')->name('home');
+
+    Route::impersonate();
 
     Auth::routes();

@@ -5,8 +5,8 @@
 
 @section('content')
 
-
-@include('reseller.partials.table', ['resellers' => $resellers])
+@livewire('reseller.reseller-table')
+{{-- @include('reseller.partials.table', ['resellers' => $resellers]) --}}
 
 @endsection
 

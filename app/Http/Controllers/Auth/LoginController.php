@@ -11,6 +11,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Redirect;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -51,9 +52,7 @@ class LoginController extends Controller
     */
     public function redirectToProvider()
     {
-        return Socialite::with('graph')
-        ->setTenantId(env('GRAPH_TENANT_ID'))
-        ->redirect();
+        return Socialite::driver('graph')->setTenantId(env('GRAPH_TENANT_ID'))->redirect();
     }
 
     /**
@@ -64,21 +63,15 @@ class LoginController extends Controller
     public function handleProviderCallback(Request $request)
     {
 
-        $socialiteUser = Socialite::driver('graph')
-        ->setTenantId(env('GRAPH_TENANT_ID'))
-        ->stateless()
-        ->user();
+        $socialiteUser = Socialite::driver('graph')->setTenantId(env('GRAPH_TENANT_ID'))->stateless()->user();
 
         $user = User::where('socialite_id', $socialiteUser->getId())->first();
 
         if(empty($user)){
-
             return Redirect::route('login')->with('danger','Please ask for the correct permissions to access the app: ');
-
         }else {
-
-            Auth::login($user, $remember = true);
-            return redirect('/');
+            Auth::login($user, true);
+            return redirect()->route('login');
         }
     }
 

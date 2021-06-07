@@ -60,14 +60,14 @@ class ResellerRepository implements ResellerRepositoryInterface
 
 			return Reseller::with(['provider','customers','users'])->whereNull('main_office')
 			->with(['country', 'subResellers', 'status'])
-			->paginate(10);
+			->paginate(2);
 			break;
 
 			case config('app.admin'):
 
 			return Reseller::with(['provider','customers'])->with('App\Reseller')->whereNull('main_office')
 			->with(['country', 'subResellers', 'status'])
-			->paginate(10);
+			->paginate(2);
 			break;
 
             case config('app.provider'):
@@ -75,7 +75,7 @@ class ResellerRepository implements ResellerRepositoryInterface
 			return $user->provider->resellers()->whereNull('main_office')
 			->with(['country', 'subResellers', 'status'])
 			->orderBy('company_name')
-			->paginate(10);
+			->paginate(2);
 			break;
 
 			default:

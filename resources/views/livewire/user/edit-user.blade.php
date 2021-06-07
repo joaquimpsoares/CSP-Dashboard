@@ -1,211 +1,172 @@
-
-<div class="row">
-    <div class="col-xl-9 col-lg-6">
-        <div class="card">
-            <div class="card-body">
-                <div class="panel panel-primary">
-                    <div class="p-0 tab-menu-heading bg-light">
-                        <div class="tabs-menu1 ">
-                            <!-- Tabs -->
-                            <ul class="nav panel-tabs">
-                                <li class=""><a href="#tab5" class="active" data-toggle="tab">@lang('User Details')
-                                </a></li>
-                                <li><a href="#tab6" data-toggle="tab">@lang('Login Details')</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="panel-body tabs-menu-body">
-                        <div class="tab-content">
-                            <div class="tab-pane active " id="tab5" wire:ignore.self>
-                                <div>
-                                    @if(session()->has('message-details'))
-                                    <div class="alert alert-success">
-                                        {{ session('message-details') }}
-                                    </div>
-                                    @endif
-                                </div>
-                                <form wire:submit.prevent="savedetails">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="status">@lang('Status')</label>
-                                                <select wire:model="status_id" name="status" class="form-control @error('status') is-invalid @enderror" sf-validate="required">
-                                                    @if ($edit)
-                                                    <option wire:model="status_id" value="{{ $edit && $user->status->id ? $user->status->id : ''}}" selected>{{ucwords(trans_choice($user->status->name, 1))}}</option>
-                                                    @endif
-                                                    @foreach ($statuses as $key => $status)
-                                                    <option value="{{$key}}">{{ucwords(trans_choice($status, 1))}}</option>
-                                                    @endforeach
-                                                </select>
-                                                @error('status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="locale">@lang('Locale')</label>
-                                                <input wire:model="locale" type="text" class="form-control input-solid @error('locale') is-invalid @enderror" id="locale"
-                                                name="address" placeholder="en,es" >
-                                                @error('locale')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="name">@lang('First Name')</label>
-                                                <input wire:model="name" type="text" class="form-control input-solid @error('name') is-invalid @enderror" id="name" name="name" placeholder="@lang('First Name')"  >
-                                                @error('name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="last_name">@lang('Last Name')</label>
-                                                <input wire:model="last_name" type="text" class="form-control input-solid @error('last_name') is-invalid @enderror" id="last_name" name="last_name" placeholder="@lang('Last Name')">
-                                                @error('last_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+<main class="flex flex-1 overflow-hidden bg-white">
+    <div class="flex flex-col flex-1 overflow-y-auto xl:overflow-hidden">
+        <!-- Breadcrumb -->
+        <nav aria-label="Breadcrumb" class="bg-white border-b border-blue-gray-200 xl:hidden">
+            <div class="flex items-start max-w-3xl px-4 py-3 mx-auto sm:px-6 lg:px-8">
+                <a href="#" class="inline-flex items-center -ml-1 space-x-3 text-sm font-medium text-blue-gray-900">
+                    <!-- Heroicon name: solid/chevron-left -->
+                    <svg class="w-5 h-5 text-blue-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </nav>
+        <div class="flex flex-1 xl:overflow-hidden">
+            <!-- Sidebar -->
+            @livewire('user.sidebar', ['user' => $user], key($user->id))
+            <div class="flex-grow">
+                <!-- Panel body -->
+                <div class="p-6 space-y-6">
+                    <div class="pt-6 divide-y divide-gray-200">
+                        <div class="px-4 sm:px-6">
+                            <!-- Picture -->
+                            <section>
+                                <form wire:submit.prevent="savephoto">
+                                    <h2 class="mb-5 text-xl font-bold text-gray-800">Picture</h2>
+                                    <div class="flex items-center">
+                                        <div class="flex items-center mt-1">
+                                            @if ($photo)
+                                            <img class="w-20 h-20 rounded-full" src="{{ $photo->temporaryUrl() }}" width="80" height="80" alt="User upload" />
+                                            @else
+                                            <img class="w-20 h-20 rounded-full" src="{{$user->avatar}}" width="80" height="80" alt="User upload" />
+                                            @endif                                      <div class="flex ml-4">
+                                                <div class="relative flex items-center px-3 py-2 bg-white border rounded-md shadow-sm cursor-pointer border-blue-gray-300 hover:bg-blue-gray-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-blue-gray-50 focus-within:ring-blue-500">
+                                                    <label for="user_photo" class="relative mt-2 text-sm font-medium pointer-events-none text-blue-gray-900">
+                                                        <span>Change</span>
+                                                        <span class="sr-only"> user photo</span>
+                                                    </label>
+                                                    <input wire:model="photo" id="user_photo" name="user_photo" type="file" class="absolute inset-0 w-full h-full border-gray-300 rounded-md opacity-0 cursor-pointer">
+                                                </div>
+                                                <button type="button" class="px-3 py-2 ml-3 text-sm font-medium bg-transparent border border-transparent rounded-md text-blue-gray-900 hover:text-blue-gray-700 focus:outline-none focus:border-blue-gray-300 focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-gray-50 focus:ring-blue-500">
+                                                    Remove
+                                                </button>
                                             </div>
                                         </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="phone">@lang('Phone')</label>
-                                                <input wire:model="phone" type="text" class="form-control input-solid @error('phone') is-invalid @enderror" id="phone_number" name="phone" placeholder="@lang('Phone')" >
-                                                @error('phone')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="address">@lang('Address')</label>
-                                                <input wire:model="address" type="text" class="form-control input-solid @error('address') is-invalid @enderror" id="address"
-                                                name="address" placeholder="@lang('Address')" >
-                                                @error('address')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="address">@lang('Country')</label>
-                                                <select wire:model="country_id" name="country" class="form-control @error('country') is-invalid @enderror" sf-validate="required">
-                                                    @if ($edit)
-                                                    {{-- <option wire:model="country_id" value="{{ $edit && $user->country->id ? $user->country->id : ''}}" selected>{{ucwords(trans_choice($user->country->name, 1))}}</option> --}}
-                                                    @endif
-                                                    @foreach ($countries as $key => $country)
-                                                    <option value="{{$key}}">{{$country}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        @if ($edit)
-                                        <div class="mt-2 col-md-12">
-                                            <button type="submit" class="btn btn-primary" id="update-details-btn">
-                                                <i class="fa fa-refresh"></i>
-                                                @lang('Update Details')
-                                            </button>
-                                        </div>
-                                        @endif
                                     </div>
                                 </form>
-                            </div>
-                            <div class="tab-pane " id="tab6" wire:ignore.self>
-                                <div>
-                                    @if(session()->has('message-auth'))
-                                    <div class="alert alert-success">
-                                        {{ session('message-auth') }}
-                                    </div>
-                                    @endif
-                                </div>
-                                <form wire:submit.prevent="saveauth" autocomplete="off">
-                                    <div class="form-group">
-                                        <label for="email">@lang('Email')</label>
-                                        <div>
-                                            <div class="flex mt-1 rounded-md shadow-sm">
-                                                <div class="relative flex items-stretch flex-grow focus-within:z-10">
-                                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                    </div>
-                                                    <input autocomplete="off" wire:model="email" type="text" name="email" id="email" class="block w-full border-gray-300 rounded-none focus:ring-indigo-500 focus:border-indigo-500 rounded-l-md sm:text-sm @error('email') is-invalid @enderror" id="email" placeholder="@lang('Email')" placeholder="John Doe">
-                                                    @error('email')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                                </div>
-                                                <a wire:click="sendInvitation" class="relative inline-flex items-center px-4 py-2 -ml-px space-x-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-r-md bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
-                                                    <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                        <path d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z" />
-                                                    </svg>
-                                                    <span>Send Invitation</span>
-                                                </a>
-                                            </div>
+                            </section>
+                            <!-- Business Profile -->
+                            <form wire:submit.prevent="savedetails">
+                                <section>
+                                    <h2 class="mb-1 text-xl font-bold text-gray-800">Business Profile</h2>
+                                    <div class="text-sm">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.</div>
+                                    <div class="mt-4 space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-4">
+                                        <div class="sm:w-1/3">
+                                            <x-label class="block mb-1 text-sm font-medium" for="name">
+                                                {{ucwords(trans_choice('messages.name', 1))}}
+                                            </x-label>
+                                            <x-input wire:model='name' id="name" class="w-full form-input" type="text"/>
+                                        </div>
+                                        <div class="sm:w-1/3">
+                                            <x-label class="block mb-1 text-sm font-medium" for="business-id">{{ucwords(trans_choice('messages.last_name', 1))}}</x-label>
+                                            <x-input wire:model='last_name' id="business-id" class="w-full form-input" type="text"></x-input>
                                         </div>
                                     </div>
-                                    {{-- <span
-                                    x-data="{ isOn: false }"
-                                    @click="isOn = !isOn"
-                                    :aria-checked="isOn"
-                                    :class="{'bg-indigo-600': isOn, 'bg-gray-200': !isOn }"
-                                    class="relative flex-shrink-0 inline-block h-6 transition-colors duration-200 ease-in-out bg-gray-200 border-2 border-transparent rounded-full cursor-pointer w-11 focus:outline-none focus:shadow-outline"
-                                    role="checkbox"
-                                    tabindex="0"
-                                    >
-                                    <span
-                                    aria-hidden="true"
-                                    :class="{'translate-x-5': isOn, 'translate-x-0': !isOn }"
-                                    class="inline-block w-5 h-5 transition duration-200 ease-in-out transform translate-x-0 bg-white rounded-full shadow"
-                                    ></span> --}}
-                                </span>
-                                <div class="form-group">
-                                    <label for="password">{{ $edit ? __("New Password") : __('Password') }}</label>
-                                    <input wire:model="password"  type="password" class="form-control input-solid @error('password') is-invalid @enderror" id="password" name="password" value="{{ old('password') }}" autocomplete="new-password"
-                                    @if ($edit) placeholder="@lang("Leave field blank if you don't want to change it")" @endif>
-                                    @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-
-                                </div>
-                                <div class="form-group">
-                                    <label for="password_confirm">{{ $edit ? __("Confirm New Password") : __('Confirm Password') }}</label>
-                                    <input wire:model="password_confirmation" type="password" class="form-control input-solid @error('password_confirm') is-invalid @enderror" id="password_confirm" name="password_confirm"  value="{{ old('password_confirm') }}" autocomplete="new-password"
-                                    @if ($edit) placeholder="@lang("Leave field blank if you don't want to change it")" @endif>
-                                    @error('password_confirm')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                </div>
-                                <div class="form-group">
-                                    <label for="socialite_id">@lang('socialite_id')</label>
-                                    <div class="form-group">
-                                        <input wire:model="socialite_id" type="text" name="socialite_id"   class="form-control   @error('socialite_id') is-invalid @enderror" />
-                                        @error('socialite_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                </section>
+                                <section>
+                                    <div class="mt-4 space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-4">
+                                        <div class="sm:w-1/3">
+                                            <x-label class="block mb-1 text-sm font-medium" for="name">{{ucwords(trans_choice('messages.address', 1))}}</x-label>
+                                            <x-input wire:model='address' id="name" class="w-full form-input" type="text"></x-input>
+                                        </div>
+                                        <div class="sm:w-1/3">
+                                            <x-label class="block mb-1 text-sm font-medium" for="business-id">{{ucwords(trans_choice('messages.city', 1))}}</x-label>
+                                            <x-input wire:model='city' id="business-id" class="w-full form-input" type="text"></x-input>
+                                        </div>
+                                        <div class="sm:w-1/3">
+                                            <x-label for="address">@lang('Country')</x-label>
+                                            <select wire:model="country_id" name="country" class="form-control @error('country') is-invalid @enderror" sf-validate="required">
+                                                @if ($edit)
+                                                {{-- <option wire:model="country_id" value="{{ $edit && $user->country->id ? $user->country->id : ''}}" selected>{{ucwords(trans_choice($user->country->name, 1))}}</option> --}}
+                                                @endif
+                                                @foreach ($countries as $key => $country)
+                                                <option value="{{$key}}">{{$country}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
+                                </section>
+                                <section>
+                                    <div class="mt-3 space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-4">
+                                        <div class="sm:w-1/3">
+                                            <x-label class="block mb-1 text-sm font-medium" for="name">{{ucwords(trans_choice('messages.phone', 1))}}</x-label>
+                                            <x-input wire:model='phone' id="name" class="w-full form-input" type="text"></x-input>
+                                        </div>
+                                    </section>
+                                    <section>
+                                        <h2 class="mt-3 mb-1 text-xl font-bold text-gray-800">{{ucwords(trans_choice('messages.locale', 1))}}</h2>
+                                        <div class="text-sm">
+                                            Choose the language of the platform.
+                                        </div>
+                                        <div class="flex flex-wrap mt-2">
+                                            <div class="mr-2">
+                                                <select wire:model="locale" name="locale" @error('locale') is-invalid @enderror" sf-validate="required">
+                                                    @if ($edit)
+                                                    <option wire:model="locale" value="{{ $edit && $user->status->id ? $user->status->id : ''}}" selected>{{$user->locale}}</option>
+                                                    @endif
+                                                    <option value="es">Español</option>
+                                                    <option value="fr">Français</option>
+                                                    <option value="en">English</option>
+                                                    <option value="el">Greek</option>
+                                                </select>
+                                                @error('locale')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <!-- Email -->
+                                    <section>
+                                        <h2 class="mt-3 mb-1 text-xl font-bold text-gray-800">Email</h2>
+                                        <div class="text-sm">You can send an invitation email to the user.</div>
+                                        <div class="flex flex-wrap mt-3">
+                                            <div class="mr-2">
+                                                <x-label class="sr-only" for="email">Business email</x-label>
+                                                <x-input wire:model="email" id="email" class="form-input" type="email"></x-input>
+                                            </div>
+                                            <button wire:click="sendInvitation" class="text-indigo-500 border-gray-200 shadow-sm btn hover:border-gray-300">{{ucwords(trans_choice('messages.sendinvitation', 1))}}</button>
+                                        </div>
+                                    </section>
+                                    <!-- Password -->
+                                    <section>
+                                        <h2 class="mt-3 mb-1 text-xl font-bold text-gray-800">Password</h2>
+                                        <div class="text-sm">You can set a permanent password if you don't want to use temporary login codes.</div>
+                                        <div class="mt-3">
+                                            <x-a class="text-indigo-500 border-gray-200 shadow-sm btn">Set New Password</x-a>
+                                        </div>
+                                    </section>
+                                    <!-- Smart Sync -->
+                                    <section>
+                                        <h2 class="mt-3 mb-3 text-xl font-bold text-gray-800">{{ucwords(trans_choice('messages.status', 1))}}</h2>
+                                        <div class="text-sm">With this update, online-only files will no longer appear to take up hard drive space.</div>
+                                        <div class="flex flex-wrap mt-3">
+                                            <x-label for="status">{{ucwords(trans_choice('messages.status', 1))}}</x-label>
+                                            <select wire:model="status_id" name="status" class="form-control @error('status') is-invalid @enderror" sf-validate="required">
+                                                @if ($edit)
+                                                <option wire:model="status_id" value="{{ $edit && $user->status->id ? $user->status->id : ''}}" selected>{{ucwords(trans_choice($user->status->name, 1))}}</option>
+                                                @endif
+                                                @foreach ($statuses as $key => $status)
+                                                <option value="{{$key}}">{{ucwords(trans_choice($status, 1))}}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div>
+                                    </section>
+                                    @livewire('user.gdpr')
                                 </div>
-                                @if ($edit)
-                                <button type="submit" class="mt-2 btn btn-primary" id="update-login-details-btn">
-                                    <i class="fa fa-refresh"></i>
-                                    @lang('Update Details')
-                                </button>
-                                @endif
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="col-xl-3 col-lg-3">
-    <div class="card box-widget widget-user">
-        <div>
-            @if(session()->has('message'))
-            <div class="alert alert-success">
-                {{ session('message') }}
-            </div>
-            @endif
-        </div>
-        <div class="mx-auto mt-5 widget-user-image">
-            <form wire:submit.prevent="savephoto">
-                @if ($photo)
-                <img alt="User Avatar" class="rounded-circle" src="{{ $photo->temporaryUrl() }}" width="128px" height="128px"></div>
-                @else
-                <img alt="User Avatar" class="rounded-circle" src="{{ $edit ? $user->avatar : url('assets/img/profile.png')  }}" width="128px" height="128px"></div>
-                @endif
-                @error('photo') <span class="error">{{ $message }}</span> @enderror
-                <div class="text-center card-body">
-                    <div class="pt-0 mt-0 card-body">
-                        <div class="custom-file">
-                            <label class="custom-file-label" for="customFileLang">Select file</label>
-                            <input wire:model="photo" type="file" name="avatar" class="custom-file-input" id="customFileLang">
-                        </div>
-                        <div class="row">
-                            <div class=" col-xs-12">
-                                <h6 class="mb-4 font-weight-bold cyan-text"></h6>
+                                <!-- Panel footer -->
+                                <footer>
+                                    <div class="flex flex-col px-6 py-5 border-t border-gray-200">
+                                        <div class="flex self-end">
+                                            <x-a class="mr-3" color="red">Cancel</x-a>
+                                            <button wire:click.prevent="savedetails" type="submit">Save Changes</button>
+                                        </div>
+                                    </div>
+                                </footer>
                             </div>
-                        </div>
-                    </div>
-                    <div class="pro-user">
-                        <h3 class="mb-1 pro-user-username text-dark">{{ $user->name ?? $user->email }} </h3>
-                        {{-- <h6 class="pro-user-desc text-muted">{{ $user->role->first()['name'] }}</h6> --}}
-                        <button type="submit" id="change-picture" class="mt-5 btn btn-outline-secondary btn-block">
-                            <i class="fa fa-camera"></i> @lang('Save Photo')
-                        </button>
+                        </form>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
-    </div>
+    </main>
+
