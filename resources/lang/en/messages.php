@@ -313,4 +313,6 @@ return [
     'microsoft_invoices_table' => 'microsoft invoices Table',
     'teams' => 'microsoft teams',
     'billing' => 'billing',
+    'settings' => 'settings',
+    'download' => 'download',
 ];

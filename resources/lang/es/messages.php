@@ -1,4 +1,4 @@
-<?php 
+<?php
 return [
   'importproducts' => 'Importar productos de Microsoft, programado',
   'jobrescheduled' => 'Trabajo reprogramado',
@@ -299,6 +299,7 @@ return [
   'invoiceDate' => 'fecha de la factura',
   'microsoft_invoices' => 'facturas de Microsoft',
   'microsoft_invoices_table' => 'Tabla de facturas de Microsoft',
-  'teams' => 'Equipos de Microsoft',
+  'teams' => 'Microsoft Teams',
+  'download' => 'Microsoft Teams',
   'billing' => 'facturación',
 ];
