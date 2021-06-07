@@ -229,9 +229,9 @@
     </dl>
     <dl class="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-2 lg:grid-cols-3 ">
         <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-            <div class="flex-grow px-4 py-5 sm:p-6">
+            <div class="flex-grow px-4 sm:p-6">
                 <div class="flex items-center ">
-                    <h3 class="text-lg font-semibold text-gray-600 ">Invoices Evolution [Year]</h3>
+                    <h3 class="text-sm text-gray-600 md:font-semibold md:text-lg">Invoices Evolution [Year]</h3>
                 </div>
                 <canvas id="chartjs-3" class="chartjs" width="undefined" height="undefined"></canvas>
                 <script>
@@ -253,9 +253,9 @@
             </div>
         </div>
         <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-            <div class="flex-grow px-4 py-5 sm:p-6">
+            <div class="flex-grow px-4 sm:p-6">
                 <div class="flex items-center ">
-                    <h3 class="text-lg font-semibold text-gray-600 ">Orders Evolution [Year]</h3>
+                    <h3 class="text-sm text-gray-600 md:font-semibold md:text-lg">Orders Evolution [Year]</h3>
                 </div>
                 <canvas id="chartjs-0" class="chartjs" width="undefined" height="undefined"></canvas>
                 <script>
@@ -277,9 +277,9 @@
             </div>
         </div>
         <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-            <div class="flex-grow px-4 py-5 sm:p-6">
+            <div class="flex-grow px-4 sm:p-6">
                 <div class="flex items-center">
-                    <h3 class="text-lg font-semibold text-gray-600">Customers Evolution [Year]</h3>
+                    <h3 class="text-sm text-gray-600 md:font-semibold md:text-lg">Customers Evolution [Year]</h3>
                     {{-- <p class="text-sm text-gray-500">Profit Share between customers</p> --}}
                 </div>
                 <canvas id="chartjs-1" class="chartjs" width="undefined" height="undefined"></canvas>
