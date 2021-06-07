@@ -252,57 +252,56 @@
                 </script>
             </div>
         </div>
-            <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-                <div class="flex-grow px-4 py-5 sm:p-6">
-                    <div class="flex items-center ">
-                        <h3 class="text-lg font-semibold text-gray-600 ">Orders Evolution [Year]</h3>
-                    </div>
-                    <canvas id="chartjs-0" class="chartjs" width="undefined" height="undefined"></canvas>
-                    <script>
-                        new Chart(document.getElementById("chartjs-0"), {
-                            "type": "line",
-                            "data": {
-                                "labels": {!!$orderlabel!!},
-                                "datasets": [{
-                                    "label": "Orders",
-                                    "data": {!!$orderdata!!},
-                                    "fill": true,
-                                    "borderColor": "rgb(99, 102, 241, 1)",
-                                    "lineTension": 0.1
-                                }]
-                            },
-                            "options": {}
-                        });
-                    </script>
+        <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
+            <div class="flex-grow px-4 py-5 sm:p-6">
+                <div class="flex items-center ">
+                    <h3 class="text-lg font-semibold text-gray-600 ">Orders Evolution [Year]</h3>
                 </div>
-            </div>
-            <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-                <div class="flex-grow px-4 py-5 sm:p-6">
-                    <div class="flex items-center">
-                        <h3 class="text-lg font-semibold text-gray-600">Customers Evolution [Year]</h3>
-                        {{-- <p class="text-sm text-gray-500">Profit Share between customers</p> --}}
-                    </div>
-                    <canvas id="chartjs-1" class="chartjs" width="undefined" height="undefined"></canvas>
-                    <script>
-                        new Chart(document.getElementById("chartjs-1"), {
-                            "type": "line",
-                            "data": {
-                                "labels": {!!$customerlabel!!},
-                                "datasets": [{
-                                    "label": "Customers",
-                                    "data": {!!$customerdata!!},
-                                    "fill": true,
-                                    "borderColor": "rgb(99, 102, 241, 1)",
-                                    "lineTension": 0.1
-                                }]
-                            },
-                            "options": {}
-                        });
-                    </script>
-                </div>
+                <canvas id="chartjs-0" class="chartjs" width="undefined" height="undefined"></canvas>
+                <script>
+                    new Chart(document.getElementById("chartjs-0"), {
+                        "type": "line",
+                        "data": {
+                            "labels": {!!$orderlabel!!},
+                            "datasets": [{
+                                "label": "Orders",
+                                "data": {!!$orderdata!!},
+                                "fill": true,
+                                "borderColor": "rgb(99, 102, 241, 1)",
+                                "lineTension": 0.1
+                            }]
+                        },
+                        "options": {}
+                    });
+                </script>
             </div>
         </div>
-    </div>
+        <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
+            <div class="flex-grow px-4 py-5 sm:p-6">
+                <div class="flex items-center">
+                    <h3 class="text-lg font-semibold text-gray-600">Customers Evolution [Year]</h3>
+                    {{-- <p class="text-sm text-gray-500">Profit Share between customers</p> --}}
+                </div>
+                <canvas id="chartjs-1" class="chartjs" width="undefined" height="undefined"></canvas>
+                <script>
+                    new Chart(document.getElementById("chartjs-1"), {
+                        "type": "line",
+                        "data": {
+                            "labels": {!!$customerlabel!!},
+                            "datasets": [{
+                                "label": "Customers",
+                                "data": {!!$customerdata!!},
+                                "fill": true,
+                                "borderColor": "rgb(99, 102, 241, 1)",
+                                "lineTension": 0.1
+                            }]
+                        },
+                        "options": {}
+                    });
+                </script>
+            </div>
+        </div>
+    </dl>
 
     <div class="overflow-hidden bg-gray-200 divide-y divide-gray-200 rounded-lg shadow sm:divide-y-0 sm:grid sm:grid-cols-2 sm:gap-px">
         <div class="relative p-6 bg-white rounded-tl-lg rounded-tr-lg sm:rounded-tr-none group focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">

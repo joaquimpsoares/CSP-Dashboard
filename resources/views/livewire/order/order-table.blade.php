@@ -93,7 +93,7 @@
                             @endif
                             <td class="hidden px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">{{ $order['created_at'] }}</td>
                             <td class="hidden px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">{{ $order['updated_at'] }}</td>
-                            <td class="px-2 py-2 text-sm font-medium text-right whitespace-nowrap">
+                            {{-- <td class="px-2 py-2 text-sm font-medium text-right whitespace-nowrap">
                                 <div class="z-10">
                                     <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
@@ -108,10 +108,10 @@
                                             Edit
                                         </a>
                                         <x-Ordersslideout></x-Ordersslideout>
-                                        {{-- <div class="dropdown-divider"></div> --}}
+                                        <div class="dropdown-divider"></div>
                                     </div>
                                 </div>
-                            </td>
+                            </td> --}}
                         </tr>
                         @empty
                         <tr>
