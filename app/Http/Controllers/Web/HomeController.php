@@ -242,11 +242,36 @@ class HomeController extends Controller
                     $customerlabel['label'][] = json_encode($row->day_name);
                     $customerdata['data'][] = (int) $row->count;
                   }
-
+                  if(!$customerrecord->isEmpty()){
                   $customerlabel = json_encode($customerlabel['label']);
                   $customerdata  = json_encode($customerdata['data']);
+                }else{
+                    $customerlabel = json_encode(['0']);
+                    $customerdata  = json_encode(['0']);
+                };
 
-                return view('home', compact('resellers','orders','countOrders','customersweek','provider','customers','subscriptions','news','orderdata','orderlabel','customerlabel','customerdata'));
+                  $sales = Msft_invoices::
+                select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
+                ->whereyear('invoiceDate', Carbon::today()->year)
+                ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
+                ->orderBy('invoiceDate', 'asc')
+                ->get();
+
+
+                foreach($sales as $row) {
+                    $invoicelabel['label'][] = json_encode($row->date);
+                    $invoicedata['data'][] = (int) $row->total;
+                  }
+                  if(!$sales->isEmpty()){
+                  $invoicelabel = json_encode($invoicelabel['label']);
+                  $invoicedata  = json_encode($invoicedata['data']);
+                }else{
+                    $invoicelabel = json_encode(['0']);
+                    $invoicedata  = json_encode(['0']);
+                };
+
+                return view('home', compact('resellers','orders','countOrders','customersweek','provider','customers',
+                'subscriptions','news','orderdata','orderlabel','customerlabel','customerdata','invoicelabel','invoicedata'));
 
 
             break;
