@@ -9,7 +9,8 @@
 {{-- <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"> --}}
 @endsection
 @section('content')
-
+@livewire('job.job-table')
+{{--
 <div class="pl-4 mb-6 border-l-4 border-blue-600">
     <form action="" method="get">
         <div class="flex items-center my-2">
@@ -52,8 +53,8 @@
                     <td>{{$job->id}}</td>
                     <td class="">
                         @if(!$job->isFinished())
-                        {{-- <div class="">
-                        </div> --}}
+                        <div class="">
+                        </div>
                         <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 md:mt-2 lg:mt-0">
                             <span>Running</span>
                         </div>
@@ -110,7 +111,7 @@
                 </td>
                 <td class="p-4 text-sm leading-5 text-gray-800 border-b border-gray-200">
                     {{ $job->started_at }}
-                    {{-- {{ $job->started_at->diffForHumans() }} --}}
+                    {{ $job->started_at->diffForHumans() }}
                 </td>
                 <td class="p-4 text-sm leading-5 text-gray-800 border-b border-gray-200">
                     @if($job->hasFailed() && $job->exception_message !== null)
@@ -173,7 +174,7 @@
             @endforelse
         </tbody>
     </table>
-</div>
+</div> --}}
 @endsection
 
 @section('js')
