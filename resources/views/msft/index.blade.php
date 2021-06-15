@@ -54,10 +54,23 @@ $user = Auth::user();
                                                     "data": {!!$invoicedata!!},
                                                     "fill": true,
                                                     "borderColor": "rgb(99, 102, 241, 1)",
-                                                    "lineTension": 0.1
+                                                    "lineTension": 0.5
                                                 }]
                                             },
-                                            "options": {}
+                                            options: {
+                                                scales: {
+                                                    xAxes: [{
+                                                        gridLines: {
+                                                            display: false
+                                                        }
+                                                    }],
+                                                    yAxes: [{
+                                                        gridLines: {
+                                                            display: false
+                                                        }
+                                                    }]
+                                                }
+                                            }
                                         });
                                     </script>
                                 </div>
@@ -113,8 +126,8 @@ $user = Auth::user();
                                             </div>
                                         </div>
                                     </div>
-                                    <x-table :list="$invoices" :mobileColumns="[
-                                    'company_name',
+                                    <x-table :list="$invoices" checkbox :mobileColumns="[
+                                    'invoice_id',
                                     ]"
                                     :columns="[
 
@@ -126,19 +139,12 @@ $user = Auth::user();
                                     ]"
                                     :listElementActions="[
                                     [
-                                    'icon' => 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJpbmxpbmUgdy01IGgtNSBtci0yIiB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9ImN1cnJlbnRDb2xvciI+CjxwYXRoIGQ9Ik0xMy41ODYgMy41ODZhMiAyIDAgMTEyLjgyOCAyLjgyOGwtLjc5My43OTMtMi44MjgtMi44MjguNzkzLS43OTN6TTExLjM3OSA1Ljc5M0wzIDE0LjE3MlYxN2gyLjgyOGw4LjM4LTguMzc5LTIuODMtMi44Mjh6IiAvPgo8L3N2Zz4=',
-                                    'textKey' => 'Edit', // To get the translation on the view
-                                    'url' => function($customer){
-                                        return $customer['path'].'/edit';
+                                    'icon' => 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJoLTYgdy02IiBmaWxsPSJub25lIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHN0cm9rZT0iY3VycmVudENvbG9yIj4KICA8cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMiIgZD0iTTcgMjFoMTBhMiAyIDAgMDAyLTJWOS40MTRhMSAxIDAgMDAtLjI5My0uNzA3bC01LjQxNC01LjQxNEExIDEgMCAwMDEyLjU4NiAzSDdhMiAyIDAgMDAtMiAydjE0YTIgMiAwIDAwMiAyeiIgLz4KPC9zdmc+',
+                                    'textKey' => 'Download', // To get the translation on the view
+                                    'url' => function($invoice){
+                                        return route('invoices.downloadinvoice',$invoice->id);
                                     }
                                     ],
-                                    [
-                                    'icon' => 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJpbmxpbmUgdy01IGgtNSBtci0yIiB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9ImN1cnJlbnRDb2xvciI+CjxwYXRoIGQ9Ik0xMCAxMmEyIDIgMCAxMDAtNCAyIDIgMCAwMDAgNHoiIC8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTS40NTggMTBDMS43MzIgNS45NDMgNS41MjIgMyAxMCAzczguMjY4IDIuOTQzIDkuNTQyIDdjLTEuMjc0IDQuMDU3LTUuMDY0IDctOS41NDIgN1MxLjczMiAxNC4wNTcuNDU4IDEwek0xNCAxMGE0IDQgMCAxMS04IDAgNCA0IDAgMDE4IDB6IiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIC8+Cjwvc3ZnPg==',
-                                    'textKey' => 'Impersonate',
-                                    'url' => function($customer){
-                                        return route('impersonate', $customer['mainUser']['id'] ?? '');
-                                    }
-                                    ]
                                     ]" />
                                 </div>
                             </div>

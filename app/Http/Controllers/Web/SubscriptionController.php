@@ -123,11 +123,9 @@ return view('subscriptions.customer', compact('subscriptions'));
 public function show(Subscription $subscription)
 {
     $subscriptions = Subscription::findOrFail($subscription->id);
-
     $usage = Product::where('sku', $subscriptions->product_id)->first();
 
     $products = Product::where('sku', $subscriptions->product_id)->where('instance_id', $subscriptions->instance_id)->get();
-
     switch ($usage->billing) {
         case 'usage':
             $subscriptions = Subscription::findOrFail($subscription->id);

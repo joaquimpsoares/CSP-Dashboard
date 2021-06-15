@@ -4,9 +4,10 @@
             <div class="flex flex-col">
                 <div class="flex flex-col items-center justify-between lg:flex-row">
                     <div class="flex items-center">
-                        <h4>{{ ucwords(trans_choice('messages.customer_table', 2)) }}</h4>
+                        <h4>{{ ucwords(trans_choice('messages.price_list', 1)) }}</h4>
                     </div>
                     <div class="flex items-center justify-between">
+
                         <div>
                             <div class="flex justify-center flex-1 lg:justify-end">
                                 <!-- Search section -->
@@ -24,7 +25,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div>
                             <a onclick="confirm('Are you sure you want to export these Records?') || event.stopImmediatePropagation()"wire:click="exportSelected()" href="#" class="px-2 py-2 ml-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
@@ -35,7 +35,7 @@
                         </div>
 
                         <div>
-                            <a  href="{{ route('customer.create') }}" class="px-2 py-2 ml-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <a  href="{{ route('priceList.create') }}" class="px-2 py-2 ml-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
                                 </svg>
@@ -44,37 +44,37 @@
                         </div>
                     </div>
                 </div>
-                @dd($jobs)
-                <x-table :list="$jobs" :mobileColumns="[
+                <x-table checkbox :list="$pricelists" :mobileColumns="[
                     'id',
-                    'queue'
+                    'name',
                     ]"
                 :columns="[
 
-                    'id' => function($customer){
-                        return $customer['path'];
+                    'id' => function($price){
+                        return route('priceList.prices',$price);
                     },
-                    'queue' => null,
                     'name' => null,
-                    'progress' => null,
-                    'time_elapsed' => null,
+                    'description' => null,
+                    'provider' => null,
+                    'reseller' => null,
+                    'customer' => null,
                     'created_at' => null
                 ]"
                 :listElementActions="[
                     [
                         'icon' => 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJpbmxpbmUgdy01IGgtNSBtci0yIiB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9ImN1cnJlbnRDb2xvciI+CjxwYXRoIGQ9Ik0xMy41ODYgMy41ODZhMiAyIDAgMTEyLjgyOCAyLjgyOGwtLjc5My43OTMtMi44MjgtMi44MjguNzkzLS43OTN6TTExLjM3OSA1Ljc5M0wzIDE0LjE3MlYxN2gyLjgyOGw4LjM4LTguMzc5LTIuODMtMi44Mjh6IiAvPgo8L3N2Zz4=',
                         'textKey' => 'Edit', // To get the translation on the view
-                        'url' => function($customer){
-                            return $customer['path'].'/edit';
+                        'url' => function($price){
+                            return route('priceList.prices', $price);
                         }
                     ],
-                    [
+                    {{-- [
                         'icon' => 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJpbmxpbmUgdy01IGgtNSBtci0yIiB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9ImN1cnJlbnRDb2xvciI+CjxwYXRoIGQ9Ik0xMCAxMmEyIDIgMCAxMDAtNCAyIDIgMCAwMDAgNHoiIC8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTS40NTggMTBDMS43MzIgNS45NDMgNS41MjIgMyAxMCAzczguMjY4IDIuOTQzIDkuNTQyIDdjLTEuMjc0IDQuMDU3LTUuMDY0IDctOS41NDIgN1MxLjczMiAxNC4wNTcuNDU4IDEwek0xNCAxMGE0IDQgMCAxMS04IDAgNCA0IDAgMDE4IDB6IiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIC8+Cjwvc3ZnPg==',
                         'textKey' => 'Impersonate',
                         'url' => function($customer){
                             return route('impersonate', $customer['mainUser']['id'] ?? '');
                         }
-                    ]
+                    ] --}}
                 ]" />
             </div>
         </div>

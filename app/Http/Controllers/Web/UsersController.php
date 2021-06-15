@@ -32,16 +32,16 @@ class UsersController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
-    public function index(Request $request)
+    public function index()
     {
-        $user = Auth::user();
+        // $user = Auth::user();
 
-        $statuses = Status::pluck('name','id');
-        $provider = Auth::user()->provider;
-        $users = $this->userRepository->paginate($perPage = 10, $request->search, $request->status);
+        // $statuses = Status::pluck('name','id');
+        // $provider = Auth::user()->provider;
+        // $users = $this->userRepository->paginate($perPage = 10, $request->search, $request->status);
 
 
-        return view('user.list', compact('users','provider','statuses'));
+        return view('user.list');
     }
 
     /**

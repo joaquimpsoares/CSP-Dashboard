@@ -13,7 +13,7 @@ class CreateMsftInvoicesTable extends Migration
      */
     public function up()
     {
-        Schema::create('msft_invoices', function (Blueprint $table) {
+        Schema::create('MsftInvoices', function (Blueprint $table) {
             $table->id();
             $table->string('provider_id')->nullable();
             $table->string('instance_id')->nullable();
@@ -38,6 +38,6 @@ class CreateMsftInvoicesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('msft_invoices');
+        Schema::dropIfExists('MsftInvoices');
     }
 }

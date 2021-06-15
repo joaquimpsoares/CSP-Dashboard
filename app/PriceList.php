@@ -15,9 +15,10 @@ class PriceList extends Model
             'name' => $this->name,
             'description' => $this->description,
             'prices' => $this->prices(),
-            'provider' => $this->provider()->first(),
-            'reseller' => $this->reseller()->get(),
-            'customer' => $this->customer()->get()
+            'provider' => $this->provider()->count(),
+            'reseller' => $this->reseller()->count(),
+            'created_at' => $this->created_at,
+            'customer' => $this->customer()->count()
         ];
     }
 

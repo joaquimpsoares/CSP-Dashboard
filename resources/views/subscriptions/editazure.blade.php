@@ -1,306 +1,299 @@
 @extends('layouts.master')
 @section('css')
-<!-- Data table css -->
-{{-- <link href="{{URL::asset('assets/plugins/datatable/css/dataTables.bootstrap4.min.css')}}" rel="stylesheet" />
-<link href="{{URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css')}}"  rel="stylesheet">
-<link href="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.css')}}" rel="stylesheet" />
-<!-- Slect2 css -->
-<link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" /> --}}
 @endsection
-
 @section('content')
 
-
-<div class="grid max-w-3xl grid-cols-1 gap-6 mx-auto mt-8 sm:px-6 lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-3">
-    <div class="space-y-6 lg:col-start-1 lg:col-span-2">
-        <section aria-labelledby="applicant-information-title">
-            <div class="bg-white shadow sm:rounded-lg">
-                <div class="px-4 py-5 sm:px-6">
-                    <h2 id="applicant-information-title" class="text-lg font-medium leading-6 text-gray-900">
-                        {{ ucwords(trans_choice('messages.subscription', 1)) }}
-                    </h2>
-                </div>
-                <div class="px-4 py-5 border-t border-gray-200 sm:px-6">
-                    <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">
-                                {{ ucwords(trans_choice('messages.subscription_name', 1)) }}
-                            </dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                {{ $subscriptions->name }}
-                            </dd>
-                        </div>
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">
-                                {{ ucwords(trans_choice('messages.subscription_id', 1)) }}
-                            </dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                {{ $subscriptions->subscription_id }}
-                            </dd>
-                        </div>
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">
-                                {{ ucwords(trans_choice('messages.tenant', 1)) }}
-                            </dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                {{ $subscriptions->tenant_name }}
-                            </dd>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <dt class="text-sm font-medium text-gray-500">
-                                {{ ucwords(trans_choice('messages.description', 1)) }}
-                            </dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                {{ $subscriptions->products->first()->description }}
-                            </dd>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <dt class="text-sm font-medium text-gray-500">
-                                Manage Subscritpion
-                            </dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                <ul class="border-gray-200 divide-y divide-gray-200 rounded-md">
-                                    <li class="flex items-center justify-between py-3 pl-3 pr-4 text-sm">
-                                        <div class="max-w-3xl mx-auto">
-                                            <div class="bg-white border shadow sm:rounded-lg">
-                                                <div class="px-4 py-5 sm:p-6" x-data="{ on: true }">
-                                                    <h3 class="text-lg font-medium leading-6 text-gray-900" id="renew-subscription-label">
-                                                        Renew subscription automatically
-                                                    </h3>
-                                                    <div class="mt-2 sm:flex sm:items-start sm:justify-between">
-                                                        <div class="max-w-xl text-sm text-gray-500">
-                                                            <p id="renew-description">
-                                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo totam non cumque deserunt officiis ex maiores nostrum.
-                                                            </p>
-                                                        </div>
-                                                        <div class="mt-5 sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:flex sm:items-center">
-                                                            <button type="button" class="relative inline-flex flex-shrink-0 h-6 transition-colors duration-200 ease-in-out bg-gray-200 border-2 border-transparent rounded-full cursor-pointer w-11 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" role="switch" aria-checked="false" x-ref="switch" x-state:on="Enabled" x-state:off="Not Enabled" :class="{ 'bg-indigo-600': on, 'bg-gray-200': !(on) }" aria-labelledby="renew-subscription-label" :aria-checked="on.toString()" @click="on = !on">
-                                                                <span class="sr-only">Use setting</span>
-                                                                <span aria-hidden="true" class="inline-block w-5 h-5 transition duration-200 ease-in-out transform translate-x-0 bg-white rounded-full shadow ring-0" x-state:on="Enabled" x-state:off="Not Enabled" :class="{ 'translate-x-5': on, 'translate-x-0': !(on) }"></span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="flex items-center justify-between py-3 pl-3 pr-4 text-sm ">
-                                        <div class="max-w-3xl mx-auto">
-                                            <div class="bg-white border shadow sm:rounded-lg">
-                                                <div class="px-4 py-5 sm:p-6" x-data="{ on: true }">
-                                                    <h3 class="text-lg font-medium leading-6 text-gray-900" id="renew-subscription-label">
-                                                        Subscription Status
-                                                    </h3>
-                                                    <div class="mt-2 sm:flex sm:items-start sm:justify-between">
-                                                        <div class="max-w-xl text-sm text-gray-500">
-                                                            <p id="renew-description">
-                                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo totam non cumque deserunt officiis ex maiores nostrum.
-                                                            </p>
-                                                        </div>
-                                                        <div class="mt-5 sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:flex sm:items-center">
-                                                            <button type="button" class="relative inline-flex flex-shrink-0 h-6 transition-colors duration-200 ease-in-out bg-gray-200 border-2 border-transparent rounded-full cursor-pointer w-11 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" role="switch" aria-checked="false" x-ref="switch" x-state:on="Enabled" x-state:off="Not Enabled" :class="{ 'bg-indigo-600': on, 'bg-gray-200': !(on) }" aria-labelledby="renew-subscription-label" :aria-checked="on.toString()" @click="on = !on">
-                                                                <span class="sr-only">Use setting</span>
-                                                                <span aria-hidden="true" class="inline-block w-5 h-5 transition duration-200 ease-in-out transform translate-x-0 bg-white rounded-full shadow ring-0" x-state:on="Enabled" x-state:off="Not Enabled" :class="{ 'translate-x-5': on, 'translate-x-0': !(on) }"></span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
-        <div class="px-4 py-5 bg-white shadow sm:rounded-lg sm:px-6">
-            <h2 id="timeline-title" class="text-lg font-medium text-gray-900">Timeline</h2>
-            <div class="flow-root mt-6">
-                <ul class="-mb-8">
-                    @foreach ($subscriptions->customer->orders as $item)
-                    <li>
-                        <div class="relative pb-8">
-                            <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
-                            <div class="relative flex space-x-3">
-                                <div>
-                                    <span class="flex items-center justify-center w-8 h-8 bg-gray-400 rounded-full ring-8 ring-white">
-                                        <!-- Heroicon name: solid/user -->
-                                        <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                                        </svg>
-                                    </span>
-                                </div>
-                                <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
-                                    <div>
-                                        <p class="text-sm text-gray-500">Applied to <a href="#" class="font-medium text-gray-900">{{$item->details}}</a></p>
-                                    </div>
-                                    <div class="text-sm text-right text-gray-500 whitespace-nowrap">
-                                        <time datetime="2020-09-20">{{$item->created_at}}</time>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    @if($item->order_status_id == 4)
-                    <li>
-                        <div class="relative pb-8">
-                            <div class="relative flex space-x-3">
-                                <div>
-                                    <span class="flex items-center justify-center w-8 h-8 bg-green-500 rounded-full ring-8 ring-white">
-                                        <!-- Heroicon name: solid/check -->
-                                        <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                                        </svg>
-                                    </span>
-                                </div>
-                                <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
-                                    <div>
-                                        <p class="text-sm text-gray-500">Order placed by: <a href="#" class="font-medium text-gray-900">{{$item->user->name}}</a></p>
-                                    </div>
-                                    <div class="text-sm text-right text-gray-500 whitespace-nowrap">
-                                        <time datetime="2020-10-04">Oct 4</time>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    @endif
-                    @endforeach
-                </ul>
+<div class="relative z-0 flex-col flex-1 overflow-y-auto">
+    <div class="p-4 overflow-hidden bg-white">
+        <div class="flex flex-col items-center justify-between lg:flex-row">
+            <div class="flex items-center">
+                <h4>{{ ucwords(trans_choice('messages.subscription', 1)) }}</h4>
             </div>
         </div>
-    </section>
-</div>
-{{-- </main>
-</div>
-<div class="container col-xm-12">
-    <div class="row">
-        <div class="col-md-12 ">
-            <div class="card">
-                <div class="view overlay">
-                    <div class="card-body">
-                        <div class="panel-block">
-                            <form class="form-horizontal form-bordered" method="POST" action="{{ route('subscription.update', $subscriptions->id) }}">
-                                @method('PATCH')
-                                @csrf
-                                <div class="field-group">
-                                    <div class="field is-inline-block-desktop">
-                                        <h3 class="card-title">{{ ucwords(trans_choice('messages.subscription_name', 1)) }}</h3>
-                                        <div class="control">
-                                            <input readonly="readonly"  name="name" type="text" placeholder="Text input" value="{{ $subscriptions->name }}">
-                                        </div>
-                                        <hr>
-                                        <div class="field is-inline-block-desktop">
-                                            <h3 class="card-title"><p>{{ ucwords(trans_choice('messages.tenant_name', 1)) }}</p></h3>
-                                            {{ $subscriptions->tenant_name }}</p>
-                                        </div>
-                                    </div>
-                                    @foreach ($products as $product)
-                                    @if ($product['billing'] == "license")
-                                    <hr>
-                                    <div class="field is-inline-block-desktop">
-                                        {{ ucwords(trans_choice('messages.licenses', 1)) }}
-                                        <div class="control">
-                                            @if ($subscriptions->status == "1")
-                                            <input readonly="readonly" class="input is-warning" name="amount" type="number" placeholder="Text input" value="{{ $subscriptions->amount }}">
-                                            @else
-                                            <input  class="input" name="amount" type="number" placeholder="Text input" value="{{ $subscriptions->amount }}">
-                                            @endif
-                                        </div>
-                                    </div>
-                                    @endif
-                                    @endforeach
+        <div class="flex flex-col items-center justify-between lg:flex-row">
+            <div class="flex items-center">
+                <span class="box-border">{{$subscriptions->customer->company_name}}
+                    <span class="text-xl font-normal text-gray-600">on</span>
+                    <span class="text-xl font-normal">{{$subscriptions->name}}</span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $subscriptions->status->name == 'messages.active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'  }}  capitalize">
+                        {{ ucwords(trans_choice($subscriptions->status->name, 1)) }}
+                    </span>
+                </span>
+            </div>
+            <div class="flex items-center justify-between">
+                <div>
+                    <div x-data="{ open: false }"   @keydown.escape.stop="open = false; focusButton()" @click.away="onClickAway($event)" class="relative inline-block px-3 mt-6 text-left">
+                        <button type="button" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none"  x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-2" @click="open = !open" aria-expanded="false" x-bind:aria-expanded="open.toString()" x-state-description="Current:"bg-gray-100 text-gray-900", Default:"bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900"">
+                            <span class="block -mt-px normal-case whitespace-no-wrap" style='margin-top: -1px; font-feature-settings: "pnum"; font-variant: proportional-nums; transition: color 0.24s ease 0s; overflow-wrap: break-word;'>
+                                <span class="box-border">
+                                    Actions
+                                </span>
+                            </span>
+                        </button>
+                        <div  x-cloak x-show.transition="open" @click.away="open = false" class="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                            <div class="py-1" role="none">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-4">Edit Subscription</a>
+                            </div>
+                            <div class="py-1" role="none">
+                                @if($subscriptions->status->name == 'messages.active')
+                                <a href="#" class="block px-4 py-2 text-sm text-red-700" role="menuitem" tabindex="-1" id="menu-item-6">Disable</a>
+                                @endif
+                                @if($subscriptions->status->name != 'messages.active')
+                                <a href="#" class="block px-4 py-2 text-sm text-green-700" role="menuitem" tabindex="-1" id="menu-item-6">Enable</a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-32 p-0 px-1 py-2 m-0 border-r shadow-xs">
+            <span class="font-bold">{{ ucwords(trans_choice('messages.subscription_started', 1)) }}</span>
+            <div>
+                <span class="text-xs text-gray-500">{{$subscriptions->created_at}}</span>
+            </div>
+        </div>
+
+        <div class="px-0 pt-0 mt-10 break-words border-b">
+            <div class="flex flex-col lg:flex-row">
+                <div class="flex items-center">
+                    <h4>{{ ucwords(trans_choice('messages.subscription_details', 1)) }}</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-flow-col grid-cols-2 gap-4">
+            <div>
+                <div class="flex justify-between mt-4 mb-8">
+                    <div class="">
+                        <dl>
+                            <div class="py-1 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.customer', 1)) }}</dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{$subscriptions->customer->company_name}}</dd>
+                            </div>
+                            <div class="py-1 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.created_at', 1)) }}</dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{$subscriptions->created_at}}</dd>
+                            </div>
+                            <div class="py-1 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.subscription_period', 1)) }}</dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ date('j F, Y', strtotime($subscriptions->created_at)) }} <strong>to</strong> {{date('j F, Y', strtotime($subscriptions->expiration_data))}}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-span-2 col-start-2 row-start-1">
+                <div>
+                    <div class="flex justify-between mt-4 mb-8">
+                        <div class="">
+                            <dl>
+                                <div class="py-1 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.billing_cycle', 1)) }}</dt>
+                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{strtoupper($subscriptions->billing_period)}}</dd>
                                 </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-sm">
-                                        <div class="control">
-                                            <label for="nights" class="label is-small"> {{ ucwords(trans_choice('messages.billing_cycle', 1)) }}</label>
-                                            @if ($subscriptions->status == "1")
-                                            <div  readonly="readonly">
-                                                @else
-                                                @endif
-                                                <div  class="select is-info">
-                                                    <select name="billing_period" >
-                                                        <option value="monthly" {{ $subscriptions->billing_period == "monthly" ? "selected":"" }}> Monthly</option>
-                                                        <option value="annual" {{ $subscriptions->billing_period == "annual" ? "selected":"" }}> Annual</option>
-                                                    </select>
+                                <div class="py-1 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.tenant', 1)) }}{{ ucwords(trans_choice('messages.tenant', 1)) }}</dt>
+                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                        <button value="copy" onclick="copyToClipboard('copy_{{ $subscriptions->tenant_name }}')" class="inline-flex p-0 -mt-1 -mb-px -ml-1 overflow-visible no-underline normal-case bg-transparent border-0 cursor-pointer focus:shadow-xs" type="button">
+                                            <div class="relative flex flex-row-reverse items-baseline p-0 m-0">
+                                                <div class="flex flex-row-reverse items-baseline justify-start flex-auto p-0 m-0">
+                                                    <div aria-hidden="true" class="flex p-0 my-0 ml-1 mr-0 text-gray-600">
+                                                        <svg aria-hidden="true" class="box-border" height="12" width="12" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M7 5h2a3 3 0 0 0 3-3 2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2 3 3 0 0 0 3 3zM6 2a2 2 0 1 1 4 0 1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z" fill-rule="evenodd" class="box-border"></path>
+                                                        </svg>
+                                                    </div>
+                                                    <span >
+                                                        <input id="copy_{{ $subscriptions->tenant_name }}" value="{{ strtoupper($subscriptions->tenant_name) }}" class="inline w-48 mr-1 font-mono text-xs font-normal" />
+                                                    </span>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-sm">
-                                            <div class="control">
-                                                <label for="nights" class="label is-small">Subscription Status</label>
-                                                <div name="status" class="select is-info">
-                                                    <select name="status">
-                                                        <option  value="1" {{ $subscriptions->status_id == "1" ? "selected":"" }}> Active</option>
-                                                        <option  value="2" {{ $subscriptions->status_id == "2" ? "selected":"" }}> Suspended</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                        </button>
+                                    </dd>
                                 </div>
-                                <br>
-                                <br>
-                                <div class="control">
-                                    <div class="text-center text-md-left">
-                                        <a data-toggle="modal" data-target="#centralModalInfo" class="genric-btn primary-brand">{{ ucwords(trans_choice('messages.update', 1)) }}</a>
-                                        <div class="modal fade" id="centralModalInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-                                        aria-hidden="true" data-backdrop="false">
-                                        <div class="modal-dialog modal-notify modal-info" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <p class="heading lead">Update Subscription</p>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true" class="white-text">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="text-center">
-                                                        <i class="mb-3 fas fa-check fa-4x animated rotateIn"></i>
-                                                        <p>You are about to update Subscription {{$subscriptions->name}}</p>
-                                                        <p>Are you sure?</p>
+                                <div class="py-1 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.subscription_id', 2)) }}</dt>
+                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                        <span class="inline font-mono text-xs font-normal">
+                                            {{$subscriptions->subscription_id}}
+                                        </span>
+                                        <button value="copy" onclick="copyToClipboard('copy_{{ $subscriptions->subscription_id }}')" class="inline-flex p-0 -mt-1 -mb-px -ml-1 overflow-visible no-underline normal-case bg-transparent border-0 cursor-pointer focus:shadow-xs" type="button">
+                                            <div class="relative flex flex-row-reverse items-baseline p-0 m-0">
+                                                <div class="flex flex-row-reverse items-baseline justify-start flex-auto p-0 m-0">
+                                                    <div aria-hidden="true" class="flex p-0 my-0 ml-1 mr-0 text-gray-600">
+                                                        <svg aria-hidden="true" class="box-border" height="12" width="12" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M7 5h2a3 3 0 0 0 3-3 2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2 3 3 0 0 0 3 3zM6 2a2 2 0 1 1 4 0 1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z" fill-rule="evenodd" class="box-border"></path>
+                                                        </svg>
                                                     </div>
                                                 </div>
-                                                <div class="modal-footer justify-content-center">
-                                                    <button  type="submit" type="button" class="genric-btn info waves-effect" >yes </button>
-                                                    <a type="button" class="genric-btn danger waves-effect" data-dismiss="modal">No, thanks</a>
+                                            </div>
+                                        </button>
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-0 m-0 break-words">
+            <div class="px-0 pt-0 pb-5 m-0">
+                <div class="p-0 m-0 overflow-visible bg-white rounded" style="overflow: visible; outline: 0px; overflow-wrap: break-word;">
+                    <div class="px-0 pt-0 mt-10 break-words border-b">
+                        <div class="flex flex-col lg:flex-row">
+                            <div class="flex items-center">
+                                <h4>{{ ucwords(trans_choice('messages.price', 2)) }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.product', 2)) }}</th>
+                                <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.subscription_id', 1)) }}</th>
+                                <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.amount', 2)) }}</th>
+                                <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.total', 1)) }}</th>
+                            </tr>
+                        </thead>
+                        <tbody class="box-border" style="overflow-wrap: break-word;">
+                            <tr class="table-subheader hover:bg-gray-100">
+                                <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">
+                                    <div class="p-0 mt-px mb-0 ml-px mr-0 pointer-events-auto">
+                                        <span class="inline font-medium text-gray-900">
+                                            {{$subscriptions->products->first()->name}}
+                                            <span class="inline text-gray-600">
+                                                •
+                                            </span>
+                                            {{$subscriptions->product_id}}
+                                        </span>
+                                    </div>
+                                    @if($subscriptions->order->first())
+                                    <span class="inline text-xs text-gray-600">
+                                        {{$subscriptions->order->first()->orderproduct->retail_price}} {{$subscriptions->currency}} / {{$subscriptions->billing_period}}
+                                    </span>
+                                    @endif
+                                </td>
+                                <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">
+                                    <span class="inline font-medium text-gray-900">
+                                        <input id="copy_{{ $subscriptions->subscription_id }}" aria-invalid="false" readonly="" placeholder="" type="text" class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto w-76" value="{{$subscriptions->subscription_id}}" />
+                                    </span>
+                                    <span class="inline font-medium text-gray-900">
+                                        <button value="copy" onclick="copyToClipboard('copy_{{ $subscriptions->subscription_id }}')" >
+                                            <div class="relative flex flex-row items-baseline w-full p-0 m-0">
+                                                <div class="flex-none p-0 m-0">
+                                                </div>
+                                                <div class="flex flex-row items-baseline justify-center flex-auto w-full p-0 m-0">
+                                                    <div class="px-px py-0 m-0">
+                                                        <div aria-hidden="true" class="flex p-0 mx-0 mb-0 -mt-px text-gray-700">
+                                                            <svg aria-hidden="true" class="box-border" height="12" width="12" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" style="fill: currentcolor; font-variant: tabular-nums; line-height: 0px; overflow-wrap: break-word;">
+                                                                <path d="M7 5h2a3 3 0 0 0 3-3 2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2 3 3 0 0 0 3 3zM6 2a2 2 0 1 1 4 0 1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z" fill-rule="evenodd" class="box-border"></path>
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                    <span class="absolute block w-px h-px -mt-px overflow-hidden normal-case whitespace-no-wrap">
+                                                        <span class="box-border">Copy to clipboard</span>
+                                                    </span>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <a href="{{ URL::previous() }}">
-                                        <span class="genric-btn danger" id="update-details-btn">
-                                            {{ ucwords(trans_choice('messages.cancel', 1)) }}
-                                        </span>
-                                    </a>
+                                        </button>
+                                    </td>
+                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">
+                                            <span class="inline text-sm font-normal leading-5">
+                                                {{$subscriptions->amount}}
+                                            </span>
+                                    </td>
+                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">
 
-                                    <a href="{{route('analytics.list')}}">
-                                        <span class="genric-btn info" id="update-details-btn">
-                                            {{ ucwords(trans_choice('messages.azure_analytic', 1)) }}
-                                        </span></a>
+                                            @if($subscriptions->order->first())
+                                            <span class="inline text-sm font-normal leading-5">
+                                                {{number_format(($subscriptions->order->first()->orderproduct->retail_price*$subscriptions->amount)*($subscriptions->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscriptions->currency}} / {{$subscriptions->billing_period}}
+                                            </span>
+                                            @endif
 
-                                    </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+                <div class="px-0 pt-0 pb-5 m-0 text-blue-900 break-words">
+                    <div class="p-0 m-0 overflow-visible break-words bg-white rounded" style="overflow: visible; outline: 0px; overflow-wrap: break-word;">
+                        <div class="px-0 pt-0 mt-10 break-words border-b">
+                            <div class="flex flex-col lg:flex-row">
+                                <div class="flex items-center">
+                                    <h4>{{ ucwords(trans_choice('messages.order', 1)) }}</h4>
                                 </div>
                             </div>
-                        </form>
+                        </div>
+                        <div class="p-0 m-0">
+                            <div class="p-0 m-0">
+                                <table class="w-full max-w-full border-collapse" style="border-spacing: 0px; overflow-wrap: break-word;">
+                                    <thead class="box-border" style="overflow-wrap: break-word;">
+                                        <tr class="h-full text-gray-700" style="overflow-wrap: break-word;"></tr>
+                                    </thead>
+                                    <tbody class="box-border" style="overflow-wrap: break-word;">
+                                        @foreach ($subscriptions->order as $item)
+                                        <tr class="h-full text-gray-700 cursor-pointer hover:bg-gray-100 focus:bg-gray-100" style="overflow-wrap: break-word;">
+                                            <td class="w-auto h-px p-0 m-0 text-left whitespace-normal align-top shadow-xs" style="height: 1px; outline: 0px; word-break: break-word; overflow-wrap: break-word;">
+                                                <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/events/evt_1IxJAJLscCqGLLUxQpoFVLpD">
+                                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                                        <span class="inline text-sm font-normal leading-5">
+                                                            <span class="box-border" style="font-variant: proportional-nums; word-break: break-word; overflow-wrap: break-word;">
+                                                                {{$item->user->name}} {{$item->user->last_name}} / {{$item->details, 'LIKE', '%'.$subscriptions->name.'%'}}
+                                                            </span>
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                            </td>
+                                            <td class="w-px h-px p-0 m-0 text-right whitespace-normal align-top shadow-xs" style="height: 1px; outline: 0px; word-break: break-word; overflow-wrap: break-word;">
+                                                <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/events/evt_1IxJAJLscCqGLLUxQpoFVLpD">
+                                                    <div class="h-full p-2 m-0 overflow-auto">
+                                                        <span class="inline text-sm font-normal leading-5">
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                            </td>
+                                            <td class="w-px h-px p-0 m-0 text-right text-gray-500 align-top shadow-xs whitespace-nowrap">
+                                                <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/events/evt_1IxJAJLscCqGLLUxQpoFVLpD">
+                                                    <div class="h-full py-2 pl-2 pr-1 m-0">
+                                                        <span class="inline text-sm font-normal leading-5 text-gray-600">
+                                                            <span class="box-border">{{$item->created_at}}</span>
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <a class="font-medium text-indigo-600 no-underline bg-transparent cursor-pointer hover:text-gray-900 hover:no-underline focus:shadow-xs" href="/events?related_object=sub_JDdMJBanJrIVHp">
+                                <div class="text-gray-900" style="overflow-wrap: break-word;">
+                                    <span class="box-border" style="overflow-wrap: break-word;">
+                                        View more events
+                                    </span>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div> --}}
+    @endsection
+    <script>
+        function copyToClipboard(subscription_id) {
+            document.getElementById(subscription_id).select();
+            document.execCommand('copy');
+            if(document.execCommand('copy')) {
+                alert('Text Copied');
+                document.body.removeChild(input);
+            }
+        }
+    </script>
 
-
-@endsection
-
-@section('scripts')
-
-
-@endsection

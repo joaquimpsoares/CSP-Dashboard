@@ -11,7 +11,8 @@
 
 @section('content')
 
-<section class="section">
+@livewire('product.product-table')
+{{-- <section class="section">
     <div id='recipients' class="p-5 mt-6 mb-5 bg-white lg:mt-0">
         <div class="px-4 py-4 bg-white border-b border-gray-200 py-auto sm:px-6">
             <div class="flex flex-wrap items-center justify-between -mt-4 -ml-4 sm:flex-nowrap">
@@ -99,7 +100,7 @@
                     </div>
                 </section>
 
-
+ --}}
                 @endsection
 
 

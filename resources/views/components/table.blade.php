@@ -17,7 +17,7 @@
                     @forelse($list as $item)
                     <tr class="hover:bg-gray-100">
                         @if($attributes->has('checkbox'))
-                        <td class="px-2 py-2 text-sm  text-gray-800 whitespace-nowrap">
+                        <td class="px-2 py-2 text-sm text-gray-800 whitespace-nowrap">
                             <input type="checkbox" />
                         </td>
                         @endif
@@ -53,12 +53,10 @@
                         <td colspan="5">Empty</td>
                     </tr>
                     @endforelse
-                    <!-- More people... -->
                 </tbody>
             </table>
         </div>
     </div>
-
     <div class="flex justify-center mt-4 card-footer">
         {{ $list->links() }}
     </div>

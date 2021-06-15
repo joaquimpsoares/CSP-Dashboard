@@ -1,10 +1,12 @@
 <?php
 
 namespace App;
-
 use App\Models\Metafield;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class Product extends Model
 {
@@ -22,10 +24,12 @@ class Product extends Model
 
     public function format()
     {
-
         return [
             'vendor' => $this->vendor,
             'instance_id' => $this->instance_id,
+            'instance' => $this->instance->name,
+
+            'id' => $this->id,
             'sku' => $this->sku,
             'name' => $this->name,
             'description' => $this->description,
@@ -43,7 +47,7 @@ class Product extends Model
             'billing' => $this->billing,
             'acquisition_type' => $this->acquisition_type,
             'addons' => $this->addons,
-            'getproductaddons' => $this->getAddons(),
+            // 'getproductaddons' => $this->getAddons(),
             'category' => $this->category,
             'upgrade_target_offers' => $this->upgrade_target_offers,
             'supported_billing_cycles' => $this->supported_billing_cycles,
@@ -70,7 +74,7 @@ class Product extends Model
     }
 
     public function path() {
-        return url("/product/{$this->id}-" . Str::slug($this->socket_shutdown, '-'));
+        return url("/product/{$this->id}-" . Str::slug($this->name, '-'));
     }
 
     public function subsriptions() {
@@ -83,5 +87,16 @@ class Product extends Model
 
     public function metafields(){
         return $this->morphMany(Metafield::class, 'metafieldable');
+    }
+
+    protected static function booted(){
+        static::addGlobalScope('access_level', function(Builder $query){
+            $user = Auth::user();
+            if($user && $user->userLevel->name === config('app.provider')){
+                $query->whereHas('instance', function(Builder $query) use($user){
+                    $query->where('id', $user->provider->id);
+                });
+            }
+        });
     }
 }

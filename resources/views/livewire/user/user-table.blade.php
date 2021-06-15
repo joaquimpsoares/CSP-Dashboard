@@ -4,9 +4,10 @@
             <div class="flex flex-col">
                 <div class="flex flex-col items-center justify-between lg:flex-row">
                     <div class="flex items-center">
-                        <h4>{{ ucwords(trans_choice('messages.customer_table', 2)) }}</h4>
+                        <h4>{{ ucwords(trans_choice('messages.user_table', 2)) }}</h4>
                     </div>
                     <div class="flex items-center justify-between">
+
                         <div>
                             <div class="flex justify-center flex-1 lg:justify-end">
                                 <!-- Search section -->
@@ -24,7 +25,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div>
                             <a onclick="confirm('Are you sure you want to export these Records?') || event.stopImmediatePropagation()"wire:click="exportSelected()" href="#" class="px-2 py-2 ml-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
@@ -44,20 +44,17 @@
                         </div>
                     </div>
                 </div>
-                @dd($jobs)
-                <x-table :list="$jobs" :mobileColumns="[
-                    'id',
-                    'queue'
+                <x-table :list="$users" :mobileColumns="[
+                    'name',
                     ]"
                 :columns="[
 
                     'id' => function($customer){
                         return $customer['path'];
                     },
-                    'queue' => null,
                     'name' => null,
-                    'progress' => null,
-                    'time_elapsed' => null,
+                    'email' => null,
+                    '' => null,
                     'created_at' => null
                 ]"
                 :listElementActions="[

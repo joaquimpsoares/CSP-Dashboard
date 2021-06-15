@@ -1,4 +1,4 @@
-<?php
+<?php 
 return [
   'importproducts' => 'Importar productos de Microsoft, programado',
   'jobrescheduled' => 'Trabajo reprogramado',
@@ -81,6 +81,7 @@ return [
   'user_table' => 'Tabla de usuario | Tabla de usuarios',
   'choose_one' => 'elige uno',
   'billing_cycle' => 'ciclo de facturación',
+  'subscription_started' => 'empezado',
   'subscription_period' => 'Periodo de suscripción',
   'new_provider' => 'nuevo proveedor',
   'new_reseller' => 'nuevo revendedor',
@@ -118,6 +119,7 @@ return [
   'last_updated' => 'última actualización',
   'comments' => 'comentarios',
   'order_details' => 'Detalles de pedido',
+  'subscription_details' => 'Detalles de suscripción',
   'expiration' => 'fecha de caducidad',
   'subscription_updated_successfully' => 'Suscripción actualizada con éxito',
   'something_went_wrong_try_again' => 'Algo salió mal, intenta de nuevo',
@@ -222,6 +224,7 @@ return [
   'customer_price' => 'Precio del cliente',
   'manage' => 'gestionar',
   'setting' => 'Configuración | Configuración',
+  'general_settings' => 'Configuración general',
   'options' => 'opciones',
   'created_at' => 'Creado en',
   'edit_user' => 'editar usuario',
@@ -300,6 +303,11 @@ return [
   'microsoft_invoices' => 'facturas de Microsoft',
   'microsoft_invoices_table' => 'Tabla de facturas de Microsoft',
   'teams' => 'Microsoft Teams',
-  'download' => 'Microsoft Teams',
   'billing' => 'facturación',
+  'settings' => 'ajustes',
+  'download' => 'Microsoft Teams',
+  'edit_subscription' => 'Editar suscripción',
+  'on' => 'en',
+  'customer_relationship' => 'relación con el cliente',
+  'main_contact' => 'contacto principal',
 ];

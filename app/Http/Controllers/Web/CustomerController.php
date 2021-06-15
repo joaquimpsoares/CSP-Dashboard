@@ -41,14 +41,7 @@ class CustomerController extends Controller
 
     }
 
-    public function index(Customer $customer) {
-
-        // $customers = Customer::with(['country', 'subscriptions','status'])->paginate(10);
-
-        // $customers->getCollection()->map(function(Customer $customer){
-        //     $customer->setRawAttributes(json_decode(json_encode($customer->format()), true)); // Coverts to array recursively (make helper from it?)
-        //     return $customer;
-        // });
+    public function index() {
         return view('customer.index');
     }
 
@@ -177,7 +170,6 @@ class CustomerController extends Controller
     }
 
     public function edit(Customer $customer) {
-
         return view('customer.edit', compact('customer'));
     }
 

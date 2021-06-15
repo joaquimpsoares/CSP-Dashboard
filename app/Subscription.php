@@ -19,6 +19,10 @@ class Subscription extends Model
         return $this->belongsTo('App\Customer');
     }
 
+    public function order() {
+        return $this->hasMany('App\Order', 'subscription_id', 'id');
+    }
+
     public function products() {
         return $this->hasMany('App\Product', 'sku', 'product_id');
     }

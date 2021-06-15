@@ -33,9 +33,7 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = $this->productRepository->showall();
-
-        return  view('product.index', compact('products'));
+        return  view('product.index');
     }
 
     public function index2()

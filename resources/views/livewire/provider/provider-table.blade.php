@@ -44,7 +44,7 @@
                         </div>
                     </div>
                 </div>
-                <x-table checkbox :list="$providers" :mobileColumns="[
+                <x-table :list="$providers" :mobileColumns="[
                     'company_name',
                     ]"
                 :columns="[

@@ -4,10 +4,12 @@ namespace App;
 
 use Soved\Laravel\Gdpr\Portable;
 use Webpatser\Countries\Countries;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Soved\Laravel\Gdpr\Contracts\Portable as PortableContract;
 
@@ -61,11 +63,15 @@ class User extends Authenticatable implements  JWTSubject, PortableContract
     public function format()
     {
         return [
+            'id'      => $this->id,
             'name'      => $this->name,
             'last_name' => $this->last_name,
             'phone'     => $this->phone,
             'email'     => $this->email,
-            'country'   => $this->country
+            'country'   => $this->country,
+            'provider'   => $this->provider,
+            'reseller'   => $this->reseller,
+            'customer'   => $this->customer,
         ];
     }
 
@@ -123,4 +129,24 @@ class User extends Authenticatable implements  JWTSubject, PortableContract
     public function news() {
         return $this->hasMany('App\News');
     }
+
+
+    // protected static function booted(){
+    //     static::addGlobalScope('access_level', function(Builder $query){
+    //         $user = Auth::user();
+    //         // dd($user);
+    //         if($user && $user->userLevel->name === config('app.provider')){
+    //             $query->whereHas('reseller', function(Builder $query) use($user){
+    //                 $query->whereHas('provider', function(Builder $query) use($user){
+    //                     $query->where('id', $user->provider->id);
+    //                 });
+    //             });
+    //         }
+    //         if($user && $user->userLevel->name === config('app.reseller')){
+    //             $query->whereHas('resellers', function(Builder $query) use($user){
+    //                 $query->where('id', $user->reseller->id);
+    //             });
+    //         }
+    //     });
+    // }
 }

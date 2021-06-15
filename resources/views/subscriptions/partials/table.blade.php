@@ -50,9 +50,8 @@
                         <tbody>
                             @forelse ($subscriptions as $subscription)
                             <tr class="table-subheader hover:bg-gray-100">
-                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">
-                                    {{$subscription['id']}}</td>
-                                    {{-- <td width="1%" class="f-s-600"><a href="{{route('subscription.show', $subscription->id)}}">{{$subscription['id']}}</a></td> --}}
+                                {{-- <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{$subscription['id']}}</td> --}}
+                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap"><a href="{{route('subscription.show', $subscription->id)}}">{{$subscription['id']}}</a></td>
                                     <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->name}}</td>
                                     <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->customer->company_name}}</td>
                                     @if ($subscription->billing_type === 'usage' )
@@ -76,19 +75,19 @@
                                         <div class="border-0 panel panel-primary receipts-inline-table">
                                             <div class="p-0 border-0 panel-body tabs-menu-body">
                                                 <div class="tab-content">
-                                                    <table  class="min-w-full divide-y divide-gray-200">
+                                                    <table  class="min-w-full mr-2 bg-indigo-100 divide-y divide-gray-200 ">
                                                         <tbody>
                                                             <tr>
-                                                                <th  scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.subscription_name', 1)) }}</th>
-                                                                <th  scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.quantity', 1)) }}</th>
-                                                                <th  scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.billing_cycle', 1)) }}</th>
-                                                                <th  scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.status', 1)) }}</th>
-                                                                <th  scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.action', 1)) }}</th>
+                                                                <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.subscription_name', 1)) }}</th>
+                                                                <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.quantity', 1)) }}</th>
+                                                                <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.billing_cycle', 1)) }}</th>
+                                                                <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.status', 1)) }}</th>
+                                                                <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.action', 1)) }}</th>
                                                             </tr>
-                                                            <tr class="last-product">
+                                                            <tr class="mr-13 last-product">
                                                                 <form class="form-horizontal form-bordered" method="POST" action="{{ route('subscription.update', $subscription->id) }}">
                                                                     @method('PATCH')
-                                                                    <td>{{$subscription->name}}</td>
+                                                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->name}}</td>
                                                                     @if ($subscription->billing_type === 'usage' ?? 'software perpetual')
                                                                     <td></td>
                                                                     @else
@@ -96,7 +95,7 @@
                                                                     <td>
                                                                         <div class="w-16 pt-0 mb-3">
                                                                             <x-input class="relative w-full px-2 py-1 text-sm " type="number" name="amount" value="{{$subscription->amount}}"/>
-                                                                            </div>
+                                                                        </div>
                                                                         </td>
                                                                         @endif
                                                                         <td>
@@ -126,17 +125,13 @@
                                                                         </td>
                                                                         <td>
                                                                             <div class="w-24 pt-0 mb-3">
-                                                                                {{-- <button class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none" type="button"
-                                                                                >
-                                                                                <i class="fas fa-heart"></i> Small
-                                                                            </button> --}}
                                                                             <button type="submit" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none" type="submit">Change</button>
                                                                         </div>
                                                                     </td>
                                                                     @if ($subscription->billing_type != 'software')
                                                                     @foreach ($subscription->products->first()->getaddons()->all() as $item)
                                                                     <tr>
-                                                                        <td><strong>Add-on:</strong> {{$item->name}}</td>
+                                                                        <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap"><strong>Add-on:</strong> {{$item->name}}</td>
                                                                         <td>
                                                                             <div class="w-16 pt-0 mb-3">
                                                                                 <x-input class="relative w-full px-2 py-1 text-sm " type="number" name="amount_addon" value="{{$item->amount}}"/>

@@ -93,6 +93,7 @@
                                 </thead>
                                 <tbody class="bg-white">
                                     @forelse($jobs as $job)
+                                    @dd($job)
                                     <tr class="hover:bg-gray-100" >
                                         <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{$job->id}}</td>
                                         <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-wrap lg:table-cell">

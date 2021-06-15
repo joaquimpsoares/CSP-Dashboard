@@ -10,13 +10,15 @@ use App\Http\Controllers\Auth\LoginController;
 
 
 /**********************************************************************************
- Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
+Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
- **********************************************************************************/
+**********************************************************************************/
 
 // Route::post('registerInvitation', 'UsersController@registerInvitation')->name('registerInvitation');
 
-
+Route::prefix('jobis')->group(function () {
+    Route::queueMonitor();
+});
 
 Route::get('exportexcel', 'AnalyticController@exportexcel')->name('exportexcel');
 
@@ -26,58 +28,55 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
 
 
 
-    /**********************************************************************************
-    Fim Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
+/**********************************************************************************
+Fim Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
-    **********************************************************************************/
+**********************************************************************************/
 
-    Route::get('login/microsoft', [LoginController::class, 'redirectToProvider']);
-    Route::get('login/microsoft/callback', [LoginController::class, 'handleProviderCallback']);
+Route::get('login/microsoft', [LoginController::class, 'redirectToProvider']);
+Route::get('login/microsoft/callback', [LoginController::class, 'handleProviderCallback']);
 
-    // Route::get('login/graph', [LoginController::class, 'redirectToProvider']);
-    Route::get('login/graph/callback', [LoginController::class, 'handleProviderCallback']);
+// Route::get('login/graph', [LoginController::class, 'redirectToProvider']);
+Route::get('login/graph/callback', [LoginController::class, 'handleProviderCallback']);
 
 
-    Route::group(['middleware' => 'auth'], function ()
+Route::group(['middleware' => 'auth'], function ()
+{
+
+
+    /*****************************************************************************************************************/
+
+    // Routes that only platform managers can access
+    Route::group(['middleware' => ['role:Super Admin']], function ()
     {
 
-
-        /*****************************************************************************************************************/
-
-        // Routes that only platform managers can access
-        Route::group(['middleware' => ['role:Super Admin']], function ()
-        {
-
-            Route::resource('roles', 'RoleController');
-            Route::post('roles/update/all', 'RoleController@updateAll')->name('roles.update.all');
-            Route::resource('permissions', 'PermissionController');
-            Route::get('userloginfo', 'HomeController@userLogInfo')->name('userloginfo');
-            Route::get('logactivity', 'HomeController@logActivity')->name('logactivity');
+        Route::resource('roles', 'RoleController');
+        Route::post('roles/update/all', 'RoleController@updateAll')->name('roles.update.all');
+        Route::resource('permissions', 'PermissionController');
+        Route::get('userloginfo', 'HomeController@userLogInfo')->name('userloginfo');
+        Route::get('logactivity', 'HomeController@logActivity')->name('logactivity');
 
 
-        });
+    });
 
-        /*****************************************************************************************************************/
+    /*****************************************************************************************************************/
 
-        // Routes that platform managers and administrators can access
-        Route::group(['middleware' => ['role:Super Admin|Admin']], function ()
-        {
-            Route::resource('provider', 'ProviderController');
-        });
+    // Routes that platform managers and administrators can access
+    Route::group(['middleware' => ['role:Super Admin|Admin']], function ()
+    {
+        Route::resource('provider', 'ProviderController');
+    });
 
-        /*****************************************************************************************************************/
+    /*****************************************************************************************************************/
 
-        // Routes that platform managers and providers can access
-        Route::group(['middleware' => ['role:Super Admin|Admin|Provider']], function ()
-        {
-            Route::get('invoices/index', [
-                'as' => 'invoices.index',
-                'uses' => 'MsftInvoicesController@index'
+    // Routes that platform managers and providers can access
+    Route::group(['middleware' => ['role:Super Admin|Admin|Provider']], function ()
+    {
+        Route::get('invoices/index', [
+            'as' => 'invoices.index',
+            'uses' => 'MsftInvoicesController@index'
             ]);
-            Route::get('invoices/downloadinvoice', [
-                'as' => 'invoices.downloadinvoice',
-                'uses' => 'MsftInvoicesController@downloadInvoice'
-            ]);
+            Route::get('invoices/downloadinvoice/{invoice_id}', [ 'as' => 'invoices.downloadinvoice', 'uses' => 'MsftInvoicesController@downloadInvoice' ]);
 
             Route::get('/instances/kascreate', 'InstanceController@kascreate')->name('instances.kascreate');
             Route::resource('/instances', 'InstanceController');
@@ -91,6 +90,8 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
 
             Route::post('/reseller', 'ResellerController@store')
             ->middleware('permission:' . config('app.reseller_create'))->name('reseller.store');
+            Route::resource('product', 'ProductController');
+
 
             Route::group(['middleware' => ['check_provider']], function ()
             {
@@ -114,6 +115,11 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
         Route::group(['middleware' => ['role:' . config('app.super_admin') . '|' . config('app.admin' ) . '|' . config('app.provider' ) . '|' . config('app.reseller') . '|' . config('app.subreseller')]], function ()
         {
 
+            //Jobs Routes
+            Route::get('jobs', 'JobsController@index')->name('jobs');
+            Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
+            Route::get('jobs/pending', 'JobsController@pending')->name('jobs.pending');
+            Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
             Route::get('/reseller', 'ResellerController@index')
             ->middleware('permission:' . config('app.reseller_index'))->name('reseller.index');
 
@@ -178,20 +184,21 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
 
         /*****************************************************************************************************************/
         /**
-     * Roles & Permissions
-     */
-    Route::group(['namespace' => 'Authorization'], function () {
-        Route::resource('roles', 'RolesController')->except('show')->middleware('permission:roles.manage');
+        * Roles & Permissions
+        */
+        Route::group(['namespace' => 'Authorization'], function () {
+            Route::resource('roles', 'RolesController')->except('show')->middleware('permission:roles.manage');
 
-        Route::post('permissions/save', 'RolePermissionsController@update')
+            Route::post('permissions/save', 'RolePermissionsController@update')
             ->name('permissions.save')
             ->middleware('permission:permissions.manage');
 
-        Route::resource('permissions', 'PermissionsController')->middleware('permission:permissions.manage');
-    });
+            Route::resource('permissions', 'PermissionsController')->middleware('permission:permissions.manage');
+        });
 
         // Routes that platform managers, providers, resellers and customers can access
         Route::group(['middleware' => ['role:Super Admin|Admin|Provider|Reseller|Sub Reseller|Customer']], function () {
+
 
             //User Routes
             Route::resource('/user', 'UsersController');
@@ -239,8 +246,11 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
         Route::get('DatabaseNotificationsMarkasRead', function () {
             auth()->user()->unreadNotifications->markAsRead();
             return redirect()->back();
-            })->name('databasenotifications.markasread');
+        })->name('databasenotifications.markasread');
 
+                    //PriceList Routes
+                    Route::resource('/priceList', 'PriceListController');
+                    Route::resource('/price', 'PriceController');
         Route::get('/order/placeOrder', 'OrderController@placeOrder')->name('order.place_order');
 
         Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
@@ -282,7 +292,6 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
 
         Route::get('products/test', 'ProductController@index2');
         Route::get('products/{id}', 'ProductController@show');
-        Route::resource('product', 'ProductController');
 
         Route::resource('/order', 'OrderController');
 
@@ -298,64 +307,58 @@ Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('
         Route::post('/analytics/edit/', ['uses' => 'AnalyticController@edit','as' => 'analytics.edit']);
         Route::get('/analytics/show/', ['uses' => 'AnalyticController@show','as' => 'analytics.show']);
 
-        //PriceList Routes
-        Route::resource('/priceList', 'PriceListController');
-        Route::resource('/price', 'PriceController');
-
-        //Jobs Routes
-        Route::get('jobs', 'JobsController@index')->name('jobs');
-        Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
-        Route::get('jobs/pending', 'JobsController@pending')->name('jobs.pending');
-        Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
+            //PriceList Routes
+            Route::resource('/priceList', 'PriceListController');
+            Route::resource('/price', 'PriceController');
 
         Route::get('news', [
             'as' => 'news.list',
             'uses' => 'AdminController@news'
-        ]);
-        Route::post('news/create', [
-            'as' => 'news.create',
-            'uses' => 'AdminController@createNews'
-        ]);
+            ]);
+            Route::post('news/create', [
+                'as' => 'news.create',
+                'uses' => 'AdminController@createNews'
+                ]);
 
-        Route::get('news/create', [
-            'as' => 'news.create',
-            'uses' => 'AdminController@createNews'
-        ]);
+                Route::get('news/create', [
+                    'as' => 'news.create',
+                    'uses' => 'AdminController@createNews'
+                    ]);
 
-        Route::get('news/{news}/edit', [
-            'as' => 'news.edit',
-            'uses' => 'AdminController@editNews'
-        ]);
+                    Route::get('news/{news}/edit', [
+                        'as' => 'news.edit',
+                        'uses' => 'AdminController@editNews'
+                        ]);
 
-        Route::get('news/{news}/view', [
-            'as' => 'news.view',
-            'uses' => 'AdminController@viewNews'
-        ]);
+                        Route::get('news/{news}/view', [
+                            'as' => 'news.view',
+                            'uses' => 'AdminController@viewNews'
+                            ]);
 
-        Route::post('news/{news}/delete', [
-            'as' => 'news.delete',
-            'uses' => 'AdminController@deleteNews'
-        ]);
+                            Route::post('news/{news}/delete', [
+                                'as' => 'news.delete',
+                                'uses' => 'AdminController@deleteNews'
+                                ]);
 
-        Route::post('news/{news}/update', [
-            'as' => 'news.update',
-            'uses' => 'AdminController@updateNews'
-        ]);
-
-
-        // Route::post('provider/register', 'ProviderController@store')->name('provider.register');
+                                Route::post('news/{news}/update', [
+                                    'as' => 'news.update',
+                                    'uses' => 'AdminController@updateNews'
+                                    ]);
 
 
-
-        // End of every authenticated user can access routes here
-    });
+                                    // Route::post('provider/register', 'ProviderController@store')->name('provider.register');
 
 
-    Auth::routes(['register' => true]);
 
-    Route::get('/', 'HomeController@index');
-    Route::get('/home', 'HomeController@index')->name('home');
+                                    // End of every authenticated user can access routes here
+                                });
 
-    Route::impersonate();
 
-    Auth::routes();
+                                Auth::routes(['register' => true]);
+
+                                Route::get('/', 'HomeController@index');
+                                Route::get('/home', 'HomeController@index')->name('home');
+
+                                Route::impersonate();
+
+                                Auth::routes();
