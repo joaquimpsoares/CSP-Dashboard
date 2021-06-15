@@ -158,7 +158,7 @@
                             <div class="py-3 xl:pl-4 xl:pt-6 xl:pb-0">
                                 <h2 class="sr-only">Description</h2>
                                 <div class="prose max-w-none">
-                                    @include('priceList.partials.pricetable')
+                                    @include('price.price-table')
                                 </div>
                             </div>
                         </div>

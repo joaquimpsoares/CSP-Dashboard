@@ -8,9 +8,19 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
-class Msft_invoices extends Model
+class MsftInvoices extends Model
 {
     use HasFactory;
+
+    public function format()
+    {
+        return [
+            'id'            => $this->id,
+            'company_name'  => $this->company_name,
+        ];
+
+    }
+
 
     public function provider() {
         return $this->belongsTo('App\Provider');

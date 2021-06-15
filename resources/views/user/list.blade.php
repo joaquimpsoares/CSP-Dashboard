@@ -1,26 +1,15 @@
 @extends('layouts.master')
 
-@section('page-title', __('Users'))
-@section('page-heading', __('Users'))
-
-@section('breadcrumbs')
-<li class="breadcrumb-item active">
-    @lang('Users')
-</li>
-@stop
 
 @section('content')
 
-@include('partials.messages')
-{{-- @dd(Auth::user()->roles->first()->name) --}}
-{{-- @dd(get_defined_vars()) --}}
-
-<div class="card">
+@livewire('user.user-table')
+{{-- <div class="card">
     <div class="card-body">
 
         <form action="" method="GET" id="users-form" class="pb-2 mb-3 border-bottom-light">
-            <div class="row my-3 flex-md-row flex-column-reverse">
-                <div class="col-md-4 mt-md-0 mt-2">
+            <div class="my-3 row flex-md-row flex-column-reverse">
+                <div class="mt-2 col-md-4 mt-md-0">
                     <div class="input-group custom-search-form">
                         <input type="text"
                         class="form-control input-solid"
@@ -43,7 +32,7 @@
                 </div>
             </div>
 
-            <div class="col-md-2 mt-2 mt-md-0">
+            <div class="mt-2 col-md-2 mt-md-0">
                 <select name="status" class="form-control SlectBox @error('status') is-invalid @enderror" sf-validate="required">
                     @foreach ($statuses as $key => $status)
                     @dump($status)
@@ -54,20 +43,20 @@
 
                 <div class="col-md-6">
                     @if (Auth::user()->roles->first()->name === 'Reseller')
-                    <a href="{{ route('user.create', ['level' => 'reseller', 'reseller_id' => session('reseller_id')]) }}" class="btn btn-primary btn-rounded float-right">
-                        <i class="fa fa-plus mr-2"></i>
+                    <a href="{{ route('user.create', ['level' => 'reseller', 'reseller_id' => session('reseller_id')]) }}" class="float-right btn btn-primary btn-rounded">
+                        <i class="mr-2 fa fa-plus"></i>
                         @lang('Add User')
                     </a>
                     @endif
                     @if (Auth::user()->roles->first()->name === 'Provider')
-                    <a href="{{ route('user.create', ['level' => 'provider', 'provider_id' => session('provider_id')]) }}" class="btn btn-primary btn-rounded float-right">
-                        <i class="fa fa-plus mr-2"></i>
+                    <a href="{{ route('user.create', ['level' => 'provider', 'provider_id' => session('provider_id')]) }}" class="float-right btn btn-primary btn-rounded">
+                        <i class="mr-2 fa fa-plus"></i>
                         @lang('Add User')
                     </a>
                     @endif
                     @if (Auth::user()->roles->first()->name === 'Customer')
-                    <a href="{{ route('user.create', ['level' => 'customer', 'customer_id' => session('customer_id')]) }}" class="btn btn-primary btn-rounded float-right">
-                        <i class="fa fa-plus mr-2"></i>
+                    <a href="{{ route('user.create', ['level' => 'customer', 'customer_id' => session('customer_id')]) }}" class="float-right btn btn-primary btn-rounded">
+                        <i class="mr-2 fa fa-plus"></i>
                         @lang('Add User')
                     </a>
                     @endif
@@ -105,14 +94,7 @@
 @if($users->total() >= 10)
     {!! $users->render() !!}
 
-@endif
+@endif --}}
 
-@stop
+@endsection
 
-@section('scripts')
-<script>
-    $("#status").change(function () {
-        $("#users-form").submit();
-    });
-</script>
-@stop

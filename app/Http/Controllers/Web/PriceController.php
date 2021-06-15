@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
 use App\Price;
-use App\Tier;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class PriceController extends Controller
 {
@@ -69,10 +68,9 @@ class PriceController extends Controller
      * @param  \App\Price  $price
      * @return \Illuminate\Http\Response
      */
-    public function edit(Price $price)
+    public function edit($price)
     {
-        $price = Price::find($price->id);
-
+        $price = Price::find($price);
         return view('price.edit', compact('price'));
     }
 

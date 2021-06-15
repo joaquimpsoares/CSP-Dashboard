@@ -47,7 +47,7 @@
                                     @endif
                                     @else
                                     <div class="cursor-pointer" wire:click="editProductField({{ $index }}, 'name')">
-                                        {{ $item->customer->country->currency_symbol}} {{$item->budget}}
+                                        {{ $item->customer->country->currency_symbol}}@money($item->budget)
                                     </div>
                                     @endif
                                 </td>
@@ -75,9 +75,9 @@
                             </tbody>
                         </table>
                         <div class="text-right card-footer d-flex">
-                            {{-- @if ($resourceName->total() >= '10')
-                            {!! $resourceName->render() !!}
-                            @endif --}}
+                            @if ($resourceName->total() >= '10')
+                            {{ $resourceName->links() }}
+                            @endif
                         </div>
                     </div>
                 </div>

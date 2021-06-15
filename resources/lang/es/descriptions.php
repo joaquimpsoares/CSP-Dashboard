@@ -1,4 +1,4 @@
-<?php
+<?php 
 return [
   'recieve_email_notifications' => 'Establezca esta opción para recibir notificaciones por correo electrónico.',
   'recieve_teams_notifications' => 'Establezca esta opción para recibir notificaciones por Microsoft teams',

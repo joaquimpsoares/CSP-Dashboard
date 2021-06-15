@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\msft_invoices;
+use App\Models\MsftInvoices;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MsftInvoicesFactory extends Factory
@@ -12,7 +12,7 @@ class MsftInvoicesFactory extends Factory
      *
      * @var string
      */
-    protected $model = msft_invoices::class;
+    protected $model = MsftInvoices::class;
 
     /**
      * Define the model's default state.

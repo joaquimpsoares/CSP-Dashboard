@@ -239,15 +239,36 @@
                         "type": "line",
                         "data": {
                             "labels": {!!$invoicelabel!!},
-                            "datasets": [{
+                            "datasets": [
+                            {
                                 "label": "Total paid",
                                 "data": {!!$invoicedata!!},
                                 "fill": true,
                                 "borderColor": "rgb(99, 102, 241, 1)",
-                                "lineTension": 0.1
-                            }]
+                                "lineTension": 0.5
+                            },
+                            {
+                                "label": "Total paid",
+                                "data": [],
+                                "fill": true,
+                                "borderColor": "rgb(99, 102, 241, 1)",
+                                "lineTension": 0.5
+                            }],
                         },
-                        "options": {}
+                        options: {
+                            scales: {
+                                xAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }],
+                                yAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }]
+                            }
+                        }
                     });
                 </script>
             </div>
@@ -268,10 +289,23 @@
                                 "data": {!!$orderdata!!},
                                 "fill": true,
                                 "borderColor": "rgb(99, 102, 241, 1)",
-                                "lineTension": 0.1
+                                "lineTension": 0.5
                             }]
                         },
-                        "options": {}
+                        options: {
+                            scales: {
+                                xAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }],
+                                yAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }]
+                            }
+                        }
                     });
                 </script>
             </div>
@@ -293,10 +327,23 @@
                                 "data": {!!$customerdata!!},
                                 "fill": true,
                                 "borderColor": "rgb(99, 102, 241, 1)",
-                                "lineTension": 0.1
+                                "lineTension": 0.5
                             }]
                         },
-                        "options": {}
+                        options: {
+                            scales: {
+                                xAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }],
+                                yAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }]
+                            }
+                        }
                     });
                 </script>
             </div>

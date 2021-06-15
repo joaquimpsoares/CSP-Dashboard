@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.master')
 
 <style>
     .number-input input[type="number"] {
@@ -6,16 +6,16 @@
         -moz-appearance: textfield;
         appearance: textfield;
     }
-    
+
     .number-input input[type=number]::-webkit-inner-spin-button,
     .number-input input[type=number]::-webkit-outer-spin-button {
         -webkit-appearance: none;
     }
-    
+
     .number-input {
         margin-bottom: 3rem;
     }
-    
+
     .number-input button {
         -webkit-appearance: none;
         background-color: transparent;
@@ -26,7 +26,7 @@
         margin: 0;
         position: relative;
     }
-    
+
     .number-input button:before,
     .number-input button:after {
         display: inline-block;
@@ -35,36 +35,36 @@
         height: 2px;
         transform: translate(-50%, -50%);
     }
-    
+
     .number-input button.plus:after {
         transform: translate(-50%, -50%) rotate(90deg);
     }
-    
+
     .number-input input[type=number] {
         text-align: center;
     }
-    
+
     .number-input.number-input {
         border: 1px solid #ced4da;
         width: 10rem;
         border-radius: .25rem;
     }
-    
+
     .number-input.number-input button {
         width: 2.6rem;
         height: .7rem;
     }
-    
+
     .number-input.number-input button.minus {
         padding-left: 10px;
     }
-    
+
     .number-input.number-input button:before,
     .number-input.number-input button:after {
         width: .7rem;
         background-color: #495057;
     }
-    
+
     .number-input.number-input input[type=number] {
         max-width: 4rem;
         padding: .5rem;
@@ -74,16 +74,16 @@
         height: 2rem;
         color: #495057;
     }
-    
+
     @media not all and (min-resolution:.001dpcm) {
         @supports (-webkit-appearance: none) and (stroke-color:transparent) {
-            
+
             .number-input.def-number-input.safari_only button:before,
             .number-input.def-number-input.safari_only button:after {
                 margin-top: -.3rem;
             }
         }
-    }   
+    }
 </style>
 
 
@@ -93,7 +93,7 @@
     <section class="section">
         <div class="card">
             <div class="">
-                <i class="fab fa-product-hunt fa-lg primary-color z-depth-2 p-4 ml-2 mt-n3 rounded text-white"></i>
+                <i class="p-4 ml-2 text-white rounded fab fa-product-hunt fa-lg primary-color z-depth-2 mt-n3"></i>
                 <div class="card-body">
                     <h4 class="card-title"><a>{{ ucwords(trans_choice('messages.product_card', 2)) }}</a></h4>
                     <div class="row">
@@ -159,7 +159,7 @@
                                     @endif
                                     <div class="row">
                                         <div class="input-field col s4">
-                                            <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.product_mininum', 1)) }}</label>  
+                                            <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.product_mininum', 1)) }}</label>
                                             <div class="def-number-input number-input safari_only">
                                                 <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus"></button>
                                                 <input class="quantity" min="0" name="quantity" value="{{$product->minimum_quantity}}" type="number">
@@ -167,7 +167,7 @@
                                             </div>
                                         </div>
                                         <div class="input-field col s4">
-                                            <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.product_maximum', 1)) }}</label>  
+                                            <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.product_maximum', 1)) }}</label>
                                             <div class="def-number-input number-input safari_only">
                                                 <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus"></button>
                                                 <input class="quantity" min="0" name="quantity" type="number" value="{{$product->maximum_quantity}}">
@@ -194,7 +194,7 @@
                                     @if ($product->limit > 0)
                                     <div class="row">
                                         <div class="input-field col s4">
-                                            <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.subscription_limit', 1)) }}</label>  
+                                            <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.subscription_limit', 1)) }}</label>
                                             <div class="def-number-input number-input safari_only">
                                                 <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus"></button>
                                                 <input class="quantity" min="0" name="quantity" value="{{$product->limit}}" type="number">
@@ -229,7 +229,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="input-field col s4">
-                                            <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.trial', 1)) }}</label>  
+                                            <label for="defaultFormMessageModalEx">{{ ucwords(trans_choice('messages.trial', 1)) }}</label>
                                             <div class="custom-control custom-radio">
                                                 <input type="radio" class="custom-control-input" id="defaultGroupExample1" name="groupOfDefaultRadios">
                                                 <label class="custom-control-label" for="defaultGroupExample1">no</label>
@@ -249,7 +249,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                             </div>
                             <div class="col-md-3"></div>
@@ -258,14 +258,14 @@
                         <!-- /.register-box -->
                     </div>
                 </div>
-                
+
             </body>
             </html>
-            
+
             @endsection
-            
-            
+
+
             @section('scripts')
-            
+
             @endsection
-            
+

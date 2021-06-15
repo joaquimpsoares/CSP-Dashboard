@@ -46,22 +46,7 @@ class ResellerController extends Controller
 
     public function index()
     {
-        // $user = $this->getUser();
-
-        // $customers = new Collection();
-
-        // $countCustomers =  $customers->count();
-
-        // // REMOVED REPOSITORY!!! NOW WORKING WITH A GLOBAL SCOPE, MUCH MUCH CLEANER
-        // $resellers = Reseller::with(['country', 'subResellers', 'status'])->whereNull('main_office')->paginate(5);
-
-        // $resellers->getCollection()->map(function(Reseller $reseller){
-        //     $reseller->setRawAttributes(json_decode(json_encode($reseller->format()), true)); // Coverts to array recursively (make helper from it?)
-        //     return $reseller;
-        // });
-
         return view('reseller.index');
-
     }
 
 

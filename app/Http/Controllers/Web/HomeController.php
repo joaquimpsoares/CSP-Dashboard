@@ -16,7 +16,7 @@ use App\Subscription;
 use App\OrderProducts;
 use App\Models\Activities;
 use App\Models\LogActivity;
-use App\Models\Msft_invoices;
+use App\Models\MsftInvoices;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -100,7 +100,7 @@ class HomeController extends Controller
                 ->orderBy('month')
                 ->get();
 
-                $sales = Msft_invoices::
+                $sales = MsftInvoices::
                 select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
                 ->whereyear('invoiceDate', Carbon::today()->year)
                 ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
@@ -151,7 +151,7 @@ class HomeController extends Controller
                     'created_at', '=', Carbon::now()->subWeekdays('1')
                 )->get();
 
-                $sales = Msft_invoices::
+                $sales = MsftInvoices::
                 select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
                 ->whereyear('invoiceDate', Carbon::today()->year)
                 ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
@@ -250,7 +250,7 @@ class HomeController extends Controller
                     $customerdata  = json_encode(['0']);
                 };
 
-                  $sales = Msft_invoices::
+                  $sales = MsftInvoices::
                 select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
                 ->whereyear('invoiceDate', Carbon::today()->year)
                 ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))

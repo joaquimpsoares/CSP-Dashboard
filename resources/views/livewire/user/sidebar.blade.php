@@ -1,3 +1,4 @@
+
 <div>
     <nav aria-label="Sections" class="flex-shrink-0 hidden bg-white border-r w-96 border-blue-gray-200 xl:flex xl:flex-col">
         <div class="flex items-center flex-shrink-0 h-16 px-6 border-b border-blue-gray-200">

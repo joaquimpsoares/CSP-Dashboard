@@ -7,20 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Price extends Model
 {
 
-	protected $fillable = [
-		'product_sku',
-		'product_vendor',
-		'price_list_id',
-		'name',
-		'price',
-		'msrp',
-		'currency',
-		'instance_id'
-	];
+    protected $guarded = [];
 
 	public function format()
 	{
 		return [
+			'id' => $this->id,
 			'product_sku' => $this->product_sku,
 			'product_vendor' => $this->product_vendor,
 			'price_list_id' => $this->price_list_id,
@@ -31,8 +23,6 @@ class Price extends Model
 			'pricelist' => $this->pricelist,
 			'instance' => $this->pricelist->id,
 			'category' => $this->product,
-			'provider' => $this->provider()->first()
-
 		];
 	}
 
@@ -40,25 +30,11 @@ class Price extends Model
 		return $this->belongsTo('App\PriceList', 'price_list_id', 'id');
 	}
 
-	// public function product() {
-	// 	return $this->belongsTo('App\Product', 'product_sku', 'sku')
-	// 	->where('vendor', $this->product_vendor)->where('instance_id', session()->get('instance_id'));
-    // }
-
-	// Uncomment and remove the method before after step 1 of migrating SKUs to Ids on prices table
 	public function product() {
 		return $this->belongsTo('App\Product')->where('vendor', $this->product_vendor)->where('instance_id', session()->get('instance_id'));
     }
 
-    // public function products() {
-    //     return $this->hasOne('App\Product', 'sku', 'product_sku');
-    // }
-
-	// public function provider() {
-	// 	return $this->belongsTo('App\Provider', 'price_list_id', 'id');
-	// }
-
-	public function tiers() {
+    public function tiers() {
         return $this->belongsToMany('App\Tier');
     }
 
