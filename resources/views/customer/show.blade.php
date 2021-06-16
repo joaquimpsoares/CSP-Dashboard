@@ -161,7 +161,6 @@
                 </div>
             </div>
         </div>
-
         <div class="p-0 m-0 break-words">
             <div class="px-0 pt-0 pb-5 m-0">
                 <div class="p-0 m-0 overflow-visible bg-white rounded" style="overflow: visible; outline: 0px; overflow-wrap: break-word;">
@@ -177,7 +176,11 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.name', 2)) }}</th>
+                                    @if($subscription->billing_period != "one_time")
                                     <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.subscription_id', 1)) }}</th>
+                                    @else
+                                    <th></th>
+                                    @endif
                                     <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.amount', 2)) }}</th>
                                     <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.price', 2)) }}</th>
                                     <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.total', 1)) }}</th>
@@ -202,6 +205,7 @@
                                         </span>
                                         @endif
                                     </td>
+                                    @if($subscription->billing_period != "one_time")
                                     <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-wrap lg:table-cell">
                                         <span class="inline font-medium text-gray-900">
                                             <input id="copy_{{ $subscription->subscription_id }}" aria-invalid="false" readonly="" placeholder="" type="text" class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto w-76" value="{{$subscription->subscription_id}}" />
@@ -226,6 +230,9 @@
                                                 </div>
                                             </button>
                                         </td>
+                                        @else
+                                        <th></th>
+                                        @endif
                                         <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-wrap lg:table-cell">
                                             <span class="inline text-sm font-normal leading-5">
                                                 {{$subscription->amount}}
