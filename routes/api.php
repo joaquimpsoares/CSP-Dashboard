@@ -17,6 +17,17 @@ use App\Http\Controllers\Api\Auth\AuthController;
 */
 Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('customers', 'CustomerController@index');
+        Route::get('customers', 'CustomerController@index');
+        Route::post('/login', [AuthController::class, 'login']);
+        Route::post('/register', [AuthController::class, 'register']);
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::post('/refresh', [AuthController::class, 'refresh']);
+        Route::get('/user-profile', [AuthController::class, 'userProfile']);
+        Route::get('customers', 'CustomerController@index');
+        Route::get('customers/{customer}', 'CustomerController@show');
+        Route::post('customers', 'CustomerController@store');
+        Route::get('resellers', 'ResellerController@index');
+        Route::get('subscriptions', 'SubscriptionsController@index');
 });
 
 
@@ -25,13 +36,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 //     // 'prefix' => 'auth'
 
 // ], function ($router) {
-//     Route::get('customers', 'CustomerController@index');
-
-//     Route::post('/login', [AuthController::class, 'login']);
-//     Route::post('/register', [AuthController::class, 'register']);
-//     Route::post('/logout', [AuthController::class, 'logout']);
-//     Route::post('/refresh', [AuthController::class, 'refresh']);
-//     Route::get('/user-profile', [AuthController::class, 'userProfile']);
 // });
 
 
@@ -41,9 +45,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
 // ], function ($router) {
 
-//     Route::get('customers', 'CustomerController@index');
-//     Route::get('customers/{customer}', 'CustomerController@show');
-//     Route::post('customers', 'CustomerController@store');
 // });
 
 // Route::group([
@@ -52,7 +53,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
 // ], function ($router) {
 
-//     Route::get('resellers', 'ResellerController@index');
 // });
 
 // Route::group([
@@ -61,6 +61,5 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
 // ], function ($router) {
 
-//     Route::get('subscriptions', 'SubscriptionsController@index');
 // });
 
