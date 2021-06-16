@@ -18,7 +18,7 @@ class SubscriptionTable extends Component
 
     public function render()
     {
-        $search = $this->search;
+
         $query = Subscription::query();
         $subscriptions = $query
             ->where(function ($q)  {

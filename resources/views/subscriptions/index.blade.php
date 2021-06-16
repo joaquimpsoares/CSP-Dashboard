@@ -10,11 +10,12 @@
 
 @section('content')
 
-@if (Auth::user()->userLevel->name == "Customer")
+@livewire('subscription.subscription-table')
+{{-- @if (Auth::user()->userLevel->name == "Customer")
 @include('subscriptions.partials.card', ['subscriptions' => $subscriptions])
 @else
 @include('subscriptions.partials.table', ['subscriptions' => $subscriptions])
-@endif
+@endif --}}
 
 @endsection
 
