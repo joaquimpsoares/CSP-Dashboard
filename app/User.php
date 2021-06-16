@@ -3,13 +3,14 @@
 namespace App;
 
 use Soved\Laravel\Gdpr\Portable;
+use Laravel\Sanctum\HasApiTokens;
 use Webpatser\Countries\Countries;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
-use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Database\Eloquent\Builder;
+use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Soved\Laravel\Gdpr\Contracts\Portable as PortableContract;
 
@@ -20,6 +21,7 @@ class User extends Authenticatable implements  JWTSubject, PortableContract
     use HasRoles;
     use Impersonate;
     use Portable;
+    use HasApiTokens;
 
 
 

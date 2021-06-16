@@ -20,8 +20,6 @@ Route::prefix('jobis')->group(function () {
     Route::queueMonitor();
 });
 
-Route::get('exportexcel', 'AnalyticController@exportexcel')->name('exportexcel');
-
 Route::get('accept/{token}', 'InviteController@accept')->name('accept');
 Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('resetinvitationpassword');
 
@@ -201,6 +199,8 @@ Route::group(['middleware' => 'auth'], function ()
 
 
             //User Routes
+            Route::get('/user/security', 'UsersController@security')->name('user.security');
+            Route::post('/user/generateToken', 'UsersController@generateToken')->name('user.generateToken');
             Route::resource('/user', 'UsersController');
             Route::get('/user/profile/{user}', 'UsersController@profile')->name('user.profile');
             Route::get('/user/{user}/notifications', 'UsersController@notifications')->name('user.notifications');
