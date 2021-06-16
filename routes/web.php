@@ -356,7 +356,7 @@ Route::group(['middleware' => 'auth'], function ()
 
                                 Auth::routes(['register' => true]);
 
-                                Route::get('/', 'HomeController@index');
+                                Route::redirect('/', '/home', 301);
                                 Route::get('/home', 'HomeController@index')->name('home');
 
                                 Route::impersonate();

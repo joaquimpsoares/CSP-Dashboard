@@ -229,49 +229,7 @@
     </dl>
     <dl class="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-2 lg:grid-cols-3 ">
         <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-            <div class="flex-grow px-4 sm:p-6">
-                <div class="flex items-center ">
-                    <h3 class="text-sm text-gray-600 md:font-semibold md:text-lg">Invoices Evolution [Year]</h3>
-                </div>
-                <canvas id="chartjs-3" class="chartjs" width="undefined" height="undefined"></canvas>
-                <script>
-                    new Chart(document.getElementById("chartjs-3"), {
-                        "type": "line",
-                        "data": {
-                            "labels": {!!$invoicelabel!!},
-                            "datasets": [
-                            {
-                                "label": "Total paid",
-                                "data": {!!$invoicedata!!},
-                                "fill": true,
-                                "borderColor": "rgb(99, 102, 241, 1)",
-                                "lineTension": 0.5
-                            },
-                            {
-                                "label": "Total paid",
-                                "data": [],
-                                "fill": true,
-                                "borderColor": "rgb(99, 102, 241, 1)",
-                                "lineTension": 0.5
-                            }],
-                        },
-                        options: {
-                            scales: {
-                                xAxes: [{
-                                    gridLines: {
-                                        display: false
-                                    }
-                                }],
-                                yAxes: [{
-                                    gridLines: {
-                                        display: false
-                                    }
-                                }]
-                            }
-                        }
-                    });
-                </script>
-            </div>
+            <x-graph legendName="Total paid" headerTitle="Invoices Evolution" :labels="$invoicelabel" :data="$invoicedata" />
         </div>
         <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
             <div class="flex-grow px-4 sm:p-6">

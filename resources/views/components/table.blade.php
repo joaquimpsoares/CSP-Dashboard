@@ -5,7 +5,7 @@
                 <thead>
                     <tr>
                         @if($attributes->has('checkbox'))
-                        <th scope="col" class="relative px-2 py-2"></th>
+                        <th scope="col" class="relative px-2 py-2"><input type="checkbox" /></th>
                         @endif
                         @foreach($columns as $column => $link)
                         <th sortable scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase @if(!in_array($column, $mobileColumns)) hidden lg:table-cell @endif">{{ Str::title(trans_choice('messages.'.$column, 1)) }}</th>
@@ -24,7 +24,14 @@
                         @foreach ($columns as $column => $link)
                         <td class="px-2 py-2 text-sm  text-gray-800 whitespace-nowrap @if(!in_array($column, $mobileColumns)) hidden lg:table-cell @endif">
                             @if($link)
+
+                            @if(Str::startsWith($link($item), ['http', '/']))
                             <a href="{{ $link($item) }}">{{ Arr::get($item->getAttributes(), $column) }}</a>
+                            @else
+
+                            {!! $link($item) !!}
+                            @endif
+
                             @else
                             {{ Arr::get($item->getAttributes(), $column) }}
                             @endif
