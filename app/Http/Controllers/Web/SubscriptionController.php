@@ -59,32 +59,33 @@ class SubscriptionController extends Controller
     public function index(Request $request)
     {
 
-        $subscriptions = [];
-        // $subscriptions = $this->subscriptionRepository->all();
-        $subscriptions = $this->subscriptionRepository->paginate($perPage = 10, $request->search, $request->customer);
+    //     $subscriptions = [];
+    //     // $subscriptions = $this->subscriptionRepository->all();
+    //     $subscriptions = $this->subscriptionRepository->paginate($perPage = 10, $request->search, $request->customer);
 
-        switch ($this->getUserLevel()) {
+    //     switch ($this->getUserLevel()) {
 
-            case 'Provider':
-                $provider = $this->getUser()->provider;
-                $subscriptions = $this->subscriptionRepository->paginateProvider($perPage = 10, $request->search, $request->customer, $provider);
-            break;
-            case 'Reseller':
-                $reseller = $this->getUser()->reseller;
-                $subscriptions = $this->listFromReseller($reseller)->paginate('10');
-            break;
-            case 'Customer':
-                $customer = $this->getUser()->customer;
-                $subscriptions = $this->listFromCustomer($customer)->paginate('10');
-            break;
+    //         case 'Provider':
+    //             $provider = $this->getUser()->provider;
+    //             $subscriptions = $this->subscriptionRepository->paginateProvider($perPage = 10, $request->search, $request->customer, $provider);
+    //         break;
+    //         case 'Reseller':
+    //             $reseller = $this->getUser()->reseller;
+    //             $subscriptions = $this->listFromReseller($reseller)->paginate('10');
+    //         break;
+    //         case 'Customer':
+    //             $customer = $this->getUser()->customer;
+    //             $subscriptions = $this->listFromCustomer($customer)->paginate('10');
+    //         break;
 
-            default:
-            # code...
-        break;
-    }
+    //         default:
+    //         # code...
+    //     break;
+    // }
 
 
-    return view('subscriptions.index', compact('subscriptions'));
+    // return view('subscriptions.index', compact('subscriptions'));
+    return view('subscriptions.index');
 }
 
 public function card()
