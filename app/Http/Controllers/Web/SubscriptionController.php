@@ -156,20 +156,16 @@ public function show(Subscription $subscription)
 */
 public function update(Request $request, Subscription $subscription)
 {
-    $amount = collect($request->amount)->diff(collect($subscription->amount));
+    $amount         = collect($request->amount)->diff(collect($subscription->amount));
     $billing_period = collect($request->billing_period)->diff(collect($subscription->billing_period));
-    $status = collect($request->status)->diff(collect($subscription->status_id));
+    $status         = collect($request->status)->diff(collect($subscription->status_id));
 
     $order = $this->orderRepository->UpdateMSSubscription($subscription,$request);
-
-    // PlaceOrderMicrosoft::dispatch($order)->allOnQueue('PlaceordertoMS');
-    // Log::info('Data to Place order: '.$order);
 
     $subscriptions = Subscription::findOrFail($subscription->id);
     $instance = Instance::where('id', $subscription->instance_id)->first();
 
     Log::info('Subscription: '.$subscriptions);
-
     Log::info('Instance: '.$instance);
 
 
@@ -253,7 +249,7 @@ public function update(Request $request, Subscription $subscription)
 
                     } catch (Exception $e) {
                         return Redirect::back()->with('danger','Error Placing order to Microsoft: '.$e->getMessage());
-                    $order->update(['order_status_id'=> 3]);
+                        $order->update(['order_status_id'=> 3]);
 
                         Log::info('Error Placing order to Microsoft: '.$e->getMessage());
                     }
@@ -263,6 +259,7 @@ public function update(Request $request, Subscription $subscription)
 
 
                 $order->update(['order_status_id'=> 4]);
+                $order->update(['subscription_id'=> $subscriptions->id]);
                 return redirect()->back()->with('success', 'Subscription updated succesfully');
 
             }
