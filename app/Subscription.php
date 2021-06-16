@@ -3,7 +3,9 @@
 namespace App;
 
 use App\Http\Traits\ActivityTrait;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Subscription extends Model
 {
@@ -29,6 +31,28 @@ class Subscription extends Model
 
     public function azureresources() {
         return $this->belongsToMany('App\Models\AzureResource');
+    }
+
+    protected static function booted(){
+        static::addGlobalScope('access_level', function(Builder $query){
+            $user = Auth::user();
+            if($user && $user->userLevel->name === config('app.provider')){
+                $query->whereHas('customer', function(Builder $query) use($user){
+                    $query->whereHas('resellers', function(Builder $query) use($user){
+                        $query->whereHas('provider', function(Builder $query) use($user){
+                            $query->where('id', $user->provider->id);
+                        });
+                    });
+                });
+            }
+            if($user && $user->userLevel->name === config('app.reseller')){
+                $query->whereHas('customer', function(Builder $query) use($user){
+                    $query->whereHas('resellers', function(Builder $query) use($user){
+                        $query->where('id', $user->reseller->id);
+                    });
+                });
+            }
+        });
     }
 
 }
