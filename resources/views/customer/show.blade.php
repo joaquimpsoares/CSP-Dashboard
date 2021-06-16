@@ -86,7 +86,7 @@
                                 <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.tenant', 1)) }}</dt>
                                 @if($customer->microsoftTenantInfo->first())
                                 <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                    <button value="copy" onclick="copyToClipboard('copy_{{ $customer->microsoftTenantInfo->first()->tenant_id }}')" class="inline-flex p-0 -mt-1 -mb-px -ml-1 overflow-visible no-underline normal-case bg-transparent border-0 cursor-pointer focus:shadow-xs" type="button">
+                                    <button value="copy" onclick="copyToClipboard('copy_{{ $customer->microsoftTenantInfo->first()->tenant_domain }}')" class="inline-flex p-0 -mt-1 -mb-px -ml-1 overflow-visible no-underline normal-case bg-transparent border-0 cursor-pointer focus:shadow-xs" type="button">
                                         <div class="relative flex flex-row-reverse items-baseline p-0 m-0">
                                             <div class="flex flex-row-reverse items-baseline justify-start flex-auto p-0 m-0">
                                                 <div aria-hidden="true" class="flex p-0 my-0 ml-1 mr-0 text-gray-600">
@@ -95,7 +95,7 @@
                                                     </svg>
                                                 </div>
                                                 <span >
-                                                    <input id="copy_{{ $customer->microsoftTenantInfo->first()->tenant_id }}" value="{{ strtoupper($customer->microsoftTenantInfo->first()->tenant_id) }}" class="inline w-48 mr-1 font-mono text-xs font-normal" />
+                                                    <input id="copy_{{ $customer->microsoftTenantInfo->first()->tenant_domain }}" value="{{ strtoupper($customer->microsoftTenantInfo->first()->tenant_domain) }}" class="inline w-48 mr-1 font-mono text-xs font-normal" />
                                                 </span>
                                             </div>
                                         </div>
@@ -201,10 +201,10 @@
                                         </span>
                                         @endif
                                     </td>
-                                    @if($subscription->billing_period != "one_time")
+                                    @if($subscription->billing_period === "one_time")
                                     <th></th>
                                     @else
-                                    <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-wrap lg:table-cell">
+                                    <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">
                                         <span class="inline font-medium text-gray-900">
                                             <input id="copy_{{ $subscription->subscription_id }}" aria-invalid="false" readonly="" placeholder="" type="text" class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto w-76" value="{{$subscription->subscription_id}}" />
                                         </span>
@@ -229,7 +229,7 @@
                                             </button>
                                         </td>
                                         @endif
-                                        <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-wrap lg:table-cell">
+                                        <td class="px-2 py-2 text-sm font-medium text-center text-gray-900 whitespace-wrap lg:table-cell">
                                             <span class="inline text-sm font-normal leading-5">
                                                 {{$subscription->amount}}
                                             </span>

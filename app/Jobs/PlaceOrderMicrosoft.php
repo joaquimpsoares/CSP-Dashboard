@@ -158,6 +158,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
 
                     Log::info('Subscription created Successfully: before writing to order table' . $subscription);
 
+                    $this->order->subscription_id   = $subscriptions->id;
                     $this->order->ext_order_id      = $subscription->orderId;
                     $this->order->order_status_id   = 4; //Order Completed state
                     $this->order->save();
@@ -169,8 +170,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
             Log::info('Error Placing order to Microsoft: ' . $e->getMessage());
 
             $this->order->details = ('Error Placing order to Microsoft: ' . $e->getMessage());
-            $this->order->save();
-
+            $this->order->subscription_id   = $subscriptions->id;
             $this->order->order_status_id = 3;
             $this->order->save();
         }
