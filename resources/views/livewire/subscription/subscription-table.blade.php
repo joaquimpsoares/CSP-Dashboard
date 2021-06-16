@@ -1,6 +1,4 @@
-@livewire('subscription.subscription-table')
-
-{{-- <div x-data="{ resellerOpen: false , isOpen: false }" class="relative z-0 flex-col flex-1 overflow-y-auto">
+<div x-data="{ resellerOpen: false , isOpen: false }" class="relative z-0 flex-col flex-1 overflow-y-auto">
     <div class="p-4 overflow-hidden bg-white">
         <div class="flex flex-col items-center justify-between lg:flex-row">
             <div class="flex items-center">
@@ -52,81 +50,81 @@
                         <tbody>
                             @forelse ($subscriptions as $subscription)
                             <tr class="table-subheader hover:bg-gray-100">
-                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{$subscription['id']}}</td>
+                                {{-- <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{$subscription['id']}}</td> --}}
                                 <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap"><a href="{{route('subscription.show', $subscription->id)}}">{{$subscription['id']}}</a></td>
-                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->name}}</td>
-                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->customer->company_name}}</td>
-                                    @if ($subscription->billing_type === 'usage' )
-                                    <td></td>
-                                    @else
-                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->amount}}</td>
-                                    @endif
-                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->expiration_data}}</td>
-                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->billing_period}}</td>
-                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $subscription->status->name == 'messages.active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'  }}  capitalize">
-                                            {{ ucwords(trans_choice($subscription->status->name, 1)) }}
-                                        </span>
-                                    </td>
+                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->name}}</td>
+                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->customer->company_name}}</td>
+                                @if ($subscription->billing_type === 'usage' )
+                                <td></td>
+                                @else
+                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->amount}}</td>
+                                @endif
+                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->expiration_data}}</td>
+                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->billing_period}}</td>
+                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $subscription->status->name == 'messages.active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'  }}  capitalize">
+                                        {{ ucwords(trans_choice($subscription->status->name, 1)) }}
+                                    </span>
                                 </td>
-                            </tr>
-                            @can('subscription_edit')
-                            <tr style="display:none" class=" hover:bg-gray-100">
-                                <td colspan="9">
-                                    <div class="">
-                                        <div class="border-0 panel panel-primary receipts-inline-table">
-                                            <div class="p-0 border-0 panel-body tabs-menu-body">
-                                                <div class="tab-content">
-                                                    <table  class="min-w-full mr-2 bg-indigo-100 divide-y divide-gray-200 ">
-                                                        <tbody>
-                                                            <tr>
-                                                                <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.subscription_name', 1)) }}</th>
-                                                                <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.quantity', 1)) }}</th>
-                                                                <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.billing_cycle', 1)) }}</th>
-                                                                <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.status', 1)) }}</th>
-                                                                <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.action', 1)) }}</th>
-                                                            </tr>
-                                                            <tr class="mr-13 last-product">
-                                                                <form class="form-horizontal form-bordered" method="POST" action="{{ route('subscription.update', $subscription->id) }}">
-                                                                    @method('PATCH')
-                                                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->name}}</td>
-                                                                    @if ($subscription->billing_type === 'usage' ?? 'software perpetual')
-                                                                    <td></td>
-                                                                    @else
-                                                                    @csrf
-                                                                    <td>
-                                                                        <div class="w-16 pt-0 mb-3">
-                                                                            <x-input class="relative w-full px-2 py-1 text-sm " type="number" name="amount" value="{{$subscription->amount}}"/>
+                            </td>
+                        </tr>
+                        @can('subscription_edit')
+                        <tr style="display:none" class=" hover:bg-gray-100">
+                            <td colspan="9">
+                                <div class="">
+                                    <div class="border-0 panel panel-primary receipts-inline-table">
+                                        <div class="p-0 border-0 panel-body tabs-menu-body">
+                                            <div class="tab-content">
+                                                <table  class="min-w-full mr-2 bg-indigo-100 divide-y divide-gray-200 ">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.subscription_name', 1)) }}</th>
+                                                            <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.quantity', 1)) }}</th>
+                                                            <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.billing_cycle', 1)) }}</th>
+                                                            <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.status', 1)) }}</th>
+                                                            <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.action', 1)) }}</th>
+                                                        </tr>
+                                                        <tr class="mr-13 last-product">
+                                                            <form class="form-horizontal form-bordered" method="POST" action="{{ route('subscription.update', $subscription->id) }}">
+                                                                @method('PATCH')
+                                                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->name}}</td>
+                                                                @if ($subscription->billing_type === 'usage' ?? 'software perpetual')
+                                                                <td></td>
+                                                                @else
+                                                                @csrf
+                                                                <td>
+                                                                    <div class="w-16 pt-0 mb-3">
+                                                                        <x-input class="relative w-full px-2 py-1 text-sm " type="number" name="amount" value="{{$subscription->amount}}"/>
                                                                         </div>
-                                                                        </td>
-                                                                        @endif
-                                                                        <td>
-                                                                            <div class="w-24 pt-0 mb-3">
-                                                                                @if ($subscription->billing_type != 'software')
-                                                                                <select name="billing_period" required="required" class="relative block w-full max-w-lg px-2 py-1 text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm" id="{{ $subscription->products->first()->id }}">
-                                                                                    @foreach($subscription->products->first()->supported_billing_cycles as $cycle)
-                                                                                    <option value="{{ $cycle }}" @if($cycle == $subscription->billing_period) selected @endif>
-                                                                                        {{ $cycle }}
-                                                                                    </option>
-                                                                                    @endforeach
+                                                                    </td>
+                                                                    @endif
+                                                                    <td>
+                                                                        <div class="w-24 pt-0 mb-3">
+                                                                            @if ($subscription->billing_type != 'software')
+                                                                            <select name="billing_period" required="required" class="relative block w-full max-w-lg px-2 py-1 text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm" id="{{ $subscription->products->first()->id }}">
+                                                                                @foreach($subscription->products->first()->supported_billing_cycles as $cycle)
+                                                                                <option value="{{ $cycle }}" @if($cycle == $subscription->billing_period) selected @endif>
+                                                                                    {{ $cycle }}
+                                                                                </option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                            @endif
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="align-middle">
+                                                                        <div class="w-24 pt-0 mb-3">
+                                                                            @can('subscription_delete')
+                                                                            <div name="status" class="select is-info">
+                                                                                <select name="status" class="relative block w-full max-w-lg px-2 py-1 text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm">
+                                                                                    <option  value="1" {{ $subscription->status_id == "1" ? "selected":"" }}> Active</option>
+                                                                                    <option  value="2" {{ $subscription->status_id == "2" ? "selected":"" }}> Suspend</option>
                                                                                 </select>
-                                                                                @endif
                                                                             </div>
-                                                                        </td>
-                                                                        <td class="align-middle">
-                                                                            <div class="w-24 pt-0 mb-3">
-                                                                                @can('subscription_delete')
-                                                                                <div name="status" class="select is-info">
-                                                                                    <select name="status" class="relative block w-full max-w-lg px-2 py-1 text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm">
-                                                                                        <option  value="1" {{ $subscription->status_id == "1" ? "selected":"" }}> Active</option>
-                                                                                        <option  value="2" {{ $subscription->status_id == "2" ? "selected":"" }}> Suspend</option>
-                                                                                    </select>
-                                                                                </div>
-                                                                                @endcan
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="w-24 pt-0 mb-3">
+                                                                            @endcan
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="w-24 pt-0 mb-3">
                                                                             <button type="submit" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none" type="submit">Change</button>
                                                                         </div>
                                                                     </td>
@@ -139,7 +137,6 @@
                                                                                 <x-input class="relative w-full px-2 py-1 text-sm " type="number" name="amount_addon" value="{{$item->amount}}"/>
                                                                                 </div>
                                                                             </td>
-
                                                                             <td></td>
                                                                             <td></td>
                                                                             <td></td>
@@ -174,4 +171,5 @@
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
+
