@@ -162,7 +162,7 @@
                                 </div>
                             </tbody>
                         </table>
-                        <div class="flex justify-center mt-4 card-footer">
+                        <div class="mt-4 card-footer">
                             @if ($subscriptions->total() >= '10')
                             {{ $subscriptions->links() }}
                             @endif
