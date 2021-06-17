@@ -2,13 +2,17 @@
 
 namespace App\Http\Livewire\Order;
 
-use App\Exports\OrdersExport;
 use App\Order;
 use Livewire\Component;
+use Livewire\WithPagination;
+use App\Exports\OrdersExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class OrderTable extends Component
 {
+
+    use WithPagination;
+
     public $search = '';
     public function exportSelected()
     {

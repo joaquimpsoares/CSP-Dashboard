@@ -4,12 +4,14 @@ namespace App\Http\Livewire\Price;
 
 use App\PriceList;
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Exports\PriceListExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 
 class PricelistTable extends Component
 {
+    use WithPagination;
     public $search = '';
 
     public function exportSelected()

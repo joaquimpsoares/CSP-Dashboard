@@ -4,11 +4,13 @@ namespace App\Http\Livewire\Provider;
 
 use App\Provider;
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Exports\ProvidersExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProviderTable extends Component
 {
+    use WithPagination;
     public $search = '';
 
     public function exportSelected()

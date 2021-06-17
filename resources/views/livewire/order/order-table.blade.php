@@ -134,7 +134,7 @@
         </div>
     </div>
 </div>
-<div class="flex justify-center mt-4 card-footer">
+<div class="mt-4 card-footer">
     {{ $orders->links() }}
 </div>
 </div>

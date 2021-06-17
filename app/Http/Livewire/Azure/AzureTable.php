@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Azure;
 use App\Instance;
 use App\Subscription;
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Repositories\AnalyticRepositoryInterface;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
@@ -12,6 +13,8 @@ use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
 
 class AzureTable extends Component
 {
+
+    use WithPagination;
 
     public $editedProductIndex = null;
     public $editedProductField = null;

@@ -2,15 +2,17 @@
 
 namespace App\Http\Livewire\Subscription;
 
-use Livewire\Component;
-use App\Exports\SubscriptionsExport;
 use App\Subscription;
+use Livewire\Component;
+use Livewire\WithPagination;
+use App\Exports\SubscriptionsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SubscriptionTable extends Component
 {
-    public $search = '';
+    use WithPagination;
 
+    public $search = '';
     public function exportSelected()
     {
         return Excel::download(new SubscriptionsExport, 'Subscriptions.xlsx');

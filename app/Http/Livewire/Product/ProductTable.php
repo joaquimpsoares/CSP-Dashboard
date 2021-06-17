@@ -4,11 +4,14 @@ namespace App\Http\Livewire\Product;
 
 use App\Product;
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Exports\ProductsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProductTable extends Component
 {
+    use WithPagination;
+
     public $search = '';
 
     public $selectedProducts = [];

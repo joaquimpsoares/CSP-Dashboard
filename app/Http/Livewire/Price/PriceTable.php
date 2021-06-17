@@ -5,10 +5,12 @@ namespace App\Http\Livewire\Price;
 use App\Price;
 use Livewire\Component;
 use App\Exports\PriceExport;
+use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
 
 class PriceTable extends Component
 {
+    use WithPagination;
     public $search = '';
 
     public function exportSelected()

@@ -5,10 +5,12 @@ namespace App\Http\Livewire\User;
 use App\User;
 use Livewire\Component;
 use App\Exports\UserExport;
+use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
 
 class UserTable extends Component
 {
+    use WithPagination;
     public $search = '';
 
     public function exportSelected()

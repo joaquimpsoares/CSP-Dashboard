@@ -5,12 +5,14 @@ namespace App\Http\Livewire\Job;
 use App\Jobs;
 use Livewire\Component;
 use App\Exports\JobsExport;
+use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
 use romanzipp\QueueMonitor\Models\Monitor;
 
 
 class JobTable extends Component
 {
+    use WithPagination;
     public $search = '';
 
     public function exportSelected()

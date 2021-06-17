@@ -4,11 +4,14 @@ namespace App\Http\Livewire\Customer;
 
 use App\Customer;
 use Livewire\Component;
-use Maatwebsite\Excel\Facades\Excel;
+use Livewire\WithPagination;
 use App\Exports\CustomersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerTable extends Component
 {
+
+    use WithPagination;
     public $search = '';
 
     public function exportSelected()

@@ -2,13 +2,15 @@
 
 namespace App\Http\Livewire\Reseller;
 
-use Livewire\Component;
-use App\Exports\ResellersExport;
 use App\Reseller;
+use Livewire\Component;
+use Livewire\WithPagination;
+use App\Exports\ResellersExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ResellerTable extends Component
 {
+    use WithPagination;
     public $search = '';
 
     public function exportSelected()
