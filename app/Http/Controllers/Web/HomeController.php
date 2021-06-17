@@ -79,22 +79,16 @@ class HomeController extends Controller
 
                 $news = News::take(2)->get();
 
-                $orderrecord = Order::select(\DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
+                $orderrecord = Order::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
                 ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
                 ->groupBy('day_name','month')
                 ->orderBy('month')
                 ->get();
 
 
-                 foreach($orderrecord as $row) {
-                    $orderlabel['label'][] = json_encode($row->day_name);
-                    $orderdata['data'][] = (int) $row->count;
-                  }
 
-                 $orderlabel = json_encode($orderlabel['label']);
-                 $orderdata  = json_encode($orderdata['data']);
 
-                  $customerrecord = Customer::select(\DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
+                  $customerrecord = Customer::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
                 ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
                 ->groupBy('day_name','month')
                 ->orderBy('month')
@@ -115,13 +109,21 @@ class HomeController extends Controller
                   $invoicelabel = $invoicelabel['label'];
                   $invoicedata  = $invoicedata['data'];
 
+                  foreach($orderrecord as $row) {
+                    $orderlabel['label'][] = json_encode($row->day_name);
+                    $orderdata['data'][] = (int) $row->count;
+                  }
+
+                 $orderlabel = $orderlabel['label'];
+                 $orderdata  = $orderdata['data'];
+
                  foreach($customerrecord as $row) {
                     $customerlabel['label'][] = json_encode($row->day_name);
                     $customerdata['data'][] = (int) $row->count;
                   }
 
-                  $customerlabel = json_encode($customerlabel['label']);
-                  $customerdata  = json_encode($customerdata['data']);
+                  $customerlabel = $customerlabel['label'];
+                  $customerdata  = $customerdata['data'];
 
                 return view('home', compact('orders','providers','resellers','customers','subscriptions','news',
                     'orderdata','orderlabel','customerlabel','customerdata','invoicelabel','invoicedata'));
@@ -163,8 +165,8 @@ class HomeController extends Controller
                     $invoicedata['data'][] = (int) $row->total;
                   }
 
-                  $invoicelabel = json_encode($invoicelabel['label']);
-                  $invoicedata  = json_encode($invoicedata['data']);
+                  $invoicelabel = $invoicelabel['label'];
+                  $invoicedata  = $invoicedata['data'];
 
                   return view('msft/index', compact('invoices','invoicelabel','invoicedata'));
 
@@ -212,7 +214,7 @@ class HomeController extends Controller
 
                 $news = News::take(2)->get();
 
-                $orderrecord = Order::select(\DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
+                $orderrecord = Order::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
                 ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
                 ->groupBy('day_name','month')
                 ->orderBy('month')
@@ -224,15 +226,15 @@ class HomeController extends Controller
                 }
 
                 if(!$orderrecord->isEmpty()){
-                    $orderlabel = json_encode($orderlabel['label']);
-                    $orderdata  = json_encode($orderdata['data']);
+                    $orderlabel = $orderlabel['label'];
+                    $orderdata  = $orderdata['data'];
                 }else{
-                    $orderlabel = json_encode(['0']);
-                    $orderdata  = json_encode(['0']);
+                    $orderlabel = ['0'];
+                    $orderdata  = ['0'];
                 };
 
 
-                  $customerrecord = Customer::select(\DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
+                  $customerrecord = Customer::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
                 ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
                 ->groupBy('day_name','month')
                 ->orderBy('month')
@@ -243,11 +245,11 @@ class HomeController extends Controller
                     $customerdata['data'][] = (int) $row->count;
                   }
                   if(!$customerrecord->isEmpty()){
-                  $customerlabel = json_encode($customerlabel['label']);
-                  $customerdata  = json_encode($customerdata['data']);
+                  $customerlabel = $customerlabel['label'];
+                  $customerdata  = $customerdata['data'];
                 }else{
-                    $customerlabel = json_encode(['0']);
-                    $customerdata  = json_encode(['0']);
+                    $customerlabel = ['0'];
+                    $customerdata  = ['0'];
                 };
 
                   $sales = MsftInvoices::
@@ -263,11 +265,11 @@ class HomeController extends Controller
                     $invoicedata['data'][] = (int) $row->total;
                   }
                   if(!$sales->isEmpty()){
-                  $invoicelabel = json_encode($invoicelabel['label']);
-                  $invoicedata  = json_encode($invoicedata['data']);
+                  $invoicelabel = $invoicelabel['label'];
+                  $invoicedata  = $invoicedata['data'];
                 }else{
-                    $invoicelabel = json_encode(['0']);
-                    $invoicedata  = json_encode(['0']);
+                    $invoicelabel = ['0'];
+                    $invoicedata  = ['0'];
                 };
 
                 return view('home', compact('resellers','orders','countOrders','customersweek','provider','customers',
