@@ -13,6 +13,11 @@ class ResellerTable extends Component
     use WithPagination;
     public $search = '';
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function exportSelected()
     {
         return Excel::download(new ResellersExport, 'resellers.xlsx');

@@ -13,7 +13,13 @@ use romanzipp\QueueMonitor\Models\Monitor;
 class JobTable extends Component
 {
     use WithPagination;
+
     public $search = '';
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
 
     public function exportSelected()
     {

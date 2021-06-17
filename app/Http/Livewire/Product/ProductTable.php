@@ -11,12 +11,14 @@ use Maatwebsite\Excel\Facades\Excel;
 class ProductTable extends Component
 {
     use WithPagination;
-
     public $search = '';
-
     public $selectedProducts = [];
-
     public bool $bulkDisabled = true;
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
 
 
     public function exportSelected()
