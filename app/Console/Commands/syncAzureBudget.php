@@ -51,7 +51,7 @@ class SyncAzureBudget extends Command
         foreach($subscriptions as $subscription){
             $msId = $subscription->customer->microsoftTenantInfo->first()->tenant_id;
             $details = $this->analyticRepository->UpdateAZURE($msId, $subscription);
-            Log::info('Budget updated for: '. $subscriptions);
+            Log::info('Budget updated for: '. $subscription->id);
         }
 
     }
