@@ -19,6 +19,6 @@ trait CronTasksList
         // paste your commands here
         // $schedule->command('example:command')->yearly()->withoutOverlapping();
         // $schedule->command('SyncAzure:daily')->dailyAt('20:00');
-        $schedule->command('syncAzureBudget:daily')->everyMinute();
+        $schedule->command('syncAzureBudget:daily')->dailyAt('20:00');
     }
 }
