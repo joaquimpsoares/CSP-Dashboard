@@ -90,7 +90,8 @@ class SyncAzure extends Command
                     'created_at'    => "5trvfvczdfv",
                     ]);
 
-                $resources = FacadesAzureResource::withCredentials($instance->external_id,$instance->external_token)->utilizations($customer, $subscriptions);
+                $resources = FacadesAzureResource::withCredentials($instance->external_id,$instance->external_token)
+                ->utilizations($customer, $subscriptions);
 
                 try{
                     $resources->first()->items->each(function($resource) use($subscription){
@@ -133,7 +134,7 @@ class SyncAzure extends Command
                     });
                 }
                 catch (\Exception $e) {
-                    Log::info($e->getMessage());
+                    Log::channel('azure')->info($e->getMessage());
                     Mail::raw($e, function ($mail) use($e) {
                         $mail->from('digamber@positronx.com');
                         $mail->to('joaquim.soares@tagydes.com')

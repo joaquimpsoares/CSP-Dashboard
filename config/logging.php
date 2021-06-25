@@ -96,6 +96,11 @@ return [
             'handler' => NullHandler::class,
         ],
 
+        'azure' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/azure_sync.log'),
+        ],
+
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],

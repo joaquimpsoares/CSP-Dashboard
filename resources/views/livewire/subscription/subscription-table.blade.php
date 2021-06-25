@@ -88,14 +88,16 @@
                                                             <form class="form-horizontal form-bordered" method="POST" action="{{ route('subscription.update', $subscription->id) }}">
                                                                 @method('PATCH')
                                                                 <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->name}}</td>
-                                                                @if ($subscription->billing_type === 'usage' ?? 'software perpetual')
+                                                                @if ($subscription->billing_type === 'usage' ?? 'software')
                                                                 <td></td>
                                                                 @else
                                                                 @csrf
                                                                 <td>
                                                                     <div class="w-16 pt-0 mb-3">
-                                                                        <x-input class="relative w-full px-2 py-1 text-sm " type="number" name="amount" value="{{$subscription->amount}}"/>
-                                                                        </div>
+                                                                        @if ($subscription->billing_type != 'software')
+                                                                            <x-input class="relative w-full px-2 py-1 text-sm " type="number" name="amount" value="{{$subscription->amount}}"/>
+                                                                        @endif
+                                                                    </div>
                                                                     </td>
                                                                     @endif
                                                                     <td>
@@ -115,10 +117,12 @@
                                                                         <div class="w-24 pt-0 mb-3">
                                                                             @can('subscription_delete')
                                                                             <div name="status" class="select is-info">
+                                                                                @if($subscription->status_id <> '3' )
                                                                                 <select name="status" class="relative block w-full max-w-lg px-2 py-1 text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm">
                                                                                     <option  value="1" {{ $subscription->status_id == "1" ? "selected":"" }}> Active</option>
                                                                                     <option  value="2" {{ $subscription->status_id == "2" ? "selected":"" }}> Suspend</option>
                                                                                 </select>
+                                                                                @endif
                                                                             </div>
                                                                             @endcan
                                                                         </div>
