@@ -57,14 +57,14 @@
                     <tbody>
                         @foreach ($resourceName as $index => $item)
                         <tr class="hover:bg-gray-100" >
-                            <td class="d-flex"><a href="{{ $item->customer->format()['path'] }}">{{$item->customer['company_name']}}</a></td>
-                            <td>{{$item->name}}</td>
+                            <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell"><a href="{{ $item->customer->format()['path'] }}">{{$item->customer['company_name']}}</a></td>
+                            <td  class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">{{$item->name}}</td>
                             @php
                             $percentage =($item->customer['markup']/100)*$item->azureresources->sum('cost');
                             $markup = $percentage+$item->azureresources->sum('cost');
                             @endphp
-                            <td>{{$item->customer->country->currency_symbol}}@money($markup)</td>
-                            <td>
+                            <td  class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">{{$item->customer->country->currency_symbol}}@money($markup)</td>
+                            <td  class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">
 
                                 @if ($editedProductIndex === $index || $editedProductField === $index . '.name')
                                 <div>
@@ -87,7 +87,7 @@
                                 @endif
                             </td>
 
-                            <td>
+                            <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">
                                 @if (($item->calculated/100) < '0.50')
                                 <div class="mx-auto mb-0 chart-circle chart-circle-xs chart-circle-primary mt-sm-0 icon-dropshadow-primary" data-value="{{($item->calculated/100)}}" data-thickness="5" data-color="#4454c3">
                                     @else
@@ -96,13 +96,18 @@
                                         <div class="mx-auto text-center chart-circle-value">{{(int)($item->calculated)}}%</div>
                                     </div>
                                 </td>
-                                <td>
-                                    {{-- <x-a color="gray" href="/analytics/update/{{$item->customer_id}}/{{$item->id}}">Update</x-a> --}}
-                                    <x-a color="blue" href="/analytics/details/{{$item->customer_id}}/{{$item->id}}">View Details</x-a>
+                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">
+                                    <a href="/analytics/details/{{$item->customer_id}}/{{$item->id}}" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none">
+                                        View Details
+                                    </a>
                                     @if($editedProductIndex === $index || (isset($editedProductField) && (int)(explode('.',$editedProductField)[0])===$index))
-                                    <x-button wire:loading.attr="disabled" color="gray" wire:click.prevent="saveBudget({{$index}})">Save Budget</x-button>
+                                    <button wire:loading.attr="disabled" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-gray-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none" wire:click.prevent="saveBudget({{$index}})">
+                                        Save Budget
+                                    </button>
                                     @else
-                                    <x-button  wire:loading.attr="disabled" color="gray" wire:click.prevent="editProduct({{$index}})">Edit Budget</x-button>
+                                    <button  wire:loading.attr="disabled" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-gray-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none"wire:click.prevent="editProduct({{$index}})">
+                                        Edit Budget
+                                    </button>
                                     @endif
                                 </td>
                             </tr>
