@@ -13,7 +13,7 @@ trait CachedTable{
     public function cache($callback){
         $cacheKey = $this->id;
 
-        if (cache()->has($cacheKey)){
+        if ($this->useCache && cache()->has($cacheKey)){
             return cache()->get($cacheKey);
         }
 

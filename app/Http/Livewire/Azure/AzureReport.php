@@ -152,6 +152,7 @@ class AzureReport extends Component
             }
             $item->cost;
             $item->save();
+
             return $this->cache(function () use($item){
                 return $item;
             });
