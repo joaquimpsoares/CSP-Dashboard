@@ -46,6 +46,7 @@ class AzureReport extends Component
 
     public function sortByColumn($column)
     {
+        $this->useCacheRows;
         if ($this->sortColumn == $column) {
             $this->sortDirection = $this->sortDirection == 'asc' ? 'desc' : 'asc';
         } else {
