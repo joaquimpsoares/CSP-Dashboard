@@ -30,7 +30,6 @@ class AzureReport extends Component
     public $selectCategory;
     public $selectSubCategory;
     public $selectLocation;
-    public $useCacheRows;
 
     public function mount(Subscription $subscription)
     {
@@ -46,7 +45,8 @@ class AzureReport extends Component
 
     public function sortByColumn($column)
     {
-        $this->useCacheRows;
+        $this->useCacheRows();
+
         if ($this->sortColumn == $column) {
             $this->sortDirection = $this->sortDirection == 'asc' ? 'desc' : 'asc';
         } else {
@@ -104,7 +104,7 @@ class AzureReport extends Component
     public function render()
     {
 
-        $this->useCacheRows;
+        $this->useCacheRows();
 
         if($this->taskduedate){
             $dates = Str::of($this->taskduedate)->explode(' - ')->collect();
