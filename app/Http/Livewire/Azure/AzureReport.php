@@ -9,10 +9,12 @@ use App\Exports\exportAzure;
 use Livewire\WithPagination;
 use App\Models\AzurePriceList;
 use App\Models\AzureUsageReport;
+use App\Http\Livewire\CachedTable;
 
 class AzureReport extends Component
 {
     use WithPagination;
+    use CachedTable;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -28,6 +30,7 @@ class AzureReport extends Component
     public $selectCategory;
     public $selectSubCategory;
     public $selectLocation;
+    public $useCacheRows;
 
     public function mount(Subscription $subscription)
     {
@@ -99,6 +102,9 @@ class AzureReport extends Component
 
     public function render()
     {
+
+        $this->useCacheRows;
+
         if($this->taskduedate){
             $dates = Str::of($this->taskduedate)->explode(' - ')->collect();
         }else{
@@ -145,8 +151,12 @@ class AzureReport extends Component
             }
             $item->cost;
             $item->save();
-            return $item;
+            return $this->cache(function () use($item){
+                return $item;
+            });
         });
+
+
 
     return view('livewire.azure.azure-report', [
         'reports' => $reports,
