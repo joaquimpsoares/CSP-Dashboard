@@ -206,13 +206,14 @@
                     </thead>
                     <body>
                         @foreach ($reports as $item)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-wrap">{{$item->resource_name}}</td>
-                            <td class="px-6 py-4 whitespace-wrap">{{$item->resource_group}}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{$item->resource_location}}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">$@money($item->cost)</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{date('Y-m-d', strtotime($item->usageStartTime))}}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{date('Y-m-d', strtotime($item->usageEndTime))}}</td>
+
+                        <tr class="hover:bg-gray-100" >
+                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{$item->resource_name}}</td>
+                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{$item->resource_group}}</td>
+                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{$item->resource_location}}</td>
+                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">$@money($item->cost)</td>
+                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{date('Y-m-d', strtotime($item->usageStartTime))}}</td>
+                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{date('Y-m-d', strtotime($item->usageEndTime))}}</td>
                         </tr>
                         @endforeach
                     </body>
