@@ -9,16 +9,6 @@
 
     @endsection
 
-    @section('page-header')
-    <!--Page header-->
-    <div class="page-header">
-        <div class="page-leftheader">
-            <h4 class="page-title">Analytics Dashboard - {{$subscription->customer->company_name}}</h4>
-        </div>
-    </div>
-    <!--End Page header-->
-    @endsection
-
     @section('content')
 
     @livewire('azure.azure-report', ['subscription' => $subscription])
