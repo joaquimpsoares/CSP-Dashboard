@@ -7,6 +7,8 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Exports\ResellersExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class ResellerTable extends Component
 {
@@ -31,6 +33,13 @@ class ResellerTable extends Component
             ->where(function ($q)  {
                 $q->where('company_name', "like", "%{$this->search}%");
                 $q->orWhere('id', 'like', "%{$this->search}%");
+                $q->orWhere('mpnid', 'like', "%{$this->search}%");
+                $q->orwhereHas('provider', function(Builder $q){
+                    $q->where('company_name', 'like', "%{$this->search}%");
+                });
+                $q->orwhereHas('country', function(Builder $q){
+                    $q->where('name', 'like', "%{$this->search}%");
+                });
             })->
             with(['country', 'customers', 'status'])->paginate(10);
 

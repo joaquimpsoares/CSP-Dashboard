@@ -7,11 +7,11 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Exports\CustomersExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Database\Eloquent\Builder;
 
 class CustomerTable extends Component
 {
     use WithPagination;
-
     public $search = '';
 
     public function updatingSearch()
@@ -34,6 +34,12 @@ class CustomerTable extends Component
         ->where(function ($q)  {
             $q->where('company_name', "like", "%{$this->search}%");
             $q->orWhere('id', 'like', "%{$this->search}%");
+            $q->orwhereHas('resellers', function(Builder $q){
+                $q->where('company_name', 'like', "%{$this->search}%");
+            });
+            $q->orwhereHas('country', function(Builder $q){
+                $q->where('name', 'like', "%{$this->search}%");
+            });
         })->
         with(['country', 'subscriptions', 'status'])->paginate(10);
 

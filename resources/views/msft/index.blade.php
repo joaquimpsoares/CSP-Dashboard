@@ -133,8 +133,12 @@ $user = Auth::user();
 
                                     'invoice_id' => null,
                                     'instance_id' => null,
-                                    'totalCharges' => null,
-                                    'paidAmount' => null,
+                                    'totalCharges' => function($invoice){
+                                        return $invoice->currencySymbol. (number_format($invoice->totalCharges , 2));
+                                    },
+                                    'paidAmount' => function($invoice){
+                                        return $invoice->currencySymbol. (number_format($invoice->paidAmount , 2));
+                                    },
                                     'invoiceDate' => null,
                                     ]"
                                     :listElementActions="[
