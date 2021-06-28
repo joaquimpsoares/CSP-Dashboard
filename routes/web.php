@@ -248,9 +248,10 @@ Route::group(['middleware' => 'auth'], function ()
             return redirect()->back();
         })->name('databasenotifications.markasread');
 
-                    //PriceList Routes
-                    Route::resource('/priceList', 'PriceListController');
-                    Route::resource('/price', 'PriceController');
+        //PriceList Routes
+        Route::resource('/priceList', 'PriceListController');
+        Route::resource('/price', 'PriceController');
+
         Route::get('/order/placeOrder', 'OrderController@placeOrder')->name('order.place_order');
 
         Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
@@ -307,58 +308,55 @@ Route::group(['middleware' => 'auth'], function ()
         Route::post('/analytics/edit/', ['uses' => 'AnalyticController@edit','as' => 'analytics.edit']);
         Route::get('/analytics/show/', ['uses' => 'AnalyticController@show','as' => 'analytics.show']);
 
-            //PriceList Routes
-            Route::resource('/priceList', 'PriceListController');
-            Route::resource('/price', 'PriceController');
 
         Route::get('news', [
             'as' => 'news.list',
             'uses' => 'AdminController@news'
             ]);
-            Route::post('news/create', [
-                'as' => 'news.create',
-                'uses' => 'AdminController@createNews'
-                ]);
+        Route::post('news/create', [
+            'as' => 'news.create',
+            'uses' => 'AdminController@createNews'
+            ]);
 
-                Route::get('news/create', [
-                    'as' => 'news.create',
-                    'uses' => 'AdminController@createNews'
-                    ]);
+        Route::get('news/create', [
+            'as' => 'news.create',
+            'uses' => 'AdminController@createNews'
+            ]);
 
-                    Route::get('news/{news}/edit', [
-                        'as' => 'news.edit',
-                        'uses' => 'AdminController@editNews'
-                        ]);
+        Route::get('news/{news}/edit', [
+            'as' => 'news.edit',
+            'uses' => 'AdminController@editNews'
+            ]);
 
-                        Route::get('news/{news}/view', [
-                            'as' => 'news.view',
-                            'uses' => 'AdminController@viewNews'
-                            ]);
+        Route::get('news/{news}/view', [
+            'as' => 'news.view',
+            'uses' => 'AdminController@viewNews'
+            ]);
 
-                            Route::post('news/{news}/delete', [
-                                'as' => 'news.delete',
-                                'uses' => 'AdminController@deleteNews'
-                                ]);
+        Route::post('news/{news}/delete', [
+            'as' => 'news.delete',
+            'uses' => 'AdminController@deleteNews'
+            ]);
 
-                                Route::post('news/{news}/update', [
-                                    'as' => 'news.update',
-                                    'uses' => 'AdminController@updateNews'
-                                    ]);
-
-
-                                    // Route::post('provider/register', 'ProviderController@store')->name('provider.register');
+        Route::post('news/{news}/update', [
+            'as' => 'news.update',
+            'uses' => 'AdminController@updateNews'
+            ]);
 
 
-
-                                    // End of every authenticated user can access routes here
-                                });
+            // Route::post('provider/register', 'ProviderController@store')->name('provider.register');
 
 
-                                Auth::routes(['register' => true]);
 
-                                Route::get('/', 'HomeController@index');
-                                Route::get('/home', 'HomeController@index')->name('home');
+            // End of every authenticated user can access routes here
+        });
 
-                                Route::impersonate();
 
-                                Auth::routes();
+        Auth::routes(['register' => true]);
+
+        Route::redirect('/', '/home', 301);
+        Route::get('/home', 'HomeController@index')->name('home');
+
+        Route::impersonate();
+
+        Auth::routes();

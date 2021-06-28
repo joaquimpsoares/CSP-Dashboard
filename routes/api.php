@@ -24,14 +24,20 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     // Route::get('createNewToken', [AuthController::class, 'createNewToken']);
 
     #Customers Routes
-    Route::get('customers', 'CustomerController@index');
-    Route::get('customers/{customer}', 'CustomerController@show');
-    Route::post('customers', 'CustomerController@store');
 
-    #Resellers Routes
-    Route::get('resellers', 'ResellerController@index');
+    Route::group([
+        'middleware' => 'auth:api',
+    ], function ($router) {
 
-    #Subscriptions Routes
-    Route::get('subscriptions', 'SubscriptionsController@index');
+        Route::get('customers', 'CustomerController@index');
+        Route::get('customers/{customer}', 'CustomerController@show');
+        Route::post('customers', 'CustomerController@store');
+
+        #Resellers Routes
+        Route::get('resellers', 'ResellerController@index');
+
+        #Subscriptions Routes
+        Route::get('subscriptions', 'SubscriptionsController@index');
+
+    });
 });
-

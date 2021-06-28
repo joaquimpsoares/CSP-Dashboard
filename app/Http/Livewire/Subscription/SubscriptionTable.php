@@ -26,8 +26,11 @@ class SubscriptionTable extends Component
             ->where(function ($q)  {
                 $q->where('name', "like", "%{$this->search}%");
                 $q->orWhere('id', 'like', "%{$this->search}%");
-            })->
-            paginate(10);
+                $q->orWhere('billing_period', 'like', "%{$this->search}%");
+                $q->orwhereHas('customer', function(Builder $q){
+                    $q->where('company_name', 'like', "%{$this->search}%");
+                });
+            })->paginate(10);
 
 
         // $subscriptions->getCollection()->map(function(Subscription $subscription){

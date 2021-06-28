@@ -9,8 +9,8 @@
 <script src="https://unpkg.com/chart.js@2.9.3/dist/Chart.min.js"></script>
 <!-- Chartisan -->
 <script src="https://unpkg.com/@chartisan/chartjs@^2.1.0/dist/chartisan_chartjs.umd.js"></script>
-
-
+<x-messages></x-messages>
+@include('layouts.messages')
 <div class="grid grid-cols-1 gap-6 mx-auto mt-8 sm:px-6 lg:grid-flow-col-dense lg:grid-cols-3">
     <div class="space-y-6 lg:col-start-1 lg:col-span-2">
         <section aria-labelledby="bignews-title">

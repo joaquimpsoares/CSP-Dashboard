@@ -27,7 +27,6 @@ class AdminController extends Controller
         $user = $this->getUser();
 
         $news = News::paginate(5);
-        // dd($news);
 
         // switch ($this->getUserLevel()) {
         //     case 'Super Admin':

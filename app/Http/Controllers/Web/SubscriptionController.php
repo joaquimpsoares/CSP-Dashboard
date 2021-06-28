@@ -14,14 +14,11 @@ use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-use App\Jobs\updateSubscriptionMicrosoftJob;
 use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProviderRepositoryInterface;
 use App\Repositories\ResellerRepositoryInterface;
 use App\Repositories\SubscriptionRepositoryInterface;
-use Tagydes\MicrosoftConnection\Facades\ServiceCosts;
-use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Facades\Subscription as SubscriptionFacade;
 use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 

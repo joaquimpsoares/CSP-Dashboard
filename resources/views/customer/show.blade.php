@@ -186,78 +186,98 @@
                                 @foreach($subscriptions as $key => $subscription)
                                 <tr  class="hover:bg-gray-100">
                                     <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-wrap lg:table-cell">
-                                        <div class="p-0 mt-px mb-0 ml-px mr-0 pointer-events-auto">
-                                            <span class="inline font-medium text-gray-900">
-                                                {{$subscription->products->first()->name}}
-                                                <span class="inline text-gray-600">
-                                                    •
+                                        <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
+                                            <div class="p-0 mt-px mb-0 ml-px mr-0 pointer-events-auto">
+                                                <span class="inline font-medium text-gray-900">
+                                                    {{$subscription->products->first()->name}}
+                                                    <span class="inline text-gray-600">
+                                                        •
+                                                    </span>
+                                                    {{$subscription->product_id}}
                                                 </span>
-                                                {{$subscription->product_id}}
+                                            </div>
+                                            @if($subscription->order->first())
+                                            @if($subscription->order->first()->orderproduct)
+                                            <span class="inline text-xs text-gray-600">
+                                                {{$subscription->order->first()->orderproduct->retail_price}} {{$subscription->currency}} / {{$subscription->billing_period}}
                                             </span>
-                                        </div>
-                                        @if($subscription->order->first())
-                                        <span class="inline text-xs text-gray-600">
-                                            {{$subscription->order->first()->orderproduct->retail_price}} {{$subscription->currency}} / {{$subscription->billing_period}}
-                                        </span>
-                                        @endif
+                                            @endif
+                                            @endif
+                                        </a>
                                     </td>
                                     @if($subscription->billing_period === "one_time")
-                                    <th></th>
+                                    <th>
+                                        <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
+                                        </a>
+                                    </th>
                                     @else
                                     <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">
-                                        <span class="inline font-medium text-gray-900">
-                                            <input id="copy_{{ $subscription->subscription_id }}" aria-invalid="false" readonly="" placeholder="" type="text" class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto w-76" value="{{$subscription->subscription_id}}" />
-                                        </span>
-                                        <span class="inline font-medium text-gray-900">
-                                            <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->subscription_id }}')" >
-                                                <div class="relative flex flex-row items-baseline w-full p-0 m-0">
-                                                    <div class="flex-none p-0 m-0">
-                                                    </div>
-                                                    <div class="flex flex-row items-baseline justify-center flex-auto w-full p-0 m-0">
-                                                        <div class="px-px py-0 m-0">
-                                                            <div aria-hidden="true" class="flex p-0 mx-0 mb-0 -mt-px text-gray-700">
-                                                                <svg aria-hidden="true" class="box-border" height="12" width="12" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" style="fill: currentcolor; font-variant: tabular-nums; line-height: 0px; overflow-wrap: break-word;">
-                                                                    <path d="M7 5h2a3 3 0 0 0 3-3 2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2 3 3 0 0 0 3 3zM6 2a2 2 0 1 1 4 0 1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z" fill-rule="evenodd" class="box-border"></path>
-                                                                </svg>
-                                                            </div>
+                                        {{-- <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}"> --}}
+                                            <span class="inline font-medium text-gray-900">
+                                                <input id="copy_{{ $subscription->subscription_id }}" aria-invalid="false" readonly="" placeholder="" type="text" class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto w-76" value="{{$subscription->subscription_id}}" />
+                                            </span>
+                                            <span class="inline font-medium text-gray-900">
+                                                <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->subscription_id }}')" >
+                                                    <div class="relative flex flex-row items-baseline w-full p-0 m-0">
+                                                        <div class="flex-none p-0 m-0">
                                                         </div>
-                                                        <span class="absolute block w-px h-px -mt-px overflow-hidden normal-case whitespace-no-wrap">
-                                                            <span class="box-border">Copy to clipboard</span>
-                                                        </span>
+                                                        <div class="flex flex-row items-baseline justify-center flex-auto w-full p-0 m-0">
+                                                            <div class="px-px py-0 m-0">
+                                                                <div aria-hidden="true" class="flex p-0 mx-0 mb-0 -mt-px text-gray-700">
+                                                                    <svg aria-hidden="true" class="box-border" height="12" width="12" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" style="fill: currentcolor; font-variant: tabular-nums; line-height: 0px; overflow-wrap: break-word;">
+                                                                        <path d="M7 5h2a3 3 0 0 0 3-3 2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2 3 3 0 0 0 3 3zM6 2a2 2 0 1 1 4 0 1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z" fill-rule="evenodd" class="box-border"></path>
+                                                                    </svg>
+                                                                </div>
+                                                            </div>
+                                                            <span class="absolute block w-px h-px -mt-px overflow-hidden normal-case whitespace-no-wrap">
+                                                                <span class="box-border">Copy to clipboard</span>
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </button>
-                                        </td>
-                                        @endif
-                                        <td class="px-2 py-2 text-sm font-medium text-center text-gray-900 whitespace-wrap lg:table-cell">
+                                                </button>
+                                            </span>
+                                        {{-- </a> --}}
+                                    </td>
+                                    @endif
+                                    <td class="px-2 py-2 text-sm font-medium text-center text-gray-900 whitespace-wrap lg:table-cell">
+                                        <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
                                             <span class="inline text-sm font-normal leading-5">
                                                 {{$subscription->amount}}
                                             </span>
-                                        </td>
-                                        <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-wrap lg:table-cell">
-                                            @if($subscription->order->first())
+                                        </a>
+                                    </td>
+                                    <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-wrap lg:table-cell">
+                                        @if($subscription->order->first())
+                                        <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
+                                            {{-- @if($subscription->order->first()->orderproduct) --}}
                                             <span class="inline text-sm font-normal leading-5">
                                                 {{number_format(($subscription->order->first()->orderproduct->price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
                                             </span>
+                                            {{-- @endif --}}
                                             @endif
-                                        </td>
-                                        <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-wrap lg:table-cell">
-                                            @if($subscription->order->first())
+                                        </a>
+                                    </td>
+                                    <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-wrap lg:table-cell">
+                                        @if($subscription->order->first())
+                                        <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
+                                            {{-- @if($subscription->order->first()->orderproduct) --}}
                                             <span class="inline text-sm font-normal leading-5">
                                                 {{number_format(($subscription->order->first()->orderproduct->retail_price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
                                             </span>
+                                            {{-- @endif --}}
                                             @endif
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                        </a>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 @endsection

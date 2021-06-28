@@ -8,7 +8,9 @@
 
 @section('content')
 @auth
+
 @include('dashboard.home')
+
 @endauth
 
 

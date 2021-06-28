@@ -37,8 +37,6 @@ class ProductTable extends Component
         })->
         with(['instance'])->paginate(10);
 
-        // dd($products);
-
         $products->getCollection()->map(function(Product $product){
             $product->setRawAttributes(json_decode(json_encode($product->format()), true)); // Coverts to array recursively (make helper from it?)
             return $product;

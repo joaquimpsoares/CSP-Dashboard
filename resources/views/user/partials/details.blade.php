@@ -13,7 +13,7 @@
                 <option value="{{ $edit && $user->status->id ? $user->status->id : ''}}" selected>{{ucwords(trans_choice($user->status->name, 1))}}</option>
                 @endif
                 @foreach ($statuses as $key => $status)
-                @dump($status)
+                {{-- @dump($status) --}}
                 <option value="{{$key}}">{{ucwords(trans_choice($status, 1))}}</option>
                 @endforeach
             </select>
@@ -56,7 +56,7 @@
         </div> --}}
     </div>
     @if ($edit)
-    <div class="col-md-12 mt-2">
+    <div class="mt-2 col-md-12">
         <button type="submit" class="btn btn-primary" id="update-details-btn">
             <i class="fa fa-refresh"></i>
             @lang('Update Details')
