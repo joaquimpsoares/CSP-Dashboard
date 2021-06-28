@@ -53,7 +53,6 @@ class OrderController extends Controller
             $tt = MicrosoftTenantInfo::where('tenant_domain', 'like', $order->domain.'%')->first();
 
             if($tt == null){
-
                 Bus::chain([
                     new CreateCustomerMicrosoft($order),
                     new PlaceOrderMicrosoft($order)])

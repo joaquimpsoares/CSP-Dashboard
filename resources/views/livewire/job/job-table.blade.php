@@ -44,7 +44,6 @@
                         </div>
                     </div>
                 </div>
-                @dd($jobs)
                 <x-table :list="$jobs" :mobileColumns="[
                     'id',
                     'queue'

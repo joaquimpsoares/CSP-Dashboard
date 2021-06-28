@@ -42,10 +42,15 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            \App\Http\Middleware\UseApiGuard::class,
-            'throttle:60,1',
-            'bindings'
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            'throttle:api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
+        // 'api' => [
+        //     \App\Http\Middleware\UseApiGuard::class,
+        //     'throttle:60,1',
+        //     'bindings'
+        // ],
         // 'api' => [
         //     'throttle:60,1',
         //     \Illuminate\Routing\Middleware\SubstituteBindings::class,

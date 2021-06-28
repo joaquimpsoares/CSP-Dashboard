@@ -5,12 +5,12 @@ namespace App\Http\Livewire\Subscription;
 use App\Order;
 use Exception;
 use App\Instance;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use App\Subscription;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Illuminate\Support\Facades\Log;
 use App\Exports\SubscriptionsExport;
-use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Database\Eloquent\Builder;
@@ -124,6 +124,7 @@ class SubscriptionTable extends Component
             ->where(function ($q)  {
                 $q->where('name', "like", "%{$this->search}%");
                 $q->orWhere('id', 'like', "%{$this->search}%");
+                $q->orWhere('billing_period', 'like', "%{$this->search}%");
                 $q->orwhereHas('customer', function(Builder $q){
                     $q->where('company_name', 'like', "%{$this->search}%");
                 });

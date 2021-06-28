@@ -89,30 +89,19 @@ class ResellerController extends Controller
 
     public function show(Reseller $reseller) {
 
-        $countries = Country::get();
 
-        $statuses = Status::get();
 
-        $subscriptions = [];
-        $customers = new Collection();
-        foreach ($reseller as $resellers){
-            $reseller = Reseller::find($reseller['id']);
-            $customers = $this->customerRepository->customersOfReseller($reseller);
+        // $amount=  $reseller->customers->map(function ($customers, $key) {
+        //    $teste = $customers->subscriptions->map(function ($subscriptions, $key) {
+        //         return ($subscriptions->order->first()->orderproduct->price*$subscriptions->amount)*($subscriptions->billing_period === 'annual' ? 12 : 1 );
+        //     });
+        //     return $teste;
+        // });
 
-            $subscriptions = $customers->flatMap(function ($values) {
-                $customer = Customer::find($values['id']);
-                $subscriptions = $this->subscriptionRepository->subscriptionsOfCustomer($customer);
-                return $subscriptions;
-            });
-            foreach ($customers as $customer){
-
-            }
-        }
-        $subscriptions = $subscriptions->paginate('10');
 
         $users = User::where('reseller_id', $reseller->id)->get();
-            return view('reseller.show', compact('reseller','customers', 'countries', 'subscriptions','statuses', 'users'));
-        }
+        return view('reseller.show', compact('reseller'));
+    }
 
 
     public function edit(Reseller $reseller) {
@@ -168,26 +157,26 @@ class ResellerController extends Controller
 
     protected function validator(array $data)
     {
-            return Validator::make($data, [
-                'company_name'      => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-                'nif'               => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:30'],
-                'country_id'        => ['required', 'integer', 'min:1'],
-                'address_1'         => ['required', 'string', 'max:255'],
-                'address_2'         => ['nullable', 'string', 'max:255'],
-                'city'              => ['required', 'string', 'max:255'],
-                'state'             => ['required', 'string', 'max:255'],
-                'postal_code'       => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
-                '   '             => ['sometimes', 'integer'],
-                'role_id'           => ['sometimes', 'integer', 'exists:roles,id'],
-                'status'            => ['required', 'integer', 'exists:statuses,id'],
-                'name'              => ['sometimes', 'string', 'max:255'],
-                'last_name'         => ['sometimes', 'string', 'max:255'],
-                'socialite_id'      => ['sometimes', 'string', 'max:255'],
-                'phone'             => ['sometimes', 'string', 'max:20'],
-                'address'           => ['sometimes', 'string', 'max:255'],
-                'email'             => ['nullable', 'email', 'max:255'],
-                'sendInvitation'    => ['nullable', 'integer'],
-                'password'          => ['sometimes', 'string', 'max:255'],
-                ]);
-        }
+        return Validator::make($data, [
+            'company_name'      => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
+            'nif'               => ['required', 'string', 'regex:/^[0-9A-Za-z.\-_:]+$/', 'max:30'],
+            'country_id'        => ['required', 'integer', 'min:1'],
+            'address_1'         => ['required', 'string', 'max:255'],
+            'address_2'         => ['nullable', 'string', 'max:255'],
+            'city'              => ['required', 'string', 'max:255'],
+            'state'             => ['required', 'string', 'max:255'],
+            'postal_code'       => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255'],
+            '   '             => ['sometimes', 'integer'],
+            'role_id'           => ['sometimes', 'integer', 'exists:roles,id'],
+            'status'            => ['required', 'integer', 'exists:statuses,id'],
+            'name'              => ['sometimes', 'string', 'max:255'],
+            'last_name'         => ['sometimes', 'string', 'max:255'],
+            'socialite_id'      => ['sometimes', 'string', 'max:255'],
+            'phone'             => ['sometimes', 'string', 'max:20'],
+            'address'           => ['sometimes', 'string', 'max:255'],
+            'email'             => ['nullable', 'email', 'max:255'],
+            'sendInvitation'    => ['nullable', 'integer'],
+            'password'          => ['sometimes', 'string', 'max:255'],
+        ]);
     }
+}

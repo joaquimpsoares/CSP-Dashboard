@@ -182,12 +182,8 @@ class ProductController extends Controller
 
 
         $order = $this->orderRepository->ImportProductsMicrosoftOrder();
-
-
         $provider = Provider::where('id', $id)->select('country_id')->first();
-
         $country = Country::select('iso_3166_2')->where('id', $provider->country_id)->first();
-
         $instance = Instance::where('provider_id', $id)->first();
 
 
@@ -197,7 +193,6 @@ class ProductController extends Controller
 
         if($instance->type === 'microsoft' || $instance->type === 'Microsoft'){
             if( ! $instance->tenant_id){
-
                 return redirect()->route('products.index')->with('success', 'There is no client_id set up on the Microsoft instance');
             }
 

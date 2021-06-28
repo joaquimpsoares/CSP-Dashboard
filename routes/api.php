@@ -15,47 +15,29 @@ use App\Http\Controllers\Api\Auth\AuthController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::group(['middleware' => ['auth:sanctum']], function() {
+    // Route::post('/login', [AuthController::class, 'login']);
+    // Route::post('/register', [AuthController::class, 'register']);
+    // Route::post('/logout', [AuthController::class, 'logout']);
+    // Route::post('/refresh', [AuthController::class, 'refresh']);
+    // Route::get('/user-profile', [AuthController::class, 'userProfile']);
+    // Route::get('createNewToken', [AuthController::class, 'createNewToken']);
 
-Route::group([
-    'middleware' => 'api',
-    'prefix' => 'auth'
+    #Customers Routes
 
-], function ($router) {
+    Route::group([
+        'middleware' => 'auth:api',
+    ], function ($router) {
 
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/refresh', [AuthController::class, 'refresh']);
-    Route::get('/user-profile', [AuthController::class, 'userProfile']);
+        Route::get('customers', 'CustomerController@index');
+        Route::get('customers/{customer}', 'CustomerController@show');
+        Route::post('customers', 'CustomerController@store');
+
+        #Resellers Routes
+        Route::get('resellers', 'ResellerController@index');
+
+        #Subscriptions Routes
+        Route::get('subscriptions', 'SubscriptionsController@index');
+
+    });
 });
-
-
-Route::group([
-    'middleware' => 'auth:api',
-    'prefix' => 'customer'
-
-], function ($router) {
-
-    Route::get('customers', 'CustomerController@index');
-    Route::get('customers/{customer}', 'CustomerController@show');
-    Route::post('customers', 'CustomerController@store');
-});
-
-Route::group([
-    'middleware' => 'auth:api',
-    'prefix' => 'reseller'
-
-], function ($router) {
-
-    Route::get('resellers', 'ResellerController@index');
-});
-
-Route::group([
-    'middleware' => 'auth:api',
-    'prefix' => 'subscription'
-
-], function ($router) {
-
-    Route::get('subscriptions', 'SubscriptionsController@index');
-});
-

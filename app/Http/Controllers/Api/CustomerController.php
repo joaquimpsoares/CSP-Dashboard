@@ -22,49 +22,50 @@ class CustomerController extends ApiController
 
     public function index()
     {
-        $user = $this->getUser();
+        $customers = Customer::get();
+        // $user = $this->getUser();
 
-        switch ($this->getUserLevel()) {
-            case config('app.super_admin'):
+        // switch ($this->getUserLevel()) {
+        //     case config('app.super_admin'):
 
-                $customers = Customer::with(['country', 'status', 'subscriptions'])
-                ->orderBy('company_name')
-                ->get();
+        //         $customers = Customer::with(['country', 'status', 'subscriptions'])
+        //         ->orderBy('company_name')
+        //         ->get();
 
-            break;
+        //     break;
 
-            case config('app.admin'):
-                $customers = Customer::with(['country', 'status'])
-                ->orderBy('company_name')
-                ->get();
+        //     case config('app.admin'):
+        //         $customers = Customer::with(['country', 'status'])
+        //         ->orderBy('company_name')
+        //         ->get();
 
-            break;
+        //     break;
 
-            case config('app.provider'):
-                $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
+        //     case config('app.provider'):
+        //         $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
 
-                $customers = Customer::whereHas('resellers', function($query) use  ($resellers) {
-                    $query->whereIn('id', $resellers);
-                })->with(['country', 'status', 'subscriptions'])
-                ->orderBy('company_name');
+        //         $customers = Customer::whereHas('resellers', function($query) use  ($resellers) {
+        //             $query->whereIn('id', $resellers);
+        //         })->with(['country', 'status', 'subscriptions'])
+        //         ->orderBy('company_name');
 
-            break;
+        //     break;
 
-            case config('app.reseller'):
-                $reseller = $user->reseller;
-                $customers = $reseller->customers;
-            break;
+        //     case config('app.reseller'):
+        //         $reseller = $user->reseller;
+        //         $customers = $reseller->customers;
+        //     break;
 
-            case config('app.subreseller'):
-                $reseller = $user->reseller;
-                $customers = $reseller->customers;
-            break;
+        //     case config('app.subreseller'):
+        //         $reseller = $user->reseller;
+        //         $customers = $reseller->customers;
+        //     break;
 
-            default:
-            return abort(403, __('errors.unauthorized_action'));
+        //     default:
+        //     return abort(403, __('errors.unauthorized_action'));
 
-        break;
-            }
+        // break;
+        //     }
     return $customers;
 
 

@@ -29,6 +29,7 @@
         "lab404/laravel-impersonate": "^1.6",
         "laravel/framework": "^8.0",
         "laravel/helpers": "^1.2",
+        "laravel/sanctum": "^2.11",
         "laravel/scout": "^8.6",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.1",

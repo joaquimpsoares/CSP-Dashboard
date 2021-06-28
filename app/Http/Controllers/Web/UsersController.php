@@ -34,16 +34,17 @@ class UsersController extends Controller
     */
     public function index()
     {
-        // $user = Auth::user();
-
-        // $statuses = Status::pluck('name','id');
-        // $provider = Auth::user()->provider;
-        // $users = $this->userRepository->paginate($perPage = 10, $request->search, $request->status);
-
-
         return view('user.list');
     }
 
+    public function security()
+    {
+        return view('user.security');
+    }
+    public function generateToken()
+    {
+       return view('user.security');
+    }
     /**
     * Show the form for creating a new resource.
     *

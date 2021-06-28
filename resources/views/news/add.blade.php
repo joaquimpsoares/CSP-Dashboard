@@ -10,7 +10,6 @@
 @include('partials.messages')
 
 {!! Form::open(['route' => 'news.create', 'files' => true, 'id' => 'customer-form']) !!}
-{{-- @dd($news) --}}
 <div class="card">
     <div class="card-body">
         <div class="row">

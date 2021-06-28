@@ -88,92 +88,115 @@
                                                             <form class="form-horizontal form-bordered" method="POST" action="{{ route('subscription.update', $subscription->id) }}">
                                                                 @method('PATCH')
                                                                 <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->name}}</td>
-                                                                @if ($subscription->billing_type === 'usage' ?? 'software')
+                                                                @if ($subscription->billing_type === 'usage' ?? 'software perpetual')
                                                                 <td></td>
                                                                 @else
                                                                 @csrf
                                                                 <td>
                                                                     <div class="w-16 pt-0 mb-3">
+                                                                        <x-input class="relative w-full px-2 py-1 text-sm " type="number" name="amount" value="{{$subscription->amount}}"/>
+                                                                    </div>
+                                                                </td>
+                                                                @endif
+                                                                <td>
+                                                                    <div class="w-24 pt-0 mb-3">
                                                                         @if ($subscription->billing_type != 'software')
-                                                                            <x-input class="relative w-full px-2 py-1 text-sm " type="number" name="amount" value="{{$subscription->amount}}"/>
+                                                                        <select name="billing_period" required="required" class="relative block w-full max-w-lg px-2 py-1 text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm" id="{{ $subscription->products->first()->id }}">
+                                                                            @foreach($subscription->products->first()->supported_billing_cycles as $cycle)
+                                                                            <option value="{{ $cycle }}" @if($cycle == $subscription->billing_period) selected @endif>
+                                                                                {{ $cycle }}
+                                                                            </option>
+                                                                            @endforeach
+                                                                        </select>
                                                                         @endif
                                                                     </div>
-                                                                    </td>
-                                                                    @endif
-                                                                    <td>
-                                                                        <div class="w-24 pt-0 mb-3">
-                                                                            @if ($subscription->billing_type != 'software')
-                                                                            <select name="billing_period" required="required" class="relative block w-full max-w-lg px-2 py-1 text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm" id="{{ $subscription->products->first()->id }}">
-                                                                                @foreach($subscription->products->first()->supported_billing_cycles as $cycle)
-                                                                                <option value="{{ $cycle }}" @if($cycle == $subscription->billing_period) selected @endif>
-                                                                                    {{ $cycle }}
-                                                                                </option>
-                                                                                @endforeach
+                                                                </td>
+                                                                <td class="align-middle">
+                                                                    <div class="w-24 pt-0 mb-3">
+                                                                        @can('subscription_delete')
+                                                                        <div name="status" class="select is-info">
+                                                                            <select name="status" class="relative block w-full max-w-lg px-2 py-1 text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm">
+                                                                                <option  value="1" {{ $subscription->status_id == "1" ? "selected":"" }}> Active</option>
+                                                                                <option  value="2" {{ $subscription->status_id == "2" ? "selected":"" }}> Suspend</option>
                                                                             </select>
-                                                                            @endif
                                                                         </div>
-                                                                    </td>
-                                                                    <td class="align-middle">
-                                                                        <div class="w-24 pt-0 mb-3">
-                                                                            @can('subscription_delete')
-                                                                            <div name="status" class="select is-info">
-                                                                                @if($subscription->status_id <> '3' )
-                                                                                <select name="status" class="relative block w-full max-w-lg px-2 py-1 text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm">
-                                                                                    <option  value="1" {{ $subscription->status_id == "1" ? "selected":"" }}> Active</option>
-                                                                                    <option  value="2" {{ $subscription->status_id == "2" ? "selected":"" }}> Suspend</option>
-                                                                                </select>
-                                                                                @endif
-                                                                            </div>
-                                                                            @endcan
-                                                                        </div>
-                                                                    </td>
+                                                                        @endcan
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="w-24 pt-0 mb-3">
+                                                                        <button type="submit" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none" type="submit">Change</button>
+                                                                    </div>
+                                                                </td>
+                                                                @if ($subscription->billing_type != 'software')
+                                                                @foreach ($subscription->products->first()->getaddons()->all() as $item)
+                                                                <tr>
+                                                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap"><strong>Add-on:</strong> {{$item->name}}</td>
                                                                     <td>
-                                                                        <div class="w-24 pt-0 mb-3">
-                                                                            <button type="submit" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none" type="submit">Change</button>
+                                                                        <div class="w-16 pt-0 mb-3">
+                                                                            <x-input class="relative w-full px-2 py-1 text-sm " type="number" name="amount_addon" value="{{$item->amount}}"/>
                                                                         </div>
                                                                     </td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td></td>
                                                                     @if ($subscription->billing_type != 'software')
-                                                                    @foreach ($subscription->products->first()->getaddons()->all() as $item)
+                                                                    @php
+                                                                        $addons = $subscription->products->first()->getaddons()->all();
+                                                                    @endphp
+                                                                    @foreach ($addons as $key => $item)
                                                                     <tr>
+                                                                    <div wire:key="{{ $key }}">
                                                                         <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap"><strong>Add-on:</strong> {{$item->name}}</td>
                                                                         <td>
                                                                             <div class="w-16 pt-0 mb-3">
-                                                                                <x-input class="relative w-full px-2 py-1 text-sm " type="number" name="amount_addon" value="{{$item->amount}}"/>
-                                                                                </div>
+                                                                                <x-input wire:model.defer="quantity" class="relative w-full px-2 py-1 text-sm " type="number" name="amount_addon"/>
+                                                                            </div>
                                                                             </td>
                                                                             <td></td>
                                                                             <td></td>
-                                                                            <td></td>
+                                                                            <td>
+                                                                                <div class="w-24 pt-0 mb-3">
+                                                                                    <button type="button"
+                                                                                        class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-gray-800 border border-transparent rounded-md hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25"
+                                                                                        wire:click.prevent="addAddon('{{$item->id}}', '{{$subscription->id}}', '{{$quantity}}')">
+                                                                                        Change
+                                                                                    </button>
+                                                                                </div>
+                                                                            </td>
+                                                                        </div>
                                                                         </tr>
                                                                         @endforeach
                                                                         @endif
                                                                     </form>
                                                                 </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
+                                                                @endforeach
+                                                                @endif
+                                                            </form>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
-                                    </td>
-                                </tr>
-                                @endcan
-                                @empty
-                                @endforelse
-                                <div class="col">
-                                    <span class="float-right">
-                                    </span>
+                                    </div>
                                 </div>
-                            </tbody>
-                        </table>
-                        <div class="mt-4 card-footer">
-                            @if ($subscriptions->total() >= '10')
-                            {{ $subscriptions->links() }}
-                            @endif
+                            </td>
+                        </tr>
+                        @endcan
+                        @empty
+                        @endforelse
+                        <div class="col">
+                            <span class="float-right">
+                            </span>
                         </div>
-                    </div>
+                    </tbody>
+                </table>
+                <div class="mt-4 card-footer">
+                    @if ($subscriptions->total() >= '10')
+                    {{ $subscriptions->links() }}
+                    @endif
                 </div>
             </div>
         </div>
     </div>
-
+</div>

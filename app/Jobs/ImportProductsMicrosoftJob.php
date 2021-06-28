@@ -49,7 +49,6 @@ class ImportProductsMicrosoftJob implements ShouldQueue
 
         $instance = $this->instance;
         Log::info('instance: '.$instance);
-
         Log::info('Country: '.$this->country);
 
         // if( ! $instance){
@@ -99,11 +98,13 @@ class ImportProductsMicrosoftJob implements ShouldQueue
                     'addons' => $importedProduct->addons->map(function($item){
                         return serialize($item);
                     }),
-                    'upgrade_target_offers' => $importedProduct->upgradeTargetOffers,
-                    'supported_billing_cycles' => $importedProduct->supportedBillingCycles,
-                    'conversion_target_offers' => $importedProduct->conversionTargetOffers,
-                    'resellee_qualifications' => $importedProduct->reselleeQualifications,
-                    'reseller_qualifications' => $importedProduct->resellerQualifications,
+                    'upgrade_target_offers'     => $importedProduct->upgradeTargetOffersmap(function($item){
+                        return serialize($item);
+                    }),
+                    'supported_billing_cycles'  => $importedProduct->supportedBillingCycles,
+                    'conversion_target_offers'  => $importedProduct->conversionTargetOffers,
+                    'resellee_qualifications'   => $importedProduct->reselleeQualifications,
+                    'reseller_qualifications'   => $importedProduct->resellerQualifications,
                     ]);
                 });
                 $this->queueProgress(90);
