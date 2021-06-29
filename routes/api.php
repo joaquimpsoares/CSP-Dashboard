@@ -40,4 +40,17 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('subscriptions', 'SubscriptionsController@index');
 
     });
+    Route::group([
+        'middleware' => 'auth:api',
+    ], function ($router) {
+
+        Route::get('customers', 'CustomerController@index');
+        Route::get('customers/{customer}', 'CustomerController@show');
+        Route::post('customers', 'CustomerController@store');
+
+        Route::get('resellers', 'ResellerController@index');
+
+        Route::get('subscriptions', 'SubscriptionsController@index');
+
+    });
 });
