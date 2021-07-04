@@ -17,20 +17,57 @@
                                         <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                                     </svg>
                                 </div>
-                                <input wire:model="search" id="search" class="block w-full bg-white py-1.5 pl-10 pr-3 border border-gray-300 rounded-md leading-5 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 focus:placeholder-gray-500 sm:text-sm" placeholder="Search" type="search" name="search">
+                                <input wire:model="search" id="search" class="block w-full bg-white py-1.5 pl-10 pr-3 border border-gray-300 rounded-md leading-5 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:placeholder-gray-500 sm:text-sm" placeholder="Search" type="search" name="search">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <a onclick="confirm('Are you sure you want to export these Records?') || event.stopImmediatePropagation()"wire:click="exportSelected()" href="#" class="px-2 py-2 ml-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
+                    <a wire:click="$toggle('showFilters')"href="#" class="px-2 py-2 ml-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
+                    </a>
+                </div>
+                <div>
+                    <a onclick="confirm('Are you sure you want to export these Records?') || event.stopImmediatePropagation()"wire:click="exportSelected()" href="#" class="px-2 py-2 ml-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd" />
                         </svg>
                         {{ ucwords(trans_choice('messages.export', 1)) }}
                     </a>
                 </div>
+
             </div>
+        </div>
+        <div>
+            @if ($showFilters)
+            <div class="relative flex p-4 mt-3 bg-indigo-100 rounded shadow-inner">
+                <div class="w-1/2 pr-2 space-y-4">
+                    <x-input.group inline for="filter-status" label="Status">
+                        <x-input.select wire:model="filters.status" id="filter-status">
+                            <option value="" disabled>Select Status...</option>
+
+                            @foreach (App\Subscription::STATUSES as $value => $label)
+                            <option value="{{ $value }}">{{ $label }}</option>
+                            @endforeach
+                        </x-input.select>
+                    </x-input.group>
+                    <x-input.group inline for="filter-date-min" label="Expiration Date">
+                        <x-input.date wire:model="filters.date-min" id="filter-date-min" placeholder="YYYY/MM/DD" />
+                    </x-input.group>
+
+                    <x-input.group inline for="filter-date-max" label="Expiration Date">
+                        <x-input.date wire:model="filters.date-max" id="filter-date-max" placeholder="YYYY/MM/DD" />
+                    </x-input.group>
+                </div>
+
+                <div class="w-1/2 pl-2 space-y-4">
+
+                    <x-button.link wire:click="resetFilters" class="absolute bottom-0 right-0 p-4">Reset Filters</x-button.link>
+                </div>
+            </div>
+            @endif
         </div>
         <div class="mt-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full px-4 py-1 align-middle">

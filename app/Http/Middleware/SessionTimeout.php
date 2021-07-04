@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Session\Store;
+use Illuminate\Support\Facades\Auth;
 
 class SessionTimeout {
 
@@ -29,7 +30,7 @@ class SessionTimeout {
             $this->session->forget('lastActivityTime');
             $cookie = cookie('intend', $isLoggedIn ? url()->current() : 'dashboard');
             $email = $request->user()->email;
-            auth()->logout();
+            Auth::logout();
             return message('You had not activity in '.$this->timeout/60 .' minutes ago.', 'warning', 'login')->withInput(compact('email'))->withCookie($cookie);
         }
         $isLoggedIn ? $this->session->put('lastActivityTime', time()) : $this->session->forget('lastActivityTime');

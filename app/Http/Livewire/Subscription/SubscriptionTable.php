@@ -5,12 +5,13 @@ namespace App\Http\Livewire\Subscription;
 use App\Order;
 use Exception;
 use App\Instance;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use App\Subscription;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Log;
 use App\Exports\SubscriptionsExport;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,11 +24,21 @@ class SubscriptionTable extends Component
     public $search = '';
     public $quantity = '';
     public $addons = '';
+    public $showFilters = false;
 
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
+    public $filters = [
+        'search' => '',
+        'status' => '',
+        'amount-min' => null,
+        'amount-max' => null,
+        'date-min' => null,
+        'date-max' => null,
+    ];
+
+    public function updatingSearch(){$this->resetPage();}
+    public function updatedFilters() { $this->resetPage(); }
+    public function resetFilters() { $this->reset('filters'); }
+
 
     public function addAddon($addon, Subscription $subscription)
     {
@@ -121,6 +132,9 @@ class SubscriptionTable extends Component
 
         $query = Subscription::query();
         $subscriptions = $query
+            ->when($this->filters['status'], fn($query, $status) => $query->where('status_id', $status))
+            ->when($this->filters['date-min'], fn($query, $date) => $query->where('expiration_data', '>=', Carbon::parse($date)))
+            ->when($this->filters['date-max'], fn($query, $date) => $query->where('expiration_data', '<=', Carbon::parse($date)))
             ->where(function ($q)  {
                 $q->where('name', "like", "%{$this->search}%");
                 $q->orWhere('id', 'like', "%{$this->search}%");
@@ -128,6 +142,7 @@ class SubscriptionTable extends Component
                 $q->orwhereHas('customer', function(Builder $q){
                     $q->where('company_name', 'like', "%{$this->search}%");
                 });
+
             })->paginate(10);
 
 

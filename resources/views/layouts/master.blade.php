@@ -7,11 +7,17 @@
     <meta content="Tagydes - CSP Automation Platform" name="description">
     <meta content="Tagydes Limited" name="author">
     <meta name="keywords" content="Admin, Admin Dashboard, Automation, Microsoft CSP, Admin Resellers, O354 Automation Platform, Kaspersky, license management"/>
-    @livewireStyles
+    <!-- Tailwind UI -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tailwindcss/ui@latest/dist/tailwind-ui.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Paaji+2&display=swap" rel="stylesheet">
 
+    <!-- Alpine -->
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+
+    @livewireStyles
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@1.2.3/dist/trix.css">
     @include('layouts.head')
-    <script src="//rum-static.pingdom.net/pa-6034bf35a15bce00110001a2.js" async></script>
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
 </head>
 
 <body  class="antialiased bg-gray-200">
@@ -33,6 +39,9 @@
 </div>
 
 @livewireScripts
+<script src="https://unpkg.com/moment"></script>
+<script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
+<script src="https://unpkg.com/trix@1.2.3/dist/trix.js"></script>
 @yield('footer')
 {{-- </body> --}}
 </html>

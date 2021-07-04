@@ -11,6 +11,15 @@ class Subscription extends Model
 {
     //use ActivityTrait;
 
+    const STATUSES = [
+        '1' => 'Active',
+        '2' => 'Inactive',
+        '3' => 'Canceled',
+        '4' => 'Expired',
+        '5' => 'pending',
+    ];
+
+
     protected $guarded = [];
 
     public function status() {
