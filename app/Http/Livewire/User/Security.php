@@ -30,7 +30,6 @@ class Security extends Component
 
     public function saveauth()
     {
-        dump($this->user->password);
         $this->validate();
         $this->user->password = Hash::make($this->password);
         $this->user->update();
