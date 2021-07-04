@@ -56,6 +56,12 @@ class Subscription extends Model
                     });
                 });
             }
+            if($user && $user->userLevel->name === config('app.customer')){
+                $query->whereHas('customer', function(Builder $query) use($user){
+                        $query->where('id', $user->customer->id);
+
+                });
+            }
         });
     }
 

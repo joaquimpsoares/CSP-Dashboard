@@ -54,7 +54,6 @@ class SyncAzure extends Command
     public function handle()
     {
         Mail::raw("Starting Azure Syncronization", function ($mail)  {
-            $mail->from('digamber@positronx.com');
             $mail->to('joaquim.soares@tagydes.com')
             ->subject('Daily importing Started Azure reports');
         });
@@ -103,7 +102,7 @@ class SyncAzure extends Command
                                 'rates' => [0]
                             ])->first('rates');
 
-                        Log::info($resource->resource->id);
+                            Log::channel('azure')->info($resource->resource->id);
 
                         $resource = AzureUsageReport::updateOrCreate([
                             'subscription_id'       => $subscription->id,
@@ -129,7 +128,7 @@ class SyncAzure extends Command
                             'quantity'              => $resource->quantity,
                             'cost'                  => (json_encode($price->rates[0])*$resource->quantity),
                             ]);
-                            // Log::info(json_encode($resource));
+                            Log::channel('azure')->info(json_encode($resource));
                             // Log::info(json_encode($price->rates[0])*$resource->quantity);
                     });
                 }
@@ -145,7 +144,6 @@ class SyncAzure extends Command
         }
 
         Mail::raw("Just finished Azure Syncronization", function ($mail)  {
-            $mail->from('digamber@positronx.com');
             $mail->to('joaquim.soares@tagydes.com')
             ->subject('Daily imported Azure reports');
         });

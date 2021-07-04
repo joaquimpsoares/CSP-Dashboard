@@ -65,7 +65,6 @@
                             @endphp
                             <td  class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">{{$item->customer->country->currency_symbol}}@money($markup)</td>
                             <td  class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">
-
                                 @if ($editedProductIndex === $index || $editedProductField === $index . '.name')
                                 <div>
                                     <input type="text"
@@ -115,7 +114,9 @@
                         </tbody>
                     </table>
                     <div class="mt-4 card-footer">
-                        {{ $resourceName->links() }}
+                        {{-- @if ($resourceName->() >= '10')
+                            {{ $resourceName->links() }}
+                            @endif --}}
                     </div>
                 </div>
             </div>

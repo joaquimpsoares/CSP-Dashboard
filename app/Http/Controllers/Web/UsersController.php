@@ -32,9 +32,16 @@ class UsersController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
-    public function index()
+    public function index(Request $request)
     {
-        return view('user.list');
+        $user = Auth::user();
+
+        $statuses = Status::pluck('name','id');
+        $provider = Auth::user()->provider;
+        $users = $this->userRepository->paginate($perPage = 10, $request->search, $request->status);
+
+
+        return view('user.list', compact('users','provider','statuses'));
     }
 
     public function security()
@@ -74,7 +81,6 @@ class UsersController extends Controller
     */
     public function create(User $user, Request $request)
     {
-
         $countries = Country::pluck( 'name','id');
         $statuses = Status::pluck( 'name','id');
         $roles = Role::pluck('name','id');

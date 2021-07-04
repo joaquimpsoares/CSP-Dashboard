@@ -10,7 +10,8 @@
 
 @section('content')
 
-@livewire('user.create-user', ['user' => $user], key($user->id))
+
+@livewire('user.create-user')
 {{-- {!! Form::open(['route' => 'user.store', 'files' => true, 'id' => 'user-form']) !!}
     <div class="card">
         <div class="card-body">

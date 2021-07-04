@@ -92,7 +92,7 @@
                 </div>
             </div>
             <div class="mb-4 col-lg-4">
-                <button class="btn btn-primary" type="submit">{{ucwords(trans_choice('messages.create', 1))}}</button>
+                <button wire:click.prevent="save">{{ucwords(trans_choice('messages.create', 1))}}</button>
             </div>
         </div>
     </div>

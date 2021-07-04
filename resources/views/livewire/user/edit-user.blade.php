@@ -127,13 +127,13 @@
                                         </div>
                                     </section>
                                     <!-- Password -->
-                                    <section>
+                                    {{-- <section>
                                         <h2 class="mt-3 mb-1 text-xl font-bold text-gray-800">Password</h2>
                                         <div class="text-sm">You can set a permanent password if you don't want to use temporary login codes.</div>
                                         <div class="mt-3">
                                             <x-a class="text-indigo-500 border-gray-200 shadow-sm btn">Set New Password</x-a>
                                         </div>
-                                    </section>
+                                    </section> --}}
                                     <!-- Smart Sync -->
                                     <section>
                                         <h2 class="mt-3 mb-3 text-xl font-bold text-gray-800">{{ucwords(trans_choice('messages.status', 1))}}</h2>

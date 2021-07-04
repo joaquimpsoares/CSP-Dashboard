@@ -34,17 +34,16 @@ $user = Auth::user();
                     <div class="flex flex-col">
                         <div class="flex flex-col items-center justify-between lg:flex-row">
                             <div class="flex items-center">
-                                <h4>{{ ucwords(trans_choice('messages.microsoft_invoices', 2)) }}</h4>
+                                <h4>{{ ucwords(trans_choice('messages.password', 2)) }}</h4>
                             </div>
                         </div>
                     </div>
                     <div class="flex justify-center mt-4 card-footer">
                     </div>
-{{-- @dd($user->tokens) --}}
                     <div>
                         <div class="relative z-0 flex-col flex-1 overflow-y-auto">
                             <div class="p-4 overflow-hidden bg-white">
-                                @livewire('user.security')
+                                @livewire('user.security', ['user' => $user], key($user->id))
                             </div>
                         </div>
                     </div>

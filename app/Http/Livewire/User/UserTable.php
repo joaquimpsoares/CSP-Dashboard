@@ -27,7 +27,6 @@ class UserTable extends Component
     {
         $search = $this->search;
 
-
         $query = User::query();
 
         $users = $query

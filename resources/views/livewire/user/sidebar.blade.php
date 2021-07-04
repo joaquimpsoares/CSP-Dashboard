@@ -37,7 +37,7 @@
                 </div>
             </a>
 
-            <a href="#" class="flex p-6 border-b hover:bg-blue-50 hover:bg-opacity-50 border-blue-gray-200" x-state-description="undefined: &quot;bg-blue-50 bg-opacity-50&quot;, undefined: &quot;hover:bg-blue-50 hover:bg-opacity-50&quot;">
+            <a href="{{route('user.security',$user->id)}}" class="@if(Request::path() == 'security/'.$user->id.'/security') bg-indigo-50 @endif flex p-6 border-b hover:bg-blue-50 hover:bg-opacity-50 border-blue-gray-200" x-state-description="undefined: &quot;bg-blue-50 bg-opacity-50&quot;, undefined: &quot;hover:bg-blue-50 hover:bg-opacity-50&quot;">
                 <svg class="flex-shrink-0 -mt-0.5 h-6 w-6 text-blue-gray-400" x-description="Heroicon name: outline/key" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
                 </svg>

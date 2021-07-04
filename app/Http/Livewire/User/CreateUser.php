@@ -11,6 +11,7 @@ use Livewire\Component;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class CreateUser extends Component
@@ -63,6 +64,7 @@ class CreateUser extends Component
 
     public function mount(Request $request)
     {
+        // dd(Auth::user()->level>name);
         $this->previous = URL::previous();
         $this->level = $request->level;
         $this->reseller_id = $request->reseller_id;
@@ -75,18 +77,20 @@ class CreateUser extends Component
     public function save(Request $request)
     {
 
-        switch ($this->level) {
-        case 'Super Admin':
+		switch ($this->getUserLevel()) {
+            case config('app.super_admin'):
+            case 'Super Admin':
 
             // $newUser = User::create($user);
 
             // $newUser->assignRole($role->name);
 
             break;
-        case 'provider':
+            case 'Provider':
+
+            $user = $this->getUser()->provider;
 
             $this->validate();
-
             $user = User::create ([
                 'email'             => $this->email,
                 'name'              => $this->name,
@@ -99,16 +103,16 @@ class CreateUser extends Component
                 'user_level_id'     => 3, //provider role id = 3
                 'notify'            => $this->sendInvitation ?? false,
                 'status_id'         => $this->status,
-                'provider_id'       => $this->provider_id,
+                'provider_id'       => $user->id,
                 ]);
 
                 $user->assignRole(config('app.provider'));
 
-
                 break;
 
-            case 'reseller':
+            case 'Reseller':
 
+                $user = $this->getUser()->reseller;
                 $this->validate();
 
                 $user = User::create ([
@@ -122,16 +126,18 @@ class CreateUser extends Component
                     'user_level_id'     => 4, //reseller role id = 4
                     'notify'            => $this->sendInvitation ?? false,
                     'status_id'         => $this->status,
-                    'reseller_id'       => $this->reseller_id,
+                    'reseller_id'       => $user->id,
                     ]);
 
                     $user->assignRole(config('app.reseller'));
 
                     break;
 
-                case 'customer':
+                case 'Customer':
 
-                    $this->validate();
+                    $user = $this->getUser()->customer;
+                $this->validate();
+
 
                     $user = User::create ([
                         'email'             => $this->email,
@@ -144,7 +150,7 @@ class CreateUser extends Component
                         'user_level_id'     => 6, //customer role id = 6
                         'notify'            => $this->sendInvitation ?? false,
                         'status_id'         => $this->status,
-                        'customer_id'       => $this->customer_id,
+                        'customer_id'       => $user->id,
                         ]);
 
                         $user->assignRole(config('app.customer'));

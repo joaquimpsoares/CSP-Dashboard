@@ -199,7 +199,7 @@ Route::group(['middleware' => 'auth'], function ()
 
 
             //User Routes
-            Route::get('/user/security', 'UsersController@security')->name('user.security');
+            Route::get('/user/{user}/security', 'UsersController@security')->name('user.security');
             Route::post('/user/generateToken', 'UsersController@generateToken')->name('user.generateToken');
             Route::resource('/user', 'UsersController');
             Route::get('/user/profile/{user}', 'UsersController@profile')->name('user.profile');

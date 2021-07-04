@@ -10,9 +10,9 @@
     @livewireStyles
 
     @include('layouts.head')
+    <script src="//rum-static.pingdom.net/pa-6034bf35a15bce00110001a2.js" async></script>
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
 </head>
-
 
 <body  class="antialiased bg-gray-200">
     <div class="page">

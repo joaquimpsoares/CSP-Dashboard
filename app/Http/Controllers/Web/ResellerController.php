@@ -89,19 +89,30 @@ class ResellerController extends Controller
 
     public function show(Reseller $reseller) {
 
+        $countries = Country::get();
 
+        $statuses = Status::get();
 
-        // $amount=  $reseller->customers->map(function ($customers, $key) {
-        //    $teste = $customers->subscriptions->map(function ($subscriptions, $key) {
-        //         return ($subscriptions->order->first()->orderproduct->price*$subscriptions->amount)*($subscriptions->billing_period === 'annual' ? 12 : 1 );
-        //     });
-        //     return $teste;
-        // });
+        $subscriptions = [];
+        $customers = new Collection();
+        foreach ($reseller as $resellers){
+            $reseller = Reseller::find($reseller['id']);
+            $customers = $this->customerRepository->customersOfReseller($reseller);
 
+            $subscriptions = $customers->flatMap(function ($values) {
+                $customer = Customer::find($values['id']);
+                $subscriptions = $this->subscriptionRepository->subscriptionsOfCustomer($customer);
+                return $subscriptions;
+            });
+            foreach ($customers as $customer){
+
+            }
+        }
+        $subscriptions = $subscriptions->paginate('10');
 
         $users = User::where('reseller_id', $reseller->id)->get();
-        return view('reseller.show', compact('reseller'));
-    }
+            return view('reseller.show', compact('reseller','customers', 'countries', 'subscriptions','statuses', 'users'));
+        }
 
 
     public function edit(Reseller $reseller) {

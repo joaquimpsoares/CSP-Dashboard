@@ -65,15 +65,15 @@ class User extends Authenticatable implements  JWTSubject, PortableContract
     public function format()
     {
         return [
-            'id'      => $this->id,
-            'name'      => $this->name,
-            'last_name' => $this->last_name,
-            'phone'     => $this->phone,
-            'email'     => $this->email,
-            'country'   => $this->country,
-            'provider'   => $this->provider,
-            'reseller'   => $this->reseller,
-            'customer'   => $this->customer,
+            'id'            => $this->id,
+            'name'          => $this->name,
+            'last_name'     => $this->last_name,
+            'phone'         => $this->phone,
+            'email'         => $this->email,
+            'country'       => $this->country,
+            'provider'      => $this->provider,
+            'reseller'      => $this->reseller,
+            'customer'      => $this->customer,
         ];
     }
 
@@ -134,19 +134,27 @@ class User extends Authenticatable implements  JWTSubject, PortableContract
 
 
     // protected static function booted(){
-    //     static::addGlobalScope('access_level', function(Builder $query){
-    //         $user = Auth::user();
-    //         // dd($user);
+    //     $user = Auth::user();
+    //     static::addGlobalScope('access_level', function(Builder $query) use($user){
     //         if($user && $user->userLevel->name === config('app.provider')){
-    //             $query->whereHas('reseller', function(Builder $query) use($user){
-    //                 $query->whereHas('provider', function(Builder $query) use($user){
-    //                     $query->where('id', $user->provider->id);
+    //             $query->whereHas('customer', function(Builder $query) use($user){
+    //                 $query->whereHas('resellers', function(Builder $query) use($user){
+    //                     $query->whereHas('provider', function(Builder $query) use($user){
+    //                         $query->where('id', $user->provider->id);
+    //                     });
     //                 });
     //             });
     //         }
     //         if($user && $user->userLevel->name === config('app.reseller')){
-    //             $query->whereHas('resellers', function(Builder $query) use($user){
-    //                 $query->where('id', $user->reseller->id);
+    //             $query->whereHas('customer', function(Builder $query) use($user){
+    //                 $query->whereHas('resellers', function(Builder $query) use($user){
+    //                     $query->where('id', $user->reseller->id);
+    //                 });
+    //             });
+    //         }
+    //         if($user && $user->userLevel->name === config('app.customer')){
+    //             $query->whereHas('customer', function(Builder $query) use($user){
+    //                     $query->where('id', $user->customer->id);
     //             });
     //         }
     //     });

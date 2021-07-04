@@ -4,7 +4,7 @@
 @endsection
 @section('content')
 
-            @livewire('order.order-table')
+@livewire('order.order-table')
 
 
 @endsection

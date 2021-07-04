@@ -13,7 +13,6 @@
                 <option value="{{ $edit && $user->status->id ? $user->status->id : ''}}" selected>{{ucwords(trans_choice($user->status->name, 1))}}</option>
                 @endif
                 @foreach ($statuses as $key => $status)
-                {{-- @dump($status) --}}
                 <option value="{{$key}}">{{ucwords(trans_choice($status, 1))}}</option>
                 @endforeach
             </select>

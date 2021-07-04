@@ -24,7 +24,7 @@ class AzureTable extends Component
     public $editedProductIndex = null;
     public $editedProductField = null;
     public $search = '';
-    private $resourceName =[];
+    public $resourceName =[];
     public $edit=false;
     public $budget;
 
@@ -39,28 +39,30 @@ class AzureTable extends Component
     ];
 
 
-    public function mount(AnalyticRepositoryInterface $analyticRepository)
+    public function mount()
     {
-        // $this->analyticRepository = $analyticRepository;
+        $this->resourceName = Subscription::where('billing_type', 'usage')->get();
 
-        // $this->resourceName = $analyticRepository->getAzureSubscriptions();
+        $this->resourceName->map(function ($item, $key) {
+            foreach ($item->azureresources as $resource) {
+                $increase = ($item->budget - $item->azureresources->sum('cost'));
+                if ($item->budget > '0') {
+                    if ($increase !== '0') {
+                        $average1 = ($increase / $item->budget) * 100;
+                        $item['calculated'] = 100 - $average1;
+                    } else {
+                        $item['calculated'] = '0';
+                    }
+                    return $item->toArray();
+                }
+            }
+        });
+    }
 
-
-        // $this->resourceName->map(function ($item, $key) {
-        //     foreach ($item->azureresources as $resource) {
-        //         $increase = ($item->budget - $item->azureresources->sum('cost'));
-        //         if ($item->budget > '0') {
-        //             if ($increase !== '0') {
-        //                 $average1 = ($increase / $item->budget) * 100;
-        //                 $item['calculated'] = 100 - $average1;
-        //             } else {
-        //                 $item['calculated'] = '0';
-        //             }
-        //             return $item->toArray();
-        //         }
-        //     }
-        // });
-
+    public function render()
+    {
+        return view('livewire.azure.azure-table',[
+            'resourceName' => $this->resourceName->paginate(10)]);
     }
 
     public function editProduct($productIndex)
@@ -106,27 +108,5 @@ class AzureTable extends Component
 
     }
 
-    public function render()
 
-    {
-
-        $resourceName = Subscription::where('billing_type', 'usage')->paginate(10);
-
-        $resourceName->map(function ($item, $key) {
-            foreach ($item->azureresources as $resource) {
-                $increase = ($item->budget - $item->azureresources->sum('cost'));
-                if ($item->budget > '0') {
-                    if ($increase !== '0') {
-                        $average1 = ($increase / $item->budget) * 100;
-                        $item['calculated'] = 100 - $average1;
-                    } else {
-                        $item['calculated'] = '0';
-                    }
-                    return $item->toArray();
-                }
-            }
-        });
-
-        return view('livewire.azure.azure-table',compact('resourceName'));
-    }
 }
