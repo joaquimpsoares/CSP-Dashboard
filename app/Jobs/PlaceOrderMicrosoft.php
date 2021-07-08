@@ -105,7 +105,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
                     'supportedBillingCycles' => ['annual', 'monthly', 'one_time'],
                 ];
 
-                if($product['is_perpetual']){
+                if ($product['is_perpetual']) {
                     $catalogItemId = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)->getPerpetualCatalogItemId($product['uri']);
 
                     $TagydesProduct = new TagydesProduct([
@@ -114,7 +114,6 @@ class PlaceOrderMicrosoft implements ShouldQueue
 
                     $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
                     Log::info('Adding Perpetual Product to Cart: ' . $tagydescart);
-
                 } else {
                     $TagydesProduct = new TagydesProduct([
                         'id' => $product['sku'],
@@ -130,41 +129,41 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 $orderConfirm = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($tagydesorder);
                 Log::info('Confirmation of cart Cart: ', $orderConfirm->subscriptions()->toArray());
 
-                if($orderConfirm->errors()->count() > 0){
-                    foreach($orderConfirm->errors() as $error){
-                        logger('Error found: '.$error);
+                if ($orderConfirm->errors()->count() > 0) {
+                    foreach ($orderConfirm->errors() as $error) {
+                        logger('Error found: ' . $error);
                     }
                 }
+            }
 
-                // Log::info('a', $orderConfirm->subscriptions()->toArray());
-                logger("Tenemos {$orderConfirm->subscriptions()->count()} subscripciones");
-                foreach ($orderConfirm->subscriptions() as $subscription) {
-                    $subscriptions = new Subscription();
-                    $subscriptions->name = $subscription->name;
-                    $subscriptions->subscription_id = $subscription->id;
-                    $subscriptions->customer_id = $customer->id; //Local customer id
-                    $subscriptions->product_id = $subscription->offerId;
-                    $subscriptions->instance_id = $instanceid;
-                    $subscriptions->billing_type = $product->billing ?? 'license';
-                    $subscriptions->order_id = $subscription->orderId;
-                    $subscriptions->amount = $subscription->quantity;
-                    $subscriptions->msrpid = $this->order->customer->format()['mpnid'];
-                    $subscriptions->expiration_data = Carbon::now()->addYear()->toDateTimeString(); //Set subscription expiration date
-                    $subscriptions->billing_period = $subscription->billingCycle;
-                    $subscriptions->currency = $subscription->currency;
-                    $subscriptions->tenant_name = $this->order->domain ?? $this->order->customer->microsoftTenantInfo->first()->tenant_domain;
-                    $subscriptions->status_id = 1;
-                    $subscriptions->save();
+            // Log::info('a', $orderConfirm->subscriptions()->toArray());
+            logger("Tenemos {$orderConfirm->subscriptions()->count()} subscripciones");
+            foreach ($orderConfirm->subscriptions() as $subscription) {
+                $subscriptions = new Subscription();
+                $subscriptions->name = $subscription->name;
+                $subscriptions->subscription_id = $subscription->id;
+                $subscriptions->customer_id = $customer->id; //Local customer id
+                $subscriptions->product_id = $subscription->offerId;
+                $subscriptions->instance_id = $instanceid;
+                $subscriptions->billing_type = $product->billing ?? 'license';
+                $subscriptions->order_id = $subscription->orderId;
+                $subscriptions->amount = $subscription->quantity;
+                $subscriptions->msrpid = $this->order->customer->format()['mpnid'];
+                $subscriptions->expiration_data = Carbon::now()->addYear()->toDateTimeString(); //Set subscription expiration date
+                $subscriptions->billing_period = $subscription->billingCycle;
+                $subscriptions->currency = $subscription->currency;
+                $subscriptions->tenant_name = $this->order->domain ?? $this->order->customer->microsoftTenantInfo->first()->tenant_domain;
+                $subscriptions->status_id = 1;
+                $subscriptions->save();
 
-                    Log::info('Subscription created Successfully: before writing to order table' . $subscription);
+                Log::info('Subscription created Successfully: before writing to order table' . $subscription);
 
-                    $this->order->subscription_id   = $subscriptions->id;
-                    $this->order->ext_order_id      = $subscription->orderId;
-                    $this->order->order_status_id   = 4; //Order Completed state
-                    $this->order->save();
+                $this->order->subscription_id   = $subscriptions->id;
+                $this->order->ext_order_id      = $subscription->orderId;
+                $this->order->order_status_id   = 4; //Order Completed state
+                $this->order->save();
 
-                    Log::info('Subscription created Successfully: ' . $subscription);
-                }
+                Log::info('Subscription created Successfully: ' . $subscription);
             }
         } catch (Exception $e) {
             Log::info('Error Placing order to Microsoft: ' . $e->getMessage());
