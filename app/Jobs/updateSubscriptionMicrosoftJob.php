@@ -74,7 +74,6 @@ class updateSubscriptionMicrosoftJob implements ShouldQueue
 
         if($request['amount'] != $subscriptions->amount){
             try{
-                dd('jj');
                 $this->order->details = ('Changing amount of license: '.$request['amount']. ' for Subscription: '. $subscriptions->name. ' for customer: '. $subscriptions->customer->company_name );
                 $this->order->subscription_id = $subscription['id'];
                 $this->order->save();

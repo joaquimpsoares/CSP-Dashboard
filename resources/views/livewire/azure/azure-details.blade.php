@@ -2,7 +2,6 @@
 $percentage =($subscription->customer->markup/100)*$subscription->azureresources->sum('cost');
 $markup = $percentage+$subscription->azureresources->sum('cost');
 @endphp
-@dd('k')
 <div class="flex flex-col">
     <div class="flex flex-col items-center justify-between lg:flex-row">
         <div class="flex items-center">

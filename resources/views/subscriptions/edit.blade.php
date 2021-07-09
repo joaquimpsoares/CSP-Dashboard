@@ -2,7 +2,6 @@
 @section('css')
 @endsection
 @section('content')
-{{-- @dd($subscriptions->products->where('instance_id', $subscriptions->instance_id)) --}}
 <div class="relative z-0 flex-col flex-1 overflow-y-auto">
     <div class="p-4 overflow-hidden bg-white">
         <div class="flex flex-col items-center justify-between lg:flex-row">
