@@ -4,24 +4,18 @@ namespace App\Http\Controllers\Web;
 
 use App\Role;
 use App\User;
-use App\Order;
-use Throwable;
 use App\Status;
 use App\Country;
-use App\Customer;
 use App\Instance;
 use App\Provider;
 use App\Reseller;
 use App\PriceList;
-use App\AzureResource;
 use App\OrderProducts;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Traits\ActivityTrait;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\OrderRepositoryInterface;
@@ -29,9 +23,6 @@ use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProviderRepositoryInterface;
 use App\Repositories\ResellerRepositoryInterface;
 use App\Repositories\SubscriptionRepositoryInterface;
-use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
-use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
-use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
 
 
 class ProviderController extends Controller
@@ -225,7 +216,7 @@ class ProviderController extends Controller
 
         public function destroy(Provider $provider)
         {
-            //
+
         }
 
 

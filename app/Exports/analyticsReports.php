@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\AzureResource;
+use App\Models\AzureResource;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 

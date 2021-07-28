@@ -125,7 +125,6 @@ class ShowProfile extends Component
 
     public function savePhoto()
     {
-        // dd('j');
         $this->validate([
             'photo' => 'image|max:2024', // 1MB Max
         ]);
@@ -137,7 +136,6 @@ class ShowProfile extends Component
         $this->account->logo = '/storage/' . $validatedData['name'];
         $this->account->save();
 
-        dd($this->account);
 
         session()->flash('success', 'Logo for ' . $this->account->company_name . ' successfully Uploaded.');
         return redirect()->back();

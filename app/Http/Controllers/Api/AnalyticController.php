@@ -10,7 +10,7 @@ ini_set('max_execution_time', 30000);
 use App\Customer;
 use App\Instance;
 use App\Subscription;
-use App\AzureResource;
+use App\Models\AzureResource;
 use Illuminate\Support\Str;
 use App\Http\Traits\UserTrait;
 use App\Models\AzurePriceList;

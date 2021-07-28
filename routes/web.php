@@ -70,6 +70,8 @@ Route::group(['middleware' => 'auth'], function ()
     // Routes that platform managers and providers can access
     Route::group(['middleware' => ['role:Super Admin|Admin|Provider']], function ()
     {
+        Route::resource('bullethq', 'BullethqController');
+
         Route::get('invoices/index', [
             'as' => 'invoices.index',
             'uses' => 'MsftInvoicesController@index'
@@ -298,7 +300,7 @@ Route::group(['middleware' => 'auth'], function ()
 
         //Analytics Routes
         Route::get('/analytics', ['uses' => 'AnalyticController@index','as' => 'analytics.list']);
-        Route::get('/analytics/azurepricelist', ['uses' => 'AnalyticController@azurepricelist','as' => 'analytics.azurepricelist']);
+        Route::get('/analytics/azurepricelist/{instance}', ['uses' => 'AnalyticController@azurepricelist','as' => 'analytics.azurepricelist']);
         Route::get('/analytics/details/{customer}/{subscription}', ['uses' => 'AnalyticController@getAzuredetails','as' => 'analytics.details']);
         Route::get('/analytics/update/{customer}/{subscription}', ['uses' => 'AnalyticController@updateAZURE','as' => 'analytics.update']);
         Route::get('/analytics/export/{customer}/{subscription}', ['uses' => 'AnalyticController@export','as' => 'analytics.export']);

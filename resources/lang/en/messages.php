@@ -321,5 +321,9 @@ return [
     'edit_subscription' => 'edit subscription',
     'on' => 'on',
     'customer_relationship' => 'customer relationship',
+    'reseller_relationship' => 'reseller relationship',
+    'provider_relationship' => 'provider relationship',
     'main_contact' => 'main contact',
+    'license' => 'license'|'licenses',
+    'analytic_table' => 'analytic table',
 ];

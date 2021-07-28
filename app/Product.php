@@ -28,7 +28,6 @@ class Product extends Model
             'vendor' => $this->vendor,
             'instance_id' => $this->instance_id,
             'instance' => $this->instance->name,
-
             'id' => $this->id,
             'sku' => $this->sku,
             'name' => $this->name,
@@ -47,7 +46,6 @@ class Product extends Model
             'billing' => $this->billing,
             'acquisition_type' => $this->acquisition_type,
             'addons' => $this->addons,
-            // 'getproductaddons' => $this->getAddons(),
             'category' => $this->category,
             'upgrade_target_offers' => $this->upgrade_target_offers,
             'supported_billing_cycles' => $this->supported_billing_cycles,
@@ -61,6 +59,12 @@ class Product extends Model
 
     public function getAddons(){
         return $this->addons->map(function($item){
+            return unserialize($item);
+        });
+    }
+
+    public function getUpgradeProducts(){
+        return $this->upgrade_target_offers->map(function($item){
             return unserialize($item);
         });
     }

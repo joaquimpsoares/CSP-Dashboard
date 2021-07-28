@@ -9,4 +9,14 @@ class AzureUsageReport extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    public function prices()
+    {
+        return $this->hasOne('App\Models\AzurePriceList', 'resource_id', 'resource_id');
+    }
+
+    public function subscription()
+    {
+        return $this->hasOne('App\Subscription','id', 'subscription_id');
+    }
 }

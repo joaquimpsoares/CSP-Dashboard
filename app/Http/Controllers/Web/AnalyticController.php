@@ -2,21 +2,19 @@
 
 namespace App\Http\Controllers\web;
 
-ini_set('memory_limit', '1024M');
+ini_set('memory_limit', '4024M');
 ini_set('max_execution_time', 30000);
 
 
 
 use App\Customer;
 use App\Instance;
-use Carbon\Carbon;
 use App\Subscription;
-use App\AzureResource;
 use Illuminate\Support\Str;
+use App\Models\AzureResource;
 use App\Http\Traits\UserTrait;
 use App\Models\AzurePriceList;
 use App\Models\AzureUsageReport;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -362,10 +360,10 @@ class AnalyticController extends Controller
             $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
             $resource = AzurePriceList::updateOrCreate([
                 'resource_id'           => $resource->id,
-                'effectiveDate'         => $resource->effectiveDate,
             ], [
-                'name'                   => $resource->name,
                 'rates'                  => $resource->rates,
+                'effectiveDate'          => $resource->effectiveDate,
+                'name'                   => $resource->name,
                 'tags'                   => $resource->tags,
                 'category'               => $resource->category,
                 'subcategory'            => $resource->subcategory,
@@ -413,16 +411,23 @@ class AnalyticController extends Controller
             $page->items->each(function ($resource) use ($subscription) {
                 $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
 
-                $price = AzurePriceList::updateOrCreate(
-                    [
-                        'resource_id'   => $resource->resource->id,
-                    ],[
-                        'rates' => "[0]"
-                    ])->first('rates');
+                // $price = AzurePriceList::where('resource_id', $resource->resource->id)->first();
 
-                Log::info($resource->resource->id);
+                // if($price->rates == null){
+                //     $update = AzurePriceList::updateOrCreate([
+                //         'resource_id'   => $resource->resource->id
+                //     ],[
+                //         'rates' => [0]
+                //     ]);
+                //     Log::channel('azure')->info('didnt existed for this resource id '.$resource->resource->id. ' this price ' . $update  );
+                // }
 
+                $price = AzurePriceList::where('resource_id', $resource->resource->id)->first();
+                // dd(json_decode($price->rates[0]));
+                Log::channel('azure')->info('for this resource id '.$resource->resource->id. ' this price ' . $resource->prices  );
+                // dd($price->rates);
                 $cost = (json_encode($price->rates[0])*$resource->quantity);
+                Log::channel('azure')->info('for this resource id we calculated this much '.$cost);
 
                 $resource = AzureUsageReport::updateOrCreate([
                     'subscription_id'       => $subscription->id,
@@ -437,7 +442,6 @@ class AnalyticController extends Controller
                     'resource_region'       => $resource->resource->region,
                     'unit'                  => $resource->unit,
                     'name'                  => $resourceGroup[8] ?? null,
-
                     "resourceType"          => $resource->instanceData->additionalInfo->toArray()['resourceType'] ?? null,
                     "usageResourceKind"     => $resource->instanceData->additionalInfo->toArray()['usageResourceKind'] ?? null,
                     "dataCenter"            => $resource->instanceData->additionalInfo->toArray()['dataCenter'] ?? null,
@@ -445,14 +449,12 @@ class AnalyticController extends Controller
                     "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
                 ], [
                     'quantity'              => $resource->quantity,
-                    'cost'                  => (json_encode($price->rates[0])*$resource->quantity) ?? '0'
-
-
-                    ]);
-                    // Log::info(json_encode($resource));
-                    // Log::info(json_encode($price->rates[0])*$resource->quantity);
-                });
+                    'cost'                  => $cost ?? [0]
+                ]);
+                // Log::info(json_encode($resource));
+                // Log::info(json_encode($price->rates[0])*$resource->quantity);
             });
+        });
     }
 
     public function azurereport(Subscription $subscription)

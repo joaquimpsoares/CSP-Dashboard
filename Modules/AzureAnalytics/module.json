@@ -1,0 +1,13 @@
+{
+    "name": "AzureAnalytics",
+    "alias": "azureanalytics",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\AzureAnalytics\\Providers\\AzureAnalyticsServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

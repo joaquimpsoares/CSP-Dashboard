@@ -56,121 +56,75 @@ class SubscriptionController extends Controller
     public function index(Request $request)
     {
 
+        return view('subscriptions.index');
+    }
+
+    // public function card()
+    // {
     //     $subscriptions = [];
-    //     // $subscriptions = $this->subscriptionRepository->all();
-    //     $subscriptions = $this->subscriptionRepository->paginate($perPage = 10, $request->search, $request->customer);
-
     //     switch ($this->getUserLevel()) {
-
     //         case 'Provider':
     //             $provider = $this->getUser()->provider;
-    //             $subscriptions = $this->subscriptionRepository->paginateProvider($perPage = 10, $request->search, $request->customer, $provider);
-    //         break;
-    //         case 'Reseller':
-    //             $reseller = $this->getUser()->reseller;
-    //             $subscriptions = $this->listFromReseller($reseller)->paginate('10');
-    //         break;
-    //         case 'Customer':
-    //             $customer = $this->getUser()->customer;
-    //             $subscriptions = $this->listFromCustomer($customer)->paginate('10');
-    //         break;
+    //             $subscriptions = $this->listFromProvider($provider);
+    //             break;
+    //             case 'Reseller':
+    //                 $reseller = $this->getUser()->reseller;
+    //                 $subscriptions = $this->listFromReseller($reseller);
+    //             break;
+    //             case 'Customer':
+    //                 $customer = $this->getUser()->customer;
+    //                 $subscriptions = $this->listFromCustomer($customer);
+    //                 break;
 
-    //         default:
-    //         # code...
-    //     break;
+    //             default:
+    //             # code...
+    //             break;
+    //         }
+
+    //     return view('subscriptions.customer', compact('subscriptions'));
     // }
 
 
-    // return view('subscriptions.index', compact('subscriptions'));
-    return view('subscriptions.index');
-}
+    /**
+    * Display the specified resource.
+    *
+    * @param  \App\Subscription  $subscription
+    * @return \Illuminate\Http\Response
+    */
+    public function show(Subscription $subscription)
+    {
 
-public function card()
-{
-    $subscriptions = [];
-    switch ($this->getUserLevel()) {
-        case 'Provider':
-            $provider = $this->getUser()->provider;
-            $subscriptions = $this->listFromProvider($provider);
-        break;
-        case 'Reseller':
-            $reseller = $this->getUser()->reseller;
-            $subscriptions = $this->listFromReseller($reseller);
-        break;
-        case 'Customer':
-            $customer = $this->getUser()->customer;
-            $subscriptions = $this->listFromCustomer($customer);
-        break;
+        return view('subscriptions.show', compact('subscription'));
 
-        default:
-        # code...
-    break;
-}
-
-return view('subscriptions.customer', compact('subscriptions'));
-}
+    }
 
 
-
-/**
-* Display the specified resource.
-*
-* @param  \App\Subscription  $subscription
-* @return \Illuminate\Http\Response
-*/
-public function show(Subscription $subscription)
-{
-    $subscriptions = Subscription::findOrFail($subscription->id);
-    $usage = Product::where('sku', $subscriptions->product_id)->first();
-
-    $products = Product::where('sku', $subscriptions->product_id)->where('instance_id', $subscriptions->instance_id)->get();
-    switch ($usage->billing) {
-        case 'usage':
-            $subscriptions = Subscription::findOrFail($subscription->id);
-            return view('subscriptions.editazure', compact('subscriptions', 'products'));
-        break;
-        case 'license':
-            foreach ($products as $key => $product) {
-                $addons = $product->getaddons()->all();
-            }
-            return view('subscriptions.edit', compact('subscriptions', 'products', 'addons'));
-        break;
-
-        default:
-        # code...
-    break;
-}
+    /**
+    * Update the specified resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @param  \App\Subscription  $subscription
+    * @return \Illuminate\Http\Response
+    */
+    public function update(Request $request, Subscription $subscription)
+    {
+        $amount         = collect($request->amount)->diff(collect($subscription->amount));
+        $billing_period = collect($request->billing_period)->diff(collect($subscription->billing_period));
+        $status         = collect($request->status)->diff(collect($subscription->status_id));
 
 
-}
+        $order = $this->orderRepository->UpdateMSSubscription($subscription,$request);
+
+        $subscriptions = Subscription::findOrFail($subscription->id);
+        $instance = Instance::where('id', $subscription->instance_id)->first();
+
+        Log::info('Subscription: '.$subscriptions);
+        Log::info('Instance: '.$instance);
 
 
-/**
-* Update the specified resource in storage.
-*
-* @param  \Illuminate\Http\Request  $request
-* @param  \App\Subscription  $subscription
-* @return \Illuminate\Http\Response
-*/
-public function update(Request $request, Subscription $subscription)
-{
-    $amount         = collect($request->amount)->diff(collect($subscription->amount));
-    $billing_period = collect($request->billing_period)->diff(collect($subscription->billing_period));
-    $status         = collect($request->status)->diff(collect($subscription->status_id));
-
-
-    $order = $this->orderRepository->UpdateMSSubscription($subscription,$request);
-
-    $subscriptions = Subscription::findOrFail($subscription->id);
-    $instance = Instance::where('id', $subscription->instance_id)->first();
-
-    Log::info('Subscription: '.$subscriptions);
-    Log::info('Instance: '.$instance);
-
-
-    $this->validate($request, [
-        'amount' => 'required|integer',
-        ]);
+        $this->validate($request, [
+            'amount' => 'required|integer',
+            ]);
 
 
         $subscription = new TagydesSubscription([
@@ -273,37 +227,16 @@ public function update(Request $request, Subscription $subscription)
     }
 
 
+    /**
+    * Remove the specified resource from storage.
+    *
+    * @param  \App\Subscription  $subscription
+    * @return \Illuminate\Http\Response
+    */
+    public function destroy(Subscription $subscription)
+    {
+        //
+    }
 
 
-            /**
-            * Remove the specified resource from storage.
-            *
-            * @param  \App\Subscription  $subscription
-            * @return \Illuminate\Http\Response
-            */
-            public function destroy(Subscription $subscription)
-            {
-                //
-            }
-
-            public function listFromProvider(Provider $provider)
-            {
-                $subscriptions = $this->providerRepository->getSubscriptions($provider);
-
-                return $subscriptions;
-            }
-
-            public function listFromReseller(Reseller $reseller)
-            {
-                $subscriptions = $this->resellerRepository->getSubscriptions($reseller);
-
-                return $subscriptions;
-            }
-
-            public function listFromCustomer(Customer $customer)
-            {
-                $subscriptions = $this->customerRepository->getSubscriptions($customer);
-
-                return $subscriptions;
-            }
-        }
+}

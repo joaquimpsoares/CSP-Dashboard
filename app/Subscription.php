@@ -26,6 +26,10 @@ class Subscription extends Model
         return $this->belongsTo(Status::class);
     }
 
+    public function instance() {
+        return $this->belongsTo(Instance::class);
+    }
+
     public function addons() {
         return $this->hasMany('App\Models\Addon');
     }

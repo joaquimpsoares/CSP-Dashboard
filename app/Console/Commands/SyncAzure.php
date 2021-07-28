@@ -96,14 +96,19 @@ class SyncAzure extends Command
                     $resources->first()->items->each(function($resource) use($subscription){
                         $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
 
+
+                    if(!isset($resource->resource->id)){
                         $price = AzurePriceList::updateOrCreate(
-                            [
-                                'resource_id'   => $resource->resource->id
-                            ],
-                            [
-                                'rates' => [0]
-                            ]
-                            )->first('rates');
+                            ['resource_id'   => $resource->resource->id],
+                            ['rates' => [0]]);
+
+                        }
+                        // else{
+                        //     $price = AzurePriceList::where('resource_id', $resource->resource->id)->first('rates');
+                        // }
+
+
+                        Log::channel('azure')->info($resource->price);
 
                         Log::channel('azure')->info($resource->resource->id);
 

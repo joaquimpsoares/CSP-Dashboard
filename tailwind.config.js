@@ -964,6 +964,9 @@ module.exports = {
     width: ['responsive'],
     wordBreak: ['responsive'],
     zIndex: ['responsive', 'focus-within', 'focus'],
+    extend: {
+       rotate: ['active', 'group-hover'],
+      }
   },
   plugins: [
     require('@tailwindcss/forms'),
