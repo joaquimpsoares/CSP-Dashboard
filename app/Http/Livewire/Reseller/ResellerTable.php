@@ -158,14 +158,14 @@ class ResellerTable extends Component
         $user = $this->getUser();
         $country=Country::find($this->country_id);
         try {
-            $newCustomer = TagydesCustomer::withCredentials($user->provider->instances->first()->external_id, $user->provider->instances->first()->external_token)
-            ->checkAddress([
-                'AddressLine1'  => $this->address_1,
-                'City'          => $this->city,
-                'State'         => $this->state,
-                'PostalCode'    => $this->postal_code,
-                'Country'       => $country->iso_3166_2,
-            ]);
+            // $newCustomer = TagydesCustomer::withCredentials($user->provider->instances->first()->external_id, $user->provider->instances->first()->external_token)
+            // ->checkAddress([
+            //     'AddressLine1'  => $this->address_1,
+            //     'City'          => $this->city,
+            //     'State'         => $this->state,
+            //     'PostalCode'    => $this->postal_code,
+            //     'Country'       => $country->iso_3166_2,
+            // ]);
 
             $newReseller =  Reseller::create([
                 'company_name'  => $this->company_name,
