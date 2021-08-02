@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class PriceList extends Model
 {
-	protected $guarded = [];
-
     public function format()
     {
         return [
@@ -23,18 +21,18 @@ class PriceList extends Model
     }
 
     public function prices(){
-        return $this->hasMany('App\Price');
+        return $this->hasMany(Price::class);
     }
 
     public function provider() {
-		return $this->belongsTo('App\Provider', 'id', 'price_list_id');
+		return $this->belongsTo(Provider::class, 'id', 'price_list_id');
     }
 
     public function reseller() {
-		return $this->belongsTo('App\Reseller', 'id', 'price_list_id');
+		return $this->belongsTo(Reseller::class, 'id', 'price_list_id');
     }
 
     public function customer() {
-		return $this->belongsTo('App\Customer', 'id', 'price_list_id');
+		return $this->belongsTo(Customer::class, 'id', 'price_list_id');
     }
 }

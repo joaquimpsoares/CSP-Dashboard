@@ -9,19 +9,15 @@ use Webpatser\Countries\Countries;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use App\PriceList;
 
 class Provider extends Model
 {
-
     use ActivityTrait;
-
-    protected $guarded = [];
 
     protected $searchable = [
         'company_name',
-
     ];
-
 
     public function format()
     {
@@ -44,16 +40,16 @@ class Provider extends Model
             'path' => $this->path(),
             'mainUser' => $this->users()->first(),
             'instance' => $this->instances()->get(),
-
         ];
-
     }
 
-    public function resellers() {
-        return $this->hasMany('App\Reseller');
+    public function resellers()
+    {
+        return $this->hasMany(Reseller::class);
     }
 
-    public function getMyCustomersId() {
+    public function getMyCustomersId()
+    {
         $customers = [];
         $resellers = $this->resellers()->whereNull('main_office')->get(['id']);
         foreach ($resellers as $reseller) {
@@ -64,38 +60,51 @@ class Provider extends Model
         return $customers;
     }
 
-    public function path() {
+    public function path()
+    {
         return url("/provider/{$this->id}-" . Str::slug($this->company_name, '-'));
     }
 
-    public function country() {
+    public function country()
+    {
         return $this->belongsTo(Countries::class);
     }
 
-    public function status() {
+    public function status()
+    {
         return $this->belongsTo(Status::class);
     }
 
-    public function users() {
-        return $this->hasMany('App\User');
+    public function users()
+    {
+        return $this->hasMany(User::class);
     }
 
-    public function instances() {
-        return $this->hasMany('App\Instance');
+    public function instances()
+    {
+        return $this->hasMany(Instance::class);
     }
 
-    public function priceList() {
-        return $this->belongsTo('App\PriceList');
+    public function priceList()
+    {
+        return $this->belongsTo(PriceList::class);
     }
 
-    public function news() {
-        return $this->hasMany('App\News');
+    public function availablePriceLists()
+    {
+        return $this->hasMany(PriceList::class);
     }
 
-    protected static function booted(){
-        static::addGlobalScope('access_level', function(Builder $query){
+    public function news()
+    {
+        return $this->hasMany(News::class);
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope('access_level', function (Builder $query) {
             $user = Auth::user();
-            if($user && $user->userLevel->name === config('app.super_admin')){
+            if ($user && $user->userLevel->name === config('app.super_admin')) {
             }
         });
     }

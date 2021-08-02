@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class AzureUsageReport extends Model
 {
     use HasFactory;
-    protected $guarded = [];
 
     public function prices()
     {

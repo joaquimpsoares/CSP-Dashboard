@@ -8,11 +8,6 @@ use Illuminate\Database\Eloquent\Builder;;
 
 class Order extends Model
 {
-
-    // use ActivityTrait;
-
-    protected $guarded = [];
-
     public function format()
     {
         return [
@@ -26,59 +21,58 @@ class Order extends Model
             'status'        => $this->status,
             'orderproducts' => $this->orderproduct,
             'products'      => $this->products,
-
         ];
     }
 
     public function orderproduct()
     {
-        return $this->belongsTo('App\OrderProducts', 'id', 'order_id');
+        return $this->belongsTo(OrderProducts::class, 'id', 'order_id');
     }
 
     public function status()
     {
-        return $this->hasOne('App\OrderStatus', 'id', 'order_status_id');
+        return $this->hasOne(OrderStatus::class, 'id', 'order_status_id');
     }
 
     public function products()
     {
-        return $this->belongsToMany('App\Product')->withPivot('id', 'quantity', 'price', 'retail_price', 'billing_cycle');
+        return $this->belongsToMany(Product::class)->withPivot('id', 'quantity', 'price', 'retail_price', 'billing_cycle');
     }
 
     public function customer()
     {
-        return $this->belongsTo('App\Customer');
+        return $this->belongsTo(Customer::class);
     }
 
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(User::class);
     }
 
-    protected static function booted(){
-        static::addGlobalScope('access_level', function(Builder $query){
+    protected static function booted()
+    {
+        static::addGlobalScope('access_level', function (Builder $query) {
             $user = Auth::user();
-            if($user && $user->userLevel->name === config('app.provider')){
-                $query->whereHas('customer', function(Builder $query) use($user){
-                    $query->whereHas('resellers', function(Builder $query) use($user){
-                        $query->whereHas('provider', function(Builder $query) use($user){
+            if ($user && $user->userLevel->name === config('app.provider')) {
+                $query->whereHas('customer', function (Builder $query) use ($user) {
+                    $query->whereHas('resellers', function (Builder $query) use ($user) {
+                        $query->whereHas('provider', function (Builder $query) use ($user) {
                             $query->where('id', $user->provider->id);
                         });
                     });
                 });
             }
-            if($user && $user->userLevel->name === config('app.reseller')){
-                $query->whereHas('customer', function(Builder $query) use($user){
-                    $query->whereHas('resellers', function(Builder $query) use($user){
+            if ($user && $user->userLevel->name === config('app.reseller')) {
+                $query->whereHas('customer', function (Builder $query) use ($user) {
+                    $query->whereHas('resellers', function (Builder $query) use ($user) {
                     });
                 });
             }
-            if($user && $user->userLevel->name === config('app.customer')){
-                $query->whereHas('customer', function(Builder $query) use($user){
+            if ($user && $user->userLevel->name === config('app.customer')) {
+                $query->whereHas('customer', function (Builder $query) use ($user) {
                     $query->where('customer_id', $user->customer->id);
                 });
             }
         });
     }
 }
-

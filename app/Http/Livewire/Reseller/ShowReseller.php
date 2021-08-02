@@ -38,7 +38,7 @@ class ShowReseller extends Component
             'editing.status_id'             => ['required', 'exists:statuses,id'],
             'editing.markup'                => ['nullable', 'integer', 'min:3'],
             'editing.mpnid'                 => ['nullable', 'integer', 'min:3'],
-
+            'editing.price_list_id' => ['integer', 'exists:price_lists,id']
         ];
     }
 
@@ -73,14 +73,14 @@ class ShowReseller extends Component
         $validatedData = $this->validate();
 
         try {
-            $newCustomer = TagydesCustomer::withCredentials($reseller->provider->instances->first()->external_id, $reseller->provider->instances->first()->external_token)
-            ->checkAddress([
-                'AddressLine1'  => $this->editing->address_1,
-                'City'          => $this->editing->city,
-                'State'         => $this->editing->state,
-                'PostalCode'    => $this->editing->postal_code,
-                'Country'       => $this->editing->country->iso_3166_2,
-            ]);
+            // $newCustomer = TagydesCustomer::withCredentials($reseller->provider->instances->first()->external_id, $reseller->provider->instances->first()->external_token)
+            // ->checkAddress([
+            //     'AddressLine1'  => $this->editing->address_1,
+            //     'City'          => $this->editing->city,
+            //     'State'         => $this->editing->state,
+            //     'PostalCode'    => $this->editing->postal_code,
+            //     'Country'       => $this->editing->country->iso_3166_2,
+            // ]);
 
             // if($newCustomer->status === 'NotValidated'){
             //     $this->showEditModal = false;
