@@ -74,7 +74,7 @@ class SyncAzure extends Command
                     'firstName' => 'Nombre',
                     'lastName' => 'Apellido',
                     'email' => 'bill@tagydes.com',
-                    ]);
+                ]);
 
                 $subscriptions = new TagydesSubscription([
                     'id'            => $subscription->subscription_id,
@@ -87,7 +87,7 @@ class SyncAzure extends Command
                     'currency'      => "EUR",
                     'billingCycle'  => "monthly",
                     'created_at'    => "5trvfvczdfv",
-                    ]);
+                ]);
 
                 $resources = FacadesAzureResource::withCredentials($instance->external_id,$instance->external_token)
                 ->utilizations($customer, $subscriptions);
@@ -96,13 +96,21 @@ class SyncAzure extends Command
                     $resources->first()->items->each(function($resource) use($subscription){
                         $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
 
-                        $price = AzurePriceList::updateOrCreate(
-                            [
-                                'resource_id'   => $resource->resource->id,
-                                'rates' => [0]
-                            ])->first('rates');
 
-                            Log::channel('azure')->info($resource->resource->id);
+                    if(!isset($resource->resource->id)){
+                        $price = AzurePriceList::updateOrCreate(
+                            ['resource_id'   => $resource->resource->id],
+                            ['rates' => [0]]);
+
+                        }
+                        // else{
+                        //     $price = AzurePriceList::where('resource_id', $resource->resource->id)->first('rates');
+                        // }
+
+
+                        Log::channel('azure')->info($resource->price);
+
+                        Log::channel('azure')->info($resource->resource->id);
 
                         $resource = AzureUsageReport::updateOrCreate([
                             'subscription_id'       => $subscription->id,
@@ -127,15 +135,14 @@ class SyncAzure extends Command
                         ], [
                             'quantity'              => $resource->quantity,
                             'cost'                  => (json_encode($price->rates[0])*$resource->quantity),
-                            ]);
-                            Log::channel('azure')->info(json_encode($resource));
-                            // Log::info(json_encode($price->rates[0])*$resource->quantity);
+                        ]);
+                        Log::channel('azure')->info(json_encode($resource));
+                        // Log::info(json_encode($price->rates[0])*$resource->quantity);
                     });
                 }
                 catch (\Exception $e) {
                     Log::channel('azure')->info($e->getMessage());
                     Mail::raw($e, function ($mail) use($e) {
-                        $mail->from('digamber@positronx.com');
                         $mail->to('joaquim.soares@tagydes.com')
                         ->subject('Azure Sync Failed');
                     });

@@ -8,7 +8,8 @@
                         <th scope="col" class="relative px-2 py-2"><input type="checkbox" /></th>
                         @endif
                         @foreach($columns as $column => $link)
-                        <th sortable scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase @if(!in_array($column, $mobileColumns)) hidden lg:table-cell @endif">{{ Str::title(trans_choice('messages.'.$column, 1)) }}</th>
+                        {{-- @dd($column) --}}
+                        <th sortable wire:click="sortBy({{$column}})" :direction="$sortField === '{{$column}}' ? $sortDirection : null" scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase @if(!in_array($column, $mobileColumns)) hidden lg:table-cell @endif">{{ Str::title(trans_choice('messages.'.$column, 1)) }}</th>
                         @endforeach
                         <th scope="col" class="relative px-2 py-2"><span class="sr-only">{{ ucwords(trans_choice('messages.action', 1)) }}</span></th>
                     </tr>
@@ -64,7 +65,7 @@
             </table>
         </div>
     </div>
-    <div class="mt-4  card-footer">
+    <div class="mt-4 card-footer">
         {{ $list->links() }}
     </div>
 </div>

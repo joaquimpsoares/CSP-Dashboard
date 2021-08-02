@@ -32,15 +32,6 @@
                                 {{ ucwords(trans_choice('messages.export', 1)) }}
                             </a>
                         </div>
-
-                        <div>
-                            <a  href="{{ route('customer.create') }}" class="px-2 py-2 ml-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-                                </svg>
-                                {{ ucwords(trans_choice('messages.create', 1)) }}
-                            </a>
-                        </div>
                     </div>
                 </div>
                 <table class="min-w-full divide-y divide-gray-200">

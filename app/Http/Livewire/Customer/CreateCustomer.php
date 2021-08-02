@@ -113,9 +113,9 @@ class CreateCustomer extends Component
             }
         }
 
-
-        session()->flash('success','Customer ' . $this->company_name . ' created successfully');
+        // session()->flash('success','Customer ' . $this->company_name . ' created successfully');
         return redirect()->to('/customer');
+        $this->notify('Customer ' . $this->company_name . ' created successfully');
 
             $this->messageText  = 'Product ' . $this->company_name . ' is saved';
 

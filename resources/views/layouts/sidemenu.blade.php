@@ -29,7 +29,7 @@
                                 @endif
                             </a>
                         </div>
-                        <div x-data="{ open: false }"   @keydown.escape.stop="open = false; focusButton()" @click.away="onClickAway($event)" class="relative inline-block px-3 mt-6 text-left">
+                        <div x-data="{ open: false }"   @keydown.escape.stop="open = false; focusButton()"class="relative inline-block px-3 mt-6 text-left">
                             <button type="button" class="group w-full  rounded-md px-3.5 py-2 text-sm text-left font-smalltext-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"  x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-2" @click="open = !open" aria-expanded="false" x-bind:aria-expanded="open.toString()" x-state-description="Current:"bg-gray-100 text-gray-900", Default:"bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900"">
                                 <span class="flex items-center justify-between w-full">
                                     <span class="flex items-center justify-between min-w-0 space-x-3">
@@ -210,7 +210,7 @@
                                     @endif
                                 </a>
                             </div>
-                            <div x-data="{ open: false }"   @keydown.escape.stop="open = false; focusButton()" @click.away="onClickAway($event)" class="relative inline-block px-3 mt-6 text-left">
+                            <div x-data="{ open: false }"   @keydown.escape.stop="open = false; focusButton()" class="relative inline-block px-3 mt-6 text-left">
                                 <button type="button" class="group w-full  rounded-md px-3.5 py-2 text-sm text-left font-smalltext-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"  x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-2" @click="open = !open" aria-expanded="false" x-bind:aria-expanded="open.toString()" x-state-description="Current:"bg-gray-100 text-gray-900", Default:"bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900"">
                                     <span class="flex items-center justify-between w-full">
                                         <span class="flex items-center justify-between min-w-0 space-x-3">
@@ -378,7 +378,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
                             </svg>
                         </button>
-                        <div x-data="{ cartOpen: false , isOpen: false }" @keydown.escape.stop="cartOpen = false; focusButton()" @click.away="onClickAway($event)" class="flex justify-between flex-1 px-4">
+                        <div x-data="{ cartOpen: false , isOpen: false }" @keydown.escape.stop="cartOpen = false; focusButton()" class="flex justify-between flex-1 px-4">
                             <div class="flex flex-1">
                                 @if (app('impersonate')->isImpersonating())
                                 <div class="px-4 py-4 md:max-w-6xl md:mx-auto">
@@ -399,7 +399,6 @@
                                     </div>
                                 </div>
                                 @endif
-
                             </div>
                             <div class="flex items-center ml-4 lg:ml-6">
                                 <x-database-notifications/>
@@ -415,7 +414,15 @@
                                         <div x-description="Background overlay, show/hide based on slide-over state." class="absolute inset-0" @click="cartOpen = !cartOpen" aria-hidden="true">
                                         </div>
                                         <div class="fixed inset-y-0 right-0 flex pl-0 sm:pl-16">
-                                            <div x-show="open" x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transform transition ease-in-out duration-500 sm:duration-700" x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full" class="w-screen max-w-2xl" x-description="Slide-over panel, show/hide based on slide-over state.">
+                                            <div x-show="open"
+                                            x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700"
+                                            x-transition:enter-start="translate-x-full"
+                                            x-transition:enter-end="translate-x-0"
+                                            x-transition:leave="transform transition ease-in-out duration-500 sm:duration-700"
+                                            x-transition:leave-start="translate-x-0"
+                                            x-transition:leave-end="translate-x-full"
+                                            class="w-screen max-w-2xl"
+                                            x-description="Slide-over panel, show/hide based on slide-over state.">
                                                 <div class="flex flex-col h-full py-6 overflow-y-scroll bg-white shadow-xl">
                                                     <div class="px-4 sm:px-6">
                                                         <div class="flex items-start justify-between">

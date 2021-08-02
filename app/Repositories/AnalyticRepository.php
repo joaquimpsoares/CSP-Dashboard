@@ -7,7 +7,7 @@ use App\Instance;
 use App\Reseller;
 use Carbon\Carbon;
 use App\Subscription;
-use App\AzureResource;
+use App\Models\AzureResource;
 use App\Http\Traits\UserTrait;
 use App\Repositories\AnalyticRepositoryInterface;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;

@@ -1,5 +1,5 @@
 <div>
-    <div x-data="{ slideOpen: false , isOpen: false }" @keydown.escape.stop="slideOpen = false; focusButton()" @click.away="onClickAway($event)" class="flex justify-between flex-1 px-4">
+    <div x-data="{ slideOpen: false , isOpen: false }" @keydown.escape.stop="slideOpen = false; focusButton()" class="flex justify-between flex-1 px-4">
         <div class="flex flex-1">
         </div>
         <div class="z-50 flex items-center ml-4 lg:ml-6">

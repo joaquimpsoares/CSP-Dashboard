@@ -24,8 +24,9 @@ class SubscriptionTable extends Component
     public $search = '';
     public $quantity = '';
     public $addons = '';
+    public $showDeleteModal = false;
     public $showFilters = false;
-
+    public $selected = [];
     public $filters = [
         'search' => '',
         'status' => '',
@@ -105,6 +106,17 @@ class SubscriptionTable extends Component
         return Excel::download(new SubscriptionsExport, 'Subscriptions.xlsx');
     }
 
+    public function deleteSelected()
+    {
+        // $deleteCount = $this->selectedRowsQuery->count();
+
+        // $this->selectedRowsQuery->delete();
+
+        $this->showDeleteModal = false;
+
+        $this->notify('You\'ve deleted  transactions');
+    }
+
     private function createOrderFromCart($cart)
     {
 
@@ -144,7 +156,6 @@ class SubscriptionTable extends Component
                 });
 
             })->paginate(10);
-
 
         // $subscriptions->getCollection()->map(function(Subscription $subscription){
         //     $subscription->setRawAttributes(json_decode(json_encode($subscription->format()), true)); // Coverts to array recursively (make helper from it?)

@@ -86,6 +86,7 @@ class EditUser extends Component
 
         $this->validate([
             'name'              => ['sometimes', 'string', 'max:255', 'min:3'],
+            'email'              => ['sometimes', 'string', 'max:255', 'min:3'],
             'status_id'         => ['sometimes', 'integer', 'exists:statuses,id'],
             'country_id'        => ['sometimes', 'integer', 'exists:countries,id'],
             'last_name'         => ['sometimes', 'string', 'max:255', 'min:3'],
@@ -98,6 +99,7 @@ class EditUser extends Component
 
         try {
             $this->user->name             = $this->name;
+            $this->user->email             = $this->email;
             $this->user->status_id        = $this->status_id;
             $this->user->city             = $this->city;
             $this->user->country_id       = $this->country_id;
