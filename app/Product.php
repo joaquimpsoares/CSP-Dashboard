@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Product extends Model
 {
-    protected $guarded = [];
-
     protected $casts = [
         'has_addons' => 'boolean',
         'addons' => 'collection',
@@ -66,11 +64,11 @@ class Product extends Model
     }
 
     public function price() {
-        return $this->hasOne('App\Price', 'product_id', 'id');
+        return $this->hasOne(Price::class, 'product_id', 'id');
     }
 
     public function instance() {
-        return $this->hasOne('App\Instance', 'id', 'instance_id');
+        return $this->hasOne(Instance::class, 'id', 'instance_id');
     }
 
     public function path() {
@@ -78,11 +76,11 @@ class Product extends Model
     }
 
     public function subsriptions() {
-        return $this->hasMany('App\Subscription', 'sku', 'product_id');
+        return $this->hasMany(Subscription::class, 'sku', 'product_id');
     }
 
     public function tiers() {
-        return $this->hasMany('App\Tier', 'product_sku', 'sku');
+        return $this->hasMany(Tier::class, 'product_sku', 'sku');
     }
 
     public function metafields(){

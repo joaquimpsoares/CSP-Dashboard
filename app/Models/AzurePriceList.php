@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class AzurePriceList extends Model
 {
     use HasFactory;
-    protected $guarded = [];
 
     protected $casts = [
         'rates' => 'array'

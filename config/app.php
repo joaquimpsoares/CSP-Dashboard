@@ -163,7 +163,6 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         SocialiteProviders\Manager\ServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
-        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -190,11 +189,9 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         Webpatser\Countries\CountriesServiceProvider::class,
         Lab404\Impersonate\ImpersonateServiceProvider::class,
-        //Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         // NotificationChannels\MsTeams\MsTeamsChannel::class,
         \SocialiteProviders\Manager\ServiceProvider::class,
         Kordy\Ticketit\TicketitServiceProvider::class,
-
     ],
 
     /*
@@ -209,7 +206,6 @@ return [
     */
 
     'aliases' => [
-
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
@@ -251,8 +247,6 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'SchedulerKernel' => MatviiB\Scheduler\SchedulerServiceProvider::class,
         'LogActivity' => App\Helpers\LogActivity::class,
-        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
-        'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
     ],
 
     'super_admin' => env('SUPER_ADMIN_LEVEL'),

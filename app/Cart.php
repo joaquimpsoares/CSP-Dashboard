@@ -8,36 +8,29 @@ use Illuminate\Support\Str;
 
 class Cart extends Model
 {
-	use UserTrait;
+    use UserTrait;
 
-	protected $fillables = [
-		'customer_id', 'domain', 'user_id', 'token', 'verify', 'verified', 'agreement_firstname', 'agreement_lastname', 'agreement_email', 'agreement_phone', 'comments'
-	];
+    public function __construct($user_id = null)
+    {
+        if (empty($this->user_id))
+            $this->user()->associate($this->getUser());
 
+        if (empty($this->token))
+            $this->token = Str::uuid();
+    }
 
-	public function __construct($user_id = null)
-	{
-		if (empty($this->user_id))
-			$this->user()->associate($this->getUser());
+    public function products()
+    {
+        return $this->belongsToMany(Product::class)->withPivot('id', 'quantity', 'price', 'retail_price', 'billing_cycle');
+    }
 
-		if (empty($this->token))
-			$this->token = Str::uuid();
-	}
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
 
-	public function products()
-	{
-		return $this->belongsToMany('App\Product')->withPivot('id', 'quantity', 'price', 'retail_price', 'billing_cycle');
-	}
-
-	public function customer()
-	{
-		return $this->belongsTo('App\Customer');
-	}
-
-	public function user()
-	{
-		return $this->belongsTo('App\User');
-	}
-
-
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

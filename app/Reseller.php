@@ -14,10 +14,6 @@ class Reseller extends Model
 {
     use ActivityTrait;
 
-    protected $guards = [];
-
-    protected $guarded = [];
-
     public function format()
     {
         return [
@@ -40,49 +36,57 @@ class Reseller extends Model
             'mainUser' => $this->users()->first(),
             'users' => $this->users(),
         ];
-
     }
 
-    public function country() {
+    public function country()
+    {
         return $this->belongsTo(Countries::class, 'country_id');
     }
 
-    public function users() {
+    public function users()
+    {
         return $this->hasMany(User::class);
     }
 
-    public function provider() {
-        return $this->belongsTo('App\Provider');
+    public function provider()
+    {
+        return $this->belongsTo(Provider::class);
     }
 
-    public function customers() {
-        return $this->belongsToMany('App\Customer');
+    public function customers()
+    {
+        return $this->belongsToMany(Customer::class);
     }
 
-    public function path() {
+    public function path()
+    {
         return url("/reseller/{$this->id}-" . Str::slug($this->company_name, '-'));
     }
 
-    public function subResellers() {
-        return $this->hasMany('App\Reseller', 'main_office');
+    public function priceList()
+    {
+        return $this->belongsTo(PriceList::class);
     }
 
-    public function priceList() {
-        return $this->belongsTo('App\PriceList');
-    }
-
-    public function status() {
+    public function status()
+    {
         return $this->belongsTo(Status::class);
     }
 
-    public function news() {
-        return $this->hasMany('App\News');
+    public function news()
+    {
+        return $this->hasMany(News::class);
     }
 
-    protected static function booted(){
-        static::addGlobalScope('access_level', function(Builder $query){
+    public function subResellers() {
+        return $this->hasMany(Reseller::class, 'main_office');
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope('access_level', function (Builder $query) {
             $user = Auth::user();
-            if($user && $user->userLevel->name === config('app.provider')){
+            if ($user && $user->userLevel->name === config('app.provider')) {
                 $query->where('provider_id', $user->provider->id);
             }
         });

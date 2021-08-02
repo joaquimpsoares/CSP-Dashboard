@@ -19,7 +19,6 @@
     ],
     "require": {
         "php": "^7.2.5",
-        "algolia/algoliasearch-client-php": "2.2",
         "barryvdh/laravel-debugbar": "^3.5",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
@@ -30,7 +29,6 @@
         "laravel/framework": "^8.0",
         "laravel/helpers": "^1.2",
         "laravel/sanctum": "^2.11",
-        "laravel/scout": "^8.6",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.1",
         "league/fractal": "^0.19.2",
@@ -48,7 +46,6 @@
         "tagydes/kaspersky-connection": "dev-master",
         "tagydes/microsoft-connection": "dev-master",
         "tanmuhittin/laravel-google-translate": "^2.0",
-        "tymon/jwt-auth": "^1.0",
         "webpatser/laravel-countries": "^1.5",
         "yajra/laravel-datatables": "^1.5"
     },

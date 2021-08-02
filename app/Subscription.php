@@ -2,15 +2,13 @@
 
 namespace App;
 
-use App\Http\Traits\ActivityTrait;
+use App\Models\Addon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
 class Subscription extends Model
 {
-    //use ActivityTrait;
-
     const STATUSES = [
         '1' => 'Active',
         '2' => 'Inactive',
@@ -19,31 +17,28 @@ class Subscription extends Model
         '5' => 'pending',
     ];
 
-
-    protected $guarded = [];
-
     public function status() {
         return $this->belongsTo(Status::class);
     }
 
     public function addons() {
-        return $this->hasMany('App\Models\Addon');
+        return $this->hasMany(Addon::class);
     }
 
     public function customer() {
-        return $this->belongsTo('App\Customer');
+        return $this->belongsTo(Customer::class);
     }
 
     public function order() {
-        return $this->hasMany('App\Order', 'subscription_id', 'id');
+        return $this->hasMany(Order::class, 'subscription_id', 'id');
     }
 
     public function products() {
-        return $this->hasMany('App\Product', 'sku', 'product_id');
+        return $this->hasMany(Product::class, 'sku', 'product_id');
     }
 
     public function azureresources() {
-        return $this->belongsToMany('App\Models\AzureResource');
+        return $this->belongsToMany(AzureResource::class);
     }
 
     protected static function booted(){
@@ -73,5 +68,4 @@ class Subscription extends Model
             }
         });
     }
-
 }

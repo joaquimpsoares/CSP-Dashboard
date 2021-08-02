@@ -12,6 +12,6 @@ class Country extends Model
 
     public function resellers()
     {
-    	return $this->belongsTo('Tagydes\Reseller', 'country');
+    	return $this->belongsTo(Reseller::class, 'country');
     }
 }

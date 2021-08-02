@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Instance extends Model
 {
-    protected $guarded = [];
-
     protected $dates = [
         'created_at',
         'updated_at',
@@ -16,12 +14,11 @@ class Instance extends Model
 
     public function provider()
     {
-    	return $this->belongsTo('App\Provider');
+        return $this->belongsTo(Provider::class);
     }
 
     public function products()
     {
-        return $this->hasMany('App\Product');
+        return $this->hasMany(Product::class);
     }
-
 }

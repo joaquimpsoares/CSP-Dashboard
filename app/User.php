@@ -5,59 +5,27 @@ namespace App;
 use Soved\Laravel\Gdpr\Portable;
 use Laravel\Sanctum\HasApiTokens;
 use Webpatser\Countries\Countries;
-use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Builder;
 use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Soved\Laravel\Gdpr\Contracts\Portable as PortableContract;
 
-class User extends Authenticatable implements  JWTSubject, PortableContract
+class User extends Authenticatable implements PortableContract
 {
-
     use Notifiable;
     use HasRoles;
     use Impersonate;
     use Portable;
     use HasApiTokens;
 
+    protected $gdprWith = ['orders', 'customer', 'reseller', 'provider'];
+    protected $gdprHidden = ['password', 'markup'];
 
-
-    /**
-     * The attributes that should be visible in the downloadable data.
-     *
-     * @var array
-     */
-    // protected $gdprVisible = ['email','name', 'address_1', ];
-
-
-    protected $gdprWith = ['orders', 'customer','reseller','provider'];
-
-    protected $gdprHidden = ['password','markup'];
-
-     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = [];
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password', 'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
@@ -65,98 +33,55 @@ class User extends Authenticatable implements  JWTSubject, PortableContract
     public function format()
     {
         return [
-            'id'            => $this->id,
-            'name'          => $this->name,
-            'last_name'     => $this->last_name,
-            'phone'         => $this->phone,
-            'email'         => $this->email,
-            'country'       => $this->country,
-            'provider'      => $this->provider,
-            'reseller'      => $this->reseller,
-            'customer'      => $this->customer,
+            'id' => $this->id,
+            'name' => $this->name,
+            'last_name' => $this->last_name,
+            'phone' => $this->phone,
+            'email' => $this->email,
+            'country' => $this->country,
+            'provider' => $this->provider,
+            'reseller' => $this->reseller,
+            'customer' => $this->customer,
         ];
     }
 
     public function country()
     {
-    	return $this->belongsTo(Countries::class);
+        return $this->belongsTo(Countries::class);
     }
 
-    public function provider() {
-        return $this->belongsTo('App\Provider');
+    public function provider()
+    {
+        return $this->belongsTo(Provider::class);
     }
 
-    public function reseller() {
-         return $this->belongsTo('App\Reseller');
+    public function reseller()
+    {
+        return $this->belongsTo(Reseller::class);
     }
 
-    public function customer() {
-        return $this->belongsTo('App\Customer');
-   }
-
-    public function userLevel() {
-        return $this->belongsTo('App\UserLevel');
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 
-    public function orders() {
-        return $this->hasMany('App\Order');
+    public function userLevel()
+    {
+        return $this->belongsTo(UserLevel::class);
     }
 
-    // public function notifications() {
-    //     return $this->hasMany('App\NotificationSettings');
-    // }
-
-    public function status() {
-        return $this->belongsTo('App\Status');
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 
-   /**
-    * Get the identifier that will be stored in the subject claim of the JWT.
-    *
-    * @return mixed
-    */
-    public function getJWTIdentifier() {
-        return $this->getKey();
+    public function status()
+    {
+        return $this->belongsTo(Status::class);
     }
 
-    /**
-    * Return a key value array, containing any custom claims to be added to the JWT.
-    *
-    * @return array
-    */
-    public function getJWTCustomClaims() {
-        return [];
+    public function news()
+    {
+        return $this->hasMany(News::class);
     }
-
-    public function news() {
-        return $this->hasMany('App\News');
-    }
-
-
-    // protected static function booted(){
-    //     $user = Auth::user();
-    //     static::addGlobalScope('access_level', function(Builder $query) use($user){
-    //         if($user && $user->userLevel->name === config('app.provider')){
-    //             $query->whereHas('customer', function(Builder $query) use($user){
-    //                 $query->whereHas('resellers', function(Builder $query) use($user){
-    //                     $query->whereHas('provider', function(Builder $query) use($user){
-    //                         $query->where('id', $user->provider->id);
-    //                     });
-    //                 });
-    //             });
-    //         }
-    //         if($user && $user->userLevel->name === config('app.reseller')){
-    //             $query->whereHas('customer', function(Builder $query) use($user){
-    //                 $query->whereHas('resellers', function(Builder $query) use($user){
-    //                     $query->where('id', $user->reseller->id);
-    //                 });
-    //             });
-    //         }
-    //         if($user && $user->userLevel->name === config('app.customer')){
-    //             $query->whereHas('customer', function(Builder $query) use($user){
-    //                     $query->where('id', $user->customer->id);
-    //             });
-    //         }
-    //     });
-    // }
 }
