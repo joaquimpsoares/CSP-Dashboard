@@ -68,6 +68,11 @@ class Reseller extends Model
         return $this->belongsTo(PriceList::class);
     }
 
+    public function availablePriceLists()
+    {
+        return $this->hasMany(PriceList::class);
+    }
+
     public function status()
     {
         return $this->belongsTo(Status::class);

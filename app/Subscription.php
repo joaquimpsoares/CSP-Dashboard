@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\Addon;
+use App\Models\AzureResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;

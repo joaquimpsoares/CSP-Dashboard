@@ -9,6 +9,7 @@ use Webpatser\Countries\Countries;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use App\PriceList;
 
 class Provider extends Model
 {
@@ -87,6 +88,11 @@ class Provider extends Model
     public function priceList()
     {
         return $this->belongsTo(PriceList::class);
+    }
+
+    public function availablePriceLists()
+    {
+        return $this->hasMany(PriceList::class);
     }
 
     public function news()
