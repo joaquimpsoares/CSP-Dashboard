@@ -33,6 +33,10 @@ class Price extends Model
         return $this->belongsTo(Product::class)->where('vendor', $this->product_vendor)->where('instance_id', session()->get('instance_id'));
     }
 
+    public function related_product(){
+        return $this->belongsTo(Product::class, 'product_id');
+    }
+
     public function tiers()
     {
         return $this->belongsToMany(Tier::class);
