@@ -99,33 +99,35 @@ class Store extends Component
 
         switch ($user->userLevel->name) {
             case 'Reseller':
-                $priceList = $user->reseller->priceList;
+                $priceList = $user->reseller->price_list_id;
                 break;
 
             case 'Customer':
-                $priceList = $user->customer->resellers->first()->priceList;
+                $priceList = $user->customer->price_list_id;
                 break;
 
             default:
                 return abort(403, __('errors.access_with_resellers_credentials'));
         }
 
-        $products = Product::whereHas('price', function(Builder $query)use($priceList){
-            $query->where('price_list_id', $priceList->id);
-        })->where(function(Builder $query){
-            if(! $this->vendor) return;
-            $query->where('vendor', $this->vendor);
-        })->where(function(Builder $query){
-            if(! $this->category) return;
-            $query->where('category', $this->category);
-        })->where(function (Builder $query)  {
-            $query->where('name', "LIKE", "%{$this->search}%");
-            $query->orWhere('sku', 'LIKE', "%{$this->search}%");
-        })->where(function (Builder $query) use($priceList) {
-        })->paginate(12);
+        $prices = Price::with('related_product')->where('price_list_id', $priceList)
+            ->whereHas('related_product', function(Builder $query){
+                if($this->vendor){
+                    $query->where('vendor', $this->vendor);
+                }
+
+                if($this->category){
+                    $query->where('category', $this->category);
+                }
+
+                $query->where(function(Builder $query){
+                    $query->where('name', "LIKE", "%{$this->search}%");
+                    $query->orWhere('sku', 'LIKE', "%{$this->search}%");
+                });
+            })->paginate(12);
 
          return view('livewire.store.store', [
-            'products' => $products,
+            'prices' => $prices,
             'vendors' => Product::pluck('vendor')->unique(),
             'categories' => Product::pluck('category')->unique(),
         ]);

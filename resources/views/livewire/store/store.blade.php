@@ -38,9 +38,9 @@
                                     </div>
                                 </div>
                                 <ul  class="grid max-w-lg gap-5 mx-auto mt-12 lg:grid-cols-4 lg:max-w-none">
-                                    @forelse($products as $product)
+                                    @forelse($prices as $price)
                                     <div class="flex flex-col overflow-hidden rounded-lg shadow-lg">
-                                        <button  wire:click="showDetails({{ $product->id }})" class="focus:outline-none">
+                                        <button  wire:click="showDetails({{ $price->related_product->id }})" class="focus:outline-none">
                                             <figure  class="px-4">
                                                 <img src="https://cdn.worldvectorlogo.com/logos/microsoft.svg" alt="" class="h-64 ml-auto mr-auto" />
                                             </figure>
@@ -49,10 +49,10 @@
                                             <div class="flex flex-col p-4 bg-blue-500 rounded-lg opacity-90">
                                                 <div>
                                                     <h5 class="font-bold leading-none text-white md:text-xl">
-                                                        {{ $product->name }}
+                                                        {{ $price->related_product->name }}
                                                     </h5>
                                                     <div class="inline-flex flex-1 pt-2 items-justify ">
-                                                        <span class="leading-none text-justify text-gray-100 md:text-xs">{{ str_limit($product->description, 250) }}</span>
+                                                        <span class="leading-none text-justify text-gray-100 md:text-xs">{{ str_limit($price->related_product->description, 250) }}</span>
                                                     </div>
                                                 </div>
                                                 <div class="flex items-center flex-1 pt-6">
@@ -61,18 +61,18 @@
                                                         <div class="text-sm font-bold text-white">
                                                             Reseller
                                                             <p class="inline text-sm font-normal text-white">
-                                                                {{ $product->price->price }}
+                                                                {{ $price->price }}
                                                             </p>
                                                         </div>
                                                         @endif
                                                         <div class="text-sm font-bold text-white">
                                                             Price
                                                             <p class="inline text-sm font-normal text-white">
-                                                                {{ $product->price->msrp }}
+                                                                {{ $price->msrp }}
                                                             </p>
                                                         </div>
                                                     </div>
-                                                    <button  wire:click="addToCart({{ $product->id }})" class="flex inline p-2 ml-auto text-white transition duration-300 bg-gray-800 rounded-full hover:bg-gray-500 hover:text-purple-900 hover:shadow-xl focus:outline-none">
+                                                    <button  wire:click="addToCart({{ $price->related_product->id }})" class="flex inline p-2 ml-auto text-white transition duration-300 bg-gray-800 rounded-full hover:bg-gray-500 hover:text-purple-900 hover:shadow-xl focus:outline-none">
                                                         <svg class="w-4 h-4" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                                                     </button>
                                                 </div>
@@ -85,7 +85,7 @@
                                     @endforelse
                                 </ul>
                                 <div class="flex justify-center mt-4">
-                                    {!! $products->links() !!}
+                                    {!! $prices->links() !!}
                                 </div>
                             </div>
                         </div>

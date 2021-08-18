@@ -65,15 +65,15 @@ class PriceListController extends Controller
 
                 $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku', $prices->pluck('product_sku'))->get();
 
-            break;
+                break;
 
             case config('app.provider'):
 
                 $provider = $user->provider;
                 $prices = $priceList->prices;
-                $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
+                $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku', $prices->pluck('product_sku'))->get();
 
-            break;
+                break;
 
             case config('app.reseller'):
 
@@ -81,12 +81,12 @@ class PriceListController extends Controller
 
 
                 $prices = $priceList->prices;
-                $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku',$prices->pluck('product_sku'))->get();
+                $products = Product::where('instance_id', $priceList->instance_id)->whereNotIn('sku', $prices->pluck('product_sku'))->get();
 
-            break;
+                break;
         }
 
-        return view('priceList.prices', compact('prices','priceList', 'products'));
+        return view('priceList.prices', compact('prices', 'priceList', 'products'));
     }
 
     public function update(Request $request, $priceList)
@@ -99,98 +99,99 @@ class PriceListController extends Controller
             'name' => $request['name'],
             'description' => $request['description'],
 
-            ]);
+        ]);
 
-            return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.pricelist_updated_successfully')]);
+        return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.pricelist_updated_successfully')]);
+    }
+
+    public function storePriceList(Request $request)
+    {
+        $priceList = $this->getUser()->reseller->priceList;
+
+        $newPriceList = PriceList::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'instance_id' => $request->instance_id,
+        ]);
+
+        $priceList->prices->each(function(Price $price)use($newPriceList){
+            $attributes = $price->getAttributes();
+            unset($attributes['id']);
+            $newPriceList->prices()->create($attributes);
+        });
+
+        return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.pricelist_created_successfully')]);
+    }
+
+    public function import(Request $request)
+    {
+        $data = Excel::import(new PricesImport, request()->file('select_file'), $request->instance_id);
+
+        return back()->withInput(['tab' => 'contact-md']);
+    }
+
+    // public function store(Request $request)
+    // {
+    //     $pricelist = PriceList::find($request->priceList);
+
+
+    //     $product = Product::where('sku', $request->sku)->where('instance_id', $pricelist->instance_id)->first();
+
+
+    //     $validatedData = $request->validate([
+    //         'sku' => 'required|max:255',
+    //         'price' => 'required',
+    //         'msrp' => 'required|numeric',
+    //         'product_vendor' => 'required',
+    //         'currency' => 'required',
+    //         ]);
+
+
+    //         $price = new Price();
+    //         $price->product_sku     = $validatedData['sku'];
+    //         $price->name            = $product->name;
+    //         $price->price           = $validatedData['price'];
+    //         $price->msrp            = $validatedData['msrp'];
+    //         $price->product_vendor  = $validatedData['product_vendor'];
+    //         $price->currency        = $validatedData['currency'];
+    //         $price->instance_id     = $pricelist->instance_id;
+    //         $price->price_list_id   = $request->price_list_id;
+
+
+    //         // $price->product()->associate($validatedData['sku']);
+
+    //         $price->pricelist()->associate($pricelist);
+
+    //         $price->save();
+
+    //         return back()->with('success', 'Excel Data Imported successfully');
+
+    //     }
+
+
+    public function clone($id)
+    {
+
+
+        $pricelist = PriceList::find($id);
+
+        $newClient = $pricelist->replicate();
+        $newClient->push(); //Push before to get id of $clone
+
+        foreach ($pricelist->prices as $price) {
+            $newClient->prices()->attach($price);
         }
 
-        public function storePriceList(Request $request)
-        {
-            // $priceList = PriceList::find($request->id);
+        // $newpricelist = $pricelist->replicate();
+        // // $newpricelist->id = $new_id;
+        // // $newpricelist->data = $new_data;
+        $newClient->save();
+
+        return view('priceList.index', compact('prices'));
+    }
 
 
-            $updatepriceList = PriceList::create([
-                'name' => $request->name,
-                'description' => $request->description,
-                'instance_id' => $request->instance,
-                ]);
-
-
-                return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.pricelist_updated_successfully')]);
-            }
-
-            public function import(Request $request)
-            {
-                $data = Excel::import(new PricesImport, request()->file('select_file'), $request->instance_id);
-
-                return back()->withInput(['tab'=>'contact-md']);
-
-            }
-
-            // public function store(Request $request)
-            // {
-            //     $pricelist = PriceList::find($request->priceList);
-
-
-            //     $product = Product::where('sku', $request->sku)->where('instance_id', $pricelist->instance_id)->first();
-
-
-            //     $validatedData = $request->validate([
-            //         'sku' => 'required|max:255',
-            //         'price' => 'required',
-            //         'msrp' => 'required|numeric',
-            //         'product_vendor' => 'required',
-            //         'currency' => 'required',
-            //         ]);
-
-
-            //         $price = new Price();
-            //         $price->product_sku     = $validatedData['sku'];
-            //         $price->name            = $product->name;
-            //         $price->price           = $validatedData['price'];
-            //         $price->msrp            = $validatedData['msrp'];
-            //         $price->product_vendor  = $validatedData['product_vendor'];
-            //         $price->currency        = $validatedData['currency'];
-            //         $price->instance_id     = $pricelist->instance_id;
-            //         $price->price_list_id   = $request->price_list_id;
-
-
-            //         // $price->product()->associate($validatedData['sku']);
-
-            //         $price->pricelist()->associate($pricelist);
-
-            //         $price->save();
-
-            //         return back()->with('success', 'Excel Data Imported successfully');
-
-            //     }
-
-
-                public function clone($id)
-                {
-
-
-                    $pricelist = PriceList::find($id);
-
-                    $newClient = $pricelist->replicate();
-                    $newClient->push(); //Push before to get id of $clone
-
-                    foreach($pricelist->prices as $price)
-                    {
-                        $newClient->prices()->attach($price);
-
-                    }
-
-                    // $newpricelist = $pricelist->replicate();
-                    // // $newpricelist->id = $new_id;
-                    // // $newpricelist->data = $new_data;
-                    $newClient->save();
-
-                    return view('priceList.index', compact('prices'));
-                }
-
-
-                /*public function getResellerPriceList(Request $request, Reseller $reseller)
+    /*public function getResellerPriceList(Request $request, Reseller $reseller)
                 {
                     $userLevel = $this->getUserLevel();
 
@@ -201,4 +202,4 @@ class PriceListController extends Controller
                     $userLevel = $this->getUserLevel();
 
                 }*/
-            }
+}

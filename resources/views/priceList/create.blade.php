@@ -24,19 +24,21 @@
                             <div class="row">
                                 <div class="mb-4 col-md-6">
                                     <label for="name"  class="">{{ ucwords(trans_choice('messages.name', 1)) }}</label>
-                                    <input type="text" disabled id="name" name="name" class="form-control" value="{{old('name')}}">
+                                    <input type="text" id="name" name="name" class="form-control">
                                 </div>
                                 <div class="mb-2 col-md-6">
                                     <label for="description">{{ ucwords(trans_choice('messages.description', 1)) }}</label>
-                                    <input type="text" disabled id="description" name="description" class="form-control" value="{{old('name')}}">
+                                    <input type="text" id="description" name="description" class="form-control">
                                 </div>
-                                <div class="form-group">
-                                    <label for="my-select">Text</label>
-                                    <select id="my-select" class="custom-select" name="">
-                                        @foreach (Auth::User()->provider->instances as $item)
-                                        <option>{{$item}}</option>
-                                        @endforeach
-                                    </select>
+                                <div class="mb-2 col-md-6">
+                                    <div class="form-group">
+                                        <label for="instance">Instance</label>
+                                        <select id="instance" class="custom-select" name="instance_id">
+                                            @foreach(Auth::User()->provider->instances as $item)
+                                                <option value="{{ $item->id }}">{{$item->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             @else
@@ -63,11 +65,8 @@
                     </div>
                 </div>
                 <div class="mb-4 col-lg-4">
+                    <a data-toggle="modal" data-target="#centralModalInfo" class="btn btn-primary text-white">{{ ucwords(trans_choice('messages.create', 1)) }}</a>
                     <div class="text-center text-md-left">
-                        @if (Auth::user()->userLevel->name == 'Reseller')
-                        @else
-                        <a data-toggle="modal" data-target="#centralModalInfo" class="btn btn-primary">{{ ucwords(trans_choice('messages.create', 1)) }}</a>
-                        @endif
                         <div class="modal fade" id="centralModalInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"aria-hidden="true" data-backdrop="false">
                             <div class="modal-dialog modal-notify modal-info" role="document">
                                 <div class="modal-content">
