@@ -107,7 +107,7 @@ class HomeController extends Controller
                         $invoicedata['data'][] = (int) $row->total;
                     }
                 }
-                if($orderlabel['label']){
+                if($invoicelabel['label']){
                   $invoicelabel = $invoicelabel['label'];
                   $invoicedata  = $invoicedata['data'];
                 }
@@ -125,6 +125,7 @@ class HomeController extends Controller
                     $customerlabel['label'][] = json_encode($row->day_name);
                     $customerdata['data'][] = (int) $row->count;
                   }
+
                   if($customerlabel['label']) {
                       $customerlabel = $customerlabel['label'];
                       $customerdata  = $customerdata['data'];
