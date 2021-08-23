@@ -33,6 +33,8 @@ class News extends Model
                 $query->whereHas('reseller', function (Builder $query) use ($user) {
                     $query->where('reseller_id', $user->reseller->id);
                     $query->where('provider_id' , $user->reseller->provider->id);
+                    $query->orwhere('provider_id' , null);
+                    $query->orwhere('reseller_id' , null);
                 });
                     // $query->where('reseller_id', $user->reseller->id);
                     // $query->where('reseller', true);

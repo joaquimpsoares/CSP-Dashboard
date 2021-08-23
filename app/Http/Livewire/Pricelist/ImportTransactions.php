@@ -83,7 +83,6 @@ class ImportTransactions extends Component
     public function extractFieldsFromRow($row)
     {
         $product = Product::where('sku', $row['Offer ID'])->where('instance_id', $this->priceList->instance_id)->pluck('id')->first();
-        dd($product);
 
         $attributes = collect($this->fieldColumnMap)
         ->filter()

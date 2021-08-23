@@ -25,7 +25,6 @@
                 <div class="form-group">
                     <x-label for="my-select">{{ ucwords(trans_choice('messages.language', 1)) }}</x-label>
                     <select name="locale" class="form-control @error('locale') is-invalid @enderror" sf-validate="required">
-                        {{-- <option value="{{ $edit && $user->status->id ? $user->status->id : ''}}" selected>{{$user->locale}}</option> --}}
                         <option value="es">Español</option>
                         <option value="fr">Français</option>
                         <option value="en">English</option>
