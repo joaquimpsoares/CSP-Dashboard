@@ -107,10 +107,10 @@ class HomeController extends Controller
                         $invoicedata['data'][] = (int) $row->total;
                     }
                 }
-
+                if($orderlabel){
                   $invoicelabel = $invoicelabel['label'];
                   $invoicedata  = $invoicedata['data'];
-
+                }
                   foreach($orderrecord as $row) {
                     $orderlabel['label'][] = json_encode($row->day_name);
                     $orderdata['data'][] = (int) $row->count;
