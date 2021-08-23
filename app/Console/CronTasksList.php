@@ -22,5 +22,6 @@ trait CronTasksList
         $schedule->command('SyncAzureBudget:daily')->dailyAt('20:00');
         $schedule->command('command:checkSubscriptionExpiration')->monthly();
         $schedule->command('command:RenewSubscriptions')->dailyAt('20:00');
+        $schedule->command('command:SyncMSFTInvoices')->monthly('4', '10:00');
     }
 }

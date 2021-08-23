@@ -21,54 +21,27 @@ class MsftInvoicesController extends Controller
     */
     public function index()
     {
-            // try {
-            //     Instance::eachById(function (Instance $instance) {
-            //         // $instance = Instance::where('id','2')->first();
-            //         $invoices = MicrosoftInvoice::withCredentials($instance->external_id, $instance->external_token)->all();
-            //         // dd($invoices);
-            //         $invoices->each(function ($invoices) use ($instance) {
-            //             $product = MsftInvoices::updateOrCreate([
-            //                 'invoice_id'                => $invoices->invoice_id,
-            //             ], [
-            //                 'provider_id'               => $instance->provider_id,
-            //                 'instance_id'               => $instance->id,
-            //                 'invoiceDate'               => $invoices->invoiceDate,
-            //                 'billingPeriodStartDate'    => $invoices->billingPeriodStartDate,
-            //                 'billingPeriodEndDate'      => $invoices->billingPeriodEndDate,
-            //                 'totalCharges'              => $invoices->totalCharges,
-            //                 'paidAmount'                => $invoices->paidAmount,
-            //                 'currencyCode'              => $invoices->currencyCode,
-            //                 'currencySymbol'            => $invoices->currencySymbol,
-            //                 'pdfDownloadLink'           => $invoices->pdfDownloadLink,
-            //                 'invoiceDetails'            => $invoices->invoiceLineItemType,
-            //                 ]);
-            //             });
-            //         });
 
-            //     } catch (Exception $e) {
-            //         echo ('Error importing products: ' . $e->getMessage());
-            // }
+        $invoices = MsftInvoices::paginate(10);
 
-                $invoices = MsftInvoices::paginate(10);
+        $sales = MsftInvoices::
+        select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
+        ->whereyear('invoiceDate', Carbon::today()->year)
+        ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
+        ->orderBy('invoiceDate', 'asc')
+        ->get();
 
-                $sales = MsftInvoices::
-                select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
-                ->whereyear('invoiceDate', Carbon::today()->year)
-                ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
-                ->orderBy('invoiceDate', 'asc')
-                ->get();
+        foreach($sales as $row) {
+            $invoicelabel['label'][] = json_encode($row->date);
+            $invoicedata['data'][] = (int) $row->total;
+        }
 
-                 foreach($sales as $row) {
-                    $invoicelabel['label'][] = json_encode($row->date);
-                    $invoicedata['data'][] = (int) $row->total;
-                  }
+        $invoicelabel = json_encode($invoicelabel['label']);
+        $invoicedata  = json_encode($invoicedata['data']);
 
-                  $invoicelabel = json_encode($invoicelabel['label']);
-                  $invoicedata  = json_encode($invoicedata['data']);
+        return view('msft/index', compact('invoices','invoicelabel','invoicedata'));
 
-                  return view('msft/index', compact('invoices','invoicelabel','invoicedata'));
-
-            }
+    }
 
     public function downloadInvoice($invoice)
     {
