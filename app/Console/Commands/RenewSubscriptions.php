@@ -55,7 +55,7 @@ class RenewSubscriptions extends Command
                     ]);
                     // Notification::send($user, new SubscriptionAboutToExpire($subscription, $interval->format('%R%a')));
                     // $user->update(['notified' => true]);
-                    Log::debug($user->email.' notified');
+                    Log::debug($subscription->name.' has renewed');
                 }
             }
         }
