@@ -85,10 +85,7 @@ class HomeController extends Controller
                 ->orderBy('month')
                 ->get();
 
-
-
-
-                  $customerrecord = Customer::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
+                $customerrecord = Customer::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
                 ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
                 ->groupBy('day_name','month')
                 ->orderBy('month')
@@ -102,35 +99,32 @@ class HomeController extends Controller
                 ->get();
 
                 if($sales){
-                    foreach($sales as $row) {
-                        $invoicelabel['label'][] = json_encode($row->date);
-                        $invoicedata['data'][] = (int) $row->total;
-                    }
-                }
-                if($invoicelabel['label']){
+
+
+                foreach($sales as $row) {
+                    $invoicelabel['label'][] = json_encode($row->date);
+                    $invoicedata['data'][] = (int) $row->total;
+                  }
+
                   $invoicelabel = $invoicelabel['label'];
                   $invoicedata  = $invoicedata['data'];
-                }
+
                   foreach($orderrecord as $row) {
                     $orderlabel['label'][] = json_encode($row->day_name);
                     $orderdata['data'][] = (int) $row->count;
                   }
 
-                  if($orderlabel['label']){
-                      $orderlabel = $orderlabel['label'];
-                      $orderdata  = $orderdata['data'];
-                    }
+                 $orderlabel = $orderlabel['label'];
+                 $orderdata  = $orderdata['data'];
 
                  foreach($customerrecord as $row) {
                     $customerlabel['label'][] = json_encode($row->day_name);
                     $customerdata['data'][] = (int) $row->count;
                   }
 
-                  if($customerlabel['label']) {
-                      $customerlabel = $customerlabel['label'];
-                      $customerdata  = $customerdata['data'];
-                    }
-
+                  $customerlabel = $customerlabel['label'];
+                  $customerdata  = $customerdata['data'];
+                }
                 return view('home', compact('orders','providers','resellers','customers','subscriptions','news',
                     'orderdata','orderlabel','customerlabel','customerdata','invoicelabel','invoicedata'));
 
