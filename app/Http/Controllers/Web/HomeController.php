@@ -101,10 +101,12 @@ class HomeController extends Controller
                 ->orderBy('invoiceDate', 'asc')
                 ->get();
 
-                foreach($sales as $row) {
-                    $invoicelabel['label'][] = json_encode($row->date);
-                    $invoicedata['data'][] = (int) $row->total;
-                  }
+                if($sales){
+                    foreach($sales as $row) {
+                        $invoicelabel['label'][] = json_encode($row->date);
+                        $invoicedata['data'][] = (int) $row->total;
+                    }
+                }
 
                   $invoicelabel = $invoicelabel['label'];
                   $invoicedata  = $invoicedata['data'];
