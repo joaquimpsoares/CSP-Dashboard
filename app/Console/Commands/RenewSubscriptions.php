@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Subscription;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 
 class RenewSubscriptions extends Command
@@ -59,5 +60,10 @@ class RenewSubscriptions extends Command
                 }
             }
         }
+        Mail::raw("Just finished renewing subscriptions", function ($mail)  {
+            $mail->to('joaquim.soares@tagydes.com')
+            ->subject('Monthly renewing customers subscription that have expired');
+        });
+        $this->info('Successfully sent daily quote to everyone.');
     }
 }

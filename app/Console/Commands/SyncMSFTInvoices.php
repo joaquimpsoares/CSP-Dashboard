@@ -6,6 +6,7 @@ use Exception;
 use App\Instance;
 use App\Models\MsftInvoices;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Mail;
 use Tagydes\MicrosoftConnection\Facades\MSFTInvoice as MicrosoftInvoice;
 
 
@@ -61,7 +62,7 @@ class SyncMSFTInvoices extends Command
                         'pdfDownloadLink'           => $invoices->pdfDownloadLink,
                         'invoiceDetails'            => $invoices->invoiceLineItemType,
                     ]);
-                dd($invoices);
+
 
                 });
             });
@@ -71,5 +72,10 @@ class SyncMSFTInvoices extends Command
             echo ('Error importing products: ' . $e->getMessage());
 
         }
+        Mail::raw("Just finished msft invoices Syncronization", function ($mail)  {
+            $mail->to('joaquim.soares@tagydes.com')
+            ->subject('Monthly import MSFT Invoices');
+        });
+        $this->info('Successfully sent daily quote to everyone.');
     }
 }

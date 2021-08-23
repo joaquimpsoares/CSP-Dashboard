@@ -6,6 +6,7 @@ use DateTime;
 use App\Subscription;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\SubscriptionAboutToExpire;
 
@@ -55,6 +56,11 @@ class CheckSubscriptionsExpiration extends Command
                 }
             }
         }
+        Mail::raw("Just finished Checking for subscriptions to send alert", function ($mail)  {
+            $mail->to('joaquim.soares@tagydes.com')
+            ->subject('Monthly notify customers subscription about to expire');
+        });
+        $this->info('Successfully sent daily quote to everyone.');
     }
 }
 
