@@ -116,8 +116,10 @@ class HomeController extends Controller
                     $orderdata['data'][] = (int) $row->count;
                   }
 
-                 $orderlabel = $orderlabel['label'];
-                 $orderdata  = $orderdata['data'];
+                  if($orderlabel){
+                      $orderlabel = $orderlabel['label'];
+                      $orderdata  = $orderdata['data'];
+                    }
 
                  foreach($customerrecord as $row) {
                     $customerlabel['label'][] = json_encode($row->day_name);
