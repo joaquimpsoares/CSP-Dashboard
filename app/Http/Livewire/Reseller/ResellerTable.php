@@ -4,10 +4,10 @@ namespace App\Http\Livewire\Reseller;
 
 use App\Role;
 use App\User;
-use App\Status;
 use App\Country;
 use App\Reseller;
 use App\Countryrules;
+use App\Models\Status;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Traits\UserTrait;
@@ -19,180 +19,139 @@ use Maatwebsite\Excel\Facades\Excel;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Livewire\DataTable\WithSorting;
+use App\Http\Livewire\DataTable\WithCachedRows;
+use App\Http\Livewire\DataTable\WithBulkActions;
+use App\Http\Livewire\DataTable\WithPerPagePagination;
 use Tagydes\MicrosoftConnection\Facades\Customer as TagydesCustomer;
 
 
 class ResellerTable extends Component
 {
     use WithPagination;
+    use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows;
     use UserTrait;
 
     public $search = '';
     // public $statuses;
     // public $countries;
-    public Reseller $creating;
-    public $showEditModal = false;
-
-    public $company_name;
-    public $nif;
-    public $messageText = '';
-    public $country_id;
-    public $address_1;
-    public $address_2;
-    public $city;
-    public $state;
-    public $postal_code;
-    public $mpnid;
-    public $status;
-    public $name;
-    public $last_name;
-    public $socialite_id;
-    public $phone;
-    public $address;
-    public $email;
-    public $sendInvitation;
     public $password;
     public $password_confirmation;
-    public $markup;
+    public $showEditModal = false;
+    public $showCreateUser = false;
 
-    protected $rules = [
-        'company_name'          => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-        'nif'                   => ['required', 'min:3'],
-        'country_id'            => ['required', 'integer', 'min:1'],
-        'address_1'             => ['required', 'string', 'max:255', 'min:3'],
-        'address_2'             => ['nullable', 'string', 'max:255', 'min:3'],
-        'city'                  => ['required', 'string', 'max:255', 'min:3'],
-        'state'                 => ['required', 'string', 'max:255', 'min:3'],
-        'postal_code'           => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255', 'min:3'],
-        'status'                => ['required', 'integer', 'exists:statuses,id'],
-        'name'                  => ['sometimes', 'string', 'max:255', 'min:3'],
-        'last_name'             => ['sometimes', 'string', 'max:255', 'min:3'],
-        'socialite_id'          => ['sometimes', 'string', 'max:255', 'min:3'],
-        'phone'                 => ['sometimes', 'string', 'max:20', 'min:3'],
-        'address'               => ['sometimes', 'string', 'max:255', 'min:3'],
-        'email'                 => ['nullable', 'email','unique:users', 'max:255', 'min:3'],
-        'markup'                => ['nullable', 'integer', 'min:3'],
-        'mpnid'                 => ['sometimes', 'integer', 'min:3'],
-        'sendInvitation'        => ['nullable', 'integer'],
-        'password'              => ['same:password_confirmation','required', 'min:6'],
+    public Reseller $editing;
+    public User $creatingUser;
+    public $filters = [
+        'search' => '',
+        'name' => null,
+        'description' => null,
     ];
 
-    public function updated($propertyName)
+
+    public function mount()
     {
-        $this->validateOnly($propertyName);
+        $this->editing      = $this->makeBlankTransaction();
+        $this->creatingUser = $this->makeBlankTransactionUser();
+    }
+
+    public function rules()
+    {
+        return [
+            'editing.company_name'          => 'required'|'string'|'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/'|'max:255',
+            'editing.nif'                   => 'required'|'min:3',
+            'editing.country_id'            => 'required'|'integer'|'min:1',
+            'editing.address_1'             => 'required'|'string'|'max:255'|'min:3',
+            'editing.address_2'             => 'nullable'|'string'|'max:255'|'min:3',
+            'editing.city'                  => 'required'|'string'|'max:255'|'min:3',
+            'editing.state'                 => 'required'|'string'|'max:255'|'min:3',
+            'editing.postal_code'           => 'required'|'string'|'regex:/^[0-9A-Za-z.\-]+$/'|'max:255'|'min:3',
+            'editing.status_id'             => 'required'|'integer'|'exists:statuses,id',
+            'editing.markup'                => 'nullable'|'integer'|'min:3',
+            'editing.mpnid'                 => 'sometimes'|'integer'|'min:3',
+
+            'creatingUser.name'             => 'sometimes'|'string'|'max:255'|'min:3',
+            'creatingUser.last_name'        => 'sometimes'|'string'|'max:255'|'min:3',
+            'creatingUser.socialite_id'     => 'sometimes'|'string'|'max:255'|'min:3',
+            'creatingUser.phone'            => 'sometimes'|'string'|'max:20'|'min:3',
+            'creatingUser.address'          => 'sometimes'|'string'|'max:255'|'min:3',
+            'creatingUser.email'            => 'nullable'|'email','unique:users'|'max:255'|'min:3',
+            'creatingUser.status_id'        => 'required'|'integer'|'exists:statuses,id',
+            'password'                      => 'same:password_confirmation'|'required'|'min:6',
+            // 'creatingUser.password_confirmation'          => 'same:creatingUser.password'|'required'|'min:6',
+            //required', new checkPostalCodeRule(!isset($this->country_id) ?? $country->iso_3166_2),'min:3'],
+            //'postal_code'           => ['requir
+        ];
+    }
+
+    public function makeBlankTransaction()
+    {
+        return Reseller::make(['date' => now(), 'status' => 'success']);
+    }
+    public function makeBlankTransactionUser()
+    {
+        return User::make(['date' => now(), 'status' => 'success']);
+    }
+
+    public function edit(Reseller $reseller)
+    {
+        $this->showCreateUser = false;
+        $this->showEditModal = true;
+        $this->useCachedRows();
+
+        if ($this->editing->isNot($reseller)) $this->editing = $reseller;
+        $this->editing = $reseller;
     }
 
 
-    // public function rules()
-    // {
-    //     $country=Country::find($this->country_id);
 
-    //     if (isset($this->country_id)) {
-
-    //         $reg = Countryrules::where('iso2code', $country->iso_3166_2)->first();
-    //         if(isset($reg->isPostalCodeRequired)){
-    //             if($reg->isPostalCodeRequired == true){
-    //                 return [
-    //                     'company_name'          => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-    //                     'nif'                   => ['required', 'min:3'],
-    //                     'country_id'            => ['required', 'integer', 'min:1'],
-    //                     'address_1'             => ['required', 'string', 'max:255', 'min:3'],
-    //                     'address_2'             => ['nullable', 'string', 'max:255', 'min:3'],
-    //                     'city'                  => ['required', 'string', 'max:255', 'min:3'],
-    //                     'state'                 => ['required', 'string', 'max:255', 'min:3'],
-    //                     'postal_code'           => ['required', new checkPostalCodeRule(!isset($this->country_id) ?? $country->iso_3166_2),'min:3'],
-    //                     'status'                => ['required', 'integer', 'exists:statuses,id'],
-    //                     'name'                  => ['sometimes', 'string', 'max:255', 'min:3'],
-    //                     'last_name'             => ['sometimes', 'string', 'max:255', 'min:3'],
-    //                     'socialite_id'          => ['sometimes', 'string', 'max:255', 'min:3'],
-    //                     'phone'                 => ['sometimes', 'string', 'max:20', 'min:3'],
-    //                     'address'               => ['sometimes', 'string', 'max:255', 'min:3'],
-    //                     'email'                 => ['nullable', 'email','unique:users', 'max:255', 'min:3'],
-    //                     'markup'                => ['nullable', 'integer', 'min:3'],
-    //                     'mpnid'                 => ['sometimes', 'integer', 'min:3'],
-    //                     'sendInvitation'        => ['nullable', 'integer'],
-    //                     'password'              => ['same:password_confirmation','required', 'min:6'],
-    //                 ];
-    //             }else{
-    //                 return [
-    //                     'company_name'          => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-    //                     'nif'                   => ['required', 'min:3'],
-    //                     'country_id'            => ['required', 'integer', 'min:1'],
-    //                     'address_1'             => ['required', 'string', 'max:255', 'min:3'],
-    //                     'address_2'             => ['nullable', 'string', 'max:255', 'min:3'],
-    //                     'city'                  => ['required', 'string', 'max:255', 'min:3'],
-    //                     'state'                 => ['required', 'string', 'max:255', 'min:3'],
-    //                     'postal_code'           => ['required', 'string', 'max:255', 'min:3'],
-    //                     'status'                => ['required', 'integer', 'exists:statuses,id'],
-    //                     'name'                  => ['sometimes', 'string', 'max:255', 'min:3'],
-    //                     'last_name'             => ['sometimes', 'string', 'max:255', 'min:3'],
-    //                     'socialite_id'          => ['sometimes', 'string', 'max:255', 'min:3'],
-    //                     'phone'                 => ['sometimes', 'string', 'max:20', 'min:3'],
-    //                     'address'               => ['sometimes', 'string', 'max:255', 'min:3'],
-    //                     'email'                 => ['nullable', 'email','unique:users', 'max:255', 'min:3'],
-    //                     'markup'                => ['nullable', 'integer', 'min:3'],
-    //                     'mpnid'                 => ['sometimes', 'integer', 'min:3'],
-    //                     'sendInvitation'        => ['nullable', 'integer'],
-    //                     'password'              => ['same:password_confirmation','required', 'min:6'],
-    //                     // 'postal_code'           => ['required', new checkPostalCodeRule(!isset($this->country_id) ?? $country->iso_3166_2),'min:3'],
-    //                     // 'postal_code'           => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255', 'min:3'],
-    //                 ];
-    //             }
-    //         }
-    //     }
-
-    // }
-
-
-
-    public function create(Reseller $reseller)
+    public function create()
     {
-        $this->creating = $reseller;
+        if ($this->editing->getKey()) $this->editing = $this->makeBlankTransaction();
+        $this->creatingUser = $this->makeBlankTransactionUser();
+
         $this->showEditModal = true;
+        $this->showCreateUser = true;
     }
 
     public function save()
     {
-        // $this->validate();
+        $this->editing->save();
+        $this->showEditModal = false;
+    }
 
+    public function savecreate()
+    {
         $user = $this->getUser();
-        $country=Country::find($this->country_id);
+
         try {
-            // $newCustomer = TagydesCustomer::withCredentials($user->provider->instances->first()->external_id, $user->provider->instances->first()->external_token)
-            // ->checkAddress([
-            //     'AddressLine1'  => $this->address_1,
-            //     'City'          => $this->city,
-            //     'State'         => $this->state,
-            //     'PostalCode'    => $this->postal_code,
-            //     'Country'       => $country->iso_3166_2,
-            // ]);
 
             $newReseller =  Reseller::create([
-                'company_name'  => $this->company_name,
-                'nif'           => $this->nif,
-                'country_id'    => $this->country_id,
-                'address_1'     => $this->address_1,
-                'address_2'     => $this->address_2,
-                'city'          => $this->city,
-                'state'         => $this->state,
-                'postal_code'   => $this->postal_code,
-                'status_id'     => $this->status,
-                'mpnid'         => $this->mpnid,
+                'company_name'  => $this->editing->company_name,
+                'nif'           => $this->editing->nif,
+                'country_id'    => $this->editing->country_id,
+                'address_1'     => $this->editing->address_1,
+                'address_2'     => $this->editing->address_2,
+                'city'          => $this->editing->city,
+                'state'         => $this->editing->state,
+                'postal_code'   => $this->editing->postal_code,
+                'status_id'     => 1,
+                'mpnid'         => $this->editing->mpnid,
                 'provider_id'   => $user->provider->id,
                 'price_list_id' => $user->provider->priceList->id,
             ]);
 
             $user = User::create ([
-                'email'             => $this->email,
-                'name'              => $this->name,
-                'last_name'         => $this->last_name,
-                'address'           => $this->address,
-                'phone'             => $this->phone,
-                'country_id'        => $this->country_id,
+                'email'             => $this->creatingUser->email,
+                'name'              => $this->creatingUser->name,
+                'last_name'         => $this->creatingUser->last_name,
+                'address'           => $this->creatingUser->address,
+                'phone'             => $this->creatingUser->phone,
+                'country_id'        => $this->creatingUser->country_id,
                 'password'          => Hash::make($this->password),
                 'user_level_id'     => 4, //reseller role id = 4
-                'notify'            => $this->sendInvitation ?? false,
-                'status_id'         => $this->status,
+                // 'notify'            => $this->sendInvitation ?? false,
+                'status_id'         => $this->creatingUser->status_id,
                 'reseller_id'       => $newReseller->id,
             ]);
 
@@ -200,60 +159,66 @@ class ResellerTable extends Component
 
         } catch (ClientException $e) {
 
-            dd($e->getMessage());
-            // if ($e->errorInfo[1] == 1062) {
-                //     $e = "errors.user_already_exists";
-                // } else {
-                    $this->showEditModal = false;
-                    // notify()->error('Welcome to Laravel Notify ⚡️');
-                    $this->notify('Customer ' . $e->getMessage() . ' created successfully');
-                    Log::info('Error saving reseller: '.$e->getMessage());
-                    // }
-                }
+            $this->showEditModal = false;
 
-
-                $this->notify('success','Reseller ' . $this->company_name . ' created successfully');
-                return redirect()->to('/reseller');
-
-
-            }
-
-            public function updatingSearch()
-            {
-                $this->resetPage();
-            }
-
-            public function exportSelected()
-            {
-                return Excel::download(new ResellersExport, 'resellers.xlsx');
-            }
-
-            public function render()
-            {
-                $search = $this->search;
-                $query = Reseller::query();
-                $resellers = $query
-                ->where(function ($q)  {
-                    $q->where('company_name', "like", "%{$this->search}%");
-                    $q->orWhere('id', 'like', "%{$this->search}%");
-                    $q->orWhere('mpnid', 'like', "%{$this->search}%");
-                    $q->orwhereHas('provider', function(Builder $q){
-                        $q->where('company_name', 'like', "%{$this->search}%");
-                    });
-                    $q->orwhereHas('country', function(Builder $q){
-                        $q->where('name', 'like', "%{$this->search}%");
-                    });
-                })->
-                with(['country', 'customers', 'status'])->paginate(10);
-
-                $resellers->getCollection()->map(function(Reseller $reseller){
-                    $reseller->setRawAttributes(json_decode(json_encode($reseller->format()), true)); // Coverts to array recursively (make helper from it?)
-                    return $reseller;
-                });
-
-                $countries  = Country::pluck( 'name','id');
-                $roles      = Role::pluck( 'name','id');
-                $statuses   = Status::pluck( 'name','id');
-                return view('livewire.reseller.reseller-table', compact('resellers','countries', 'statuses','roles'));
-            }
+            $this->notify('Customer ' . $e->getMessage() . ' created successfully');
+            Log::info('Error saving reseller: '.$e->getMessage());
         }
+
+
+        $this->notify('success','Reseller ' . $this->editing->company_name . ' created successfully');
+        return redirect()->to('/reseller');
+        $this->showEditModal = false;
+
+    }
+
+    public function getRowsQueryProperty()
+    {
+        $resellers = Reseller::query()
+        ->where(function ($q)  {
+            $q->where('company_name', "like", "%{$this->search}%");
+            $q->orWhere('id', 'like', "%{$this->search}%");
+            $q->orWhere('mpnid', 'like', "%{$this->search}%");
+            $q->orwhereHas('provider', function(Builder $q){
+                $q->where('company_name', 'like', "%{$this->search}%");
+            });
+            $q->orwhereHas('country', function(Builder $q){
+                $q->where('name', 'like', "%{$this->search}%");
+            });
+        })->
+        with(['country', 'customers', 'status']);
+
+        return $this->applySorting($resellers);
+    }
+
+    public function getRowsProperty()
+    {
+        return $this->cache(function () {
+            return $this->applyPagination($this->rowsQuery);
+        });
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function exportSelected()
+    {
+        return Excel::download(new ResellersExport, 'resellers.xlsx');
+    }
+
+    public function render()
+    {
+        $countries  = Country::pluck( 'name','id');
+        $roles      = Role::pluck( 'name','id');
+        $statuses   = Status::pluck( 'name','id');
+        return view('livewire.reseller.reseller-table'
+        , [
+            'resellers' => $this->rows,
+            'countries' => $countries,
+            'statuses'  => $statuses,
+            'roles'     => $roles
+        ]);
+    }
+}
