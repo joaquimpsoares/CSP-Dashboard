@@ -29,22 +29,23 @@ class Subscribed
 
             switch ($this->getUserLevel()) {
                 case config('app.customer'):
-                    if($user->notified == false ){
-                    foreach ($user->customer->subscriptions as $subscription) {
-                        $deate = new DateTime($subscription->expiration_data);
-                        $interval = $fechahoy->diff($deate);
-                        if ($interval->format('%R%a') <= 233){
-                            Notification::send($user, new SubscriptionAboutToExpire($subscription, $interval->format('%R%a')));
-                            $user->notified=true;
-                            $user->save();
+                    $updated_at =new DateTime($user->updated_at);
+                    $date = $fechahoy->diff($updated_at);
+                    if($date->format('%R%a') >= 30 ){
+                        foreach ($user->customer->subscriptions as $subscription) {
+                            $deate = new DateTime($subscription->expiration_data);
+                            $interval = $fechahoy->diff($deate);
+                            if ($interval->format('%R%a') <= 90){
+                                Notification::send($user, new SubscriptionAboutToExpire($subscription, $interval->format('%R%a')));
+                                $user->update(['notified' => true]);
+                            }
                         }
                     }
-                }
-                break;
+                    break;
 
-                default:
+                    default:
+                }
             }
+            return $next($request);
         }
-        return $next($request);
     }
-}

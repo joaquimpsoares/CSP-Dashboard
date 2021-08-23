@@ -6,11 +6,8 @@ use Exception;
 use Livewire\Component;
 use App\Subscription;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redirect;
 use App\Notifications\SubscriptionUpdate;
 use Illuminate\Support\Facades\Notification;
-use Tagydes\MicrosoftConnection\Facades\Subscription as SubscriptionFacade;
-use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 
 class ShowSubscription extends Component
 {

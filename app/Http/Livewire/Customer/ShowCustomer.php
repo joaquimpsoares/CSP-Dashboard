@@ -6,15 +6,12 @@ use Exception;
 use App\Country;
 use App\Customer;
 use App\Instance;
-use App\PriceList;
 use App\Models\Status;
 use Livewire\Component;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-use App\Notifications\SubscriptionUpdate;
 use GuzzleHttp\Exception\ClientException;
-use Illuminate\Support\Facades\Notification;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 use Tagydes\MicrosoftConnection\Facades\Subscription as SubscriptionFacade;
@@ -88,7 +85,6 @@ class ShowCustomer extends Component
             }
         }
         $customer->update(['status_id' => 2]);
-        // Notification::send($subscriptions->customer->users->first(), new SubscriptionUpdate($subscriptions));
         $this->notify('Customer ' . $customer->company_name . ' is disabled, refresh page');
     }
 
