@@ -212,7 +212,7 @@ class HomeController extends Controller
 
                 $subscriptions = $this->subscriptionRepository->all();
 
-                $news = News::orderBy('id', 'DESC')->take(2)->get();
+                $news = News::orderBy('created_at', 'desc')->take(2)->get();
 
                 $orderrecord = Order::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
                 ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))

@@ -25,14 +25,14 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <x-label for="my-select">{{ ucwords(trans_choice('messages.language', 1)) }}</x-label>
-                        <select name="locale" class="form-control @error('locale') is-invalid @enderror" sf-validate="required">
+                        <select name="language" class="form-control @error('language') is-invalid @enderror" sf-validate="required">
                             {{-- <option value="{{ $edit && $user->status->id ? $user->status->id : ''}}" selected>{{$user->locale}}</option> --}}
                             <option value="es">Español</option>
                             <option value="fr">Français</option>
                             <option value="en">English</option>
                             <option value="el">Greek</option>
                         </select>
-                        @error('locale')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                        @error('language')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                     </div>
                     <div class="form-group">
                         <x-label for="postal_code">{{ ucwords(trans_choice('messages.title', 1)) }}</x-label>

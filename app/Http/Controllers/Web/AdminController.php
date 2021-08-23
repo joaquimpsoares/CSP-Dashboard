@@ -26,7 +26,7 @@ class AdminController extends Controller
     {
         $user = $this->getUser();
 
-        $news = News::paginate(5);
+        $news = News::orderBy('created_at', 'desc')->paginate(5);
 
         // switch ($this->getUserLevel()) {
         //     case 'Super Admin':
@@ -101,6 +101,7 @@ class AdminController extends Controller
             $file       = $request->file('image');
             $video      = $request->input('video');
             $expire_at  = $request->input('date');
+            $language   = $request->input('language');
             $provider   = $request->input('provider') == 'on' ? 1 : 0;
             $reseller   = $request->input('reseller') == 'on' ? 1 : 0;
             $customer   = $request->input('customer') == 'on' ? 1 : 0;
@@ -126,6 +127,7 @@ class AdminController extends Controller
                 $news->description  = $desc;
                 $news->expires_at   = $expire_at;
                 $news->provider     = $provider;
+                $news->language     = $language;
                 $news->reseller     = $reseller;
                 $news->customer     = $customer;
                 $news->image = 'uploads/'.$fileName;
@@ -185,6 +187,7 @@ class AdminController extends Controller
         $file       = $request->file('image');
         $video      = $request->input('video');
         $expires_at = $request->input('date');
+        $language   = $request->input('language');
         $provider   = $request->input('provider') == 'on' ? 1 : 0;
         $reseller   = $request->input('reseller') == 'on' ? 1 : 0;
         $customer   = $request->input('customer') == 'on' ? 1 : 0;
@@ -209,6 +212,7 @@ class AdminController extends Controller
                 'category'      => $category,
                 'provider'      => $provider,
                 'reseller'      => $reseller,
+                'language'      => $language,
                 'customer'      => $customer,
                 'image'         => 'uploads/'.$fileName,
             ];
@@ -220,6 +224,7 @@ class AdminController extends Controller
                 'expires_at'    => $expires_at,
                 'category'      => $category,
                 'provider'      => $provider,
+                'language'      => $language,
                 'reseller'      => $reseller,
                 'customer'      => $customer,
             ];

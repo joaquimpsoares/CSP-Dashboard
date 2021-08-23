@@ -333,4 +333,12 @@ return [
     'table' => 'table',
     'create_reseller' => 'add reseller',
     'create_customer' => 'add customer',
+    'title' => 'title',
+    'video_youtube_link' => 'youtube link',
+    'show_to' => 'show to',
+    'photo' => 'photo',
+    'language' => 'language',
+    'add_announcements' => 'add announcements',
+    'announcements' => 'announcements',
+    'edit_announcements' => 'edit announcements',
 ];

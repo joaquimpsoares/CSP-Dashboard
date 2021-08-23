@@ -137,6 +137,7 @@
     </div>
     <!-- Save Transaction Modal -->
     <div>
+        @if($showEditModal == true)
         <form @if($showCreateUser === false) { wire:submit.prevent="save({{$reseller->id}})" } @else { wire:submit.prevent="savecreate" } @endif>
             <x-modal.slideout wire:model.defer="showEditModal">
                 @if ($showCreateUser == false)
@@ -302,7 +303,7 @@
                 </x-slot>
             </x-modal.slideout>
         </form>
-        {{-- @endif --}}
+        @endif
     </div>
 </div>
 

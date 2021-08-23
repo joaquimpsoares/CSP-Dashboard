@@ -20,21 +20,25 @@ class News extends Model
 
     protected static function booted()
     {
-        static::addGlobalScope('access_level', function (Builder $query) {
+        static::addGlobalScope('access_level', function (Builder $query){
             $user = Auth::user();
+            // dd($user->locale);
 
-            // if($user && $user->userLevel->name === config('app.super_admin')){
-            //     $query->where('provider', true);
-            // }
             if ($user && $user->userLevel->name === config('app.provider')) {
-                $query->where('provider_id', $user->provider->id);
-                $query->orwhere('provider', true);
-                $query->where('expires_at', '>', date('Y-m-d'));
-                $query->orwhere('expires_at', null);
+                $query->whereHas('provider', function (Builder $query) use ($user) {
+                    $query->where('provider_id', $user->provider->id);
+                });
             }
             if ($user && $user->userLevel->name === config('app.reseller')) {
-                $query->where('reseller_id', $user->reseller->id);
-                // $query->where('expires_at', null);
+                $query->whereHas('reseller', function (Builder $query) use ($user) {
+                    $query->where('reseller_id', $user->reseller->id);
+                    $query->where('provider_id' , $user->reseller->provider->id);
+                });
+                    // $query->where('reseller_id', $user->reseller->id);
+                    // $query->where('reseller', true);
+
+                // $query->where('reseller_id', $user->reseller->id);
+                // $query->orwhere('reseller', true);
                 // $query->where('expires_at', '>', date('Y-m-d') ?? null);
             }
             if ($user && $user->userLevel->name === config('app.customer')) {

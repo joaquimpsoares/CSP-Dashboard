@@ -213,6 +213,7 @@ class CustomerTable extends Component
         // });
 
         return view('livewire.customer.customer-table', [
+            'customer' => null,
             'customers' => $this->rows,
             'countries' => $countries,
             'statuses'  => $statuses,
