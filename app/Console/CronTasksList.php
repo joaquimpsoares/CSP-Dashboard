@@ -20,5 +20,6 @@ trait CronTasksList
         // $schedule->command('example:command')->yearly()->withoutOverlapping();
         $schedule->command('SyncAzure:daily')->dailyAt('20:00');
         $schedule->command('SyncAzureBudget:daily')->dailyAt('20:00');
+        $schedule->command('command:checkSubscriptionExpiration')->Montly();
     }
 }

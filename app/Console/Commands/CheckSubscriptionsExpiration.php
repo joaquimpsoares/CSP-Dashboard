@@ -51,7 +51,7 @@ class CheckSubscriptionsExpiration extends Command
                 if ($interval->format('%R%a') <= 90){
                     Notification::send($user, new SubscriptionAboutToExpire($subscription, $interval->format('%R%a')));
                     $user->update(['notified' => true]);
-                    Log::debug($user->name.'notified');
+                    Log::debug($user->email.' notified');
                 }
             }
         }

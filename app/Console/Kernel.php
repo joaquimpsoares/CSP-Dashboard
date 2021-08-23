@@ -28,6 +28,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('SyncAzure:daily')->dailyAt('20:00');
         $schedule->command('syncAzureBudget:daily')->dailyAt('20:00');
+        $schedule->command('command:checkSubscriptionExpiration')->Montly();
 
     }
 
