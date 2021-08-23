@@ -27,6 +27,7 @@ class News extends Model
             if ($user && $user->userLevel->name === config('app.provider')) {
                 $query->whereHas('provider', function (Builder $query) use ($user) {
                     $query->where('provider_id', $user->provider->id);
+                    $query->orwhere('provider_id' , null);
                 });
             }
             if ($user && $user->userLevel->name === config('app.reseller')) {
