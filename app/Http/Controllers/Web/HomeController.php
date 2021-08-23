@@ -107,7 +107,7 @@ class HomeController extends Controller
                         $invoicedata['data'][] = (int) $row->total;
                     }
                 }
-                if($orderlabel){
+                if($orderlabel['label']){
                   $invoicelabel = $invoicelabel['label'];
                   $invoicedata  = $invoicedata['data'];
                 }
@@ -116,7 +116,7 @@ class HomeController extends Controller
                     $orderdata['data'][] = (int) $row->count;
                   }
 
-                  if($orderlabel){
+                  if($orderlabel['label']){
                       $orderlabel = $orderlabel['label'];
                       $orderdata  = $orderdata['data'];
                     }
@@ -125,9 +125,10 @@ class HomeController extends Controller
                     $customerlabel['label'][] = json_encode($row->day_name);
                     $customerdata['data'][] = (int) $row->count;
                   }
-
-                  $customerlabel = $customerlabel['label'];
-                  $customerdata  = $customerdata['data'];
+                  if($customerlabel['label']) {
+                      $customerlabel = $customerlabel['label'];
+                      $customerdata  = $customerdata['data'];
+                    }
 
                 return view('home', compact('orders','providers','resellers','customers','subscriptions','news',
                     'orderdata','orderlabel','customerlabel','customerdata','invoicelabel','invoicedata'));
