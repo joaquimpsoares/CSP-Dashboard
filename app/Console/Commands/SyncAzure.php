@@ -97,64 +97,60 @@ class SyncAzure extends Command
                         $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
 
 
-                    if(!isset($resource->resource->id)){
-                        $price = AzurePriceList::updateOrCreate(
-                            ['resource_id'   => $resource->resource->id],
-                            ['rates' => [0]]);
+                        if(!isset($resource->resource->id)){
+                            $price = AzurePriceList::updateOrCreate(
+                                ['resource_id'   => $resource->resource->id],
+                                ['rates' => [0]]);
 
-                        }
-                        // else{
-                        //     $price = AzurePriceList::where('resource_id', $resource->resource->id)->first('rates');
-                        // }
+                            }
 
 
-                        Log::channel('azure')->info($resource->price);
+                            Log::channel('azure')->info($resource->price);
 
-                        Log::channel('azure')->info($resource->resource->id);
+                            Log::channel('azure')->info($resource->resource->id);
 
-                        $resource = AzureUsageReport::updateOrCreate([
-                            'subscription_id'       => $subscription->id,
-                            'resource_id'           => $resource->resource->id,
-                            'usageStartTime'        => $resource->usageStartTime,
-                            'usageEndTime'          => $resource->usageEndTime,
-                            'resource_group'        => $resourceGroup[4],
-                            'resource_location'     => $resource->instanceData->location,
-                            'resource_name'         => $resource->resource->name,
-                            'resource_category'     => $resource->resource->category,
-                            'resource_subcategory'  => $resource->resource->subcategory,
-                            'resource_region'       => $resource->resource->region,
-                            'unit'                  => $resource->unit,
-                            'name'                  => $resourceGroup[8] ?? null,
+                            $resource = AzureUsageReport::updateOrCreate([
+                                'subscription_id'       => $subscription->id,
+                                'resource_id'           => $resource->resource->id,
+                                'usageStartTime'        => $resource->usageStartTime,
+                                'usageEndTime'          => $resource->usageEndTime,
+                                'resource_group'        => $resourceGroup[4],
+                                'resource_location'     => $resource->instanceData->location,
+                                'resource_name'         => $resource->resource->name,
+                                'resource_category'     => $resource->resource->category,
+                                'resource_subcategory'  => $resource->resource->subcategory,
+                                'resource_region'       => $resource->resource->region,
+                                'unit'                  => $resource->unit,
+                                'name'                  => $resourceGroup[8] ?? null,
 
 
-                            "resourceType"          => $resource->instanceData->additionalInfo->toArray()['resourceType'] ?? null,
-                            "usageResourceKind"     => $resource->instanceData->additionalInfo->toArray()['usageResourceKind'] ?? null,
-                            "dataCenter"            => $resource->instanceData->additionalInfo->toArray()['dataCenter'] ?? null,
-                            "networkBucket"         => $resource->instanceData->additionalInfo->toArray()['networkBucket'] ?? null,
-                            "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
-                        ], [
-                            'quantity'              => $resource->quantity,
-                            'cost'                  => (json_encode($price->rates[0])*$resource->quantity),
-                        ]);
-                        Log::channel('azure')->info(json_encode($resource));
-                        // Log::info(json_encode($price->rates[0])*$resource->quantity);
-                    });
-                }
-                catch (\Exception $e) {
-                    Log::channel('azure')->info($e->getMessage());
-                    Mail::raw($e, function ($mail) use($e) {
-                        $mail->to('joaquim.soares@tagydes.com')
-                        ->subject('Azure Sync Failed');
-                    });
+                                "resourceType"          => $resource->instanceData->additionalInfo->toArray()['resourceType'] ?? null,
+                                "usageResourceKind"     => $resource->instanceData->additionalInfo->toArray()['usageResourceKind'] ?? null,
+                                "dataCenter"            => $resource->instanceData->additionalInfo->toArray()['dataCenter'] ?? null,
+                                "networkBucket"         => $resource->instanceData->additionalInfo->toArray()['networkBucket'] ?? null,
+                                "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
+                            ], [
+                                'quantity'              => $resource->quantity,
+                                'cost'                  => (json_encode($price->rates[0])*$resource->quantity),
+                            ]);
+                            Log::channel('azure')->info(json_encode($resource));
+                        });
+                    }
+                    catch (\Exception $e) {
+                        Log::channel('azure')->info($e->getMessage());
+                        Mail::raw($e, function ($mail) use($e) {
+                            $mail->to('joaquim.soares@tagydes.com')
+                            ->subject('Azure Sync Failed');
+                        });
+                    }
                 }
             }
+
+            Mail::raw("Just finished Azure Syncronization", function ($mail)  {
+                $mail->to('joaquim.soares@tagydes.com')
+                ->subject('Daily imported Azure reports');
+            });
+
+            $this->info('Successfully sent daily quote to everyone.');
         }
-
-        Mail::raw("Just finished Azure Syncronization", function ($mail)  {
-            $mail->to('joaquim.soares@tagydes.com')
-            ->subject('Daily imported Azure reports');
-        });
-
-        $this->info('Successfully sent daily quote to everyone.');
     }
-}

@@ -66,12 +66,12 @@ class ImportProductsMicrosoftJob implements ShouldQueue
             $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)
             ->forCountry($this->country)->all($this->country);
 
+            $importCount = 0;
 
-
-            $products->each(function($importedProduct)use($instance){
+            $products->each(function($importedProduct)use($instance, $importCount){
             Log::info('CREATE products: '.$importedProduct);
 
-                Product::updateOrCreate([
+                $updated = Product::updateOrCreate([
                     'sku' => $importedProduct->id,
                     'instance_id' => $instance->id,
                 ],[
@@ -98,7 +98,7 @@ class ImportProductsMicrosoftJob implements ShouldQueue
                     'addons' => $importedProduct->addons->map(function($item){
                         return serialize($item);
                     }),
-                    'upgrade_target_offers'     => $importedProduct->upgradeTargetOffersmap(function($item){
+                    'upgrade_target_offers'     => $importedProduct->upgradeTargetOffers->map(function($item){
                         return serialize($item);
                     }),
                     'supported_billing_cycles'  => $importedProduct->supportedBillingCycles,
@@ -106,9 +106,11 @@ class ImportProductsMicrosoftJob implements ShouldQueue
                     'resellee_qualifications'   => $importedProduct->reselleeQualifications,
                     'reseller_qualifications'   => $importedProduct->resellerQualifications,
                     ]);
-                });
-                $this->queueProgress(90);
 
+                    $importCount++;
+                });
+                Log::info('Imported '.$importCount.' transactions!');
+                $this->queueProgress(90);
 
             } catch (Exception $e) {
                 Log::info('Error importing products: '.$e->getMessage());
@@ -118,7 +120,7 @@ class ImportProductsMicrosoftJob implements ShouldQueue
 
                 Log::info('Error: '.$e->getMessage());
             }
-            // }
+                Log::info('Imported '.$importCount.' transactions!');
                 $this->order->order_status_id = 4; //Order running state
                 $this->order->save();
                 $this->queueProgress(100);

@@ -65,15 +65,15 @@
                                     </td>
                                     <td class="p-1 md:p-3 md:text-right">
                                         <label class="text-xs font-semibold text-gray-500 uppercase md:hidden" for="">{{ ucwords(trans_choice('messages.provider', 1)) }}</label>
-                                        <div>{{ $priceList['reseller']->count() }}</div>
+                                        <div>0</div>
                                     </td>
                                     <td class="p-1 md:p-3 md:text-right">
                                         <label class="text-xs font-semibold text-gray-500 uppercase md:hidden" for="">{{ ucwords(trans_choice('messages.reseller', 2)) }}</label>
-                                        <div>{{ $priceList['reseller']->count() }}</div>
+                                        <div>0</div>
                                     </td>
                                     <td class="p-1 md:p-3 md:text-right">
                                         <label class="text-xs font-semibold text-gray-500 uppercase md:hidden" for="">{{ ucwords(trans_choice('messages.customer', 1)) }}</label>
-                                        <div>{{ $priceList['customer']->count() }}</div>
+                                        <div>0</div>
                                     </td>
                                     <td class="p-1 md:p-3">
                                         <label class="text-xs font-semibold text-gray-500 uppercase md:hidden" for="">{{ ucwords(trans_choice('messages.action', 1)) }}</label>

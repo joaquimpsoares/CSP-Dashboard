@@ -54,28 +54,28 @@
                     'name',
                     ]"
                 :columns="[
-
-                    'id' => function($customer){
-                        return $customer['path'];
-                    },
+                    'id' => null,
                     'name' => null,
+                    'last_name' => null,
                     'email' => null,
-                    '' => null,
+                    'belongs_to' => function($user){
+                        return $user->reseller['company_name'] ?? $user->provider['company_name'] ?? $user->customer['company_name'] ?? '';
+                    },
                     'created_at' => null
                 ]"
                 :listElementActions="[
                     [
                         'icon' => 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJpbmxpbmUgdy01IGgtNSBtci0yIiB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9ImN1cnJlbnRDb2xvciI+CjxwYXRoIGQ9Ik0xMy41ODYgMy41ODZhMiAyIDAgMTEyLjgyOCAyLjgyOGwtLjc5My43OTMtMi44MjgtMi44MjguNzkzLS43OTN6TTExLjM3OSA1Ljc5M0wzIDE0LjE3MlYxN2gyLjgyOGw4LjM4LTguMzc5LTIuODMtMi44Mjh6IiAvPgo8L3N2Zz4=',
                         'textKey' => 'Edit', // To get the translation on the view
-                        'url' => function($customer){
-                            return $customer['path'].'/edit';
+                        'url' => function($user){
+                            return $user->id.'/edit';
                         }
                     ],
                     [
                         'icon' => 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJpbmxpbmUgdy01IGgtNSBtci0yIiB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9ImN1cnJlbnRDb2xvciI+CjxwYXRoIGQ9Ik0xMCAxMmEyIDIgMCAxMDAtNCAyIDIgMCAwMDAgNHoiIC8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTS40NTggMTBDMS43MzIgNS45NDMgNS41MjIgMyAxMCAzczguMjY4IDIuOTQzIDkuNTQyIDdjLTEuMjc0IDQuMDU3LTUuMDY0IDctOS41NDIgN1MxLjczMiAxNC4wNTcuNDU4IDEwek0xNCAxMGE0IDQgMCAxMS04IDAgNCA0IDAgMDE4IDB6IiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIC8+Cjwvc3ZnPg==',
                         'textKey' => 'Impersonate',
-                        'url' => function($customer){
-                            return route('impersonate', $customer['mainUser']['id'] ?? '');
+                        'url' => function($user){
+                            return route('impersonate', $user['id'] ?? '');
                         }
                     ]
                 ]" />

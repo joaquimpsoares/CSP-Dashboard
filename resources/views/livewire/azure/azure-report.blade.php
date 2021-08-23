@@ -123,7 +123,7 @@
                                 </x-input.select>
                             </x-input.group> --}}
 
-                            <div>
+                            {{-- <div>
                                 <div class="relative">
                                     <input type="text" wire:model="taskduedate"  class="w-full pl-4 pr-10 font-medium leading-none text-gray-600 rounded-lg shadow-sm py-auto focus:outline-none focus:ring focus:ring-blue-600 focus:ring-opacity-50" placeholder="Select date"
                                     autocomplete="off" id="daterange-btn"
@@ -135,7 +135,7 @@
                                         </svg>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <x-input.group inline for="filter-amount-min" label="Minimum Amount">
                                 <x-input.money wire:model.lazy="filters.amount-min" id="filter-amount-min" />
@@ -155,7 +155,7 @@
                                 <x-input.date wire:model="filters.date-max" id="filter-date-max" placeholder="MM/DD/YYYY" />
                             </x-input.group>
 
-                            <x-button.link wire:click="resetFilters" class="absolute bottom-0 right-0 p-4">Reset Filters</x-button.link>
+                            <x-button wire:click="resetFilters" class="absolute bottom-0 right-0 p-4">Reset Filters</x-button>
                         </div>
                     </div>
                     @endif

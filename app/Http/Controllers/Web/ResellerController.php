@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Role;
 use App\User;
-use App\Status;
+use App\Models\Status;
 use App\Country;
 use App\Customer;
 use App\Reseller;

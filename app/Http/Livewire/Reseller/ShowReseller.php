@@ -2,8 +2,9 @@
 
 namespace App\Http\Livewire\Reseller;
 
-use App\Status;
+use App\Models\Status;
 use App\Country;
+use App\PriceList;
 use App\Reseller;
 use Livewire\Component;
 use App\Rules\checkvatIdRule;
@@ -38,7 +39,7 @@ class ShowReseller extends Component
             'editing.status_id'             => ['required', 'exists:statuses,id'],
             'editing.markup'                => ['nullable', 'integer', 'min:3'],
             'editing.mpnid'                 => ['nullable', 'integer', 'min:3'],
-            'editing.price_list_id' => ['integer', 'exists:price_lists,id']
+            'editing.price_list_id'         => ['integer', 'exists:price_lists,id']
         ];
     }
 
@@ -87,8 +88,12 @@ class ShowReseller extends Component
             //     $this->notify($newCustomer->validationMessage);
             // }
 
+            $pricelist = PriceList::find($this->editing->price_list_id)->first();
+            $pricelist->update(['reseller_id' => $this->reseller->id]);
+
             $this->editing->save();
             $this->showEditModal = false;
+
 
 
         } catch (ClientException $e) {

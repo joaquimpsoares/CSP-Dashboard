@@ -3,9 +3,7 @@
 
 @section('content')
 
-@include('priceList.partials.pricelisttable', ['products' => $products])
-
-@livewire('price.pricelist-table')
+@livewire('pricelist.pricelist-table', ['priceLists' => $priceLists], key($priceLists->id))
 
 @endsection
 

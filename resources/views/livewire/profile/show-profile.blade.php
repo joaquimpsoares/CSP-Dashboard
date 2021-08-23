@@ -1,79 +1,72 @@
-<main class="flex flex-1 overflow-hidden bg-white">
-    <div class="flex flex-col flex-1 overflow-y-auto xl:overflow-hidden">
-        <!-- Breadcrumb -->
-        <nav aria-label="Breadcrumb" class="bg-white border-b border-blue-gray-200 xl:hidden">
-            <div class="flex items-start max-w-3xl px-4 py-3 mx-auto sm:px-6 lg:px-8">
-                <a href="#" class="inline-flex items-center -ml-1 space-x-3 text-sm font-medium text-blue-gray-900">
-                    <!-- Heroicon name: solid/chevron-left -->
-                    <svg class="w-5 h-5 text-blue-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                    </svg>
-                    <span>Settings</span>
-                </a>
-            </div>
-        </nav>
-        <div class="flex flex-1 xl:overflow-hidden">
-            <!-- Sidebar -->
-            @livewire('user.sidebar', ['user' => $user], key($user->id))
-            <div class="flex-grow">
-                <!-- Panel body -->
-                <div class="p-6 space-y-6">
-                    <div class="pt-6 divide-y divide-gray-200">
-                        <div class="px-4 sm:px-6">
-                    @if(Auth::user()->userlevel->name == 'Provider')
-                    <section aria-labelledby="payment_details_heading">
-                        <form wire:submit.prevent="savePhoto">
-                            <div class="shadow sm:rounded-md sm:overflow-hidden">
-                                <div class="px-4 py-6 bg-white sm:p-6">
-                                    <div>
-                                        <h2 id="payment_details_heading" class="text-lg font-medium leading-6 text-gray-900">Company Logo</h2>
-                                        <p class="mt-1 text-sm text-gray-500">Set your company Logo.</p>
-                                    </div>
-                                    <div class="sm:col-span-6">
-                                        <label for="photo" class="block text-sm font-medium text-blue-gray-900">
-                                            Logo
-                                        </label>
-                                        <div class="flex items-center mt-1">
-                                            @if ($photo)
-                                            <img class="inline-block w-auto h-14 " src="{{$photo->temporaryUrl()}}" alt="">
-                                            @else
-                                            <img class="inline-block w-auto h-14 " src="{{$logo ?? $logo->temporaryUrl()}}" alt="">
-                                            @endif
-                                            <div class="flex ml-4">
-                                                <div class="relative flex items-center px-3 py-1 mr-3 bg-white border rounded-md shadow-sm cursor-pointer border-blue-gray-300 hover:bg-blue-gray-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-blue-gray-50 focus-within:ring-blue-500">
-                                                    <label for="user_photo" class="relative text-sm font-medium pointer-events-none text-blue-gray-900">
-                                                        <span>Change</span>
-                                                        <span class="sr-only"> Company Logo</span>
-                                                    </label>
-                                                    <input wire:model="photo" id="photo" name="photo" type="file" class="absolute inset-0 w-full h-full border-gray-300 rounded-md opacity-0 cursor-pointer">
+<div>
+    <main class="flex flex-1 overflow-hidden bg-white">
+        <div class="flex flex-col flex-1 overflow-y-auto xl:overflow-hidden">
+            <div class="flex flex-1 xl:overflow-hidden">
+                <!-- Sidebar -->
+                @livewire('user.sidebar', ['user' => $user], key($user->id))
+                <div class="flex-grow">
+                    <div class="p-6 space-y-6">
+                        <div class="pt-6 divide-y divide-gray-200">
+                            <div class="px-4 sm:px-6">
+                                @if(Auth::user()->userlevel->name == 'Provider')
+                                <form wire:submit.prevent="savePhoto">
+                                    <section>
+                                        <h2 class="text-lg font-medium leading-6 text-gray-900">Company Logo</h2>
+                                        <div class="text-sm"></div>
+                                        <div class="mt-4 space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-4">
+                                            <div class="sm:w-1/3">
+                                                <div class="px-4 py-6 bg-white sm:p-6">
+                                                    <div>
+                                                        <p class="mt-1 text-sm text-gray-500">Set your company Logo.</p>
+                                                    </div>
+                                                    <div class="sm:col-span-6">
+                                                        <label for="photo" class="block text-sm font-medium text-blue-gray-900">
+                                                            Logo
+                                                        </label>
+                                                        <div class="flex items-center mt-1">
+                                                            @if ($photo)
+                                                            <img class="inline-block w-auto h-14 " src="{{$photo->temporaryUrl()}}" alt="">
+                                                            @else
+                                                            <img class="inline-block w-auto h-14 " src="{{$logo ?? $logo->temporaryUrl()}}" alt="">
+                                                            @endif
+                                                            <div class="flex ml-4">
+                                                                <div class="relative flex items-center px-3 py-1 mr-3 bg-white border rounded-md shadow-sm cursor-pointer border-blue-gray-300 hover:bg-blue-gray-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-blue-gray-50 focus-within:ring-blue-500">
+                                                                    <label for="user_photo" class="relative text-sm font-medium pointer-events-none text-blue-gray-900">
+                                                                        <span>Change</span>
+                                                                        <span class="sr-only"> Company Logo</span>
+                                                                    </label>
+                                                                    <input wire:model="photo" id="photo" name="photo" type="file" class="absolute inset-0 w-full h-full border-gray-300 rounded-md opacity-0 cursor-pointer">
+                                                                </div>
+                                                                @if(isset($logo))
+                                                                <x-a color="red" type="submit" wire:click.prevent='removePhoto'>
+                                                                    Remove
+                                                                </x-a>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div wire:loading wire:target="photo">Uploading...</div>
+                                                    <div class="text-red-700">
+                                                        @error('photo') <span class="error">{{ $message }}</span> @enderror
+                                                    </div>
                                                 </div>
-                                                @if(isset($logo))
-                                                <x-a color="red" type="submit" wire:click.prevent='removePhoto'>
-                                                    Remove
-                                                </x-a>
-                                                @endif
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div wire:loading wire:target="photo">Uploading...</div>
-                                    <div class="text-red-700">
-                                        @error('photo') <span class="error">{{ $message }}</span> @enderror
-                                    </div>
-                                </div>
-                                <div class="px-4 py-3 text-right bg-gray-50 sm:px-6">
-                                    <button type="submit" class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
-                                        Save
-                                    </button>
-                                </div>
+                                        <div class="flex flex-col py-5 mt-3 mb-3 border-t border-gray-200">
+                                            <div class="flex self-end">
+                                                <x-button  type="submit">Save Changes</x-button>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </form>
+                                @endif
                             </div>
-                        </form>
-                    </section>
-                    @endif
+                        </div>
 
-                    <section aria-labelledby="payment_details_heading">
-                        <form action="#" method="POST" wire:submit.prevent="save">
-                            <div class="shadow sm:rounded-md sm:overflow-hidden">
+
+                        <section>
+                            <form action="#" method="POST" wire:submit.prevent="save">
                                 <div class="px-4 py-6 bg-white sm:p-6">
                                     <div>
                                         <h2 id="payment_details_heading" class="text-lg font-medium leading-6 text-gray-900">Company details</h2>
@@ -129,161 +122,16 @@
                                             @error('postal_code')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                         </div>
                                     </div>
+                                    <div class="flex flex-col py-5 mt-3 mb-3 border-t border-gray-200">
+                                        <div class="flex self-end">
+                                            <x-button  type="submit">Save Changes</x-button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="px-4 py-3 text-right bg-gray-50 sm:px-6">
-                                    <button type="submit" class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
-                                        Save
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </section>
-                </div>
-            </div>
-        </div>
-    </main>
-</div>
-        <!-- Plan -->
-        {{-- <section aria-labelledby="plan_heading">
-            <form action="#" method="POST">
-                <div class="shadow sm:rounded-md sm:overflow-hidden">
-                    <div class="px-4 py-6 space-y-6 bg-white sm:p-6">
-                        <div>
-                            <h2 id="plan_heading" class="text-lg font-medium leading-6 text-gray-900">Plan</h2>
-                        </div>
-
-                        <fieldset>
-                            <legend class="sr-only">
-                                Pricing plans
-                            </legend>
-                            <div class="relative -space-y-px bg-white rounded-md">
-                                <!-- Checked: "bg-orange-50 border-orange-200 z-10", Not Checked: "border-gray-200" -->
-                                <label class="relative flex flex-col p-4 border border-gray-200 cursor-pointer rounded-tl-md rounded-tr-md md:pl-4 md:pr-6 md:grid md:grid-cols-3">
-                                    <div class="flex items-center text-sm">
-                                        <input type="radio" name="pricing_plan" value="Startup" class="w-4 h-4 text-orange-500 border-gray-300 focus:ring-gray-900" aria-labelledby="pricing-plans-0-label" aria-describedby="pricing-plans-0-description-0 pricing-plans-0-description-1">
-                                        <span id="pricing-plans-0-label" class="ml-3 font-medium text-gray-900">Startup</span>
-                                    </div>
-                                    <p id="pricing-plans-0-description-0" class="pl-1 ml-6 text-sm md:ml-0 md:pl-0 md:text-center">
-                                        <!-- Checked: "text-orange-900", Not Checked: "text-gray-900" -->
-                                        <span class="font-medium text-gray-900">$29 / mo</span>
-                                        <!-- Checked: "text-orange-700", Not Checked: "text-gray-500" -->
-                                        <span class="text-gray-500">($290 / yr)</span>
-                                    </p>
-                                    <!-- Checked: "text-orange-700", Not Checked: "text-gray-500" -->
-                                    <p id="pricing-plans-0-description-1" class="pl-1 ml-6 text-sm text-gray-500 md:ml-0 md:pl-0 md:text-right">Up to 5 active job postings</p>
-                                </label>
-
-                                <!-- Checked: "bg-orange-50 border-orange-200 z-10", Not Checked: "border-gray-200" -->
-                                <label class="relative flex flex-col p-4 border border-gray-200 cursor-pointer md:pl-4 md:pr-6 md:grid md:grid-cols-3">
-                                    <div class="flex items-center text-sm">
-                                        <input type="radio" name="pricing_plan" value="Business" class="w-4 h-4 text-orange-500 border-gray-300 focus:ring-gray-900" aria-labelledby="pricing-plans-1-label" aria-describedby="pricing-plans-1-description-0 pricing-plans-1-description-1">
-                                        <span id="pricing-plans-1-label" class="ml-3 font-medium text-gray-900">Business</span>
-                                    </div>
-                                    <p id="pricing-plans-1-description-0" class="pl-1 ml-6 text-sm md:ml-0 md:pl-0 md:text-center">
-                                        <!-- Checked: "text-orange-900", Not Checked: "text-gray-900" -->
-                                        <span class="font-medium text-gray-900">$99 / mo</span>
-                                        <!-- Checked: "text-orange-700", Not Checked: "text-gray-500" -->
-                                        <span class="text-gray-500">($990 / yr)</span>
-                                    </p>
-                                    <!-- Checked: "text-orange-700", Not Checked: "text-gray-500" -->
-                                    <p id="pricing-plans-1-description-1" class="pl-1 ml-6 text-sm text-gray-500 md:ml-0 md:pl-0 md:text-right">Up to 25 active job postings</p>
-                                </label>
-
-                                <!-- Checked: "bg-orange-50 border-orange-200 z-10", Not Checked: "border-gray-200" -->
-                                <label class="relative flex flex-col p-4 border border-gray-200 cursor-pointer rounded-bl-md rounded-br-md md:pl-4 md:pr-6 md:grid md:grid-cols-3">
-                                    <div class="flex items-center text-sm">
-                                        <input type="radio" name="pricing_plan" value="Enterprise" class="w-4 h-4 text-orange-500 border-gray-300 focus:ring-gray-900" aria-labelledby="pricing-plans-2-label" aria-describedby="pricing-plans-2-description-0 pricing-plans-2-description-1">
-                                        <span id="pricing-plans-2-label" class="ml-3 font-medium text-gray-900">Enterprise</span>
-                                    </div>
-                                    <p id="pricing-plans-2-description-0" class="pl-1 ml-6 text-sm md:ml-0 md:pl-0 md:text-center">
-                                        <!-- Checked: "text-orange-900", Not Checked: "text-gray-900" -->
-                                        <span class="font-medium text-gray-900">$249 / mo</span>
-                                        <!-- Checked: "text-orange-700", Not Checked: "text-gray-500" -->
-                                        <span class="text-gray-500">($2490 / yr)</span>
-                                    </p>
-                                    <!-- Checked: "text-orange-700", Not Checked: "text-gray-500" -->
-                                    <p id="pricing-plans-2-description-1" class="pl-1 ml-6 text-sm text-gray-500 md:ml-0 md:pl-0 md:text-right">Unlimited active job postings</p>
-                                </label>
-                            </div>
-                        </fieldset>
-
-                        <div class="flex items-center">
-                            <!-- Enabled: "bg-orange-500", Not Enabled: "bg-gray-200" -->
-                            <button type="button" class="relative inline-flex flex-shrink-0 h-6 transition-colors duration-200 ease-in-out bg-gray-200 border-2 border-transparent rounded-full cursor-pointer w-11 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900" role="switch" aria-checked="true" aria-labelledby="annual-billing-label">
-                                <span class="sr-only">Use setting</span>
-                                <!-- Enabled: "translate-x-5", Not Enabled: "translate-x-0" -->
-                                <span aria-hidden="true" class="inline-block w-5 h-5 transition duration-200 ease-in-out transform translate-x-0 bg-white rounded-full shadow ring-0"></span>
-                            </button>
-                            <span class="ml-3" id="annual-billing-label">
-                                <span class="text-sm font-medium text-gray-900">Annual billing </span>
-                                <span class="text-sm text-gray-500">(Save 10%)</span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="px-4 py-3 text-right bg-gray-50 sm:px-6">
-                        <button type="submit" class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-transparent rounded-md shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
-                            Save
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </section>
-
-        <!-- Billing history -->
-        <section aria-labelledby="billing_history_heading">
-            <div class="pt-6 bg-white shadow sm:rounded-md sm:overflow-hidden">
-                <div class="px-4 sm:px-6">
-                    <h2 id="billing_history_heading" class="text-lg font-medium leading-6 text-gray-900">Billing history</h2>
-                </div>
-                <div class="flex flex-col mt-6">
-                    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                            <div class="overflow-hidden border-t border-gray-200">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                                Date
-                                            </th>
-                                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                                Description
-                                            </th>
-                                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                                Amount
-                                            </th>
-                                            <!--
-                                                `relative` is added here due to a weird bug in Safari that causes `sr-only` headings to introduce overflow on the body on mobile.
-                                            -->
-                                            <th scope="col" class="relative px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                                <span class="sr-only">View receipt</span>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                        <tr>
-                                            <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                                <time datetime="2020-01-01">1/1/2020</time>
-                                            </td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                                Business Plan - Annual Billing
-                                            </td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                                CA$109.00
-                                            </td>
-                                            <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-                                                <a href="#" class="text-orange-600 hover:text-orange-900">View receipt</a>
-                                            </td>
-                                        </tr>
-
-                                        <!-- More payments... -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                            </form>
+                        </section>
                     </div>
                 </div>
             </div>
-        </section> --}}
+        </main>
     </div>
-</div>
-</main>

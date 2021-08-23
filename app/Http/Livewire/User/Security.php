@@ -41,7 +41,6 @@ class Security extends Component
     public function generateToken()
     {
         $user = Auth::user()->createToken('myapp')->plainTextToken;
-        // dd($user);
         $this->token = $user;
     }
 

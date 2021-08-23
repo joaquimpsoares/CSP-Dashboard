@@ -21,6 +21,7 @@ use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 class SubscriptionTable extends Component
 {
     use WithPagination;
+
     public $search = '';
     public $quantity = '';
     public $addons = '';

@@ -9,8 +9,8 @@
 {{-- <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"> --}}
 @endsection
 @section('content')
-{{-- @livewire('job.job-table') --}}
-<div>
+@livewire('job.job-table')
+{{-- <div>
     <div x-data="{ resellerOpen: false , isOpen: false }" class="relative z-0 flex-col flex-1 overflow-y-auto">
         <div class="p-4 overflow-hidden bg-white">
             <div class="flex flex-col">

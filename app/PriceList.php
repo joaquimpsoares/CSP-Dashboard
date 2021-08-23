@@ -2,7 +2,9 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class PriceList extends Model
 {
@@ -25,14 +27,35 @@ class PriceList extends Model
     }
 
     public function provider() {
-		return $this->belongsTo(Provider::class, 'id', 'price_list_id');
+        return $this->belongsTo(Provider::class, 'provider_id', 'id');
     }
 
     public function reseller() {
-		return $this->belongsTo(Reseller::class, 'id', 'price_list_id');
+        return $this->belongsTo(Reseller::class, 'reseller_id', 'id');
     }
 
     public function customer() {
-		return $this->belongsTo(Customer::class, 'id', 'price_list_id');
+        return $this->belongsTo(Customer::class, 'price_list_id', 'id');
+    }
+
+    protected static function booted(){
+        static::addGlobalScope('access_level', function(Builder $query){
+            $user = Auth::user();
+            if($user && $user->userLevel->name === config('app.provider')){
+                $query->whereHas('provider', function(Builder $query) use($user){
+                    $query->where('provider_id', $user->provider->id);
+                });
+            }
+            if($user && $user->userLevel->name === config('app.reseller')){
+                $query->whereHas('reseller', function(Builder $query) use($user){
+                    $query->where('reseller_id', $user->reseller->id);
+                });
+            }
+            if($user && $user->userLevel->name === config('app.customer')){
+                $query->whereHas('customer', function(Builder $query) use($user){
+                    $query->where('customer_id', $user->customer->id);
+                });
+            }
+        });
     }
 }

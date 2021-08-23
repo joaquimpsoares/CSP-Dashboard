@@ -3,10 +3,11 @@
 namespace App\Http\Livewire\User;
 
 use App\Role;
+use App\User;
 use Exception;
 use App\Invite;
-use App\Status;
 use App\Country;
+use App\Models\Status;
 use Livewire\Component;
 use App\Mail\InviteCreated;
 use Livewire\WithFileUploads;
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Mail;
 class EditUser extends Component
 {
     use WithFileUploads;
-
+    public User $editingUser;
     public $user;
     public $photo;
     public $country_id;
@@ -42,36 +43,27 @@ class EditUser extends Component
 
 
     protected $rules = [
-        'name'              => ['sometimes', 'string', 'max:255', 'min:3'],
-        'status'            => ['sometimes', 'integer', 'exists:statuses,id'],
-        'last_name'         => ['sometimes', 'string', 'max:255', 'min:3'],
-        'socialite_id'      => ['sometimes', 'string', 'max:255', 'min:3'],
-        'city'              => ['sometimes', 'string', 'max:20', 'min:3'],
-        'phone'             => ['sometimes', 'string', 'max:20', 'min:3'],
-        'address'           => ['sometimes', 'string', 'max:255', 'min:3'],
-        'email'             => ['nullable', 'email', 'max:255', 'min:3'],
-        'sendInvitation'    => ['nullable', 'integer'],
-        'password'          => ['sometimes', 'confirmed', 'min:8'],
-        'locale' => ['sometimes', 'string', 'in:es,en']
+        'editingUser.name'              => ['sometimes', 'string', 'max:255', 'min:3'],
+        'editingUser.status_id'         => ['sometimes', 'integer', 'exists:statuses,id'],
+        'editingUser.country_id'         => ['sometimes', 'integer', 'exists:countries,id'],
+        'editingUser.last_name'         => ['sometimes', 'string', 'max:255', 'min:3'],
+        'editingUser.socialite_id'      => ['sometimes', 'string', 'max:255', 'min:3'],
+        'editingUser.city'              => ['sometimes', 'string', 'max:20', 'min:3'],
+        'editingUser.phone'             => ['sometimes', 'string', 'max:20', 'min:3'],
+        'editingUser.address'           => ['sometimes', 'string', 'max:255', 'min:3'],
+        'editingUser.email'             => ['nullable', 'email', 'max:255', 'min:3'],
+        // 'editingUser.sendInvitation'    => ['nullable', 'integer'],
+        'editingUser.locale'            => ['sometimes', 'string', 'in:es,en']
     ];
 
-    public function mount()
+    public function mount(User $user)
     {
-
-        $this->name          = $this->user->name;
-        $this->email          = $this->user->email;
-        $this->status_id        = $this->user->status->id;
-        $this->last_name     = $this->user->last_name;
-        $this->socialite_id  = $this->user->socialite_id;
-        $this->address       = $this->user->address;
-        $this->city          = $this->user->city;
-        $this->phone         = $this->user->phone;
-        $this->state         = $this->user->state;
-        $this->country_id    = $this->user->country_id;
-        $this->postal_code   = $this->user->postal_code;
-        $this->locale = $this->user->locale;
+        $this->editingUser = $user;
     }
-
+    public function makeBlankTransaction()
+    {
+        return User::make(['date' => now(), 'status' => 'success']);
+    }
 
 
     public function updatedPhoto()
@@ -84,43 +76,15 @@ class EditUser extends Component
     public function savedetails()
     {
 
-        $this->validate([
-            'name'              => ['sometimes', 'string', 'max:255', 'min:3'],
-            'email'              => ['sometimes', 'string', 'max:255', 'min:3'],
-            'status_id'         => ['sometimes', 'integer', 'exists:statuses,id'],
-            'country_id'        => ['sometimes', 'integer', 'exists:countries,id'],
-            'last_name'         => ['sometimes', 'string', 'max:255', 'min:3'],
-            'phone'             => ['sometimes', 'string', 'max:20', 'min:3'],
-            'address'           => ['sometimes', 'string', 'max:255', 'min:3'],
-            'sendInvitation'    => ['nullable', 'integer'],
-            'locale'            => ['sometimes', 'string', 'in:es,en,fr,pt,el'],
-            'city'              => ['sometimes', 'string', 'max:20', 'min:3'],
-        ]);
 
         try {
-            $this->user->name             = $this->name;
-            $this->user->email             = $this->email;
-            $this->user->status_id        = $this->status_id;
-            $this->user->city             = $this->city;
-            $this->user->country_id       = $this->country_id;
-            $this->user->last_name        = $this->last_name;
-            $this->user->phone            = $this->phone;
-            $this->user->address          = $this->address;
-            $this->user->locale           = $this->locale;
-            $this->user->update();
 
-
-            // $this->user->city             = $this->city;
-            // $this->user->state            = $this->state;
-            // $this->user->postal_code      = $this->postal_code;
-
+            $this->editingUser->update();
+            // $this->user->save();
 
         } catch (Exception $e) {
-
             Log::info('Error creating Customer Microsoft: '.$e->getMessage());
-
-            session()->flash('alert','Error Creating Customer ');
-
+            $this->notify('User ' . $e->getMessage() . ' Not updated successfully');
         }
 
 
@@ -190,9 +154,10 @@ class EditUser extends Component
         return redirect()->back();
     }
 
-    public function render()
+    public function render(User $user)
     {
-        $user = $this->user;
+
+        $user = $this->editingUser;
         $edit = true;
         $countries = Country::pluck('name', 'id');
         $statuses = Status::pluck('name', 'id');

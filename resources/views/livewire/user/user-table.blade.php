@@ -7,7 +7,7 @@
                         <h4>{{ ucwords(trans_choice('messages.user_table', 2)) }}</h4>
                     </div>
                     <div class="flex items-center justify-between">
-
+                        @dd('s')
                         <div>
                             <div class="flex justify-center flex-1 lg:justify-end">
                                 <!-- Search section -->
@@ -44,12 +44,12 @@
                         </div>
                     </div>
                 </div>
-                <x-table :list="$users" :mobileColumns="[
+                <x-table :list="$user" :mobileColumns="[
                     'name',
                     ]"
                 :columns="[
 
-                    'id' => function($customer){
+                    'id' => function($user){
                         return $customer['path'];
                     },
                     'name' => null,
@@ -61,8 +61,8 @@
                     [
                         'icon' => 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJpbmxpbmUgdy01IGgtNSBtci0yIiB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9ImN1cnJlbnRDb2xvciI+CjxwYXRoIGQ9Ik0xMy41ODYgMy41ODZhMiAyIDAgMTEyLjgyOCAyLjgyOGwtLjc5My43OTMtMi44MjgtMi44MjguNzkzLS43OTN6TTExLjM3OSA1Ljc5M0wzIDE0LjE3MlYxN2gyLjgyOGw4LjM4LTguMzc5LTIuODMtMi44Mjh6IiAvPgo8L3N2Zz4=',
                         'textKey' => 'Edit', // To get the translation on the view
-                        'url' => function($customer){
-                            return $customer['path'].'/edit';
+                        'url' => function($user){
+                            return $user.'/edit';
                         }
                     ],
                     [

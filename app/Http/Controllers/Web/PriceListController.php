@@ -29,13 +29,13 @@ class PriceListController extends Controller
 
     public function index()
     {
+        $priceLists = PriceList::paginate(10);
+        return view('priceList.index', compact('priceLists'));
+    }
 
-        $products = Product::get();
-        $priceLists = $this->priceListRepository->all()->paginate(10);
-        $prices = Price::get();
-
-
-        return view('priceList.index', compact('priceLists', 'prices', 'products'));
+    public function show(PriceList $priceList)
+    {
+        return view('priceList.show', compact('priceList'));
     }
 
     public function create()
@@ -89,39 +89,39 @@ class PriceListController extends Controller
         return view('priceList.prices', compact('prices', 'priceList', 'products'));
     }
 
-    public function update(Request $request, $priceList)
-    {
+    // public function update(Request $request, $priceList)
+    // {
 
-        $priceList = PriceList::find($priceList);
+    //     $priceList = PriceList::find($priceList);
 
 
-        $updatepriceList = $priceList->update([
-            'name' => $request['name'],
-            'description' => $request['description'],
+    //     $updatepriceList = $priceList->update([
+    //         'name' => $request['name'],
+    //         'description' => $request['description'],
 
-        ]);
+    //     ]);
 
-        return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.pricelist_updated_successfully')]);
-    }
+    //     return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.pricelist_updated_successfully')]);
+    // }
 
-    public function storePriceList(Request $request)
-    {
-        $priceList = $this->getUser()->reseller->priceList;
+    // public function storePriceList(Request $request)
+    // {
+    //     $priceList = $this->getUser()->reseller->priceList;
 
-        $newPriceList = PriceList::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'instance_id' => $request->instance_id,
-        ]);
+    //     $newPriceList = PriceList::create([
+    //         'name' => $request->name,
+    //         'description' => $request->description,
+    //         'instance_id' => $request->instance_id,
+    //     ]);
 
-        $priceList->prices->each(function(Price $price)use($newPriceList){
-            $attributes = $price->getAttributes();
-            unset($attributes['id']);
-            $newPriceList->prices()->create($attributes);
-        });
+    //     $priceList->prices->each(function(Price $price)use($newPriceList){
+    //         $attributes = $price->getAttributes();
+    //         unset($attributes['id']);
+    //         $newPriceList->prices()->create($attributes);
+    //     });
 
-        return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.pricelist_created_successfully')]);
-    }
+    //     return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.pricelist_created_successfully')]);
+    // }
 
     public function import(Request $request)
     {

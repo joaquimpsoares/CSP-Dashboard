@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Order;
 use App\Price;
 use App\Product;
-use App\Status;
+use App\Models\Status;
 use App\Subscription;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

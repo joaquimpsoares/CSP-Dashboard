@@ -30,7 +30,7 @@ class JobTable extends Component
     {
         $search = $this->search;
 
-        $query = Monitor::query();
+        $query = Monitor::query()->orderBy('id', 'DESC');
 
         $jobs = $query
         ->where(function ($q)  {
@@ -38,10 +38,6 @@ class JobTable extends Component
             $q->orWhere('queue', 'like', "%{$this->search}%");
         })->paginate(10);
 
-        // $jobs->getCollection()->map(function(Monitor $job){
-        //     $job->setRawAttributes(json_decode(json_encode($job->format()), true)); // Coverts to array recursively (make helper from it?)
-        //     return $job;
-        // });
         return view('livewire.job.job-table',compact('jobs'));
     }
 }

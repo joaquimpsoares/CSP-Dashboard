@@ -3,8 +3,8 @@
 namespace App\Http\Livewire\Subscription;
 
 use Exception;
-use App\Subscription;
 use Livewire\Component;
+use App\Subscription;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use App\Notifications\SubscriptionUpdate;
@@ -21,6 +21,8 @@ class ShowSubscription extends Component
     public Subscription $editing;
     public $showEditModal = false;
     public $showconfirmationModal = false;
+
+    protected $listeners = ['refreshTransactions' => '$refresh'];
 
     public function rules()
     {
@@ -46,8 +48,31 @@ class ShowSubscription extends Component
         $this->editing = $subscription;
         $this->showEditModal = true;
     }
+    public function save()
+    {
+        $this->showEditModal = false;
+        $this->validate();
+        $this->editing->save();
 
-    protected $listeners = ['refreshStatus'];
+        if(collect($this->editing->getChanges())->has('status_id')){
+            if(collect($this->editing->getChanges())['status_id'] == 1){
+                $this->editing->activate();
+            }else{
+                $this->editing->suspend();
+            }
+        }
+        if(collect($this->editing->getChanges())->has('amount')){
+            $this->editing->changeAmount($this->editing->amount);
+        }
+
+        $this->showEditModal = false;
+        $fields = collect($this->editing->getChanges())->except(['updated_at']);
+
+        $this->notify('You\'ve updated '.  $fields .' Subscription');
+        $this->emit('refreshTransactions');
+
+    }
+
 
     public function checkout(Subscription $subscription){
 
@@ -60,72 +85,27 @@ class ShowSubscription extends Component
 
     }
 
-    public function disable(Subscription $subscriptions){
+    public function disable(Subscription $subscription){
+
         $this->showconfirmationModal = false;
 
-        $subscription = new TagydesSubscription([
-            'id'            => $subscriptions->subscription_id,
-            'orderId'       => $subscriptions->order_id,
-            'offerId'       => $subscriptions->product_id,
-            'customerId'    => $subscriptions->customer->microsoftTenantInfo->first()->tenant_id,
-            'name'          => $subscriptions->name,
-            'status'        => $subscriptions->status_id,
-            'quantity'      => $subscriptions->amount,
-            'currency'      => $subscriptions->currency,
-            'billingCycle'  => $subscriptions->billing_period,
-            'created_at'    => $subscriptions->created_at->__toString(),
-            ]);
 
-            Log::info('MS subscriptions: '.$subscription);
-
-        try {
-
-            $update = SubscriptionFacade::withCredentials($subscriptions->instance->external_id, $subscriptions->instance->external_token) //change status only
-            ->update($subscription, ['status' => 'suspended']);
-    } catch (Exception $e) {
-        return Redirect::back()->with('danger','Error Placing order to Microsoft: '.$e->getMessage());
-        Log::info('Error Placing order to Microsoft: '.$e->getMessage());
-    }
+        $subscription->suspend();
 
 
-    $subscriptions->update(['status_id' => 2]);
-    $this->notify('Subscription ' . $subscription->name . ' is suspended, refresh page');
-    Notification::send($subscriptions->customer->users->first(), new SubscriptionUpdate($subscriptions));
-    Log::info('Status changed: Suspended');
-    $this->redirect('#');
+        $this->emit('refreshTransactions');
 
     }
 
-    public function enable(Subscription $subscriptions){
+    public function enable(Subscription $subscription){
 
-        $subscription = new TagydesSubscription([
-            'id'            => $subscriptions->subscription_id,
-            'orderId'       => $subscriptions->order_id,
-            'offerId'       => $subscriptions->product_id,
-            'customerId'    => $subscriptions->customer->microsoftTenantInfo->first()->tenant_id,
-            'name'          => $subscriptions->name,
-            'status'        => $subscriptions->status_id,
-            'quantity'      => $subscriptions->amount,
-            'currency'      => $subscriptions->currency,
-            'billingCycle'  => $subscriptions->billing_period,
-            'created_at'    => $subscriptions->created_at->__toString(),
-            ]);
+        $subscription->active();
 
-            Log::info('MS subscriptions: '.$subscription);
+        $this->notify('Subscription ' . $subscription->name . ' is Active, refresh page');
+        Notification::send($subscription->customer->users->first(), new SubscriptionUpdate($subscription));
+        Log::info('Status changed: Enabled');
+        $this->emit('refreshTransactions');
 
-        try {
-            $update = SubscriptionFacade::withCredentials($subscriptions->instance->external_id, $subscriptions->instance->external_token) //change status only
-            ->update($subscription, ['status' => 'active']);
-        } catch (Exception $e) {
-        return Redirect::back()->with('danger','Error Placing order to Microsoft: '.$e->getMessage());
-        Log::info('Error Placing order to Microsoft: '.$e->getMessage());
-    }
-
-    $subscriptions->update(['status_id' => 1]);
-    $this->notify('Subscription ' . $subscription->name . ' is Active, refresh page');
-    Notification::send($subscriptions->customer->users->first(), new SubscriptionUpdate($subscriptions));
-    Log::info('Status changed: Enabled');
-    $this->redirect('#');
 
     }
 

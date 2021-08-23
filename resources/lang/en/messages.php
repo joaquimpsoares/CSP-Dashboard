@@ -326,4 +326,11 @@ return [
     'main_contact' => 'main contact',
     'license' => 'license'|'licenses',
     'analytic_table' => 'analytic table',
+    'margin' => 'margin',
+    'price_list_details' => 'price list details',
+    'table' => 'table',
+    'relationship' => 'relationship',
+    'table' => 'table',
+    'create_reseller' => 'add reseller',
+    'create_customer' => 'add customer',
 ];

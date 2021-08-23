@@ -2,10 +2,12 @@
     'sortable' => null,
     'direction' => null,
     'multiColumn' => null,
+    'visibility' => null,
+    'tablecell' => null,
 ])
 
 <th
-    {{ $attributes->merge(['class' => 'px-2 py-3 text-sm font-medium text-left whitespace-nowrap'])->only('class') }}
+    {{ $attributes->merge(['class' => 'px-2 py-3 text-sm font-medium text-left whitespace-nowrap '. $visibility . ' ' . $tablecell])->only('class') }}
 >
     @unless ($sortable)
         <span class="text-xs font-medium leading-4 tracking-wider text-left uppercase text-cool-gray-500">{{ $slot }}</span>

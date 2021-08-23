@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\News;
 use App\User;
 use App\Order;
-use App\Status;
+use App\Models\Status;
 use App\Country;
 use App\Customer;
 use App\Instance;
@@ -77,7 +77,7 @@ class HomeController extends Controller
                 $providers = Provider::get();
                 $customers = Customer::get();
 
-                $news = News::take(2)->get();
+                $news = News::orderBy('id', 'DESC')->take(2)->get();
 
                 $orderrecord = Order::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
                 ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
@@ -212,7 +212,7 @@ class HomeController extends Controller
 
                 $subscriptions = $this->subscriptionRepository->all();
 
-                $news = News::take(2)->get();
+                $news = News::orderBy('id', 'DESC')->take(2)->get();
 
                 $orderrecord = Order::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
                 ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
@@ -287,7 +287,7 @@ class HomeController extends Controller
 
                 $provider = $user->reseller->provider;
 
-                $news = News::take(2)->get();
+                $news = News::orderBy('id', 'DESC')->take(2)->get();
 
                 return view('reseller.partials.home', compact('countCustomers','countSubscriptions','orders','news'));
 
@@ -312,7 +312,7 @@ class HomeController extends Controller
                 $reseller = $user->customer->resellers->first()->provider;
                 $orders = Order::get();
 
-                $news = News::take(2)->get();
+                $news = News::orderBy('id', 'DESC')->take(2)->get();
 
 
                 return view('subscriptions.customer', compact('subscriptions', 'customer','abouttoexpire','news','orders'));

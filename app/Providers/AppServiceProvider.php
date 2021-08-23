@@ -12,6 +12,7 @@ use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -29,6 +30,8 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
+
+
     /**
      * Bootstrap any application services.
      *
@@ -36,6 +39,23 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Builder::macro('toCsv', function () {
+            $results = $this->get();
+
+            if ($results->count() < 1) return;
+
+            $titles = implode(',', array_keys((array) $results->first()->getAttributes()));
+
+            $values = $results->map(function ($result) {
+                return implode(',', collect($result->getAttributes())->map(function ($thing) {
+                    return '"'.$thing.'"';
+                })->toArray());
+            });
+
+            $values->prepend($titles);
+
+            return $values->implode("\n");
+        });
 
         Component::macro('notify', function ($message) {
             $this->dispatchBrowserEvent('notify', $message);

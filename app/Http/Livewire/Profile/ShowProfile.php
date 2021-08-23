@@ -75,15 +75,14 @@ class ShowProfile extends Component
             }
 
 
-        $this->company_name     = $this->account->company_name;
-        $this->address          = $this->account->address_1;
-        $this->nif              = $this->account->nif;
-        $this->city             = $this->account->city;
-        $this->state            = $this->account->state;
-        $this->country_id       = $this->account->country_id;
-        $this->postal_code      = $this->account->postal_code;
-        $this->country_id       = $this->account->country_id;
-        $this->country_id       = $this->account->country_id;
+        $this->company_name     = $this->account->company_name ?? '';
+        $this->address          = $this->account->address_1 ?? '';
+        $this->nif              = $this->account->nif ?? '';
+        $this->city             = $this->account->city ?? '';
+        $this->state            = $this->account->state ?? '';
+        $this->country_id       = $this->account->country_id ?? '';
+        $this->postal_code      = $this->account->postal_code ?? '';
+        $this->country_id       = $this->account->country_id ?? '';
 
     }
 

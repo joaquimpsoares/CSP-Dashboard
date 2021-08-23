@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Cart;
 use App\Order;
-use App\Status;
+use App\Models\Status;
 use App\Country;
 use App\Product;
 use App\Customer;
@@ -318,12 +318,6 @@ class CartController extends Controller
             $domain = $validate['customerTenant'] . '.onmicrosoft.com';
             $cart->domain = $validate['customerTenant'];
             $canChangeTenant = FALSE;
-            // $order = $customer->orders()->where('domain', $domain)->first();
-            // $cart->agreement_firstname = $order->agreement_firstname;
-            // $cart->agreement_lastname = $order->agreement_lastname;
-            // $cart->agreement_email = $order->agreement_email;
-            // $cart->agreement_phone = $order->agreement_phone;
-            // $cart->save();
         }
 
         $hasTenant = $this->cartHasTenant($cart);

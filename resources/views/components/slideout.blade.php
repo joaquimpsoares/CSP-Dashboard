@@ -62,10 +62,8 @@ style="display: none;"
             x-transition:leave-end="translate-x-full"
             class="w-screen max-w-2xl"
             x-description="Slide-over panel, show/hide based on slide-over state.">
-            <div class="flex flex-col h-full py-6 overflow-y-scroll bg-white shadow-xl">
-                <div class="px-4 sm:px-6">
-                    {{ $slot }}
-                </div>
+            <div class="flex flex-col h-full overflow-y-scroll bg-white shadow-xl">
+                {{ $slot }}
             </div>
         </div>
     </div>

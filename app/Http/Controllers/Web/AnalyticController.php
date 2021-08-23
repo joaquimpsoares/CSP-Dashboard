@@ -425,7 +425,6 @@ class AnalyticController extends Controller
                 $price = AzurePriceList::where('resource_id', $resource->resource->id)->first();
                 // dd(json_decode($price->rates[0]));
                 Log::channel('azure')->info('for this resource id '.$resource->resource->id. ' this price ' . $resource->prices  );
-                // dd($price->rates);
                 $cost = (json_encode($price->rates[0])*$resource->quantity);
                 Log::channel('azure')->info('for this resource id we calculated this much '.$cost);
 

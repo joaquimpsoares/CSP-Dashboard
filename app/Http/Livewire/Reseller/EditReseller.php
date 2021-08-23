@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Reseller;
 
-use App\Status;
+use App\Models\Status;
 use App\Country;
 use App\Reseller;
 use Livewire\Component;

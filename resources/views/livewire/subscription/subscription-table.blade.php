@@ -48,7 +48,7 @@
                         <x-input.select wire:model="filters.status" id="filter-status">
                             <option value="" disabled>Select Status...</option>
 
-                            @foreach (App\Subscription::STATUSES as $value => $label)
+                            @foreach (App\Models\Subscription::STATUSES as $value => $label)
                             <option value="{{ $value }}">{{ $label }}</option>
                             @endforeach
                         </x-input.select>

@@ -86,7 +86,13 @@ class JobsController extends Controller
             return unserialize($item);
         });
     }
+    public function jobsfailed(){
 
+        $failedJobs = DB::table('failed_jobs')->get();
+
+        return view('job.index', compact('failedJobs'));
+
+    }
 
     public function notifications()
     {

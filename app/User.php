@@ -5,8 +5,10 @@ namespace App;
 use Soved\Laravel\Gdpr\Portable;
 use Laravel\Sanctum\HasApiTokens;
 use Webpatser\Countries\Countries;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
 use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Soved\Laravel\Gdpr\Contracts\Portable as PortableContract;
@@ -84,4 +86,31 @@ class User extends Authenticatable implements PortableContract
     {
         return $this->hasMany(News::class);
     }
+
+    // protected static function booted(){
+    //     static::addGlobalScope('access_level', function(Builder $query){
+    //         $user = Auth::user();
+    //         if($user && $user->userLevel->name === config('app.provider')){
+    //             $query->whereHas('customer', function(Builder $query) use($user){
+    //                 $query->whereHas('resellers', function(Builder $query) use($user){
+    //                     $query->whereHas('provider', function(Builder $query) use($user){
+    //                         $query->where('id', $user->provider->id);
+    //                     });
+    //                 });
+    //             });
+    //         }
+    //         if($user && $user->userLevel->name === config('app.reseller')){
+    //             $query->whereHas('customer', function(Builder $query) use($user){
+    //                 $query->whereHas('resellers', function(Builder $query) use($user){
+    //                     $query->where('id', $user->reseller->id);
+    //                 });
+    //             });
+    //         }
+    //         if($user && $user->userLevel->name === config('app.customer')){
+    //             $query->whereHas('customer', function(Builder $query) use($user){
+    //                 $query->where('id', $user->customer->id);
+    //             });
+    //         }
+    //     });
+    // }
 }

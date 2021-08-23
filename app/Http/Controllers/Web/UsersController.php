@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\web;
 
 use App\User;
-use App\Status;
+use App\Models\Status;
 use App\Country;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
@@ -118,10 +118,15 @@ class UsersController extends Controller
     */
     public function edit(User $user)
     {
-        $edit = true;
-        $countries = Country::pluck( 'name','id');
-        $statuses = Status::pluck( 'name','id');
-        $roles = Role::pluck('name','id');
+
+        if($user->id == Auth::user()->id){
+            $edit = true;
+            $countries = Country::pluck( 'name','id');
+            $statuses = Status::pluck( 'name','id');
+            $roles = Role::pluck('name','id');
+        }else{
+            return abort(403, __('errors.unauthorized_action'));
+        }
 
 
         return view('user.edit',compact('edit', 'user','countries','roles','statuses'));

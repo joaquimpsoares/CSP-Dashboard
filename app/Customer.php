@@ -33,7 +33,7 @@ class Customer extends Model
             'pathUpdate'    => $this->pathUpdate(),
             'reseller'      => $this->resellers()->first(),
             'subscriptions' => $this->subscriptions->count(),
-            'priceLists'    => $this->priceLists()->first(),
+            'priceList'     => $this->priceList,
             'mainUser'      => $this->users()->first(),
             'users'         => $this->users()->get(),
             'azure'         => $this->azure(),
@@ -65,9 +65,9 @@ class Customer extends Model
         return $this->hasMany(Order::class);
     }
 
-    public function priceLists()
+    public function priceList()
     {
-        return $this->hasMany(PriceList::class, 'id', 'price_list_id');
+        return $this->belongsTo(PriceList::class);
     }
 
     public function azure()

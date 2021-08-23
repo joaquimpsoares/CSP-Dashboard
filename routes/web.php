@@ -117,9 +117,11 @@ Route::group(['middleware' => 'auth'], function ()
 
             //Jobs Routes
             Route::get('jobs', 'JobsController@index')->name('jobs');
+            Route::get('jobsfailed', 'JobsController@jobsfailed')->name('jobsfailed');
             Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
             Route::get('jobs/pending', 'JobsController@pending')->name('jobs.pending');
             Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
+
             Route::get('/reseller', 'ResellerController@index')
             ->middleware('permission:' . config('app.reseller_index'))->name('reseller.index');
 
@@ -252,6 +254,8 @@ Route::group(['middleware' => 'auth'], function ()
 
         //PriceList Routes
         Route::resource('/priceList', 'PriceListController');
+
+
         Route::resource('/price', 'PriceController');
 
         Route::get('/order/placeOrder', 'OrderController@placeOrder')->name('order.place_order');

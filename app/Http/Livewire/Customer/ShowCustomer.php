@@ -3,9 +3,11 @@
 namespace App\Http\Livewire\Customer;
 
 use Exception;
-use App\Status;
 use App\Country;
 use App\Customer;
+use App\Instance;
+use App\PriceList;
+use App\Models\Status;
 use Livewire\Component;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +15,8 @@ use Illuminate\Support\Facades\Redirect;
 use App\Notifications\SubscriptionUpdate;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Notification;
-use Tagydes\MicrosoftConnection\Facades\Customer as TagydesCustomer;
+use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
+use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 use Tagydes\MicrosoftConnection\Facades\Subscription as SubscriptionFacade;
 use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 
@@ -41,6 +44,7 @@ class ShowCustomer extends Component
             'editing.postal_code'   => ['required', 'string', 'max:255', 'min:3'],
             'editing.markup'        => ['required', 'min:1'],
             'editing.status_id'     => ['required', 'exists:statuses,id'],
+            'editing.price_list_id' => ['required','integer', 'exists:price_lists,id']
         ];
     }
 
@@ -70,7 +74,7 @@ class ShowCustomer extends Component
                 'currency'      => $subscriptions->currency,
                 'billingCycle'  => $subscriptions->billing_period,
                 'created_at'    => $subscriptions->created_at->__toString(),
-                ]);
+            ]);
 
 
             try {
@@ -85,7 +89,7 @@ class ShowCustomer extends Component
         }
         $customer->update(['status_id' => 2]);
         // Notification::send($subscriptions->customer->users->first(), new SubscriptionUpdate($subscriptions));
-       $this->notify('Customer ' . $customer->company_name . ' is disabled, refresh page');
+        $this->notify('Customer ' . $customer->company_name . ' is disabled, refresh page');
     }
 
     public function enable(Customer $customer)
@@ -103,7 +107,7 @@ class ShowCustomer extends Component
                 'currency'      => $subscriptions->currency,
                 'billingCycle'  => $subscriptions->billing_period,
                 'created_at'    => $subscriptions->created_at->__toString(),
-                ]);
+            ]);
 
 
             try {
@@ -120,45 +124,95 @@ class ShowCustomer extends Component
         $this->notify('Customer ' . $customer->company_name . ' is enabled, refresh page');
     }
 
+    Public function CustomerServiceCosts($customer)
+    {
+        if (!$customer->subscriptions->isEmpty()){
+            $instance = $customer->subscriptions->first()->instance_id;
+            $instance = Instance::find($instance);
+            try {
+            $customer = new TagydesCustomer([
+                'id' => $customer->microsoftTenantInfo->first()->tenant_id,
+                'username' => 'bill@tagydes.com',
+                'password' => 'blabla',
+                'firstName' => 'Nombre',
+                'lastName' => 'Apellido',
+                'email' => 'bill@tagydes.com',
+            ]);
+            $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCosts($customer);
+
+            return $resources;
+        } catch (\Throwable $th) {
+
+        }
+    }
+
+    }
+
+    Public function CustomerLicenseUsage($customer)
+    {
+        if (!$customer->subscriptions->isEmpty()){
+        $instance = $customer->subscriptions->first()->instance_id;
+        $instance = Instance::find($instance);
+        try {
+            $customer = new TagydesCustomer([
+                'id' => $customer->microsoftTenantInfo->first()->tenant_id,
+                'username' => 'bill@tagydes.com',
+                'password' => 'blabla',
+                'firstName' => 'Nombre',
+                'lastName' => 'Apellido',
+                'email' => 'bill@tagydes.com',
+            ]);
+            $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceUsage($customer);
+            return $resources;
+
+        } catch (\Throwable $th) {
+
+        }
+    }
+    }
+
+
     public function save(Customer $customer)
     {
         $validatedData = $this->validate();
         try {
             // $newCustomer = TagydesCustomer::withCredentials($customer->provider->instances->first()->external_id, $customer->provider->instances->first()->external_token)
             // ->checkAddress([
-            //     'AddressLine1'  => $this->editing->address_1,
-            //     'City'          => $this->editing->city,
-            //     'State'         => $this->editing->state,
-            //     'PostalCode'    => $this->editing->postal_code,
-            //     'Country'       => $this->editing->country->iso_3166_2,
-            // ]);
+                //     'AddressLine1'  => $this->editing->address_1,
+                //     'City'          => $this->editing->city,
+                //     'State'         => $this->editing->state,
+                //     'PostalCode'    => $this->editing->postal_code,
+                //     'Country'       => $this->editing->country->iso_3166_2,
+                // ]);
 
-            // if($newCustomer->status === 'NotValidated'){
-            //     $this->showEditModal = false;
-            //     $this->notify($newCustomer->validationMessage);
-            // }
+                // if($newCustomer->status === 'NotValidated'){
+                    //     $this->showEditModal = false;
+                    //     $this->notify($newCustomer->validationMessage);
+                    // }
 
-            $this->editing->save();
-            $this->showEditModal = false;
+                    $this->editing->save();
+                    $this->showEditModal = false;
 
 
-        } catch (ClientException $e) {
-            $this->showEditModal = false;
-            $this->notify('Customer ' . $e->getMessage() . ' created successfully');
-            Log::info('Error saving reseller: '.$e->getMessage());
+                } catch (ClientException $e) {
+                    $this->showEditModal = false;
+                    $this->notify('Customer ' . $e->getMessage() . ' created successfully');
+                    Log::info('Error saving reseller: '.$e->getMessage());
+                }
+                $this->notify('Customer ' . $customer->company_name . ' saved successfully, refresh page');
+
+
+            }
+
+
+            public function render(Customer $customer)
+            {
+                $customer = $this->customer;
+                $countries = Country::get();
+                $statuses = Status::get();
+                $subscriptions = $this->customer->subscriptions;
+                // $costs = $this->CustomerServiceCosts($customer);
+                $usage = $this->CustomerLicenseUsage($customer);
+                return view('livewire.customer.show-customer', compact('statuses','countries', 'customer', 'subscriptions','usage'));
+            }
         }
-        $this->notify('Customer ' . $customer->company_name . ' saved successfully, refresh page');
-
-
-    }
-
-
-    public function render(Customer $customer)
-    {
-        $customer = $this->customer;
-        $countries = Country::get();
-        $statuses = Status::get();
-        $subscriptions = $this->customer->subscriptions;
-        return view('livewire.customer.show-customer', compact('statuses','countries', 'customer', 'subscriptions'));
-    }
-}

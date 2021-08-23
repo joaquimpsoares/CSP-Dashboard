@@ -4,7 +4,7 @@ use App\Customer;
 use App\PriceList;
 use App\Provider;
 use App\Reseller;
-use App\Status;
+use App\Models\Status;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
@@ -18,7 +18,7 @@ class CreateProviderResellerCustomerSeeder extends Seeder
     public function run()
     {
         Provider::unsetEventDispatcher();
-        
+
         $active = Status::where('name', 'messages.active')->first();
 
         $provider = Provider::create([
@@ -241,7 +241,7 @@ class CreateProviderResellerCustomerSeeder extends Seeder
 
         $provider->save();
         $provider2->save();
-        
+
 
         foreach ($provider->resellers as $reseller) {
             $reseller->priceList()->associate($priceList1);
