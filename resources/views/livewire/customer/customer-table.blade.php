@@ -34,14 +34,16 @@
                             </a>
                         </div>
 
-                        <div>
-                            <a href="#" wire:click="create"class="px-2 py-2 ml-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-                                </svg>
-                                {{ ucwords(trans_choice('messages.create', 1)) }}
-                            </a>
-                        </div>
+                        @if(Auth::user()->userLevel->name == 'Reseller')
+                            <div>
+                                <a href="#" wire:click="create"class="px-2 py-2 ml-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                                    </svg>
+                                    {{ ucwords(trans_choice('messages.create', 1)) }}
+                                </a>
+                            </div>
+                        @endif
                     </div>
                 </div>
                 <x-tableazure>
@@ -155,9 +157,9 @@
                 {{-- <form @if($showCreateUser === true) { wire:submit.prevent="savecreate" } @endif> --}}
                     {{-- @dd($showCreateUser === false) --}}
                     @if ($showCreateUser == false)
-                    <x-slot name="title">{{ ucwords(trans_choice('messages.create_customer', 1)) }}</x-slot>
-                    @elseif($showCreateUser == true)
                     <x-slot name="title">{{ ucwords(trans_choice('messages.edit_customer', 1)) }}</x-slot>
+                    @elseif($showCreateUser == true)
+                    <x-slot name="title">{{ ucwords(trans_choice('messages.create_customer', 1)) }}</x-slot>
                     @endif
                     <x-slot name="content">
                         <section class="dark-grey-text">
@@ -214,7 +216,7 @@
                                         </div>
                                         <div class="mb-3 col-lg-4 col-md-6">
                                             <x-label for="zip">{{ucwords(trans_choice('messages.postal_code', 1))}}</x-label>
-                                            <x-input wire:model="editing.postal_code" name="postal_code" type="text" class="@error('editing.postal_code') is-invalid @enderror" id="postal_code" placeholder="" required></x-input>
+                                            <x-input wire:model="editing.postal_code" name="postal_code" type="number" class="@error('editing.postal_code') is-invalid @enderror" id="postal_code" placeholder="" required></x-input>
                                             @error('editing.postal_code')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                         </div>
                                     </div>
@@ -237,7 +239,7 @@
                                 </div>
                             </div>
                             @if ($showCreateUser == true)
-                            <h3>User informatrion</h3>
+                            <h3>{{ucwords(trans_choice('user_information', 1))}}</h3>
                             <hr>
                             <div class="row">
                                 <div class="col-md-6">
@@ -307,8 +309,14 @@
                         </section>
                     </x-slot>
                     <x-slot name="footer">
-                        <x-a wire:click="$set('showEditModal', false)">Cancel</x-a>
-                        <x-button.primary type="submit">Save</x-button.primary>
+                        <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            {{ucwords(trans_choice('cancel', 1))}}
+                        </button>
+                        <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            {{ucwords(trans_choice('save', 1))}}
+                        </button>
+                        {{-- <x-a wire:click="$set('showEditModal', false)">Cancel</x-a>
+                        <x-button.primary type="submit">Save</x-button.primary> --}}
                     </x-slot>
                 </x-modal.slideout>
             </form>

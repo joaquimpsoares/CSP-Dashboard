@@ -341,4 +341,5 @@ return [
     'add_announcements' => 'add announcements',
     'announcements' => 'announcements',
     'edit_announcements' => 'edit announcements',
+    'user_information' => 'user information',
 ];
