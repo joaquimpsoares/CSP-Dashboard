@@ -255,7 +255,7 @@
                                     <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">
                                         <div class="p-0 mt-px mb-0 ml-px mr-0 pointer-events-auto">
                                             <span class="inline font-medium text-gray-900">
-                                                {{$subscription->products->first()->name}}
+                                                {{$subscription->products->first()->name ?? ''}}
                                                 <span class="inline text-gray-600">
                                                     •
                                                 </span>
@@ -442,78 +442,82 @@
                                 </div>
                                 <div class="row">
                                     <div class="mt-2 mb-2 col-md-12">
-                                        <x-label for="country">{{ucwords(trans_choice('messages.country', 1))}}</x-label>
+                                        <x-label for="billing_period">{{ucwords(trans_choice('messages.billing_cycle', 1))}}</x-label>
                                         <div class="mb-3 input-group">
-                                            <select wire:model="editing.country_id" name="country_id" class="form-control @error('editing.country_id') is-invalid @enderror" sf-validate="required">
+                                            @if ($subscription->billing_type != 'software')
+                                            <select wire:model="editing.billing_period" name="billing_period" class="form-control @error('editing.billing_period') is-invalid @enderror" sf-validate="required">
                                                 <option value="{{$subscription->billing_period}}">{{$subscription->billing_period}}</option>
-                                                {{-- @foreach ($countries as $key => $country)
-                                                    <option value="{{$country->id}}">{{$country->name}}</option>
-                                                    @endforeach --}}
-                                                </select>
-                                                @error('editing.country_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                            </div>
+                                                @foreach($subscription->products->first()->supported_billing_cycles as $cycle)
+                                                <option value="{{ $cycle }}" @if($cycle == $subscription->billing_period) selected @endif>
+                                                    {{ $cycle }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                            @error('editing.billing_period')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                            @endif
                                         </div>
                                     </div>
-                                    <hr>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <x-label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</x-label>
-                                            <div class="form-group">
-                                                @can('subscription_delete')
-                                                <div name="status" class="select is-info">
-                                                    <select wire:model="editing.status_id" name="status" class="form-control @error('editing.status') is-invalid @enderror" sf-validate="required">
-                                                        <option  value="1" {{ $subscription->status_id == "1" ? "selected":"" }}> Active</option>
-                                                        <option  value="2" {{ $subscription->status_id == "2" ? "selected":"" }}> Suspend</option>
-                                                    </select>
-                                                    @error('editing.status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                                </div>
-                                                @endcan
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <x-label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</x-label>
+                                        <div class="form-group">
+                                            @can('subscription_delete')
+                                            <div name="status" class="select is-info">
+                                                <select wire:model="editing.status_id" name="status" class="form-control @error('editing.status') is-invalid @enderror" sf-validate="required">
+                                                    <option  value="1" {{ $subscription->status_id == "1" ? "selected":"" }}> Active</option>
+                                                    <option  value="2" {{ $subscription->status_id == "2" ? "selected":"" }}> Suspend</option>
+                                                </select>
+                                                @error('editing.status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                             </div>
+                                            @endcan
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="max-w-xl mx-auto bg-white border border-gray-200" x-data="{selected:null}">
-                                <ul class="shadow-box">
-                                    <li class="relative border-b border-gray-200">
-                                        <button type="button" class="w-full px-8 py-6 text-left" @click="selected !== 1 ? selected = 1 : selected = null">
-                                            <div class="flex items-center justify-between">
-                                                <span>Addons</span>
-                                                <span class="ico-plus">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                    </svg>
-                                                </span>
-                                            </div>
-                                        </button>
-                                        <div class="relative overflow-hidden transition-all duration-700 max-h-0" style="" x-ref="container1" x-bind:style="selected == 1 ? 'max-height: ' + $refs.container1.scrollHeight + 'px' : ''">
-                                            <div class="p-6">
-                                                @if ($subscription->billing_type != 'software')
-                                                @foreach ($subscription->products->first()->getaddons()->all() as $item)
-                                                <tr>
-                                                    <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap"><strong>Add-on:</strong> {{$item->name}}</td>
-                                                    <div class="w-56 pt-0 mb-3">
-                                                        <div>
-                                                            <div class="flex mt-1 rounded-md shadow-sm">
-                                                                <div class="relative flex items-stretch flex-grow focus-within:z-10">
-                                                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                                    </div>
-                                                                    <input  value="{{$item->amount}}" class="block w-full pl-10 border-gray-300 rounded-none focus:ring-indigo-500 focus:border-indigo-500 rounded-l-md sm:text-sm" type="number" name="amount_addon">
+                        </div>
+                        <div class="max-w-xl mx-auto bg-white border border-gray-200" x-data="{selected:null}">
+                            <ul class="shadow-box">
+                                <li class="relative border-b border-gray-200">
+                                    <button type="button" class="w-full px-8 py-6 text-left" @click="selected !== 1 ? selected = 1 : selected = null">
+                                        <div class="flex items-center justify-between">
+                                            <span>Addons</span>
+                                            <span class="ico-plus">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </button>
+                                    <div class="relative overflow-hidden transition-all duration-700 max-h-0" style="" x-ref="container1" x-bind:style="selected == 1 ? 'max-height: ' + $refs.container1.scrollHeight + 'px' : ''">
+                                        <div class="p-6">
+                                            @if ($subscription->billing_type != 'software')
+                                            @foreach ($subscription->products->first()->getaddons()->all() as $item)
+                                            <tr>
+                                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap"><strong>Add-on:</strong> {{$item->name}}</td>
+                                                <div class="w-56 pt-0 mb-3">
+                                                    <div>
+                                                        <div class="flex mt-1 rounded-md shadow-sm">
+                                                            <div class="relative flex items-stretch flex-grow focus-within:z-10">
+                                                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                                                 </div>
-                                                                <button class="relative inline-flex items-center px-4 py-2 -ml-px space-x-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-r-md bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
-                                                                    <span>{{$item->unitType}}</span>
-                                                                </button>
+                                                                <input  value="{{$item->amount}}" class="block w-full pl-10 border-gray-300 rounded-none focus:ring-indigo-500 focus:border-indigo-500 rounded-l-md sm:text-sm" type="number" name="amount_addon">
                                                             </div>
+                                                            <button class="relative inline-flex items-center px-4 py-2 -ml-px space-x-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-r-md bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+                                                                <span>{{$item->unitType}}</span>
+                                                            </button>
                                                         </div>
                                                     </div>
-                                                </tr>
-                                                @endforeach
-                                                @endif
-                                            </div>
+                                                </div>
+                                            </tr>
+                                            @endforeach
+                                            @endif
                                         </div>
-                                    </li>
-                                </ul>
-                            </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </section>
                 </x-slot>
                 <x-slot name="footer">

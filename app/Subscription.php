@@ -70,6 +70,39 @@ class Subscription extends Model
         ])->save();
     }
 
+    public function changeBillingCycle($cycle)
+    {
+        // $product = Price::where('product_id', $this->product_id)->first();
+        $subscription = new TagydesSubscription([
+            'id'            => $this->subscription_id,
+            'orderId'       => $this->order_id,
+            'offerId'       => $this->product_id,
+            'customerId'    => $this->customer->microsoftTenantInfo->first()->tenant_id,
+            'name'          => $this->name,
+            'status'        => $this->status_id,
+            'quantity'      => $this->amount,
+            'currency'      => $this->currency,
+            'billingCycle'  => $this->billing_period,
+            'created_at'    => $this->created_at->__toString(),
+        ]);
+        // $order = new Order();
+        // $order->details = "changing subscription ".$this->name ." from ". $subscription->billing_period. " to ". $cycle;
+        // $order->token = Str::uuid();
+        // $order->user_id = Auth::user()->id;
+        // $order->save();
+        // $order->products()->attach($this->product_id, [
+        //     'id' => Str::uuid(),
+        //     'price' => $product->price ?? '0',
+        //     'retail_price' => $product->msrp ?? '0',
+        //     'billing_cycle' => $cycle,
+        //     'quantity' => $this->quantity ?? '0'
+        //     ]);
+
+            $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)->changeBillingCycle($subscription, $cycle);
+
+        return $this;
+    }
+
     public function changeAmount($quantity)
     {
 

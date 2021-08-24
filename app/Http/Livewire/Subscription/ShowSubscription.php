@@ -62,6 +62,10 @@ class ShowSubscription extends Component
             $this->editing->changeAmount($this->editing->amount);
         }
 
+        if(collect($this->editing->getChanges())->has('billing_period')){
+            $this->editing->changeBillingCycle($this->editing->billing_period);
+        }
+
         $this->showEditModal = false;
         $fields = collect($this->editing->getChanges())->except(['updated_at']);
 
