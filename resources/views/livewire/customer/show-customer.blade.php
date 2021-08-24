@@ -240,6 +240,7 @@
                                             <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
                                                 <div class="p-0 mt-px mb-0 ml-px mr-0 pointer-events-auto">
                                                     <span class="inline font-medium text-gray-900">
+                                                        @dd($subscription->products)
                                                         {{$subscription->products->first()->name ?? ''}}
                                                         <span class="inline text-gray-600">
                                                             •
