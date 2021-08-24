@@ -16,6 +16,6 @@ class AzureUsageReport extends Model
 
     public function subscription()
     {
-        return $this->hasOne('App\Models\Subscription','id', 'subscription_id');
+        return $this->hasOne('App\Subscription','id', 'subscription_id');
     }
 }

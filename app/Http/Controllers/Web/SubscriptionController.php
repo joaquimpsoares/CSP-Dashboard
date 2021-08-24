@@ -3,11 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use Exception;
-use App\Product;
-use App\Customer;
 use App\Instance;
-use App\Provider;
-use App\Reseller;
 use App\Subscription;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
