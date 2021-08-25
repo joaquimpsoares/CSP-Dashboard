@@ -210,7 +210,7 @@
                                     </div>
                                     <div class="mb-3 col-lg-4 col-md-6">
                                         <x-label for="zip">{{ucwords(trans_choice('messages.postal_code', 1))}}</x-label>
-                                        <x-input wire:model="editing.postal_code" name="postal_code" type="text" class="@error('editing.postal_code') is-invalid @enderror" id="postal_code" placeholder="" required></x-input>
+                                        <x-input wire:model="editing.postal_code" name="postal_code" type="number" class="@error('editing.postal_code') is-invalid @enderror" id="postal_code" placeholder="" required></x-input>
                                         @error('editing.postal_code')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                     </div>
                                 </div>
@@ -308,8 +308,12 @@
                     </section>
                 </x-slot>
                 <x-slot name="footer">
-                    <x-a wire:click="$set('showEditModal', false)">Cancel</x-a>
-                    <x-button.primary type="submit">Save</x-button.primary>
+                    <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        {{ucwords(trans_choice('cancel', 1))}}
+                    </button>
+                    <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        {{ucwords(trans_choice('save', 1))}}
+                    </button>
                 </x-slot>
             </x-modal.slideout>
         </form>

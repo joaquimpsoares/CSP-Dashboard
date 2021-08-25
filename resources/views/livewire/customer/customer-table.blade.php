@@ -132,7 +132,7 @@
                             <x-table.cell colspan="9">
                                 <div class="flex items-center justify-center space-x-2">
                                     <x-icon.inbox class="w-8 h-8 text-cool-gray-400" />
-                                    <span class="py-8 text-xl font-medium text-cool-gray-400">No Price List found...</span>
+                                    <span class="py-8 text-xl font-medium text-cool-gray-400">No Customer found...</span>
                                 </div>
                             </x-table.cell>
                         </x-table.row>
@@ -147,15 +147,9 @@
     </div>
     <!-- Save Transaction Modal -->
     <div>
-        {{-- @dd($customer==null) --}}
-        {{-- @if($customer !=null) --}}
         @if($showEditModal == true)
         <form @if($showCreateUser === false) { wire:submit.prevent="save({{$customer->id}})" } @else { wire:submit.prevent="savecreate" } @endif>
             <x-modal.slideout wire:model.defer="showEditModal">
-
-                {{-- @else --}}
-                {{-- <form @if($showCreateUser === true) { wire:submit.prevent="savecreate" } @endif> --}}
-                    {{-- @dd($showCreateUser === false) --}}
                     @if ($showCreateUser == false)
                     <x-slot name="title">{{ ucwords(trans_choice('messages.edit_customer', 1)) }}</x-slot>
                     @elseif($showCreateUser == true)
@@ -225,11 +219,12 @@
                                         <div class="mb-4 col-lg-4 col-md-6">
                                             <x-label for="country">{{ucwords(trans_choice('messages.price_list', 1))}}</x-label>
                                             <div class="mb-3 input-group">
-                                                {{-- <select wire:model="editing.price_list_id" name="price_list_id" class="form-control @error('editing.price_list_id') is-invalid @enderror" sf-validate="required">
+                                                @DD(Auth::user()->reseller->provider->priceList)
+                                                <select wire:model="editing.price_list_id" name="price_list_id" class="form-control @error('editing.price_list_id') is-invalid @enderror" sf-validate="required">
                                                     @foreach ($customer->resellers->first()->availablePriceLists as $pricelist)
                                                     <option value="{{$pricelist->id}}" >{{$pricelist->name}}</option>
                                                     @endforeach
-                                                </select> --}}
+                                                </select>
                                                 @error('editing.price_list_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                             </div>
                                         </div>
@@ -315,8 +310,6 @@
                         <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             {{ucwords(trans_choice('save', 1))}}
                         </button>
-                        {{-- <x-a wire:click="$set('showEditModal', false)">Cancel</x-a>
-                        <x-button.primary type="submit">Save</x-button.primary> --}}
                     </x-slot>
                 </x-modal.slideout>
             </form>

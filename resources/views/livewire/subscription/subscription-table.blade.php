@@ -89,7 +89,12 @@
                             <tr class="table-subheader hover:bg-gray-100">
                                 {{-- <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{$subscription['id']}}</td> --}}
                                 <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap"><a href="{{route('subscription.show', $subscription->id)}}">{{$subscription['id']}}</a></td>
-                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->name}}</td>
+                                <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->name}}
+                                    @if($subscription->autorenew == 0)
+                                    <span class="flex-shrink-0 inline-block px-2 py-0.5 text-red-800 text-xs font-medium bg-red-100 rounded-full">{{ ucwords(trans_choice('messages.no_autorenew', 1)) }}</span>
+                                    @endif
+                                </td>
+
                                 <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->customer->company_name}}</td>
                                 @if ($subscription->billing_type === 'usage' )
                                 <td></td>

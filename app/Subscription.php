@@ -159,8 +159,8 @@ class Subscription extends Model
         ->update($subscription, ['status' => 'suspended']);
 
         $this->markAsCancelled();
-        $this->notify('Subscription ' . $subscription->name . ' is suspended, refresh page');
-        Notification::send($subscription->customer->users->first(), new SubscriptionUpdate($subscription));
+        // $this->notify('Subscription ' . $subscription->name . ' is suspended, refresh page');
+        // Notification::send($subscription->customer->users->first(), new SubscriptionUpdate($subscription));
         Log::info('Status changed: Suspended');
 
         return $this;

@@ -1,73 +1,52 @@
 <div>
+    @if($subscription->autorenew == 0 && $subscription->status_id == 1)
+    <div class="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+            <div class="p-4 border-l-4 border-yellow-400 bg-yellow-50">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="w-5 h-5 text-yellow-400" x-description="Heroicon name: solid/exclamation" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-yellow-700">
+                            This subscription is set not to auto renew.
+                        </p>
+                        <p class="text-xs text-yellow-700"> On the {{$subscription->expiration_data}} will be automatically suspended. </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+    {{-- ->getUpgradeProducts()->all() --}}
+    @if($subscription->products->where('instance_id', $subscription->instance_id)->first()->upgrade_target_offers != null)
+
+    <div class="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+            <div class="p-4 border-l-4 border-yellow-400 bg-yellow-50">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="w-5 h-5 text-yellow-400" x-description="Heroicon name: solid/exclamation" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-yellow-700">
+                            This subscription has available upgrades:
+                        </p>
+                        @foreach($subscription->products->where('instance_id', $subscription->instance_id)->first()->getUpgradeProducts()->all() as $key => $value)
+                        <p class="text-xs text-yellow-700"> {{$value->name}}
+                        </p>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
     <div class="relative z-0 flex-col flex-1 overflow-y-auto">
-        <!-- This example requires Tailwind CSS v2.0+ -->
-        <div wire:loading wire:target="enable" class="fixed inset-x-0 bottom-0 pb-2 sm:pb-5">
-            <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="p-2 bg-indigo-600 rounded-lg shadow-lg sm:p-3">
-                    <div class="flex flex-wrap items-center justify-between">
-                        <div class="flex items-center flex-1 w-0">
-                            <span class="flex p-2 bg-indigo-800 rounded-lg">
-                                <!-- Heroicon name: outline/speakerphone -->
-                                <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
-                                </svg>
-                            </span>
-                            <p class="ml-3 font-medium text-white truncate">
-                                <span class="md:hidden">
-                                    We announced a new product!
-                                </span>
-                                <span class="hidden md:inline">
-                                    Enabling Subscription...
-                                </span>
-                            </p>
-                        </div>
-                        <div class="flex-shrink-0 order-2 sm:order-3 sm:ml-2">
-                            <button type="button" class="flex p-2 -mr-1 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-white">
-                                <span class="sr-only">Dismiss</span>
-                                <!-- Heroicon name: outline/x -->
-                                <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- This example requires Tailwind CSS v2.0+ -->
-        <div wire:loading wire:target="disable" class="fixed inset-x-0 bottom-0 pb-2 sm:pb-5">
-            <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="p-2 bg-indigo-600 rounded-lg shadow-lg sm:p-3">
-                    <div class="flex flex-wrap items-center justify-between">
-                        <div class="flex items-center flex-1 w-0">
-                            <span class="flex p-2 bg-indigo-800 rounded-lg">
-                                <!-- Heroicon name: outline/speakerphone -->
-                                <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
-                                </svg>
-                            </span>
-                            <p class="ml-3 font-medium text-white truncate">
-                                <span class="md:hidden">
-                                    Suspending Subscription...
-                                </span>
-                                <span class="hidden md:inline">
-                                    Suspending Subscription...
-                                </span>
-                            </p>
-                        </div>
-                        <div class="flex-shrink-0 order-2 sm:order-3 sm:ml-2">
-                            <button type="button" class="flex p-2 -mr-1 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-white">
-                                <span class="sr-only">Dismiss</span>
-                                <!-- Heroicon name: outline/x -->
-                                <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="p-4 overflow-hidden bg-white">
             <div class="flex flex-col items-center justify-between lg:flex-row">
                 <div class="flex items-center">
@@ -90,20 +69,29 @@
                             <button type="button" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none"  x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-2" @click="open = !open" aria-expanded="false" x-bind:aria-expanded="open.toString()" x-state-description="Current:"bg-gray-100 text-gray-900", Default:"bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900"">
                                 <span class="block -mt-px normal-case whitespace-no-wrap" style='margin-top: -1px; font-feature-settings: "pnum"; font-variant: proportional-nums; transition: color 0.24s ease 0s; overflow-wrap: break-word;'>
                                     <span class="box-border">
-                                        Actions
+                                        {{ ucwords(trans_choice('actions', 1)) }}
                                     </span>
                                 </span>
                             </button>
                             <div  x-cloak x-show.transition="open" @click.away="open = false" class="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                                 <div class="py-1" role="none">
-                                    <a wire:click="edit({{ $subscription->id }})" href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-4">Edit Subscription</a>
+                                    <a wire:click="edit({{ $subscription->id }})" href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-4">
+                                        <x-icon.edit></x-icon.edit>
+                                        {{ ucwords(trans_choice('edit', 1)) }}
+                                    </a>
                                 </div>
                                 <div class="py-1" role="none">
                                     @if($status == 'messages.active')
-                                    <button wire:click="$toggle('showconfirmationModal')" class="block px-4 py-2 text-sm text-red-700" role="menuitem" tabindex="-1" id="menu-item-6">Suspend</button>
+                                    <button wire:click="$toggle('showconfirmationModal')" class="block px-4 py-2 text-sm text-red-700" role="menuitem" tabindex="-1" id="menu-item-6">
+                                        <x-icon.pause></x-icon.pause>
+                                        {{ ucwords(trans_choice('suspend', 1)) }}
+                                    </button>
                                     @endif
                                     @if($subscription->status->name != 'messages.active')
-                                    <button wire:click="enable({{$subscription->id}})" class="block px-4 py-2 text-sm text-green-700" role="menuitem" tabindex="-1" id="menu-item-6">Enable</button>
+                                    <button wire:click="enable({{$subscription->id}})" class="block px-4 py-2 text-sm text-green-700" role="menuitem" tabindex="-1" id="menu-item-6">
+                                        <x-icon.play></x-icon.play>
+                                        {{ ucwords(trans_choice('enable', 1)) }}
+                                    </button>
                                     @endif
                                 </div>
                             </div>
@@ -416,6 +404,24 @@
             </div>
         </div>
     </div>
+    <form wire:submit.prevent="disable({{$subscription->id}})">
+        <x-modal.confirmation wire:model.defer="showconfirmationModal">
+            <x-slot name="title">Disabling Subscription</x-slot>
+
+            <x-slot name="content">
+                Are you sure you want to suspend this subscription? By doing so you have 90 days to re-activate the subscription.
+            </x-slot>
+
+            <x-slot name="footer">
+                <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        {{ucwords(trans_choice('messages.cancel', 1))}}
+                    </button>
+                    <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        {{ucwords(trans_choice('messages.suspend', 1))}}
+                    </button>
+            </x-slot>
+        </x-modal.confirmation>
+    </form>
     <!-- Save Transaction Modal -->
     <div>
         <form wire:submit.prevent="save({{$subscription->id}})" class="flex flex-col h-full bg-white divide-y divide-gray-200 shadow-xl">
@@ -458,6 +464,15 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="mt-2 mb-2 col-md-12">
+                                        <x-label for="billing_period">{{ucwords(trans_choice('messages.autorenew', 1))}}</x-label>
+                                        <div class="mb-3 input-group">
+                                            <x-input.checkbox wire:model="editing.autorenew" ></x-input.checkbox>
+                                            @error('editing.billing_period')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div>
+                                    </div>
+                                </div>
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-12">
@@ -466,8 +481,8 @@
                                             @can('subscription_delete')
                                             <div name="status" class="select is-info">
                                                 <select wire:model="editing.status_id" name="status" class="form-control @error('editing.status') is-invalid @enderror" sf-validate="required">
-                                                    <option  value="1" {{ $subscription->status_id == "1" ? "selected":"" }}> Active</option>
-                                                    <option  value="2" {{ $subscription->status_id == "2" ? "selected":"" }}> Suspend</option>
+                                                    <option  value="1" {{ $subscription->status_id == "1" ? "selected":"" }}> {{ucwords(trans_choice('messages.active', 1))}}</option>
+                                                    <option  value="2" {{ $subscription->status_id == "2" ? "selected":"" }}> {{ucwords(trans_choice('messages.suspend', 1))}}</option>
                                                 </select>
                                                 @error('editing.status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                             </div>
@@ -521,26 +536,17 @@
                     </section>
                 </x-slot>
                 <x-slot name="footer">
-                    <x-a wire:click="$set('showEditModal', false)">Cancel</x-a>
-                    <x-button.primary type="submit">Save</x-button.primary>
+                    <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        {{ucwords(trans_choice('cancel', 1))}}
+                    </button>
+                    <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        {{ucwords(trans_choice('save', 1))}}
+                    </button>
                 </x-slot>
             </x-modal.slideout>
         </form>
     </div>
-    <form wire:submit.prevent="disable({{$subscription->id}})">
-        <x-modal.confirmation wire:model.defer="showconfirmationModal">
-            <x-slot name="title">Disabling Subscription</x-slot>
 
-            <x-slot name="content">
-                Are you sure you want to disable this subscription? By doing so you have 90 days to re-activate the subscription.
-            </x-slot>
-
-            <x-slot name="footer">
-                <a href="#" wire:click="$set('showconfirmationModal', false)">Cancel</a>
-                <button type="submit">Disable</button>
-            </x-slot>
-        </x-modal.confirmation>
-    </form>
 </div>
 <script>
     function copyToClipboard(subscription_id) {

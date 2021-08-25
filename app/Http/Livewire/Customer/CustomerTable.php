@@ -56,7 +56,7 @@ class CustomerTable extends Component
             'editing.postal_code'           => 'required'|'string'|'regex:/^[0-9A-Za-z.\-]+$/'|'max:255'|'min:3',
             'editing.status_id'             => 'required'|'integer'|'exists:statuses,id',
             'editing.markup'                => 'nullable'|'integer'|'min:3',
-            'editing.price_list_id'         => 'required'|'integer'|'exists:price_lists,id',
+            'editing.price_list_id'         => 'required'|'integer'|'exists:price_list,id',
 
             'creatingUser.name'             => 'sometimes'|'string'|'max:255'|'min:3',
             'creatingUser.last_name'        => 'sometimes'|'string'|'max:255'|'min:3',

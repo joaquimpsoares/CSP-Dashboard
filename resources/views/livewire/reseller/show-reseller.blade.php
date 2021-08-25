@@ -21,27 +21,42 @@
                         <button type="button" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none"  x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-2" @click="open = !open" aria-expanded="false" x-bind:aria-expanded="open.toString()" x-state-description="Current:"bg-gray-100 text-gray-900", Default:"bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900"">
                             <span class="block -mt-px normal-case whitespace-no-wrap" style='margin-top: -1px; font-feature-settings: "pnum"; font-variant: proportional-nums; transition: color 0.24s ease 0s; overflow-wrap: break-word;'>
                                 <span class="box-border">
-                                    Actions
+                                    {{ ucwords(trans_choice('messages.actions', 1)) }}
                                 </span>
                             </span>
                         </button>
                         <div  x-cloak x-show.transition="open" @click.away="open = false" class="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                             <div class="py-1" role="none">
-                                <a href="#" wire:click="edit({{ $reseller->id }})" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-4">{{ ucwords(trans_choice('messages.edit', 1)) }} </a>
+                                <span>
+                                    <a href="#" wire:click="edit({{ $reseller->id }})" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-4">
+                                        <x-icon.edit></x-icon.edit>
+                                        {{ ucwords(trans_choice('messages.edit', 1)) }}
+                                    </a>
+                                </span>
                             </div>
                             <div class="py-1" role="none">
                                 @canImpersonate
                                 @if(!empty($reseller->format()['mainUser']))
-                                <a href="{{ route('impersonate', $reseller->format()['mainUser']['id']) }}" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-4">Impersonate</a>
+                                <a href="{{ route('impersonate', $reseller->format()['mainUser']['id']) }}" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-4">
+                                    <x-icon.impersonate></x-icon.impersonate>
+                                    {{ ucwords(trans_choice('messages.impersonate', 1)) }}
+                                </a>
                                 @endif
                                 @endCanImpersonate
                             </div>
                             <div class="py-1" role="none">
                                 @if($reseller->status->name == 'messages.active')
-                                <a href="#" wire:click="$toggle('showconfirmationModal')" class="block px-4 py-2 text-sm text-red-700" role="menuitem" tabindex="-1" id="menu-item-6">Disable</a>
+                                <a href="#" wire:click="$toggle('showconfirmationModal')" class="block px-4 py-2 text-sm text-red-700" role="menuitem" tabindex="-1" id="menu-item-6">
+                                    <x-icon.pause></x-icon.pause>
+                                    {{ ucwords(trans_choice('messages.suspend', 1)) }}
+                                </a>
                                 @endif
                                 @if($reseller->status->name != 'messages.active')
-                                <a type="button" wire:click="enable({{ $reseller->id }})" class="block px-4 py-2 text-sm text-green-700" role="menuitem" tabindex="-1" id="menu-item-6">Enable</a>
+                                <a type="button" wire:click="enable({{ $reseller->id }})" class="block px-4 py-2 text-sm text-green-700" role="menuitem" tabindex="-1" id="menu-item-6">
+                                    <x-icon.play></x-icon.play>
+                                    {{ ucwords(trans_choice('messages.reactivate', 1)) }}
+
+                                </a>
                                 @endif
                             </div>
                         </div>
@@ -253,7 +268,82 @@
                 </div>
             </div>
         </div>
+        <div class="flex flex-col items-center justify-between lg:flex-row">
+            <div class="flex items-center">
+                <h4>{{ ucwords(trans_choice('messages.user', 2)) }}</h4>
+            </div>
+            <div class="flex items-center justify-between">
+                <div>
+                    <a  href="{{ route('user.create') }}" class="px-2 py-2 ml-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        {{ ucwords(trans_choice('messages.create', 1)) }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <table class="min-w-full px-4 divide-y divide-gray-200">
+            <thead>
+                <tr>
+                    <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.name', 2)) }}</th>
+                    <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.email', 2)) }}</th>
+                    <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.status', 2)) }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($reseller->users as $key => $user)
+                <tr  class="hover:bg-gray-100">
+                    <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">
+                        <a href="{{ route('user.edit', $user) }}" class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" >
+                            <div class="p-0 mt-px mb-0 ml-px mr-0 pointer-events-auto">
+                                <span class="inline font-medium text-gray-900">
+                                    {{$user->name}}
+                                    {{$user->last_name}}
+                                </span>
+                            </div>
+                        </a>
+                    </td>
+                    <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">
+                        <a href="{{ route('user.edit', $user) }}" class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" >
+                            {{$user->email}}
+                        </a>
+                    </td>
+                    <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">
+                        <a href="{{ route('user.edit', $user) }}" class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" >
+                            <p>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 capitalize">
+                                    {{ ucwords(trans_choice($user->status->name, 1)) }}
+                                </span>
+                            </p>
+                        </a>
+                    </td>
+                    <td class="px-2 py-2 text-sm font-medium text-left whitespace-nowrap">
+                        <div class="z-10">
+                            <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                                </svg>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="">
+                                    <x-icon.edit class="text-gray-400"/> <span>{{ ucwords(trans_choice('edit', 1)) }}</span>
+                                </a>
+                                <a class="dropdown-item" href="">
+                                    <x-icon.trash class="text-gray-400"/> <span>{{ ucwords(trans_choice('delete', 1)) }}</span>
+                                </a>
+                                <a class="dropdown-item" href="">
+                                    <x-icon.ban class="text-gray-400"/> <span>{{ ucwords(trans_choice('disable', 1)) }}</span>
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
+
 </div>
 <form wire:submit.prevent="disable({{$reseller->id}})">
     <x-modal.confirmation wire:model.defer="showconfirmationModal">
@@ -347,7 +437,7 @@
                                 </div>
                                 <div class="mb-4 col-lg-4 col-md-6">
 
-                                    <x-label for="country">{{ucwords(trans_choice('messages.price_list_id', 1))}}</x-label>
+                                    <x-label for="country">{{ucwords(trans_choice('messages.price_list', 1))}}</x-label>
                                     <div class="mb-3 input-group">
                                         <select wire:model="editing.price_list_id" name="price_list_id" class="form-control @error('editing.price_list_id') is-invalid @enderror" sf-validate="required">
                                             @foreach ($reseller->provider->availablePriceLists as $pricelist)
@@ -377,8 +467,12 @@
                     </div>
                 </x-slot>
                 <x-slot name="footer">
-                    <x-a wire:click="$set('showEditModal', false)">Cancel</x-a>
-                    <x-button.primary type="submit">Save</x-button.primary>
+                    <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        {{ucwords(trans_choice('cancel', 1))}}
+                    </button>
+                    <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        {{ucwords(trans_choice('save', 1))}}
+                    </button>
                 </x-slot>
             </x-modal.slideout>
         </form>

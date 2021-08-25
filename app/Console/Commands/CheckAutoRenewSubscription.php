@@ -8,39 +8,38 @@ use App\Subscription;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Notification;
 
-class RenewSubscriptions extends Command
+class CheckAutoRenewSubscription extends Command
 {
     /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'command:RenewSubscriptions';
+    * The name and signature of the console command.
+    *
+    * @var string
+    */
+    protected $signature = 'command:CheckAutoRenewSubscription';
 
     /**
-     * The console command description.
-     *
-     * @var string
-     */
+    * The console command description.
+    *
+    * @var string
+    */
     protected $description = 'Command description';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
+    * Create a new command instance.
+    *
+    * @return void
+    */
     public function __construct()
     {
         parent::__construct();
     }
 
     /**
-     * Execute the console command.
-     *
-     * @return int
-     */
+    * Execute the console command.
+    *
+    * @return int
+    */
     public function handle()
     {
         $fechahoy = new DateTime();
@@ -49,11 +48,9 @@ class RenewSubscriptions extends Command
             foreach ($subscription->customer->users as $key => $user) {
                 $deate = new DateTime($subscription->expiration_data);
                 $interval = $fechahoy->diff($deate);
-                if ($interval->format('%R%a') <= 1 ?? $subscription->autorenew == true){
+                if ($interval->format('%R%a') <= 1 ?? $subscription->autorenew == false){
                     $newDateTime = Carbon::now()->addYears(1);
-                    $subscription->update([
-                        'expiration_data' => $newDateTime,
-                    ]);
+                    $subscription->suspend();
                     // Notification::send($user, new SubscriptionAboutToExpire($subscription, $interval->format('%R%a')));
                     // $user->update(['notified' => true]);
                     Log::debug('Subscription id: '.$subscription->id .' has renewed');
@@ -66,4 +63,5 @@ class RenewSubscriptions extends Command
         });
         $this->info('Successfully sent daily quote to everyone.');
     }
+
 }

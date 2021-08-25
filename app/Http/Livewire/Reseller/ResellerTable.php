@@ -69,6 +69,7 @@ class ResellerTable extends Component
             'editing.status_id'             => 'required'|'integer'|'exists:statuses,id',
             'editing.markup'                => 'nullable'|'integer'|'min:3',
             'editing.mpnid'                 => 'sometimes'|'integer'|'min:3',
+            'editing.price_list_id'         => 'required'|'integer'|'exists:price_list,id',
 
             'creatingUser.name'             => 'sometimes'|'string'|'max:255'|'min:3',
             'creatingUser.last_name'        => 'sometimes'|'string'|'max:255'|'min:3',

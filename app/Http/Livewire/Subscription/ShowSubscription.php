@@ -28,8 +28,8 @@ class ShowSubscription extends Component
         return [
             'editing.name'              => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
             'editing.amount'            => ['required', 'max:'.$max_quantity, 'min:'.$min_quantity],
-            'editing.autorenew'         => ['nullable'],
             'editing.billing_period'    => ['required'],
+            'editing.autorenew'         => ['required', 'boolean'],
             'editing.status_id'         => ['required', 'exists:statuses,id'],
 
         ];
@@ -47,6 +47,7 @@ class ShowSubscription extends Component
     }
     public function save()
     {
+        // dd($this->editing);
         $this->showEditModal = false;
         $this->validate();
         $this->editing->save();

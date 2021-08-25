@@ -342,4 +342,11 @@ return [
     'announcements' => 'announcements',
     'edit_announcements' => 'edit announcements',
     'user_information' => 'user information',
+    'actions' => 'actions',
+    'reactivate' => 'reactivate',
+    'suspend' => 'suspend',
+    'disable' => 'disable',
+    'no_autorenew' => 'no autorenew',
+    'autorenew' => 'set auto renewable subscription'
+
 ];
