@@ -180,7 +180,6 @@ class ProductController extends Controller
     public function import($id)
     {
 
-
         $order = $this->orderRepository->ImportProductsMicrosoftOrder();
         $provider = Provider::where('id', $id)->select('country_id')->first();
         $country = Country::select('iso_3166_2')->where('id', $provider->country_id)->first();
@@ -201,10 +200,11 @@ class ProductController extends Controller
                 $instance->update([
                     'external_token' => $externalToken,
                     'external_token_updated_at' => now()
-                    ]);
-                }
+                ]);
+            }
 
-                ImportProductsMicrosoftJob::dispatch($instance, $order, $country->iso_3166_2)->onQueue('SyncProducts')
+            dd('l');
+            ImportProductsMicrosoftJob::dispatch($instance, $order, $country->iso_3166_2)->onQueue('SyncProducts')
                 ->delay(now()->addSeconds(10));
             }
         else{

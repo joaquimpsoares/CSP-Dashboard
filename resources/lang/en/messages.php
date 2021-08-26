@@ -347,6 +347,12 @@ return [
     'suspend' => 'suspend',
     'disable' => 'disable',
     'no_autorenew' => 'no autorenew',
-    'autorenew' => 'set auto renewable subscription'
-
+    'autorenew' => 'set auto renewable subscription',
+    'import_products' => 'import products',
+    'perpetual_software' => 'perpetual software',
+    'microsoft_perpetual_licenses' => 'Import software perpetual licences to the platform',
+    'microsoft_licenses' => 'Import Microsoft O365 licences to the platform',
+    'error' => 'error',
+    'error_class' => 'error class',
+    'time_elapsed' => 'time elapsed',
 ];

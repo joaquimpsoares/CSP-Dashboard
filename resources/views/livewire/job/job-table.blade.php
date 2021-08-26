@@ -68,16 +68,18 @@
                         <x-tableazure>
                             <x-slot name="head">
                                 <x-table.heading class="w-8 pr-0">
-                                    {{-- <x-input.checkbox wire:model="selectPage" /> --}}
+                                    <x-input.checkbox wire:model="selectPage" />
                                 </x-table.heading>
-                                <x-table.heading sortable multi-column wire:click="sortBy('name')"     :direction="$sorts['name'] ?? null">{{ ucwords(trans_choice('messages.name', 1)) }}</x-table.heading>
-                                <x-table.heading sortable multi-column wire:click="sortBy('description')"    :direction="$sorts['description'] ?? null">{{ ucwords(trans_choice('messages.description', 1)) }}</x-table.heading>
-                                <x-table.heading sortable multi-column wire:click="sortBy('provider')"     :direction="$sorts['provider'] ?? null">{{ ucwords(trans_choice('messages.provider', 1)) }}</x-table.heading>
-                                <x-table.heading sortable multi-column wire:click="sortBy('reseller')"     :direction="$sorts['reseller'] ?? null">{{ ucwords(trans_choice('messages.reseller', 1)) }}</x-table.heading>
+                                <x-table.heading sortable multi-column wire:click="sortBy('queue')"          :direction="$sorts['queue'] ?? null">{{ ucwords(trans_choice('messages.name', 1)) }}</x-table.heading>
+                                <x-table.heading sortable multi-column wire:click="sortBy('status')"    :direction="$sorts['status'] ?? null">{{ ucwords(trans_choice('messages.status', 1)) }}</x-table.heading>
+                                <x-table.heading sortable multi-column wire:click="sortBy('exception_message')"     :direction="$sorts['exception_message'] ?? null">{{ ucwords(trans_choice('messages.error', 1)) }}</x-table.heading>
+                                <x-table.heading sortable multi-column wire:click="sortBy('exception_class')"     :direction="$sorts['exception_class'] ?? null">{{ ucwords(trans_choice('messages.error_class', 1)) }}</x-table.heading>
+                                <x-table.heading sortable multi-column wire:click="sortBy('started_at')"     :direction="$sorts['started_at'] ?? null">{{ ucwords(trans_choice('messages.started_at', 1)) }}</x-table.heading>
+                                <x-table.heading sortable multi-column wire:click="sortBy('time_elapsed')"     :direction="$sorts['time_elapsed'] ?? null">{{ ucwords(trans_choice('messages.time_elapsed', 1)) }}</x-table.heading>
                             </x-slot>
 
                             <x-slot name="body">
-                                {{-- @if ($selectPage)
+                                @if ($selectPage)
                                 <x-table.row class="bg-cool-gray-200" wire:key="row-message">
                                     <x-table.cell colspan="6">
                                         @unless ($selectAll)
@@ -90,8 +92,9 @@
                                         @endif
                                     </x-table.cell>
                                 </x-table.row>
-                                @endif --}}
+                                @endif
                                 @forelse ($jobs as $transaction)
+                                {{-- @dd($transaction) --}}
                                 <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $transaction['id'] }}">
                                     <x-table.cell class="pr-0">
                                         <x-input.checkbox wire:model="selected" value="{{ $transaction['id'] }}" ></x-input.checkbox>
@@ -109,67 +112,90 @@
                                     <x-table.cell>
                                         <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                             <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
-                                                    {{ sprintf('%02.2f', (float) $transaction->time_elapsed) }}
-                                                </span>
+                                                @if(!$transaction->isFinished())
+                                                <div class="">
+                                                </div>
+                                                <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 md:mt-2 lg:mt-0">
+                                                    <span>Running</span>
+                                                </div>
+                                                @elseif($transaction->hasSucceeded())
+                                                <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 md:mt-2 lg:mt-0">
+                                                    <span>Success</span>
+                                                </div>
+                                                @else
+                                                <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 md:mt-2 lg:mt-0">
+                                                    <span>Failed</span>
+                                                </div>
+                                                @endif
                                             </div>
                                         </a>
                                     </span>
                                 </x-table.cell>
+
                                 <x-table.cell>
-                                    <a href="{{route('priceList.show',$transaction['job_id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
-                                                {{ $transaction->provider->company_name ?? ''}}
+                                                {{ $transaction['exception_message'] }}
                                             </span>
                                         </div>
                                     </a>
-                                </span>
-                            </x-table.cell>
-                            <x-table.cell>
-                                <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
-                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
-                                       @if(!$transaction->isFinished())
-                                            <div class="">
-                                            </div>
-                                            <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 md:mt-2 lg:mt-0">
-                                                <span>Running</span>
-                                            </div>
-                                            @elseif($transaction->hasSucceeded())
-                                            <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 md:mt-2 lg:mt-0">
-                                                <span>Success</span>
-                                            </div>
-                                            @else
-                                            <div class="inline-flex items-baseline px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 md:mt-2 lg:mt-0">
-                                                <span>Failed</span>
-                                            </div>
-                                            @endif
+                                </x-table.cell>
+                                {{-- <x-table.cell>
+                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                        <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
+                                                {{ $transaction['exception'] }}
+                                            </span>
+                                        </div>
+                                    </a>
+                                </x-table.cell> --}}
+                                <x-table.cell>
+                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                        <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
+                                                {{ $transaction['exception_class'] }}
+                                            </span>
+                                        </div>
+                                    </a>
+                                </x-table.cell>
+                                <x-table.cell>
+                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                        <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
+                                                {{ $transaction['started_at'] }}
+                                            </span>
+                                        </div>
+                                    </a>
+                                </x-table.cell>
+                                <x-table.cell>
+                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                        <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
+                                                {{ sprintf('%02.2f', (float) $transaction->time_elapsed) }}
+                                            </span>
+                                        </div>
+                                    </a>
+                                </x-table.cell>
+                            </x-table.row>
+                            @empty
+                            <x-table.row>
+                                <x-table.cell colspan="9">
+                                    <div class="flex items-center justify-center space-x-2">
+                                        <x-icon.inbox class="w-8 h-8 text-cool-gray-400" />
+                                        <span class="py-8 text-xl font-medium text-cool-gray-400">No Price List found...</span>
                                     </div>
-                                </a>
-                            </span>
-                        </x-table.cell>
-                        <x-table.cell>
-                            <x-button.link wire:click="edit({{ $transaction->id }})">Edit</x-button.link>
-                        </x-table.cell>
-                    </x-table.row>
-                    @empty
-                    <x-table.row>
-                        <x-table.cell colspan="9">
-                            <div class="flex items-center justify-center space-x-2">
-                                <x-icon.inbox class="w-8 h-8 text-cool-gray-400" />
-                                <span class="py-8 text-xl font-medium text-cool-gray-400">No Price List found...</span>
-                            </div>
-                        </x-table.cell>
-                    </x-table.row>
-                    @endforelse
-                </x-slot>
-            </x-tableazure>
-            <div>
-                {{ $jobs->links() }}
+                                </x-table.cell>
+                            </x-table.row>
+                            @endforelse
+                        </x-slot>
+                    </x-tableazure>
+                    <div>
+                        {{ $jobs->links() }}
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    </div>
     </div>
     <!-- Delete Transactions Modal -->
     <form wire:submit.prevent="deleteSelected">
@@ -226,6 +252,6 @@
             </x-slot>
         </x-modal.dialog>
     </form>
-    </div>
+</div>
 
 </div>

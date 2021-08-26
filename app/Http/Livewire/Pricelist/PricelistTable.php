@@ -100,19 +100,13 @@ class PricelistTable extends Component
         $this->showEditModal = true;
     }
 
-    public function makeBlankTransaction()
-    {
-        return PriceList::make(['date' => now(), 'status' => 'success']);
-    }
+    public function makeBlankTransaction(){ return PriceList::make(['date' => now(), 'status' => 'success']); }
 
     public function deleteSelected()
     {
         $deleteCount = $this->selectedRowsQuery->count();
-
         $this->selectedRowsQuery->delete();
-
         $this->showDeleteModal = false;
-
         $this->notify('You\'ve deleted '.$deleteCount.' transactions');
     }
 
@@ -121,7 +115,6 @@ class PricelistTable extends Component
 
     public function sortByColumn($column)
     {
-
         if ($this->sortColumn == $column) {
             $this->sortDirection = $this->sortDirection == 'asc' ? 'desc' : 'asc';
         } else {
