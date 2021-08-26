@@ -73,7 +73,7 @@
                             <x-table.heading sortable multi-column wire:click="sortBy('name')"          :direction="$sorts['name'] ?? null">{{ ucwords(trans_choice('messages.name', 1)) }}</x-table.heading>
                             <x-table.heading sortable multi-column wire:click="sortBy('description')"   :direction="$sorts['description'] ?? null">{{ ucwords(trans_choice('messages.description', 1)) }}</x-table.heading>
                             <x-table.heading sortable multi-column wire:click="sortBy('provider')"      :direction="$sorts['provider'] ?? null">{{ ucwords(trans_choice('messages.provider', 1)) }}</x-table.heading>
-                            <x-table.heading sortable multi-column wire:click="sortBy('reseller')"      :direction="$sorts['reseller'] ?? null">{{ ucwords(trans_choice('messages.reseller', 1)) }}</x-table.heading>
+                            {{-- <x-table.heading sortable multi-column wire:click="sortBy('reseller')"      :direction="$sorts['reseller'] ?? null">{{ ucwords(trans_choice('messages.reseller', 1)) }}</x-table.heading> --}}
                         </x-slot>
 
                         <x-slot name="body">
@@ -91,135 +91,134 @@
                                 </x-table.cell>
                             </x-table.row>
                             @endif
-                            @forelse ($priceLists as $transaction)
-                            <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $transaction['id'] }}">
+                            @forelse ($priceLists as $pricelist)
+                            <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $pricelist['id'] }}">
                                 <x-table.cell class="pr-0">
-                                    <x-input.checkbox wire:model="selected" value="{{ $transaction['id'] }}" ></x-input.checkbox>
+                                    <x-input.checkbox wire:model="selected" value="{{ $pricelist['id'] }}" ></x-input.checkbox>
                                 </x-table.cell>
                                 <x-table.cell>
-                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <a href="{{route('priceList.show',$pricelist['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
-                                                {{ $transaction['name'] }}
+                                                {{ $pricelist['name'] }}
                                             </span>
                                         </div>
                                     </a>
                                 </x-table.cell>
                                 <x-table.cell>
-                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <a href="{{route('priceList.show',$pricelist['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
-                                                {{ $transaction['description'] }}
+                                                {{ $pricelist['description'] }}
                                             </span>
                                         </div>
-
                                     </a>
-                                </span>
-                            </x-table.cell>
-                            <x-table.cell>
-                                <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
-                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
-                                            {{ $transaction->provider->company_name ?? ''}}
-                                        </span>
+                                </x-table.cell>
+                                <x-table.cell>
+                                    <a href="{{route('priceList.show',$pricelist['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                        <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
+                                                {{ $pricelist->provider->company_name ?? ''}}
+                                            </span>
+                                        </div>
+                                    </a>
+                                </x-table.cell>
+                                <x-table.cell>
+                                    <div class="z-10">
+                                        <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                                            </svg>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a wire:click="edit({{ $pricelist->id }})" class="dropdown-item" href="#">
+                                                <x-icon.edit></x-icon.edit>
+                                                {{ ucwords(trans_choice('messages.edit', 1)) }}
+                                            </a>
+                                        </div>
                                     </div>
-                                </a>
-                            </span>
-                        </x-table.cell>
-                        <x-table.cell>
-                            <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
-                                <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
-                                        {{ $transaction->reseller->company_name ?? ''}}
-                                    </span>
-                                </div>
-                            </a>
-                        </span>
-                    </x-table.cell>
-                    <x-table.cell>
-                        <x-button.link wire:click="edit({{ $transaction->id }})">Edit</x-button.link>
-                    </x-table.cell>
-                </x-table.row>
-                @empty
-                <x-table.row>
-                    <x-table.cell colspan="9">
-                        <div class="flex items-center justify-center space-x-2">
-                            <x-icon.inbox class="w-8 h-8 text-cool-gray-400" />
-                            <span class="py-8 text-xl font-medium text-cool-gray-400">No Price List found...</span>
-                        </div>
-                    </x-table.cell>
-                </x-table.row>
-                @endforelse
-            </x-slot>
-        </x-tableazure>
-        <div>
-            {{ $priceLists->links() }}
+                                </x-table.cell>
+                            </x-table.row>
+                            @empty
+                            <x-table.row>
+                                <x-table.cell colspan="9">
+                                    <div class="flex items-center justify-center space-x-2">
+                                        <x-icon.inbox class="w-8 h-8 text-cool-gray-400" />
+                                        <span class="py-8 text-xl font-medium text-cool-gray-400">No Price List found...</span>
+                                    </div>
+                                </x-table.cell>
+                            </x-table.row>
+                            @endforelse
+                        </x-slot>
+                    </x-tableazure>
+                    <div>
+                        {{ $priceLists->links() }}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-</div>
-</div>
-<!-- Delete Transactions Modal -->
-<form wire:submit.prevent="deleteSelected">
-    <x-modal.confirmation wire:model.defer="showDeleteModal">
-        <x-slot name="title">Delete Transaction</x-slot>
+    <!-- Delete Transactions Modal -->
+    <form wire:submit.prevent="deleteSelected">
+        <x-modal.confirmation wire:model.defer="showDeleteModal">
+            <x-slot name="title">Delete Transaction</x-slot>
 
-        <x-slot name="content">
-            <div class="py-8 text-cool-gray-700">Are you sure you? This action is irreversible.</div>
-        </x-slot>
+            <x-slot name="content">
+                <div class="py-8 text-cool-gray-700">Are you sure you? This action is irreversible.</div>
+            </x-slot>
 
-        <x-slot name="footer">
-            <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false">
-                Delete
-            </button>
-            <a type="button" wire:click="$set('showDeleteModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
-                Cancel
-            </a>
+            <x-slot name="footer">
+                <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false">
+                    Delete
+                </button>
+                <a type="button" wire:click="$set('showDeleteModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
+                    Cancel
+                </a>
 
-            {{-- <x-button.secondary wire:click="$set('showDeleteModal', false)">Cancel</x-button.secondary>
+                {{-- <x-button.secondary wire:click="$set('showDeleteModal', false)">Cancel</x-button.secondary>
 
-            <x-button.primary type="submit">Delete</x-button.primary> --}}
-        </x-slot>
-    </x-modal.confirmation>
-</form>
-<!-- Save Transaction Modal -->
-<form wire:submit.prevent="save">
-    <x-modal.dialog wire:model.defer="showEditModal">
-        <x-slot name="title">Edit Transaction</x-slot>
+                <x-button.primary type="submit">Delete</x-button.primary> --}}
+            </x-slot>
+        </x-modal.confirmation>
+    </form>
+    <!-- Save Transaction Modal -->
+    <form wire:submit.prevent="save">
+        <x-modal.dialog wire:model.defer="showEditModal">
+            <x-slot name="title">Edit Transaction</x-slot>
 
-        <x-slot name="content">
-            <x-input.group for="name" label="name" :error="$errors->first('editing.name')">
-                <x-input.text wire:model="editing.name" id="name" placeholder="name" />
-            </x-input.group>
+            <x-slot name="content">
+                <x-input.group for="name" label="name" :error="$errors->first('editing.name')">
+                    <x-input.text wire:model="editing.name" id="name" placeholder="name" />
+                </x-input.group>
 
-            <x-input.group for="status" label="Status" :error="$errors->first('editing.status')">
-                <x-input.select wire:model="editing.status" id="status">
-                    {{-- @foreach (App\Models\Transaction::STATUSES as $value => $label)
-                        <option value="{{ $value }}">{{ $label }}</option>
-                    @endforeach --}}
-                </x-input.select>
-            </x-input.group>
+                <x-input.group for="status" label="Status" :error="$errors->first('editing.status')">
+                    <x-input.select wire:model="editing.status" id="status">
+                        {{-- @foreach (App\Models\Transaction::STATUSES as $value => $label)
+                            <option value="{{ $value }}">{{ $label }}</option>
+                            @endforeach --}}
+                        </x-input.select>
+                    </x-input.group>
 
-            <x-input.group for="description" label="description" :error="$errors->first('editing.description')">
-                <x-input.money wire:model="editing.description" id="description" />
-            </x-input.group>
+                    <x-input.group for="description" label="description" :error="$errors->first('editing.description')">
+                        <x-input.money wire:model="editing.description" id="description" />
+                    </x-input.group>
 
-            <x-input.group for="margin" label="margin" :error="$errors->first('editing.margin')">
-                <x-input.text wire:model="editing.margin" id="margin" />
-            </x-input.group>
-        </x-slot>
+                    <x-input.group for="margin" label="margin" :error="$errors->first('editing.margin')">
+                        <x-input.text wire:model="editing.margin" id="margin" />
+                    </x-input.group>
+                </x-slot>
 
-        <x-slot name="footer">
+                <x-slot name="footer">
 
-            <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false">
-                Save
-            </button>
-            <a type="button" wire:click="$set('showEditModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
-                Cancel
-            </a>
+                    <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false">
+                        Save
+                    </button>
+                    <a type="button" wire:click="$set('showEditModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
+                        Cancel
+                    </a>
 
-            {{-- <x-button.primary type="submit">Save</x-button.primary> --}}
-        </x-slot>
-    </x-modal.dialog>
-</form>
-</div>
+                    {{-- <x-button.primary type="submit">Save</x-button.primary> --}}
+                </x-slot>
+            </x-modal.dialog>
+        </form>
+    </div>

@@ -7,7 +7,6 @@
                         <h4>{{ ucwords(trans_choice('messages.user_table', 2)) }}</h4>
                     </div>
                     <div class="flex items-center justify-between">
-                        @dd('s')
                         <div>
                             <div class="flex justify-center flex-1 lg:justify-end">
                                 <!-- Search section -->
