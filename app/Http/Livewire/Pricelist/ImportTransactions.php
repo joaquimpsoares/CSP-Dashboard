@@ -58,7 +58,6 @@ class ImportTransactions extends Component
         $importCount = 0;
         Csv::from($this->upload)
         ->eachRow(function ($row) use (&$importCount) {
-            dd($this->extractFieldsFromRow($row));
             $tt = $this->extractFieldsFromRow($row);
             if($tt['product_id'] != null){
                 Price::updateOrCreate([
