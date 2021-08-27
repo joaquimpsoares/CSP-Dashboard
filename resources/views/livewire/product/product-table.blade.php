@@ -63,6 +63,7 @@
                             <x-table.heading sortable multi-column wire:click="sortBy('sku')"  :direction="$sorts['sku'] ?? null">{{ ucwords(trans_choice('messages.sku', 1)) }}</x-table.heading>
                             <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('category')" :direction="$sorts['category'] ?? null">{{ ucwords(trans_choice('messages.category', 1)) }}</x-table.heading>
                             <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('vendor')"  :direction="$sorts['vendor'] ?? null">{{ ucwords(trans_choice('messages.vendor', 2)) }}</x-table.heading>
+                            <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('created_at')"  :direction="$sorts['created_at'] ?? null">{{ ucwords(trans_choice('messages.created_at', 2)) }}</x-table.heading>
                         </x-slot>
                         <x-slot name="body">
                             @if ($selectPage)
@@ -125,6 +126,15 @@
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
                                                 {{ $product['vendor'] }}
+                                            </span>
+                                        </a>
+                                    </span>
+                                </x-table.cell>
+                                <x-table.cell>
+                                    <a href="{{$product->format()['path']}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                        <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
+                                                {{ $product['created_at'] }}
                                             </span>
                                         </a>
                                     </span>

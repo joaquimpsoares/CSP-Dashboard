@@ -3,8 +3,11 @@
 namespace App;
 use App\Models\Metafield;
 use Illuminate\Support\Str;
+use GPBMetadata\Google\Api\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use App\Jobs\ImportPerpetuaMicrosoftJob;
+use App\Jobs\ImportProductsMicrosoftJob;
 use Illuminate\Database\Eloquent\Builder;
 
 
@@ -89,6 +92,24 @@ class Product extends Model
 
     public function metafields(){
         return $this->morphMany(Metafield::class, 'metafieldable');
+    }
+
+    public function importLicenses($instance, $country)
+    {
+
+        ImportProductsMicrosoftJob::dispatch($instance, $country->iso_3166_2)->onQueue('SyncProducts')
+                ->delay(now()->addSeconds(10));
+
+        return $this;
+    }
+
+    public function importPerpetual($instance, $country)
+    {
+
+        ImportPerpetuaMicrosoftJob::dispatch($instance, $country->iso_3166_2)->onQueue('SyncProducts')
+                ->delay(now()->addSeconds(10));
+
+        return $this;
     }
 
     protected static function booted(){

@@ -2,11 +2,16 @@
 
 namespace App\Http\Livewire\Product;
 
+use App\Order;
+use App\Country;
 use App\Product;
+use App\Instance;
+use App\Provider;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Traits\UserTrait;
 use App\Exports\ProductsExport;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Livewire\DataTable\WithSorting;
 use App\Http\Livewire\DataTable\WithCachedRows;
@@ -23,7 +28,7 @@ class ProductTable extends Component
     public $license = false;
     public $perpetual = false;
     public $password_confirmation;
-    public $showImportModal = true;
+    public $showImportModal = false;
     public $showCreateUser = false;
 
     public Product $editing;
@@ -52,8 +57,38 @@ class ProductTable extends Component
         $this->resetPage();
     }
 
+    public function import(){
+        $this->showImportModal = true;
+    }
+
     public function importproducts(){
 
+        if($this->license == true){
+
+            $id = Auth::user()->provider->id;
+            $product = new Product();
+            $provider = Provider::where('id', $id)->select('country_id')->first();
+            $country = Country::select('iso_3166_2')->where('id', $provider->country_id)->first();
+            $instance = Instance::where('provider_id', $id)->first();
+
+            $product->importLicenses($instance, $country);
+            $this->notify('Import Scheduled for licenses');
+
+        }
+
+        if($this->perpetual == true){
+
+            $id = Auth::user()->provider->id;
+            $product = new Product();
+            $provider = Provider::where('id', $id)->select('country_id')->first();
+            $country = Country::select('iso_3166_2')->where('id', $provider->country_id)->first();
+            $instance = Instance::where('provider_id', $id)->first();
+
+            $product->importPerpetual($instance, $country);
+
+            $this->notify('Import Scheduled for perpetual');
+        }
+        $this->showImportModal = false;
     }
 
     public function getRowsQueryProperty()

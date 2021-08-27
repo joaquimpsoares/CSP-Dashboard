@@ -2,9 +2,11 @@
 
 namespace App;
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class Order extends Model
 {
@@ -48,6 +50,17 @@ class Order extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function importProducts()
+    {
+        $order = new Order([
+            'token' => Str::uuid(),
+            'user_id' => Auth::user()->id,
+            'details' => "Importing MS Products",
+        ]);
+        return $order;
+    }
+
 
     protected static function booted()
     {

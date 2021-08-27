@@ -1,8 +1,12 @@
 <div>
-    <x-button.secondary wire:click="$toggle('showModal')" class="flex items-center space-x-2"><x-icon.upload class="text-cool-gray-500"/> <span>Import</span></x-button.secondary>
+    <x-button.secondary wire:click="$toggle('showModal')" class="flex items-center space-x-2"><x-icon.upload class="text-cool-gray-500"/>
+        <span>Import</span>
+    </x-button.secondary>
     <form wire:submit.prevent="import">
         <x-modal.dialog wire:model="showModal">
-            <x-slot name="title">Import Transactions</x-slot>
+            <x-slot name="title">
+                Import Transactions
+            </x-slot>
 
             <x-slot name="content">
                 @unless ($upload)
@@ -56,7 +60,6 @@
 
             <x-slot name="footer">
                 <x-button.secondary wire:click="$set('showModal', false)">Cancel</x-button.secondary>
-
                 <x-button.primary type="submit">Import</x-button.primary>
             </x-slot>
         </x-modal.dialog>

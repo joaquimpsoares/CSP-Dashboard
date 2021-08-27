@@ -175,7 +175,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @if ($product->price->price != null)
+                                    {{-- @if ($product->price->price != null)
                                     <div class="row">
                                         <div class="input-field col s4">
                                             <div class="md-form">
@@ -190,7 +190,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @endif
+                                    @endif --}}
                                     @if ($product->limit > 0)
                                     <div class="row">
                                         <div class="input-field col s4">

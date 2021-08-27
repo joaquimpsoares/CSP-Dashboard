@@ -1,38 +1,4 @@
 <div>
-    <!-- This example requires Tailwind CSS v2.0+ -->
-    <div wire:loading wire:target="enable" class="fixed inset-x-0 bottom-0 pb-2 sm:pb-5">
-        <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div class="p-2 bg-indigo-600 rounded-lg shadow-lg sm:p-3">
-                <div class="flex flex-wrap items-center justify-between">
-                    <div class="flex items-center flex-1 w-0">
-                        <span class="flex p-2 bg-indigo-800 rounded-lg">
-                            <!-- Heroicon name: outline/speakerphone -->
-                            <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
-                            </svg>
-                        </span>
-                        <p class="ml-3 font-medium text-white truncate">
-                            <span class="md:hidden">
-                                We announced a new product!
-                            </span>
-                            <span class="hidden md:inline">
-                                Enabling Subscription...
-                            </span>
-                        </p>
-                    </div>
-                    <div class="flex-shrink-0 order-2 sm:order-3 sm:ml-2">
-                        <button type="button" class="flex p-2 -mr-1 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-white">
-                            <span class="sr-only">Dismiss</span>
-                            <!-- Heroicon name: outline/x -->
-                            <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="relative z-0 flex-col flex-1 overflow-y-auto">
         <div class="p-4 overflow-hidden bg-white">
             <div class="flex flex-col items-center justify-between lg:flex-row">
@@ -42,10 +8,8 @@
             </div>
             <div class="flex flex-col items-center justify-between lg:flex-row">
                 <div class="flex items-center">
-                    <span class="box-border">{{$priceList['name']}}
-                        {{-- <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $priceList->status->name == 'messages.active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'  }}  capitalize">
-                            {{ ucwords(trans_choice($priceList->status->name, 1)) }}
-                        </span> --}}
+                    <span class="box-border">
+                        {{$priceList['name']}}
                     </span>
                 </div>
                 <div class="flex items-center justify-between">
@@ -62,20 +26,9 @@
                                 <div class="py-1" role="none">
                                     <a href="#" wire:click="editList({{ $priceList->id }})" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-4">{{ ucwords(trans_choice('messages.edit', 1)) }} </a>
                                 </div>
-                                {{-- <div class="py-1" role="none">
-                                    @canImpersonate
-                                    @if(!empty($priceList->format()['mainUser']))
-                                    <a href="{{ route('impersonate', $priceList->format()['mainUser']['id']) }}" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-4">Impersonate</a>
-                                    @endif
-                                    @endCanImpersonate
-                                </div> --}}
+
                                 <div class="py-1" role="none">
-                                    {{-- @if($priceList->status->name == 'messages.active')
-                                    <a href="#" wire:click="$toggle('showconfirmationModal')" class="block px-4 py-2 text-sm text-red-700" role="menuitem" tabindex="-1" id="menu-item-6">Disable</a>
-                                    @endif
-                                    @if($priceList->status->name != 'messages.active')
-                                    <a href="#" wire:click="enable({{ $priceList->id }})" class="block px-4 py-2 text-sm text-green-700" role="menuitem" tabindex="-1" id="menu-item-6">Enable</a>
-                                    @endif --}}
+
                                 </div>
                             </div>
                         </div>
@@ -200,7 +153,10 @@
                                         </x-dropdown.item>
                                     </x-dropdown>
                                 </div>
-                                @livewire('pricelist.import-transactions', ['priceList' => $priceList], key($priceList->id))
+                                <div class="ml-3 lg:max-w-xs">
+                                    @livewire('pricelist.import-transactions', ['priceList' => $priceList], key($priceList->id))
+                                </div>
+
                                 <div class="ml-3 lg:max-w-xs">
                                     <x-button.primary wire:click="create"><x-icon.plus/> Add</x-button.primary>
                                 </div>

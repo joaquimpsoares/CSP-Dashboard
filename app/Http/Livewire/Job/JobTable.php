@@ -35,7 +35,6 @@ class JobTable extends Component
 
     public function render()
     {
-        $search = $this->search;
 
         $query = Monitor::query()->orderBy('id', 'DESC');
 

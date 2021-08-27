@@ -45,7 +45,7 @@
 												@if($canChangeTenant)
 												<div class="row">
 													<div class="col">
-														<div class="input-group mb-3">
+														<div class="mb-3 input-group">
 															<input type="text" id="tenant" class="form-control" placeholder="tenant" name="tenant" value="{{ $cart->domain ?? null }}">
 															<div class="input-group-append">
 																<span class="input-group-text" id="basic-addon2">{{ ucwords(trans_choice('messages.onmicrosoft', 1)) }}</span>
@@ -72,19 +72,19 @@
 																@csrf
 																<input type="hidden" name="token" value="{{ $cart->token }}" />
 																<h2>{{ ucwords(trans_choice('messages.sign_agreement_microsoft', 1)) }}</h2>
-																<div class="md-form mb-0">
+																<div class="mb-0 md-form">
 																	<label for="firstName">{{ ucwords(trans_choice('messages.name', 1)) }}</label>
 																	<input type="text" name="firstName" id="firstName" class="form-control" required="required" value="{{ $cart->agreement_firstname ?? null }}"/>
 																</div>
-																<div class="md-form mb-0">
+																<div class="mb-0 md-form">
 																	<label for="lastName">{{ ucwords(trans_choice('messages.last_name', 1)) }}</label>
 																	<input type="text" name="lastName" id="lastName" class="form-control" required="required" value="{{ $cart->agreement_lastname ?? null }}" />
 																</div>
-																<div class="md-form mb-0">
+																<div class="mb-0 md-form">
 																	<label for="email">{{ ucwords(trans_choice('messages.email', 1)) }}</label>
 																	<input type="email" name="email" id="email" class="form-control" required="required" value="{{ $cart->agreement_email ?? null }}" />
 																</div>
-																<div class="md-form mb-0">
+																<div class="mb-0 md-form">
 																	<label for="phoneNumber">{{ ucwords(trans_choice('messages.phone_number', 1)) }}</label>
 																	<input type="text" name="phoneNumber" id="phoneNumber" class="form-control" value="{{ $cart->agreement_phone ?? null }}" />
 																</div>
@@ -101,7 +101,7 @@
 												@else
 												<div class="row">
 													<div class="col">
-														<div class="input-group mb-3">
+														<div class="mb-3 input-group">
 															<input type="text" id="tenant" class="form-control" placeholder="tenant" name="tenant" value="{{ $cart->domain ?? null }}" disabled="disabled">
 															<div class="input-group-append">
 																<span class="input-group-text" id="basic-addon2">{{ ucwords(trans_choice('messages.onmicrosoft', 1)) }}</span>
@@ -116,19 +116,19 @@
 																@csrf
 																<input type="hidden" name="token" value="{{ $cart->token }}" />
 																<h2>{{ ucwords(trans_choice('messages.sign_agreement_microsoft', 1)) }}</h2>
-																<div class="md-form mb-0">
+																<div class="mb-0 md-form">
 																	<label for="firstName">{{ ucwords(trans_choice('messages.name', 1)) }}</label>
 																	<input type="text" name="firstName" id="firstName" class="form-control" required="required" value="{{ $cart->agreement_firstname ?? null }}" style="pointer-events: none; background-color: #f2f6f9;" />
 																</div>
-																<div class="md-form mb-0">
+																<div class="mb-0 md-form">
 																	<label for="lastName">{{ ucwords(trans_choice('messages.last_name', 1)) }}</label>
 																	<input type="text" name="lastName" id="lastName" class="form-control" required="required" value="{{ $cart->agreement_lastname ?? null }}" style="pointer-events: none; background-color: #f2f6f9;" />
 																</div>
-																<div class="md-form mb-0">
+																<div class="mb-0 md-form">
 																	<label for="email">{{ ucwords(trans_choice('messages.email', 1)) }}</label>
 																	<input type="email" name="email" id="email" class="form-control" required="required" value="{{ $cart->agreement_email ?? null }}" style="pointer-events: none; background-color: #f2f6f9;" />
 																</div>
-																<div class="md-form mb-0">
+																<div class="mb-0 md-form">
 																	<label for="phoneNumber">{{ ucwords(trans_choice('messages.phone_number', 1)) }}</label>
 																	<input type="text" name="phoneNumber" id="phoneNumber" class="form-control" value="{{ $cart->agreement_phone ?? null }}" style="pointer-events: none; background-color: #f2f6f9;" />
 																</div>

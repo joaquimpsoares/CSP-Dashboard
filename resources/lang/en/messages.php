@@ -355,4 +355,5 @@ return [
     'error' => 'error',
     'error_class' => 'error class',
     'time_elapsed' => 'time elapsed',
+    'job_table' => 'job table',
 ];
