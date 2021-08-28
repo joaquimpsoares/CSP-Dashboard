@@ -187,7 +187,8 @@
                                         </x-table.cell>
                                     </x-table.row>
                                     @endif
-                                    @forelse ($prices as $price)
+                                    {{-- @dd($priceList->prices) --}}
+                                    @forelse ($priceList->prices as $price)
                                     <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $price['id'] }}">
                                         <x-table.cell class="pr-0">
                                             <x-input.checkbox wire:model="selected" value="{{ $price['id'] }}" ></x-input.checkbox>
@@ -283,8 +284,12 @@
                         </section>
                     </x-slot>
                     <x-slot name="footer">
-                        <x-a wire:click="$set('showEditModal', false)">Cancel</x-a>
-                        <x-button.primary type="submit">Save</x-button.primary>
+                        <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            {{ucwords(trans_choice('cancel', 1))}}
+                        </button>
+                        <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            {{ucwords(trans_choice('save', 1))}}
+                        </button>
                     </x-slot>
                 </x-modal.slideout>
             </form>
@@ -296,13 +301,7 @@
             <x-slot name="content">
                 <p> Are you sure you want to disable <strong class="text-red-400">{{$priceList->company_name }}</strong>?</p>
                 <p> <strong>By doing so your customer's subscriptions will be put to disabled  you have 90 days until your customer can loose their information.</strong></p>
-                {{-- @foreach($priceList->subscriptions as $key => $value)
-                    <ul>
-                        <li>
-                            {{$value->name}}
-                        </li>
-                    </ul>
-                    @endforeach --}}
+
                 </x-slot>
 
                 <x-slot name="footer">
