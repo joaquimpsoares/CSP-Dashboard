@@ -171,6 +171,7 @@
                                         @endcan
                                         @can(config('app.provider_index'))
                                         <a href="{{ route('jobs') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.job', 2)) }}</a>
+                                        <a href="{{ route('jobsfailed') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.failed_job', 2)) }}</a>
                                         @endcan
                                         @can('users.manage')
                                         <a href="{{ route('user.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.user', 2)) }}</a>
@@ -355,7 +356,8 @@
                                             @endcan
                                             @can(config('app.provider_index'))
                                             <a href="{{ route('jobs') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.job', 2)) }}</a>
-                                            @endcan
+                                            <a href="{{ route('jobsfailed') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.failed_job', 2)) }}</a>
+                                        @endcan
                                             @can('users.manage')
                                             <a href="{{ route('user.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.user', 2)) }}</a>
                                             @endcan

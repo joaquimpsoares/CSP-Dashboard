@@ -358,4 +358,5 @@ return [
     'job_table' => 'job table',
     'retry' => 'retry',
     'failed_at' => 'failed at',
+    'failed_job' => 'failed job',
 ];
