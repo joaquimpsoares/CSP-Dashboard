@@ -4,7 +4,7 @@
             <div class="flex flex-col">
                 <div class="flex flex-col items-center justify-between lg:flex-row">
                     <div class="flex items-center">
-                        <h4>Pricelists</h4>
+                        <h4>{{ ucwords(trans_choice('messages.price_list', 1)) }}</h4>
                     </div>
                 </div>
             </div>
@@ -17,7 +17,7 @@
             <div class="flex flex-col">
                 <div class="flex flex-col items-center justify-between lg:flex-row">
                     <div class="flex items-center">
-                        <h4>{{ ucwords(trans_choice('messages.analytic_table', 1)) }}</h4>
+                        <h4>{{ ucwords(trans_choice('messages.price_list_table', 1)) }}</h4>
                     </div>
                     <div class="flex items-center justify-between">
                         <div>
@@ -178,26 +178,26 @@
     <!-- Save Transaction Modal -->
     <form wire:submit.prevent="save">
         <x-modal.dialog wire:model.defer="showEditModal">
-            <x-slot name="title">Edit Transaction</x-slot>
+            <x-slot name="title">{{ ucwords(trans_choice('messages.edit', 1)) }}</x-slot>
 
             <x-slot name="content">
-                <x-input.group for="name" label="name" :error="$errors->first('editing.name')">
+                <x-input.group for="name" label="{{ ucwords(trans_choice('messages.name', 1)) }}" :error="$errors->first('editing.name')">
                     <x-input.text wire:model="editing.name" id="name" placeholder="name" />
                 </x-input.group>
 
-                <x-input.group for="status" label="Status" :error="$errors->first('editing.status')">
+                {{-- <x-input.group for="status" label="Status" :error="$errors->first('editing.status')">
                     <x-input.select wire:model="editing.status" id="status">
-                        {{-- @foreach (App\Models\Transaction::STATUSES as $value => $label)
+                        @foreach (App\Models\Transaction::STATUSES as $value => $label)
                             <option value="{{ $value }}">{{ $label }}</option>
-                            @endforeach --}}
+                            @endforeach
                         </x-input.select>
+                    </x-input.group> --}}
+
+                    <x-input.group for="description" label="{{ ucwords(trans_choice('messages.description', 1)) }}" :error="$errors->first('editing.description')">
+                        <x-input.text wire:model="editing.description" id="description" />
                     </x-input.group>
 
-                    <x-input.group for="description" label="description" :error="$errors->first('editing.description')">
-                        <x-input.money wire:model="editing.description" id="description" />
-                    </x-input.group>
-
-                    <x-input.group for="margin" label="margin" :error="$errors->first('editing.margin')">
+                    <x-input.group for="margin" label="{{ ucwords(trans_choice('messages.margin', 1)) }}" :error="$errors->first('editing.margin')">
                         <x-input.text wire:model="editing.margin" id="margin" />
                     </x-input.group>
                 </x-slot>
@@ -205,10 +205,10 @@
                 <x-slot name="footer">
 
                     <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false">
-                        Save
+                        {{ ucwords(trans_choice('messages.save', 1)) }}
                     </button>
                     <a type="button" wire:click="$set('showEditModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
-                        Cancel
+                        {{ ucwords(trans_choice('messages.cancel', 1)) }}
                     </a>
 
                     {{-- <x-button.primary type="submit">Save</x-button.primary> --}}

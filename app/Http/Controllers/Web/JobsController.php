@@ -88,9 +88,9 @@ class JobsController extends Controller
     }
     public function jobsfailed(){
 
-        $failedJobs = DB::table('failed_jobs')->get();
+        $failedjobs = DB::table('failed_jobs')->get();
 
-        return view('job.index', compact('failedJobs'));
+        return view('job.failed', compact('failedjobs'));
 
     }
 
@@ -211,7 +211,7 @@ class JobsController extends Controller
     {
         DB::table('failed_jobs')->where('id', $id)->delete();
 
-        return redirect()->route('job')->with(['alert' => 'success', 'message' => trans('messages.importproducts')]);
+        return redirect()->back()->with(['alert' => 'success', 'message' => trans('messages.importproducts')]);
 
     }
 }
