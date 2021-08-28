@@ -47,7 +47,6 @@ class ShowSubscription extends Component
     }
     public function save()
     {
-        // dd($this->editing);
         $this->showEditModal = false;
         $this->validate();
         $this->editing->save();

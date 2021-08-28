@@ -22,7 +22,6 @@ class News extends Model
     {
         static::addGlobalScope('access_level', function (Builder $query){
             $user = Auth::user();
-            // dd($user->locale);
 
             if ($user && $user->userLevel->name === config('app.provider')) {
                 $query->whereHas('provider', function (Builder $query) use ($user) {

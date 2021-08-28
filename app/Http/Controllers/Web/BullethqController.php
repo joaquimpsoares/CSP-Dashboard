@@ -18,10 +18,8 @@ class BullethqController extends Controller
         $response = Http::withBasicAuth('joaquim.soares@tagydes.com', '25a142a35cccedbb8465cf148790eefe')
         ->get('https://accounts-app.bullethq.com/api/v1/clientPayments')->collect();
 
-        // dd($response);
 
         foreach ($response as $key => $value) {
-            dd($value);
             # code...
         }
 

@@ -46,8 +46,6 @@ class JobTable extends Component
         })->paginate(10);
 
         $failedjobs = FailedJobs::get();
-        // dd($failedjobs->first()->getPayload->all());
-
         return view('livewire.job.job-table',compact('jobs', 'failedjobs'));
     }
 }

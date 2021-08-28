@@ -25,6 +25,7 @@ class ShowPricelist extends Component
 
     public $priceList;
     public $products;
+    public $search;
     public $showDeleteModal = false;
     public $showEditModal = false;
     public $showFilters = false;
@@ -153,11 +154,14 @@ class ShowPricelist extends Component
 
     public function getRowsQueryProperty()
     {
-        $prices = Price::query()->where('instance_id',1)->where('price_list_id', $this->priceList->id)
-            ->when($this->filters['name'], fn($query, $name) => $query->where('name', '>=', $name))
-            ->when($this->filters['price'], fn($query, $price) => $query->where('price', '<=', $price))
-            ->when($this->filters['msrp'], fn($query, $msrp) => $query->where('msrp', '<=', $msrp))
-            ->when($this->filters['search'], fn($query, $search) => $query->where('name', 'like', '%'.$search.'%'));
+        $prices = Price::query()
+        ->where(function ($q)  {
+            $q->where('price_list_id', $this->priceList);
+            $q->where('name', "like", "%{$this->filters['search']}%");
+            $q->orWhere('price', 'like', "%{$this->filters['search']}%");
+            $q->orWhere('msrp', 'like', "%{$this->filters['search']}%");
+        });
+
 
         return $this->applySorting($prices);
     }

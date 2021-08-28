@@ -187,8 +187,7 @@
                                         </x-table.cell>
                                     </x-table.row>
                                     @endif
-                                    {{-- @dd($priceList->prices) --}}
-                                    @forelse ($priceList->prices as $price)
+                                    @forelse ($prices as $price)
                                     <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $price['id'] }}">
                                         <x-table.cell class="pr-0">
                                             <x-input.checkbox wire:model="selected" value="{{ $price['id'] }}" ></x-input.checkbox>

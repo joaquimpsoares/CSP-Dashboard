@@ -9,18 +9,6 @@ class FailedJobs extends Model
 {
     use HasFactory;
 
-    // public function getPayload(){
-
-    //     $jsonpayload = json_decode($this->payload);
-    //     // dd(unserialize($jsonpayload->data->command));
-    //     $data = unserialize($jsonpayload->data->command);
-    //     return $data;
-    //     // dd($this->payload);
-    //     // $jsonpayload = json_decode($this->payload);
-    //     // return $jsonpayload->map(function($item){
-    //     //     dd($item);
-    //     //     return unserialize($item);
-    //     // });
 
     public function jobname(){
         $jsonpayload = json_decode($this->payload);

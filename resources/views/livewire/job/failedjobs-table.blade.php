@@ -104,9 +104,7 @@
                                 @forelse ($failedjobs as $transaction)
                                 @php
                                 $jsonpayload = json_decode($transaction->payload);
-                                // dd($jsonpayload->displayName);
                                 $data = unserialize($jsonpayload->data->command);
-                                // dd(collect($data));
                                 @endphp
                                 <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $transaction['id'] }}">
                                     <x-table.cell class="pr-0">
