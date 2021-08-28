@@ -156,8 +156,8 @@ class ShowPricelist extends Component
     {
         $prices = Price::query()
         ->where(function ($q)  {
-            $q->where('price_list_id', $this->priceList);
-            $q->where('name', "like", "%{$this->filters['search']}%");
+            $q->orwhere('price_list_id', $this->priceList);
+            $q->orwhere('name', "like", "%{$this->filters['search']}%");
             $q->orWhere('price', 'like', "%{$this->filters['search']}%");
             $q->orWhere('msrp', 'like', "%{$this->filters['search']}%");
         });
