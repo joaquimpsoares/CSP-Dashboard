@@ -55,7 +55,8 @@ class PricelistTable extends Component
             case config('app.super_admin'):
 
 
-                return view('analytics.licenses', compact('serviceCosts', 'customer'));
+                return abort(403, __('errors.unauthorized_action'));
+
 
                 break;
 
@@ -65,10 +66,8 @@ class PricelistTable extends Component
                 break;
 
             case config('app.provider'):
-
-
-
-                return view('analytics.licenses', compact('serviceCosts', 'customer'));
+                $this->editing->provider_id =$this->getUser()->provider->id;
+                $this->editing->save();
                 break;
 
             case config('app.reseller'):
