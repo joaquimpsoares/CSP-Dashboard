@@ -70,6 +70,10 @@ class Product extends Model
         });
     }
 
+    public function IsSubscribed()
+    {
+        return $this->subsription;
+    }
     public function price() {
         return $this->hasOne(Price::class, 'product_id', 'id');
     }
@@ -86,6 +90,10 @@ class Product extends Model
         return $this->hasMany(Subscription::class, 'sku', 'product_id');
     }
 
+    public function subsription() {
+        return $this->belongsTo(Subscription::class, 'sku', 'product_id');
+    }
+
     public function tiers() {
         return $this->hasMany(Tier::class, 'product_sku', 'sku');
     }
@@ -96,19 +104,15 @@ class Product extends Model
 
     public function importLicenses($instance, $country)
     {
-
         ImportProductsMicrosoftJob::dispatch($instance, $country->iso_3166_2)->onQueue('SyncProducts')
-                ->delay(now()->addSeconds(10));
-
+        ->delay(now()->addSeconds(10));
         return $this;
     }
 
     public function importPerpetual($instance, $country)
     {
-
         ImportPerpetuaMicrosoftJob::dispatch($instance, $country->iso_3166_2)->onQueue('SyncProducts')
-                ->delay(now()->addSeconds(10));
-
+        ->delay(now()->addSeconds(10));
         return $this;
     }
 

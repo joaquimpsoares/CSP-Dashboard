@@ -33,7 +33,7 @@ class MovePriceSkuToId extends Command
             if($product){
                 $price->update(['product_id' => $product->id]);
             } else {
-                if($price->instance_id === 1){
+                if($price->instance_id === 2){
                     $price->delete();
                 } else {
                     logger('Product not found for price: '.$price->id);

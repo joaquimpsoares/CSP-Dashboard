@@ -18,7 +18,7 @@
                             <button type="button" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none"  x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-2" @click="open = !open" aria-expanded="false" x-bind:aria-expanded="open.toString()" x-state-description="Current:"bg-gray-100 text-gray-900", Default:"bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900"">
                                 <span class="block -mt-px normal-case whitespace-no-wrap" style='margin-top: -1px; font-feature-settings: "pnum"; font-variant: proportional-nums; transition: color 0.24s ease 0s; overflow-wrap: break-word;'>
                                     <span class="box-border">
-                                        Actions
+                                        {{ ucwords(trans_choice('messages.actions', 1)) }}
                                     </span>
                                 </span>
                             </button>
@@ -86,28 +86,6 @@
                     </div>
                 </div>
             </div>
-            {{-- <div class="grid grid-flow-col grid-cols-2 gap-4">
-                <div>
-                    <div class="flex justify-between mt-4 mb-8">
-                        <div class="">
-                            <dl>
-                                <div class="py-1 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.company_name', 1)) }}</dt>
-                                    <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{$priceList->resellers->first()->company_name}}</dd>
-                                </div>
-                                <div class="py-1 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.main_contact', 1)) }}</dt>
-                                    <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{$priceList->resellers->first()->users->first()->name}} {{$priceList->resellers->first()->users->first()->last_name}}</dd>
-                                </div>
-                                <div class="py-1 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.phone', 1)) }}</dt>
-                                    <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{$priceList->resellers->first()->users->first()->phone}}</dd>
-                                </div>
-                            </dl>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
             <div class="p-0 m-0 mt-4 break-words">
                 <div class="px-0 pt-0 pb-5 m-0">
                     <div class="p-0 m-0 overflow-visible bg-white rounded" style="overflow: visible; outline: 0px; overflow-wrap: break-word;">
@@ -145,11 +123,11 @@
                                 <div class="ml-3 lg:max-w-xs">
                                     <x-dropdown label="Bulk Actions">
                                         <x-dropdown.item type="button" wire:click="exportSelected" class="flex items-center space-x-2">
-                                            <x-icon.download class="text-gray-400"/> <span>Export</span>
+                                            <x-icon.download class="text-gray-400"/> <span>{{ ucwords(trans_choice('messages.export', 1)) }}</span>
                                         </x-dropdown.item>
 
                                         <x-dropdown.item type="button" wire:click="$toggle('showDeleteModal')" class="flex items-center space-x-2">
-                                            <x-icon.trash class="text-gray-400"/> <span>Delete</span>
+                                            <x-icon.trash class="text-gray-400"/> <span>{{ ucwords(trans_choice('messages.delete', 1)) }}</span>
                                         </x-dropdown.item>
                                     </x-dropdown>
                                 </div>
@@ -158,7 +136,7 @@
                                 </div>
 
                                 <div class="ml-3 lg:max-w-xs">
-                                    <x-button.primary wire:click="create"><x-icon.plus/> Add</x-button.primary>
+                                    <x-button.primary wire:click="create"><x-icon.plus/> {{ ucwords(trans_choice('messages.add', 1)) }}</x-button.primary>
                                 </div>
                             </div>
                         </div>
@@ -294,29 +272,7 @@
             </form>
         </div>
     </div>
-    <form wire:submit.prevent="disable({{$priceList->id}})" wire:loading.class.delay="opacity-50">
-        <x-modal.confirmation wire:model.defer="showconfirmationModal">
-            <x-slot name="title">Disabling Customer</x-slot>
-            <x-slot name="content">
-                <p> Are you sure you want to disable <strong class="text-red-400">{{$priceList->company_name }}</strong>?</p>
-                <p> <strong>By doing so your customer's subscriptions will be put to disabled  you have 90 days until your customer can loose their information.</strong></p>
-
-                </x-slot>
-
-                <x-slot name="footer">
-                    <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false">
-                        Suspend
-                    </button>
-                    <a type="button" wire:click="$set('showconfirmationModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
-                        Cancel
-                    </a>
-                </div>
-            </x-slot>
-        </x-modal.confirmation>
-    </form>
     <!-- Delete Transactions Modal -->
-
-
     <form wire:submit.prevent="deleteSelected">
         <x-modal.confirmation wire:model.defer="showDeleteModal">
             <x-slot name="title">Delete Price</x-slot>
@@ -325,10 +281,10 @@
             </x-slot>
             <x-slot name="footer">
                 <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false">
-                    Delete
+                    {{ ucwords(trans_choice('messages.delete', 1)) }}
                 </button>
                 <a type="button" wire:click="$set('showDeleteModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
-                    Cancel
+                    {{ ucwords(trans_choice('messages.cancel', 1)) }}
                 </a>
             </x-slot>
         </x-modal.confirmation>
@@ -338,6 +294,5 @@
     function copyToClipboard(subscription_id) {
         document.getElementById(subscription_id).select();
         document.execCommand('copy');
-
     }
 </script>
