@@ -20,9 +20,9 @@
         </div>
     </div>
     @endif
-    {{-- ->getUpgradeProducts()->all() --}}
+    {{-- @dd($subscription->products->isNotEmpty()) --}}
+    @if($subscription->products->isNotEmpty())
     @if($subscription->products->where('instance_id', $subscription->instance_id)->first()->upgrade_target_offers != null)
-
     <div class="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="max-w-4xl mx-auto">
             <div class="p-4 border-l-4 border-yellow-400 bg-yellow-50">
@@ -45,6 +45,7 @@
             </div>
         </div>
     </div>
+    @endif
     @endif
     <div class="relative z-0 flex-col flex-1 overflow-y-auto">
         <div class="p-4 overflow-hidden bg-white">
@@ -414,11 +415,11 @@
 
             <x-slot name="footer">
                 <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        {{ucwords(trans_choice('messages.cancel', 1))}}
-                    </button>
-                    <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        {{ucwords(trans_choice('messages.suspend', 1))}}
-                    </button>
+                    {{ucwords(trans_choice('messages.cancel', 1))}}
+                </button>
+                <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    {{ucwords(trans_choice('messages.suspend', 1))}}
+                </button>
             </x-slot>
         </x-modal.confirmation>
     </form>

@@ -252,13 +252,17 @@
                                             <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
                                                 <div class="p-0 mt-px mb-0 ml-px mr-0 pointer-events-auto">
                                                     <span class="inline font-medium text-gray-900">
-                                                        {{$subscription->products->first()->name ?? ''}}
+                                                        {{$subscription->name ?? ''}}
                                                         <span class="inline text-gray-600">
                                                             •
                                                         </span>
-                                                        {{$subscription->product_id}}
                                                     </span>
                                                 </div>
+                                                <div class="p-0 mt-px mb-0 ml-px mr-0 pointer-events-auto">
+                                                    <span class="inline text-xs text-gray-600">{{$subscription->product_id}}
+                                                    </span>
+                                                </div>
+
                                                 @if($subscription->order->first())
                                                 @if($subscription->order->first()->orderproduct)
                                                 <span class="inline text-xs text-gray-600">
@@ -488,13 +492,13 @@
                                                 <div>
                                                     <x-label for="country">{{ucwords(trans_choice('messages.price_list', 1))}}</x-label>
                                                     <div class="mb-3 input-group">
-                                                        <select wire:model="editing.price_list_id" name="price_list_id" class="form-control @error('editing.price_list_id') is-invalid @enderror" sf-validate="required">
+                                                        {{-- <select wire:model="editing.price_list_id" name="price_list_id" class="form-control @error('editing.price_list_id') is-invalid @enderror" sf-validate="required">
                                                             <option value="{{$customer->price_list_id ?? ''}}" selected>{{optional($customer->priceList)->name}} </option>
                                                             @foreach ($customer->resellers->first()->availablePriceLists as $pricelist)
                                                             <option value="{{$pricelist->id}}">
                                                                 {{$pricelist->name}}</option>
                                                                 @endforeach
-                                                            </select>
+                                                            </select> --}}
                                                             @error('editing.price_list_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                                         </div>
                                                         <label for="editing.markup" class="block text-sm font-medium text-gray-700">{{ ucwords(trans_choice('messages.markup', 1)) }}</label>

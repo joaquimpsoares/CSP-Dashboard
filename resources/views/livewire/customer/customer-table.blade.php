@@ -219,11 +219,11 @@
                                         <div class="mb-4 col-lg-4 col-md-6">
                                             <x-label for="country">{{ucwords(trans_choice('messages.price_list', 1))}}</x-label>
                                             <div class="mb-3 input-group">
-                                                <select wire:model="editing.price_list_id" name="price_list_id" class="form-control @error('editing.price_list_id') is-invalid @enderror" sf-validate="required">
+                                                {{-- <select wire:model="editing.price_list_id" name="price_list_id" class="form-control @error('editing.price_list_id') is-invalid @enderror" sf-validate="required">
                                                     @foreach ($customer->resellers->first()->availablePriceLists as $pricelist)
                                                     <option value="{{$pricelist->id}}" >{{$pricelist->name}}</option>
                                                     @endforeach
-                                                </select>
+                                                </select> --}}
                                                 @error('editing.price_list_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                             </div>
                                         </div>
