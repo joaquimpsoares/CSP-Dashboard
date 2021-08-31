@@ -53,7 +53,7 @@ class CustomerTable extends Component
             'editing.address_2'             => 'nullable'|'string'|'max:255'|'min:3',
             'editing.city'                  => 'required'|'string'|'max:255'|'min:3',
             'editing.state'                 => 'required'|'string'|'max:255'|'min:3',
-            'editing.postal_code'           => 'required'|'string'|'regex:/^[0-9A-Za-z.\-]+$/'|'max:255'|'min:3',
+            'editing.postal_code'           => 'required'|'string'|'max:255'|'min:3',
             'editing.status_id'             => 'required'|'integer'|'exists:statuses,id',
             'editing.markup'                => 'nullable'|'integer'|'min:3',
             'editing.price_list_id'         => 'required'|'integer'|'exists:price_list,id',

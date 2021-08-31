@@ -210,7 +210,7 @@
                                         </div>
                                         <div class="mb-3 col-lg-4 col-md-6">
                                             <x-label for="zip">{{ucwords(trans_choice('messages.postal_code', 1))}}</x-label>
-                                            <x-input wire:model="editing.postal_code" name="postal_code" type="number" class="@error('editing.postal_code') is-invalid @enderror" id="postal_code" placeholder="" required></x-input>
+                                            <x-input wire:model="editing.postal_code" name="postal_code" type="text" class="@error('editing.postal_code') is-invalid @enderror" id="postal_code" placeholder="" required></x-input>
                                             @error('editing.postal_code')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                         </div>
                                     </div>
