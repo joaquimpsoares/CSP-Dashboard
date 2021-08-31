@@ -339,6 +339,8 @@ class CartController extends Controller
 
 
     public function checkDomainAvailability(Request $request) {
+        Log::info('starting to validate');
+
         $validate = $request->validate([
             'token' => 'required|uuid',
             'domain' => 'required|string|regex:/(^[A-Za-z0-9 ]+$)+/'
