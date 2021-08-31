@@ -346,6 +346,8 @@ class CartController extends Controller
             'domain' => 'required|string|regex:/(^[A-Za-z0-9 ]+$)+/'
         ]);
 
+        Log::info('validated'.$validate);
+
         $cart = $this->getByToken($validate['token']);
         $domain = $validate['domain'] . ".onmicrosoft.com";
         $instance = Instance::where('id', session('instance_id'))->first();
