@@ -174,7 +174,6 @@
 
 		})
 		.done(function(data) {
-
 			getMainUserFromCustomer();
 			$("#validateButton").hide();
 			$("#agreement").show();
