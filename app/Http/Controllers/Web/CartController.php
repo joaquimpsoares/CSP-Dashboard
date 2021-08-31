@@ -355,6 +355,7 @@ class CartController extends Controller
             $tenantCheckRequest = Http::get('https://login.windows.net/'.$domain.'/.well-known/openid-configuration');
 
             $cart->domain = $domain;
+            // dd($domain);
             $cart->save();
 
             if ($tenantCheckRequest->failed()){
