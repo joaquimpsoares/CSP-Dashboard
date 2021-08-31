@@ -10,18 +10,19 @@ use App\Product;
 use App\Customer;
 use App\Instance;
 use Illuminate\Support\Str;
+use App\MicrosoftTenantInfo;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\MicrosoftTenantInfo;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
-use Illuminate\Support\Facades\Http;
-use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 use Tagydes\MicrosoftConnection\Models\Customer as ModelsCustomer;
+use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 
 class CartController extends Controller
 {
@@ -350,18 +351,18 @@ class CartController extends Controller
         if($instance->type === 'microsoft'){
 
             $tenantCheckRequest = Http::get('https://login.windows.net/'.$domain.'/v2.0/.well-known/openid-configuration');
+            Log::info('Confirmation of Result of tenant: '.$tenantCheckRequest);
             $cart->domain = $domain;
             $cart->save();
 
             if ($tenantCheckRequest->failed()){
-
+                Log::info('failed');
                 $cart->domain = $domain;
                 $cart->save();
                 return true;
-
             } else {
+                Log::info('not failed');
                 $token = Str::of($tenantCheckRequest['token_endpoint'])->explode('/')[3];
-
                 $customer = new ModelsCustomer([
                     'id' => $token,
                     'username' => 's@s.com',
@@ -375,17 +376,13 @@ class CartController extends Controller
                 if($agreed){
                     $cart->domain = $domain;
                     $cart->save();
-
                 if(MicrosoftTenantInfo::where('tenant_id',$token)->first() == null){
-
                 MicrosoftTenantInfo::create([
                     'customer_id'   => $cart->customer_id,
                     'tenant_id'     => $token,
                     'tenant_domain' => $domain,
                     ]);
                 }
-
-
                     return true;
                 } else {
                     return response($token, 401);
