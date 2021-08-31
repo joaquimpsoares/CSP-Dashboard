@@ -339,37 +339,25 @@ class CartController extends Controller
 
 
     public function checkDomainAvailability(Request $request) {
-        Log::info('starting to validate');
-
-
         $validate = $request->validate([
             'token' => 'required|uuid',
             'domain' => 'required|string|regex:/(^[A-Za-z0-9 ]+$)+/'
         ]);
-        Log::info('starting to validate'. $validate['token']);
-        Log::info('starting to validate'. $validate['domain']);
-
-        Log::info('validated');
-
         $cart = $this->getByToken($validate['token']);
-
         $domain = $validate['domain'] . ".onmicrosoft.com";
         $instance = Instance::where('id', session('instance_id'))->first();
 
-        if($instance->type === 'microsoft'){
+        if(strtolower($instance->type) === 'microsoft'){
 
             $tenantCheckRequest = Http::get('https://login.windows.net/'.$domain.'/v2.0/.well-known/openid-configuration');
-            Log::info('Confirmation of Result of tenant: '.$domain);
             $cart->domain = $domain;
             $cart->save();
 
             if ($tenantCheckRequest->failed()){
-                Log::info('failed');
                 $cart->domain = $domain;
                 $cart->save();
                 return true;
             } else {
-                Log::info('not failed');
                 $token = Str::of($tenantCheckRequest['token_endpoint'])->explode('/')[3];
                 $customer = new ModelsCustomer([
                     'id' => $token,
