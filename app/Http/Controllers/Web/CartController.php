@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Cart;
 use App\Order;
-use App\Models\Status;
+use App\Status;
 use App\Country;
 use App\Product;
 use App\Customer;
