@@ -23,6 +23,7 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
     public function all()
     {
         $user = $this->getUser();
+        $subscriptions = null;
 
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
