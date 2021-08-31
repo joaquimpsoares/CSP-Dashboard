@@ -353,7 +353,7 @@ class CartController extends Controller
         if($instance->type === 'microsoft'){
 
             $tenantCheckRequest = Http::get('https://login.windows.net/'.$domain.'/.well-known/openid-configuration');
-
+dd($tenantCheckRequest);
             $cart->domain = $domain;
             // dd($domain);
             $cart->save();
