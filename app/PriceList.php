@@ -27,15 +27,11 @@ class PriceList extends Model
     }
 
     public function provider() {
-        return $this->belongsTo(Provider::class, 'provider_id', 'id');
+        return $this->belongsTo(Provider::class);
     }
 
     public function reseller() {
-        return $this->belongsTo(Reseller::class, 'reseller_id', 'id');
-    }
-
-    public function customer() {
-        return $this->belongsTo(Customer::class, 'price_list_id', 'id');
+        return $this->belongsTo(Reseller::class);
     }
 
     protected static function booted(){

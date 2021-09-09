@@ -65,7 +65,7 @@ class Reseller extends Model
 
     public function priceList()
     {
-        return $this->belongsTo(PriceList::class);
+        return $this->belongsTo(PriceList::class)->withoutGlobalScope('access_level');
     }
 
     public function availablePriceLists()
