@@ -181,27 +181,20 @@ class InstanceController extends Controller
 
             public function getMasterToken($id)
             {
-
                 $instance = Instance::findorFail($id);
-
-
                 if( !$instance){
                     return redirect()->back()->with('warning', 'The account has no assigned tenant');
                 }
+                // dd(! $instance->external_token);
 
-                if( ! $instance->external_token){
                     $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
-
-
                     $expire = date("Y-m-d h:i:s", $externalToken['expiration']);
                     $external_token = $externalToken['token'];
-
-
                     $update = $instance->update([
                         'external_token' => $external_token,
                         'external_token_updated_at' => $expire
-                        ]);
-                }
+                    ]);
+
 
                 return redirect()->back()->with('success', 'Instance updated succesfully');
             }
