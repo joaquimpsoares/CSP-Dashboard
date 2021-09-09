@@ -141,13 +141,13 @@ class EditUser extends Component
 
         //create a new invite record
         $invite = Invite::create([
-            'email' => $this->email,
+            'email' => $this->user->email,
             'token' => $token,
             'provider_id' => $user
         ]);
 
         // send the email
-        Mail::to($this->email)->send(new InviteCreated($invite));
+        Mail::to($this->user->email)->send(new InviteCreated($invite));
 
         session()->flash('message', 'Message sent to ' . $this->user->email . ' successfully.');
         // redirect back where we came from

@@ -28,8 +28,9 @@ class ProductTable extends Component
     public $license = false;
     public $perpetual = false;
     public $password_confirmation;
+    // public $showCreateUser = false;
     public $showImportModal = false;
-    public $showCreateUser = false;
+    public $showEditModal = false;
 
     public Product $editing;
     public $filters = [
@@ -43,9 +44,59 @@ class ProductTable extends Component
 
     public function mount()
     {
-        $this->editing      = $this->makeBlankTransaction();
+        $this->editing = $this->makeBlankTransaction();
     }
 
+    public function rules()
+    {
+        return [
+            'editing.name'                      => 'required'|'string'|'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/'|'max:255',
+            'editing.description'               => 'required'|'min:3',
+            'editing.vendor'                    => 'required'|'integer'|'min:1',
+            'editing.sku'                       => 'required'|'string'|'max:255'|'min:3',
+            'editing.catalog_item_id'           => 'nullable'|'string'|'max:255'|'min:3',
+            'editing.vendor'                    => 'required'|'string'|'max:255'|'min:3',
+            'editing.productType'               => 'required'|'string'|'max:255'|'min:3',
+            'editing.minimum_quantity'          => 'required'|'string'|'max:255'|'min:3',
+            'editing.maximum_quantity'          => 'required'|'integer'|'exists:statuses,id',
+            'editing.limit'                     => 'nullable'|'integer'|'min:3',
+            'editing.term'                      => 'required'|'integer'|'exists:price_list,id',
+            'editing.supported_billing_cycles'  => 'required'|'integer'|'exists:price_list,id',
+            'editing.terms'                     => 'required'|'integer'|'exists:price_list,id',
+            'editing.resellee_qualifications'   => 'required'|'integer'|'exists:price_list,id',
+
+
+
+
+
+
+            // 'creatingUser.editing.'             => 'sometimes'|'string'|'max:255'|'min:3',
+            // 'creatingUser.last_name'        => 'sometimes'|'string'|'max:255'|'min:3',
+            // 'creatingUser.socialite_id'     => 'sometimes'|'string'|'max:255'|'min:3',
+            // 'creatingUser.phone'            => 'sometimes'|'string'|'max:20'|'min:3',
+            // 'creatingUser.address'          => 'sometimes'|'string'|'max:255'|'min:3',
+            // 'creatingUser.email'            => 'nullable'|'email','unique:users'|'max:255'|'min:3',
+            // 'creatingUser.status_id'        => 'required'|'integer'|'exists:statuses,id',
+            // 'password'                      => 'same:password_confirmation'|'required'|'min:6',
+            //required', new checkPostalCodeRule(!isset($this->country_id) ?? $country->iso_3166_2),'min:3'],
+            //'postal_code'           => ['requir
+        ];
+    }
+
+    public function edit(Product $product)
+    {
+        $this->showEditModal = true;
+        $this->useCachedRows();
+
+        if ($this->editing->isNot($product)) $this->editing = $product;
+        $this->editing = $product;
+    }
+
+    public function save()
+    {
+        $this->editing->save();
+        $this->showEditModal = false;
+    }
     public function makeBlankTransaction()
     {
         return Product::make(['date' => now(), 'status' => 'success']);
@@ -71,7 +122,7 @@ class ProductTable extends Component
             $country = Country::select('iso_3166_2')->where('id', $provider->country_id)->first();
             $instance = Instance::where('provider_id', $id)->first();
 
-            $product->importLicenses($instance, $country);
+            $product->importNCELicenses($instance, $country);
             $this->notify('Import Scheduled for licenses');
 
         }

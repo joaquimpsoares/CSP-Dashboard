@@ -49,10 +49,9 @@ class ImportProductsMicrosoftJob implements ShouldQueue
 
             $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)
             ->forCountry($this->country)->all($this->country);
-
             $importCount = 0;
 
-            $products->each(function($importedProduct)use($instance, $importCount){
+            $products->each(function($importedProduct)use($instance){
                 Log::info('CREATE products: '.$importedProduct);
 
                 $updated = Product::updateOrCreate([
@@ -62,7 +61,7 @@ class ImportProductsMicrosoftJob implements ShouldQueue
                     'name' => $importedProduct->name,
                     'description' => $importedProduct->description,
                     'uri' => $importedProduct->uri,
-
+                    'productType' => $importedProduct,
                     'minimum_quantity' => $importedProduct->minimumQuantity,
                     'maximum_quantity' => $importedProduct->maximumQuantity,
                     'limit' => $importedProduct->limit,
@@ -91,9 +90,9 @@ class ImportProductsMicrosoftJob implements ShouldQueue
                     'reseller_qualifications'   => $importedProduct->resellerQualifications,
                 ]);
 
-                $importCount++;
+                // $importCount++;
             });
-            Log::info('Imported '.$importCount.' transactions!');
+            // Log::info('Imported '.$importCount.' transactions!');
             $this->queueProgress(90);
 
         } catch (Exception $e) {
@@ -102,7 +101,7 @@ class ImportProductsMicrosoftJob implements ShouldQueue
 
             Log::info('Error: '.$e->getMessage());
         }
-        Log::info('Imported '.$importCount.' transactions!');
+        // Log::info('Imported '.$importCount.' transactions!');
 
         $this->queueProgress(100);
 

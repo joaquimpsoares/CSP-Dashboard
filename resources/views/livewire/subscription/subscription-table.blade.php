@@ -87,7 +87,6 @@
                         <tbody>
                             @forelse ($subscriptions as $subscription)
                             <tr class="table-subheader hover:bg-gray-100">
-                                {{-- <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{$subscription['id']}}</td> --}}
                                 <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap"><a href="{{route('subscription.show', $subscription->id)}}">{{$subscription['id']}}</a></td>
                                 <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{$subscription->name}}
                                     @if($subscription->autorenew == 0)

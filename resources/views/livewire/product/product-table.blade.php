@@ -61,7 +61,7 @@
                             <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('id')" :direction="$sorts['id'] ?? null">{{ ucwords(trans_choice('messages.id', 2)) }}</x-table.heading>
                             <x-table.heading sortable multi-column wire:click="sortBy('name')" :direction="$sorts['name'] ?? null">{{ ucwords(trans_choice('messages.name', 1)) }}</x-table.heading>
                             <x-table.heading sortable multi-column wire:click="sortBy('sku')"  :direction="$sorts['sku'] ?? null">{{ ucwords(trans_choice('messages.sku', 1)) }}</x-table.heading>
-                            <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('category')" :direction="$sorts['category'] ?? null">{{ ucwords(trans_choice('messages.category', 1)) }}</x-table.heading>
+                            <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('productType')" :direction="$sorts['productType'] ?? null">{{ ucwords(trans_choice('messages.productType', 1)) }}</x-table.heading>
                             <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('vendor')"  :direction="$sorts['vendor'] ?? null">{{ ucwords(trans_choice('messages.vendor', 2)) }}</x-table.heading>
                             <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('created_at')"  :direction="$sorts['created_at'] ?? null">{{ ucwords(trans_choice('messages.created_at', 2)) }}</x-table.heading>
                         </x-slot>
@@ -116,7 +116,7 @@
                                     <a href="{{$product->format()['path']}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
-                                                {{ $product['category'] }}
+                                                {{ $product['productType'] }}
                                             </span>
                                         </a>
                                     </span>
@@ -138,6 +138,21 @@
                                             </span>
                                         </a>
                                     </span>
+                                </x-table.cell>
+                                <x-table.cell>
+                                    <div class="z-10">
+                                        <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                                            </svg>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a wire:click="edit({{ $product->id }})" class="dropdown-item" href="#">
+                                                <x-icon.edit></x-icon.edit>
+                                                {{ ucwords(trans_choice('messages.edit', 1)) }}
+                                            </a>
+                                        </div>
+                                    </div>
                                 </x-table.cell>
                             </x-table.row>
                             @empty
@@ -175,10 +190,6 @@
                 <a type="button" wire:click="$set('showDeleteModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
                     Cancel
                 </a>
-
-                {{-- <x-button.secondary wire:click="$set('showDeleteModal', false)">Cancel</x-button.secondary>
-
-                <x-button.primary type="submit">Delete</x-button.primary> --}}
             </x-slot>
         </x-modal.confirmation>
     </form>
@@ -186,9 +197,7 @@
     <form wire:submit.prevent="importproducts">
         <x-modal.dialog wire:model.defer="showImportModal">
             <x-slot name="title">{{ ucwords(trans_choice('messages.import_products', 1)) }}</x-slot>
-
             <x-slot name="content">
-
                 <x-input.group for="status" label="Select Type of import" >
                     <fieldset class="border-t border-b border-gray-200">
                         <legend class="sr-only">import types</legend>
@@ -227,4 +236,169 @@
             </x-slot>
         </x-modal.dialog>
     </form>
-</div>
+    <div>
+        <!-- Save Transaction Modal -->
+        <form wire:submit.prevent="save({{$product->id}})">
+            <x-modal.slideout wire:model.defer="showEditModal">
+                <x-slot name="title">Edit Product</x-slot>
+                <x-slot name="content">
+                    <section class="dark-grey-text">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="mb-4 col-md-6">
+                                        <x-label for="name" class="">{{ ucwords(trans_choice('messages.name', 1)) }}</x-label>
+                                        <x-input  wire:model="editing.name" type="text" id="name" name="name" class="@error('editing.name') is-invalid @enderror"></x-input>
+                                        @error('editing.name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                    <div class="mb-2 col-md-6">
+                                        <x-label for="vendor">{{ ucwords(trans_choice('messages.vendor', 1)) }}</x-label>
+                                        <x-input wire:model="editing.vendor" type="text" id="vendor" name="vendor" class="@error('editing.vendor') is-invalid @enderror"></x-input>
+                                        @error('editing.vendor')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="mb-2 col-md-12">
+                                        <x-label for="country">{{ucwords(trans_choice('messages.description', 1))}}</x-label>
+                                        <div class="mb-3 input-group">
+                                            <textarea wire:model="editing.description" id="description" placeholder="description" rows="2"
+                                            class="flex-1 block w-full min-w-0 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                                            @error('editing.description')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="mb-3 col-lg-4 col-md-6">
+                                        <x-label for="sku" class="">{{ucwords(trans_choice('messages.sku', 1))}}</x-label>
+                                        <x-input wire:model="editing.sku" type="text" id="sku" name="sku" class=" mb-4 @error('editing.sku') is-invalid @enderror"></x-input>
+                                        @error('editing.sku')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                    <div class="mb-3 col-lg-4 col-md-6">
+                                        <x-label for="catalog_item_id">{{ucwords(trans_choice('messages.product_catalog_item_id', 1))}}</x-label>
+                                        <x-input wire:model="editing.catalog_item_id" name="catalog_item_id" type="text" class="@error('editing.catalog_item_id') is-invalid @enderror" id="catalog_item_id" placeholder=""></x-input>
+                                        @error('editing.catalog_item_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                    <div class="mb-3 col-lg-4 col-md-6">
+                                        <x-label for="productType">{{ucwords(trans_choice('messages.productType', 1))}}</x-label>
+                                        <x-input wire:model="editing.productType" name="productType" type="text" class="@error('editing.productType') is-invalid @enderror" id="productType" placeholder=""></x-input>
+                                        @error('editing.postal_code')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="mb-3 col-lg-4 col-md-6">
+                                        <x-label for="minimum_quantity" class="">{{ucwords(trans_choice('messages.product_mininum', 1))}}</x-label>
+                                        <x-input wire:model="editing.minimum_quantity" type="text" id="minimum_quantity" name="minimum_quantity" class=" mb-4 @error('editing.minimum_quantity') is-invalid @enderror"></x-input>
+                                        @error('editing.minimum_quantity')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                    <div class="mb-3 col-lg-4 col-md-6">
+                                        <x-label for="maximum_quantity">{{ucwords(trans_choice('messages.product_maximum', 1))}}</x-label>
+                                        <x-input wire:model="editing.maximum_quantity" name="maximum_quantity" type="text" class="@error('editing.maximum_quantity') is-invalid @enderror" id="maximum_quantity" placeholder=""></x-input>
+                                        @error('editing.maximum_quantity')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                    <div class="mb-3 col-lg-4 col-md-6">
+                                        <x-label for="limit">{{ucwords(trans_choice('messages.limit', 1))}}</x-label>
+                                        <x-input wire:model="editing.limit" name="limit" type="text" class="@error('editing.limit') is-invalid @enderror" id="limit" placeholder=""></x-input>
+                                        @error('editing.limit')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <x-label for="supported_billing_cycles" class="">{{ucwords(trans_choice('messages.product_billing_cycle', 1))}}</x-label>
+                                    <x-input wire:model="editing.supported_billing_cycles" type="text" id="supported_billing_cycles" name="supported_billing_cycles" class="@error('editing.supported_billing_cycles') is-invalid @enderror" placeholder="1234 Main St"></x-input>
+                                    @error('editing.supported_billing_cycles')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                </div>
+                                <div class="row">
+                                    @if($editing['terms'])
+                                    @foreach ($editing['terms'] as $item)
+                                    <div class="mb-3 col-lg-4 col-md-6">
+
+                                        <x-label for="terms" class="">{{ucwords(trans_choice('messages.product_term', 1))}}</x-label>
+                                        <x-input  type="text" id="terms" name="terms" class="@error('editing.terms') is-invalid @enderror" value="{{$item['duration']}}"></x-input>
+                                    </div>
+                                    @error('editing.terms')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    <div class="mb-3 col-lg-4 col-md-6">
+
+                                        <x-label for="terms" class="">{{ucwords(trans_choice('messages.name', 1))}}</x-label>
+                                        <x-input  type="text" id="terms" name="terms" class="@error('editing.terms') is-invalid @enderror" value="{{$item['description']}}"></x-input>
+                                    </div>
+                                    @error('editing.terms')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    <div class="mb-3 col-lg-4 col-md-6">
+                                        <x-label for="terms" class="">{{ucwords(trans_choice('messages.product_billing_cycle', 1))}}</x-label>
+                                        <x-input  type="text" id="terms" name="terms" class="@error('editing.terms') is-invalid @enderror" value="{{$item['billingCycle']}}"></x-input>
+                                        @error('editing.terms')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+
+                                    </div>
+                                    @endforeach
+                                    @endif
+                                </div>
+
+
+                                    <div class="row">
+                                        <div class="mb-3 col-lg-4 col-md-6">
+                                            <x-label for="city" class="">{{ucwords(trans_choice('messages.product_reseller_qualification', 1))}}</x-label>
+                                            <x-input wire:model="editing.resellee_qualifications" type="text" id="resellee_qualifications" name="resellee_qualifications" class=" mb-4 @error('editing.resellee_qualifications') is-invalid @enderror"></x-input>
+                                            @error('editing.resellee_qualifications')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div>
+                                        {{-- <div class="mb-3 col-lg-4 col-md-6">
+                                            <x-label for="state">{{ucwords(trans_choice('messages.state', 1))}}</x-label>
+                                            <x-input wire:model="editing.state" name="state" type="text" class="@error('editing.state') is-invalid @enderror" id="state" placeholder=""></x-input>
+                                            @error('editing.state')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div>
+                                        <div class="mb-3 col-lg-4 col-md-6">
+                                            <x-label for="zip">{{ucwords(trans_choice('messages.postal_code', 1))}}</x-label>
+                                            <x-input wire:model="editing.postal_code" name="postal_code" type="text" class="@error('editing.postal_code') is-invalid @enderror" id="postal_code" placeholder="" required></x-input>
+                                            @error('editing.postal_code')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div> --}}
+                                    </div>
+                                    <div class="row">
+                                        <div class="mb-4 col-lg-4 col-md-6">
+                                            {{-- <div class="mb-3 input-group">
+                                                <div>
+                                                    <x-label for="country">{{ucwords(trans_choice('messages.price_list', 1))}}</x-label>
+                                                    <div class="mb-3 input-group">
+                                                        price_list_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                                    </div>
+                                                    <label for="editing.markup" class="block text-sm font-medium text-gray-700">{{ ucwords(trans_choice('messages.markup', 1)) }}</label>
+                                                    <div class="relative mt-1 rounded-md shadow-sm">
+                                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                            <span class="text-gray-500 sm:text-sm">
+                                                                %
+                                                            </span>
+                                                        </div>
+                                                        <input value="{{$product->markup}}" wire:model="editing.markup" type="text" name="editing.marku" id="editing.markup" class="block w-full pr-12 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 pl-7 sm:text-sm" placeholder="00" aria-describedby="price-markup">
+                                                    </div>
+                                                    @error('editing.markup')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                                </div>
+                                            </div>
+                                        </div> --}}
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <x-label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</x-label>
+                                                {{-- <div class="form-group">
+                                                    <select wire:model="editing.status_id" name="status" class="form-control @error('editing.status') is-invalid @enderror" sf-validate="required">
+                                                        <option value="{{$product->status->id}}" selected>{{ucwords(trans_choice($product->status->name, 1))}}</option>
+                                                        @foreach ($statuses  as $key => $status)
+                                                        <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('editing.status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                                </div> --}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </x-slot>
+                        <x-slot name="footer">
+                            <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                {{ucwords(trans_choice('cancel', 1))}}
+                            </button>
+                            <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                {{ucwords(trans_choice('save', 1))}}
+                            </button>
+                        </x-slot>
+                    </x-modal.slideout>
+                </form>
+            </div>
+        </div>
+    </div>

@@ -9,18 +9,21 @@ use Illuminate\Database\Eloquent\Model;
 use App\Jobs\ImportPerpetuaMicrosoftJob;
 use App\Jobs\ImportProductsMicrosoftJob;
 use Illuminate\Database\Eloquent\Builder;
+use App\Jobs\ImportProductsNECMicrosoftJob;
 
 
 class Product extends Model
 {
     protected $casts = [
-        'has_addons' => 'boolean',
-        'addons' => 'collection',
-        'upgrade_target_offers' => 'collection',
-        'supported_billing_cycles' => 'collection',
-        'conversion_target_offers' => 'collection',
-        'resellee_qualifications' => 'collection',
-        'reseller_qualifications' => 'collection',
+        'has_addons'                => 'boolean',
+        'is_addon'                  => 'boolean',
+        'addons'                    => 'collection',
+        'upgrade_target_offers'     => 'collection',
+        'supported_billing_cycles'  => 'collection',
+        'conversion_target_offers'  => 'collection',
+        'resellee_qualifications'   => 'collection',
+        'reseller_qualifications'   => 'collection',
+        'terms'                     => 'collection',
     ];
 
     public function format()
@@ -104,15 +107,19 @@ class Product extends Model
 
     public function importLicenses($instance, $country)
     {
-        ImportProductsMicrosoftJob::dispatch($instance, $country->iso_3166_2)->onQueue('SyncProducts')
-        ->delay(now()->addSeconds(10));
+        ImportProductsMicrosoftJob::dispatch($instance, $country->iso_3166_2)->onQueue('SyncProducts');
+        return $this;
+    }
+
+    public function importNCELicenses($instance, $country)
+    {
+        ImportProductsNECMicrosoftJob::dispatch($instance, $country->iso_3166_2)->onQueue('SyncProducts');
         return $this;
     }
 
     public function importPerpetual($instance, $country)
     {
-        ImportPerpetuaMicrosoftJob::dispatch($instance, $country->iso_3166_2)->onQueue('SyncProducts')
-        ->delay(now()->addSeconds(10));
+        ImportPerpetuaMicrosoftJob::dispatch($instance, $country->iso_3166_2)->onQueue('SyncProducts');
         return $this;
     }
 

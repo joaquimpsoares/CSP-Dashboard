@@ -177,7 +177,7 @@
                                             <div class="mb-3 input-group">
                                                 <select wire:model="editing.country_id" name="country_id" class="form-control @error('editing.country_id') is-invalid @enderror" sf-validate="required">
                                                     @if ($showCreateUser == true)
-                                                    <option value="{{$customer->country->name ?? ''}}">{{$customer->country->name ?? ''}}</option>
+                                                    <option value="{{$customer->country->name}}">{{$customer->country->name}}</option>
                                                     @endif
                                                     @foreach ($countries as $key => $country)
                                                     <option value="{{$key}}">{{$country}}</option>

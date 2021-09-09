@@ -50,29 +50,29 @@ class ImportPerpetuaMicrosoftJob implements ShouldQueue
             ->forCountry($instance->provider->country->iso_3166_2)->softwarePrepetualAll($instance->provider->country->iso_3166_2);
 
             $importCount = 0;
-
             $products->each(function ($importedProduct) use ($instance, $importCount) {
-                $product = Product::updateOrCreate([
-                    'sku'                       => $importedProduct[0]->productId,
-                    'instance_id'               => $instance->id,
-                    'billing'                   => "software",
-                    'addons'                    => "[]",
-                    'category'                  => "Perpetual Software",
-                ], [
-                    'name'                      => $importedProduct[0]->title,
-                    'description'               => $importedProduct[0]->description,
-                    'uri'                       => $importedProduct[0]->uri,
-                    'minimum_quantity'          => $importedProduct[0]->minimumQuantity,
-                    'maximum_quantity'          => $importedProduct[0]->maximumQuantity,
-                    'is_trial'                  => $importedProduct[0]->isTrial,
-                    'limit'                     => $importedProduct[0]->limit,
-                    'term'                      => $importedProduct[0]->term,
-                    'locale'                    => $importedProduct[0]->locale,
-                    'supported_billing_cycles'  => $importedProduct[0]->supportedBillingCycles,
-                    'is_perpetual' => true
-                ]);
-
-                $importCount++;
+                $importedProduct->each(function ($importedProduct) use ($instance, $importCount) {
+                    $product = Product::updateOrCreate([
+                        'sku'                       => $importedProduct->productId.':'.$importedProduct->id,
+                        'instance_id'               => $instance->id,
+                        'billing'                   => "software",
+                        'addons'                    => "[]",
+                        'category'                  => "Perpetual Software",
+                    ], [
+                        'name'                      => $importedProduct->title,
+                        'description'               => $importedProduct->description,
+                        'uri'                       => $importedProduct->uri,
+                        'minimum_quantity'          => $importedProduct->minimumQuantity,
+                        'maximum_quantity'          => $importedProduct->maximumQuantity,
+                        'is_trial'                  => $importedProduct->isTrial,
+                        'limit'                     => $importedProduct->limit,
+                        'term'                      => $importedProduct->term,
+                        'locale'                    => $importedProduct->locale,
+                        'supported_billing_cycles'  => $importedProduct->supportedBillingCycles,
+                        'is_perpetual' => true
+                    ]);
+                    $importCount++;
+                });
             });
             Log::info('Imported '.$importCount.' transactions!');
             $this->queueProgress(90);
