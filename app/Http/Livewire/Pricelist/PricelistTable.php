@@ -57,11 +57,6 @@ class PricelistTable extends Component
         switch ($this->getUserLevel()) {
             case config('app.provider'):
                 $this->editing->update(['provider_id' => $this->getUser()->provider->id]);
-                $this->getUser()->provider->priceList->prices->each(function(Price $price){
-                    $attributes = $price->getAttributes();
-                    unset($attributes['id']);
-                    $this->editing->prices()->create($attributes);
-                });
 
                 break;
             case config('app.reseller'):
