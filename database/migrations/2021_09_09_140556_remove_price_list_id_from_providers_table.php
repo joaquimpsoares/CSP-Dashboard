@@ -14,6 +14,7 @@ class RemovePriceListIdFromProvidersTable extends Migration
     public function up()
     {
         Schema::table('providers', function (Blueprint $table) {
+            $table->dropForeign('providers_price_list_id_foreign');
             $table->dropColumn('price_list_id');
         });
     }
