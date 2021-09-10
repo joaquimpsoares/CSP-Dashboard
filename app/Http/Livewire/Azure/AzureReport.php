@@ -4,15 +4,17 @@ namespace App\Http\Livewire\Azure;
 
 use App\Subscription;
 use Livewire\Component;
+use Illuminate\Support\Str;
+use App\Exports\exportAzure;
 use Livewire\WithPagination;
-use App\Http\Livewire\DataTable\WithSorting;
-use App\Http\Livewire\DataTable\WithBulkActions;
-use App\Http\Livewire\DataTable\WithPerPagePagination;
+use App\Models\AzurePriceList;
+use App\Models\AzureUsageReport;
+use App\Http\Livewire\CachedTable;
 
 class AzureReport extends Component
 {
     use WithPagination;
-    use WithPerPagePagination, WithSorting, WithBulkActions;
+    use CachedTable;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -20,29 +22,14 @@ class AzureReport extends Component
     public $taskduedate;
     public $startdate;
     public $endtdate;
-    public $showFilters = false;
+    public $sortColumn = 'usageStartTime';
+    public $sortDirection = 'asc';
 
     public $dates;
     public $selectRgroup;
     public $selectCategory;
     public $selectSubCategory;
     public $selectLocation;
-    public $filters = [
-        'search' => '',
-        'amount-min' => null,
-        'amount-max' => null,
-        'date-min' => null,
-        'date-max' => null,
-    ];
-
-
-    protected $queryString = ['sorts'];
-
-    public function toggleShowFilters()
-    {
-
-        $this->showFilters = ! $this->showFilters;
-    }
 
     public function mount(Subscription $subscription)
     {
@@ -52,10 +39,13 @@ class AzureReport extends Component
         $this->selectCategory;
         $this->selectSubCategory;
         $this->selectLocation;
+
+
     }
 
     public function sortByColumn($column)
     {
+        $this->useCacheRows();
 
         if ($this->sortColumn == $column) {
             $this->sortDirection = $this->sortDirection == 'asc' ? 'desc' : 'asc';
@@ -67,137 +57,117 @@ class AzureReport extends Component
 
     public function resetFilters()
     {
+        $this->useCacheRows();
         $this->reset();
     }
 
     public function resetDate()
     {
+        $this->useCacheRows();
         $this->reset(['taskduedate']);
     }
 
     public function exportSelected()
     {
-        dd('h');
-        // if($this->taskduedate){
-        //     $dates = Str::of($this->taskduedate)->explode(' - ')->collect();
-        // }else{
-        // $dates = (['0' => '1', '1' => '2']);
-        // }
-        // $query = AzureUsageReport::query();
+        $this->useCacheRows();
+        if($this->taskduedate){
+            $dates = Str::of($this->taskduedate)->explode(' - ')->collect();
+        }else{
+        $dates = (['0' => '1', '1' => '2']);
+        }
+        $query = AzureUsageReport::query();
 
-        // if ($this->selectRgroup) {
-        //     $query->where('resource_group', $this->selectRgroup);
-        //     $categories     = AzureUsageReport::where('resource_group', $this->selectRgroup)->groupBy('resource_category')->pluck('resource_category');
-        // }
-        // if ($this->selectCategory) {
-        //     $query->where('resource_category', $this->selectCategory);
-        //     $subcategories  = AzureUsageReport::where('resource_category', $this->selectCategory)->where('resource_group', $this->selectRgroup)->groupBy('resource_subcategory')->pluck('resource_subcategory');
-        // }
-        // if ($this->selectSubCategory) {
-        //     $query->where('resource_subcategory', $this->selectSubCategory);
-        //     $region = AzureUsageReport::where('resource_subcategory', $this->selectSubCategory)->where('resource_group', $this->selectRgroup)->groupBy('resource_region')->pluck('resource_region');
-        // }
-        // if ($this->selectLocation) {
-        //     $query->where('resource_location', $this->selectLocation);
-        // }
+        if ($this->selectRgroup) {
+            $query->where('resource_group', $this->selectRgroup);
+            $categories     = AzureUsageReport::where('resource_group', $this->selectRgroup)->groupBy('resource_category')->pluck('resource_category');
+        }
+        if ($this->selectCategory) {
+            $query->where('resource_category', $this->selectCategory);
+            $subcategories  = AzureUsageReport::where('resource_category', $this->selectCategory)->where('resource_group', $this->selectRgroup)->groupBy('resource_subcategory')->pluck('resource_subcategory');
+        }
+        if ($this->selectSubCategory) {
+            $query->where('resource_subcategory', $this->selectSubCategory);
+            $region = AzureUsageReport::where('resource_subcategory', $this->selectSubCategory)->where('resource_group', $this->selectRgroup)->groupBy('resource_region')->pluck('resource_region');
+        }
+        if ($this->selectLocation) {
+            $query->where('resource_location', $this->selectLocation);
+        }
 
-        // $reports = $query->where('subscription_id', $this->subscription->id)
-        // ->whereBetween('usageStartTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
-        // ->whereBetween('usageEndTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
-        // ->orderBy($this->sortColumn, $this->sortDirection)
-        // ->pluck('id')->toArray();
+        $reports = $query->where('subscription_id', $this->subscription->id)
+        ->whereBetween('usageStartTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
+        ->whereBetween('usageEndTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
+        ->orderBy($this->sortColumn, $this->sortDirection)
+        ->pluck('id')->toArray();
 
 
-        // return (new exportAzure($reports))->download('azureReports '.$this->subscription->customer->company_name.'.xlsx');
+        return (new exportAzure($reports))->download('azureReports '.$this->subscription->customer->company_name.'.xlsx');
     }
 
-    // public function getRowsQueryProperty()
-    // {
-        // dd('hj');
-        // $reports = AzureUsageReport::query()
-        //     ->when($this->filters['amount-min'], fn($query, $quantity) => $query->where('quantity', '>=', $quantity))
-        //     ->when($this->filters['amount-max'], fn($query, $quantity) => $query->where('quantity', '<=', $quantity))
-        //     ->when($this->filters['date-min'], fn($query, $date) => $query->where('usageStartTime', '>=', Carbon::parse($date)))
-        //     ->when($this->filters['date-max'], fn($query, $date) => $query->where('usageEndTime', '<=', Carbon::parse($date)))
-        //     ->when($this->filters['search'], fn($query, $search) => $query->where('resource_group', 'like', '%'.$search.'%')->$query->where('resource_id', 'like', '%'.$search.'%'));
-
-        // return $this->applySorting($reports);
-    // }
-
-    public function getRowsProperty()
-    {
-        return $this->cache(function () {
-            return $this->applyPagination($this->rowsQuery);
-        });
-    }
 
     public function render()
     {
 
-        // if($this->taskduedate){
-        //     $dates = Str::of($this->taskduedate)->explode(' - ')->collect();
-        // }else{
-        // $dates = (['0' => '1', '1' => '2']);
-        // }
+        if($this->taskduedate){
+            $dates = Str::of($this->taskduedate)->explode(' - ')->collect();
+        }else{
+        $dates = (['0' => '1', '1' => '2']);
+        }
 
-        // $top5Q          = AzureUsageReport::groupBy('resource_group')->where('subscription_id', $this->subscription->id)->selectRaw('sum(cost) as sum, resource_group, resource_category')->orderBy('sum', 'DESC')->limit(5)->get()->toArray();
-        // $resourceGroups = AzureUsageReport::where('subscription_id', $this->subscription->id)->groupBy('resource_group')->pluck('resource_group');
-        // $categories     = AzureUsageReport::where('subscription_id', $this->subscription->id)->groupBy('resource_category')->pluck('resource_category');
-        // $subcategories  = AzureUsageReport::where('subscription_id', $this->subscription->id)->groupBy('resource_subcategory')->pluck('resource_subcategory');
-        // $region         = AzureUsageReport::where('subscription_id', $this->subscription->id)->groupBy('resource_region')->pluck('resource_region');
-
-
-        // $query = AzureUsageReport::query();
-        // $this->query = $query;
-
-        // if ($this->selectRgroup) {
-        //     $query->where('resource_group', $this->selectRgroup);
-        //     $categories     = AzureUsageReport::where('resource_group', $this->selectRgroup)->groupBy('resource_category')->pluck('resource_category');
-        // }
-        // if ($this->selectCategory) {
-        //     $query->where('resource_category', $this->selectCategory);
-        //     $subcategories  = AzureUsageReport::where('resource_category', $this->selectCategory)->where('resource_group', $this->selectRgroup)->groupBy('resource_subcategory')->pluck('resource_subcategory');
-        // }
-        // if ($this->selectSubCategory) {
-        //     $query->where('resource_subcategory', $this->selectSubCategory);
-        //     $region = AzureUsageReport::where('resource_subcategory', $this->selectSubCategory)->where('resource_group', $this->selectRgroup)->groupBy('resource_region')->pluck('resource_region');
-        // }
-        // if ($this->selectLocation) {
-        //     $query->where('resource_location', $this->selectLocation);
-        // }
+        $top5Q          = AzureUsageReport::groupBy('resource_group')->where('subscription_id', $this->subscription->id)->selectRaw('sum(cost) as sum, resource_group, resource_category')->orderBy('sum', 'DESC')->limit(5)->get()->toArray();
+        $resourceGroups = AzureUsageReport::where('subscription_id', $this->subscription->id)->groupBy('resource_group')->pluck('resource_group');
+        $categories     = AzureUsageReport::where('subscription_id', $this->subscription->id)->groupBy('resource_category')->pluck('resource_category');
+        $subcategories  = AzureUsageReport::where('subscription_id', $this->subscription->id)->groupBy('resource_subcategory')->pluck('resource_subcategory');
+        $region         = AzureUsageReport::where('subscription_id', $this->subscription->id)->groupBy('resource_region')->pluck('resource_region');
 
 
-        // $reports = $query->where('subscription_id', $this->subscription->id)
-        // ->whereBetween('usageStartTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
-        // ->whereBetween('usageEndTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
-        // ->orderBy($this->sortColumn, $this->sortDirection)
-        // ->paginate('10');
+        $query = AzureUsageReport::query();
+        $this->query = $query;
 
-        // $reports->map(function($item, $key) {
-        //     $azurepricelist = AzurePriceList::where('resource_id', $item->resource_id)->get('rates');
-        //     if ($azurepricelist->first()){
-        //         $item['cost'] = $item->quantity*$azurepricelist->first()->rates[0];
-        //     }
-        //     $item->cost;
-        //     $item->save();
+        if ($this->selectRgroup) {
+            $query->where('resource_group', $this->selectRgroup);
+            $categories     = AzureUsageReport::where('resource_group', $this->selectRgroup)->groupBy('resource_category')->pluck('resource_category');
+        }
+        if ($this->selectCategory) {
+            $query->where('resource_category', $this->selectCategory);
+            $subcategories  = AzureUsageReport::where('resource_category', $this->selectCategory)->where('resource_group', $this->selectRgroup)->groupBy('resource_subcategory')->pluck('resource_subcategory');
+        }
+        if ($this->selectSubCategory) {
+            $query->where('resource_subcategory', $this->selectSubCategory);
+            $region = AzureUsageReport::where('resource_subcategory', $this->selectSubCategory)->where('resource_group', $this->selectRgroup)->groupBy('resource_region')->pluck('resource_region');
+        }
+        if ($this->selectLocation) {
+            $query->where('resource_location', $this->selectLocation);
+        }
 
-        //     return $this->cache(function () use($item){
-        //         return $item;
-        //     });
-        // });
+
+        $reports = $query->where('subscription_id', $this->subscription->id)
+        ->whereBetween('usageStartTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
+        ->whereBetween('usageEndTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
+        ->orderBy($this->sortColumn, $this->sortDirection)
+        ->paginate('10');
+
+        $reports->map(function($item, $key) {
+            $azurepricelist = AzurePriceList::where('resource_id', $item->resource_id)->get('rates');
+            if ($azurepricelist->first()){
+                $item['cost'] = $item->quantity+$azurepricelist->first()->rates[0];
+            }
+            $item->cost;
+            $item->save();
+
+            return $this->cache(function () use($item){
+                return $item;
+            });
+        });
 
 
 
-    // return view('livewire.azure.azure-report', [
-    //     'reports' => $reports,
-    //     'resourceGroups' => $resourceGroups,
-    //     'categories' => $categories,
-    //     'top5Q' => $top5Q,
-    //     'subcategories' => $subcategories,
-    //     'region' => $region,
-    //     ]);
     return view('livewire.azure.azure-report', [
-        'reports' => $this->rows,
-    ]);
+        'reports' => $reports,
+        'resourceGroups' => $resourceGroups,
+        'categories' => $categories,
+        'top5Q' => $top5Q,
+        'subcategories' => $subcategories,
+        'region' => $region,
+        ]);
     }
 }
