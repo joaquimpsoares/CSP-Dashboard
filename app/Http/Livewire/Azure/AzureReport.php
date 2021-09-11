@@ -57,19 +57,16 @@ class AzureReport extends Component
 
     public function resetFilters()
     {
-        $this->useCacheRows();
         $this->reset();
     }
 
     public function resetDate()
     {
-        $this->useCacheRows();
         $this->reset(['taskduedate']);
     }
 
     public function exportSelected()
     {
-        $this->useCacheRows();
         if($this->taskduedate){
             $dates = Str::of($this->taskduedate)->explode(' - ')->collect();
         }else{
@@ -106,6 +103,8 @@ class AzureReport extends Component
 
     public function render()
     {
+
+        $this->useCacheRows();
 
         if($this->taskduedate){
             $dates = Str::of($this->taskduedate)->explode(' - ')->collect();
