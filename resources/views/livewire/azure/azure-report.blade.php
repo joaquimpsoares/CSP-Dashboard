@@ -1,138 +1,137 @@
+@extends('layouts.master')
 <div>
-    <div>
-        <div class="relative bg-indigo-600">
-            <div class="px-3 py-3 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="pr-16 sm:text-center sm:px-16">
-                    <p class="text-white font-small">
-                        <span class="md:hidden">
-                            We announced a new product!
-                        </span>
-                        <span class="hidden md:inline">
-                            <p class="text-white font-small">
-                                This Azure report provides access to utilization records for a time period that represents when the utilization was reported in the billing system. It provides access to the same utilization data that is used to create and calculate the reconciliation file.
+    <div class="relative bg-indigo-600">
+        <div class="px-3 py-3 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="pr-16 sm:text-center sm:px-16">
+                <p class="text-white font-small">
+                    <span class="md:hidden">
+                        We announced a new product!
+                    </span>
+                    <span class="hidden md:inline">
+                        <p class="text-white font-small">
+                            This Azure report provides access to utilization records for a time period that represents when the utilization was reported in the billing system. It provides access to the same utilization data that is used to create and calculate the reconciliation file.
 
-                            </p>
-                            <p class="text-white font-small">
-                                However, it does not have knowledge of billing system reconciliation file logic. You should not expect reconciliation file summary results to match the result retrieved from this API exactly for the same time period.
-                            </p>
+                        </p>
+                        <p class="text-white font-small">
+                            However, it does not have knowledge of billing system reconciliation file logic. You should not expect reconciliation file summary results to match the result retrieved from this API exactly for the same time period.
+                        </p>
 
-                            <p class="text-white font-small">
-                                For example, the billing system takes the same utilization data and applies lateness rules to determine what is accounted for in a reconciliation file. When a billing period closes, all usage until the end of the day that the billing period ends is included in the reconciliation file. Any late usage within the billing period that is reported within 24 hours after the billing period ends is accounted for in the next reconciliation file.
-                            </p>
-                        </span>
-                        {{-- <span class="block sm:ml-2 sm:inline-block">
-                            <a href="#" class="font-bold text-white underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
-                        </span> --}}
-                    </p>
-                </div>
-                {{-- <div class="absolute inset-y-0 right-0 flex items-start pt-1 pr-1 sm:pt-1 sm:pr-2 sm:items-start">
-                    <button type="button" class="flex p-2 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-white">
-                        <span class="sr-only">Dismiss</span>
-                        <!-- Heroicon name: outline/x -->
-                        <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div> --}}
+                        <p class="text-white font-small">
+                            For example, the billing system takes the same utilization data and applies lateness rules to determine what is accounted for in a reconciliation file. When a billing period closes, all usage until the end of the day that the billing period ends is included in the reconciliation file. Any late usage within the billing period that is reported within 24 hours after the billing period ends is accounted for in the next reconciliation file.
+                        </p>
+                    </span>
+                    {{-- <span class="block sm:ml-2 sm:inline-block">
+                        <a href="#" class="font-bold text-white underline"> Learn more <span aria-hidden="true">&rarr;</span></a>
+                    </span> --}}
+                </p>
             </div>
+            {{-- <div class="absolute inset-y-0 right-0 flex items-start pt-1 pr-1 sm:pt-1 sm:pr-2 sm:items-start">
+                <button type="button" class="flex p-2 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-white">
+                    <span class="sr-only">Dismiss</span>
+                    <!-- Heroicon name: outline/x -->
+                    <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div> --}}
         </div>
-        <div x-data="{ resellerOpen: false , isOpen: false }" class="relative z-0 flex-col flex-1 overflow-y-auto">
-            <div class="p-4 overflow-hidden bg-white">
-                <div class="flex flex-col">
-                    <div class="flex flex-col items-center justify-between lg:flex-row">
-                        <div class="flex items-center">
-                            <h4>Analytics Dashboard - {{$subscription->customer->company_name}}</h4>
-                        </div>
+    </div>
+    <div x-data="{ resellerOpen: false , isOpen: false }" class="relative z-0 flex-col flex-1 overflow-y-auto">
+        <div class="p-4 overflow-hidden bg-white">
+            <div class="flex flex-col">
+                <div class="flex flex-col items-center justify-between lg:flex-row">
+                    <div class="flex items-center">
+                        <h4>Analytics Dashboard - {{$subscription->customer->company_name}}</h4>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="grid grid-cols-1 gap-6 mx-auto mt-8 sm:px-6 lg:grid-flow-col-dense lg:grid-cols-3">
-            <div class="space-y-6 lg:col-start-1 lg:col-span-2">
-                <!-- Description list-->
-                <section aria-labelledby="applicant-information-title">
-                    <div class="bg-white shadow sm:rounded-lg">
-                        <div class="px-4 py-5 sm:px-6">
-                            <h2 id="applicant-information-title" class="text-lg font-medium leading-6 text-gray-900">
-                                {{ ucwords(trans_choice('messages.top5_resource_group_cost', 1)) }}
-                            </h2>
-                        </div>
-
-                        <div class="px-4 py-5 border-t border-gray-200 sm:px-6">
-                            <div class="table-responsive">
-                                <table id="" class="table mg-b-0 text-nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th>{{ ucwords(trans_choice('messages.resource_group_name', 1)) }}</th>
-                                            <th>{{ ucwords(trans_choice('messages.total', 1)) }}</th>
-                                        </tr>
-                                    </thead>
-                                    <body>
-                                        @foreach ($top5Q as $item)
-                                        <tr>
-                                            <td >{{$item['resource_group']}}</td>
-                                            <td> $@money($item['sum'])</td>
-                                        </tr>
-                                        @endforeach
-                                    </body>
-                                </table>
-                            </div>
-                        </div>
+    </div>
+    <div class="grid grid-cols-1 gap-6 mx-auto mt-8 sm:px-6 lg:grid-flow-col-dense lg:grid-cols-3">
+        <div class="space-y-6 lg:col-start-1 lg:col-span-2">
+            <!-- Description list-->
+            <section aria-labelledby="applicant-information-title">
+                <div class="bg-white shadow sm:rounded-lg">
+                    <div class="px-4 py-5 sm:px-6">
+                        <h2 id="applicant-information-title" class="text-lg font-medium leading-6 text-gray-900">
+                            {{ ucwords(trans_choice('messages.top5_resource_group_cost', 1)) }}
+                        </h2>
                     </div>
-                </section>
-            </div>
 
-            <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
-                <div class="px-4 py-5 bg-white shadow sm:rounded-lg sm:px-6">
-                    <h2 id="timeline-title" class="text-lg font-medium text-gray-900">{{ ucwords(trans_choice('messages.filter', 1)) }}</h2>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label class="form-label">Resource Groups</label>
-                            <select  wire:model="selectRgroup" name="beast" id="select-beast" class="form-control custom-select select2">
-                                <option value="0">--Select--</option>
-                                @foreach ($resourceGroups as $key => $item)
-                                <option>{{$item}}</option>
-                                @endforeach
-                            </select>
+                    <div class="px-4 py-5 border-t border-gray-200 sm:px-6">
+                        <div class="table-responsive">
+                            <table id="" class="table mg-b-0 text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>{{ ucwords(trans_choice('messages.resource_group_name', 1)) }}</th>
+                                        <th>{{ ucwords(trans_choice('messages.total', 1)) }}</th>
+                                    </tr>
+                                </thead>
+                                <body>
+                                    @foreach ($top5Q as $item)
+                                    <tr>
+                                        <td >{{$item['resource_group']}}</td>
+                                        <td> $@money($item['sum'])</td>
+                                    </tr>
+                                    @endforeach
+                                </body>
+                            </table>
                         </div>
-                        @if($selectRgroup)
-                        <div class="form-group">
-                            <label class="form-label">Categories</label>
-                            <select wire:model="selectCategory" name="beast" id="select-beast1" class="form-control custom-select select2">
-                                <option value="0">--Select--</option>
-                                @foreach ($categories as $item)
-                                <option>{{$item}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        @endif
-                        @if($selectCategory)
-                        <div class="form-group">
-                            <label class="form-label">Sub Categories</label>
-                            <select wire:model="selectSubCategory" name="beast" id="select-beast2" class="form-control custom-select select2">
-                                <option value="0">--Select--</option>
-                                @foreach ($subcategories as $key => $item)
-                                <option>{{$item}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        @endif
-                        @if($selectSubCategory)
-                        <div class="form-group">
-                            <label class="form-label">Region</label>
-                            <select wire:model="selectRegion" name="beast" id="select-beast3" class="form-control custom-select select2">
-                                <option value="0">--Select--</option>
-                                @foreach ($region as $key => $item)
-                                <option>{{$item}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        @endif
-                        <a wire:click="resetFilters" class="inline-flex items-center px-2.5 py-2 block border text-center border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Clear Filter</a>
                     </div>
                 </div>
             </section>
         </div>
+
+        <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
+            <div class="px-4 py-5 bg-white shadow sm:rounded-lg sm:px-6">
+                <h2 id="timeline-title" class="text-lg font-medium text-gray-900">{{ ucwords(trans_choice('messages.filter', 1)) }}</h2>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">Resource Groups</label>
+                        <select  wire:model="selectRgroup" name="beast" id="select-beast" class="form-control custom-select select2">
+                            <option value="0">--Select--</option>
+                            @foreach ($resourceGroups as $key => $item)
+                            <option>{{$item}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @if($selectRgroup)
+                    <div class="form-group">
+                        <label class="form-label">Categories</label>
+                        <select wire:model="selectCategory" name="beast" id="select-beast1" class="form-control custom-select select2">
+                            <option value="0">--Select--</option>
+                            @foreach ($categories as $item)
+                            <option>{{$item}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
+                    @if($selectCategory)
+                    <div class="form-group">
+                        <label class="form-label">Sub Categories</label>
+                        <select wire:model="selectSubCategory" name="beast" id="select-beast2" class="form-control custom-select select2">
+                            <option value="0">--Select--</option>
+                            @foreach ($subcategories as $key => $item)
+                            <option>{{$item}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
+                    @if($selectSubCategory)
+                    <div class="form-group">
+                        <label class="form-label">Region</label>
+                        <select wire:model="selectRegion" name="beast" id="select-beast3" class="form-control custom-select select2">
+                            <option value="0">--Select--</option>
+                            @foreach ($region as $key => $item)
+                            <option>{{$item}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
+                    <a wire:click="resetFilters" class="inline-flex items-center px-2.5 py-2 block border text-center border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Clear Filter</a>
+                </div>
+            </div>
+        </section>
     </div>
     <hr class="py-10">
     <div class="relative z-0 flex-col flex-1 overflow-y-auto">

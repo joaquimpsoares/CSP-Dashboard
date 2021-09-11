@@ -486,6 +486,6 @@ class AnalyticController extends Controller
         //     'region' => $region,
         //     'subscription' => $subscription,
         // ]);
-        return view('analytics.azurereports', compact('subscription'));
+        // return view('analytics.azurereports', compact('subscription'));
     }
 }

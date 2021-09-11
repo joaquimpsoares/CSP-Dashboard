@@ -10,8 +10,7 @@
     @endsection
 
     @section('content')
-
-    @livewire('azure.azure-report', ['subscription' => $subscription])
+    {{-- @livewire('azure.azure-report', ['subscription' => $subscription]) --}}
 
     @endsection
     {{-- <script>

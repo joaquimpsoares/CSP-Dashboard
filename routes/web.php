@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Auth\LoginController;
 
-
-
 /**********************************************************************************
 Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
 
@@ -308,7 +306,12 @@ Route::group(['middleware' => 'auth'], function ()
         Route::get('/analytics/details/{customer}/{subscription}', ['uses' => 'AnalyticController@getAzuredetails','as' => 'analytics.details']);
         Route::get('/analytics/update/{customer}/{subscription}', ['uses' => 'AnalyticController@updateAZURE','as' => 'analytics.update']);
         Route::get('/analytics/export/{customer}/{subscription}', ['uses' => 'AnalyticController@export','as' => 'analytics.export']);
-        Route::get('/analytics/reports/{subscription}', ['uses' => 'AnalyticController@azurereport','as' => 'analytics.reports']);
+        // Route::get('/analytics/reports/{subscription}', ['uses' => 'AnalyticController@azurereport','as' => 'analytics.reports']);
+        // route::get('/analytics/reports/{subscription}', ['uses' =>  '\App\Http\Controllers\Web\App\Livewire\Azure\AzureReport']);
+
+
+        Route::get('/analytics/reports/{subscription}', [\App\Http\Livewire\Azure\AzureReport::class, '__invoke'])->name('analytics.report');
+
         Route::get('/analytics/licenses', ['uses' => 'AnalyticController@licenses','as' => 'analytics.licenses']);
         Route::get('/customer/costs', ['uses' => 'CustomerController@CustomerServiceCosts','as' => 'customer.costs']);
         Route::post('/analytics/edit/', ['uses' => 'AnalyticController@edit','as' => 'analytics.edit']);

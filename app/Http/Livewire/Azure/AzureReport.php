@@ -65,6 +65,7 @@ class AzureReport extends Component
         $this->reset(['taskduedate']);
     }
 
+
     public function exportSelected()
     {
         if($this->taskduedate){
@@ -103,7 +104,7 @@ class AzureReport extends Component
 
     public function render()
     {
-
+        dd('k');
         $this->useCacheRows();
 
         if($this->taskduedate){
