@@ -24,15 +24,14 @@
     <div class="page">
         <div class="page-main">
             @include('layouts.sidemenu')
-            {{-- @include('layouts.header') --}}
             <div class="md:max-w-8xl md:mx-auto">
                 @include('layouts.messages')
                 <x-messages></x-messages>
-                {{-- @include('layouts.bread') --}}
                 @yield('page-header')
+    {{ $slot  ?? '' }}
+
                 @yield('content')
-                {{-- @include('layouts.footer') --}}
-            </div><!-- End Page -->
+            </div>
             @include('layouts.footer-scripts')
         </div>
     </div>

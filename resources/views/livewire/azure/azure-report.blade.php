@@ -1,4 +1,3 @@
-@extends('layouts.master')
 <div>
     <div class="relative bg-indigo-600">
         <div class="px-3 py-3 mx-auto max-w-7xl sm:px-6 lg:px-8">

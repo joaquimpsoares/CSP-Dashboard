@@ -104,7 +104,6 @@ class AzureReport extends Component
 
     public function render()
     {
-        dd('k');
         $this->useCacheRows();
 
         if($this->taskduedate){
