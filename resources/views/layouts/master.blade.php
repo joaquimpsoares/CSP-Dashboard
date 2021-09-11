@@ -28,7 +28,7 @@
                 @include('layouts.messages')
                 <x-messages></x-messages>
                 @yield('page-header')
-    {{ $slot  ?? '' }}
+                {{ $slot  ?? '' }}
 
                 @yield('content')
             </div>
@@ -42,5 +42,5 @@
 <script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
 <script src="https://unpkg.com/trix@1.2.3/dist/trix.js"></script>
 @yield('footer')
-{{-- </body> --}}
+</body>
 </html>
