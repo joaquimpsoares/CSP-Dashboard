@@ -23,12 +23,13 @@ class PricelistTable extends Component
     protected $paginationTheme = 'bootstrap';
     protected $queryString = ['sorts'];
 
-    // public $priceLists;
+    public PriceList $editing;
     public $products;
     public $showDeleteModal = false;
     public $showEditModal = false;
     public $showFilters = false;
-    public PriceList $editing;
+    public $instances;
+    public $instance_id;
     public $filters = [
         'search' => '',
         'name' => null,
@@ -38,12 +39,12 @@ class PricelistTable extends Component
     public function rules()
     {
         return [
-        'editing.name' => 'required|min:3',
-        'editing.description' => 'required',
-        'editing.margin' => 'required',
-        'editing.instance_id' => 'sometimes',
-        'editing.provider_id' => 'sometimes',
-        'editing.reseller_id' => 'sometimes',
+        'editing.name'          => 'required|min:3',
+        'editing.description'   => 'required',
+        'editing.margin'        => 'required',
+        'editing.instance_id'   => 'required',
+        'editing.provider_id'   => 'sometimes',
+        'editing.reseller_id'   => 'sometimes',
     ]; }
 
     public function mount() { $this->editing = $this->makeBlankTransaction(); }
@@ -51,7 +52,6 @@ class PricelistTable extends Component
     public function save()
     {
         $this->validate();
-
         $this->editing->save();
 
         switch ($this->getUserLevel()) {
@@ -152,8 +152,11 @@ class PricelistTable extends Component
     public function render(PriceList $priceLists)
     {
         $priceLists = PriceList::get();
+        $this->instances = $this->getUser()->provider->instances;
+
         return view('livewire.pricelist.pricelist-table', [
             'priceLists' => $this->rows,
+            'instances'  => $this->instances
          ]);
     }
 }

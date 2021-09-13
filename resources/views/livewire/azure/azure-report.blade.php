@@ -14,7 +14,7 @@
     .group:hover .group-hover\:flex {
         display: flex;
     }
-</style>a
+</style>
 @endsection
 <div>
     <div x-data="{ resellerOpen: false , isOpen: false }" class="relative z-0 flex-col flex-1 overflow-y-auto">

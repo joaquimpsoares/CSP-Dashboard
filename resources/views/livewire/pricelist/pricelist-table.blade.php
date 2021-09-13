@@ -179,40 +179,48 @@
     <form wire:submit.prevent="save">
         <x-modal.dialog wire:model.defer="showEditModal">
             <x-slot name="title">{{ ucwords(trans_choice('messages.edit', 1)) }}</x-slot>
-
             <x-slot name="content">
+
+                <x-input.group for="instance_id" label="Instance" :error="$errors->first('editing.instance_id')">
+                    <x-input.select wire:model="editing.instance_id" id="instance_id">
+                        <option value="" >Select Column...</option>
+                        @foreach ($instances as $instance)
+                        <option value="{{$instance->id}}">{{ $instance->name }}</option>
+                        @endforeach
+                    </x-input.select>
+                </x-input.group>
+
+                {{-- <x-input.group borderless paddingless for="perPage" label="Per Page">
+                    <x-input.select class="block w-full bg-white py-1.5 pl-10 pr-3 border border-gray-300 rounded-md leading-5 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 focus:placeholder-gray-500 sm:text-sm" wire:model="editing.instance_id" id="perPage">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </x-input.select>
+                </x-input.group> --}}
+
                 <x-input.group for="name" label="{{ ucwords(trans_choice('messages.name', 1)) }}" :error="$errors->first('editing.name')">
                     <x-input.text wire:model="editing.name" id="name" placeholder="name" />
                 </x-input.group>
 
-                {{-- <x-input.group for="status" label="Status" :error="$errors->first('editing.status')">
-                    <x-input.select wire:model="editing.status" id="status">
-                        @foreach (App\Models\Transaction::STATUSES as $value => $label)
-                            <option value="{{ $value }}">{{ $label }}</option>
-                            @endforeach
-                        </x-input.select>
-                    </x-input.group> --}}
+                <x-input.group for="description" label="{{ ucwords(trans_choice('messages.description', 1)) }}" :error="$errors->first('editing.description')">
+                    <x-input.text wire:model="editing.description" id="description"  placeholder="description" />
+                </x-input.group>
 
-                    <x-input.group for="description" label="{{ ucwords(trans_choice('messages.description', 1)) }}" :error="$errors->first('editing.description')">
-                        <x-input.text wire:model="editing.description" id="description" />
-                    </x-input.group>
+                <x-input.group for="margin" label="{{ ucwords(trans_choice('messages.margin', 1)) }}" :error="$errors->first('editing.margin')">
+                    <x-input.text wire:model="editing.margin" id="margin"  placeholder="margin" />
+                </x-input.group>
+            </x-slot>
 
-                    <x-input.group for="margin" label="{{ ucwords(trans_choice('messages.margin', 1)) }}" :error="$errors->first('editing.margin')">
-                        <x-input.text wire:model="editing.margin" id="margin" />
-                    </x-input.group>
-                </x-slot>
+            <x-slot name="footer">
 
-                <x-slot name="footer">
+                <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false">
+                    {{ ucwords(trans_choice('messages.save', 1)) }}
+                </button>
+                <a type="button" wire:click="$set('showEditModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
+                    {{ ucwords(trans_choice('messages.cancel', 1)) }}
+                </a>
 
-                    <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false">
-                        {{ ucwords(trans_choice('messages.save', 1)) }}
-                    </button>
-                    <a type="button" wire:click="$set('showEditModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
-                        {{ ucwords(trans_choice('messages.cancel', 1)) }}
-                    </a>
-
-                    {{-- <x-button.primary type="submit">Save</x-button.primary> --}}
-                </x-slot>
-            </x-modal.dialog>
-        </form>
-    </div>
+            </x-slot>
+        </x-modal.dialog>
+    </form>
+</div>

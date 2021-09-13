@@ -92,12 +92,13 @@ class ShowPricelist extends Component
 
         public function savecreate()
         {
+
             $this->validate();
 
             $product = Product::where('sku', $this->editing->product_sku)->where('instance_id', $this->priceList->instance_id)->pluck('id')->first();
 
-            $attributes = $this->editing
-            ->toArray();
+            $attributes = $this->editing->toArray();
+
             $tt = $attributes + [
                 'product_vendor' => 'microsoft',
                 'instance_id' => $this->priceList->instance_id,
@@ -121,6 +122,7 @@ class ShowPricelist extends Component
                 'price_list_id'     => $tt['price_list_id'],
                 'product_id'        => $tt['product_id'],
             ]);
+
             $this->showEditModal = false;
             $this->showCreate = false;
             $fields = collect($this->editing->getChanges())->except(['updated_at']);
@@ -200,6 +202,9 @@ class ShowPricelist extends Component
             }else{
                 $customers='';
             }
+
+            $this->products = Product::where('sku', $this->editing->product_sku)->where('instance_id', $this->priceList->instance_id)->pluck('id')->first();
+            // dd($this->products);
 
             return view('livewire.pricelist.show-pricelist',[
                 'prices' => $this->rows,
