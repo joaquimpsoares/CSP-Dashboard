@@ -11,6 +11,8 @@ use App\Http\Livewire\DataTable\WithCachedRows;
 use App\Http\Livewire\DataTable\WithBulkActions;
 use App\Http\Livewire\DataTable\WithPerPagePagination;
 use App\Http\Traits\UserTrait;
+use Illuminate\Support\Facades\Auth;
+use App\Price;
 
 class PricelistTable extends Component
 {
@@ -51,40 +53,23 @@ class PricelistTable extends Component
         $this->validate();
 
         $this->editing->save();
+
         switch ($this->getUserLevel()) {
-            case config('app.super_admin'):
-
-
-                return abort(403, __('errors.unauthorized_action'));
-
-
-                break;
-
-            case config('app.admin'):
-
-
-                break;
-
             case config('app.provider'):
-                $this->editing->provider_id =$this->getUser()->provider->id;
-                $this->editing->save();
-                break;
+                $this->editing->update(['provider_id' => $this->getUser()->provider->id]);
 
+                break;
             case config('app.reseller'):
-                $this->editing->reseller_id =$this->getUser()->reseller->id;
-                $this->editing->save();
-
-
-
-                break;
-
-            case config('app.subreseller'):
+                $this->editing->update(['reseller_id' => $this->getUser()->reseller->id]);
+                $this->getUser()->reseller->priceList->prices->each(function(Price $price){
+                    $attributes = $price->getAttributes();
+                    unset($attributes['id']);
+                    $this->editing->prices()->create($attributes);
+                });
 
                 break;
-
-
-            default:
-                return abort(403, __('errors.unauthorized_action'));
+            case config('app.customer'):
+                abort(403, __('errors.unauthorized_action'));
         }
 
         $this->showEditModal = false;

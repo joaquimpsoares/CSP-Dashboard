@@ -85,11 +85,6 @@ class Provider extends Model
         return $this->hasMany(Instance::class);
     }
 
-    public function priceList()
-    {
-        return $this->belongsTo(PriceList::class);
-    }
-
     public function availablePriceLists()
     {
         return $this->hasMany(PriceList::class);
