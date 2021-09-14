@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class PriceList extends Model
 {
+    public $dates = ['confirmed_changes_at'];
+
     public function format()
     {
         return [
