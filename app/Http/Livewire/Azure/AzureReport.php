@@ -10,11 +10,16 @@ use Livewire\WithPagination;
 use App\Models\AzurePriceList;
 use App\Models\AzureUsageReport;
 use App\Http\Livewire\CachedTable;
+use App\Http\Livewire\DataTable\WithSorting;
+use App\Http\Livewire\DataTable\WithCachedRows;
+use App\Http\Livewire\DataTable\WithBulkActions;
+use App\Http\Livewire\DataTable\WithPerPagePagination;
 
 class AzureReport extends Component
 {
     use WithPagination;
     use CachedTable;
+    use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -117,6 +122,14 @@ class AzureReport extends Component
         ->paginate('10');
 
         return $this->applySorting($reports);
+    }
+
+
+    public function getRowsProperty()
+    {
+        return $this->cache(function () {
+            return $this->applyPagination($this->rowsQuery);
+        });
     }
 
     public function render()

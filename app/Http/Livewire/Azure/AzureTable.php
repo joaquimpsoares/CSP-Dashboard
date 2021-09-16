@@ -60,11 +60,6 @@ class AzureTable extends Component
 
     }
 
-    public function render()
-    {
-        return view('livewire.azure.azure-table',[
-            'resourceName' => $this->resourceName->paginate(10)]);
-    }
 
     public function editProduct($productIndex)
     {
@@ -108,6 +103,13 @@ class AzureTable extends Component
         return redirect()->back();
 
     }
+
+    public function render()
+    {
+        return view('livewire.azure.azure-table',[
+            'resourceName' => $this->resourceName->paginate(10)]);
+    }
+
 
 
 }

@@ -199,11 +199,12 @@
 
             <x-tableazure>
                 <x-slot name="head">
-                    <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('id')" :direction="$sorts['id'] ?? null">{{ ucwords(trans_choice('messages.id', 2)) }}</x-table.heading>
-                    <x-table.heading sortable multi-column wire:click="sortBy('company_name')"  :direction="$sorts['company_name'] ?? null">{{ ucwords(trans_choice('messages.company_name', 1)) }}</x-table.heading>
-                    <x-table.heading  wire:click="sortBy('subscriptions')"         :direction="$sorts['subscriptions'] ?? null">{{ ucwords(trans_choice('messages.subscriptions', 1)) }}</x-table.heading>
-                    <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('country_id')"       :direction="$sorts['country_id'] ?? null">{{ ucwords(trans_choice('messages.relationship', 1)) }}</x-table.heading>
-                    <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('country_id')"       :direction="$sorts['country_id'] ?? null">{{ ucwords(trans_choice('messages.country', 2)) }}</x-table.heading>
+                    <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('name')" :direction="$sorts['name'] ?? null">{{ ucwords(trans_choice('messages.name', 2)) }}</x-table.heading>
+                    <x-table.heading sortable multi-column wire:click="sortBy('resource_group')"  :direction="$sorts['resource_group'] ?? null">{{ ucwords(trans_choice('messages.resource_group', 1)) }}</x-table.heading>
+                    <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('resource_location')"         :direction="$sorts['resource_location'] ?? null">{{ ucwords(trans_choice('messages.region', 1)) }}</x-table.heading>
+                    <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('total_cost')"       :direction="$sorts['total_cost'] ?? null">{{ ucwords(trans_choice('messages.total_cost', 1)) }}</x-table.heading>
+                    <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('usageStartTime')"       :direction="$sorts['usageStartTime'] ?? null">{{ ucwords(trans_choice('messages.start_date', 2)) }}</x-table.heading>
+                    <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('usageEndTime')"       :direction="$sorts['usageEndTime'] ?? null">{{ ucwords(trans_choice('messages.end_date', 2)) }}</x-table.heading>
                 </x-slot>
                 <x-slot name="body">
                     @forelse ($reports as $item)
