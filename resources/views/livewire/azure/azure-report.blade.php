@@ -60,7 +60,7 @@
 </div>
 
 <div class="grid grid-cols-1 gap-6 mx-auto mt-8 sm:px-6 lg:grid-flow-col-dense lg:grid-cols-3">
-    <div class="space-y-6 lg:col-start-1 lg:col-span-2">
+    {{-- <div class="space-y-6 lg:col-start-1 lg:col-span-2">
         <!-- Description list-->
         <section aria-labelledby="applicant-information-title">
             <div class="bg-white shadow sm:rounded-lg">
@@ -144,6 +144,7 @@
             </div>
         </div>
     </section>
+    --}}
 </div>
 <hr class="py-10">
 <div class="relative z-0 flex-col flex-1 overflow-y-auto">
@@ -196,7 +197,112 @@
                 </div>
             </div>
 
-            <table class="min-w-full divide-y divide-gray-200">
+            <x-tableazure>
+                <x-slot name="head">
+                    <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('id')" :direction="$sorts['id'] ?? null">{{ ucwords(trans_choice('messages.id', 2)) }}</x-table.heading>
+                    <x-table.heading sortable multi-column wire:click="sortBy('company_name')"  :direction="$sorts['company_name'] ?? null">{{ ucwords(trans_choice('messages.company_name', 1)) }}</x-table.heading>
+                    <x-table.heading  wire:click="sortBy('subscriptions')"         :direction="$sorts['subscriptions'] ?? null">{{ ucwords(trans_choice('messages.subscriptions', 1)) }}</x-table.heading>
+                    <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('country_id')"       :direction="$sorts['country_id'] ?? null">{{ ucwords(trans_choice('messages.relationship', 1)) }}</x-table.heading>
+                    <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('country_id')"       :direction="$sorts['country_id'] ?? null">{{ ucwords(trans_choice('messages.country', 2)) }}</x-table.heading>
+                </x-slot>
+                <x-slot name="body">
+                    @forelse ($reports as $item)
+                    {{-- <tr class="hover:bg-gray-100" >
+                        <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{$item->resource_name}}</td>
+                        <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{$item->resource_group}}</td>
+                        <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{$item->resource_location}}</td>
+                        <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">$@money($item->cost)</td>
+                        <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{date('Y-m-d', strtotime($item->usageStartTime))}}</td>
+                        <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{date('Y-m-d', strtotime($item->usageEndTime))}}</td>
+                    </tr> --}}
+                    <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $customer['id'] }}">
+                        <x-table.cell visibility='hidden' tablecell='lg:table-cell'>
+                                <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
+                                        {{$item->resource_name}}
+                                    </span>
+                                </div>
+                        </x-table.cell>
+                        <x-table.cell>
+                                <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
+                                        {{$item->resource_group}}
+                                    </span>
+                            </span>
+                        </x-table.cell>
+                        <x-table.cell>
+                                <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
+                                        {{$item->resource_location}}
+                                    </span>
+                                </div>
+                        </x-table.cell>
+                        <x-table.cell>
+                                <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
+                                        $@money($item->cost)
+                                    </span>
+                                </div>
+                        </x-table.cell>
+
+                        <x-table.cell>
+                                <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
+                                        {{date('Y-m-d', strtotime($item->usageStartTime))}}
+                                    </span>
+                                </div>
+                        </x-table.cell>
+
+                        <x-table.cell>
+                            <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
+                                    {{date('Y-m-d', strtotime($item->usageEndTime))}}
+                                </span>
+                            </div>
+                    </x-table.cell>
+
+
+                        {{-- <x-table.cell>
+                            <div class="z-10">
+                                <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                                    </svg>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a wire:click="edit({{ $customer->id }})" class="dropdown-item" href="#">
+                                        <x-icon.edit></x-icon.edit>
+                                        {{ ucwords(trans_choice('messages.edit', 1)) }}
+                                    </a>
+                                    @canImpersonate
+                                    @if(!empty($customer->format()['mainUser']))
+                                    <a class="dropdown-item" href="{{ route('impersonate', $customer->format()['mainUser']['id'])}}">
+                                        <x-icon.impersonate></x-icon.impersonate>
+                                        {{ ucwords(trans_choice('messages.impersonate', 1)) }}
+                                    </a>
+                                    @endif
+                                    @endCanImpersonate
+                                </div>
+                            </div>
+                        </x-table.cell> --}}
+                    </x-table.row>
+                    @empty
+                    <x-table.row>
+                        <x-table.cell colspan="9">
+                            <div class="flex items-center justify-center space-x-2">
+                                <x-icon.inbox class="w-8 h-8 text-cool-gray-400" />
+                                <span class="py-8 text-xl font-medium text-cool-gray-400">No Reports found...</span>
+                            </div>
+                        </x-table.cell>
+                    </x-table.row>
+                    @endforelse
+                </x-slot>
+            </x-tableazure>
+            <div>
+                {{ $reports->links() }}
+            </div>
+
+            {{-- <table class="min-w-full divide-y divide-gray-200">
                 <thead>
                     <tr>
                         <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase" wire:click="sortByColumn('resource_name')">
@@ -269,7 +375,7 @@
                 @if ($reports->total() >= '10')
                 {!! $reports->render() !!}
                 @endif
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>
