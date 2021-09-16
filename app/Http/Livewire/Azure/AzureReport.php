@@ -17,8 +17,6 @@ use App\Http\Livewire\DataTable\WithPerPagePagination;
 
 class AzureReport extends Component
 {
-    use WithPagination;
-
     use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows;
 
     protected $paginationTheme = 'bootstrap';
@@ -48,17 +46,17 @@ class AzureReport extends Component
 
     }
 
-    public function sortByColumn($column)
-    {
-        $this->useCacheRows();
+    // public function sortByColumn($column)
+    // {
+    //     $this->useCacheRows();
 
-        if ($this->sortColumn == $column) {
-            $this->sortDirection = $this->sortDirection == 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->reset('sortDirection');
-            $this->sortColumn = $column;
-        }
-    }
+    //     if ($this->sortColumn == $column) {
+    //         $this->sortDirection = $this->sortDirection == 'asc' ? 'desc' : 'asc';
+    //     } else {
+    //         $this->reset('sortDirection');
+    //         $this->sortColumn = $column;
+    //     }
+    // }
 
     public function resetFilters()
     {
