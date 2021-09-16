@@ -215,7 +215,7 @@
                         <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{date('Y-m-d', strtotime($item->usageStartTime))}}</td>
                         <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{date('Y-m-d', strtotime($item->usageEndTime))}}</td>
                     </tr> --}}
-                    <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $customer['id'] }}">
+                    <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $item['id'] }}">
                         <x-table.cell visibility='hidden' tablecell='lg:table-cell'>
                                 <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
