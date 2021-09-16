@@ -175,10 +175,8 @@
                                         <div class="mb-2 col-md-12">
                                             <x-label for="country">{{ucwords(trans_choice('messages.country', 1))}}</x-label>
                                             <div class="mb-3 input-group">
-                                                <select wire:model="editing.country_id" name="country_id" class="form-control @error('editing.country_id') is-invalid @enderror" sf-validate="required">
-                                                    @if ($showCreateUser == true)
-                                                    <option value="{{$customer->country->name}}">{{$customer->country->name}}</option>
-                                                    @endif
+                                                <select wire:model="editing.country_id" name="country_id" class="form-control @error('editing.country_id') is-invalid @enderror" sf-validate="required" required>
+                                                    <option value="{{ old('country_id')}}" selected></option>
                                                     @foreach ($countries as $key => $country)
                                                     <option value="{{$key}}">{{$country}}</option>
                                                     @endforeach
@@ -239,43 +237,43 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <x-label for="status">@lang('Status')</x-label>
-                                        <select wire:model="creatingUser.status_id" name="status" class="form-control @error('status') is-invalid @enderror" sf-validate="required">
+                                        <select wire:model="creatingUser.status_id" name="status" class="form-control @error('creatingUser.status') is-invalid @enderror" sf-validate="required" required>
                                             <option value="{{ old('status')}}" selected></option>
                                             @foreach ($statuses as $key => $status)
                                             <option value="{{$key}}">{{ucwords(trans_choice($status, 1))}}</option>
                                             @endforeach
                                         </select>
-                                        @error('status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        @error('creatingUser.status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                     </div>
                                     <div class="form-group">
                                         <x-label for="name">@lang('First Name')</x-label>
-                                        <x-input wire:model="creatingUser.name" type="text" class="@error('name') is-invalid @enderror" id="name" name="name" placeholder="First Name" value="{{ old('name') }}"></x-input>
-                                        @error('name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        <x-input wire:model="creatingUser.name" type="text" class="@error('creatingUser.name') is-invalid @enderror" id="name" name="name" placeholder="First Name" value="{{ old('name') }}"></x-input>
+                                        @error('creatingUser.name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                     </div>
                                     <div class="form-group">
                                         <x-label for="last_name">@lang('Last Name')</x-label>
-                                        <x-input wire:model="creatingUser.last_name" type="text" class="@error('last_name') is-invalid @enderror" id="last_name" name="last_name" placeholder="Last Name" value="{{ old('last_name')  }}"></x-input>
-                                        @error('last_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        <x-input wire:model="creatingUser.last_name" type="text" class="@error('creatingUser.last_name') is-invalid @enderror" id="last_name" name="last_name" placeholder="Last Name" value="{{ old('last_name')  }}"></x-input>
+                                        @error('creatingUser.last_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <x-label for="socialite_id">@lang('socialite_id')</x-label>
                                         <div class="form-group">
-                                            <x-input wire:model="creatingUser.socialite_id" class="@error('socialite_id') is-invalid @enderror" type="text" name="socialite_id" id='socialite_id' value="{{ old('socialite_id') }}"></x-input>
-                                            @error('socialite_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                            <x-input wire:model="creatingUser.socialite_id" class="@error('creatingUser.socialite_id') is-invalid @enderror" type="text" name="socialite_id" id='socialite_id' value="{{ old('socialite_id') }}"></x-input>
+                                            @error('creatingUser.socialite_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <x-label for="phone">@lang('Phone')</x-label>
-                                        <x-input wire:model="creatingUser.phone" type="text" class="@error('phone') is-invalid @enderror" id="phone_number" name="phone" placeholder="Phone" value="{{ old('phone') }}"></x-input>
-                                        @error('phone')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        <x-input wire:model="creatingUser.phone" type="text" class="@error('creatingUser.phone') is-invalid @enderror" id="phone_number" name="phone" placeholder="Phone" value="{{ old('phone') }}"></x-input>
+                                        @error('creatingUser.phone')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                     </div>
                                     <div class="form-group">
                                         <x-label for="address">@lang('Address')</x-label>
-                                        <x-input wire:model="creatingUser.address" type="text" class="@error('address') is-invalid @enderror" id="address"
+                                        <x-input wire:model="creatingUser.address" type="text" class="@error('creatingUser.address') is-invalid @enderror" id="address"
                                         name="address" placeholder="Address" value="{{ old('address') }}"></x-input>
-                                        @error('address')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        @error('creatingUser.address')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                     </div>
                                 </div>
                             </div>
@@ -283,19 +281,19 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <x-label for="email">@lang('Email')</x-label>
-                                        <x-input wire:model="creatingUser.email" type="email" class="@error('email') is-invalid @enderror" id="email" name="email" placeholder="Email" value="{{ old('email') }}"></x-input>
+                                        <x-input wire:model="email" type="email" class="@error('email.email') is-invalid @enderror" id="email" name="email" placeholder="Email" value="{{ old('email') }}"></x-input>
                                         @error('email')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
 
                                     </div>
                                     <div class="form-group">
                                         <x-label for="password">{{ __('Password') }}</x-label>
-                                        <x-input wire:model="password" type="password" class="@error('password') is-invalid @enderror" id="password" name="password"  value="{{ old('password') }}"></x-input>
-                                        @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        <x-input wire:model="password" type="password" class="@error('creatingUser.password') is-invalid @enderror" id="password" name="password"  value="{{ old('password') }}"></x-input>
+                                        @error('creatingUser.password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                     </div>
                                     <div class="form-group">
                                         <x-label for="password_confirmation">{{ __('Confirm Password') }}</x-label>
-                                        <x-input wire:model="password_confirmation" type="password" class="@error('password') is-invalid @enderror" id="password_confirmation" name="password_confirmation"  value="{{ old('password_confirmation') }}"></x-input>
-                                        @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        <x-input wire:model="password_confirmation" type="password" class="@error('password_confirmation') is-invalid @enderror" id="password_confirmation" name="password_confirmation"  value="{{ old('password_confirmation') }}"></x-input>
+                                        @error('password_confirmation')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                     </div>
                                 </div>
                             </div>
