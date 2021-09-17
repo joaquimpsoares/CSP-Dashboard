@@ -347,9 +347,7 @@ class AnalyticController extends Controller
 
     public function azurepricelist()
     {
-
         $instance = Instance::where('id', 1)->first();
-
 
         $resources = FacadesAzureResource::withCredentials(
             $instance->external_id,
@@ -376,7 +374,6 @@ class AnalyticController extends Controller
 
     public function export(Customer $customer, Subscription $subscription)
     {
-
         $msId = $customer->microsoftTenantInfo->first()->tenant_id;
 
         $instance = Instance::where('id', $subscription->instance_id)->first();
@@ -424,24 +421,23 @@ class AnalyticController extends Controller
 
                 $resource = AzureUsageReport::updateOrCreate([
                     'subscription_id'       => $subscription->id,
+                    'resource_name'         => $resource->resource->name,
+                    'name'                  => $resourceGroup[8] ?? null,
                     'resource_id'           => $resource->resource->id,
+                    'resource_group'        => $resourceGroup[4],
+                ], [
                     'usageStartTime'        => $resource->usageStartTime,
                     'usageEndTime'          => $resource->usageEndTime,
-                    'resource_group'        => $resourceGroup[4],
                     'resource_location'     => $resource->instanceData->location,
-                    'resource_name'         => $resource->resource->name,
                     'resource_category'     => $resource->resource->category,
                     'resource_subcategory'  => $resource->resource->subcategory,
                     'resource_region'       => $resource->resource->region,
                     'unit'                  => $resource->unit,
-                    'name'                  => $resourceGroup[8] ?? null,
-
                     "resourceType"          => $resource->instanceData->additionalInfo->toArray()['resourceType'] ?? null,
                     "usageResourceKind"     => $resource->instanceData->additionalInfo->toArray()['usageResourceKind'] ?? null,
                     "dataCenter"            => $resource->instanceData->additionalInfo->toArray()['dataCenter'] ?? null,
                     "networkBucket"         => $resource->instanceData->additionalInfo->toArray()['networkBucket'] ?? null,
                     "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
-                ], [
                     'quantity'              => $resource->quantity,
                     'cost'                  => (json_encode($price->rates[0])*$resource->quantity) ?? '0'
 
@@ -453,8 +449,8 @@ class AnalyticController extends Controller
             });
     }
 
-    public function azurereport(Subscription $subscription)
-    {
+    // public function azurereport(Subscription $subscription)
+    // {
 
 
         // $reports = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('resource_id')->get();
@@ -487,5 +483,5 @@ class AnalyticController extends Controller
         //     'subscription' => $subscription,
         // ]);
         // return view('analytics.azurereports', compact('subscription'));
-    }
+    // }
 }
