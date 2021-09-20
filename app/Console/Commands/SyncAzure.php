@@ -111,12 +111,13 @@ class SyncAzure extends Command
 
                             $resource = AzureUsageReport::updateOrCreate([
                                 'subscription_id'       => $subscription->id,
+                                'resource_name'         => $resource->resource->name,
                                 'resource_id'           => $resource->resource->id,
+                                'resource_group'        => $resourceGroup[4],
+                            ], [
                                 'usageStartTime'        => $resource->usageStartTime,
                                 'usageEndTime'          => $resource->usageEndTime,
-                                'resource_group'        => $resourceGroup[4],
                                 'resource_location'     => $resource->instanceData->location,
-                                'resource_name'         => $resource->resource->name,
                                 'resource_category'     => $resource->resource->category,
                                 'resource_subcategory'  => $resource->resource->subcategory,
                                 'resource_region'       => $resource->resource->region,
@@ -129,7 +130,6 @@ class SyncAzure extends Command
                                 "dataCenter"            => $resource->instanceData->additionalInfo->toArray()['dataCenter'] ?? null,
                                 "networkBucket"         => $resource->instanceData->additionalInfo->toArray()['networkBucket'] ?? null,
                                 "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
-                            ], [
                                 'quantity'              => $resource->quantity,
                                 'cost'                  => (json_encode($price->rates[0])*$resource->quantity),
                             ]);
