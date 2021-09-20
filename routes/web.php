@@ -302,10 +302,15 @@ Route::group(['middleware' => 'auth'], function ()
 
         //Analytics Routes
         Route::get('/analytics', ['uses' => 'AnalyticController@index','as' => 'analytics.list']);
-        Route::get('/analytics/azurepricelist/{instance}', ['uses' => 'AnalyticController@azurepricelist','as' => 'analytics.azurepricelist']);
-        Route::get('/analytics/details/{customer}/{subscription}', ['uses' => 'AnalyticController@getAzuredetails','as' => 'analytics.details']);
-        Route::get('/analytics/update/{customer}/{subscription}', ['uses' => 'AnalyticController@updateAZURE','as' => 'analytics.update']);
-        Route::get('/analytics/export/{customer}/{subscription}', ['uses' => 'AnalyticController@export','as' => 'analytics.export']);
+        Route::get('/analytics/azurepricelist/{instance}',          ['uses' => 'AnalyticController@azurepricelist','as' => 'analytics.azurepricelist']);
+        Route::get('/analytics/details/{customer}/{subscription}',  ['uses' => 'AnalyticController@getAzuredetails','as' => 'analytics.details']);
+        Route::get('/analytics/update/{customer}/{subscription}',   ['uses' => 'AnalyticController@updateAZURE','as' => 'analytics.update']);
+        Route::get('/analytics/export/{customer}/{subscription}',   ['uses' => 'AnalyticController@export','as' => 'analytics.export']);
+        Route::get('/analytics/updatepricesinreports',              ['uses' => 'AnalyticController@updatepricesinreports','as' => 'analytics.updatepricesinreports']);
+
+
+
+
         // Route::get('/analytics/reports/{subscription}', ['uses' => 'AnalyticController@azurereport','as' => 'analytics.reports']);
         // route::get('/analytics/reports/{subscription}', ['uses' =>  '\App\Http\Controllers\Web\App\Livewire\Azure\AzureReport']);
 

@@ -344,10 +344,16 @@ class AnalyticController extends Controller
         }
     }
 
+    public function updatepricesinreports(){
+        $resource = AzureResource::get();
+        dd($resource);
 
-    public function azurepricelist()
+    }
+
+    public function azurepricelist($id)
     {
-        $instance = Instance::where('id', 1)->first();
+        $instance = Instance::find($id);
+        dd($instance);
 
         $resources = FacadesAzureResource::withCredentials(
             $instance->external_id,

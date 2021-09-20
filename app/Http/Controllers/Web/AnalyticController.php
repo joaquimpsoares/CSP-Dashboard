@@ -81,6 +81,19 @@ class AnalyticController extends Controller
     }
 
 
+    public function updatepricesinreports(){
+        $resource = AzureUsageReport::get();
+        $resource->each(function ($price) {
+            $cost= AzurePriceList::where('resource_id',$price->resource_id)->first();
+            Log::channel('azure')->info('This price ' .$cost->resource_id.' for resource '.$price->resource_id.' name '.$price->name. ' has this cost ' .$cost->rates[0]);
+
+            $cost = ($price->quantity*$cost->rates[0]);
+
+            // Log::channel('azure')->info('This price ' .$cost.' for resource '.$price->resource_id.' name '.$price->name);
+
+            $update = $price->update(['cost' => $cost]);
+        });
+    }
     /**
      *
      */
@@ -417,7 +430,6 @@ class AnalyticController extends Controller
                 //     $update = AzurePriceList::updateOrCreate([
                 //         'resource_id'   => $resource->resource->id
                 //     ],[
-                //         'rates' => [0]
                 //     ]);
                 //     Log::channel('azure')->info('didnt existed for this resource id '.$resource->resource->id. ' this price ' . $update  );
                 // }

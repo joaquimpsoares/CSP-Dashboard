@@ -31,17 +31,17 @@ class ShowCustomer extends Component
     public function rules()
     {
         return [
-            'editing.company_name'  => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-            'editing.address_1'     => ['required', 'string', 'max:255', 'min:3'],
-            'editing.address_2'     => ['nullable', 'string', 'max:255', 'min:3'],
-            'editing.city'          => ['required', 'string', 'max:255', 'min:3'],
-            'editing.country_id'    => ['required', 'integer', 'min:1','exists:countries,id'],
-            'editing.state'         => ['required', 'string', 'max:255', 'min:3'],
-            'editing.nif'           => ['required', 'min:3'],
-            'editing.postal_code'   => ['required', 'string', 'max:255', 'min:3'],
-            'editing.markup'        => ['required', 'min:1'],
-            'editing.status_id'     => ['required', 'exists:statuses,id'],
-            'editing.price_list_id' => ['required','integer', 'exists:price_lists,id']
+            'editing.company_name'  => ['required','string','regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/','max:255'],
+            'editing.address_1'     => ['required','string','max:255','min:3'],
+            'editing.address_2'     => ['nullable','string','max:255','min:3'],
+            'editing.city'          => ['required','string','max:255','min:3'],
+            'editing.country_id'    => ['required','integer','min:1','exists:countries,id'],
+            'editing.state'         => ['required','string','max:255','min:3'],
+            'editing.nif'           => ['required','min:3'],
+            'editing.postal_code'   => ['required','string','max:255','min:3'],
+            'editing.markup'        => ['required','min:1'],
+            'editing.status_id'     => ['required','exists:statuses,id'],
+            'editing.price_list_id' => ['required','integer','exists:price_lists,id']
         ];
     }
 
@@ -126,89 +126,76 @@ class ShowCustomer extends Component
             $instance = $customer->subscriptions->first()->instance_id;
             $instance = Instance::find($instance);
             try {
-            $customer = new TagydesCustomer([
-                'id' => $customer->microsoftTenantInfo->first()->tenant_id,
-                'username' => 'bill@tagydes.com',
-                'password' => 'blabla',
-                'firstName' => 'Nombre',
-                'lastName' => 'Apellido',
-                'email' => 'bill@tagydes.com',
-            ]);
-            $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCosts($customer);
+                $customer = new TagydesCustomer([
+                    'id' => $customer->microsoftTenantInfo->first()->tenant_id,
+                    'username' => 'bill@tagydes.com',
+                    'password' => 'blabla',
+                    'firstName' => 'Nombre',
+                    'lastName' => 'Apellido',
+                    'email' => 'bill@tagydes.com',
+                ]);
+                $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCosts($customer);
 
-            return $resources;
-        } catch (\Throwable $th) {
+                return $resources;
+            } catch (\Throwable $th) {
 
+            }
         }
-    }
 
     }
 
     Public function CustomerLicenseUsage($customer)
     {
         if (!$customer->subscriptions->isEmpty()){
-        $instance = $customer->subscriptions->first()->instance_id;
-        $instance = Instance::find($instance);
-        try {
-            $customer = new TagydesCustomer([
-                'id' => $customer->microsoftTenantInfo->first()->tenant_id,
-                'username' => 'bill@tagydes.com',
-                'password' => 'blabla',
-                'firstName' => 'Nombre',
-                'lastName' => 'Apellido',
-                'email' => 'bill@tagydes.com',
-            ]);
-            $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceUsage($customer);
-            return $resources;
+            $instance = $customer->subscriptions->first()->instance_id;
+            $instance = Instance::find($instance);
+            try {
+                $customer = new TagydesCustomer([
+                    'id' => $customer->microsoftTenantInfo->first()->tenant_id,
+                    'username' => 'bill@tagydes.com',
+                    'password' => 'blabla',
+                    'firstName' => 'Nombre',
+                    'lastName' => 'Apellido',
+                    'email' => 'bill@tagydes.com',
+                ]);
+                $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceUsage($customer);
+                return $resources;
 
-        } catch (\Throwable $th) {
+            } catch (\Throwable $th) {
 
+            }
         }
-    }
     }
 
 
     public function save(Customer $customer)
     {
-        $validatedData = $this->validate();
+        $this->validate();
         try {
-            // $newCustomer = TagydesCustomer::withCredentials($customer->provider->instances->first()->external_id, $customer->provider->instances->first()->external_token)
-            // ->checkAddress([
-                //     'AddressLine1'  => $this->editing->address_1,
-                //     'City'          => $this->editing->city,
-                //     'State'         => $this->editing->state,
-                //     'PostalCode'    => $this->editing->postal_code,
-                //     'Country'       => $this->editing->country->iso_3166_2,
-                // ]);
 
-                // if($newCustomer->status === 'NotValidated'){
-                    //     $this->showEditModal = false;
-                    //     $this->notify($newCustomer->validationMessage);
-                    // }
-
-                    $this->editing->save();
-                    $this->showEditModal = false;
+            $this->editing->save();
+            $this->showEditModal = false;
 
 
-                } catch (ClientException $e) {
-                    $this->showEditModal = false;
-                    $this->notify('Customer ' . $e->getMessage() . ' created successfully');
-                    Log::info('Error saving reseller: '.$e->getMessage());
-                }
-                $this->notify('Customer ' . $customer->company_name . ' saved successfully, refresh page');
-
-
-            }
-
-
-            public function render(Customer $customer)
-            {
-                $customer = $this->customer;
-                $countries = Country::get();
-                $statuses = Status::get();
-                $subscriptions = $this->customer->subscriptions;
-                // $costs = $this->CustomerServiceCosts($customer);
-                $usage = $this->CustomerLicenseUsage($customer);
-                return view('livewire.customer.show-customer', compact('statuses','countries', 'customer', 'subscriptions','usage'));
-            }
+        } catch (ClientException $e) {
+            $this->showEditModal = false;
+            $this->notify('Customer ' . $e->getMessage() . ' created successfully');
+            Log::info('Error saving reseller: '.$e->getMessage());
         }
+        $this->notify('Customer ' . $customer->company_name . ' saved successfully, refresh page');
+
+
+    }
+
+
+    public function render(Customer $customer)
+    {
+        $customer = $this->customer;
+        $countries = Country::get();
+        $statuses = Status::get();
+        $subscriptions = $this->customer->subscriptions;
+        // $costs = $this->CustomerServiceCosts($customer);
+        $usage = $this->CustomerLicenseUsage($customer);
+        return view('livewire.customer.show-customer', compact('statuses','countries', 'customer', 'subscriptions','usage'));
+    }
+}
