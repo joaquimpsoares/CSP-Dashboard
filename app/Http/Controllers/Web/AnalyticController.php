@@ -456,8 +456,8 @@ class AnalyticController extends Controller
         });
     }
 
-    public function azurereport(Subscription $subscription)
-    {
+    // public function azurereport(Subscription $subscription)
+    // {
 
 
         // $reports = AzureUsageReport::where('subscription_id', $subscription->id)->groupBy('resource_id')->get();
@@ -489,6 +489,6 @@ class AnalyticController extends Controller
         //     'region' => $region,
         //     'subscription' => $subscription,
         // ]);
-        return view('analytics.azurereports', compact('subscription'));
-    }
+    //     return view('analytics.azurereports', compact('subscription'));
+    // }
 }
