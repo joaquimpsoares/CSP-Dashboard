@@ -6,6 +6,7 @@ use App\Subscription;
 use Livewire\Component;
 use Illuminate\Support\Str;
 use App\Exports\exportAzure;
+use Livewire\WithPagination;
 use App\Models\AzurePriceList;
 use App\Models\AzureUsageReport;
 use App\Http\Livewire\DataTable\WithSorting;
@@ -15,6 +16,7 @@ use App\Http\Livewire\DataTable\WithPerPagePagination;
 
 class AzureReport extends Component
 {
+    use WithPagination;
     use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows;
 
     protected $paginationTheme = 'bootstrap';
