@@ -128,13 +128,20 @@ class AzureReport extends Component
         });
     }
 
-
     public function getRowsProperty()
     {
+        return $this->applyPagination($this->rowsQuery);
         return $this->cache(function () {
             return $this->applyPagination($this->rowsQuery);
         });
     }
+
+    // public function getRowsProperty()
+    // {
+    //     return $this->cache(function () {
+    //         return $this->applyPagination($this->rowsQuery);
+    //     });
+    // }
 
 
     public function render()
