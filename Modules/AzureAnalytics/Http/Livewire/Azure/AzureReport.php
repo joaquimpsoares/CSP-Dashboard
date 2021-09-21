@@ -106,11 +106,11 @@ class AzureReport extends Component
         $query->where('subscription_id', $this->subscription->id)
         ->whereBetween('usageStartTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
         ->whereBetween('usageEndTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
-        ->where('name', "like", "%{$this->search}%")
-        ->orWhere('resource_name', 'like', "%{$this->search}%")
-        ->orWhere('resource_location', 'like', "%{$this->search}%")
-        ->orWhere('usageStartTime', 'like', "%{$this->search}%")
-        ->orWhere('resource_group', 'like', "%{$this->search}%");
+        // ->where('name', "like", "%{$this->search}%")
+        ->Where('resource_name', 'like', "%{$this->search}%")
+        // ->orWhere('resource_location', 'like', "%{$this->search}%")
+        // ->orWhere('resource_group', 'like', "%{$this->search}%")
+        ;
 
         return $this->applySorting($query);
 
