@@ -40,8 +40,11 @@ class AzureReport extends Component
         $this->selectCategory;
         $this->selectSubCategory;
         $this->selectLocation;
+    }
 
-
+    public function updatingSearch()
+    {
+        $this->resetPage();
     }
 
     public function resetFilters()
