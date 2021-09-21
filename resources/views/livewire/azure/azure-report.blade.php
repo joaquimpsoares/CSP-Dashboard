@@ -58,93 +58,6 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-6 mx-auto mt-8 sm:px-6 lg:grid-flow-col-dense lg:grid-cols-3">
-        {{-- <div class="space-y-6 lg:col-start-1 lg:col-span-2">
-            <!-- Description list-->
-            <section aria-labelledby="applicant-information-title">
-                <div class="bg-white shadow sm:rounded-lg">
-                    <div class="px-4 py-5 sm:px-6">
-                        <h2 id="applicant-information-title" class="text-lg font-medium leading-6 text-gray-900">
-                            {{ ucwords(trans_choice('messages.top5_resource_group_cost', 1)) }}
-                        </h2>
-                    </div>
-
-                    <div class="px-4 py-5 border-t border-gray-200 sm:px-6">
-                        <div class="table-responsive">
-                            <table id="" class="table mg-b-0 text-nowrap">
-                                <thead>
-                                    <tr>
-                                        <th>{{ ucwords(trans_choice('messages.resource_group_name', 1)) }}</th>
-                                        <th>{{ ucwords(trans_choice('messages.total', 1)) }}</th>
-                                    </tr>
-                                </thead>
-                                <body>
-                                    @foreach ($top5Q as $item)
-                                    <tr>
-                                        <td >{{$item['resource_group']}}</td>
-                                        <td> $@money($item['sum'])</td>
-                                    </tr>
-                                    @endforeach
-                                </body>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <section aria-labelledby="timeline-title" class="lg:col-start-3 lg:col-span-1">
-            <div class="px-4 py-5 bg-white shadow sm:rounded-lg sm:px-6">
-                <h2 id="timeline-title" class="text-lg font-medium text-gray-900">{{ ucwords(trans_choice('messages.filter', 1)) }}</h2>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label class="form-label">Resource Groups</label>
-                        <select  wire:model="selectRgroup" name="beast" id="select-beast" class="form-control custom-select select2">
-                            <option value="0">--Select--</option>
-                            @foreach ($resourceGroups as $key => $item)
-                            <option>{{$item}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @if($selectRgroup)
-                    <div class="form-group">
-                        <label class="form-label">Categories</label>
-                        <select wire:model="selectCategory" name="beast" id="select-beast1" class="form-control custom-select select2">
-                            <option value="0">--Select--</option>
-                            @foreach ($categories as $item)
-                            <option>{{$item}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @endif
-                    @if($selectCategory)
-                    <div class="form-group">
-                        <label class="form-label">Sub Categories</label>
-                        <select wire:model="selectSubCategory" name="beast" id="select-beast2" class="form-control custom-select select2">
-                            <option value="0">--Select--</option>
-                            @foreach ($subcategories as $key => $item)
-                            <option>{{$item}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @endif
-                    @if($selectSubCategory)
-                    <div class="form-group">
-                        <label class="form-label">Region</label>
-                        <select wire:model="selectRegion" name="beast" id="select-beast3" class="form-control custom-select select2">
-                            <option value="0">--Select--</option>
-                            @foreach ($region as $key => $item)
-                            <option>{{$item}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @endif
-                    <a wire:click="resetFilters" class="inline-flex items-center px-2.5 py-2 block border text-center border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Clear Filter</a>
-                </div>
-            </div>
-        </section>
-        --}}
-    </div>
     <hr class="py-10">
     <div class="relative z-0 flex-col flex-1 overflow-y-auto">
         <div class="p-4 overflow-hidden bg-white">
@@ -206,14 +119,7 @@
                     </x-slot>
                     <x-slot name="body">
                         @forelse ($reports as $item)
-                        {{-- <tr class="hover:bg-gray-100" >
-                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{$item->resource_name}}</td>
-                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{$item->resource_group}}</td>
-                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{$item->resource_location}}</td>
-                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">$@money($item->cost)</td>
-                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{date('Y-m-d', strtotime($item->usageStartTime))}}</td>
-                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{date('Y-m-d', strtotime($item->usageEndTime))}}</td>
-                        </tr> --}}
+
                         <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $item['id'] }}">
                             <x-table.cell visibility='hidden' tablecell='lg:table-cell'>
                                 <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
@@ -260,30 +166,6 @@
                                 </div>
                             </x-table.cell>
 
-
-                            {{-- <x-table.cell>
-                                <div class="z-10">
-                                    <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                                        </svg>
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        <a wire:click="edit({{ $customer->id }})" class="dropdown-item" href="#">
-                                            <x-icon.edit></x-icon.edit>
-                                            {{ ucwords(trans_choice('messages.edit', 1)) }}
-                                        </a>
-                                        @canImpersonate
-                                        @if(!empty($customer->format()['mainUser']))
-                                        <a class="dropdown-item" href="{{ route('impersonate', $customer->format()['mainUser']['id'])}}">
-                                            <x-icon.impersonate></x-icon.impersonate>
-                                            {{ ucwords(trans_choice('messages.impersonate', 1)) }}
-                                        </a>
-                                        @endif
-                                        @endCanImpersonate
-                                    </div>
-                                </div>
-                            </x-table.cell> --}}
                         </x-table.row>
                         @empty
                         <x-table.row>
@@ -300,81 +182,6 @@
                 <div>
                     {{ $reports->links() }}
                 </div>
-
-                {{-- <table class="min-w-full divide-y divide-gray-200">
-                    <thead>
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase" wire:click="sortByColumn('resource_name')">
-                                {{ ucwords(trans_choice('messages.name', 1)) }}
-                                @if ($sortColumn == 'resource_name')
-                                <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
-                                @else
-                                <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
-                                @endif
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase" wire:click="sortByColumn('resource_group')">
-                                {{ ucwords(trans_choice('messages.resource_group', 1)) }}
-                                @if ($sortColumn == 'resource_group')
-                                <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
-                                @else
-                                <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
-                                @endif
-                            </th>
-
-                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase" wire:click="sortByColumn('resource_location')">
-                                {{ ucwords(trans_choice('messages.region', 1)) }}
-                                @if ($sortColumn == 'resource_location')
-                                <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
-                                @else
-                                <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
-                                @endif
-                            </th>
-
-                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase" wire:click="sortByColumn('cost')">
-                                {{ ucwords(trans_choice('messages.total_cost', 1)) }}
-                                @if ($sortColumn == 'cost')
-                                <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
-                                @else
-                                <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
-                                @endif
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase" wire:click="sortByColumn('usageStartTime')">
-                                {{ ucwords(trans_choice('messages.start_date', 1)) }}
-                                @if ($sortColumn == 'usageStartTime')
-                                <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
-                                @else
-                                <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
-                                @endif
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase" wire:click="sortByColumn('usageEndTime')">
-                                {{ ucwords(trans_choice('messages.end_date', 1)) }}
-                                @if ($sortColumn == 'usageEndTime')
-                                <i class="fa fa-fw fa-sort-{{ $sortDirection }}"></i>
-                                @else
-                                <i class="fa fa-fw fa-sort" style="color:#DCDCDC"></i>
-                                @endif
-                            </th>
-                        </tr>
-                    </thead>
-                    <body>
-                        @foreach ($reports as $item)
-
-                        <tr class="hover:bg-gray-100" >
-                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{$item->resource_name}}</td>
-                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{$item->resource_group}}</td>
-                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{$item->resource_location}}</td>
-                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">$@money($item->cost)</td>
-                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{date('Y-m-d', strtotime($item->usageStartTime))}}</td>
-                            <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{date('Y-m-d', strtotime($item->usageEndTime))}}</td>
-                        </tr>
-                        @endforeach
-                    </body>
-                </table>
-                <div class="text-right card-footer d-flex">
-                    @if ($reports->total() >= '10')
-                    {!! $reports->render() !!}
-                    @endif
-                </div> --}}
             </div>
         </div>
     </div>
