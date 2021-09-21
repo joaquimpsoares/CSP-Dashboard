@@ -113,7 +113,6 @@ class AzureReport extends Component
                 return $item;
             });
         });
-        dd($query);
         return $this->applySorting($query);
     }
 
@@ -134,10 +133,6 @@ class AzureReport extends Component
         $categories     = AzureUsageReport::where('subscription_id', $this->subscription->id)->groupBy('resource_category')->pluck('resource_category');
         $subcategories  = AzureUsageReport::where('subscription_id', $this->subscription->id)->groupBy('resource_subcategory')->pluck('resource_subcategory');
         $region         = AzureUsageReport::where('subscription_id', $this->subscription->id)->groupBy('resource_region')->pluck('resource_region');
-
-
-
-        dd($this->rows);
 
     return view('livewire.azure.azure-report', [
         'reports' => $this->rows,

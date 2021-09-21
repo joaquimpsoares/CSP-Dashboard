@@ -25,6 +25,7 @@ class AzureReport extends Component
     public $taskduedate;
     public $startdate;
     public $endtdate;
+    public $search;
 
     public $dates;
     public $selectRgroup;
@@ -43,6 +44,7 @@ class AzureReport extends Component
         $this->selectSubCategory;
         $this->selectLocation;
     }
+
 
     public function updatingSearch()
     {
@@ -88,7 +90,6 @@ class AzureReport extends Component
         $reports = $query->where('subscription_id', $this->subscription->id)
         ->whereBetween('usageStartTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
         ->whereBetween('usageEndTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
-        // ->orderBy($this->sortColumn, $this->sortDirection)
         ->pluck('id')->toArray();
         return (new exportAzure($reports))->download('azureReports '.$this->subscription->customer->company_name.'.xlsx');
     }
@@ -104,14 +105,19 @@ class AzureReport extends Component
         $query = AzureUsageReport::query();
         $query->where('subscription_id', $this->subscription->id)
         ->whereBetween('usageStartTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
-        ->whereBetween('usageEndTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"]);
+        ->whereBetween('usageEndTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
+        ->where('name', "like", "%{$this->search}%")
+        ->orWhere('resource_name', 'like', "%{$this->search}%")
+        ->orWhere('resource_location', 'like', "%{$this->search}%")
+        ->orWhere('usageStartTime', 'like', "%{$this->search}%")
+        ->orWhere('resource_group', 'like', "%{$this->search}%");
 
         return $this->applySorting($query);
 
         $query->map(function($item, $key) {
             $azurepricelist = AzurePriceList::where('resource_id', $item->resource_id)->get('rates');
             if ($azurepricelist->first()){
-                $item['cost'] = $item->quantity+$azurepricelist->first()->rates[0];
+                $item['cost'] = $item->quantity*$azurepricelist->first()->rates[0];
             }
             $item->cost;
             $item->save();

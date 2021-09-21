@@ -204,7 +204,6 @@ class ShowPricelist extends Component
             }
 
             $this->products = Product::where('sku', $this->editing->product_sku)->where('instance_id', $this->priceList->instance_id)->pluck('id')->first();
-            // dd($this->products);
 
             return view('livewire.pricelist.show-pricelist',[
                 'prices' => $this->rows,

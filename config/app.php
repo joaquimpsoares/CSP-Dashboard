@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    // 'timezone' => 'UTC',
 
     /*
     |--------------------------------------------------------------------------
@@ -176,6 +176,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+
         App\Providers\ProviderRepositoryServiceProvider::class,
         App\Providers\ResellerRepositoryServiceProvider::class,
         App\Providers\AnalyticRepositoryServiceProvider::class,
@@ -189,9 +190,9 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         Webpatser\Countries\CountriesServiceProvider::class,
         Lab404\Impersonate\ImpersonateServiceProvider::class,
-        // NotificationChannels\MsTeams\MsTeamsChannel::class,
         \SocialiteProviders\Manager\ServiceProvider::class,
         Kordy\Ticketit\TicketitServiceProvider::class,
+        // NotificationChannels\MsTeams\MsTeamsChannel::class,
     ],
 
     /*
