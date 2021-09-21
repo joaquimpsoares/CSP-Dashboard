@@ -15,6 +15,11 @@ trait WithPerPagePagination
         $this->perPage = session()->get('perPage', $this->perPage);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function updatedPerPage($value)
     {
         session()->put('perPage', $value);
