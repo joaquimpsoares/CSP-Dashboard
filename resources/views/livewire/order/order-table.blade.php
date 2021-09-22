@@ -53,45 +53,45 @@
                         @forelse($orders as $order)
                         <tr class="hover:bg-gray-100" >
                             <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{ $order['id'] }}</td>
-                            <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{ $order['avatar']['email'] }}</td>
+                            <td class="px-2 py-2 text-xs font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{ $order['avatar']['email'] }}</td>
                             @if ($order['customer'])
-                            <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{  $order['customer']['company_name'] }}</td>
+                            <td class="px-2 py-2 text-xs text-gray-500 whitespace-wrap">{{  $order['customer']['company_name'] }}</td>
                             @else
                             <td></td>
                             @endif
-                            <td class="hidden px-2 py-2 text-sm text-gray-500 break-words whitespace-wrap lg:table-cell">{{ \Illuminate\Support\Str::limit($order['details'], 100, $end='...') }}</td>
+                            <td class="hidden px-2 py-2 text-xs text-gray-500 break-words whitespace-wrap lg:table-cell">{{ \Illuminate\Support\Str::limit($order['details'], 100, $end='...') }}</td>
                             @if ($order['orderproducts'])
-                            <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{ $order['orderproducts']['quantity'] }} </td>
+                            <td class="px-2 py-2 text-xs text-gray-500 whitespace-nowrap">{{ $order['orderproducts']['quantity'] }} </td>
                             @else
                             <td></td>
                             @endif
                             @if ($order['orderproducts'])
-                            <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{ number_format(($order['orderproducts']['quantity']*$order['orderproducts']['retail_price']) * ($order['orderproducts']['billing_cycle'] === 'annual' ? 12 : 1 ),2) }} </td>
+                            <td class="px-2 py-2 text-xs text-gray-500 whitespace-nowrap">{{ number_format(($order['orderproducts']['quantity']*$order['orderproducts']['retail_price']) * ($order['orderproducts']['billing_cycle'] === 'annual' ? 12 : 1 ),2) }} </td>
                             @else
                             <td></td>
                             @endif
                             @if ($order['status']['id']==4)
-                            <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">
+                            <td class="px-2 py-2 text-xs text-gray-500 whitespace-nowrap lg:table-cell">
                                 <p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 capitalize">{{ $order['status']['name'] }}</span></p>
                             </td>
                             @endif
                             @if ($order['status']['id']==1)
-                            <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">
+                            <td class="px-2 py-2 text-xs text-gray-500 whitespace-nowrap lg:table-cell">
                                 <p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 capitalize">{{ $order['status']['name'] }}</span></p>
                             </td>
                             @endif
                             @if ($order['status']['id']==2)
-                            <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">
+                            <td class="px-2 py-2 text-xs text-gray-500 whitespace-nowrap lg:table-cell">
                                 <p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 capitalize">{{ $order['status']['name'] }}</span></p>
                             </td>
                             @endif
                             @if ($order['status']['id']==3)
-                            <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">
+                            <td class="px-2 py-2 text-xs text-gray-500 whitespace-nowrap lg:table-cell">
                                 <p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 capitalize">{{ $order['status']['name'] }}</span></p>
                             </td>
                             @endif
-                            <td class="hidden px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">{{ $order['created_at'] }}</td>
-                            <td class="hidden px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">{{ $order['updated_at'] }}</td>
+                            <td class="hidden px-2 py-2 text-xs text-gray-500 whitespace-nowrap lg:table-cell">{{ $order['created_at'] }}</td>
+                            <td class="hidden px-2 py-2 text-xs text-gray-500 whitespace-nowrap lg:table-cell">{{ $order['updated_at'] }}</td>
                         </tr>
                         @empty
                         <tr>
