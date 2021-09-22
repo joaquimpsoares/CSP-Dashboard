@@ -55,11 +55,11 @@
                             <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{ $order['id'] }}</td>
                             <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">{{ $order['avatar']['email'] }}</td>
                             @if ($order['customer'])
-                            <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{  $order['customer']['company_name'] }}</td>
+                            <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap">{{  $order['customer']['company_name'] }}</td>
                             @else
                             <td></td>
                             @endif
-                            <td class="hidden px-2 py-2 text-sm text-gray-500 break-words whitespace-wrap lg:table-cell">{{ \Illuminate\Support\Str::limit($order['details'], 50, $end='...') }}</td>
+                            <td class="hidden px-2 py-2 text-sm text-gray-500 break-words whitespace-wrap lg:table-cell">{{ \Illuminate\Support\Str::limit($order['details'], 100, $end='...') }}</td>
                             @if ($order['orderproducts'])
                             <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{ $order['orderproducts']['quantity'] }} </td>
                             @else
