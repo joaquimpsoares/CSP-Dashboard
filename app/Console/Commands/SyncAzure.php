@@ -64,9 +64,7 @@ class SyncAzure extends Command
 
             if($subscription->product_id == 'MS-AZR-0145P'){
                 $instance = Instance::where('id', $subscription->instance_id)->first();
-
                 $msId = $subscription->customer->microsoftTenantInfo->first()->tenant_id;
-
                 $customer = new TagydesCustomer([
                     'id' => $msId,
                     'username' => 'bill@tagydes.com',
@@ -96,17 +94,13 @@ class SyncAzure extends Command
                     $resources->first()->items->each(function($resource) use($subscription){
                         $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
 
-
-                        if(!isset($resource->resource->id)){
-                            $price = AzurePriceList::updateOrCreate(
-                                ['resource_id'   => $resource->resource->id],
-                                ['rates' => [0]]);
-
-                            }
-
+                        // if(!isset($resource->resource->id)){
+                        //     $price = AzurePriceList::updateOrCreate(
+                        //         ['resource_id'   => $resource->resource->id],
+                        //         ['rates' => [0]]);
+                        //     }
 
                             Log::channel('azure')->info($resource->price);
-
                             Log::channel('azure')->info($resource->resource->id);
 
                             $resource = AzureUsageReport::updateOrCreate([
@@ -123,16 +117,22 @@ class SyncAzure extends Command
                                 'resource_region'       => $resource->resource->region,
                                 'unit'                  => $resource->unit,
                                 'name'                  => $resourceGroup[8] ?? null,
-
-
                                 "resourceType"          => $resource->instanceData->additionalInfo->toArray()['resourceType'] ?? null,
                                 "usageResourceKind"     => $resource->instanceData->additionalInfo->toArray()['usageResourceKind'] ?? null,
                                 "dataCenter"            => $resource->instanceData->additionalInfo->toArray()['dataCenter'] ?? null,
                                 "networkBucket"         => $resource->instanceData->additionalInfo->toArray()['networkBucket'] ?? null,
                                 "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
                                 'quantity'              => $resource->quantity,
-                                'cost'                  => (json_encode($price->rates[0])*$resource->quantity),
+                                // 'cost'                  => (json_encode($price->rates[0])*$resource->quantity),
                             ]);
+
+                            $resources = AzureUsageReport::where('subscription_id', $$subscription->id)->get();
+                            $resources->each(function ($resource) {
+                                $price = AzurePriceList::where('resource_id', $resource->resource_id)->first();
+                                $price = $resource->quantity*$price->rates[0];
+                                $resource->update(['cost' => $price]);
+                                Log::channel('azure')->info('updated '.$resource->resource_name. ' With price '. $price);
+                            });
                             Log::channel('azure')->info(json_encode($resource));
                         });
                     }
