@@ -15,6 +15,7 @@ use App\Models\AzureResource;
 use App\Http\Traits\UserTrait;
 use App\Models\AzurePriceList;
 use App\Models\AzureUsageReport;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -62,13 +63,20 @@ class AnalyticController extends Controller
     }
 
     public function updatepricesinreports(){
-        $resource = AzureUsageReport::get();
-        $resource->each(function ($price) {
-            $cost= AzurePriceList::where('resource_id',$price->resource_id)->first();
-            Log::channel('azure')->info('This price ' .$cost->resource_id.' for resource '.$price->resource_id.' name '.$price->name. ' has this cost ' .$cost->rates[0]);
-            $cost = ($price->quantity*$cost->rates[0]);
-            $update = $price->update(['cost' => $cost]);
+        // $resource = AzureUsageReport::get();
+
+        $teste = DB::table('azure_usage_reports')
+        ->lazyById()->each(function ($resource) {
+            DB::table('azure_price_lists')
+            ->where('resource_id',$resource->resource_id)->first();
         });
+        dd($teste);
+        // $resource->each(function ($price) {
+        //     $cost= AzurePriceList::where('resource_id',$price->resource_id)->first();
+        //     Log::channel('azure')->info('This price ' .$cost->resource_id.' for resource '.$price->resource_id.' name '.$price->name. ' has this cost ' .$cost->rates[0]);
+        //     $cost = ($price->quantity*$cost->rates[0]);
+        //     $update = $price->update(['cost' => $price->quantity*$cost->rates[0]]);
+        // });
     }
 
     public function getAzuredetails(Customer $customer, Subscription $subscription)

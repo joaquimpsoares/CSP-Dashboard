@@ -1,3 +1,4 @@
 {
-    "AzureAnalytics": true
+    "AzureAnalytics": true,
+    "UpdateAzurePricesinResources": true
 }

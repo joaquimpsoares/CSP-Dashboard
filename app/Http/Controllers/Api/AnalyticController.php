@@ -344,12 +344,6 @@ class AnalyticController extends Controller
         }
     }
 
-    public function updatepricesinreports(){
-        $resource = AzureResource::get();
-        dd($resource);
-
-    }
-
     public function azurepricelist($id)
     {
         $instance = Instance::find($id);
