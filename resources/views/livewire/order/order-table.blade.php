@@ -59,7 +59,7 @@
                             @else
                             <td></td>
                             @endif
-                            <td class="hidden px-2 py-2 text-sm text-gray-500 break-words whitespace-wrap lg:table-cell">{{ \Illuminate\Support\Str::limit($order['details'], 100, $end='...') }}</td>
+                            <td class="hidden px-2 py-2 text-sm text-gray-500 break-words whitespace-wrap lg:table-cell">{{ \Illuminate\Support\Str::limit($order['details'], 50, $end='...') }}</td>
                             @if ($order['orderproducts'])
                             <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">{{ $order['orderproducts']['quantity'] }} </td>
                             @else
