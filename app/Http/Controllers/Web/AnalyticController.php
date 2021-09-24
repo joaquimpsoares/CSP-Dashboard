@@ -360,34 +360,38 @@ class AnalyticController extends Controller
         $pages->each(function ($page) use ($subscription) {
             $page->items->each(function ($resource) use ($subscription) {
                 $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
-                $price = AzurePriceList::where('resource_id', $resource->resource->id)->first();
-                Log::channel('azure')->info('for this resource id '.$resource->resource->id. ' this price ' . $resource->prices  );
-                $cost = (json_encode($price->rates[0])*$resource->quantity);
-                Log::channel('azure')->info('for this resource id we calculated this much '.$cost);
+                // $price = AzurePriceList::where('resource_id', $resource->resource->id)->first();
+                // Log::channel('azure')->info('for this resource id '.$resource->resource->id. ' this price ' . $resource->prices  );
+                // $cost = (json_encode($price->rates[0])*$resource->quantity);
+                // Log::channel('azure')->info('for this resource id we calculated this much '.$cost);
 
                 $resource = AzureUsageReport::updateOrCreate([
                     'subscription_id'       => $subscription->id,
+                    'resource_name'         => $resource->resource->name,
+                    'name'                  => $resourceGroup[8] ?? null,
                     'resource_id'           => $resource->resource->id,
+                    'resource_group'        => $resourceGroup[4],
+                ], [
                     'usageStartTime'        => $resource->usageStartTime,
                     'usageEndTime'          => $resource->usageEndTime,
-                    'resource_group'        => $resourceGroup[4],
                     'resource_location'     => $resource->instanceData->location,
-                    'resource_name'         => $resource->resource->name,
                     'resource_category'     => $resource->resource->category,
                     'resource_subcategory'  => $resource->resource->subcategory,
                     'resource_region'       => $resource->resource->region,
                     'unit'                  => $resource->unit,
-                    'name'                  => $resourceGroup[8] ?? null,
                     "resourceType"          => $resource->instanceData->additionalInfo->toArray()['resourceType'] ?? null,
                     "usageResourceKind"     => $resource->instanceData->additionalInfo->toArray()['usageResourceKind'] ?? null,
                     "dataCenter"            => $resource->instanceData->additionalInfo->toArray()['dataCenter'] ?? null,
                     "networkBucket"         => $resource->instanceData->additionalInfo->toArray()['networkBucket'] ?? null,
                     "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
-                ], [
                     'quantity'              => $resource->quantity,
-                    'cost'                  => $cost ?? [0]
-                ]);
+                    // 'cost'                  => (json_encode($price->rates[0])*$resource->quantity) ?? '0'
+                    ]);
+                    $price = AzurePriceList::where('resource_id', $resource->resource_id)->first();
+                    $price = $resource->quantity*$price->rates[0];
+                    $resource->update(['cost' => $price]);
+                    Log::channel('azure')->info('updated '.$resource->resource_name. ' With price '. $price);
+                });
             });
-        });
     }
 }
