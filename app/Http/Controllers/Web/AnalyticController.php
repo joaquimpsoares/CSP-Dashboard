@@ -387,9 +387,11 @@ class AnalyticController extends Controller
                     'quantity'              => $resource->quantity,
                     // 'cost'                  => (json_encode($price->rates[0])*$resource->quantity) ?? '0'
                     ]);
-                    $price = AzurePriceList::where('resource_id', $resource->resource_id)->first();
-                    $price = $resource->quantity*$price->rates[0];
+                    $price1 = AzurePriceList::where('resource_id', $resource->resource_id)->first();
+                    $price = $resource->quantity*$price1->rates[0];
                     $resource->update(['cost' => $price]);
+
+                    Log::channel('azure')->info('price '.$price1->rates[0]. ' This quantity '. $resource->quantity . ' total ->  ' . $price );
                     Log::channel('azure')->info('updated '.$resource->resource_name. ' With price '. $price);
                 });
             });
