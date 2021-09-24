@@ -408,16 +408,16 @@ class AnalyticController extends Controller
             $page->items->each(function ($resource) use ($subscription) {
                 $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
 
-                $price = AzurePriceList::updateOrCreate(
-                    [
-                        'resource_id'   => $resource->resource->id,
-                    ],[
-                        'rates' => "[0]"
-                    ])->first('rates');
+                // $price = AzurePriceList::updateOrCreate(
+                //     [
+                //         'resource_id'   => $resource->resource->id,
+                //     ],[
+                //         'rates' => "[0]"
+                //     ])->first('rates');
 
                 Log::info($resource->resource->id);
 
-                $cost = (json_encode($price->rates[0])*$resource->quantity);
+                // $cost = (json_encode($price->rates[0])*$resource->quantity);
 
                 $resource = AzureUsageReport::updateOrCreate([
                     'subscription_id'       => $subscription->id,
@@ -439,12 +439,12 @@ class AnalyticController extends Controller
                     "networkBucket"         => $resource->instanceData->additionalInfo->toArray()['networkBucket'] ?? null,
                     "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
                     'quantity'              => $resource->quantity,
-                    'cost'                  => (json_encode($price->rates[0])*$resource->quantity) ?? '0'
-
-
+                    // 'cost'                  => (json_encode($price->rates[0])*$resource->quantity) ?? '0'
                     ]);
-                    // Log::info(json_encode($resource));
-                    // Log::info(json_encode($price->rates[0])*$resource->quantity);
+                    $price = AzurePriceList::where('resource_id', $resource->resource_id)->first();
+                    $price = $resource->quantity*$price->rates[0];
+                    $resource->update(['cost' => $price]);
+                    Log::channel('azure')->info('updated '.$resource->resource_name. ' With price '. $price);
                 });
             });
     }
