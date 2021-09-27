@@ -126,13 +126,11 @@ class SyncAzure extends Command
                                 // 'cost'                  => (json_encode($price->rates[0])*$resource->quantity),
                             ]);
 
-                            $resources = AzureUsageReport::where('subscription_id', $subscription->id)->get();
-                            $resources->each(function ($resource) {
+
                                 $price = AzurePriceList::where('resource_id', $resource->resource_id)->first();
                                 $price = $resource->quantity*$price->rates[0];
                                 $resource->update(['cost' => $price]);
                                 Log::channel('azure')->info('updated '.$resource->resource_name. ' With price '. $price);
-                            });
                             Log::channel('azure')->info(json_encode($resource));
                         });
                     }
