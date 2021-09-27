@@ -357,7 +357,7 @@ class AnalyticController extends Controller
         ]);
 
         $pages = FacadesAzureResource::withCredentials($instance->external_id, $instance->external_token)->utilizations($customer, $subscriptions);
-        $pages->chunk(200, function ($pages) use ($subscription) {
+        $pages->chunk(1000, function ($pages) use ($subscription) {
             foreach ($pages as $page){
                 $page->items->each(function ($resource) use ($subscription) {
                     $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
@@ -381,7 +381,6 @@ class AnalyticController extends Controller
                         "networkBucket"         => $resource->instanceData->additionalInfo->toArray()['networkBucket'] ?? null,
                         "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
                         'quantity'              => $resource->quantity,
-                        // 'cost'                  => (json_encode($price->rates[0])*$resource->quantity) ?? '0'
                     ]);
                     $price1 = AzurePriceList::where('resource_id', $resource->resource_id)->first();
                     $price = $resource->quantity*$price1->rates[0];
