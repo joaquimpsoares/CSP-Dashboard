@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\TestController;
 
 /**********************************************************************************
 Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
@@ -20,7 +21,7 @@ Route::prefix('jobis')->group(function () {
 
 Route::get('accept/{token}', 'InviteController@accept')->name('accept');
 Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('resetinvitationpassword');
-
+Route::get('test-custom-mailer', TestController::class);
 
 
 
