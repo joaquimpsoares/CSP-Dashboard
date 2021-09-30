@@ -112,6 +112,7 @@ class ProductTable extends Component
     public function importproducts(){
 
         if($this->license == true){
+            Log::info('Started importing NCE');
 
             $id = Auth::user()->provider->id;
             $product = new Product();
@@ -126,6 +127,7 @@ class ProductTable extends Component
 
         if($this->perpetual == true){
 
+            Log::info('Started importing Perpetual');
             $id = Auth::user()->provider->id;
             $product = new Product();
             $provider = Provider::where('id', $id)->select('country_id')->first();
