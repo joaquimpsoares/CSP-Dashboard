@@ -43,7 +43,7 @@
                                                     <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                                                 </svg>
                                             </div>
-                                            <input wire:model="filters.search" id="search" class="block w-full bg-white py-1.5 pl-10 pr-3 border border-gray-300 rounded-md leading-5 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 focus:placeholder-gray-500 sm:text-sm" placeholder="Search" type="search" name="search">
+                                            <input wire:model="search" id="search" class="block w-full bg-white py-1.5 pl-10 pr-3 border border-gray-300 rounded-md leading-5 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 focus:placeholder-gray-500 sm:text-sm" placeholder="Search" type="search" name="search">
                                         </div>
                                     </div>
                                 </div>
@@ -99,7 +99,6 @@
                                         <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                             <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
-                                                    {{-- <x-icon.cash class="text-cool-gray-400"/> --}}
                                                     {{ $transaction['queue'] }}
                                                 </span>
                                             </div>
@@ -127,7 +126,6 @@
                                         </a>
                                     </span>
                                 </x-table.cell>
-
                                 <x-table.cell>
                                     <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
@@ -137,15 +135,6 @@
                                         </div>
                                     </a>
                                 </x-table.cell>
-                                {{-- <x-table.cell>
-                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
-                                        <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
-                                                {{ $transaction['exception'] }}
-                                            </span>
-                                        </div>
-                                    </a>
-                                </x-table.cell> --}}
                                 <x-table.cell>
                                     <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
@@ -193,61 +182,4 @@
             </div>
         </div>
     </div>
-    <!-- Delete Transactions Modal -->
-    <form wire:submit.prevent="deleteSelected">
-        <x-modal.confirmation wire:model.defer="showDeleteModal">
-            <x-slot name="title">Delete Transaction</x-slot>
-
-            <x-slot name="content">
-                <div class="py-8 text-cool-gray-700">Are you sure you? This action is irreversible.</div>
-            </x-slot>
-
-            <x-slot name="footer">
-                <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false">
-                    Delete
-                </button>
-                <a type="button" wire:click="$set('showDeleteModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
-                    Cancel
-                </a>
-
-                {{-- <x-button.secondary wire:click="$set('showDeleteModal', false)">Cancel</x-button.secondary>
-
-                <x-button.primary type="submit">Delete</x-button.primary> --}}
-            </x-slot>
-        </x-modal.confirmation>
-    </form>
-    <!-- Save Transaction Modal -->
-    <form wire:submit.prevent="save">
-        <x-modal.dialog wire:model.defer="showEditModal">
-            <x-slot name="title">Edit Transaction</x-slot>
-
-            <x-slot name="content">
-                <x-input.group for="name" label="name" :error="$errors->first('editing.name')">
-                    <x-input.text wire:model="editing.name" id="name" placeholder="name" />
-                </x-input.group>
-
-                <x-input.group for="description" label="description" :error="$errors->first('editing.description')">
-                    <x-input.money wire:model="editing.description" id="description" />
-                </x-input.group>
-
-                <x-input.group for="margin" label="margin" :error="$errors->first('editing.margin')">
-                    <x-input.text wire:model="editing.margin" id="margin" />
-                </x-input.group>
-            </x-slot>
-
-            <x-slot name="footer">
-
-                <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false">
-                    Save
-                </button>
-                <a type="button" wire:click="$set('showEditModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
-                    Cancel
-                </a>
-
-                {{-- <x-button.primary type="submit">Save</x-button.primary> --}}
-            </x-slot>
-        </x-modal.dialog>
-    </form>
-</div>
-
 </div>
