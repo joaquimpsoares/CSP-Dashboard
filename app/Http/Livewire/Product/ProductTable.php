@@ -11,6 +11,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Traits\UserTrait;
 use App\Exports\ProductsExport;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Livewire\DataTable\WithSorting;
@@ -66,10 +67,6 @@ class ProductTable extends Component
             'editing.resellee_qualifications'   => 'required'|'integer'|'exists:price_list,id',
 
 
-
-
-
-
             // 'creatingUser.editing.'             => 'sometimes'|'string'|'max:255'|'min:3',
             // 'creatingUser.last_name'        => 'sometimes'|'string'|'max:255'|'min:3',
             // 'creatingUser.socialite_id'     => 'sometimes'|'string'|'max:255'|'min:3',
@@ -123,7 +120,7 @@ class ProductTable extends Component
             $instance = Instance::where('provider_id', $id)->first();
 
             $product->importNCELicenses($instance, $country);
-            $this->notify('Import Scheduled for licenses');
+            Log::debug('Subscription id: '.$product->name .' has renewed');
 
         }
 
@@ -138,6 +135,7 @@ class ProductTable extends Component
             $product->importPerpetual($instance, $country);
 
             $this->notify('Import Scheduled for perpetual');
+            $this->info('Successfully sent daily quote to everyone.');
         }
         $this->showImportModal = false;
     }
