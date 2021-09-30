@@ -27,8 +27,8 @@ class ProductTable extends Component
     public $password;
     public $license = false;
     public $perpetual = false;
+    public $showDeleteModal = false;
     public $password_confirmation;
-    // public $showCreateUser = false;
     public $showImportModal = false;
     public $showEditModal = false;
 
