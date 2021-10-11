@@ -146,7 +146,6 @@ class AzureReport extends Component
 
     public function render()
     {
-
         $top5Q          = AzureUsageReport::groupBy('resource_group')->where('subscription_id', $this->subscription->id)->selectRaw('sum(cost) as sum, resource_group, resource_category')->orderBy('sum', 'DESC')->limit(5)->get()->toArray();
         $resourceGroups = AzureUsageReport::where('subscription_id', $this->subscription->id)->groupBy('resource_group')->pluck('resource_group');
         $categories     = AzureUsageReport::where('subscription_id', $this->subscription->id)->groupBy('resource_category')->pluck('resource_category');
@@ -160,6 +159,6 @@ class AzureReport extends Component
         'top5Q' => $top5Q,
         'subcategories' => $subcategories,
         'region' => $region,
-        ]);
+        ])->extends('layouts.master');;
     }
 }
