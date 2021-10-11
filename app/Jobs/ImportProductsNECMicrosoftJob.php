@@ -53,7 +53,7 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
             $products->each(function ($importedProduct) use ($instance, $importCount) {
                 $importedProduct->each(function ($importedProduct) use ($instance, $importCount) {
                     $importedProduct->each(function ($importedProduct) use ($instance, $importCount) {
-
+                        Log::info('this is NCE: '.$importedProduct->product->productType->displayName);
                         if($importedProduct->product->productType->displayName=='OnlineServicesNCE'){
                             $sku = $importedProduct->sku->productId.':'.$importedProduct->sku->id;
                         }else{
@@ -94,6 +94,7 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
                             'reseller_qualifications'   => $importedProduct->sku->dynamicAttributes->resellerQualifications,
                         ]);
                         $importCount++;
+                        Log::info('Imported '.$product->name.' transactions!');
                         Log::info('Imported '.$importCount.' transactions!');
                     });
                 });
