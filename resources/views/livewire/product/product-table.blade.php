@@ -238,7 +238,7 @@
     </form>
     <div>
         <!-- Save Transaction Modal -->
-        @if($showEditModal = true)
+        @if($showEditModal == true)
         <form wire:submit.prevent="save({{$product->id}})">
             <x-modal.slideout wire:model.defer="showEditModal">
                 <x-slot name="title">Edit Product</x-slot>
