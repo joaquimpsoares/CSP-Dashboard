@@ -61,6 +61,7 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
                         }
 
                         Log::info('catalogItemIdy: '.$importedProduct->catalogItemId);
+                        dd($importedProduct->sku->description);
 
                         $product = Product::updateOrCreate([
                             'instance_id'               => $instance->id,
