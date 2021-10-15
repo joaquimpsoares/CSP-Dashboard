@@ -49,10 +49,10 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
 
             $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)
             ->forCountry($instance->provider->country->iso_3166_2)->softwareNCEAll($instance->provider->country->iso_3166_2);
-            $importCount = 0;
-            $products->each(function ($importedProduct) use ($instance, $importCount) {
-                $importedProduct->each(function ($importedProduct) use ($instance, $importCount) {
-                    $importedProduct->each(function ($importedProduct) use ($instance, $importCount) {
+            // $importCount = 0;
+            $products->each(function ($importedProduct) use ($instance) {
+                $importedProduct->each(function ($importedProduct) use ($instance) {
+                    $importedProduct->each(function ($importedProduct) use ($instance) {
                         Log::info('this is NCE: '.$importedProduct->product->productType->displayName);
                         if($importedProduct->product->productType->displayName=='OnlineServicesNCE'){
                             $sku = $importedProduct->sku->productId.':'.$importedProduct->sku->id;
@@ -93,9 +93,9 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
                             'resellee_qualifications'   => $importedProduct->sku->dynamicAttributes->reselleeQualifications,
                             'reseller_qualifications'   => $importedProduct->sku->dynamicAttributes->resellerQualifications,
                         ]);
-                        $importCount++;
+                        // $importCount++;
                         Log::info('Imported '.$product->name.' transactions!');
-                        Log::info('Imported '.$importCount.' transactions!');
+                        // Log::info('Imported '.$importCount.' transactions!');
                     });
                 });
             });
@@ -105,7 +105,7 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
             Log::info('Error importing products: '.$e->getMessage());
             Log::info('Error: '.$e->getMessage());
         }
-        Log::info('Imported '.$importCount.' transactions!');
+        // Log::info('Imported '.$importCount.' transactions!');
 
         $this->queueProgress(100);
 
