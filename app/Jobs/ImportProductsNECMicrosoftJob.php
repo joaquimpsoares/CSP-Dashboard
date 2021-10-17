@@ -45,15 +45,14 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
 
         try {
 
-            $this->queueProgress(0);
-
             $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)
             ->forCountry($instance->provider->country->iso_3166_2)->softwareNCEAll($instance->provider->country->iso_3166_2);
-            // $importCount = 0;
+
             $products->each(function ($importedProduct) use ($instance) {
                 $importedProduct->each(function ($importedProduct) use ($instance) {
                     $importedProduct->each(function ($importedProduct) use ($instance) {
                         Log::info('this is NCE: '.$importedProduct->product->productType->displayName);
+
                         if($importedProduct->product->productType->displayName=='OnlineServicesNCE'){
                             $sku = $importedProduct->sku->productId.':'.$importedProduct->sku->id;
                         }else{
@@ -61,12 +60,14 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
                         }
 
                         Log::info('catalogItemIdy: '.$importedProduct->catalogItemId);
-                        dd($importedProduct->sku->description);
+                        Log::info('descriptyion: '.$importedProduct->sku->description);
+
 
                         $product = Product::updateOrCreate([
                             'instance_id'               => $instance->id,
                             'sku'                       => $sku,
                         ], [
+                            'uri'                       => $importedProduct->links->self->uri,
                             'name'                      => $importedProduct->sku->title,
                             'catalog_item_id'           => $importedProduct->catalogItemId,
                             'billing'                   => $importedProduct->sku->dynamicAttributes->billingType,
@@ -94,17 +95,15 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
                             'resellee_qualifications'   => $importedProduct->sku->dynamicAttributes->reselleeQualifications,
                             'reseller_qualifications'   => $importedProduct->sku->dynamicAttributes->resellerQualifications,
                         ]);
-                        // $importCount++;
+
                         Log::info('Imported '.$product->name.' transactions!');
                         // Log::info('Imported '.$importCount.' transactions!');
                     });
                 });
             });
-            $this->queueProgress(90);
 
         } catch (Exception $e) {
             Log::info('Error importing products: '.$e->getMessage());
-            Log::info('Error: '.$e->getMessage());
         }
         // Log::info('Imported '.$importCount.' transactions!');
 
