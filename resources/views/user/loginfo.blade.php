@@ -9,7 +9,7 @@
 @endsection
 
 @section('content')
-<div class="card">
+{{-- <div class="card">
 
     <div class="card-body">
         <h1>Log Activity Lists</h1>
@@ -36,12 +36,12 @@
                             <td>{{ ++$key }}</td>
                             <td>{{ $log->subject }}</td>
                             <td class="text-success">{{ $log->url }}</td>
-                            <td><span class="badge badge-pill badge-primary mt-2">{{ $log->method }}</span>
+                            <td><span class="mt-2 badge badge-pill badge-primary">{{ $log->method }}</span>
                             <td class="text-warning">{{ $log->ip }}</td>
                             <td class="text-warning">{!! geoip()->getLocation($log->ip)->country !!}</td>
                             <td>{{ $log->user_id }}</td>
                             <td>{{ $log->created_at }}</td>
-                            <td class="text-danger"> <button type="button" class="btn btn-info mr-2" data-container="body" data-toggle="popover" data-popover-color="popinfo" data-placement="top" title="alert info" data-content="{{ $log->agent }}">
+                            <td class="text-danger"> <button type="button" class="mr-2 btn btn-info" data-container="body" data-toggle="popover" data-popover-color="popinfo" data-placement="top" title="alert info" data-content="{{ $log->agent }}">
                                 Show info
                             </button></td>
                         </tr>
@@ -51,7 +51,9 @@
                 </table>
             </div>
         </div>
-    </div>
+    </div> --}}
+
+    @livewire('log.log-table', ['logs' => $logs], key($user->id))
     @endsection
 
 
