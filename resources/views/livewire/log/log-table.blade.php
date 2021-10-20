@@ -120,7 +120,7 @@
                                 <x-table.cell>
                                     <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
+                                            <span class="inline-flex text-wrap items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                 {{ $transaction->url }}
                                             </span>
                                         </div>
