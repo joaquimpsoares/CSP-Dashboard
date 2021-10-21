@@ -15,9 +15,11 @@ use App\Http\Controllers\Auth\LoginController;
 */
 
 Route::group(['middleware' => ['role:Super Admin|Admin|Provider|Reseller|Sub Reseller|Customer']], function () {
-    Route::prefix('azureanalytics')->group(function() {
-        Route::get('/', 'AzureAnalyticsController@index');
-    });
+    // Route::prefix('azureanalytics')->group(function() {
+    //     Route::get('/', 'AzureAnalyticsController@index');
+    // });
+
+    // Route::get('/analytics/reports/{subscription}', [\Modules\AzureAnalytics\Http\Livewire\Azure\AzureReport::class, '__invoke'])->name('analytics.reports');
 });
 
 

@@ -241,7 +241,7 @@ Route::group(['middleware' => 'auth'], function ()
             Route::get('/analytics/licenses',                           ['uses' => 'AnalyticController@licenses','as'               => 'analytics.licenses']);
             Route::get('/customer/costs',                               ['uses' => 'CustomerController@CustomerServiceCosts','as'   => 'customer.costs']);
             Route::get('/analytics/show/',                              ['uses' => 'AnalyticController@show','as'                   => 'analytics.show']);
-            Route::get('/analytics/reports/{subscription}',             [\App\Http\Livewire\Azure\AzureReport::class, '__invoke'])->name('analytics.reports');
+            Route::get('/analytics/reports/{subscription}',             [\Modules\AzureAnalytics\Http\Livewire\Azure\AzureReport::class, '__invoke'])->name('analytics.reports');
             Route::post('/analytics/edit/',                             ['uses' => 'AnalyticController@edit','as'                   => 'analytics.edit']);
 
             // Route::get('/analytics/reports/{subscription}', ['uses' => 'AnalyticController@azurereport','as' => 'analytics.reports']);

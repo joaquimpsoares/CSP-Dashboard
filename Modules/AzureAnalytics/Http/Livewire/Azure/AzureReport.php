@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Azure;
+namespace Modules\AzureAnalytics\Http\Livewire\Azure;
 
 use App\Subscription;
 use Livewire\Component;
@@ -136,13 +136,6 @@ class AzureReport extends Component
         });
     }
 
-    // public function getRowsProperty()
-    // {
-    //     return $this->cache(function () {
-    //         return $this->applyPagination($this->rowsQuery);
-    //     });
-    // }
-
 
     public function render()
     {
@@ -152,13 +145,13 @@ class AzureReport extends Component
         $subcategories  = AzureUsageReport::where('subscription_id', $this->subscription->id)->groupBy('resource_subcategory')->pluck('resource_subcategory');
         $region         = AzureUsageReport::where('subscription_id', $this->subscription->id)->groupBy('resource_region')->pluck('resource_region');
 
-    return view('livewire.azure.azure-report', [
+    return view('azureanalytics::livewire.azure.azure-report', [
         'reports' => $this->rows,
         'resourceGroups' => $resourceGroups,
         'categories' => $categories,
         'top5Q' => $top5Q,
         'subcategories' => $subcategories,
         'region' => $region,
-        ])->extends('layouts.master');;
+        ])->extends('layouts.master');
     }
 }
