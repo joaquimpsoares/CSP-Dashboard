@@ -102,7 +102,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
                     'PartnerIdOnRecord' => $this->order->customer->format()['mpnid']  ?? null,
                     'isTrial' => $product['is_trial'],
                     'uri' => $product['uri'],
-                    'supportedBillingCycles' => ['annual', 'monthly', 'one_time'],
+                    'supportedBillingCycles' => ['annual', 'monthly', 'one_time', 'none'],
                 ];
 
                 if ($product['is_perpetual']) {
