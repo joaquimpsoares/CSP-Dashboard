@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\PriceChanged;
+use App\Listeners\MarkPriceListsAsChangedListener;
 use App\Listeners\SetLeveIdInSession;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
@@ -43,6 +45,9 @@ class EventServiceProvider extends ServiceProvider
         'Lab404\Impersonate\Events\LeaveImpersonation' =>[
             'App\Listeners\LeaveImpersonationLeveIdInSession',
         ],
+        PriceChanged::class => [
+            MarkPriceListsAsChangedListener::class,
+        ]
     ];
 
     /**
