@@ -137,7 +137,6 @@ class ProductTable extends Component
             $product->importPerpetual($instance, $country);
 
             $this->notify('Import Scheduled for perpetual');
-            // $this->info('Successfully sent daily quote to everyone.');
         }
         $this->showImportModal = false;
     }
@@ -149,6 +148,9 @@ class ProductTable extends Component
             $query->where('id', "like", "%{$this->filters['search']}%");
             $query->orWhere('sku', 'like', "%{$this->filters['search']}%");
             $query->orWhere('name', 'like', "%{$this->filters['search']}%");
+            $query->orWhere('productType', 'like', "%{$this->filters['search']}%");
+            $query->orWhere('vendor', 'like', "%{$this->filters['search']}%");
+            $query->orWhere('created_at', 'like', "%{$this->filters['search']}%");
             $query->orWhere('category', 'like', "%{$this->filters['search']}%");
         })->
         with(['instance']);

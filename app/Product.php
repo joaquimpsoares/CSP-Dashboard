@@ -77,6 +77,12 @@ class Product extends Model
     {
         return $this->subsription;
     }
+
+    public function IsNCE()
+    {
+        return $this->productType == 'OnlineServicesNCE';
+    }
+
     public function price() {
         return $this->hasOne(Price::class, 'product_id', 'id');
     }

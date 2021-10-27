@@ -112,9 +112,15 @@ class AnalyticRepository implements AnalyticRepositoryInterface
             'created_at'    => "5trvfvczdfv",
             ]);
 
-        return (int) FacadesAzureResource::withCredentials(
+        $budget = FacadesAzureResource::withCredentials(
             $instance->external_id,$instance->external_token
             )->budget($customer, $subscription);
+
+            if (!is_int($budget)){
+                return [0];
+
+            }
+            return (int) $budget;
 
         });
 

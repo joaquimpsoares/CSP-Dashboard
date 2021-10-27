@@ -21,8 +21,12 @@ class ImportTransactions extends Component
         'name'              => '',
         'product_sku'       => '',
         'instance_id'       => '',
+        'currency'          => '',
+        'market'            => '',
+        'term_duration'     => '',
         'product_vendor'    => '',
         'price'             => '',
+        'billing_plan'      => '',
         'msrp'              => '',
         'currency'          => '',
     ];
@@ -59,6 +63,7 @@ class ImportTransactions extends Component
         Csv::from($this->upload)
         ->eachRow(function ($row) use (&$importCount) {
             $tt = $this->extractFieldsFromRow($row);
+            // dd($tt);
             if($tt['product_id'] != null){
                 Price::updateOrCreate([
                     'product_sku'   => $tt['product_sku'],
@@ -67,7 +72,11 @@ class ImportTransactions extends Component
                     'price_list_id' => $this->priceList->id,
                 ],[
                     'name'          => $tt['name'],
+                    'currency'      => $tt['currency'],
+                    'market'        => $tt['market'],
+                    'term_duration' => $tt['term_duration'],
                     'price'         => $tt['price'],
+                    'billing_plan'  => $tt['billing_plan'],
                     'msrp'          => $tt['msrp'],
                     'product_vendor'=> $tt['product_vendor']
                 ]);
@@ -81,8 +90,7 @@ class ImportTransactions extends Component
 
     public function extractFieldsFromRow($row)
     {
-        $product = Product::where('sku', $row['Offer ID'])->where('instance_id', $this->priceList->instance_id)->pluck('id')->first();
-
+        $product = Product::where('sku', $row['SkuId'])->where('instance_id', $this->priceList->instance_id)->pluck('id')->first();
         $attributes = collect($this->fieldColumnMap)
         ->filter()
         ->mapWithKeys(function($heading, $field) use ($row) {
@@ -90,23 +98,28 @@ class ImportTransactions extends Component
         })->toArray();
 
         return $attributes + [
-            'product_vendor' => 'microsoft',
-            'instance_id' => $this->priceList->instance_id,
-            'price_list_id' => $this->priceList->id,
-            'product_id' => $product
+            'product_vendor'    => 'microsoft',
+            'instance_id'       => $this->priceList->instance_id,
+            'price_list_id'     => $this->priceList->id,
+            'market'            => $row['Market'],
+            'billing_plan'      => $row['BillingPlan'],
+            'currency'          => $row['Currency'],
+            'term_duration'     => $row['TermDuration'],
+            'product_id'        => $product,
+
         ];
     }
 
     public function guessWhichColumnsMapToWhichFields()
     {
         $guesses = [
-            'name'          => ['offer display name'],
-            'product_sku'   => ['offer id'],
-            'price'         => ['list price',],
+            'name'          => ['skutitle'],
+            'product_sku'   => ['skuid'],
+            'price'         => ['unitprice',],
             'msrp'          => ['erp price',],
         ];
-
         foreach ($this->columns as $column) {
+
             $match = collect($guesses)->search(fn($options) => in_array(strtolower($column), $options));
 
             if ($match) $this->fieldColumnMap[$match] = $column;

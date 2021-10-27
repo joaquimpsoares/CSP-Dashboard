@@ -109,20 +109,13 @@ class SubscriptionTable extends Component
 
     public function deleteSelected()
     {
-        // $deleteCount = $this->selectedRowsQuery->count();
-
-        // $this->selectedRowsQuery->delete();
-
         $this->showDeleteModal = false;
-
         $this->notify('You\'ve deleted  transactions');
     }
 
     private function createOrderFromCart($cart)
     {
-
         $order = new Order();
-
         $order->customer_id = $cart->customer_id;
         $order->domain = $cart->domain;
         $order->user_id = Auth::user()->id;
@@ -142,7 +135,6 @@ class SubscriptionTable extends Component
 
     public function render()
     {
-
         $query = Subscription::query();
         $subscriptions = $query
             ->when($this->filters['status'], fn($query, $status) => $query->where('status_id', $status))
@@ -157,11 +149,6 @@ class SubscriptionTable extends Component
                 });
 
             })->paginate(10);
-
-        // $subscriptions->getCollection()->map(function(Subscription $subscription){
-        //     $subscription->setRawAttributes(json_decode(json_encode($subscription->format()), true)); // Coverts to array recursively (make helper from it?)
-        //     return $subscription;
-        // });
         return view('livewire.subscription.subscription-table', compact('subscriptions'));
     }
 }

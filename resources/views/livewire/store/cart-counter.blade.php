@@ -9,6 +9,7 @@
         <h3 class="w-1/5 text-xs font-semibold text-center text-gray-600 uppercase">Total</h3>
     </div>
     @forelse ($cart as $key => $item)
+
     <div class="flex items-center px-6 py-2 -mx-8 hover:bg-gray-100">
         <div class="flex w-2/5"> <!-- product -->
             <div class="flex flex-col justify-between flex-grow ml-4">
@@ -22,7 +23,7 @@
                     <path d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"/>
                 </svg>
             </button>
-            <input class="mx-2 text-center border w-14" type="text" value="{{$item->qty}}">
+            <input wire:change="changeQty($event.target.value, '{{$item->id}}')" value={{$item->qty}} class="mx-2 text-sm text-center border rounded-sm w-14 focus:outline-none" type="text" >
             <button>
                 <svg wire:click="increaseQuantity('{{$item->id}}','{{ $item->qty }}')" class="w-3 text-gray-600 fill-current"
                     viewBox="0 0 448 512">
@@ -31,14 +32,34 @@
 
             </button>
         </div>
+        @if($item->productType == 'OnlineServicesNCE')
         <div class="flex justify-center w-1/5">
+            <select name="item[{{$key}}]terms" wire:change.defer="SelectedTerms($event.target.value, '{{$item->id}}')" class="block w-full p-2 text-sm text-gray-600 form-control"  required >
+                <option value="">-Select-</option>
+                @foreach($item->terms->first() as $term)
+                <option value="{{$term}}">{{$term[0]['duration']}}</option>
+                @endforeach
+            </select>
+        </div>
+
+        @if(!is_null($billing_cycle))
+        <div class="flex justify-center w-1/5 ml-3">
+            <select name="terms[{{$key}}][billingCycle" class="form-control" wire:change.defer="selectBilling($event.target.value, '{{$item->id}}')" name="terms" class="block w-full p-2 text-sm text-gray-600 form-control"  required>
+                @foreach ($billing_cycle as $key => $billing)
+                <option  value="{{ $billing['billingCycle'] }}">{{ $billing['billingCycle']}}</option>
+                @endforeach
+            </select>
+        </div>
+        @endif
+        @endif
+        {{-- <div class="flex justify-center w-1/5">
             <select class="block p-2 text-sm text-gray-600 form-control" wire:change="changeBilling($event.target.value, '{{$item->id}}')" >
                 <option value="" selected="selected" hidden>{{ ucfirst($item->billing_cycle) }}</option>
                 @foreach($item->cycle as $cycle)
                 <option  value="{{$cycle}}" >{{ucfirst($cycle) }}</option>
                 @endforeach
             </select>
-        </div>
+        </div> --}}
         <span class="w-1/5 text-sm font-semibold text-center">{{'$'.number_format($item->price, 2)}}</span>
         <span class="w-1/5 text-sm font-semibold text-center">{{'$'.number_format($item->total, 2)}}</span>
         <button wire:click="removeItem('{{ $item->id }}')"  class="ml-2 text-gray-500 focus:outline-none focus:text-gray-600">

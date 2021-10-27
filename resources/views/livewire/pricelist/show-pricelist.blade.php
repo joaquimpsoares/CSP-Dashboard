@@ -103,6 +103,19 @@
                                         </x-input.select>
                                     </x-input.group>
                                 </div>
+                                {{-- @dd($categories) --}}
+                                {{-- <x-input.group inline for="filter-categories" label="Categories">
+                                    @foreach($categories as $key => $value)
+                                    <div class="relative flex items-start">
+                                        <div class="flex items-center h-5">
+                                            <x-input.checkbox wire:model="categories" ></x-input.checkbox>
+                                        </div>
+                                        <div class="ml-3 text-sm">
+                                            <label for="candidates" class="font-medium text-gray-700">{{$value}}</label>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </x-input.group> --}}
                                 <div>
                                     <div class="flex justify-center flex-1 lg:justify-end">
                                         <!-- Search section -->
@@ -122,6 +135,12 @@
                                 </div>
                                 <div class="ml-3 lg:max-w-xs">
                                     <x-dropdown label="Bulk Actions">
+                                        {{-- @livewire('pricelist.import-transactions', ['priceList' => $priceList], key($priceList->id)) --}}
+
+                                        <x-dropdown.item wire:click="$toggle('showModal')" type="buttonmodal" wire:click="import" class="flex items-center space-x-2">
+                                            <x-icon.upload class="text-gray-400"/> <span>{{ ucwords(trans_choice('messages.import', 1)) }}</span>
+                                        </x-dropdown.item>
+
                                         <x-dropdown.item type="button" wire:click="exportSelected" class="flex items-center space-x-2">
                                             <x-icon.download class="text-gray-400"/> <span>{{ ucwords(trans_choice('messages.export', 1)) }}</span>
                                         </x-dropdown.item>
@@ -129,10 +148,11 @@
                                         <x-dropdown.item type="button" wire:click="$toggle('showDeleteModal')" class="flex items-center space-x-2">
                                             <x-icon.trash class="text-gray-400"/> <span>{{ ucwords(trans_choice('messages.delete', 1)) }}</span>
                                         </x-dropdown.item>
+
+
                                     </x-dropdown>
                                 </div>
                                 <div class="ml-3 lg:max-w-xs">
-                                    @livewire('pricelist.import-transactions', ['priceList' => $priceList], key($priceList->id))
                                 </div>
 
                                 <div class="ml-3 lg:max-w-xs">
@@ -147,6 +167,8 @@
                                         <x-input.checkbox wire:model="selectPage" />
                                     </x-table.heading>
                                     <x-table.heading sortable multi-column wire:click="sortBy('name')"     :direction="$sorts['name'] ?? null">{{ ucwords(trans_choice('messages.name', 1)) }}</x-table.heading>
+                                    <x-table.heading sortable multi-column wire:click="sortBy('product_sku')"    :direction="$sorts['product_sku'] ?? null">{{ ucwords(trans_choice('messages.sku', 1)) }}</x-table.heading>
+                                    <x-table.heading sortable multi-column wire:click="sortBy('currency')"    :direction="$sorts['currency'] ?? null">{{ ucwords(trans_choice('messages.currency', 1)) }}</x-table.heading>
                                     <x-table.heading sortable multi-column wire:click="sortBy('price')"    :direction="$sorts['price'] ?? null">{{ ucwords(trans_choice('messages.price', 1)) }}</x-table.heading>
                                     <x-table.heading sortable multi-column wire:click="sortBy('msrp')"    :direction="$sorts['msrp'] ?? null">{{ ucwords(trans_choice('messages.msrp', 1)) }}</x-table.heading>
                                 </x-slot>
@@ -177,6 +199,25 @@
                                                         {{ $price['name'] }}
                                                     </span>
                                                 </div>
+                                            </a>
+                                            </x-table.cell>
+                                            <x-table.cell>
+                                                <a wire:click="edit({{ $price->id }})" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                                        <span wire:model="editing.name" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
+                                                            {{ $price->product_sku }}
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                            </x-table.cell>
+                                            <x-table.cell>
+                                                <a wire:click="edit({{ $price->id }})" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                                        <span wire:model="editing.currency" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
+                                                            {{ $price->currency }}
+                                                        </span>
+                                                    </div>
+                                                </a>
                                             </x-table.cell>
                                             <x-table.cell>
                                                 <a wire:click="edit({{ $price->id }})" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
@@ -222,10 +263,52 @@
             </div>
         </div>
         <div>
+            <form wire:submit.prevent="importproducts">
+                <x-modal.dialog wire:model.defer="showImportModal">
+                    <x-slot name="title">{{ ucwords(trans_choice('messages.import_products', 1)) }}</x-slot>
+                    <x-slot name="content">
+                        <x-input.group for="status" label="Select Type of import" >
+                            <fieldset class="border-t border-b border-gray-200">
+                                <legend class="sr-only">import types</legend>
+                                <div class="divide-y divide-gray-200">
+                                    <div class="relative flex items-start py-4">
+                                        <div class="flex-1 min-w-0 text-sm">
+                                            <label for="comments" class="font-medium text-gray-700">{{ ucwords(trans_choice('messages.license', 2)) }}</label>
+                                            <p id="comments-description" class="text-gray-500">{{ ucwords(trans_choice('messages.microsoft_licenses', 1)) }}</p>
+                                        </div>
+                                        <div class="flex items-center h-5 ml-3">
+                                            <input wire:model="license" id="comments" aria-describedby="comments-description" name="comments" type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="relative flex items-start py-4">
+                                            <div class="flex-1 min-w-0 text-sm">
+                                                <label for="candidates" class="font-medium text-gray-700">{{ ucwords(trans_choice('messages.perpetual_software', 1)) }}</label>
+                                                <p id="candidates-description" class="text-gray-500">{{ ucwords(trans_choice('messages.microsoft_perpetual_licenses', 1)) }}</p>
+                                            </div>
+                                            <div class="flex items-center h-5 ml-3">
+                                                <input wire:model="perpetual" id="candidates" aria-describedby="candidates-description" name="candidates" type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </x-input.group>
+                    </x-slot>
+                    <x-slot name="footer">
+                        <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false">
+                            {{ ucwords(trans_choice('messages.import', 1)) }}
+                        </button>
+                        <a type="button" wire:click="$set('showImportModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
+                            {{ ucwords(trans_choice('messages.cancel', 1)) }}
+                        </a>
+                    </x-slot>
+                </x-modal.dialog>
+            </form>
             <!-- Save Transaction Modal -->
             <form @if($showCreate === false) { wire:submit.prevent="save({{$priceList->id}})" } @else { wire:submit.prevent="savecreate" } @endif>
                 <x-modal.slideout wire:model.defer="showEditModal">
-                    <x-slot name="title">Add Price</x-slot>
+                    <x-slot name="title">{{ ucwords(trans_choice('messages.edit_price', 1)) }}</x-slot>
                     <x-slot name="content">
                         <section class="dark-grey-text">
                             <div class="row">
@@ -242,6 +325,32 @@
                                             <x-label for="name" class="">{{ ucwords(trans_choice('messages.name', 1)) }}</x-label>
                                             <x-input  wire:model="editing.name" type="text" id="name" name="name" class="@error('editing.name') is-invalid @enderror"></x-input>
                                             @error('editing.name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="mb-2 col-md-6">
+                                            <x-label for="market">{{ ucwords(trans_choice('messages.market', 1)) }}</x-label>
+                                            <x-input wire:model="editing.market" type="text" id="market" name="market" class="@error('editing.market') is-invalid @enderror"></x-input>
+                                            @error('editing.market')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div>
+                                        <div class="mb-2 col-md-6">
+                                            <x-label for="currency">{{ ucwords(trans_choice('messages.currency', 1)) }}</x-label>
+                                            <x-input wire:model="editing.currency" type="text" id="currency" name="currency" class="@error('editing.currency') is-invalid @enderror"></x-input>
+                                            @error('editing.currency')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="mb-2 col-md-6">
+                                            <x-label for="term_duration">{{ ucwords(trans_choice('messages.product_term', 1)) }}</x-label>
+                                            <x-input wire:model="editing.term_duration" type="text" id="term_duration" name="term_duration" class="@error('editing.term_duration') is-invalid @enderror"></x-input>
+                                            @error('editing.term_duration')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div>
+                                        <div class="mb-2 col-md-6">
+                                            <x-label for="billing_plan">{{ ucwords(trans_choice('messages.billing_cycle', 1)) }}</x-label>
+                                            <x-input wire:model="editing.billing_plan" type="text" id="billing_plan" name="billing_plan" class="@error('editing.billing_plan') is-invalid @enderror"></x-input>
+                                            @error('editing.billing_plan')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                         </div>
                                     </div>
                                     <div class="row">
@@ -270,6 +379,7 @@
                     </x-slot>
                 </x-modal.slideout>
             </form>
+
         </div>
     </div>
     <!-- Delete Transactions Modal -->
@@ -288,6 +398,84 @@
                 </a>
             </x-slot>
         </x-modal.confirmation>
+    </form>
+
+    {{-- Import Modal--}}
+    <form wire:submit.prevent="import">
+        <x-modal.dialog wire:model="showModal">
+            <x-slot name="title">
+                Import Transactions
+            </x-slot>
+
+            <x-slot name="content">
+                @unless ($upload)
+                <div class="flex flex-col items-center justify-center py-16 ">
+                    <div class="flex items-center space-x-2 text-xl">
+                        <x-icon.upload class="w-8 h-8 text-cool-gray-400" />
+                        <x-input.file-upload wire:model="upload" id="upload">
+                            <span class="font-bold text-cool-gray-500">CSV File</span>
+                        </x-input.file-upload>
+                    </div>
+                    @error('upload') <div class="mt-3 text-sm text-red-500">{{ $message }}</div> @enderror
+
+                </div>
+                @else
+                <div>
+                    <x-input.group for="type" label="type" :error="$errors->first('fieldColumnMap.type')">
+                        <x-input.select wire:model="fieldColumnMap.type" id="type">
+                            <option value="" disabled>Select Column...</option>
+                            @foreach ($columns as $column)
+                            <option>{{ $column }}</option>
+                            @endforeach
+                        </x-input.select>
+                    </x-input.group>
+
+                    <x-input.group for="name" label="name" :error="$errors->first('fieldColumnMap.name')">
+                        <x-input.select wire:model="fieldColumnMap.name" id="name">
+                            <option value="" disabled>Select Column...</option>
+                            @foreach ($columns as $column)
+                            <option>{{ $column }}</option>
+                            @endforeach
+                        </x-input.select>
+                    </x-input.group>
+
+                    <x-input.group for="product_sku" label="product_sku" :error="$errors->first('fieldColumnMap.product_sku')">
+                        <x-input.select wire:model="fieldColumnMap.product_sku" id="product_sku">
+                            <option value="" disabled>Select Column...</option>
+                            @foreach ($columns as $column)
+                            <option>{{ $column }}</option>
+                            @endforeach
+                        </x-input.select>
+                    </x-input.group>
+
+                    <x-input.group for="price" label="price">
+                        <x-input.select wire:model="fieldColumnMap.price" id="price">
+                            <option value="" disabled>Select Column...</option>
+                            @foreach ($columns as $column)
+                            <option>{{ $column }}</option>
+                            @endforeach
+                        </x-input.select>
+                    </x-input.group>
+
+                    <x-input.group for="msrp" label="msrp">
+                        <x-input.select wire:model="fieldColumnMap.msrp" id="msrp">
+                            <option value="" disabled>Select Column...</option>
+                            @foreach ($columns as $column)
+                            <option>{{ $column }}</option>
+                            @endforeach
+                        </x-input.select>
+                    </x-input.group>
+                </div>
+                @endif
+            </x-slot>
+
+            <x-slot name="footer">
+                <a type="button" wire:click="$set('showModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
+                    {{ ucwords(trans_choice('messages.cancel', 1)) }}
+                </a>
+                <x-button.primary type="submit">{{ ucwords(trans_choice('messages.import', 1)) }}</x-button.primary>
+            </x-slot>
+        </x-modal.dialog>
     </form>
 </div>
 <script>

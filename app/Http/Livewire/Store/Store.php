@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
+use Maatwebsite\Excel\Concerns\ToArray;
 
 class Store extends Component
 {
@@ -20,9 +21,10 @@ class Store extends Component
 
     public $details;
     public $search;
-    public $vendor;
+    public $vendor =[];
     public $category;
     public $cartProducts = [];
+    public $selectproducttype;
 
     public $productName;
     public $productCategory;
@@ -30,6 +32,12 @@ class Store extends Component
     public $productDescription;
     public $productMSRP;
 
+
+
+    public function updatedQtys($field)
+{
+   $this->recalc($field);
+}
 
     public function addToCart(Product $productId)
     {
@@ -93,8 +101,19 @@ class Store extends Component
         return $cart;
     }
 
+    public function updatedVendor()
+    {
+      if (!is_array($this->vendor)) return;
+
+      $this->vendor = array_filter($this->vendor, function ($vendors) {
+        return $vendors != false;
+      });
+    }
+
     public function render()
     {
+        // dd($this->vendor);
+
         $user = Auth::user();
 
         switch ($user->userLevel->name) {
@@ -109,27 +128,56 @@ class Store extends Component
             default:
                 return abort(403, __('errors.access_with_resellers_credentials'));
         }
-
         $prices = Price::with('related_product')->where('price_list_id', $priceList)
-            ->whereHas('related_product', function(Builder $query){
-                if($this->vendor){
-                    $query->where('vendor', $this->vendor);
-                }
+        ->whereHas('related_product', function(Builder $query){
+            if($this->vendor){
+                $query->where('vendor', $this->vendor);
+            }
+            if($this->category){
+                $query->where('category', $this->category);
+            }
+            if($this->selectproducttype){
+                $query->where('productType', $this->producttype);
+            }
 
-                if($this->category){
-                    $query->where('category', $this->category);
-                }
+            $query->where(function(Builder $query){
+                $query->where('name', "LIKE", "%{$this->search}%");
+                $query->orWhere('sku', 'LIKE', "%{$this->search}%");
+                $query->orWhere('productType', 'LIKE', "%{$this->search}%");
+                $query->orWhere('category', 'LIKE', "%{$this->search}%");
 
-                $query->where(function(Builder $query){
-                    $query->where('name', "LIKE", "%{$this->search}%");
-                    $query->orWhere('sku', 'LIKE', "%{$this->search}%");
+            });})->paginate(12);
+            // dd($prices);
+            if($prices){
+
+                $productType = $prices->map(function ($item, $key) {
+                    return ($item->related_product->pluck('productType')->unique());
                 });
-            })->paginate(12);
 
+                $productType = $productType->first()->filter(function ($value) {
+                    return !is_null($value);
+                });
+
+                $categories = $prices->map(function ($item, $key) {
+                    return ($item->related_product->pluck('category')->unique());
+                });
+                $categories = $categories->first()->filter(function ($value) {
+                    return !is_null($value);
+                });
+
+                $vendors = $prices->map(function ($item, $key) {
+                    return ($item->related_product->pluck('vendor')->unique());
+                });
+
+                $vendors = $vendors->first()->filter(function ($value) {
+                    return !is_null($value);
+                });
+            }
          return view('livewire.store.store', [
             'prices' => $prices,
-            'vendors' => Product::pluck('vendor')->unique(),
-            'categories' => Product::pluck('category')->unique(),
+            'vendors' => $vendors,
+            'categories' => $categories,
+            'producttype' => $productType,
         ]);
     }
 }

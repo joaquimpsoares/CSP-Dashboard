@@ -212,11 +212,6 @@ class CustomerTable extends Component
         $roles      = Role::pluck( 'name','id');
         $statuses   = Status::pluck( 'name','id');
 
-        // $this->customers->getCollection()->map(function(Customer $customer){
-        //     $customer->setRawAttributes(json_decode(json_encode($customer->format()), true)); // Coverts to array recursively (make helper from it?)
-        //     return $customer;
-        // });
-
         return view('livewire.customer.customer-table', [
             'customers' => $this->rows,
             'countries' => $countries,

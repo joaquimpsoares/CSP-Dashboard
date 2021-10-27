@@ -451,6 +451,10 @@ class CartController extends Controller
                 $hasTenant = true;
                 break;
             }
+            if(strtolower($product->vendor) === "microsoft corporation"){
+                $hasTenant = true;
+                break;
+            }
         }
 
         return $hasTenant;
