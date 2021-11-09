@@ -362,4 +362,6 @@ return [
     'retry' => 'retry',
     'failed_at' => 'failed at',
     'failed_job' => 'failed job',
+    'market' => 'market',
+    'edit_budget' => 'edit budget',
 ];

@@ -22,6 +22,7 @@ class Store extends Component
     public $search;
     public $vendor;
     public $category;
+    public $typeselected;
     public $cartProducts = [];
 
     public $productName;
@@ -61,12 +62,12 @@ class Store extends Component
         $this->showModal = true;
         $details = Product::where('id', $id)->first();
 
-        $this->productName      = $details->name;
-        $this->productCategory  = $details->category;
-        $this->productSku       = $details->sku;
-        $this->productDescription = $details->description;
-        $this->productName      = $details->name;
-        $this->productMSRP      = $details->price->msrp;
+        $this->productName          = $details->name;
+        $this->productCategory      = $details->category;
+        $this->productSku           = $details->sku;
+        $this->productDescription   = $details->description;
+        $this->productName          = $details->name;
+        $this->productMSRP          = $details->price->msrp;
 
     }
 
@@ -109,27 +110,46 @@ class Store extends Component
             default:
                 return abort(403, __('errors.access_with_resellers_credentials'));
         }
-
         $prices = Price::with('related_product')->where('price_list_id', $priceList)
-            ->whereHas('related_product', function(Builder $query){
-                if($this->vendor){
-                    $query->where('vendor', $this->vendor);
-                }
+        ->whereHas('related_product', function(Builder $query){
+            if($this->vendor){
+                $query->where('vendor', $this->vendor);
+            }
+            if($this->category){
+                $query->where('category', $this->category);
+            }
+            if($this->typeselected){
+                $query->where('productType', $this->typeselected);
+            }
 
-                if($this->category){
-                    $query->where('category', $this->category);
-                }
+            $query->where(function(Builder $query){
+                $query->where('name', "LIKE", "%{$this->search}%");
+                $query->orWhere('sku', 'LIKE', "%{$this->search}%");
+                $query->orWhere('productType', 'LIKE', "%{$this->search}%");
+                $query->orWhere('category', 'LIKE', "%{$this->search}%");
+            });})->paginate(12);
 
-                $query->where(function(Builder $query){
-                    $query->where('name', "LIKE", "%{$this->search}%");
-                    $query->orWhere('sku', 'LIKE', "%{$this->search}%");
+            if($prices){
+                $productType = $prices->map(function ($item, $key) {
+                    return ($item->related_product->pluck('productType')->unique());
                 });
-            })->paginate(12);
+                $productType = $productType->first()->filter();
 
+                $categories = $prices->map(function ($item, $key) {
+                    return ($item->related_product->pluck('category')->unique());
+                });
+                $categories = $categories->first()->filter();
+
+                $vendors = $prices->map(function ($item, $key) {
+                    return ($item->related_product->pluck('vendor')->unique());
+                });
+                $vendors = $vendors->first()->filter();
+            }
          return view('livewire.store.store', [
             'prices' => $prices,
-            'vendors' => Product::pluck('vendor')->unique(),
-            'categories' => Product::pluck('category')->unique(),
+            'vendors' => $vendors,
+            'categories' => $categories,
+            'producttype' => collect($productType),
         ]);
     }
 }

@@ -114,18 +114,18 @@ class AzureReport extends Component
 
         return $this->applySorting($query);
 
-        $query->map(function($item, $key) {
-            $azurepricelist = AzurePriceList::where('resource_id', $item->resource_id)->get('rates');
-            if ($azurepricelist->first()){
-                $item['cost'] = $item->quantity*$azurepricelist->first()->rates[0];
-            }
-            $item->cost;
-            $item->save();
+        // $query->map(function($item, $key) {
+        //     $azurepricelist = AzurePriceList::where('resource_id', $item->resource_id)->get('rates');
+        //     if ($azurepricelist->first()){
+        //         $item['cost'] = $item->quantity*$azurepricelist->first()->rates[0];
+        //     }
+        //     $item->cost;
+        //     $item->save();
 
-            return $this->cache(function () use($item){
-                return $item;
-            });
-        });
+        //     return $this->cache(function () use($item){
+        //         return $item;
+        //     });
+        // });
     }
 
     public function getRowsProperty()

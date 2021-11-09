@@ -55,7 +55,7 @@ class CustomerTable extends Component
             'editing.state'                 => 'required|string|max:255|min:3',
             'editing.postal_code'           => 'required|string|max:255|min:3',
             'editing.status_id'             => 'required|integer|exists:statuses,id',
-            'editing.markup'                => 'nullable|integer|min:3',
+            'editing.markup'                => 'nullable|integer|min:1',
             'editing.price_list_id'         => 'required|integer|exists:price_list,id',
 
             'creatingUser.name'             => 'sometimes|string|max:255|min:3',
@@ -128,11 +128,8 @@ class CustomerTable extends Component
 
     public function savecreate()
     {
-
         $user = $this->getUser();
-
         try {
-
             $newCustomer =  Customer::create([
                 'company_name'  => $this->editing->company_name,
                 'nif'           => $this->editing->nif,
@@ -145,7 +142,6 @@ class CustomerTable extends Component
                 'status_id'     => 1,
                 'price_list_id' => $this->editing->price_list_id,
             ]);
-
             $user = User::create ([
                 'email'             => $this->email,
                 'name'              => $this->creatingUser->name,
@@ -195,6 +191,7 @@ class CustomerTable extends Component
 
         return $this->applySorting($customers);
     }
+
     public function getRowsProperty()
     {
         return $this->cache(function () {

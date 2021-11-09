@@ -212,6 +212,11 @@
                                             @error('editing.postal_code')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                         </div>
                                     </div>
+                                    <div class="mb-3">
+                                        <x-label for="markup" class="">{{ucwords(trans_choice('messages.markup', 1))}} (optional)</x-label>
+                                        <x-input wire:model="editing.markup" type="text" id="markup" name="markup" class="@error('editing.markup') is-invalid @enderror" placeholder="Markup % for Azure Subscription"></x-input>
+                                        @error('editing.markup')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
                                     <div class="row">
                                         @if ($showCreateUser == true)
                                         <div class="mb-4 col-lg-4 col-md-6">

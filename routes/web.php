@@ -2,11 +2,14 @@
 
 
 
+use App\Instance;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\TestController;
+use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
+
+// use App\Http\Controllers\TestController;
 
 /**********************************************************************************
 Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares groups
@@ -32,7 +35,6 @@ Fim Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares
 
 Route::get('login/microsoft', [LoginController::class, 'redirectToProvider']);
 Route::get('login/microsoft/callback', [LoginController::class, 'handleProviderCallback']);
-// Route::get('login/graph', [LoginController::class, 'redirectToProvider']);
 Route::get('login/graph/callback', [LoginController::class, 'handleProviderCallback']);
 
 
@@ -64,10 +66,7 @@ Route::group(['middleware' => 'auth'], function ()
     {
         Route::resource('bullethq', 'BullethqController');
 
-        Route::get('invoices/index', [
-            'as' => 'invoices.index',
-            'uses' => 'MsftInvoicesController@index'
-            ]);
+        Route::get('invoices/index', ['as' => 'invoices.index','uses' => 'MsftInvoicesController@index']);
             Route::get('invoices/downloadinvoice/{invoice_id}', [ 'as' => 'invoices.downloadinvoice', 'uses' => 'MsftInvoicesController@downloadInvoice' ]);
 
             Route::get('/instances/kascreate', 'InstanceController@kascreate')->name('instances.kascreate');
@@ -80,8 +79,7 @@ Route::group(['middleware' => 'auth'], function ()
             Route::get('/reseller/create', 'ResellerController@create')
             ->middleware('permission:' . config('app.reseller_create'))->name('reseller.create');
 
-            Route::post('/reseller', 'ResellerController@store')
-            ->middleware('permission:' . config('app.reseller_create'))->name('reseller.store');
+            Route::post('/reseller', 'ResellerController@store')->middleware('permission:' . config('app.reseller_create'))->name('reseller.store');
             Route::resource('product', 'ProductController');
 
             Route::group(['middleware' => ['check_provider']], function ()
@@ -233,7 +231,13 @@ Route::group(['middleware' => 'auth'], function ()
             Route::resource('/order', 'OrderController');
 
             //Analytics Routes
-            Route::get('/analytics',                                    ['uses' => 'AnalyticController@index','as'                  => 'analytics.list']);
+            // Route::get('/analytics',                                    ['uses' => 'AnalyticController@index','as'                  => 'analytics.list']);
+
+            //Analytics Module Routes Begin
+            Route::get('/analytics',                                    [\Modules\AzureAnalytics\Http\Livewire\Azure\AzureTable::class, '__invoke'])->name('analytics');
+            Route::get('/analytics/reports/{subscription}',             [\Modules\AzureAnalytics\Http\Livewire\Azure\AzureReport::class, '__invoke'])->name('analytics.reports');
+            //Analytics Module Routes finish
+
             Route::get('/analytics/azurepricelist/{instance}',          ['uses' => 'AnalyticController@azurepricelist','as'         => 'analytics.azurepricelist']);
             Route::get('/analytics/details/{customer}/{subscription}',  ['uses' => 'AnalyticController@getAzuredetails','as'        => 'analytics.details']);
             Route::get('/analytics/update/{customer}/{subscription}',   ['uses' => 'AnalyticController@updateAZURE','as'            => 'analytics.update']);
@@ -242,7 +246,6 @@ Route::group(['middleware' => 'auth'], function ()
             Route::get('/analytics/licenses',                           ['uses' => 'AnalyticController@licenses','as'               => 'analytics.licenses']);
             Route::get('/customer/costs',                               ['uses' => 'CustomerController@CustomerServiceCosts','as'   => 'customer.costs']);
             Route::get('/analytics/show/',                              ['uses' => 'AnalyticController@show','as'                   => 'analytics.show']);
-            Route::get('/analytics/reports/{subscription}',             [\Modules\AzureAnalytics\Http\Livewire\Azure\AzureReport::class, '__invoke'])->name('analytics.reports');
             Route::post('/analytics/edit/',                             ['uses' => 'AnalyticController@edit','as'                   => 'analytics.edit']);
 
             // Route::get('/analytics/reports/{subscription}', ['uses' => 'AnalyticController@azurereport','as' => 'analytics.reports']);
