@@ -1,6 +1,6 @@
 
 
-<div wire:poll.visible>
+<div>
     <div x-data="{ customerOpen: false , isOpen: false }" class="relative z-0 flex-col flex-1 overflow-y-auto">
         <div class="p-4 overflow-hidden bg-white">
             <div class="flex flex-col">
