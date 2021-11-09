@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Subscription;
 use App\Models\AzureResource;
 use App\Http\Traits\UserTrait;
+use Illuminate\Support\Facades\DB;
 use App\Repositories\AnalyticRepositoryInterface;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
@@ -117,22 +118,16 @@ class AnalyticRepository implements AnalyticRepositoryInterface
             )->budget($customer, $subscription);
 
             return (int) $budget;
-
         });
 
         $subscription->budget = $budget;
         $subscription->save();
         $budget = $subscription->budget;
-
         $costSum = AzureResource::where('subscription_id', $subscription->id)->sum('cost');
-
         $increase = ($budget-$costSum);
-
-
         if($increase !== 0){
             $average1 = ($increase/$budget)*100;
             $average = 100-$average1;
-
         return view('analytics.azure', [
             'category' => json_encode($category, JSON_NUMERIC_CHECK),
             'query' => $query,
@@ -150,9 +145,6 @@ class AnalyticRepository implements AnalyticRepositoryInterface
             'top10S' => json_encode($top10S, JSON_NUMERIC_CHECK)
             ]);
         }
-
-
-
         return view('analytics.azure', [
             'category' => json_encode($category, JSON_NUMERIC_CHECK),
             'query' => json_encode($query, JSON_NUMERIC_CHECK),
@@ -239,25 +231,33 @@ class AnalyticRepository implements AnalyticRepositoryInterface
             $instance->external_id,$instance->external_token
             )->all($customer, $subscription);
 
+            $resource = AzureResource::where('subscription_id', $subscriptions->id)->first();
+            if (isset($resource)) {
+                DB::statement("SET foreign_key_checks=0");
+                $resource = AzureResource::where('subscription_id', $subscriptions->id)->delete();
+                $subscriptions->azureresources()->delete();
+                DB::statement("SET foreign_key_checks=1");
+            }
+
+
         $resources->each(function($resource) use($subscriptions){
             $resource = AzureResource::updateOrCreate([
-                'subscription_id' => $subscriptions->id,
-                'azure_id' => $resource->meterId,
+                'subscription_id'   => $subscriptions->id,
+                'azure_id'          => $resource->meterId,
             ], [
-                'name' => $resource->meterName,
-                'category' => $resource->category,
-                'unit' => $resource->unit,
-                'subcategory' => $resource->subcategory,
-                'currency' => $resource->currencyLocale,
-                'cost' => $resource->totalCost,
-                'used' => $resource->quantityUsed,
-                'azure_updated_at' => Carbon::parse($resource->lastModifiedDate),
+                'name'              => $resource->meterName,
+                'category'          => $resource->category,
+                'unit'              => $resource->unit,
+                'subcategory'       => $resource->subcategory,
+                'currency'          => $resource->currencyLocale,
+                'cost'              => $resource->totalCost,
+                'used'              => $resource->quantityUsed,
+                'azure_updated_at'  => Carbon::parse($resource->lastModifiedDate),
                 ]);
                 if ($resource->wasRecentlyCreated){
                     $subscriptions->azureresources()->attach($resource->id);
                 }
             });
-
     }
 
     public function update($customer, $validate)

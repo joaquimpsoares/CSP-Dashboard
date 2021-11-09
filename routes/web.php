@@ -24,7 +24,6 @@ Route::prefix('jobis')->group(function () {
 
 Route::get('accept/{token}', 'InviteController@accept')->name('accept');
 Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('resetinvitationpassword');
-Route::get('test-custom-mailer', TestController::class);
 
 
 
