@@ -1,5 +1,3 @@
-
-
 <div>
     <div x-data="{ customerOpen: false , isOpen: false }" class="relative z-0 flex-col flex-1 overflow-y-auto">
         <div class="p-4 overflow-hidden bg-white">
@@ -50,7 +48,6 @@
                 </div>
                 <x-tableazure>
                     <x-slot name="head">
-
                         <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('id')" :direction="$sorts['id'] ?? null">{{ ucwords(trans_choice('messages.company_name', 2)) }}</x-table.heading>
                         <x-table.heading sortable multi-column wire:click="sortBy('company_name')"  :direction="$sorts['company_name'] ?? null">{{ ucwords(trans_choice('messages.subscription_name', 1)) }}</x-table.heading>
                         <x-table.heading  wire:click="sortBy('subscriptions')"         :direction="$sorts['subscriptions'] ?? null">{{ ucwords(trans_choice('messages.estimated_cost', 1)) }}</x-table.heading>
@@ -134,22 +131,18 @@
                                             </svg>
                                         </button>
                                         <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="analytics/reports/{{$item->id}}">
+                                                <x-icon.recipe></x-icon.recipe>
+                                                {{ ucwords(trans_choice('messages.report', 1)) }}
+                                            </a>
                                             <a wire:click="edit({{ $item->id }})" class="dropdown-item" href="#">
                                                 <x-icon.edit></x-icon.edit>
                                                 {{ ucwords(trans_choice('messages.edit_budget', 1)) }}
                                             </a>
                                             <a class="dropdown-item" href="analytics/update/{{$item->customer_id}}/{{$item->id}}">
-                                                <x-icon.edit></x-icon.edit>
+                                                <x-icon.refresh></x-icon.refresh>
                                                 {{ ucwords(trans_choice('messages.update', 1)) }}
                                             </a>
-                                            {{-- @canImpersonate
-                                                @if(!empty($item->format()['mainUser']))
-                                                <a class="dropdown-item" href="{{ route('impersonate', $item->format()['mainUser']['id'])}}">
-                                                    <x-icon.impersonate></x-icon.impersonate>
-                                                    {{ ucwords(trans_choice('messages.impersonate', 1)) }}
-                                                </a>
-                                                @endif
-                                                @endCanImpersonate --}}
                                             </div>
                                         </div>
                                     </x-table.cell>
