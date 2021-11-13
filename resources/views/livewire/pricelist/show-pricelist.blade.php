@@ -135,11 +135,11 @@
                                 </div>
                                 <div class="ml-3 lg:max-w-xs">
                                     <x-dropdown label="Bulk Actions">
-                                        {{-- @livewire('pricelist.import-transactions', ['priceList' => $priceList], key($priceList->id)) --}}
+                                        @livewire('pricelist.import-transactions', ['priceList' => $priceList], key($priceList->id))
 
-                                        <x-dropdown.item wire:click="$toggle('showModal')" type="buttonmodal" wire:click="import" class="flex items-center space-x-2">
+                                        {{-- <x-dropdown.item wire:click="$toggle('showModal')" type="buttonmodal" wire:click="import" class="flex items-center space-x-2">
                                             <x-icon.upload class="text-gray-400"/> <span>{{ ucwords(trans_choice('messages.import', 1)) }}</span>
-                                        </x-dropdown.item>
+                                        </x-dropdown.item> --}}
 
                                         <x-dropdown.item type="button" wire:click="exportSelected" class="flex items-center space-x-2">
                                             <x-icon.download class="text-gray-400"/> <span>{{ ucwords(trans_choice('messages.export', 1)) }}</span>
@@ -421,14 +421,14 @@
                 </div>
                 @else
                 <div>
-                    <x-input.group for="type" label="type" :error="$errors->first('fieldColumnMap.type')">
+                    {{-- <x-input.group for="type" label="type" :error="$errors->first('fieldColumnMap.type')">
                         <x-input.select wire:model="fieldColumnMap.type" id="type">
                             <option value="" disabled>Select Column...</option>
                             @foreach ($columns as $column)
                             <option>{{ $column }}</option>
                             @endforeach
                         </x-input.select>
-                    </x-input.group>
+                    </x-input.group> --}}
 
                     <x-input.group for="name" label="name" :error="$errors->first('fieldColumnMap.name')">
                         <x-input.select wire:model="fieldColumnMap.name" id="name">

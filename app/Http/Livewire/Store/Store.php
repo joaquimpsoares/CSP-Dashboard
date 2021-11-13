@@ -143,7 +143,7 @@ class Store extends Component
             $query->where(function(Builder $query){
                 $query->where('name', "LIKE", "%{$this->search}%");
                 $query->orWhere('sku', 'LIKE', "%{$this->search}%");
-                $query->orWhere('productType', 'LIKE', "%{$this->search}%");
+                // $query->orWhere('productType', 'LIKE', "%{$this->search}%");
                 $query->orWhere('category', 'LIKE', "%{$this->search}%");
 
             });})->paginate(12);
@@ -154,30 +154,33 @@ class Store extends Component
                     return ($item->related_product->pluck('productType')->unique());
                 });
 
-                $productType = $productType->first()->filter(function ($value) {
-                    return !is_null($value);
-                });
+                if($productType->first()){
+                    $productType = $productType->first()->filter(function ($value) {
+                        return !is_null($value);
+                    });
+                }
 
                 $categories = $prices->map(function ($item, $key) {
                     return ($item->related_product->pluck('category')->unique());
                 });
-                $categories = $categories->first()->filter(function ($value) {
-                    return !is_null($value);
-                });
+
+                // $categories = $categories->first()->filter(function ($value) {
+                //     return !is_null($value);
+                // });
 
                 $vendors = $prices->map(function ($item, $key) {
                     return ($item->related_product->pluck('vendor')->unique());
                 });
 
-                $vendors = $vendors->first()->filter(function ($value) {
-                    return !is_null($value);
-                });
+                // $vendors = $vendors->first()->filter(function ($value) {
+                //     return !is_null($value);
+                // });
             }
          return view('livewire.store.store', [
-            'prices' => $prices,
-            'vendors' => $vendors,
-            'categories' => $categories,
-            'producttype' => $productType,
+            'prices'        => $prices,
+            'vendors'       => $vendors,
+            'categories'    => $categories,
+            'producttype'   => $productType,
         ]);
     }
 }

@@ -66,17 +66,17 @@ class ImportTransactions extends Component
             // dd($tt);
             if($tt['product_id'] != null){
                 Price::updateOrCreate([
-                    'product_sku'   => $tt['product_sku'],
                     'product_id'    => $tt['product_id'],
+                    'product_sku'   => $tt['product_sku'],
                     'instance_id'   => $this->priceList->instance_id,
                     'price_list_id' => $this->priceList->id,
+                    'term_duration' => $tt['term_duration'],
+                    'market'        => $tt['market'],
+                    'currency'      => $tt['currency'],
+                    'billing_plan'  => $tt['billing_plan'],
                 ],[
                     'name'          => $tt['name'],
-                    'currency'      => $tt['currency'],
-                    'market'        => $tt['market'],
-                    'term_duration' => $tt['term_duration'],
                     'price'         => $tt['price'],
-                    'billing_plan'  => $tt['billing_plan'],
                     'msrp'          => $tt['msrp'],
                     'product_vendor'=> $tt['product_vendor']
                 ]);

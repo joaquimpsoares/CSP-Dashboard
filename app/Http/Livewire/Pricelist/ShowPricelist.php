@@ -60,16 +60,23 @@ class ShowPricelist extends Component
     public function toggleShowFilters() { $this->showFilters = ! $this->showFilters; }
 
     public function rules() {
+        // dd(0);
         return [
+            'fieldColumnMap.name' => 'required',
+        'fieldColumnMap.product_sku' => 'required',
+        'editing.product_sku'   => 'required|min:3|exists:products,sku',
             'editing.product_sku'   => 'required|min:3|exists:products,sku',
+            'editing.product_id'   => 'required|min:3|exists:products,sku',
+            'editing.instance_id'   => 'required|min:3|exists:products,sku',
+            'editing.price_list_id'   => 'required|min:3|exists:products,sku',
             'editing.name'          => 'required|min:3',
             'editing.currency'      => 'required|min:2',
             'editing.market'        => 'required|min:2',
             'editing.term_duration' => 'required|min:2',
             'editing.billing_plan'  => 'required|min:2',
-
             'editing.price'         => 'required',
             'editing.msrp'          => 'required',
+            'editing.product_vendor'          => 'required',
         ];
     }
 
@@ -92,10 +99,22 @@ class ShowPricelist extends Component
         'currency'          => '',
     ];
 
-    protected $rules = [
-        'fieldColumnMap.name' => 'required',
-        'fieldColumnMap.product_sku' => 'required',
-    ];
+    // protected $rules = [
+    //     'fieldColumnMap.name' => 'required',
+    //     'fieldColumnMap.product_sku' => 'required',
+    //     'editing.product_sku'   => 'required|min:3|exists:products,sku',
+    //         'editing.product_id'   => 'required|min:3|exists:products,sku',
+    //         'editing.instance_id'   => 'required|min:3|exists:products,sku',
+    //         'editing.price_list_id'   => 'required|min:3|exists:products,sku',
+    //         'editing.name'          => 'required|min:3',
+    //         'editing.currency'      => 'required|min:2',
+    //         'editing.market'        => 'required|min:2',
+    //         'editing.term_duration' => 'required|min:2',
+    //         'editing.billing_plan'  => 'required|min:2',
+    //         'editing.price'         => 'required',
+    //         'editing.msrp'          => 'required',
+    //         'editing.product_vendor'          => 'required',
+    // ];
 
     protected $customAttributes = [
         'fieldColumnMap.name' => 'name',
@@ -188,6 +207,7 @@ class ShowPricelist extends Component
     }
 
     public function importproducts(){
+        dd(0);
 
         if($this->license == true){
             Log::info('Started importing NCE');
@@ -241,8 +261,6 @@ class ShowPricelist extends Component
             $this->editingpricelist = $pricelist;
         }
 
-
-
         public function save()
         {
             $this->validate();
@@ -251,7 +269,6 @@ class ShowPricelist extends Component
             $this->showEditModal = false;
             $this->notify('You\'ve updated '.  $this->editing->name .' prices');
         }
-
 
         public function savecreate()
         {
