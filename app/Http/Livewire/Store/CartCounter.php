@@ -182,7 +182,7 @@ class CartCounter extends Component
                     'id' => $products->pivot->id,
                     'product_name' => $products->name,
                     'products' => $products->name,
-                    'currency' => $products->price->currency,
+                    'currency' => $products->price->currency  ?? null,
                     'price' => $products->pivot->price,
                     'qty' => $products->pivot->quantity,
                     'cycle' => $products->supported_billing_cycles,

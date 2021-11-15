@@ -363,5 +363,7 @@ return [
     'failed_at' => 'failed at',
     'failed_job' => 'failed job',
     'market' => 'market',
+    'annual' => 'annual',
+    'monthly' => 'monthly',
     '' => '',
 ];

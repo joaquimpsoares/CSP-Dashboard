@@ -10,11 +10,15 @@ use Illuminate\Support\Str;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
+use App\Http\Livewire\DataTable\WithSorting;
+use App\Http\Livewire\DataTable\WithCachedRows;
+use App\Http\Livewire\DataTable\WithBulkActions;
+use App\Http\Livewire\DataTable\WithPerPagePagination;
 use Maatwebsite\Excel\Concerns\ToArray;
 
 class Store extends Component
 {
-    use WithPagination;
+    use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows;
     protected $paginationTheme = 'bootstrap';
 
     public $showModal = false;
@@ -32,7 +36,19 @@ class Store extends Component
     public $productDescription;
     public $productMSRP;
 
+    public $showmobilefilter = false;
+    public $showproductdetails = true;
 
+
+    public $filters = [
+        'search' => '',
+        'category' => '',
+        'vendors' => '',
+        'producttype' => '',
+        'plugins' => false,
+        'billing' => [],
+        'terms' => [],
+    ];
 
     public function updatedQtys($field)
 {
@@ -42,15 +58,12 @@ class Store extends Component
     public function addToCart(Product $productId)
     {
         $this->showModal = false;
-
         $price= Price::where('product_id', $productId)->get();
         $cart = $this->getUserCart();
-
         if (! $cart) {
             $cart = new Cart();
             $cart->save();
         }
-
         $cart->products()->attach($productId, [
             'id' => Str::uuid(),
             'price' => $productId->price->price,
@@ -61,7 +74,6 @@ class Store extends Component
 
         $this->emit('updateCart');
         $this->notify('Product added to cart: '. $productId->name );
-
     }
 
     public function showDetails($id)
@@ -75,12 +87,18 @@ class Store extends Component
         $this->productDescription = $details->description;
         $this->productName      = $details->name;
         $this->productMSRP      = $details->price->msrp;
-
     }
 
     public function close()
     {
         $this->showModal = false;
+    }
+
+    public function showprodcutdetails($id)
+    {
+        $this->showproductdetails = true;
+
+
     }
 
     public static  function getUserCart($id = null, $token = null)
@@ -110,76 +128,50 @@ class Store extends Component
       });
     }
 
+    public function getRowsQueryProperty()
+    {
+        // dd($this->filters['billing']);
+        $query = Price::query()
+            ->when($this->filters['category'], fn($query, $category) => $query->whereHas('related_product', function(Builder $q) use($category){
+                $q->where('category',$category);
+            }))
+            ->when($this->filters['vendors'], fn($query, $vendors) => $query->whereHas('related_product', function(Builder $q) use($vendors){
+                $q->where('vendors', $vendors);
+            }))
+            ->when($this->filters['producttype'], fn($query, $producttype) => $query->whereHas('related_product', function(Builder $q) use($producttype){
+                $q->where('productType', $producttype);
+            }))
+            ->when($this->filters['plugins'], fn($query, $plugins) => $query->whereHas('related_product', function(Builder $q) use($plugins){
+                $q->where('is_addon', $plugins);
+            }))
+            ->when($this->filters['billing'], fn($query, $billing) => $query->where('billing_plan', $billing))
+            ->when($this->filters['terms'], fn($query, $terms) => $query->where('term_duration', $terms))
+            ->when($this->search, fn($query, $search) => $query->where('name', 'like', '%'.$search.'%')
+                                                               ->orwhere('product_sku', 'like', '%'.$search.'%'))
+                                                               ->with('related_product');
+
+        return $this->applySorting($query);
+    }
+
+    public function getRowsProperty()
+    {
+        return $this->cache(function () {
+            return $this->applyPagination($this->rowsQuery);
+        });
+    }
+
     public function render()
     {
-        // dd($this->vendor);
+            $categories     = Product::pluck('category')->unique()->filter();
+            $terms          = Price::pluck('term_duration')->unique()->filter();
+            $vendors        = Product::pluck('vendor')->unique()->filter();
+            $productType    = Product::pluck('productType')->unique()->filter();
 
-        $user = Auth::user();
-
-        switch ($user->userLevel->name) {
-            case 'Reseller':
-                $priceList = $user->reseller->price_list_id;
-                break;
-
-            case 'Customer':
-                $priceList = $user->customer->price_list_id;
-                break;
-
-            default:
-                return abort(403, __('errors.access_with_resellers_credentials'));
-        }
-        $prices = Price::with('related_product')->where('price_list_id', $priceList)
-        ->whereHas('related_product', function(Builder $query){
-            if($this->vendor){
-                $query->where('vendor', $this->vendor);
-            }
-            if($this->category){
-                $query->where('category', $this->category);
-            }
-            if($this->selectproducttype){
-                $query->where('productType', $this->producttype);
-            }
-
-            $query->where(function(Builder $query){
-                $query->where('name', "LIKE", "%{$this->search}%");
-                $query->orWhere('sku', 'LIKE', "%{$this->search}%");
-                // $query->orWhere('productType', 'LIKE', "%{$this->search}%");
-                $query->orWhere('category', 'LIKE', "%{$this->search}%");
-
-            });})->paginate(12);
-            // dd($prices);
-            if($prices){
-
-                $productType = $prices->map(function ($item, $key) {
-                    return ($item->related_product->pluck('productType')->unique());
-                });
-
-                if($productType->first()){
-                    $productType = $productType->first()->filter(function ($value) {
-                        return !is_null($value);
-                    });
-                }
-
-                $categories = $prices->map(function ($item, $key) {
-                    return ($item->related_product->pluck('category')->unique());
-                });
-
-                // $categories = $categories->first()->filter(function ($value) {
-                //     return !is_null($value);
-                // });
-
-                $vendors = $prices->map(function ($item, $key) {
-                    return ($item->related_product->pluck('vendor')->unique());
-                });
-
-                // $vendors = $vendors->first()->filter(function ($value) {
-                //     return !is_null($value);
-                // });
-            }
-         return view('livewire.store.store', [
-            'prices'        => $prices,
+        return view('livewire.store.store', [
+            'prices'        => $this->rows,
             'vendors'       => $vendors,
             'categories'    => $categories,
+            'terms'         => $terms,
             'producttype'   => $productType,
         ]);
     }
