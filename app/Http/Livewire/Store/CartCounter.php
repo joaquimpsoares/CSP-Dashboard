@@ -125,43 +125,6 @@ class CartCounter extends Component
         }
     }
 
-    public function changeBilling($value, $id)
-    {
-        $cart = $this->getUserCart();
-        $product = $cart->products->first(function ($value) use ($id) {
-            return $value->pivot->id == $id;
-        });
-        $product->pivot->billing_cycle = $value;
-        $product->pivot->save();
-        $this->billing = $value;
-        $this->emit('updateCart');
-    }
-
-    public function SelectedTerms($value, $id)
-    {
-        if (!is_null($value)) {
-            $this->billing_cycle = json_decode($value, true);
-        }
-        $cart = $this->getUserCart();
-        $product = $cart->products->first(function ($value) use ($id) {
-            return $value->pivot->id == $id;
-        });
-        $product->pivot->term_duration = strtolower($this->billing_cycle[0]['duration']);
-        $product->pivot->save();
-        $this->SelectedTerms = strtolower($this->billing_cycle[0]['duration']);
-    }
-
-    public function selectBilling($value, $id)
-    {
-        $cart = $this->getUserCart();
-        $product = $cart->products->first(function ($value) use ($id) {
-            return $value->pivot->id == $id;
-        });
-        $product->pivot->billing_cycle = strtolower($value);
-        $product->pivot->save();
-        $this->billing = strtolower($value);
-    }
-
     public function render()
     {
         $user = Auth::user();

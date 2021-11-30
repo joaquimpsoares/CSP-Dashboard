@@ -49,7 +49,7 @@ class RenewSubscriptions extends Command
             foreach ($subscription->customer->users as $key => $user) {
                 $deate = new DateTime($subscription->expiration_data);
                 $interval = $fechahoy->diff($deate);
-                if ($interval->format('%R%a') <= 1 ?? $subscription->autorenew == true){
+                if ($interval->format('%R%a') <= 1 && $subscription->autorenew === true){
                     $newDateTime = Carbon::now()->addYears(1);
                     $subscription->update([
                         'expiration_data' => $newDateTime,

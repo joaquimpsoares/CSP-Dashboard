@@ -4,7 +4,6 @@
     <div class="flex mt-10 mb-3">
         <h3 class="w-2/5 text-xs font-semibold text-gray-600 uppercase">Product Details</h3>
         <h3 class="w-1/5 text-xs font-semibold text-center text-gray-600 uppercase">Quantity</h3>
-        <h3 class="w-1/5 text-xs font-semibold text-center text-gray-600 uppercase">billing cycle</h3>
         <h3 class="w-1/5 text-xs font-semibold text-center text-gray-600 uppercase">Price</h3>
         <h3 class="w-1/5 text-xs font-semibold text-center text-gray-600 uppercase">Total</h3>
     </div>
@@ -32,7 +31,6 @@
 
             </button>
         </div>
-        {{-- @dd($billing_cycle) --}}
         @if($item->productType == 'OnlineServicesNCE')
         <div class="flex justify-center w-1/5 font-bold">
             <span class="text-xs font-bold">
@@ -58,8 +56,6 @@
         </div>
         @endif
         <span class="w-1/5 text-sm font-semibold text-center">{{'$'.number_format($item->price, 2)}}</span>
-        <span class="w-1/5 text-sm font-semibold text-center">{{'$'.number_format($item->total, 2)}}</span>
-        <button wire:click="removeItem('{{ $item->id }}')"  class="ml-2 text-gray-500 focus:outline-none focus:text-gray-600">
             <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
                 <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
