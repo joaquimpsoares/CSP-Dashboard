@@ -2,11 +2,13 @@
 
 namespace Modules\AzureAnalytics\Console;
 
+use Exception;
 use App\Instance;
-use App\MicrosoftTenantInfo;
 use App\Subscription;
+use App\MicrosoftTenantInfo;
 use Illuminate\Console\Command;
 use App\Models\AzureUsageReport;
+use App\Models\MsftInvoices;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Symfony\Component\Console\Input\InputOption;
@@ -51,29 +53,46 @@ class AzureBilledCommand extends Command
             ->subject('Daily importing Started Azure reports');
         });
 
-        $instances = Instance::where('id', 2)->get();
-        $subscriptions = Subscription::where('billing_type', 'usage')->get();
-        $instances->each(function ($instance) {
-            $resources = FacadesAzureResource::withCredentials($instance->external_id,$instance->external_token)->invoicebilled($instance->provider->country->currency_code,'G006139711');
+        $instances = Instance::get();
+        $invoiceIDs = MsftInvoices::pluck('invoice_id');
+        $invoiceIDs->each(function ($invoiceID) use($instances) {
+            $instances->each(function ($instance) use($invoiceID){
+            try {
+                $resources = FacadesAzureResource::withCredentials($instance->external_id,$instance->external_token)
+                ->invoicebilled($instance->provider->country->currency_code,$invoiceID);
+                Log::channel('azure')->info($invoiceID);
+
+            } catch (\Throwable $th) {
+                    // dd($th->getMessage());
+                Mail::raw($th, function ($mail) use($th) {
+                    $mail->to('joaquim.soares@tagydes.com')
+                    ->subject($th->getMessage());
+                });
+                // return false;
+            }
+            $Count = 0;
+            if($resources){
             foreach ($resources as $key => $value) {
                 foreach ($value as $key => $value) {
+                    // dd($value);
                     $tenant = MicrosoftTenantInfo::where('tenant_id', $value['customerId'])->first();
                     if(isset($tenant->customer)){
-                        $tenant->customer->subscriptions->where('billing_type', 'usage')->each(function ($subscription) use($value) {
+                        $tenant->customer->subscriptions->where('billing_type', 'usage')->each(function ($subscription) use($value,$Count) {
                             try{
+                            $Count++;
                                 $resource = AzureUsageReport::updateOrCreate([
                                     'subscription_id'       => $subscription->id,
                                     'resource_id'           => $value['productId'],
                                     'name'                  => $value['productName'],
                                     'resource_name'         => $value['productName'],
-                                    'usagedate'             => $value['usageDate'],
-                                    'usageStartTime'        => $value['chargeStartDate'],
-                                    'usageEndTime'          => $value['chargeEndDate'],
                                     'resource_group'        => $value['resourceGroup'],
                                     'resource_location'     => $value['resourceLocation'],
                                     'resource_region'       => $value['meterRegion'],
                                     'resource_category'     => $value['meterCategory'],
+                                    'usageStartTime'        => $value['chargeStartDate'],
+                                    'usageEndTime'          => $value['chargeEndDate'],
                                     'resource_subcategory'  => $value['meterSubCategory'],
+                                    'usagedate'             => $value['usageDate'],
                                 ], [
                                     'quantity'              => $value['quantity'],
                                     'unit'                  => $value['unitOfMeasure'],
@@ -93,13 +112,13 @@ class AzureBilledCommand extends Command
                                 //     ->subject('Azure Sync Failed');
                                 // });
                             }
-
                         });
                     }
                 }
             }
-
+        }
         });
+    });
 
         Mail::raw("Just finished Azure Syncronization", function ($mail)  {
             $mail->to('joaquim.soares@tagydes.com')

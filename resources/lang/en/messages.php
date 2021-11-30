@@ -364,4 +364,5 @@ return [
     'failed_job' => 'failed job',
     'market' => 'market',
     'edit_budget' => 'edit budget',
+    'usage_date' => 'usage date'
 ];
