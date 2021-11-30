@@ -207,7 +207,6 @@ class ShowPricelist extends Component
     }
 
     public function importproducts(){
-        dd(0);
 
         if($this->license == true){
             Log::info('Started importing NCE');

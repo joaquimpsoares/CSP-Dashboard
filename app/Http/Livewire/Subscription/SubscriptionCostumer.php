@@ -2,27 +2,29 @@
 
 namespace App\Http\Livewire\Subscription;
 
-use Exception;
-use Livewire\Component;
 use App\Subscription;
+use Livewire\Component;
 use Illuminate\Support\Facades\Log;
 use App\Notifications\SubscriptionUpdate;
 use Illuminate\Support\Facades\Notification;
 
-class ShowSubscription extends Component
+class SubscriptionCostumer extends Component
 {
-    public $status;
-    public $amount;
-    public $subs;
-    public $subscription;
     public Subscription $editing;
+    public $showEditModal = false;
+    public $subs;
+    public $showconfirmationModal = false;
     public $max_quantity = '999999999';
     public $min_quantity = '1';
-    public $showEditModal = false;
-    public $showconfirmationModal = false;
-    public $showcancelconfirmationModal = false;
 
-    protected $listeners = ['refreshTransactions' => '$refresh'];
+    public $filters = [
+        'search' => '',
+        'status' => '',
+        'amount-min' => null,
+        'amount-max' => null,
+        'date-min' => null,
+        'date-max' => null,
+    ];
 
     public function rules()
     {
@@ -50,8 +52,8 @@ class ShowSubscription extends Component
 
     public function save()
     {
-        $this->showEditModal = false;
         $this->validate();
+        $this->showEditModal = false;
         $this->editing->save();
 
         if(collect($this->editing->getChanges())->has('status_id')){
@@ -77,53 +79,27 @@ class ShowSubscription extends Component
 
     }
 
-
-    public function checkout(Subscription $subscription){
-
-    }
-
-    public function mount(){
-        $this->amount = $this->subscription->amount;
-        $this->status = $this->subscription->status->name;
-
-    }
-
-    public function disable(Subscription $subscription){
-
+    public function disable(Subscription $subscription)
+    {
         $this->showconfirmationModal = false;
         $subscription->suspend();
         $this->emit('refreshTransactions');
-
     }
 
-
-    public function enable(Subscription $subscription){
-
-        $subscription->activate();
-
+    public function enable(Subscription $subscription)
+    {
+        $subscription->active();
         $this->notify('Subscription ' . $subscription->name . ' is Active, refresh page');
         Notification::send($subscription->customer->users->first(), new SubscriptionUpdate($subscription));
         Log::info('Status changed: Enabled');
         $this->emit('refreshTransactions');
-
-
     }
-    public function cancel(Subscription $subscription){
 
-        $this->showcancelconfirmationModal = false;
-
-        $subscription->cancel();
-
-        $this->notify('Subscription ' . $subscription->name . ' was canceled, refresh page');
-        Notification::send($subscription->customer->users->first(), new SubscriptionUpdate($subscription));
-        Log::info('Status changed: canceled');
-        $this->emit('refreshTransactions');
-
-    }
 
     public function render()
     {
-        $subscription = $this->subscription;
-        return view('livewire.subscription.show-subscription', compact('subscription'));
+        $query = Subscription::all();
+        $subscriptions = $query;
+        return view('livewire.subscription.subscription-costumer', compact('subscriptions'));
     }
 }

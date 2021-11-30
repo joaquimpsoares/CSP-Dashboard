@@ -57,7 +57,6 @@ class AzureTable extends Component
                 }
             }
         });
-
     }
 
     public function render()
@@ -66,15 +65,9 @@ class AzureTable extends Component
             'resourceName' => $this->resourceName->paginate(10)]);
     }
 
-    public function editProduct($productIndex)
-    {
-        $this->editedProductIndex = $productIndex;
-    }
+    public function editProduct($productIndex) { $this->editedProductIndex = $productIndex; }
 
-    public function editProductField($productIndex, $fieldName)
-    {
-        $this->editedProductField = $productIndex . '.' . $fieldName;
-    }
+    public function editProductField($productIndex, $fieldName){$this->editedProductField = $productIndex . '.' . $fieldName;}
 
     public function saveBudget($productIndex){
 

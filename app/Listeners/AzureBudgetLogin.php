@@ -31,26 +31,26 @@ class AzureBudgetLogin
     public function handle(login $event)
     {
         // Session::flash('success', 'Hello ' . $event->user->name . ', welcome back!');
-        $resourceName = $this->analyticRepository->getAzureSubscriptions();
-        $resourceName->map(function ($item, $key) {
-            foreach ($item->azureresources as $resource) {
-                $increase = ($item->budget - $item->azureresources->sum('cost'));
-                if ($item->budget > '0') {
-                    if ($increase !== '0') {
-                        $average1 = ($increase / $item->budget) * 100;
-                        $item['percentage'] = 100 - $average1;
-                    } else {
-                        $item['percentage'] = '0';
-                    }
-                    return $item;
-                }
-            }
-        });
-        if ($resourceName->first() != null){
-            if($resourceName->first()->percentage >= '90' ){
-                Notification::send($event->user, new AzureBudgetNotification($resourceName));
-            }
-        }
+        // $resourceName = $this->analyticRepository->getAzureSubscriptions();
+        // $resourceName->map(function ($item, $key) {
+        //     foreach ($item->azureresources as $resource) {
+        //         $increase = ($item->budget - $item->azureresources->sum('cost'));
+        //         if ($item->budget > '0') {
+        //             if ($increase !== '0') {
+        //                 $average1 = ($increase / $item->budget) * 100;
+        //                 $item['percentage'] = 100 - $average1;
+        //             } else {
+        //                 $item['percentage'] = '0';
+        //             }
+        //             return $item;
+        //         }
+        //     }
+        // });
+        // if ($resourceName->first() != null){
+        //     if($resourceName->first()->percentage >= '90' ){
+        //         Notification::send($event->user, new AzureBudgetNotification($resourceName));
+        //     }
+        // }
 
     }
 }

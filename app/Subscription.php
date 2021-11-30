@@ -21,8 +21,6 @@ use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 class Subscription extends Model
 {
     use ActivityTrait;
-    // use Expirable;
-
 
     const STATUSES = [
         '1' => 'Active',
@@ -106,6 +104,7 @@ class Subscription extends Model
     public function changeAmount($quantity)
     {
 
+
         $product = Price::where('product_id', $this->product_id)->first();
         $subscription = new TagydesSubscription([
             'id'            => $this->subscription_id,
@@ -119,29 +118,30 @@ class Subscription extends Model
             'billingCycle'  => $this->billing_period,
             'created_at'    => $this->created_at->__toString(),
         ]);
-        $order = new Order();
-        $order->details = "changing subscription ".$this->name ." amount from ". $subscription->amount. " to ". $quantity;
-        $order->token = Str::uuid();
-        $order->user_id = Auth::user()->id;
-        $order->save();
-        $order->products()->attach($this->product_id, [
-            'id' => Str::uuid(),
-            'price' => $product->price ?? '0',
-            'retail_price' => $product->msrp ?? '0',
-            'billing_cycle' => $this->billing_period,
-            'quantity' => $quantity
-            ]);
+        try {
+            $order = new Order();
+            $order->details = "changing subscription ".$this->name ." amount from ". $subscription->amount. " to ". $quantity;
+            $order->token = Str::uuid();
+            $order->user_id = Auth::user()->id;
+            $order->save();
+            $order->products()->attach($this->product_id, [
+                'id' => Str::uuid(),
+                'price' => $product->price ?? '0',
+                'retail_price' => $product->msrp ?? '0',
+                'billing_cycle' => $this->billing_period,
+                'quantity' => $quantity
+                ]);
 
-
-        $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)->
-        update($subscription, ['quantity' => $quantity]);
-
+            $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)->
+            update($subscription, ['quantity' => $quantity]);
+        } catch (\Exception $th) {
+            // dd($th->getMessage());
+        }
         return $this;
     }
 
     public function suspend()
     {
-
         $subscription = new TagydesSubscription([
             'id'            => $this->subscription_id,
             'orderId'       => $this->order_id,
@@ -158,7 +158,7 @@ class Subscription extends Model
         $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token) //change status only
         ->update($subscription, ['status' => 'suspended']);
 
-        $this->markAsCancelled();
+        $this->markAsSuspended();
         // $this->notify('Subscription ' . $subscription->name . ' is suspended, refresh page');
         // Notification::send($subscription->customer->users->first(), new SubscriptionUpdate($subscription));
         Log::info('Status changed: Suspended');
@@ -166,12 +166,45 @@ class Subscription extends Model
         return $this;
     }
 
-    public function markAsCancelled()
+    public function cancel()
+    {
+        $subscription = new TagydesSubscription([
+            'id'            => $this->subscription_id,
+            'orderId'       => $this->order_id,
+            'offerId'       => $this->product_id,
+            'customerId'    => $this->customer->microsoftTenantInfo->first()->tenant_id,
+            'name'          => $this->name,
+            'status'        => $this->status_id,
+            'quantity'      => $this->amount,
+            'currency'      => $this->currency,
+            'billingCycle'  => $this->billing_period,
+            'created_at'    => $this->created_at->__toString(),
+        ]);
+
+        $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token) //change status only
+        ->cancelNCE($subscription);
+
+        $this->markAsCanceled();
+        // $this->notify('Subscription ' . $subscription->name . ' is suspended, refresh page');
+        // Notification::send($subscription->customer->users->first(), new SubscriptionUpdate($subscription));
+        Log::info('Status changed: Suspended');
+
+        return $this;
+    }
+
+    public function markAsSuspended()
     {
         $this->fill([
             'status_id' => '2',
             ])->save();
-        }
+    }
+
+    public function markAsCanceled()
+    {
+        $this->fill([
+            'status_id' => '3',
+            ])->save();
+    }
 
     public function addons() {
         return $this->hasMany(Addon::class);
@@ -187,6 +220,13 @@ class Subscription extends Model
 
     public function products() {
         return $this->hasMany(Product::class, 'sku', 'product_id');
+    }
+
+    public function product() {
+        return $this->hasOne(Product::class, 'sku', 'product_id');
+    }
+    public function productnce() {
+        return $this->hasOne(Product::class, 'catalog_item_id', 'product_id');
     }
 
     public function azureresources() {

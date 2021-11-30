@@ -30,7 +30,7 @@ class OrderTable extends Component
 
         $query = Order::query()->orderBy('id', 'DESC');
 
-        $orders = $query
+        $orders = $query->orderBy('id', 'DESC')
         ->where(function ($q)  {
             $q->where('details', "like", "%{$this->search}%");
             $q->orWhere('id', 'like', "%{$this->search}%");

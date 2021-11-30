@@ -174,6 +174,7 @@ class CartCounter extends Component
             });
             $this->terms = $terms->filter();
             $cart = $cart->products->map(function ($products) use($cart, $terms) {
+                // dd($products->pivot);
                 return (object)[
                     'token' => $cart->token,
                     'productType' => $products->productType,
@@ -186,7 +187,7 @@ class CartCounter extends Component
                     'price' => $products->pivot->price,
                     'qty' => $products->pivot->quantity,
                     'cycle' => $products->supported_billing_cycles,
-                    'billing_cycle' => $this->billing_cycle,
+                    'billing_cycle' => $this->billing_cycle ?? $products->pivot->billing_cycle,
                     'total' => ($products->pivot->quantity * $products->pivot->price) * ($products->pivot->billing_cycle === 'annual' ? 12 : 1 ),
                 ];
             });

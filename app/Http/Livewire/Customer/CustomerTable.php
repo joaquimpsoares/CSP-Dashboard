@@ -29,8 +29,6 @@ class CustomerTable extends Component
     use UserTrait;
 
     public $search = '';
-    // public $statuses;
-    // public $countries;
     public $password;
     public $email;
     public $password_confirmation;

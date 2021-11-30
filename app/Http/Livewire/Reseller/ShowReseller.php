@@ -71,7 +71,7 @@ class ShowReseller extends Component
 
     public function save(Reseller $reseller)
     {
-        $validatedData = $this->validate();
+        // $validatedData = $this->validate();
 
         try {
             // $newCustomer = TagydesCustomer::withCredentials($reseller->provider->instances->first()->external_id, $reseller->provider->instances->first()->external_token)
@@ -88,8 +88,8 @@ class ShowReseller extends Component
             //     $this->notify($newCustomer->validationMessage);
             // }
 
-            $pricelist = PriceList::find($this->editing->price_list_id)->first();
-            $pricelist->update(['reseller_id' => $this->reseller->id]);
+            // $pricelist = PriceList::find($this->editing->price_list_id)->first();
+            // $pricelist->update(['reseller_id' => $this->reseller->id]);
 
             $this->editing->save();
             $this->showEditModal = false;

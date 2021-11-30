@@ -182,7 +182,6 @@ class CartController extends Controller
 
         $status = "tenant";
 
-        //return view('order.tenant', compact('cart'));
         if ($this->cartHasTenant($cart))
             return redirect()->route('cart.tenant', ['cart' => $cart->token, 'customerTenant' => $customerTenant]);
         else

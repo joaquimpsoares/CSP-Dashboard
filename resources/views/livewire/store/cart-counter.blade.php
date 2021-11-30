@@ -32,34 +32,31 @@
 
             </button>
         </div>
+        {{-- @dd($billing_cycle) --}}
         @if($item->productType == 'OnlineServicesNCE')
-        <div class="flex justify-center w-1/5">
-            <select name="item[{{$key}}]terms" wire:change.defer="SelectedTerms($event.target.value, '{{$item->id}}')" class="block w-full p-2 text-sm text-gray-600 form-control"  required >
-                <option value="">-Select-</option>
-                @foreach($item->terms->first() as $term)
-                <option value="{{$term}}">{{$term[0]['duration']}}</option>
-                @endforeach
-            </select>
+        <div class="flex justify-center w-1/5 font-bold">
+            <span class="text-xs font-bold">
+                {{$item->term_duration}}/{{$item->billing_cycle}}
+            </span>
         </div>
 
-        @if(!is_null($billing_cycle))
-        <div class="flex justify-center w-1/5 ml-3">
+        @else
+        {{-- <div class="flex justify-center w-1/5 ml-3">
             <select name="terms[{{$key}}][billingCycle" class="form-control" wire:change.defer="selectBilling($event.target.value, '{{$item->id}}')" name="terms" class="block w-full p-2 text-sm text-gray-600 form-control"  required>
                 @foreach ($billing_cycle as $key => $billing)
                 <option  value="{{ $billing['billingCycle'] }}">{{ $billing['billingCycle']}}</option>
                 @endforeach
             </select>
-        </div>
-        @endif
-        @endif
-        {{-- <div class="flex justify-center w-1/5">
+        </div> --}}
+        <div class="flex justify-center w-1/5">
             <select class="block p-2 text-sm text-gray-600 form-control" wire:change="changeBilling($event.target.value, '{{$item->id}}')" >
                 <option value="" selected="selected" hidden>{{ ucfirst($item->billing_cycle) }}</option>
                 @foreach($item->cycle as $cycle)
                 <option  value="{{$cycle}}" >{{ucfirst($cycle) }}</option>
                 @endforeach
             </select>
-        </div> --}}
+        </div>
+        @endif
         <span class="w-1/5 text-sm font-semibold text-center">{{'$'.number_format($item->price, 2)}}</span>
         <span class="w-1/5 text-sm font-semibold text-center">{{'$'.number_format($item->total, 2)}}</span>
         <button wire:click="removeItem('{{ $item->id }}')"  class="ml-2 text-gray-500 focus:outline-none focus:text-gray-600">
@@ -71,6 +68,7 @@
     @empty
     Cart is empty
     @endforelse
+    @if($customers)
     <h1 class="pb-8 text-2xl font-semibold border-b"></h1>
     <div >
         <label class="inline-block mb-3 text-sm font-medium uppercase">Choose customer</label>
@@ -81,6 +79,7 @@
             @endforeach
         </select>
     </div>
+    @endif
     <div class="mt-8 border-t ">
         <div class="flex justify-between py-6 text-sm font-semibold uppercase">
             <span>Total cost</span>

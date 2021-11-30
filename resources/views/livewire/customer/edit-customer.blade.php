@@ -1,4 +1,11 @@
-<form wire:submit.prevent="save({{ $customer->id }})">
+<div class="py-1" role="none">
+    <a href="#" wire:click="edit({{ $customer->id }})" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-4">
+        <x-icon.edit></x-icon.edit>
+        {{ ucwords(trans_choice('messages.edit', 1)) }}
+    </a>
+</div>
+
+{{-- <form wire:submit.prevent="save({{ $customer->id }})">
     @if ($messageText != '')
     <div class="alert alert-info">
         {{ $messageText }}
@@ -135,4 +142,4 @@
             </div>
         </section>
     </div>
-</form>
+</form> --}}

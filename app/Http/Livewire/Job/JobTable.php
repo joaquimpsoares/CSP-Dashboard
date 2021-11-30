@@ -8,6 +8,7 @@ use App\Exports\JobsExport;
 use Livewire\WithPagination;
 use App\Http\Traits\UserTrait;
 use Maatwebsite\Excel\Facades\Excel;
+use romanzipp\QueueMonitor\Models\Monitor;
 use App\Http\Livewire\DataTable\WithSorting;
 use App\Http\Livewire\DataTable\WithCachedRows;
 use App\Http\Livewire\DataTable\WithBulkActions;
@@ -33,6 +34,7 @@ class JobTable extends Component
 
     public function render()
     {
-        return view('livewire.job.job-table');
+        $jobs= Monitor::orderBy('id', 'DESC')->get()->paginate(10);
+        return view('livewire.job.job-table', compact('jobs'));
     }
 }

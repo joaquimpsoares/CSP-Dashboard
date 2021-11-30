@@ -20,7 +20,6 @@
         </div>
     </div>
     @endif
-    {{-- @dd($subscription->products->isNotEmpty()) --}}
     @if($subscription->products->isNotEmpty())
     @if($subscription->products->where('instance_id', $subscription->instance_id)->first()->upgrade_target_offers != null)
     <div class="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -75,24 +74,38 @@
                                 </span>
                             </button>
                             <div  x-cloak x-show.transition="open" @click.away="open = false" class="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                                @if($status != 'messages.canceled')
                                 <div class="py-1" role="none">
                                     <a wire:click="edit({{ $subscription->id }})" href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-4">
                                         <x-icon.edit></x-icon.edit>
                                         {{ ucwords(trans_choice('edit', 1)) }}
                                     </a>
                                 </div>
+                                @endif
                                 <div class="py-1" role="none">
                                     @if($status == 'messages.active')
-                                    <button wire:click="$toggle('showconfirmationModal')" class="block px-4 py-2 text-sm text-red-700" role="menuitem" tabindex="-1" id="menu-item-6">
+                                    <button wire:click="$toggle('showconfirmationModal')" class="block px-4 py-2 text-sm text-yellow-500" role="menuitem" tabindex="-1" id="menu-item-6">
                                         <x-icon.pause></x-icon.pause>
                                         {{ ucwords(trans_choice('suspend', 1)) }}
                                     </button>
                                     @endif
+                                    @if($status != 'messages.canceled')
                                     @if($subscription->status->name != 'messages.active')
                                     <button wire:click="enable({{$subscription->id}})" class="block px-4 py-2 text-sm text-green-700" role="menuitem" tabindex="-1" id="menu-item-6">
                                         <x-icon.play></x-icon.play>
                                         {{ ucwords(trans_choice('enable', 1)) }}
                                     </button>
+                                    @endif
+                                    @endif
+                                    @if($subscription->productnce)
+                                    @if($subscription->productnce->IsNCE())
+                                    @if($status == 'messages.active')
+                                    <button wire:click="$toggle('showcancelconfirmationModal')" class="block px-4 py-2 text-sm text-red-700" role="menuitem" tabindex="-1" id="menu-item-6">
+                                        <x-icon.trash></x-icon.trash>
+                                        {{ ucwords(trans_choice('cancel', 1)) }}
+                                    </button>
+                                    @endif
+                                    @endif
                                     @endif
                                 </div>
                             </div>
@@ -107,7 +120,6 @@
                     <span class="text-xs text-gray-500">{{$subscription->created_at}}</span>
                 </div>
             </div>
-
 
             <div class="px-0 pt-0 mt-10 break-words border-b">
                 <div class="flex flex-col lg:flex-row">
@@ -408,11 +420,9 @@
     <form wire:submit.prevent="disable({{$subscription->id}})">
         <x-modal.confirmation wire:model.defer="showconfirmationModal">
             <x-slot name="title">Disabling Subscription</x-slot>
-
             <x-slot name="content">
                 Are you sure you want to suspend this subscription? By doing so you have 90 days to re-activate the subscription.
             </x-slot>
-
             <x-slot name="footer">
                 <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     {{ucwords(trans_choice('messages.cancel', 1))}}
@@ -423,8 +433,28 @@
             </x-slot>
         </x-modal.confirmation>
     </form>
+    <form wire:submit.prevent="cancel({{$subscription->id}})">
+        <x-modal.confirmation wire:model.defer="showcancelconfirmationModal">
+
+            <x-slot name="title">Canceling Subscription</x-slot>
+
+            <x-slot name="content">
+                Are you sure you want to cancel this subscription? all data will be deleted from this subscription.
+            </x-slot>
+
+            <x-slot name="footer">
+                <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    {{ucwords(trans_choice('messages.cancel', 1))}}
+                </button>
+                <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    {{ucwords(trans_choice('messages.confirm', 1))}}
+                </button>
+            </x-slot>
+        </x-modal.confirmation>
+    </form>
     <!-- Save Transaction Modal -->
     <div>
+        @if($editing)
         <form wire:submit.prevent="save({{$subscription->id}})" class="flex flex-col h-full bg-white divide-y divide-gray-200 shadow-xl">
             <x-modal.slideout wire:model.defer="showEditModal">
                 <x-slot name="title">{{ ucwords(trans_choice('messages.edit_subscription', 1)) }}</x-slot>
@@ -443,8 +473,8 @@
                                         <x-input wire:model="editing.amount" type="number" id="editing.amount" name="editing.amount" class="@error('editing.amount') is-invalid @enderror"></x-input>
                                         @error('editing.amount')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                         <p class="mt-2 text-xs text-gray-500">
-                                            {{-- {{$max_quantity-$editing->amount}} --}}
-                                        </p>
+                                            Max: {{$max_quantity-$editing['amount']}}
+                                         </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -546,6 +576,7 @@
                 </x-slot>
             </x-modal.slideout>
         </form>
+        @endif
     </div>
 
 </div>

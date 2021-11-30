@@ -116,9 +116,8 @@ class AnalyticRepository implements AnalyticRepositoryInterface
             $instance->external_id,$instance->external_token
             )->budget($customer, $subscription);
 
-            if (!is_int($budget)){
-                return [0];
-
+            if (!($budget)){
+                return 1;
             }
             return (int) $budget;
 

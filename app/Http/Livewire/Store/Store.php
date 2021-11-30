@@ -7,14 +7,12 @@ use App\Price;
 use App\Product;
 use Livewire\Component;
 use Illuminate\Support\Str;
-use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use App\Http\Livewire\DataTable\WithSorting;
 use App\Http\Livewire\DataTable\WithCachedRows;
 use App\Http\Livewire\DataTable\WithBulkActions;
 use App\Http\Livewire\DataTable\WithPerPagePagination;
-use Maatwebsite\Excel\Concerns\ToArray;
 
 class Store extends Component
 {
@@ -27,6 +25,7 @@ class Store extends Component
     public $search;
     public $vendor =[];
     public $category;
+    public $price;
     public $cartProducts = [];
     public $selectproducttype;
 
@@ -37,7 +36,7 @@ class Store extends Component
     public $productMSRP;
 
     public $showmobilefilter = false;
-    public $showproductdetails = true;
+    public $showproductdetails = false;
 
 
     public $filters = [
@@ -48,6 +47,7 @@ class Store extends Component
         'plugins' => false,
         'billing' => [],
         'terms' => [],
+        'trial' => '',
     ];
 
     public function updatedQtys($field)
@@ -57,36 +57,43 @@ class Store extends Component
 
     public function addToCart(Product $productId)
     {
+        $billing_cycle = "Monthly";
         $this->showModal = false;
-        $price= Price::where('product_id', $productId)->get();
+
         $cart = $this->getUserCart();
         if (! $cart) {
             $cart = new Cart();
             $cart->save();
+        }
+
+        if($productId->IsNCE()){
+            $billing_cycle = $productId->price->billing_plan;
+            $term_duration = $productId->price->term_duration;
         }
         $cart->products()->attach($productId, [
             'id' => Str::uuid(),
             'price' => $productId->price->price,
             'retail_price' => $productId->price->msrp,
             'quantity' => $productId->minimum_quantity,
-            'billing_cycle' => "annual"
+            'billing_cycle' => $billing_cycle,
+            'term_duration' => $term_duration ?? null
             ]);
 
         $this->emit('updateCart');
         $this->notify('Product added to cart: '. $productId->name );
     }
 
-    public function showDetails($id)
+    public function showDetails(Product $product)
     {
-        $this->showModal = true;
-        $details = Product::where('id', $id)->first();
-
-        $this->productName      = $details->name;
-        $this->productCategory  = $details->category;
-        $this->productSku       = $details->sku;
-        $this->productDescription = $details->description;
-        $this->productName      = $details->name;
-        $this->productMSRP      = $details->price->msrp;
+        $this->showproductdetails   = true;
+        $this->price                = Price::where('product_id', $product->id)->first();
+        $this->retail               = $product->price->price;
+        $this->msrp                 = $product->price->msrp;
+        $this->productName          = $product->name;
+        $this->productCategory      = $product->category;
+        $this->productSku           = $product->sku;
+        $this->productDescription   = $product->description;
+        $this->productMSRP          = $product->price->msrp;
     }
 
     public function close()
@@ -94,18 +101,10 @@ class Store extends Component
         $this->showModal = false;
     }
 
-    public function showprodcutdetails($id)
-    {
-        $this->showproductdetails = true;
-
-
-    }
 
     public static  function getUserCart($id = null, $token = null)
     {
-
         $user = Auth::user();
-
         if (empty($token)) {
             if (empty($id)) {
                 $cart = Cart::where('user_id', $user->id)->whereNull('customer_id')->with(['products', 'customer'])->first();
@@ -115,7 +114,6 @@ class Store extends Component
         } else {
             $cart = Cart::where('user_id', $user->id)->where('token', $token)->with(['products', 'customer'])->first();
         }
-
         return $cart;
     }
 
@@ -130,7 +128,6 @@ class Store extends Component
 
     public function getRowsQueryProperty()
     {
-        // dd($this->filters['billing']);
         $query = Price::query()
             ->when($this->filters['category'], fn($query, $category) => $query->whereHas('related_product', function(Builder $q) use($category){
                 $q->where('category',$category);
@@ -144,12 +141,14 @@ class Store extends Component
             ->when($this->filters['plugins'], fn($query, $plugins) => $query->whereHas('related_product', function(Builder $q) use($plugins){
                 $q->where('is_addon', $plugins);
             }))
+            ->when($this->filters['trial'], fn($query, $trial) => $query->whereHas('related_product', function(Builder $q) use($trial){
+                $q->where('is_trial', $trial);
+            }))
             ->when($this->filters['billing'], fn($query, $billing) => $query->where('billing_plan', $billing))
             ->when($this->filters['terms'], fn($query, $terms) => $query->where('term_duration', $terms))
             ->when($this->search, fn($query, $search) => $query->where('name', 'like', '%'.$search.'%')
                                                                ->orwhere('product_sku', 'like', '%'.$search.'%'))
                                                                ->with('related_product');
-
         return $this->applySorting($query);
     }
 

@@ -141,7 +141,7 @@
                                                                     @endif
                                                                     <td>
                                                                         <div class="w-24 pt-0 mb-3">
-                                                                            @if ($subscription->billing_type != 'software')
+                                                                            {{-- @if ($subscription->billing_type != 'software')
                                                                             <select name="billing_period" required="required" class="relative block w-full max-w-lg px-2 py-1 text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm" id="{{ $subscription->products->first()->id }}">
                                                                                 @foreach($subscription->products->first()->supported_billing_cycles as $cycle)
                                                                                 <option value="{{ $cycle }}" @if($cycle == $subscription->billing_period) selected @endif>
@@ -149,7 +149,7 @@
                                                                                 </option>
                                                                                 @endforeach
                                                                             </select>
-                                                                            @endif
+                                                                            @endif --}}
                                                                         </div>
                                                                     </td>
                                                                     <td class="align-middle">
@@ -170,7 +170,7 @@
                                                                         </div>
                                                                     </td>
                                                                     @if ($subscription->billing_type != 'software')
-                                                                    @foreach ($subscription->products->first()->getaddons()->all() as $item)
+                                                                    {{-- @foreach ($subscription->products->first()->getaddons()->all() as $item)
                                                                     <tr>
                                                                         <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap"><strong>Add-on:</strong> {{$item->name}}</td>
                                                                         <td>
@@ -184,7 +184,7 @@
 
                                                                         </form>
                                                                     </tr>
-                                                                    @endforeach
+                                                                    @endforeach --}}
                                                                     @endif
                                                                 </form>
                                                             </tr>

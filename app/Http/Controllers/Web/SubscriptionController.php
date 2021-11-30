@@ -51,34 +51,11 @@ class SubscriptionController extends Controller
     */
     public function index(Request $request)
     {
-
+        if ($this->getUserLevel() === 'Customer'){
+            return view('subscriptions.customer');
+        }
         return view('subscriptions.index');
     }
-
-    // public function card()
-    // {
-    //     $subscriptions = [];
-    //     switch ($this->getUserLevel()) {
-    //         case 'Provider':
-    //             $provider = $this->getUser()->provider;
-    //             $subscriptions = $this->listFromProvider($provider);
-    //             break;
-    //             case 'Reseller':
-    //                 $reseller = $this->getUser()->reseller;
-    //                 $subscriptions = $this->listFromReseller($reseller);
-    //             break;
-    //             case 'Customer':
-    //                 $customer = $this->getUser()->customer;
-    //                 $subscriptions = $this->listFromCustomer($customer);
-    //                 break;
-
-    //             default:
-    //             # code...
-    //             break;
-    //         }
-
-    //     return view('subscriptions.customer', compact('subscriptions'));
-    // }
 
 
     /**
@@ -182,7 +159,6 @@ class SubscriptionController extends Controller
                 }
         }elseif(!$status->isempty()){
             try{
-
                 if($subscription->billingCycle == "one_time"){
                     $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token) //change status only
                     ->cancelSoftware($subscription);

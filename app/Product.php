@@ -80,7 +80,7 @@ class Product extends Model
 
     public function IsNCE()
     {
-        return $this->productType == 'OnlineServicesNCE';
+        return $this->productType === 'OnlineServicesNCE';
     }
 
     public function price() {

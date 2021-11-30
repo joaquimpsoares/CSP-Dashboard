@@ -52,13 +52,10 @@ class PlaceOrderMicrosoft implements ShouldQueue
             $this->order->details = ('Stage 2 - Placing Order for: ' . $product['name'] . ' for Customer: ' . $customer->company_name);
             $this->order->save();
         }
-
         Log::info('tenant Cart: ' . $this->order->customer->microsoftTenantInfo->first());
-
 
         $instanceid = $products->first()->instance_id;
         Log::info('Creating Cart: ' . $instanceid);
-
 
         $instance = Instance::where('id', $instanceid)->first();
         Log::info('Creating Cart: ' . $instance);
@@ -114,7 +111,18 @@ class PlaceOrderMicrosoft implements ShouldQueue
 
                     $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
                     Log::info('Adding Perpetual Product to Cart: ' . $tagydescart);
-                } else {
+                }
+                elseif($product->IsNCE()){
+                    $catalogItemId = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)->getNCECatalogItemId($product['uri']);
+                    Log::info('catalogItemId1: ' . $catalogItemId);
+
+                    $TagydesProduct = new TagydesProduct([
+                        'id' => $catalogItemId
+                    ] + $productData);
+
+                    $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
+                    Log::info('Adding NCE Product to Cart: ' . $tagydescart);
+                }else{
                     $TagydesProduct = new TagydesProduct([
                         'id' => $product['sku'],
                     ] + $productData);
@@ -123,12 +131,14 @@ class PlaceOrderMicrosoft implements ShouldQueue
                     Log::info('Adding Product to Cart: ' . $tagydescart);
                 }
             }
-
-            $tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->create($tagydescart);
-            Log::info('Creating Cart: ' . $tagydesorder);
-
-            $orderConfirm = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($tagydesorder);
-            Log::info('Confirmation of cart Cart: ', $orderConfirm->subscriptions()->toArray());
+            try {
+                $tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->create($tagydescart);
+                Log::info('Creating Cart: ' . $tagydesorder);
+                $orderConfirm = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($tagydesorder);
+                Log::info('Confirmation of cart Cart: ', $orderConfirm->subscriptions()->toArray());
+            } catch (\Throwable $th) {
+                throw $th;
+            }
 
             if ($orderConfirm->errors()->count() > 0) {
                 foreach ($orderConfirm->errors() as $error) {
@@ -139,6 +149,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
             // Log::info('a', $orderConfirm->subscriptions()->toArray());
             logger("Tenemos {$orderConfirm->subscriptions()->count()} subscripciones");
             foreach ($orderConfirm->subscriptions() as $subscription) {
+
                 $subscriptions = new Subscription();
                 $subscriptions->name = $subscription->name;
                 $subscriptions->subscription_id = $subscription->id;
@@ -169,7 +180,6 @@ class PlaceOrderMicrosoft implements ShouldQueue
             Log::info('Error Placing order to Microsoft: ' . $e->getMessage());
 
             $this->order->details = ('Error Placing order to Microsoft: ' . $e->getMessage());
-            $this->order->subscription_id   = $subscriptions->id;
             $this->order->order_status_id = 3;
             $this->order->save();
         }

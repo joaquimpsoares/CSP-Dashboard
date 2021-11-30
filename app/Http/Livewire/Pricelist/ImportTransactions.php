@@ -63,7 +63,6 @@ class ImportTransactions extends Component
         Csv::from($this->upload)
         ->eachRow(function ($row) use (&$importCount) {
             $tt = $this->extractFieldsFromRow($row);
-            // dd($tt);
             if($tt['product_id'] != null){
                 Price::updateOrCreate([
                     'product_id'    => $tt['product_id'],
@@ -80,7 +79,6 @@ class ImportTransactions extends Component
                     'msrp'          => $tt['msrp'],
                     'product_vendor'=> $tt['product_vendor']
                 ]);
-                $importCount++;
             }
             });
         $this->reset();
@@ -101,10 +99,10 @@ class ImportTransactions extends Component
             'product_vendor'    => 'microsoft',
             'instance_id'       => $this->priceList->instance_id,
             'price_list_id'     => $this->priceList->id,
-            'market'            => $row['Market'],
-            'billing_plan'      => $row['BillingPlan'],
+            'market'            => $row['Market'] ?? null,
+            'billing_plan'      => $row['BillingPlan'] ?? null,
             'currency'          => $row['Currency'],
-            'term_duration'     => $row['TermDuration'],
+            'term_duration'     => $row['TermDuration'] ?? null,
             'product_id'        => $product,
 
         ];
