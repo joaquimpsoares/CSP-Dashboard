@@ -193,7 +193,7 @@
             </div>
             <!-- End - Customer Details -->
 
-            <!-- Start - Customer Relationshipt -->
+            <!-- Start - Customer Relationship -->
             <div class="px-0 pt-0 mt-5 break-words border-b">
                 <div class="flex flex-col lg:flex-row">
                     <div class="flex items-center">
