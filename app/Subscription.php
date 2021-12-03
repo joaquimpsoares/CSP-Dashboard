@@ -22,6 +22,10 @@ class Subscription extends Model
 {
     use ActivityTrait;
 
+    protected $casts = [
+        'changes_on_renew' => 'array',
+    ];
+
     const STATUSES = [
         '1' => 'Active',
         '2' => 'Inactive',

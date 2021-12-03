@@ -165,8 +165,12 @@
                                                                         </div>
                                                                     </td>
                                                                     <td>
-                                                                        <div class="w-24 pt-0 mb-3">
-                                                                            <button type="submit" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none" type="submit">Change</button>
+                                                                        <div class="w-24 pt-0 mb-3 inline">
+                                                                            <button type="submit" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none" name="scheduled" value="false">Change</button>
+
+                                                                            @if($subscription->product->productType === 'OnlineServicesNCE' && $subscription->autorenew === 1)
+                                                                            <button type="submit" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-800 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none" name="scheduled" value="true">Change on next renew</button>
+                                                                            @endif
                                                                         </div>
                                                                     </td>
                                                                     @if ($subscription->billing_type != 'software')
