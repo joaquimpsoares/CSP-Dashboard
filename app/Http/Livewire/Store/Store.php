@@ -31,6 +31,26 @@ class Store extends Component
     public $productDescription;
     public $productMSRP;
 
+    public $showmobilefilter = false;
+    public $showproductdetails = false;
+
+
+    public $filters = [
+        'search' => '',
+        'category' => '',
+        'vendors' => '',
+        'producttype' => '',
+        'plugins' => false,
+        'notplugins' => true,
+        'billing' => [],
+        'terms' => [],
+        'trial' => '',
+    ];
+
+    public function updatedQtys($field)
+{
+   $this->recalc($field);
+}
 
     public function addToCart(Product $productId)
     {
