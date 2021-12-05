@@ -57,8 +57,10 @@ class AzureBilledCommand extends Command
                 if(substr($invoice->invoice_id,0,1) === "G"){
                     try {
                         $resources = FacadesAzureResource::withCredentials($invoice->instance->external_id,$invoice->instance->external_token)
-                        ->invoicebilled($invoice->instance->provider->country->currency_code,$invoice);
-                        Log::channel('azure')->info($invoice);
+                        ->invoicebilled($invoice->provider->country->currency_code,$invoice->invoice_id);
+                        Log::channel('azure')->info($invoice->invoice_id);
+            $this->info('Successfully '.$invoice->invoice_id);
+
                     } catch (\Throwable $th) {
                         Mail::raw($th, function ($mail) use($th) {
                             $mail->to('joaquim.soares@tagydes.com')
@@ -66,6 +68,7 @@ class AzureBilledCommand extends Command
                         });
                     }
                     $Count = 0;
+
                     if($resources){
                         foreach ($resources as $key => $value) {
                             foreach ($value as $key => $value) {
@@ -96,6 +99,7 @@ class AzureBilledCommand extends Command
                                                 'unitPrice'             => $value['unitPrice'],
                                                 'additionalinfo'        => $value['additionalInfo'],
                                             ]);
+                                            $this->info('updated '.$resource->resource_id);
                                             // Log::channel('azure')->info('price '.$price1->rates[0]. ' This quantity '. $value->quantity . ' total ->  ' . $price );
                                             Log::channel('azure')->info('updated '.$resource->resource_name);
                                         }
@@ -103,7 +107,7 @@ class AzureBilledCommand extends Command
                                             Log::channel('azure')->info($e->getMessage());
                                             Mail::raw($e, function ($mail) use($e) {
                                                     $mail->to('joaquim.soares@tagydes.com')
-                                                    ->subject('Azure Sync Failed');
+                                                    ->subject('Azure Sync Failed' . $e->getMessage());
                                                 });
                                             }
                                         });
