@@ -89,8 +89,8 @@ class AzureBilledCommand extends Command
                                                 'usageStartTime'        => $value['chargeStartDate'],
                                                 'usageEndTime'          => $value['chargeEndDate'],
                                                 'resource_subcategory'  => $value['meterSubCategory'],
-                                                'usagedate'             => $value['usageDate'],
                                             ], [
+                                                'usagedate'             => $value['usageDate'],
                                                 'quantity'              => $value['quantity'],
                                                 'unit'                  => $value['unitOfMeasure'],
                                                 'cost'                  => $value['billingPreTaxTotal'],
