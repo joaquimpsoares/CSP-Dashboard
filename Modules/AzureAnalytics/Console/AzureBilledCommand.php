@@ -59,7 +59,7 @@ class AzureBilledCommand extends Command
                         $resources = FacadesAzureResource::withCredentials($invoice->instance->external_id,$invoice->instance->external_token)
                         ->invoicebilled($invoice->provider->country->currency_code,$invoice->invoice_id);
                         Log::channel('azure')->info($invoice->invoice_id);
-            $this->info('Successfully '.$invoice->invoice_id);
+            $this->info('Updating Invoice ID '.$invoice->invoice_id);
 
                     } catch (\Throwable $th) {
                         Mail::raw($th->getMessage(), function ($mail) use($th) {
@@ -99,8 +99,7 @@ class AzureBilledCommand extends Command
                                                 'unitPrice'             => $value['unitPrice'],
                                                 'additionalinfo'        => $value['additionalInfo'],
                                             ]);
-                                            $this->info('updated '.$resource->resource_id);
-                                            // Log::channel('azure')->info('price '.$price1->rates[0]. ' This quantity '. $value->quantity . ' total ->  ' . $price );
+                                            $this->info('updating '.$resource->resource_name . ''. $resource->usagedate );
                                             Log::channel('azure')->info('updated '.$resource->resource_name);
                                         }
                                         catch (\Exception $e) {
