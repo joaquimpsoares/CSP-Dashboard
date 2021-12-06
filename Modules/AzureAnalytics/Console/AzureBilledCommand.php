@@ -62,9 +62,9 @@ class AzureBilledCommand extends Command
             $this->info('Successfully '.$invoice->invoice_id);
 
                     } catch (\Throwable $th) {
-                        Mail::raw($th, function ($mail) use($th) {
+                        Mail::raw($th->getMessage(), function ($mail) use($th) {
                             $mail->to('joaquim.soares@tagydes.com')
-                            ->subject($th->getMessage());
+                            ->subject('Failed importing');
                         });
                     }
                     $Count = 0;
@@ -105,18 +105,18 @@ class AzureBilledCommand extends Command
                                         }
                                         catch (\Exception $e) {
                                             Log::channel('azure')->info($e->getMessage());
-                                            Mail::raw($e, function ($mail) use($e) {
-                                                    $mail->to('joaquim.soares@tagydes.com')
-                                                    ->subject('Azure Sync Failed' . $e->getMessage());
-                                                });
-                                            }
-                                        });
-                                    }
+                                            Mail::raw($e->getMessage(), function ($mail) use($e) {
+                                                $mail->to('joaquim.soares@tagydes.com')
+                                                ->subject('Azure Sync Failed');
+                                            });
+                                        }
+                                    });
                                 }
                             }
                         }
                     }
-                });
+                }
+            });
 
             Mail::raw("Just finished Azure Syncronization", function ($mail)  {
                 $mail->to('joaquim.soares@tagydes.com')
