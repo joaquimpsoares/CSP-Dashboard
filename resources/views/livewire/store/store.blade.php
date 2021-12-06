@@ -148,7 +148,7 @@
                                             <div class="flex items-center justify-between px-4 pt-4">
                                                 <div>
                                                     @if($price->related_product->is_addon ==true)
-                                                    <x-icon.addon ></x-icon.addon>
+                                                    {{-- <x-icon.addon ></x-icon.addon> --}}
                                                     @else
                                                     <svg xmlns="http://www.w3.org/2000/svg" tabindex="{{$index}}" class="focus:outline-none" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
