@@ -6,6 +6,7 @@ use App\User;
 use Exception;
 use App\Customer;
 use App\Instance;
+use Carbon\Carbon;
 use App\Subscription;
 use Illuminate\Support\Str;
 use App\Models\AzurePriceList;
@@ -53,16 +54,19 @@ class SyncAzure extends Command
     */
     public function handle()
     {
-        Mail::raw("Starting Azure Syncronization", function ($mail)  {
-            $mail->to('joaquim.soares@tagydes.com')
-            ->subject('Daily importing Started Azure reports');
-        });
+        // Mail::raw("Starting Azure Syncronization", function ($mail)  {
+        //     $mail->to('joaquim.soares@tagydes.com')
+        //     ->subject('Daily importing Started Azure reports');
+        // });
+
 
         $subscriptions = Subscription::where('billing_type', 'usage')->get();
 
+        Log::channel('azure')->info('Preparing import for current subscription ' .$subscriptions->count() );
+
         foreach($subscriptions as $subscription){
 
-            if($subscription->product_id == 'MS-AZR-0145P'){
+            // if($subscription->product_id == 'MS-AZR-0145P'){
                 $instance = Instance::where('id', $subscription->instance_id)->first();
                 $msId = $subscription->customer->microsoftTenantInfo->first()->tenant_id;
                 $customer = new TagydesCustomer([
@@ -91,61 +95,94 @@ class SyncAzure extends Command
                 ->utilizations($customer, $subscriptions);
 
                 try{
-                    $resources->first()->items->each(function($resource) use($subscription){
-                        $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
+                    $resources->each(function($resource) use($subscription){
+                        $resource = collect($resource);
+                        // $resource = $resource->groupBy(['usageStartTime', 'resource','id']);
+                        // dd($resource);
 
-                        $price = AzurePriceList::where('resource_id', $resource->resource->id)->first();
+                        // $resource = $resource->groupBy(function ($item, $key) {
+                        //     return [
+                        //         date('m/Y', strtotime($item['usageStartTime'])),
+                        //         // $item['resource']['id']
+                        // ];
+                        // })->map(function($resource){
+                        //     return $resource->sum('quantity');
+                        // });
+                        // dd($resource);
+
+
+
+                        // $resource = $resource->groupBy(['usageStartTime', function ($item) {
+                        //     return $item['resource']['id'];
+                        // }], $preserveKeys = true);
+                        // $resource = $resource->map(function($resource){
+                        //     $resource = $resource->map(function($resource){
+                        //         $resource = collect($resource);
+                        //         dd($resource[0]['quantity']);
+                        //         return $resource[0]['quantity']->sum();
+                        //     });
+                        // });
+                        // dd($resource);
+                        $resource->each(function($resource) use($subscription){
+                            // $resource->each(function($resource) use($subscription){
+                            //     $resource = collect($resource);
+                            //     dd($resource);
+                            // });
+
+                        $resourceGroup = Str::of($resource['instanceData']['resourceUri'])->explode('/');
+                        $price = AzurePriceList::where('resource_id', $resource['resource']['id'])->first();
                         if(!isset($price)){
                             $price = AzurePriceList::updateOrCreate(
-                                ['resource_id'   => $resource->resource->id],
+                                ['resource_id'   => $resource['resource']['id']],
                                 ['rates' => [0]]);
-                                Log::channel('azure')->info('Price updated for resource ' .$resource->resource->id);
+                                Log::channel('azure')->info('Price updated for resource ' .$resource['resource']['id']);
                             }
 
                             $resource = AzureUsageReport::updateOrCreate([
-                                'subscription_id'       => $subscription->id,
-                                'resource_name'         => $resource->resource->name,
-                                'resource_id'           => $resource->resource->id,
+                                'subscription_id'       => $subscription['id'],
+                                'resource_name'         => $resource['resource']['name'],
+                                'resource_id'           => $resource['resource']['id'],
                                 'resource_group'        => $resourceGroup[4],
                             ], [
-                                'usageStartTime'        => $resource->usageStartTime,
-                                'usageEndTime'          => $resource->usageEndTime,
-                                'resource_location'     => $resource->instanceData->location,
-                                'resource_category'     => $resource->resource->category,
-                                'resource_subcategory'  => $resource->resource->subcategory,
-                                'resource_region'       => $resource->resource->region,
-                                'unit'                  => $resource->unit,
+                                'usageStartTime'        => $resource['usageStartTime'],
+                                'usageEndTime'          => $resource['usageEndTime'],
+                                'usagedate'             => $resource['usageStartTime'],
+                                'resource_location'     => $resource['instanceData']['location'],
+                                'resource_category'     => $resource['resource']['category'],
+                                'resource_subcategory'  => $resource['resource']['subcategory'],
+                                'resource_region'       => $resource['resource']['region'],
+                                'unit'                  => $resource['unit'],
                                 'name'                  => $resourceGroup[8] ?? null,
-                                "resourceType"          => $resource->instanceData->additionalInfo->toArray()['resourceType'] ?? null,
-                                "usageResourceKind"     => $resource->instanceData->additionalInfo->toArray()['usageResourceKind'] ?? null,
-                                "dataCenter"            => $resource->instanceData->additionalInfo->toArray()['dataCenter'] ?? null,
-                                "networkBucket"         => $resource->instanceData->additionalInfo->toArray()['networkBucket'] ?? null,
-                                "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
-                                'quantity'              => $resource->quantity,
+                                "resourceType"          => $resource['instanceData']['additionalInfo']['resourceType'] ?? null,
+                                "usageResourceKind"     => $resource['instanceData']['additionalInfo']['usageResourceKind'] ?? null,
+                                "dataCenter"            => $resource['instanceData']['additionalInfo']['dataCenter'] ?? null,
+                                "networkBucket"         => $resource['instanceData']['additionalInfo']['networkBucket'] ?? null,
+                                "pipelineType"          => $resource['instanceData']['additionalInfo']['pipelineType'] ?? null,
+                                'quantity'              => $resource['quantity'],
                             ]);
-
-                            $price1 = AzurePriceList::where('resource_id', $resource->resource_id)->first();
-                            $price = $resource->quantity*$price1->rates[0];
+                            $price1 = AzurePriceList::where('resource_id', $resource['resource_id'])->first();
+                            $price = $resource['quantity']*$price1->rates[0];
                             $resource->update(['cost' => $price]);
 
-                            Log::channel('azure')->info('price '.$price1->rates[0]. ' This quantity '. $resource->quantity . ' total ->  ' . $price );
-                            Log::channel('azure')->info('updated '.$resource->resource_name. ' With price '. $price);
+                            Log::channel('azure')->info('price '.$price1->rates[0]. ' This quantity '. $resource['quantity'] . ' total ->  ' . $price );
+                            Log::channel('azure')->info('updated '.$resource['resource_name']. ' With price '. $price);
                         });
+                    });
                     }
                     catch (\Exception $e) {
                         Log::channel('azure')->info($e->getMessage());
-                        Mail::raw($e, function ($mail) use($e) {
-                            $mail->to('joaquim.soares@tagydes.com')
-                            ->subject('Azure Sync Failed');
-                        });
+                        // Mail::raw($e, function ($mail) use($e) {
+                        //     $mail->to('joaquim.soares@tagydes.com')
+                        //     ->subject('Azure Sync Failed');
+                        // });
                     }
                 }
-            }
+            // }
 
-            Mail::raw("Just finished Azure Syncronization", function ($mail)  {
-                $mail->to('joaquim.soares@tagydes.com')
-                ->subject('Daily imported Azure reports');
-            });
+            // Mail::raw("Just finished Azure Syncronization", function ($mail)  {
+            //     $mail->to('joaquim.soares@tagydes.com')
+            //     ->subject('Daily imported Azure reports');
+            // });
 
             $this->info('Successfully sent daily quote to everyone.');
         }
