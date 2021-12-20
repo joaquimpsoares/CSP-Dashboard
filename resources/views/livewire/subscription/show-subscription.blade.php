@@ -440,10 +440,20 @@
                                     </div>
                                     <div class="mb-2 col-md-6">
                                         <x-label for="editing.amount">{{ ucwords(trans_choice('messages.amount', 1)) }}</x-label>
+                                        @if($showEditModal == true)
+
+                                        @if($editing->amount <= 0)
+                                        @php
+                                            $editing->amount = 1;
+                                        @endphp
+                                        @endif
+                                        @endif
                                         <x-input wire:model="editing.amount" type="number" id="editing.amount" name="editing.amount" class="@error('editing.amount') is-invalid @enderror"></x-input>
                                         @error('editing.amount')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                         <p class="mt-2 text-xs text-gray-500">
-                                            {{-- {{$max_quantity-$editing->amount}} --}}
+                                            @if($showEditModal == true)
+                                            {{$max_quantity-$editing->amount}}
+                                            @endif
                                         </p>
                                     </div>
                                 </div>
