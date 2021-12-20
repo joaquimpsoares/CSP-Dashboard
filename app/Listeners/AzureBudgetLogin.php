@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use DateTime;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Queue\InteractsWithQueue;
@@ -30,6 +31,7 @@ class AzureBudgetLogin
     */
     public function handle(login $event)
     {
+        $fechahoy = new DateTime();
         // Session::flash('success', 'Hello ' . $event->user->name . ', welcome back!');
         $resourceName = $this->analyticRepository->getAzureSubscriptions();
         $resourceName->map(function ($item, $key) {
@@ -46,11 +48,13 @@ class AzureBudgetLogin
                 }
             }
         });
+        $date = $fechahoy->diff($resourceName->first()->updated_at);
         if ($resourceName->first() != null){
             if($resourceName->first()->percentage >= '90' ){
-                Notification::send($event->user, new AzureBudgetNotification($resourceName));
+                if($date->format('%R%a') >= 10 ){
+                    Notification::send($event->user, new AzureBudgetNotification($resourceName));
+                }
             }
         }
-
     }
 }
