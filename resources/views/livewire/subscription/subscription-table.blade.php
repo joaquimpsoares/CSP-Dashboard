@@ -169,7 +169,7 @@
                                                                             <button type="submit" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none" type="submit">Change</button>
                                                                         </div>
                                                                     </td>
-                                                                    @if ($subscription->billing_type != 'software')
+                                                                    {{-- @if ($subscription->billing_type != 'software')
                                                                     @foreach ($subscription->products->first()->getaddons()->all() as $item)
                                                                     <tr>
                                                                         <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap"><strong>Add-on:</strong> {{$item->name}}</td>
@@ -185,7 +185,7 @@
                                                                         </form>
                                                                     </tr>
                                                                     @endforeach
-                                                                    @endif
+                                                                    @endif --}}
                                                                 </form>
                                                             </tr>
                                                         </tbody>
