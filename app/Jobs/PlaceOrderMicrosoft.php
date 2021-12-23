@@ -107,6 +107,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
 
                 if ($product['is_perpetual']) {
                     $catalogItemId = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)->getPerpetualCatalogItemId($product['uri']);
+                    Log::info('Catalog Item ID: ' . $catalogItemId);
 
                     $TagydesProduct = new TagydesProduct([
                         'id' => $catalogItemId
@@ -169,7 +170,6 @@ class PlaceOrderMicrosoft implements ShouldQueue
             Log::info('Error Placing order to Microsoft: ' . $e->getMessage());
 
             $this->order->details = ('Error Placing order to Microsoft: ' . $e->getMessage());
-            // $this->order->subscription_id   = $subscriptions->id;
             $this->order->order_status_id = 3;
             $this->order->save();
         }
