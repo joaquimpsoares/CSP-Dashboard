@@ -34,6 +34,7 @@ class AzureBudgetLogin
         $fechahoy = new DateTime();
         // Session::flash('success', 'Hello ' . $event->user->name . ', welcome back!');
         $resourceName = $this->analyticRepository->getAzureSubscriptions();
+        dd($resourceName);
         if($resourceName){
         $resourceName->map(function ($item, $key) {
             foreach ($item->azureresources as $resource) {
