@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Price extends Model
 {
-    protected $dispatchesEvents = [
-        'saved' => PriceChanged::class
-    ];
+    // protected $dispatchesEvents = [
+    //     'saved' => PriceChanged::class
+    // ];
 
     public function format()
     {

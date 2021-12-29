@@ -217,8 +217,7 @@
                                     <x-input wire:model.debounce.500ms="editing.markup" type="text" id="markup" name="markup" class="@error('editing.markup') is-invalid @enderror" placeholder="Markup % for Azure Subscription"></x-input>
                                     @error('editing.markup')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
-                                {{-- <div class="row">
-                                    @if ($showCreateUser == true)
+                                <div class="row">
                                     <div class="mb-4 col-lg-4 col-md-6">
                                         <x-label for="country">{{ucwords(trans_choice('messages.price_list', 1))}}</x-label>
                                         <div class="mb-3 input-group">
@@ -230,9 +229,8 @@
                                             @error('editing.price_list_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                         </div>
                                     </div>
-                                    @endif
                                     <hr>
-                                </div> --}}
+                                </div>
                             </div>
                         </div>
                         @if ($showCreateUser == true)

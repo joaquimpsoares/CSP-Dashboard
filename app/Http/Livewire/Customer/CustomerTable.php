@@ -62,7 +62,8 @@ class CustomerTable extends Component
         'editing.postal_code'           => 'required|string|max:255|min:3',
         'editing.status_id'             => 'required|integer|exists:statuses,id',
         'editing.markup'                => 'nullable|integer|min:1',
-        'editing.price_list_id'         => 'required|integer|exists:price_list,id',
+        'editing.price_list_id'         => 'required|integer|exists:price_lists,id',
+
 
         'creatingUser.name'             => 'sometimes|string|max:255|min:3',
         'creatingUser.last_name'        => 'sometimes|string|max:255|min:3',
@@ -79,8 +80,6 @@ class CustomerTable extends Component
     {
         $this->validateOnly($propertyName);
     }
-
-
 
     public function updatingSearch(){$this->resetPage();}
     public function makeBlankTransaction(){return Customer::make(['date' => now(), 'status' => 'success']);}
@@ -139,9 +138,9 @@ class CustomerTable extends Component
                 'country_id'        => $this->editing->country_id,
                 'password'          => Hash::make($this->password),
                 'user_level_id'     => 6, //Customer role id = 6
-                // 'notify'            => $this->sendInvitation ?? false,
                 'status_id'         => $this->creatingUser->status_id,
                 'customer_id'       => $newCustomer->id,
+                // 'notify'            => $this->sendInvitation ?? false,
             ]);
 
             $newCustomer->resellers()->attach(Auth::user()->reseller->id);

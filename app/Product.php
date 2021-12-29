@@ -75,7 +75,11 @@ class Product extends Model
 
     public function IsSubscribed()
     {
-        return $this->subsription;
+        if($this->subsription){
+            return true;
+        }else{
+            return false;
+        }
     }
     public function price() {
         return $this->hasOne(Price::class, 'product_id', 'id');

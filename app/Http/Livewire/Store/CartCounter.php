@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Store;
 
 use App\Cart;
+use App\Customer;
 use Livewire\Component;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\Auth;
@@ -35,14 +36,16 @@ class CartCounter extends Component
         $this->isOpen = true;
     }
 
-    protected $rules = [
+    protected $rules =
+
+    [
+        'company_name'          => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
         'company_name'          => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
     ];
 
     public static  function getUserCart($id = null, $token = null)
     {
         $user = Auth::user();
-
         if (empty($token)) {
             if (empty($id)) {
                 $cart = Cart::where('user_id', $user->id)->whereNull('verify')->with(['products', 'customer'])->first();
@@ -99,17 +102,35 @@ class CartCounter extends Component
         $this->emit('updateCart');
     }
 
-    public function setCustomer($value, $id)
+    public function setCustomer(Customer $customer)
     {
-
         $cart = $this->getUserCart();
+        $productId = $cart->products->first(function ($customer) {
+            return $customer->pivot->id;
+        });
 
-        $cart->customer_id = $value;
-        $cart->save();
+        $cart->update(['customer_id' => $customer->id]);
+
+        $limits = $this->checkLimits($customer,$productId);
+
+        if($limits == true){
+            $this->removeItem($cart->id);
+        }
 
         $this->emit('updateCart');
     }
 
+
+    public function checkLimits($customer, $product){
+        if($product->IsSubscribed()){
+            $limit = $customer->subscriptions->where('product_id', $product->sku)->count();
+            if($limit >=  $product->limit){
+                $this->notify('you have reached the limits for: '. $product->name, 'error');
+                return true;
+            }
+        }
+        return false;
+    }
 
     public function mount(){
         $user = Auth::user();
@@ -135,6 +156,7 @@ class CartCounter extends Component
 
         $this->emit('updateCart');
     }
+
 
     public function render()
     {

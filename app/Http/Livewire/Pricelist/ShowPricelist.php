@@ -42,6 +42,7 @@ class ShowPricelist extends Component
 
 
     public function mount() { $this->editing = $this->makeBlankTransaction(); }
+    public function updatingSearch(){$this->resetPage();}
     public function makeBlankTransaction() { return Price::make(['date' => now(), 'status' => 'success']); }
     public function resetFilters(){ $this->reset(); }
     public function resetDate() { $this->reset(['taskduedate']); }
@@ -54,6 +55,7 @@ class ShowPricelist extends Component
             'editing.price'         => 'required',
             'editing.msrp'          => 'required',
         ]; }
+
 
         public function create()
         {
@@ -132,18 +134,19 @@ class ShowPricelist extends Component
 
         public function deleteSelected()
         {
-
+            $deleteCount = $this->selectedRowsQuery->count();
             foreach($this->selectedRowsQuery->get() as $row){
+                // dump($row->related_product->IsSubscribed());
                 if($row->related_product->IsSubscribed() == null) {
-                    $deleteCount = $this->selectedRowsQuery->count();
                     $this->selectedRowsQuery->delete();
-                    $this->notify('You\'ve deleted '.$deleteCount.' Price');
+                    $this->showDeleteModal = false;
                 }else{
                     $deleted = $row->name;
                     $this->notify('This price '. $deleted . 'is already subscribed, cannot be deleted');
+                    $this->showDeleteModal = false;
                 }
-                $this->showDeleteModal = false;
             }
+            $this->notify('You\'ve deleted '.$deleteCount.' Price');
         }
 
 

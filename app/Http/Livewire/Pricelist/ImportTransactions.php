@@ -8,6 +8,7 @@ use Validator;
 use App\Product;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Log;
 
 class ImportTransactions extends Component
 {
@@ -59,18 +60,30 @@ class ImportTransactions extends Component
         Csv::from($this->upload)
         ->eachRow(function ($row) use (&$importCount) {
             $tt = $this->extractFieldsFromRow($row);
+            // dd($tt['instance_id']);
+            $product = Product::where('instance_id', $tt['instance_id'] )->where('sku', $tt['product_sku'])->first();
+            // Log::info('instance id: ' .$this->priceList->instance_id. ' updating for ID: '. $product->id . ' sku: '. $tt['product_sku'] .' name: ' .$tt['name']);
+
             if($tt['product_id'] != null){
-                Price::updateOrCreate([
-                    'product_sku'   => $tt['product_sku'],
-                    'product_id'    => $tt['product_id'],
-                    'instance_id'   => $this->priceList->instance_id,
-                    'price_list_id' => $this->priceList->id,
-                ],[
-                    'name'          => $tt['name'],
-                    'price'         => $tt['price'],
-                    'msrp'          => $tt['msrp'],
-                    'product_vendor'=> $tt['product_vendor']
-                ]);
+                try {
+                    $price = Price::updateOrCreate([
+                        'product_sku'   => $tt['product_sku'],
+                        'instance_id'   => $this->priceList->instance_id,
+                        'price_list_id' => $this->priceList->id,
+                        'name'          => $tt['name'],
+                    ],[
+                        'price'         => $tt['price'],
+                        'msrp'          => $tt['msrp'],
+                        'product_vendor'=> $tt['product_vendor'],
+                        'product_id'    => $product->id,
+
+                    ]);
+                Log::info('Budget updated for: '. $price['product_sku'].' name:'. $price['name']);
+
+                } catch (\Throwable $th) {
+                    dd($th->getMessage());
+                }
+
                 $importCount++;
             }
             });

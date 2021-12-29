@@ -47,6 +47,8 @@ class PricelistTable extends Component
         'editing.reseller_id'   => 'sometimes',
     ]; }
 
+    public function updatingSearch(){$this->resetPage();}
+
     public function mount() { $this->editing = $this->makeBlankTransaction(); }
 
     public function save()
@@ -64,6 +66,7 @@ class PricelistTable extends Component
                 $this->getUser()->reseller->priceList->prices->each(function(Price $price){
                     $attributes = $price->getAttributes();
                     unset($attributes['id']);
+                    unset($attributes['provider_id']);
                     $this->editing->prices()->create($attributes);
                 });
 

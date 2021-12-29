@@ -50,6 +50,12 @@
     @empty
     Cart is empty
     @endforelse
+    {{-- @dd(Auth::user()->userLevel) --}}
+    @if(Auth::user()->userLevel->name == 'Customer')
+    @php
+    $customer = Auth::user()->customer;
+    @endphp
+    @else
     <h1 class="pb-8 text-2xl font-semibold border-b"></h1>
     <div >
         <label class="inline-block mb-3 text-sm font-medium uppercase">Choose customer</label>
@@ -60,6 +66,7 @@
             @endforeach
         </select>
     </div>
+    @endif
     <div class="mt-8 border-t ">
         <div class="flex justify-between py-6 text-sm font-semibold uppercase">
             <span>Total cost</span>
@@ -68,12 +75,18 @@
         <form action="{{ route('cart.add_customer') }}" method="POST">
             @csrf
             {{ method_field('POST') }}
-            <input type="hidden" name="cart" value="{{ $cart->first()->token }}">
-            <button type="submit" href="{{ route('cart.add_customer') }}" class="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
+            @if(Auth::user()->userLevel->name == 'Customer')
+            <input type="hidden"  name="cart" value="{{ $cart->first()->token }}">
+            <button type="submit"  class="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
                 Checkout
             </button>
+            @else
+            <input type="hidden" name="cart" value="{{ $cart->first()->token }}">
+            <button type="submit" class="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
+                Checkout
+            </button>
+            @endif
         </form>
     </div>
     @endif
 </div>
-

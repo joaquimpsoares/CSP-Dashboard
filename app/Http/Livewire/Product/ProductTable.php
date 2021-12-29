@@ -43,10 +43,10 @@ class ProductTable extends Component
     public $selectedProducts = [];
     public bool $bulkDisabled = true;
 
-    public function mount()
-    {
-        $this->editing = $this->makeBlankTransaction();
-    }
+    public function mount(){$this->editing = $this->makeBlankTransaction();}
+    public function updatingSearch(){$this->resetPage();}
+    public function import(){$this->showImportModal = true;}
+
 
     public function rules()
     {
@@ -65,18 +65,6 @@ class ProductTable extends Component
             'editing.supported_billing_cycles'  => 'required'|'integer'|'exists:price_list,id',
             'editing.terms'                     => 'required'|'integer'|'exists:price_list,id',
             'editing.resellee_qualifications'   => 'required'|'integer'|'exists:price_list,id',
-
-
-            // 'creatingUser.editing.'             => 'sometimes'|'string'|'max:255'|'min:3',
-            // 'creatingUser.last_name'        => 'sometimes'|'string'|'max:255'|'min:3',
-            // 'creatingUser.socialite_id'     => 'sometimes'|'string'|'max:255'|'min:3',
-            // 'creatingUser.phone'            => 'sometimes'|'string'|'max:20'|'min:3',
-            // 'creatingUser.address'          => 'sometimes'|'string'|'max:255'|'min:3',
-            // 'creatingUser.email'            => 'nullable'|'email','unique:users'|'max:255'|'min:3',
-            // 'creatingUser.status_id'        => 'required'|'integer'|'exists:statuses,id',
-            // 'password'                      => 'same:password_confirmation'|'required'|'min:6',
-            //required', new checkPostalCodeRule(!isset($this->country_id) ?? $country->iso_3166_2),'min:3'],
-            //'postal_code'           => ['requir
         ];
     }
 
@@ -99,15 +87,17 @@ class ProductTable extends Component
         return Product::make(['date' => now(), 'status' => 'success']);
     }
 
-
-    public function updatingSearch()
+    public function deleteSelected()
     {
-        $this->resetPage();
+        $deleteCount = $this->selectedRowsQuery->count();
+
+        $this->selectedRowsQuery->delete();
+
+        $this->showDeleteModal = false;
+
+        $this->notify('You\'ve deleted '.$deleteCount.' transactions');
     }
 
-    public function import(){
-        $this->showImportModal = true;
-    }
 
     public function importproducts(){
 
@@ -149,6 +139,7 @@ class ProductTable extends Component
             $query->where('id', "like", "%{$this->filters['search']}%");
             $query->orWhere('sku', 'like', "%{$this->filters['search']}%");
             $query->orWhere('name', 'like', "%{$this->filters['search']}%");
+            $query->orWhere('productType', 'like', "%{$this->filters['search']}%");
             $query->orWhere('category', 'like', "%{$this->filters['search']}%");
         })->
         with(['instance']);

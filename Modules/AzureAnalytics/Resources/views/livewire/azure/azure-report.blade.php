@@ -4,6 +4,7 @@
 <link href="{{URL::asset('assets/plugins/datatable/css/dataTables.bootstrap4.min.css')}}" rel="stylesheet" />
 <link href="{{URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css')}}"  rel="stylesheet">
 <link href="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.css')}}" rel="stylesheet" />
+
 <style>
     .rotate-45 {
         --transform-rotate: 45deg;
@@ -112,8 +113,8 @@
                 <x-tableazure>
                     <x-slot name="head">
                         <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('name')" :direction="$sorts['name'] ?? null">{{ ucwords(trans_choice('messages.name', 2)) }}</x-table.heading>
-                        <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('resource_group')"  :direction="$sorts['resource_group'] ?? null">{{ ucwords(trans_choice('messages.resource_group', 1)) }}</x-table.heading>
-                        <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('resource_location')"         :direction="$sorts['resource_location'] ?? null">{{ ucwords(trans_choice('messages.region', 1)) }}</x-table.heading>
+                        {{-- <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('resource_group')"  :direction="$sorts['resource_group'] ?? null">{{ ucwords(trans_choice('messages.resource_group', 1)) }}</x-table.heading> --}}
+                        <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('resource_region')"         :direction="$sorts['resource_region'] ?? null">{{ ucwords(trans_choice('messages.region', 1)) }}</x-table.heading>
                         <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('cost')"       :direction="$sorts['cost'] ?? null">{{ ucwords(trans_choice('messages.total_cost', 1)) }}</x-table.heading>
                         <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('usageStartTime')"       :direction="$sorts['usageStartTime'] ?? null">{{ ucwords(trans_choice('messages.start_date', 2)) }}</x-table.heading>
                         <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('usageEndTime')"       :direction="$sorts['usageEndTime'] ?? null">{{ ucwords(trans_choice('messages.end_date', 2)) }}</x-table.heading>
@@ -121,7 +122,7 @@
                     </x-slot>
                     <x-slot name="body">
                         @forelse ($reports as $item)
-{{-- @dd($item) --}}
+                        {{-- @dd($item) --}}
                         <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $item['id'] }}">
                             <x-table.cell visibility='hidden' tablecell='lg:table-cell'>
                                 <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
@@ -130,17 +131,18 @@
                                     </span>
                                 </div>
                             </x-table.cell>
-                            <x-table.cell>
+
+                            {{-- <x-table.cell>
                                 <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
                                         {{$item->resource_group}}
                                     </span>
                                 </span>
-                            </x-table.cell>
+                            </x-table.cell> --}}
                             <x-table.cell>
                                 <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
-                                        {{$item->resource_location}}
+                                        {{$item->resource_region}}
                                     </span>
                                 </div>
                             </x-table.cell>

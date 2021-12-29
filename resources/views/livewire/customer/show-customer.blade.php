@@ -492,89 +492,87 @@
                                                 <div>
                                                     <x-label for="country">{{ucwords(trans_choice('messages.price_list', 1))}}</x-label>
                                                     <div class="mb-3 input-group">
-                                                        {{-- <select wire:model="editing.price_list_id" name="price_list_id" class="form-control @error('editing.price_list_id') is-invalid @enderror" sf-validate="required">
-                                                            <option value="{{$customer->price_list_id ?? ''}}" selected>{{optional($customer->priceList)->name}} </option>
+                                                        <select wire:model.debounce.500ms="editing.price_list_id" name="price_list_id" class="form-control @error('editing.price_list_id') is-invalid @enderror" sf-validate="required">
                                                             @foreach ($customer->resellers->first()->availablePriceLists as $pricelist)
-                                                            <option value="{{$pricelist->id}}">
-                                                                {{$pricelist->name}}</option>
-                                                                @endforeach
-                                                            </select> --}}
-                                                            @error('editing.price_list_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                                        </div>
-                                                        <label for="editing.markup" class="block text-sm font-medium text-gray-700">{{ ucwords(trans_choice('messages.markup', 1)) }}</label>
-                                                        <div class="relative mt-1 rounded-md shadow-sm">
-                                                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                                <span class="text-gray-500 sm:text-sm">
-                                                                    %
-                                                                </span>
-                                                            </div>
-                                                            <input value="{{$customer->markup}}" wire:model="editing.markup" type="text" name="editing.marku" id="editing.markup" class="block w-full pr-12 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 pl-7 sm:text-sm" placeholder="00" aria-describedby="price-markup">
-                                                        </div>
-                                                        @error('editing.markup')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <hr>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <x-label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</x-label>
-                                                    <div class="form-group">
-                                                        <select wire:model="editing.status_id" name="status" class="form-control @error('editing.status') is-invalid @enderror" sf-validate="required">
-                                                            <option value="{{$customer->status->id}}" selected>{{ucwords(trans_choice($customer->status->name, 1))}}</option>
-                                                            @foreach ($statuses  as $key => $status)
-                                                            <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
+                                                            <option value="{{$pricelist->id}}" >{{$pricelist->name}}</option>
                                                             @endforeach
                                                         </select>
-                                                        @error('editing.status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                                        @error('editing.price_list_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                                     </div>
+                                                    <label for="editing.markup" class="block text-sm font-medium text-gray-700">{{ ucwords(trans_choice('messages.markup', 1)) }}</label>
+                                                    <div class="relative mt-1 rounded-md shadow-sm">
+                                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                            <span class="text-gray-500 sm:text-sm">
+                                                                %
+                                                            </span>
+                                                        </div>
+                                                        <input value="{{$customer->markup}}" wire:model="editing.markup" type="text" name="editing.marku" id="editing.markup" class="block w-full pr-12 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 pl-7 sm:text-sm" placeholder="00" aria-describedby="price-markup">
+                                                    </div>
+                                                    @error('editing.markup')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <x-label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</x-label>
+                                                <div class="form-group">
+                                                    <select wire:model="editing.status_id" name="status" class="form-control @error('editing.status') is-invalid @enderror" sf-validate="required">
+                                                        <option value="{{$customer->status->id}}" selected>{{ucwords(trans_choice($customer->status->name, 1))}}</option>
+                                                        @foreach ($statuses  as $key => $status)
+                                                        <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('editing.status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </x-slot>
-                            <x-slot name="footer">
-                                <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                    {{ucwords(trans_choice('cancel', 1))}}
-                                </button>
-                                <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                    {{ucwords(trans_choice('save', 1))}}
-                                </button>
-                            </x-slot>
-                        </x-modal.slideout>
-                    </form>
-                </div>
+                            </div>
+                        </x-slot>
+                        <x-slot name="footer">
+                            <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                {{ucwords(trans_choice('cancel', 1))}}
+                            </button>
+                            <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                {{ucwords(trans_choice('save', 1))}}
+                            </button>
+                        </x-slot>
+                    </x-modal.slideout>
+                </form>
             </div>
-            <form wire:submit.prevent="disable({{$customer->id}})" wire:loading.class.delay="opacity-50">
-                <x-modal.confirmation wire:model.defer="showconfirmationModal">
-                    <x-slot name="title">Disabling Customer</x-slot>
-                    <x-slot name="content">
-                        <p> Are you sure you want to disable <strong class="text-red-400">{{$customer->company_name }}</strong>?</p>
-                        <p> <strong>By doing so your customer's subscriptions will be put to disabled  you have 90 days until your customer can loose their information.</strong></p>
-                        @foreach($customer->subscriptions as $key => $value)
-                        <ul>
-                            <li>
-                                {{$value->name}}
-                            </li>
-                        </ul>
-                        @endforeach
-                    </x-slot>
-                    <x-slot name="footer">
-                        <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false">
-                            {{ucwords(trans_choice('suspend', 1))}}
-                        </button>
-                        <a type="button" wire:click="$set('showconfirmationModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
-                            {{ucwords(trans_choice('cancel', 1))}}
-                        </a>
-                    </div>
+        </div>
+        <form wire:submit.prevent="disable({{$customer->id}})" wire:loading.class.delay="opacity-50">
+            <x-modal.confirmation wire:model.defer="showconfirmationModal">
+                <x-slot name="title">Disabling Customer</x-slot>
+                <x-slot name="content">
+                    <p> Are you sure you want to disable <strong class="text-red-400">{{$customer->company_name }}</strong>?</p>
+                    <p> <strong>By doing so your customer's subscriptions will be put to disabled  you have 90 days until your customer can loose their information.</strong></p>
+                    @foreach($customer->subscriptions as $key => $value)
+                    <ul>
+                        <li>
+                            {{$value->name}}
+                        </li>
+                    </ul>
+                    @endforeach
                 </x-slot>
+                <x-slot name="footer">
+                    <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false">
+                        {{ucwords(trans_choice('suspend', 1))}}
+                    </button>
+                    <a type="button" wire:click="$set('showconfirmationModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
+                        {{ucwords(trans_choice('cancel', 1))}}
+                    </a>
+                </div>
+            </x-slot>
 
-            </x-modal.confirmation>
-        </form>
-    </div>
-    <script>
-        function copyToClipboard(subscription_id) {
-            document.getElementById(subscription_id).select();
-            document.execCommand('copy');
-        }
-    </script>
+        </x-modal.confirmation>
+    </form>
+</div>
+<script>
+    function copyToClipboard(subscription_id) {
+        document.getElementById(subscription_id).select();
+        document.execCommand('copy');
+    }
+</script>

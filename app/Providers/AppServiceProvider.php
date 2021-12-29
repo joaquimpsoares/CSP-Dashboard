@@ -57,8 +57,13 @@ class AppServiceProvider extends ServiceProvider
             return $values->implode("\n");
         });
 
-        Component::macro('notify', function ($message) {
-            $this->dispatchBrowserEvent('notify', $message);
+        // Component::macro('notify', function ($message) {
+        //     $this->dispatchBrowserEvent('notify', $message);
+        // });
+
+        Component::macro('notify', function ($message,  $type = 'success') {
+            // dd($type);
+            $this->dispatchBrowserEvent('notify', ['message' => $message, 'type' => $type]);
         });
 
         Model::unguard();

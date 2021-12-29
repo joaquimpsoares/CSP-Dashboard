@@ -10,41 +10,42 @@
                         </svg>
                     </div>
                     <div class="ml-3">
-                        <p class="text-sm text-yellow-700">
+                        <p class="text-sm text-red-700">
                             This subscription is set not to auto renew.
                         </p>
-                        <p class="text-xs text-yellow-700"> On the {{$subscription->expiration_data}} will be automatically suspended. </p>
+                        <p class="text-xs text-red-700"> On the {{$subscription->expiration_data}} will be automatically suspended. </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     @endif
-    {{-- @dd($subscription->products->isNotEmpty()) --}}
+    {{-- @dd($subscription->products->where('instance_id', $subscription->instance_id)->first()->upgrade_target_offers->first() != null) --}}
     @if($subscription->products->isNotEmpty())
-    @if($subscription->products->where('instance_id', $subscription->instance_id)->first()->upgrade_target_offers != null)
-    <div class="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <div class="max-w-4xl mx-auto">
-            <div class="p-4 border-l-4 border-yellow-400 bg-yellow-50">
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        <svg class="w-5 h-5 text-yellow-400" x-description="Heroicon name: solid/exclamation" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                        </svg>
+    @if($subscription->products->where('instance_id', $subscription->instance_id)->first()->upgrade_target_offers->first() != null)
+
+    <div class="max-w-xl mx-auto bg-white border border-gray-200">
+        <ul class="shadow-box">
+            <li class="relative border-b border-gray-200" x-data="{selected:null}">
+                <button type="button" class="w-full px-8 py-6 text-left" @click="selected !== 1 ? selected = 1 : selected = null">
+                    <div class="flex items-center justify-between">
+                        <h3 class="pb-4 mx-auto mt-10 text-md">Available upgrades</h3>
+                        <x-icon.plus></x-icon.plus>
                     </div>
-                    <div class="ml-3">
-                        <p class="text-sm text-yellow-700">
-                            This subscription has available upgrades:
-                        </p>
+                </button>
+
+                <div class="relative overflow-hidden transition-all duration-700 max-h-0" style="" x-ref="container1" x-bind:style="selected == 1 ? 'max-height: ' + $refs.container1.scrollHeight + 'px' : ''">
+                    <div class="p-6">
                         @foreach($subscription->products->where('instance_id', $subscription->instance_id)->first()->getUpgradeProducts()->all() as $key => $value)
-                        <p class="text-xs text-yellow-700"> {{$value->name}}
+                        <p class="text-xs "> {{$value->name}}
                         </p>
                         @endforeach
                     </div>
                 </div>
-            </div>
-        </div>
+            </li>
+        </ul>
     </div>
+
     @endif
     @endif
     <div class="relative z-0 flex-col flex-1 overflow-y-auto">
@@ -444,7 +445,7 @@
 
                                         @if($editing->amount <= 0)
                                         @php
-                                            $editing->amount = 1;
+                                        $editing->amount = 1;
                                         @endphp
                                         @endif
                                         @endif
