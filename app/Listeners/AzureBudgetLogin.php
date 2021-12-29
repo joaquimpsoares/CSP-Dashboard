@@ -34,30 +34,29 @@ class AzureBudgetLogin
         $fechahoy = new DateTime();
         // Session::flash('success', 'Hello ' . $event->user->name . ', welcome back!');
         $resourceName = $this->analyticRepository->getAzureSubscriptions();
-        dd($resourceName);
-        if($resourceName){
-        $resourceName->map(function ($item, $key) {
-            foreach ($item->azureresources as $resource) {
-                $increase = ($item->budget - $item->azureresources->sum('cost'));
-                if ($item->budget > '0') {
-                    if ($increase !== '0') {
-                        $average1 = ($increase / $item->budget) * 100;
-                        $item['percentage'] = 100 - $average1;
-                    } else {
-                        $item['percentage'] = '0';
+        if($resourceName->total() > 0){
+            $resourceName->map(function ($item, $key) {
+                foreach ($item->azureresources as $resource) {
+                    $increase = ($item->budget - $item->azureresources->sum('cost'));
+                    if ($item->budget > '0') {
+                        if ($increase !== '0') {
+                            $average1 = ($increase / $item->budget) * 100;
+                            $item['percentage'] = 100 - $average1;
+                        } else {
+                            $item['percentage'] = '0';
+                        }
+                        return $item;
                     }
-                    return $item;
                 }
-            }
-        });
-        $date = $fechahoy->diff($resourceName->first()->updated_at);
-        if ($resourceName->first() != null){
-            if($resourceName->first()->percentage >= '90' ){
-                if($date->format('%R%a') >= 10 ){
-                    Notification::send($event->user, new AzureBudgetNotification($resourceName));
+            });
+            $date = $fechahoy->diff($resourceName->first()->updated_at);
+            if ($resourceName->first() != null){
+                if($resourceName->first()->percentage >= '90' ){
+                    if($date->format('%R%a') >= 10 ){
+                        Notification::send($event->user, new AzureBudgetNotification($resourceName));
+                    }
                 }
             }
         }
     }
-}
 }
