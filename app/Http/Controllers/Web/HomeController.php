@@ -162,9 +162,10 @@ class HomeController extends Controller
                     $invoicedata['data'][] = (int) $row->total;
                   }
 
+                  if($invoicedata){
                   $invoicelabel = $invoicelabel['label'];
                   $invoicedata  = $invoicedata['data'];
-
+                }
                   return view('msft/index', compact('invoices','invoicelabel','invoicedata'));
 
                 $topProducts = OrderProducts::with('Order')->get();
