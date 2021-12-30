@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Web;
 
 use App\News;
-use App\User;
 use App\Order;
 use App\Models\Status;
-use App\Country;
 use App\Customer;
-use App\Instance;
 use App\Provider;
 use App\Reseller;
 use Carbon\Carbon;
@@ -18,7 +15,6 @@ use App\Models\Activities;
 use App\Models\LogActivity;
 use App\Models\MsftInvoices;
 use App\Http\Traits\UserTrait;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\OrderRepositoryInterface;
@@ -105,9 +101,10 @@ class HomeController extends Controller
                     $invoicelabel['label'][] = json_encode($row->date);
                     $invoicedata['data'][] = (int) $row->total;
                   }
-
-                  $invoicelabel = $invoicelabel['label'];
-                  $invoicedata  = $invoicedata['data'];
+                  if($invoicelabel){
+                      $invoicelabel = $invoicelabel['label'];
+                      $invoicedata  = $invoicedata['data'];
+                  }
 
                   foreach($orderrecord as $row) {
                     $orderlabel['label'][] = json_encode($row->day_name);
