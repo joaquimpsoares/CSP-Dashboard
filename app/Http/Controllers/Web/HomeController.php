@@ -101,8 +101,8 @@ class HomeController extends Controller
                     $invoicelabel['label'][] = json_encode($row->date);
                     $invoicedata['data'][] = (int) $row->total;
                   }
-                  if($invoicelabel){
-                      $invoicelabel = $invoicelabel['label'];
+                  if(!$sales->isEmpty()){
+                    $invoicelabel = $invoicelabel['label'];
                       $invoicedata  = $invoicedata['data'];
                   }
 
@@ -162,7 +162,7 @@ class HomeController extends Controller
                     $invoicedata['data'][] = (int) $row->total;
                   }
 
-                  if($invoicedata){
+                  if(!$sales->isEmpty()){
                   $invoicelabel = $invoicelabel['label'];
                   $invoicedata  = $invoicedata['data'];
                 }
@@ -265,10 +265,7 @@ class HomeController extends Controller
                   if(!$sales->isEmpty()){
                   $invoicelabel = $invoicelabel['label'];
                   $invoicedata  = $invoicedata['data'];
-                }else{
-                    $invoicelabel = ['0'];
-                    $invoicedata  = ['0'];
-                };
+                }
 
                 return view('home', compact('resellers','orders','countOrders','customersweek','provider','customers',
                 'subscriptions','news','orderdata','orderlabel','customerlabel','customerdata','invoicelabel','invoicedata'));
