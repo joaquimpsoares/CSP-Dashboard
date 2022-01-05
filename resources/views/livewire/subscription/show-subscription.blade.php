@@ -22,7 +22,7 @@
     @endif
     {{-- @dd($subscription->products->where('instance_id', $subscription->instance_id)->first()->upgrade_target_offers->first() != null) --}}
     @if($subscription->products->isNotEmpty())
-    @if($subscription->products->where('instance_id', $subscription->instance_id)->first()->upgrade_target_offers->first() != null)
+    {{-- @if($subscription->products->where('instance_id', $subscription->instance_id)->first()->upgrade_target_offers->first() != null)
 
     <div class="max-w-xl mx-auto bg-white border border-gray-200">
         <ul class="shadow-box">
@@ -46,7 +46,7 @@
         </ul>
     </div>
 
-    @endif
+    @endif --}}
     @endif
     <div class="relative z-0 flex-col flex-1 overflow-y-auto">
         <div class="p-4 overflow-hidden bg-white">
@@ -254,7 +254,7 @@
                                         </div>
                                         @if($subscription->order->first())
                                         <span class="inline text-xs text-gray-600">
-                                            {{$subscription->order->first()->orderproduct->retail_price}} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                            {{$subscription->order->first()->orderproduct->first()->retail_price}} {{$subscription->currency}} / {{$subscription->billing_period}}
                                         </span>
                                         @endif
                                     </td>
@@ -283,7 +283,7 @@
                                     <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">
                                         @if($subscription->order->first())
                                         <span class="inline text-sm font-normal leading-5">
-                                            {{number_format(($subscription->order->first()->orderproduct->retail_price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                            {{number_format(($subscription->order->first()->orderproduct->first()->retail_price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
                                         </span>
                                         @endif
                                     </td>
