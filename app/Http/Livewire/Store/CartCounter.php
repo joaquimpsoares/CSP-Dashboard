@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Store;
 
 use App\Cart;
+use App\Customer;
 use Livewire\Component;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\Auth;
@@ -38,7 +39,10 @@ class CartCounter extends Component
         $this->isOpen = true;
     }
 
-    protected $rules = [
+    protected $rules =
+
+    [
+        'company_name'          => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
         'company_name'          => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
     ];
 
@@ -106,12 +110,34 @@ class CartCounter extends Component
         $this->qty = $value;
     }
 
-    public function setCustomer($value, $id)
+    public function setCustomer(Customer $customer)
     {
         $cart = $this->getUserCart();
-        $cart->customer_id = $value;
-        $cart->save();
+        $productId = $cart->products->first(function ($customer) {
+            return $customer->pivot->id;
+        });
+
+        $cart->update(['customer_id' => $customer->id]);
+
+        $limits = $this->checkLimits($customer,$productId);
+
+        if($limits == true){
+            $this->removeItem($cart->id);
+        }
+
         $this->emit('updateCart');
+    }
+
+
+    public function checkLimits($customer, $product){
+        if($product->IsSubscribed()){
+            $limit = $customer->subscriptions->where('product_id', $product->sku)->count();
+            if($limit >=  $product->limit){
+                $this->notify('you have reached the limits for: '. $product->name, 'error');
+                return true;
+            }
+        }
+        return false;
     }
 
     public function mount(){
@@ -124,6 +150,24 @@ class CartCounter extends Component
             $this->customers =$user->reseller->customers;
         }
     }
+
+    public function changeBilling($value, $id)
+    {
+
+        $cart = $this->getUserCart();
+
+        $product = $cart->products->first(function ($value) use ($id) {
+            return $value->pivot->id == $id;
+        });
+
+        $product->pivot->billing_cycle = $value;
+        $product->pivot->save();
+
+        $this->billing = $value;
+
+        $this->emit('updateCart');
+    }
+
 
     public function render()
     {

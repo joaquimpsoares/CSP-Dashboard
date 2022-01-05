@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Jobs extends Model
 {
+
+    protected $casts = [
+        'payload'   => 'array',
+    ];
+
     public function format()
     {
         return [
@@ -19,10 +24,4 @@ class Jobs extends Model
         ];
 
     }
-   public function getPayload(){
-        return $this->payload->map(function($item){
-            return unserialize($item);
-        });
-    }
-
 }

@@ -8,6 +8,7 @@ use App\Status;
 use App\Country;
 use App\Customer;
 use Livewire\Component;
+// use Livewire\WithPagination;
 use Livewire\WithPagination;
 use App\Http\Traits\UserTrait;
 use App\Exports\CustomersExport;
@@ -37,66 +38,53 @@ class CustomerTable extends Component
 
     public Customer $editing;
     public User $creatingUser;
+
     public $filters = [
         'search' => '',
         'name' => null,
         'description' => null,
     ];
 
+    public function mount()
+    {
+        $this->editing      = $this->makeBlankTransaction();
+        $this->creatingUser = $this->makeBlankTransactionUser();
+    }
+
     protected $rules = [
-            'editing.company_name'          => 'required|string|regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/|max:255',
-            'editing.nif'                   => 'required|min:3',
-            'editing.country_id'            => 'required|integer|min:1|exists:countries,id',
-            'editing.address_1'             => 'required|string|max:255|min:3',
-            'editing.address_2'             => 'nullable|string|max:255|min:3',
-            'editing.city'                  => 'required|string|max:255|min:3',
-            'editing.state'                 => 'required|string|max:255|min:3',
-            'editing.postal_code'           => 'required|string|max:255|min:3',
-            'editing.status_id'             => 'required|integer|exists:statuses,id',
-            'editing.markup'                => 'nullable|integer|min:3',
-            'editing.price_list_id'         => 'required|integer|exists:price_list,id',
+        'editing.company_name'          => 'required|string|regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/|max:255',
+        'editing.nif'                   => 'required|min:3',
+        'editing.country_id'            => 'required|integer|min:1|exists:countries,id',
+        'editing.address_1'             => 'required|string|max:255|min:3',
+        'editing.address_2'             => 'nullable|string|max:255|min:3',
+        'editing.city'                  => 'required|string|max:255|min:3',
+        'editing.state'                 => 'required|string|max:255|min:3',
+        'editing.postal_code'           => 'required|string|max:255|min:3',
+        'editing.status_id'             => 'required|integer|exists:statuses,id',
+        'editing.markup'                => 'nullable|integer|min:1',
+        'editing.price_list_id'         => 'required|integer|exists:price_lists,id',
 
-            'creatingUser.name'             => 'sometimes|string|max:255|min:3',
-            'creatingUser.last_name'        => 'sometimes|string|max:255|min:3',
-            'creatingUser.socialite_id'     => 'sometimes|string|max:255|min:3',
-            'creatingUser.phone'            => 'sometimes|string|max:20|min:3',
-            'creatingUser.address'          => 'sometimes|string|max:255|min:3',
-            'email'                         => 'required|email|unique:users|max:255|min:3',
-            'creatingUser.status_id'        => 'required|integer|exists:statuses,id',
-            'password'                      => 'same:password_confirmation|required|min:6',
-            'password_confirmation'         => 'same:password|required|min:6',
 
+        'creatingUser.name'             => 'sometimes|string|max:255|min:3',
+        'creatingUser.last_name'        => 'sometimes|string|max:255|min:3',
+        'creatingUser.socialite_id'     => 'sometimes|string|max:255|min:3',
+        'creatingUser.phone'            => 'sometimes|string|max:20|min:3',
+        'creatingUser.address'          => 'sometimes|string|max:255|min:3',
+        'email'                         => 'required|email|unique:users|max:255|min:3',
+        'creatingUser.status_id'        => 'required|integer|exists:statuses,id',
+        'password'                      => 'same:password_confirmation|required|min:6',
+        'password_confirmation'         => 'same:password|required|min:6',
     ];
-
 
     public function updated($propertyName)
     {
         $this->validateOnly($propertyName);
     }
 
-    public function mount()
-    {
-        $this->editing      = $this->makeBlankTransaction();
-        $this->creatingUser = $this->makeBlankTransactionUser();
-    }
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
-    public function makeBlankTransaction()
-    {
-        return Customer::make(['date' => now(), 'status' => 'success']);
-    }
-    public function makeBlankTransactionUser()
-    {
-        return User::make(['date' => now(), 'status' => 'success']);
-    }
-
-    public function exportSelected()
-    {
-        return Excel::download(new CustomersExport, 'users.xlsx');
-    }
+    public function updatingSearch(){$this->resetPage();}
+    public function makeBlankTransaction(){return Customer::make(['date' => now(), 'status' => 'success']);}
+    public function makeBlankTransactionUser(){return User::make(['date' => now(), 'status' => 'success']);}
+    public function exportSelected(){return Excel::download(new CustomersExport, 'Customers.xlsx');}
 
     public function edit(Customer $customer)
     {
@@ -126,11 +114,9 @@ class CustomerTable extends Component
 
     public function savecreate()
     {
-
+        // $this->validate();
         $user = $this->getUser();
-
         try {
-
             $newCustomer =  Customer::create([
                 'company_name'  => $this->editing->company_name,
                 'nif'           => $this->editing->nif,
@@ -143,7 +129,6 @@ class CustomerTable extends Component
                 'status_id'     => 1,
                 'price_list_id' => $this->editing->price_list_id,
             ]);
-
             $user = User::create ([
                 'email'             => $this->email,
                 'name'              => $this->creatingUser->name,
@@ -153,9 +138,9 @@ class CustomerTable extends Component
                 'country_id'        => $this->editing->country_id,
                 'password'          => Hash::make($this->password),
                 'user_level_id'     => 6, //Customer role id = 6
-                // 'notify'            => $this->sendInvitation ?? false,
                 'status_id'         => $this->creatingUser->status_id,
                 'customer_id'       => $newCustomer->id,
+                // 'notify'            => $this->sendInvitation ?? false,
             ]);
 
             $newCustomer->resellers()->attach(Auth::user()->reseller->id);
@@ -190,9 +175,9 @@ class CustomerTable extends Component
             });
         })->
         with(['country', 'subscriptions', 'status']);
-
         return $this->applySorting($customers);
     }
+
     public function getRowsProperty()
     {
         return $this->cache(function () {
@@ -202,10 +187,6 @@ class CustomerTable extends Component
 
     public function render()
     {
-        $search = $this->search;
-
-        $query = Customer::query();
-
         $countries  = Country::pluck( 'name','id');
         $roles      = Role::pluck( 'name','id');
         $statuses   = Status::pluck( 'name','id');

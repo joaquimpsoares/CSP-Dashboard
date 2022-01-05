@@ -196,7 +196,21 @@ class Subscription extends Model
         return $this;
     }
 
-    public function markAsSuspended()
+    public function setbudget($value)
+    {
+
+        SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token) //change status only
+        ->update($subscription, ['status' => 'suspended']);
+
+        $this->markAsCancelled();
+        // $this->notify('Subscription ' . $subscription->name . ' is suspended, refresh page');
+        // Notification::send($subscription->customer->users->first(), new SubscriptionUpdate($subscription));
+        Log::info('Status changed: Suspended');
+
+        return $this;
+    }
+
+    public function markAsCancelled()
     {
         $this->fill([
             'status_id' => '2',

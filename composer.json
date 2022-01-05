@@ -19,6 +19,7 @@
     ],
     "require": {
         "php": "^7.2.5",
+        "alajusticia/laravel-expirable": "^1.5",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "hwi/oauth-bundle": "^1.1",
@@ -62,7 +63,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "treeware/plant": false
+        }
     },
     "extra": {
         "laravel": {

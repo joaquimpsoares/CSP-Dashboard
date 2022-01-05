@@ -45,15 +45,16 @@ class PriceList extends Model
                 });
             }
             if($user && $user->userLevel->name === config('app.reseller')){
+                $query->whereNull('provider_id');
                 $query->whereHas('reseller', function(Builder $query) use($user){
                     $query->where('reseller_id', $user->reseller->id);
                 });
             }
-            if($user && $user->userLevel->name === config('app.customer')){
-                $query->whereHas('customer', function(Builder $query) use($user){
-                    $query->where('customer_id', $user->customer->id);
-                });
-            }
+            // if($user && $user->userLevel->name === config('app.customer')){
+            //     $query->whereHas('customer', function(Builder $query) use($user){
+            //         $query->where('customer_id', $user->customer->id);
+            //     });
+            // }
         });
     }
 }

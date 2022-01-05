@@ -174,21 +174,21 @@
                                                                         </div>
                                                                     </td>
                                                                     @if ($subscription->billing_type != 'software')
-                                                                    {{-- @foreach ($subscription->products->first()->getaddons()->all() as $item)
-                                                                    <tr>
-                                                                        <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap"><strong>Add-on:</strong> {{$item->name}}</td>
-                                                                        <td>
-                                                                            <div class="w-16 pt-0 mb-3">
-                                                                                <x-input class="relative w-full px-2 py-1 text-sm " type="number" name="amount_addon" value="{{$item->amount}}"/>
-                                                                                </div>
-                                                                            </td>
-                                                                            <td></td>
-                                                                            <td></td>
-                                                                            <td></td>
+                                                                        @foreach ($subscription->products->first()->getaddons()->all() as $item)
+                                                                        <tr>
+                                                                            <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap"><strong>Add-on:</strong> {{$item->name}}</td>
+                                                                            <td>
+                                                                                <div class="w-16 pt-0 mb-3">
+                                                                                    <x-input class="relative w-full px-2 py-1 text-sm " type="number" name="amount_addon" value="{{$item->amount}}"/>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
 
-                                                                        </form>
-                                                                    </tr>
-                                                                    @endforeach --}}
+                                                                            </form>
+                                                                        </tr>
+                                                                        @endforeach
                                                                     @endif
                                                                 </form>
                                                             </tr>

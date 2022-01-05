@@ -26,9 +26,12 @@ class ShowSubscription extends Component
 
     public function rules()
     {
+        $max_quantity = $this->subscription->products->where('instance_id', $this->subscription->instance_id)->first()->maximum_quantity;
+        $min_quantity = $this->subscription->products->where('instance_id', $this->subscription->instance_id)->first()->minimum_quantity;
+
         return [
             'editing.name'              => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-            'editing.amount'            => ['required', 'numeric','max:'.$this->max_quantity, 'min:'.$this->min_quantity],
+            'editing.amount'            => ['required', 'integer', 'max:'.$max_quantity, 'min:'.$min_quantity],
             'editing.billing_period'    => ['required'],
             'editing.autorenew'         => ['required', 'boolean'],
             'editing.status_id'         => ['required', 'exists:statuses,id'],
@@ -84,6 +87,7 @@ class ShowSubscription extends Component
 
     public function mount(){
         $this->amount = $this->subscription->amount;
+        $this->max_quantity = $this->subscription->products->where('instance_id', $this->subscription->instance_id)->first()->maximum_quantity;
         $this->status = $this->subscription->status->name;
 
     }

@@ -13,7 +13,10 @@ class Cart extends Model
     public function __construct($user_id = null)
     {
         if (empty($this->user_id))
-            $this->user()->associate($this->getUser());
+        $this->user()->associate($this->getUser());
+
+        if (empty($this->customer))
+            $this->customer_id = $this->getUser()->customer->id ?? null;
 
         if (empty($this->token))
             $this->token = Str::uuid();

@@ -57,27 +57,27 @@ class AnalyticController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        return view('analytics.azure');
-    }
+    // public function index()
+    // {
+    //     return view('analytics.azure');
+    // }
 
-    public function updatepricesinreports(){
-        // $resource = AzureUsageReport::get();
+    // public function updatepricesinreports(){
+    //     // $resource = AzureUsageReport::get();
 
-        $teste = DB::table('azure_usage_reports')
-        ->lazyById()->each(function ($resource) {
-            DB::table('azure_price_lists')
-            ->where('resource_id',$resource->resource_id)->first();
-        });
-        dd($teste);
-        // $resource->each(function ($price) {
-        //     $cost= AzurePriceList::where('resource_id',$price->resource_id)->first();
-        //     Log::channel('azure')->info('This price ' .$cost->resource_id.' for resource '.$price->resource_id.' name '.$price->name. ' has this cost ' .$cost->rates[0]);
-        //     $cost = ($price->quantity*$cost->rates[0]);
-        //     $update = $price->update(['cost' => $price->quantity*$cost->rates[0]]);
-        // });
-    }
+    //     $teste = DB::table('azure_usage_reports')
+    //     ->lazyById()->each(function ($resource) {
+    //         DB::table('azure_price_lists')
+    //         ->where('resource_id',$resource->resource_id)->first();
+    //     });
+    //     dd($teste);
+    //     // $resource->each(function ($price) {
+    //     //     $cost= AzurePriceList::where('resource_id',$price->resource_id)->first();
+    //     //     Log::channel('azure')->info('This price ' .$cost->resource_id.' for resource '.$price->resource_id.' name '.$price->name. ' has this cost ' .$cost->rates[0]);
+    //     //     $cost = ($price->quantity*$cost->rates[0]);
+    //     //     $update = $price->update(['cost' => $price->quantity*$cost->rates[0]]);
+    //     // });
+    // }
 
     public function getAzuredetails(Customer $customer, Subscription $subscription)
     {
@@ -112,6 +112,7 @@ class AnalyticController extends Controller
     {
         $msId = $customer->microsoftTenantInfo->first()->tenant_id;
         $details = $this->analyticRepository->UpdateAZURE($msId, $subscription);
+
         return redirect()->back()->with('success', ucwords(trans_choice('messages.resouces_updated', 1)));
     }
 

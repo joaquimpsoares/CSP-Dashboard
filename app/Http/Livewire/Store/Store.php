@@ -3,6 +3,8 @@
 namespace App\Http\Livewire\Store;
 
 use App\Cart;
+use App\Customer;
+use App\Http\Traits\UserTrait;
 use App\Price;
 use App\Product;
 use Livewire\Component;
@@ -59,7 +61,6 @@ class Store extends Component
     {
         $billing_cycle = "Monthly";
         $this->showModal = false;
-
         $cart = $this->getUserCart();
         if (! $cart) {
             $cart = new Cart();
@@ -96,10 +97,7 @@ class Store extends Component
         $this->productMSRP          = $product->price->msrp;
     }
 
-    public function close()
-    {
-        $this->showModal = false;
-    }
+    public function close(){$this->showModal = false;}
 
 
     public static  function getUserCart($id = null, $token = null)

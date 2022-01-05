@@ -101,31 +101,31 @@ class AzureReport extends Component
         }else{
             $dates = (['0' => '1', '1' => '2']);
         }
-
+        // dd($dates[0]."T00:00:00Z");
         $query = AzureUsageReport::query();
         $query->where('subscription_id', $this->subscription->id)
-        ->whereBetween('usageStartTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
-        ->whereBetween('usageEndTime',["$dates[0]T00:00:00+00:00", "$dates[1]T00:00:00+00:00"])
+        ->whereBetween('usageStartTime',[$dates[0]."T00:00:00Z", $dates[1]."T00:00:00Z"])
+        ->whereBetween('usageEndTime',[$dates[0]."T00:00:00Z", $dates[1]."T00:00:00Z"])
+        ->Where('resource_name', 'like', "%{$this->search}%");
+        // dd($query);
         // ->where('name', "like", "%{$this->search}%")
-        ->Where('resource_name', 'like', "%{$this->search}%")
         // ->orWhere('resource_location', 'like', "%{$this->search}%")
         // ->orWhere('resource_group', 'like', "%{$this->search}%")
-        ;
 
         return $this->applySorting($query);
 
-        $query->map(function($item, $key) {
-            $azurepricelist = AzurePriceList::where('resource_id', $item->resource_id)->get('rates');
-            if ($azurepricelist->first()){
-                $item['cost'] = $item->quantity*$azurepricelist->first()->rates[0];
-            }
-            $item->cost;
-            $item->save();
+        // $query->map(function($item, $key) {
+        //     $azurepricelist = AzurePriceList::where('resource_id', $item->resource_id)->get('rates');
+        //     if ($azurepricelist->first()){
+        //         $item['cost'] = $item->quantity*$azurepricelist->first()->rates[0];
+        //     }
+        //     $item->cost;
+        //     $item->save();
 
-            return $this->cache(function () use($item){
-                return $item;
-            });
-        });
+        //     return $this->cache(function () use($item){
+        //         return $item;
+        //     });
+        // });
     }
 
     public function getRowsProperty()

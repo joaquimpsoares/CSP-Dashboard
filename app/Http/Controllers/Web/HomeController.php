@@ -98,36 +98,42 @@ class HomeController extends Controller
                 ->orderBy('invoiceDate', 'asc')
                 ->get();
 
-                if($sales){
-
-
+            if($sales->first() != null){
                 foreach($sales as $row) {
                     $invoicelabel['label'][] = json_encode($row->date);
                     $invoicedata['data'][] = (int) $row->total;
-                  }
+                }
 
-                  $invoicelabel = $invoicelabel['label'];
-                  $invoicedata  = $invoicedata['data'];
+                $invoicelabel = $invoicelabel['label'];
+                $invoicedata  = $invoicedata['data'];
 
-                  foreach($orderrecord as $row) {
+                foreach($orderrecord as $row) {
                     $orderlabel['label'][] = json_encode($row->day_name);
                     $orderdata['data'][] = (int) $row->count;
-                  }
+                }
 
-                 $orderlabel = $orderlabel['label'];
-                 $orderdata  = $orderdata['data'];
+                $orderlabel = $orderlabel['label'];
+                $orderdata  = $orderdata['data'];
 
-                 foreach($customerrecord as $row) {
+                foreach($customerrecord as $row) {
                     $customerlabel['label'][] = json_encode($row->day_name);
                     $customerdata['data'][] = (int) $row->count;
-                  }
-
-                  $customerlabel = $customerlabel['label'];
-                  $customerdata  = $customerdata['data'];
                 }
-                return view('home', compact('orders','providers','resellers','customers','subscriptions','news',
-                    'orderdata','orderlabel','customerlabel','customerdata','invoicelabel','invoicedata'));
 
+                $customerlabel = $customerlabel['label'];
+                $customerdata  = $customerdata['data'];
+                return view('home', compact('orders','providers','resellers','customers','subscriptions','news',
+                'orderdata','orderlabel','customerlabel','customerdata','invoicelabel','invoicedata'));
+            }
+            $orderdata = [];
+            $orderlabel = [];
+            $customerlabel = [];
+            $customerdata = [];
+            $invoicelabel = [];
+            $invoicedata = [];
+
+            return view('home', compact('orders','providers','resellers','customers','subscriptions','news',
+                'orderdata','orderlabel','customerlabel','customerdata','invoicelabel','invoicedata'));
             break;
 
             case config('app.admin'):

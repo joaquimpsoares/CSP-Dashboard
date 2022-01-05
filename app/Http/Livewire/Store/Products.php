@@ -39,6 +39,8 @@ class Products extends Component
         'company_name'          => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
     ];
 
+    public function updatingSearch(){$this->resetPage();}
+
     public static  function getUserCart($id = null, $token = null)
     {
         $user = Auth::user();

@@ -103,7 +103,9 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 ];
 
                 if ($product['is_perpetual']) {
+                    Log::info('Catalog Item URL: ' . $product['uri']);
                     $catalogItemId = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)->getPerpetualCatalogItemId($product['uri']);
+                    Log::info('Catalog Item ID: ' . $catalogItemId);
 
                     $TagydesProduct = new TagydesProduct([
                         'id' => $catalogItemId
@@ -146,7 +148,6 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 }
             }
 
-            // Log::info('a', $orderConfirm->subscriptions()->toArray());
             logger("Tenemos {$orderConfirm->subscriptions()->count()} subscripciones");
             foreach ($orderConfirm->subscriptions() as $subscription) {
 

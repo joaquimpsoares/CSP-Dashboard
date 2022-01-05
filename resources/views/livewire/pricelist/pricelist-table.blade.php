@@ -190,14 +190,6 @@
                     </x-input.select>
                 </x-input.group>
 
-                {{-- <x-input.group borderless paddingless for="perPage" label="Per Page">
-                    <x-input.select class="block w-full bg-white py-1.5 pl-10 pr-3 border border-gray-300 rounded-md leading-5 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 focus:placeholder-gray-500 sm:text-sm" wire:model="editing.instance_id" id="perPage">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                    </x-input.select>
-                </x-input.group> --}}
-
                 <x-input.group for="name" label="{{ ucwords(trans_choice('messages.name', 1)) }}" :error="$errors->first('editing.name')">
                     <x-input.text wire:model="editing.name" id="name" placeholder="name" />
                 </x-input.group>

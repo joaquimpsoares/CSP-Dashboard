@@ -51,13 +51,27 @@ $user = Auth::user();
                                                         <a href="{{ route('instances.edit', $instance->id) }}" class="font-medium text-gray-900 hover:text-gray-600">{{$instance['name']}}</a>
                                                     </div>
                                                     <div class="flex-shrink-0 pr-2">
-                                                        <button class="inline-flex items-center justify-center w-8 h-8 text-gray-400 bg-transparent bg-white rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                                            <span class="sr-only">Open options</span>
-                                                            <!-- Heroicon name: solid/dots-vertical -->
-                                                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                                                            </svg>
-                                                        </button>
+                                                        {{-- <div class="z-10"> --}}
+                                                            <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                                                    <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                                                                </svg>
+                                                            </button>
+                                                            <div class="dropdown-menu">
+                                                                {{-- <a wire:click="edit({{ $customer->id }})" class="dropdown-item" href="#"> --}}
+                                                                    <x-icon.download></x-icon.download>
+                                                                    {{ ucwords(trans_choice('messages.import', 1)) }}
+                                                                {{-- </a> --}}
+                                                                {{-- @canImpersonate
+                                                                @if(!empty($customer->format()['mainUser']))
+                                                                <a class="dropdown-item" href="{{ route('impersonate', $customer->format()['mainUser']['id'])}}">
+                                                                    <x-icon.impersonate></x-icon.impersonate>
+                                                                    {{ ucwords(trans_choice('messages.impersonate', 1)) }}
+                                                                </a>
+                                                                @endif
+                                                                @endCanImpersonate --}}
+                                                            {{-- </div> --}}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </li>

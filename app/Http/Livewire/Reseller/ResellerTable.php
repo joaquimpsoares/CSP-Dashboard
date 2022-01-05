@@ -33,8 +33,6 @@ class ResellerTable extends Component
     use UserTrait;
 
     public $search = '';
-    // public $statuses;
-    // public $countries;
     public $password;
     public $email;
     public $password_confirmation;
@@ -56,7 +54,6 @@ class ResellerTable extends Component
         $this->creatingUser = $this->makeBlankTransactionUser();
     }
 
-
     protected $rules = [
         'editing.company_name'          => 'required|string|regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/|max:255',
         'editing.nif'                   => 'required|min:3',
@@ -65,11 +62,11 @@ class ResellerTable extends Component
         'editing.address_2'             => 'nullable|string|max:255|min:3',
         'editing.city'                  => 'required|string|max:255|min:3',
         'editing.state'                 => 'required|string|max:255|min:3',
-        'editing.postal_code'           => 'required|string|regex:/^[0-9A-Za-z.\-]+$/|max:255|min:3',
+        'editing.postal_code'           => 'required|string|max:255|min:3',
         'editing.status_id'             => 'required|integer|exists:statuses,id',
         'editing.markup'                => 'nullable|integer|min:3',
         'editing.mpnid'                 => 'sometimes|integer|min:3',
-        'editing.price_list_id'         => 'required|integer|exists:price_list,id',
+        'editing.price_list_id'         => 'required|integer|exists:price_lists,id',
 
         'creatingUser.name'             => 'sometimes|string|max:255|min:3',
         'creatingUser.last_name'        => 'sometimes|string|max:255|min:3',
@@ -80,9 +77,6 @@ class ResellerTable extends Component
         'creatingUser.status_id'        => 'required|integer|exists:statuses,id',
         'password'                      => 'same:password_confirmation|required|min:6',
         'password_confirmation'         => 'same:password|required|min:6',
-        // 'creatingUser.password_confirmation'          => 'same:creatingUser.password|required|min:6',
-        //required', new checkPostalCodeRule(!isset($this->country_id) ?? $country->iso_3166_2),'min:3'],
-        //'postal_code'           => ['requir
     ];
 
 
@@ -93,14 +87,8 @@ class ResellerTable extends Component
         $this->validateOnly($propertyName);
     }
 
-    public function makeBlankTransaction()
-    {
-        return Reseller::make(['date' => now(), 'status' => 'success']);
-    }
-    public function makeBlankTransactionUser()
-    {
-        return User::make(['date' => now(), 'status' => 'success']);
-    }
+    public function makeBlankTransaction(){return Reseller::make(['date' => now(), 'status' => 'success']);}
+    public function makeBlankTransactionUser(){return User::make(['date' => now(), 'status' => 'success']);}
 
     public function edit(Reseller $reseller)
     {
@@ -168,7 +156,7 @@ class ResellerTable extends Component
         } catch (ClientException $e) {
             $this->showEditModal = false;
 
-            $this->notify('Customer ' . $e->getMessage() . ' created successfully');
+            $this->notify('Reseller ' . $e->getMessage() . ' created successfully');
             Log::info('Error saving reseller: '.$e->getMessage());
         }
 
@@ -209,18 +197,15 @@ class ResellerTable extends Component
         $this->resetPage();
     }
 
-    public function exportSelected()
-    {
-        return Excel::download(new ResellersExport, 'resellers.xlsx');
-    }
+    public function exportSelected(){return Excel::download(new ResellersExport, 'resellers.xlsx');}
 
     public function render()
     {
         $countries  = Country::pluck( 'name','id');
         $roles      = Role::pluck( 'name','id');
         $statuses   = Status::pluck( 'name','id');
-        return view('livewire.reseller.reseller-table'
-        , [
+        return view('livewire.reseller.reseller-table',
+        [
             'resellers' => $this->rows,
             'countries' => $countries,
             'statuses'  => $statuses,

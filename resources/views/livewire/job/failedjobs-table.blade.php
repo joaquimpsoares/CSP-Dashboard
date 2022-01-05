@@ -68,67 +68,53 @@
                                 </x-table.heading>
                                 <x-table.heading sortable multi-column wire:click="sortBy('queue')"          :direction="$sorts['queue'] ?? null">{{ ucwords(trans_choice('messages.name', 1)) }}</x-table.heading>
                                 <x-table.heading sortable multi-column wire:click="sortBy('status')"    :direction="$sorts['status'] ?? null">{{ ucwords(trans_choice('messages.status', 1)) }}</x-table.heading>
+                                <x-table.heading sortable multi-column wire:click="sortBy('status')"    :direction="$sorts['status'] ?? null">{{ ucwords(trans_choice('messages.status', 1)) }}</x-table.heading>
                                 <x-table.heading sortable multi-column wire:click="sortBy('exception_message')"     :direction="$sorts['exception_message'] ?? null">{{ ucwords(trans_choice('messages.error', 1)) }}</x-table.heading>
                                 <x-table.heading sortable multi-column wire:click="sortBy('exception_class')"     :direction="$sorts['exception_class'] ?? null">{{ ucwords(trans_choice('messages.error_class', 1)) }}</x-table.heading>
                                 <x-table.heading sortable multi-column wire:click="sortBy('failed_at')"     :direction="$sorts['failed_at'] ?? null">{{ ucwords(trans_choice('messages.failed_at', 1)) }}</x-table.heading>
                             </x-slot>
-                            {{-- <a href="·">{{ $failedJob->id }}</a></td>
-                            <td>{{ $failedJob->queue }}</td>
-                            <td style="width: 15px">{{ Str::limit($failedJob->payload, 100, $end='[...]')  }}</td>
-                            <td style="width: 15px">{{ Str::limit($failedJob->exception, 100, $end='[...]') }}</td>
-                            <td ><div class="col-2">
-                                <a href="{{route('jobs.retry', $failedJob->id)}}">
-                                    <i class="fas fa-redo-alt text-primary }}"></i>
-                                </a>
-                            </div>
-                            <div class="col-2">
-                                <a href="{{route('jobs.destroy', $failedJob->id)}}">
-                                    <i class="fas fa-trash-alt text-primary }}"></i>
-                                </a> --}}
-
-                                <x-slot name="body">
-                                    @if ($selectPage)
-                                    <x-table.row class="bg-cool-gray-200" wire:key="row-message">
-                                        <x-table.cell colspan="6">
-                                            @unless ($selectAll)
-                                            <div>
-                                                <span>You have selected <strong>{{ $priceLists->count() }}</strong> transactions, do you want to select all <strong>{{ $priceLists->total() }}</strong>?</span>
-                                                <x-button.link wire:click="selectAll" class="ml-1 text-blue-600">Select All</x-button.link>
+                            <x-slot name="body">
+                                @if ($selectPage)
+                                <x-table.row class="bg-cool-gray-200" wire:key="row-message">
+                                    <x-table.cell colspan="6">
+                                        @unless ($selectAll)
+                                        <div>
+                                            <span>You have selected <strong>{{ $priceLists->count() }}</strong> transactions, do you want to select all <strong>{{ $priceLists->total() }}</strong>?</span>
+                                            <x-button.link wire:click="selectAll" class="ml-1 text-blue-600">Select All</x-button.link>
+                                        </div>
+                                        @else
+                                        <span>You are currently selecting all <strong>{{ $priceLists->total() }}</strong> transactions.</span>
+                                        @endif
+                                    </x-table.cell>
+                                </x-table.row>
+                                @endif
+                                @forelse ($failedjobs as $transaction)
+                                @php
+                                $jsonpayload = json_decode($transaction->payload);
+                                $data = unserialize($jsonpayload->data->command);
+                                @endphp
+                                <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $transaction['id'] }}">
+                                    <x-table.cell class="pr-0">
+                                        <x-input.checkbox wire:model="selected" value="{{ $transaction['id'] }}" ></x-input.checkbox>
+                                    </x-table.cell>
+                                    <x-table.cell>
+                                        <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                            <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
+                                                    {{-- <x-icon.cash class="text-cool-gray-400"/> --}}
+                                                    {{ $transaction['queue'] }}
+                                                </span>
                                             </div>
-                                            @else
-                                            <span>You are currently selecting all <strong>{{ $priceLists->total() }}</strong> transactions.</span>
-                                            @endif
-                                        </x-table.cell>
-                                    </x-table.row>
-                                    @endif
-                                    @forelse ($failedjobs as $transaction)
-                                    @php
-                                    $jsonpayload = json_decode($transaction->payload);
-                                    $data = unserialize($jsonpayload->data->command);
-                                    @endphp
-                                    <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $transaction['id'] }}">
-                                        <x-table.cell class="pr-0">
-                                            <x-input.checkbox wire:model="selected" value="{{ $transaction['id'] }}" ></x-input.checkbox>
-                                        </x-table.cell>
-                                        <x-table.cell>
-                                            <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
-                                                <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
-                                                        {{-- <x-icon.cash class="text-cool-gray-400"/> --}}
-                                                        {{ $transaction['queue'] }}
-                                                    </span>
-                                                </div>
-                                            </a>
-                                        </x-table.cell>
-                                        <x-table.cell>
-                                            <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
-                                                <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
-                                                        {{ $transaction->jobname() }}
-                                                    </span>
-                                                </div>
-                                            </a>
-                                        </span>
+                                        </a>
+                                    </x-table.cell>
+                                    <x-table.cell>
+                                        <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                            <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
+                                                    {{ $transaction->payload }}
+                                                </span>
+                                            </div>
+                                        </a>
                                     </x-table.cell>
 
                                     <x-table.cell>
@@ -199,3 +185,6 @@
         </div>
     </div>
 </div>
+<script>
+    var app = <?php echo json_encode($transaction->payload); ?>;
+</script>
