@@ -252,11 +252,13 @@
                                                 {{$subscription->product_id}}
                                             </span>
                                         </div>
-                                        {{-- @dd() --}}
+                                        {{-- @dd($subscription->order->first()->orderproduct->first()->retail_price) --}}
                                         @if($subscription->order->first() != null)
+                                        @if($subscription->order->first()->orderproduct != null)
                                         <span class="inline text-xs text-gray-600">
                                             {{$subscription->order->first()->orderproduct->first()->retail_price}} {{$subscription->currency}} / {{$subscription->billing_period}}
                                         </span>
+                                        @endif
                                         @endif
                                     </td>
                                     <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">
@@ -283,9 +285,11 @@
                                     </td>
                                     <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">
                                         @if($subscription->order->first() != null)
+                                        @if($subscription->order->first()->orderproduct != null)
                                         <span class="inline text-sm font-normal leading-5">
                                             {{number_format(($subscription->order->first()->orderproduct->first()->retail_price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
                                         </span>
+                                        @endif
                                         @endif
                                     </td>
                                 </tr>
