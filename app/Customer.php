@@ -28,7 +28,7 @@ class Customer extends Model
             'status'        => $this->status->name,
             'created_at'    => $this->created_at,
             'path'          => $this->path(),
-            'mpnid'         => $this->resellers()->first()->mpnid,
+            'mpnid'         => $this->resellers()->first()->mpnid ?? null,
             'tenant_id'     => $this->microsoftTenantInfo->first(),
             'pathUpdate'    => $this->pathUpdate(),
             'reseller'      => $this->resellers()->first(),
