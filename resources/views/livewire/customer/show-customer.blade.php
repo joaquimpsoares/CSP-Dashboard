@@ -322,7 +322,7 @@
                                             </td>
                                             <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-wrap lg:table-cell">
                                                 @if($subscription->order->first() != null)
-                                                @if($subscription->order->first()->orderproduct->first() != null)
+                                                @if($subscription->order->first()->orderproduct != null)
                                                 <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
                                                     <span class="inline text-sm font-normal leading-5">
                                                         {{number_format(($subscription->order->first()->orderproduct->first()->price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
@@ -333,7 +333,7 @@
                                             </td>
                                             <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-wrap lg:table-cell">
                                                 @if($subscription->order->first())
-                                                @if($subscription->order->first()->orderproduct->first() != null)
+                                                @if($subscription->order->first()->orderproduct != null)
                                                 <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
                                                     <span class="inline text-sm font-normal leading-5">
                                                         {{number_format(($subscription->order->first()->orderproduct->first()->retail_price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
