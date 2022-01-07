@@ -153,21 +153,17 @@ class CartController extends Controller
             // 'customer_id' => 'required|integer|exists:customers,id',
             'cart' => 'required|uuid|exists:carts,token'
         ]);
-
         $customerTenant = null;
 
-        $customerTenant = explode('.onmicrosoft.com',  $customer->microsoftTenantInfo->first()->tenant_domain);
-        $customerTenant = $customerTenant[0];
-
-        // $subscriptions = $customer->subscriptions;
-        // foreach ($subscriptions as $subscription) {
-        //     foreach ($subscription->products as $product) {
-        //         if ($product->billing === "license") {
-        //             $tenant = explode('.onmicrosoft.com', $subscription->tenant_name);
-        //             $customerTenant = $tenant[0];
-        //         }
-        //     }
-        // }
+        $subscriptions = $customer->subscriptions;
+        foreach ($subscriptions as $subscription) {
+            foreach ($subscription->products as $product) {
+                if ($product->billing === "license") {
+                    $customerTenant = explode('.onmicrosoft.com',  $customer->microsoftTenantInfo->first()->tenant_domain);
+                    $customerTenant = $customerTenant[0];
+                }
+            }
+        }
 
         /* Check if can buy to this customer */
         if (!$this->customerRepository->canInteractWithCustomer($customer)) {
@@ -453,10 +449,11 @@ class CartController extends Controller
         $validate = $request->validate([
             'token' => 'required|uuid'
         ]);
-
         $cart = $this->getByToken($validate['token']);
+        Log::info('This is user for: '.$cart->customer);
 
         $user = $cart->customer->users->first();
+        Log::info('This is user for: '.$user);
 
         return $user;
     }
