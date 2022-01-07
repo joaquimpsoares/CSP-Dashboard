@@ -169,8 +169,6 @@ class CartController extends Controller
         //     }
         // }
 
-            dd($this->cartHasTenant($cart));
-
         /* Check if can buy to this customer */
         if (!$this->customerRepository->canInteractWithCustomer($customer)) {
             return abort(401);
