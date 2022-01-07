@@ -155,14 +155,17 @@ class CartController extends Controller
         ]);
         $customerTenant = null;
 
-        $subscriptions = $customer->subscriptions;
-        foreach ($subscriptions as $subscription) {
-            foreach ($subscription->products as $product) {
-                if ($product->billing === "license") {
+        if($customer->microsoftTenantInfo->first() != null){
+
+        
+        // $subscriptions = $customer->subscriptions;
+        // foreach ($subscriptions as $subscription) {
+        //     foreach ($subscription->products as $product) {
+        //         if ($product->billing === "license") {
                     $customerTenant = explode('.onmicrosoft.com',  $customer->microsoftTenantInfo->first()->tenant_domain);
                     $customerTenant = $customerTenant[0];
-                }
-            }
+                // }
+            // }
         }
 
         /* Check if can buy to this customer */
