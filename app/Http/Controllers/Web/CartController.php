@@ -156,17 +156,20 @@ class CartController extends Controller
 
         $customerTenant = null;
 
-        $subscriptions = $customer->subscriptions;
-        foreach ($subscriptions as $subscription) {
-            foreach ($subscription->products as $product) {
-                if ($product->billing === "license") {
-                    $tenant = explode('.onmicrosoft.com', $subscription->tenant_name);
-                    $customerTenant = $tenant[0];
-                }
-            }
-        }
+        $customerTenant = explode('.onmicrosoft.com',  $customer->microsoftTenantInfo->first()->tenant_domain);
+        $customerTenant = $customerTenant[0];
 
+        // $subscriptions = $customer->subscriptions;
+        // foreach ($subscriptions as $subscription) {
+        //     foreach ($subscription->products as $product) {
+        //         if ($product->billing === "license") {
+        //             $tenant = explode('.onmicrosoft.com', $subscription->tenant_name);
+        //             $customerTenant = $tenant[0];
+        //         }
+        //     }
+        // }
 
+            dd($this->cartHasTenant($cart));
 
         /* Check if can buy to this customer */
         if (!$this->customerRepository->canInteractWithCustomer($customer)) {
@@ -182,7 +185,6 @@ class CartController extends Controller
 
         $status = "tenant";
 
-        //return view('order.tenant', compact('cart'));
         if ($this->cartHasTenant($cart))
             return redirect()->route('cart.tenant', ['cart' => $cart->token, 'customerTenant' => $customerTenant]);
         else
@@ -410,29 +412,20 @@ class CartController extends Controller
 
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
-
                 $orders = Order::get()->map->format()->toArray();
-
 			break;
-
             case config('app.customer'):
                 $customers =  $this->getUser()->customer;
                 $countries = Country::all();
                 $statuses = Status::get();
 			break;
-
             case config('app.provider'):
-
             break;
-
             case config('app.reseller'):
-
                 $customers = $this->customerRepository->all();
                 $countries = Country::all();
                 $statuses = Status::get();
-
 			break;
-
 			default:
 			    return abort(403, __('errors.unauthorized_action'));
 			break;
