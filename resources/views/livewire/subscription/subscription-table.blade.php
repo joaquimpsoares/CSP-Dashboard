@@ -176,7 +176,7 @@
                                                                         </div>
                                                                     </td>
                                                                     @if ($subscription->billing_type != 'software')
-                                                                        @foreach ($subscription->products->first()->getaddons()->all() as $item)
+                                                                        {{-- @foreach ($subscription->products->first()->getaddons()->all() as $item)
                                                                         <tr>
                                                                             <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap"><strong>Add-on:</strong> {{$item->name}}</td>
                                                                             <td>
@@ -190,7 +190,7 @@
 
                                                                             </form>
                                                                         </tr>
-                                                                        @endforeach
+                                                                        @endforeach --}}
                                                                     @endif
                                                                 </form>
                                                             </tr>
