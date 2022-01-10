@@ -80,19 +80,15 @@ class ShowSubscription extends Component
 
     }
 
-
-    public function checkout(Subscription $subscription){
-
-    }
-
-    public function mount(){
+    public function mount()
+    {
         $this->amount = $this->subscription->amount;
-        $this->max_quantity = $this->subscription->products->where('instance_id', $this->subscription->instance_id)->first()->maximum_quantity;
+        $this->max_quantity = $this->subscription->products->where('instance_id', $this->subscription->instance_id)->first()->maximum_quantity ?? null;
         $this->status = $this->subscription->status->name;
-
     }
 
-    public function disable(Subscription $subscription){
+    public function disable(Subscription $subscription)
+    {
 
         $this->showconfirmationModal = false;
         $subscription->suspend();
@@ -100,17 +96,13 @@ class ShowSubscription extends Component
 
     }
 
-
-    public function enable(Subscription $subscription){
-
-        $subscription->activate();
-
+    public function enable(Subscription $subscription)
+    {
+        $subscription->active();
         $this->notify('Subscription ' . $subscription->name . ' is Active, refresh page');
         Notification::send($subscription->customer->users->first(), new SubscriptionUpdate($subscription));
         Log::info('Status changed: Enabled');
         $this->emit('refreshTransactions');
-
-
     }
     public function cancel(Subscription $subscription){
 

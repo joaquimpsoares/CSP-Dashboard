@@ -153,20 +153,20 @@ class CartController extends Controller
             // 'customer_id' => 'required|integer|exists:customers,id',
             'cart' => 'required|uuid|exists:carts,token'
         ]);
-
         $customerTenant = null;
 
-        $subscriptions = $customer->subscriptions;
-        foreach ($subscriptions as $subscription) {
-            foreach ($subscription->products as $product) {
-                if ($product->billing === "license") {
-                    $tenant = explode('.onmicrosoft.com', $subscription->tenant_name);
-                    $customerTenant = $tenant[0];
-                }
-            }
+        if($customer->microsoftTenantInfo->first() != null){
+
+        
+        // $subscriptions = $customer->subscriptions;
+        // foreach ($subscriptions as $subscription) {
+        //     foreach ($subscription->products as $product) {
+        //         if ($product->billing === "license") {
+                    $customerTenant = explode('.onmicrosoft.com',  $customer->microsoftTenantInfo->first()->tenant_domain);
+                    $customerTenant = $customerTenant[0];
+                // }
+            // }
         }
-
-
 
         /* Check if can buy to this customer */
         if (!$this->customerRepository->canInteractWithCustomer($customer)) {
@@ -409,29 +409,20 @@ class CartController extends Controller
 
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
-
                 $orders = Order::get()->map->format()->toArray();
-
 			break;
-
             case config('app.customer'):
                 $customers =  $this->getUser()->customer;
                 $countries = Country::all();
                 $statuses = Status::get();
 			break;
-
             case config('app.provider'):
-
             break;
-
             case config('app.reseller'):
-
                 $customers = $this->customerRepository->all();
                 $countries = Country::all();
                 $statuses = Status::get();
-
 			break;
-
 			default:
 			    return abort(403, __('errors.unauthorized_action'));
 			break;
@@ -465,10 +456,11 @@ class CartController extends Controller
         $validate = $request->validate([
             'token' => 'required|uuid'
         ]);
-
         $cart = $this->getByToken($validate['token']);
+        Log::info('This is user for: '.$cart->customer);
 
         $user = $cart->customer->users->first();
+        Log::info('This is user for: '.$user);
 
         return $user;
     }

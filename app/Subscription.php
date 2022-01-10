@@ -237,7 +237,7 @@ class Subscription extends Model
     }
 
     public function products() {
-        return $this->hasMany(Product::class, 'sku', 'product_id');
+        return $this->hasMany(Product::class, 'catalog_item_id', 'product_id');
     }
 
     public function product() {
