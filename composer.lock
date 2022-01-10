@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1a2ac611394ad072c770876e88b509d6",
+    "content-hash": "af9422ec6746ffde9a7c17a36f34a2b0",
     "packages": [
         {
             "name": "alajusticia/laravel-expirable",
@@ -10899,16 +10899,10 @@
         {
             "name": "tagydes/microsoft-connection",
             "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "git@gitlab.com:tagydes/microsoft-connection.git",
-                "reference": "3158884a0f3ea2e80debd52ad8f5c059eb893bac"
-            },
             "dist": {
-                "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/tagydes%2Fmicrosoft-connection/repository/archive.zip?sha=3158884a0f3ea2e80debd52ad8f5c059eb893bac",
-                "reference": "3158884a0f3ea2e80debd52ad8f5c059eb893bac",
-                "shasum": ""
+                "type": "path",
+                "url": "../microsoft-connection",
+                "reference": "0f22bb5fc3ce5101cb540d3b57ed88ac252d98ad"
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.3",
@@ -10920,7 +10914,6 @@
                 "mockery/mockery": "^0.9.9",
                 "phpunit/phpunit": "^6.0"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -10964,11 +10957,9 @@
                 "php7",
                 "tagydes"
             ],
-            "support": {
-                "source": "https://gitlab.com/tagydes/microsoft-connection/-/tree/master",
-                "issues": "https://gitlab.com/tagydes/microsoft-connection/-/issues"
-            },
-            "time": "2021-12-20T21:17:51+00:00"
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "tanmuhittin/laravel-google-translate",
