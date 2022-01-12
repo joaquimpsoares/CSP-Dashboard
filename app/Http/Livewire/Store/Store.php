@@ -52,10 +52,14 @@ class Store extends Component
         'trial' => '',
     ];
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
     public function updatedQtys($field)
-{
-   $this->recalc($field);
-}
+    {
+        $this->recalc($field);
+    }
 
     public function addToCart(Product $productId)
     {

@@ -10,7 +10,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Log;
 
-class ImportTransactions extends Component
+class ImportTransactionsnce extends Component
 {
     use WithFileUploads;
 
@@ -33,13 +33,13 @@ class ImportTransactions extends Component
     ];
 
     protected $rules = [
-        'fieldColumnMap.name' => 'required',
-        'fieldColumnMap.product_sku' => 'required',
+        'fieldColumnMap.name'           => 'required',
+        'fieldColumnMap.product_sku'    => 'required',
     ];
 
     protected $customAttributes = [
-        'fieldColumnMap.name' => 'name',
-        'fieldColumnMap.product_sku' => 'product sku',
+        'fieldColumnMap.name'           => 'name',
+        'fieldColumnMap.product_sku'    => 'product sku',
     ];
 
     public function updatingUpload($value)
@@ -72,6 +72,9 @@ class ImportTransactions extends Component
                         'price_list_id' => $this->priceList->id,
                         'name'          => $tt['name'],
                     ],[
+                        'billing_plan'  => $tt['billing_plan'],
+                        'currency'      => $tt['currency'],
+                        'term_duration' => $tt['term_duration'],
                         'price'         => $tt['price'],
                         'msrp'          => $tt['msrp'],
                         'product_vendor'=> $tt['product_vendor'],
@@ -81,7 +84,6 @@ class ImportTransactions extends Component
                 Log::info('Budget updated for: '. $price['product_sku'].' name:'. $price['name']);
 
                 } catch (\Throwable $th) {
-                    dd($th->getMessage());
                 }
 
                 $importCount++;

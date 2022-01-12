@@ -1,6 +1,6 @@
 <div>
     <main class="px-4 mx-auto sm:px-6 lg:px-8"  x-data="{'layout': 'grid'}">
-        <div class="relative flex items-baseline justify-between pt-24 pb-6 border-b border-gray-200">
+        <div class="relative flex items-baseline justify-between pt-8 pb-6 border-b border-gray-200">
             <div class="text-sm font-extrabold tracking-tight text-gray-900 sm:text-4xl">
                 <div class="w-full max-w-lg ml-3 lg:max-w-xs">
                     <label for="search" class="sr-only">Search</label>

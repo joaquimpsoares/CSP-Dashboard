@@ -83,7 +83,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
             logger("Tenemos {$products->count()} productos", $products->toArray());
             foreach ($products as $product) {
                 $quantity = $product->pivot->quantity;
-                $billing_cycle = $product->pivot->billing_cycle;
+                $billing_cycle = strtolower($product->pivot->billing_cycle);
                 Log::info('Billing cycle!: ' . $billing_cycle);
 
                 $tagydescart->setCustomer($existingCustomer);

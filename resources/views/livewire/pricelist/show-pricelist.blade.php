@@ -136,6 +136,7 @@
                                 <div class="ml-3 lg:max-w-xs">
                                     <x-dropdown label="Bulk Actions">
                                         @livewire('pricelist.import-transactions', ['priceList' => $priceList], key($priceList->id))
+                                        @livewire('pricelist.import-transactionsnce', ['priceList' => $priceList], key($priceList->id))
 
                                         {{-- <x-dropdown.item wire:click="$toggle('showModal')" type="buttonmodal" wire:click="import" class="flex items-center space-x-2">
                                             <x-icon.upload class="text-gray-400"/> <span>{{ ucwords(trans_choice('messages.import', 1)) }}</span>

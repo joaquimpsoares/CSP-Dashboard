@@ -180,22 +180,22 @@ class CartCounter extends Component
                 }
             });
             $this->terms = $terms->filter();
-            $cart = $cart->products->map(function ($products) use($cart, $terms) {
-                // dd($products->pivot);
+            $cart = $cart->products->map(function ($product) use($cart, $terms) {
+                // dd($product);
                 return (object)[
                     'token' => $cart->token,
-                    'productType' => $products->productType,
-                    'term_duration' => $products->pivot->term_duration,
+                    'productType' => $product->productType,
+                    'term_duration' => $product->pivot->term_duration,
                     'terms' => $this->terms ?? null,
-                    'id' => $products->pivot->id,
-                    'product_name' => $products->name,
-                    'products' => $products->name,
-                    'currency' => $products->price->currency  ?? null,
-                    'price' => $products->pivot->price,
-                    'qty' => $products->pivot->quantity,
-                    'cycle' => $products->supported_billing_cycles,
-                    'billing_cycle' => $this->billing_cycle ?? $products->pivot->billing_cycle,
-                    'total' => ($products->pivot->quantity * $products->pivot->price) * ($products->pivot->billing_cycle === 'annual' ? 12 : 1 ),
+                    'id' => $product->pivot->id,
+                    'product_name' => $product->name,
+                    'addon' => $product->is_addon,
+                    'currency' => $product->price->currency  ?? null,
+                    'price' => $product->pivot->price,
+                    'qty' => $product->pivot->quantity,
+                    'cycle' => $product->supported_billing_cycles,
+                    'billing_cycle' => $this->billing_cycle ?? $product->pivot->billing_cycle,
+                    'total' => ($product->pivot->quantity * $product->pivot->price) * ($product->pivot->billing_cycle === 'annual' ? 12 : 1 ),
                 ];
             });
         }
