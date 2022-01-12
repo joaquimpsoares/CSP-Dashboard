@@ -84,7 +84,9 @@ class PlaceOrderMicrosoft implements ShouldQueue
             foreach ($products as $product) {
                 $quantity = $product->pivot->quantity;
                 $billing_cycle = strtolower($product->pivot->billing_cycle);
+                $term_duration = strtolower($product->pivot->term_duration);
                 Log::info('Billing cycle!: ' . $billing_cycle);
+                Log::info('Term Duration!: ' . $term_duration);
 
                 $tagydescart->setCustomer($existingCustomer);
                 Log::info('Setting Customer to Cart: ' . $tagydescart);
@@ -94,7 +96,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
                     'description' => $product['description'],
                     'minimumQuantity' => $product['minimum_quantity'],
                     'maximumQuantity' => $product['maximum_quantity'],
-                    'term' => $product['term'],
+                    'term' => $term_duration,
                     'limit' => $product['limit'] ?? 0,
                     'PartnerIdOnRecord' => $this->order->customer->format()['mpnid']  ?? null,
                     'isTrial' => $product['is_trial'],
@@ -115,20 +117,20 @@ class PlaceOrderMicrosoft implements ShouldQueue
                     Log::info('Adding Perpetual Product to Cart: ' . $tagydescart);
                 }
                 elseif($product->IsNCE()){
-                    $catalogItemId = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)->getNCECatalogItemId($product['uri']);
+                    $catalogItemId = $product['catalog_item_id'];
+
                     Log::info('catalogItemId1: ' . $catalogItemId);
 
                     $TagydesProduct = new TagydesProduct([
                         'id' => $catalogItemId
-                    ] + $productData);
+                        ] + $productData);
+                        $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
 
-                    $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
                     Log::info('Adding NCE Product to Cart: ' . $tagydescart);
                 }else{
                     $TagydesProduct = new TagydesProduct([
                         'id' => $product['sku'],
                     ] + $productData);
-
                     $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
                     Log::info('Adding Product to Cart: ' . $tagydescart);
                 }

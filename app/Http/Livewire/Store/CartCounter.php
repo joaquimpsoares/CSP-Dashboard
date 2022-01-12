@@ -181,7 +181,6 @@ class CartCounter extends Component
             });
             $this->terms = $terms->filter();
             $cart = $cart->products->map(function ($product) use($cart, $terms) {
-                // dd($product);
                 return (object)[
                     'token' => $cart->token,
                     'productType' => $product->productType,
