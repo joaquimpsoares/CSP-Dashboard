@@ -350,7 +350,7 @@ return [
     'suspend' => 'suspend',
     'disable' => 'disable',
     'no_autorenew' => 'no autorenew',
-    'autorenew' => 'set auto renewable subscription',
+    'autorenew' => 'Renew subscription automatically',
     'import_products' => 'import products',
     'perpetual_software' => 'perpetual software',
     'microsoft_perpetual_licenses' => 'Import software perpetual licences to the platform',
@@ -367,4 +367,5 @@ return [
     'monthly' => 'monthly',
     'edit_budget' => 'edit budget',
     'usage_date' => 'usage date',
+    'nce' => 'new commerce experience',
 ];

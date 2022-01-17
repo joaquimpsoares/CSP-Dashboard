@@ -3,9 +3,10 @@
 namespace App\Http\Livewire\Subscription;
 
 use Exception;
-use Livewire\Component;
 use App\Subscription;
+use Livewire\Component;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request;
 use App\Notifications\SubscriptionUpdate;
 use Illuminate\Support\Facades\Notification;
 
@@ -14,20 +15,31 @@ class ShowSubscription extends Component
     public $status;
     public $amount;
     public $subs;
+    public $tt;
     public $subscription;
-    public Subscription $editing;
+    public $validate;
+    public $autorenew;
     public $max_quantity = '999999999';
     public $min_quantity = '1';
     public $showEditModal = false;
+    public $isLoading = true;
     public $showconfirmationModal = false;
     public $showcancelconfirmationModal = false;
+
+    public Subscription $editing;
 
     protected $listeners = ['refreshTransactions' => '$refresh'];
 
     public function rules()
     {
-        $max_quantity = $this->subscription->products->where('instance_id', $this->subscription->instance_id)->first()->maximum_quantity;
-        $min_quantity = $this->subscription->products->where('instance_id', $this->subscription->instance_id)->first()->minimum_quantity;
+        if ($this->subscription->productonce){
+            $max_quantity = $this->subscription->productonce->where('instance_id', $this->subscription->instance_id)->first()->maximum_quantity;
+            $min_quantity = $this->subscription->productonce->where('instance_id', $this->subscription->instance_id)->first()->minimum_quantity;
+        }else{
+            $max_quantity = 1;
+            $min_quantity = 1;
+        }
+
 
         return [
             'editing.name'              => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
@@ -43,11 +55,12 @@ class ShowSubscription extends Component
         $this->validateOnly($propertyName);
     }
 
+
     public function edit(Subscription $subs)
     {
         $this->showEditModal = true;
-        $this->min_quantity = $subs->product->minimum_quantity;
-        $this->max_quantity = $subs->product->maximum_quantity;
+        $this->min_quantity = $subs->productonce->minimum_quantity;
+        $this->max_quantity = $subs->productonce->maximum_quantity;
         $this->editing      = $subs;
     }
 
@@ -77,11 +90,42 @@ class ShowSubscription extends Component
 
         $this->notify('You\'ve updated '.  $fields .' Subscription');
         $this->emit('refreshTransactions');
+    }
+
+    public function autorenewcheck(Subscription $subscription)
+    {
+        // dd($this->autorenew == true);
+        if ($this->autorenew == true) {
+            $subscription->fill([
+                'autorenew' => '1',
+                ])->save();
+            }else
+            $subscription->fill([
+                'autorenew' => '0',
+                ])->save();
+            $this->emit('refreshTransactions');
+    }
+
+    public function migrateToMCE(Subscription $subscription)
+    {
+        dd($subscription);
+    }
+
+    public function manageSchedule(Subscription $subscription)
+    {
+        dd($subscription);
+    }
+
+    public function validateisEligible(Subscription $subscription)
+    {
+       $this->tt = $this->subscription->validatemigration($subscription->customer, $subscription);
+       $this->isLoading = false;
 
     }
 
     public function mount()
     {
+        $this->autorenew = $this->subscription->autorenew;
         $this->amount = $this->subscription->amount;
         $this->max_quantity = $this->subscription->products->where('instance_id', $this->subscription->instance_id)->first()->maximum_quantity ?? null;
         $this->status = $this->subscription->status->name;
