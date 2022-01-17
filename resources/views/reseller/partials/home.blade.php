@@ -166,7 +166,7 @@
     </div>
 </div>
 <div class="p-6 mb-10 ">
-    <div class="h-64 overflow-hidden bg-center bg-cover rounded-md" style="background-image: url('https://images.unsplash.com/photo-1530133532239-eda6f53fcf0f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1074&q=80')">
+    {{-- <div class="h-64 overflow-hidden bg-center bg-cover rounded-md" style="background-image: url('https://images.unsplash.com/photo-1530133532239-eda6f53fcf0f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1074&q=80')">
         <div class="flex items-center h-full bg-gray-900 bg-opacity-50">
             <div class="max-w-xl px-10">
                 <h2 class="text-2xl font-semibold text-white">Software Perpetual</h2>
@@ -203,7 +203,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
 
     <div class="mt-5 overflow-hidden bg-gray-200 divide-y divide-gray-200 rounded-lg shadow sm:divide-y-0 sm:grid sm:grid-cols-2 sm:gap-px">
