@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use App\Notifications\SubscriptionUpdate;
 use Illuminate\Support\Facades\Notification;
+use Tagydes\MicrosoftConnection\Facades\Subscription as SubscriptionFacade;
+use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
+use App\Instance;
 
 class ShowSubscription extends Component
 {
@@ -90,6 +93,37 @@ class ShowSubscription extends Component
 
         $this->notify('You\'ve updated '.  $fields .' Subscription');
         $this->emit('refreshTransactions');
+    }
+
+    public function saveScheduled(){
+        // TODO: Pending to adapt on Livewire usage
+        $instance = Instance::where('id', $this->editing->instance_id)->first();
+
+        $subscription = new TagydesSubscription([
+            'id'            => $this->editing->subscription_id,
+            'orderId'       => $this->editing->order_id,
+            'offerId'       => $this->editing->upgradeToOffer ?? $this->editing->product_id,
+            'customerId'    => $this->editing->customer->microsoftTenantInfo->first()->tenant_id,
+            'name'          => $this->editing->name,
+            'status'        => $this->editing->status_id,
+            'quantity'      => $this->editing->amount,
+            'currency'      => $this->editing->currency,
+            'billingCycle'  => $this->editing->billing_period,
+            'created_at'    => $this->editing->created_at->__toString(),
+        ]);
+
+        SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->updateOnRenew($subscription, [
+            'billingCycle' => $this->editing->billing_period,
+            'quantity' => $this->editing->amount,
+            'term' => $this->editing->term,
+        ]);
+
+        $this->editing->update(['changes_on_renew' => [
+            'amount' => $this->editing->amount,
+            'billingCycle' => $this->editing->billing_period,
+            'term' => $this->editing->term,
+            'product_id' => $this->editing->upgradeToOffer ?? $this->editing->product_id,
+        ]]);
     }
 
     public function autorenewcheck(Subscription $subscription)

@@ -113,8 +113,9 @@ class SubscriptionController extends Controller
         ]);
 
         Log::info('MS subscriptions: ' . $subscription);
-//      if($request->scheduled === 'true') {
-        if (true) {
+
+        // This is for reference as we plan to use only Livewire and it's not calling here
+        if ($subscriptions->product->IsNCE() && $request->scheduled === 'true') {
             $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->updateOnRenew($subscription, [
                 'billingCycle' => $request->get('billingCycle', $subscriptions->billing_period),
                 'quantity' => $request->get('amount', $subscriptions->amount),

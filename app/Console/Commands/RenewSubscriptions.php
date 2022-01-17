@@ -53,7 +53,7 @@ class RenewSubscriptions extends Command
                     $newDateTime = Carbon::now()->addYears(1);
                     $subscription->update([
                         'expiration_data' => $newDateTime,
-                    ]);
+                    ] + $subscription->changes_on_renew);
                     // Notification::send($user, new SubscriptionAboutToExpire($subscription, $interval->format('%R%a')));
                     // $user->update(['notified' => true]);
                     Log::debug('Subscription id: '.$subscription->id .' has renewed');
