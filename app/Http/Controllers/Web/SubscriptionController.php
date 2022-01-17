@@ -32,7 +32,7 @@ class SubscriptionController extends Controller
 
 
 
-    public function __construct(ResellerRepositoryInterface $resellerRepository, OrderRepositoryInterface $orderRepository, CustomerRepositoryInterface $customerRepository,SubscriptionRepositoryInterface $subscriptionRepository, ProviderRepositoryInterface $providerRepository)
+    public function __construct(ResellerRepositoryInterface $resellerRepository, OrderRepositoryInterface $orderRepository, CustomerRepositoryInterface $customerRepository, SubscriptionRepositoryInterface $subscriptionRepository, ProviderRepositoryInterface $providerRepository)
     {
         $this->resellerRepository = $resellerRepository;
         $this->customerRepository = $customerRepository;
@@ -45,63 +45,39 @@ class SubscriptionController extends Controller
 
 
     /**
-    * Display a listing of the resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index(Request $request)
     {
-
+        if ($this->getUserLevel() === 'Customer') {
+            return view('subscriptions.customer');
+        }
         return view('subscriptions.index');
     }
 
-    // public function card()
-    // {
-    //     $subscriptions = [];
-    //     switch ($this->getUserLevel()) {
-    //         case 'Provider':
-    //             $provider = $this->getUser()->provider;
-    //             $subscriptions = $this->listFromProvider($provider);
-    //             break;
-    //             case 'Reseller':
-    //                 $reseller = $this->getUser()->reseller;
-    //                 $subscriptions = $this->listFromReseller($reseller);
-    //             break;
-    //             case 'Customer':
-    //                 $customer = $this->getUser()->customer;
-    //                 $subscriptions = $this->listFromCustomer($customer);
-    //                 break;
-
-    //             default:
-    //             # code...
-    //             break;
-    //         }
-
-    //     return view('subscriptions.customer', compact('subscriptions'));
-    // }
-
 
     /**
-    * Display the specified resource.
-    *
-    * @param  \App\Models\Subscription  $subscription
-    * @return \Illuminate\Http\Response
-    */
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Subscription  $subscription
+     * @return \Illuminate\Http\Response
+     */
     public function show(Subscription $subscription)
     {
 
         return view('subscriptions.show', compact('subscription'));
-
     }
 
 
     /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  \App\Models\Subscription  $subscription
-    * @return \Illuminate\Http\Response
-    */
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Subscription  $subscription
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, Subscription $subscription)
     {
         $amount         = collect($request->amount)->diff(collect($subscription->amount));
@@ -109,18 +85,18 @@ class SubscriptionController extends Controller
         $status         = collect($request->status)->diff(collect($subscription->status_id));
 
 
-        $order = $this->orderRepository->UpdateMSSubscription($subscription,$request);
+        $order = $this->orderRepository->UpdateMSSubscription($subscription, $request);
 
         $subscriptions = Subscription::findOrFail($subscription->id);
         $instance = Instance::where('id', $subscription->instance_id)->first();
 
-        Log::info('Subscription: '.$subscriptions);
-        Log::info('Instance: '.$instance);
+        Log::info('Subscription: ' . $subscriptions);
+        Log::info('Instance: ' . $instance);
 
 
         $this->validate($request, [
             'amount' => 'required|integer',
-            ]);
+        ]);
 
 
         $subscription = new TagydesSubscription([
@@ -134,105 +110,104 @@ class SubscriptionController extends Controller
             'currency'      => $subscriptions->currency,
             'billingCycle'  => $subscriptions->billing_period,
             'created_at'    => $subscriptions->created_at->__toString(),
+        ]);
+
+        Log::info('MS subscriptions: ' . $subscription);
+
+        // This is for reference as we plan to use only Livewire and it's not calling here
+        if ($subscriptions->product->IsNCE() && $request->scheduled === 'true') {
+            $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->updateOnRenew($subscription, [
+                'billingCycle' => $request->get('billingCycle', $subscriptions->billing_period),
+                'quantity' => $request->get('amount', $subscriptions->amount),
             ]);
-
-        Log::info('MS subscriptions: '.$subscription);
-
-        if($status->isempty() &&  $billing_period->isempty() && !$amount->isempty()){ //change only amount
-            try{
-                $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->
-                update($subscription, ['quantity' => $request->amount]);
-                $subscriptions->update(['amount'=> $request->amount]);
-                Log::info('License changed: '.$update);
-                Log::info('License changed: '.$request->amount);
+            $subscriptions->update(['changes_on_renew' => ['amount' => $request->amount]]);
+        } elseif ($status->isempty() &&  $billing_period->isempty() && !$amount->isempty()) { //change only amount
+            try {
+                $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->update($subscription, ['quantity' => $request->amount]);
+                $subscriptions->update(['changes_on_renew' => null, 'amount' => $request->amount]);
+                Log::info('License changed: ' . $update);
+                Log::info('License changed: ' . $request->amount);
                 // $order->update(['order_status_id'=> 4]);
             } catch (Exception $e) {
-                Log::info('Error Placing order to Microsoft: '.$e->getMessage());
-                $order->update(['order_status_id'=> 3]);
-                return Redirect::back()->with('danger','Error Placing order to Microsoft: '.$e->getMessage());
+                Log::info('Error Placing order to Microsoft: ' . $e->getMessage());
+                $order->update(['order_status_id' => 3]);
+                return Redirect::back()->with('danger', 'Error Placing order to Microsoft: ' . $e->getMessage());
             }
-        }elseif ($status->isempty() &&  !$billing_period->isempty() && $amount->isempty()){ //Change billing period
-            try{
+        } elseif ($status->isempty() &&  !$billing_period->isempty() && $amount->isempty()) { //Change billing period
+            try {
                 $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->changeBillingCycle($subscription, $request->billing_period);
-                $subscriptions->update(['billing_period'=> $request->billing_period]);
-                Log::info('Billing Cycle changed: '.$request->billing_period);
+                $subscriptions->update(['changes_on_renew' => null, 'billing_period' => $request->billing_period]);
+                Log::info('Billing Cycle changed: ' . $request->billing_period);
                 // $order->update(['order_status_id'=> 4]);
 
             } catch (Exception $e) {
-                Log::info('Error Placing order to Microsoft: '.$e->getMessage());
-                $order->update(['order_status_id'=> 3]);
-                return Redirect::back()->with('danger','Error Placing order to Microsoft: '.$e->getMessage());
+                Log::info('Error Placing order to Microsoft: ' . $e->getMessage());
+                $order->update(['order_status_id' => 3]);
+                return Redirect::back()->with('danger', 'Error Placing order to Microsoft: ' . $e->getMessage());
             }
-        }elseif ($status->isempty() &&  !$billing_period->isempty() && !$amount->isempty()){ //Change billing period AND AMOUNT
-            try{
+        } elseif ($status->isempty() &&  !$billing_period->isempty() && !$amount->isempty()) { //Change billing period AND AMOUNT
+            try {
                 $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->changeBillingCycle($subscription, $request->billing_period);
                 $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->update($subscription, ['quantity' => $request->amount]);
                 $subscriptions->update([
-                    'billing_period'=> $request->billing_period,
-                    'amount'=> $request->amount
-                    ]);
-                $order->update(['order_status_id'=> 4]);
-                    Log::info('Billing Cycle changed To: '.$request->billing_period. "and amount changed to ". $request->amount);
+                    'changes_on_renew' => null,
+                    'billing_period' => $request->billing_period,
+                    'amount' => $request->amount
+                ]);
 
-                } catch (Exception $e) {
-                    return Redirect::back()->with('danger','Error Placing order to Microsoft: '.$e->getMessage());
-                $order->update(['order_status_id'=> 3]);
-
-                    Log::info('Error Placing order to Microsoft: '.$e->getMessage());
-                }
-        }elseif(!$status->isempty()){
-            try{
-
-                if($subscription->billingCycle == "one_time"){
+                $order->update(['order_status_id' => 4]);
+                Log::info('Billing Cycle changed To: ' . $request->billing_period . "and amount changed to " . $request->amount);
+            } catch (Exception $e) {
+                $order->update(['order_status_id' => 3]);
+                Log::info('Error Placing order to Microsoft: ' . $e->getMessage());
+                return Redirect::back()->with('danger', 'Error Placing order to Microsoft: ' . $e->getMessage());
+            }
+        } elseif (!$status->isempty()) {
+            try {
+                if ($subscription->billingCycle == "one_time") {
                     $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token) //change status only
-                    ->cancelSoftware($subscription);
+                        ->cancelSoftware($subscription);
                     if ($request->status == 'active') {
                         $request->merge(['status' => 1]);
-                    }else {
+                    } else {
                         $request->merge(['status' => 3]);
                     }
                     $subscriptions->update(['status_id' => $request->status]);
-                }else{
+                } else {
                     $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token) //change status only
-                    ->update($subscription, ['status' => $request->status]);
-
+                        ->update($subscription, ['status' => $request->status]);
                     if ($request->status == 'active') {
                         $request->merge(['status' => 1]);
-                    }else {
+                    } else {
                         $request->merge(['status' => 2]);
                     }
                     $subscriptions->update(['status_id' => $request->status]);
                 }
 
-                Log::info('Status changed: '.$request->status);
-
+                Log::info('Status changed: ' . $request->status);
             } catch (Exception $e) {
-                return Redirect::back()->with('danger','Error Placing order to Microsoft: '.$e->getMessage());
-                $order->update(['order_status_id'=> 3]);
-
-                Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+                $order->update(['order_status_id' => 3]);
+                Log::info('Error Placing order to Microsoft: ' . $e->getMessage());
+                return Redirect::back()->with('danger', 'Error Placing order to Microsoft: ' . $e->getMessage());
             }
-        }else{
-            return Redirect::back()->with('danger','nothing to do');
+        } else {
+            return Redirect::back()->with('danger', 'nothing to do');
         }
 
-        $order->update(['order_status_id'=> 4]);
-        $order->update(['subscription_id'=> $subscriptions->id]);
+        $order->update(['order_status_id' => 4]);
+        $order->update(['subscription_id' => $subscriptions->id]);
         return redirect()->back()->with('success', 'Subscription updated succesfully');
-
     }
 
 
     /**
-    * Remove the specified resource from storage.
-    *
-    * @param  \App\Models\Subscription  $subscription
-    * @return \Illuminate\Http\Response
-    */
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Subscription  $subscription
+     * @return \Illuminate\Http\Response
+     */
     public function destroy(Subscription $subscription)
     {
         //
     }
-
-
 }

@@ -9,8 +9,8 @@
     "license": "MIT",
     "repositories": [
         {
-            "type": "vcs",
-            "url": "https://gitlab.com/tagydes/microsoft-connection.git"
+            "type": "path",
+            "url": "../microsoft-connection"
         },
         {
             "type": "vcs",
@@ -52,6 +52,7 @@
         "yajra/laravel-datatables": "^1.5"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.6",
         "facade/ignition": "^2.0",
         "fzaninotto/faker": "^1.9.1",
         "laravel/sail": "^1.5",
@@ -62,7 +63,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "treeware/plant": false
+        }
     },
     "extra": {
         "laravel": {

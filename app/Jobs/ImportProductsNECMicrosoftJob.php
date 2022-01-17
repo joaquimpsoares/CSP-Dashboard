@@ -65,17 +65,17 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
 
                         $product = Product::updateOrCreate([
                             'instance_id'               => $instance->id,
-                            'sku'                       => $sku,
                         ], [
-                            'uri'                       => $importedProduct->links->self->uri,
+                            'sku'                       => $sku,
                             'name'                      => $importedProduct->sku->title,
-                            'catalog_item_id'           => $importedProduct->catalogItemId,
+                            'uri'                       => $importedProduct->links->self->uri,
                             'billing'                   => $importedProduct->sku->dynamicAttributes->billingType,
                             'productType'               => $importedProduct->product->productType->displayName,
                             'country'                   => $importedProduct->country,
                             'description'               => $importedProduct->sku->description,
                             'minimum_quantity'          => $importedProduct->sku->minimumQuantity,
                             'maximum_quantity'          => $importedProduct->sku->maximumQuantity,
+                            'catalog_item_id'           => $importedProduct->catalogItemId,
                             'is_trial'                  => $importedProduct->sku->isTrial,
                             'is_addon'                  => $importedProduct->sku->dynamicAttributes->isAddon,
                             'has_addons'                => $importedProduct->sku->dynamicAttributes->hasAddOns,
@@ -96,8 +96,7 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
                             'reseller_qualifications'   => $importedProduct->sku->dynamicAttributes->resellerQualifications,
                         ]);
 
-                        Log::info('Imported '.$product->name.' transactions!');
-                        // Log::info('Imported '.$importCount.' transactions!');
+                        Log::info('Imported: '.$product->name.' transactions!');
                     });
                 });
             });
@@ -105,7 +104,6 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
         } catch (Exception $e) {
             Log::info('Error importing products: '.$e->getMessage());
         }
-        // Log::info('Imported '.$importCount.' transactions!');
 
         $this->queueProgress(100);
 

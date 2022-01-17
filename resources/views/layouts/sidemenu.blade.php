@@ -382,8 +382,14 @@
                         </button>
                         <div x-data="{ cartOpen: false , isOpen: false }" @keydown.escape.stop="cartOpen = false; focusButton()" class="flex justify-between flex-1 px-4">
                             <div class="flex flex-1">
+                            </div>
+                            <div class="flex items-center ml-4 lg:ml-6">
                                 @if (app('impersonate')->isImpersonating())
-                                <div class="px-4 py-4 md:max-w-6xl md:mx-auto">
+                                <a href="{{ route('impersonate.leave') }} " class="flex items-center justify-center w-full px-8 py-3 mr-3 text-base text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">{{ ucwords(trans_choice('messages.stop_impersonation', 2)) }}</a>
+                                {{-- <a type="button" href="{{ route('impersonate.leave') }} ">
+                                    <span style="color: red" >{{ ucwords(trans_choice('messages.stop_impersonation', 2)) }} &rarr; </i></span>
+                                </a> --}}
+                                {{-- <div class="px-4 py-4 md:max-w-6xl md:mx-auto">
                                     <div class="relative px-6 py-4 text-red-700 bg-red-200 rounded-lg" role="alert" x-data="{ open: true }" x-show.transition="open">
                                         <div class="mr-4">
                                             Currently impersonating user <strong class="font-bold">{{Auth::user()->name}} {{Auth::user()->last_name}}</strong>
@@ -399,10 +405,8 @@
                                             </svg>
                                         </span>
                                     </div>
-                                </div>
+                                </div> --}}
                                 @endif
-                            </div>
-                            <div class="flex items-center ml-4 lg:ml-6">
                                 <x-database-notifications/>
                                 @can('marketplace.index')
                                 <a @click="cartOpen = !cartOpen"  href="#" class="p-2 mr-4 text-gray-500 rounded-full cursor-pointer hover:text-blue-600 hover:bg-gray-200">

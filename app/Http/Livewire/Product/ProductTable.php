@@ -127,7 +127,6 @@ class ProductTable extends Component
             $product->importPerpetual($instance, $country);
 
             $this->notify('Import Scheduled for perpetual');
-            // $this->info('Successfully sent daily quote to everyone.');
         }
         $this->showImportModal = false;
     }

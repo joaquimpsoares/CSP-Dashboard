@@ -81,6 +81,12 @@ class Product extends Model
             return false;
         }
     }
+
+    public function IsNCE()
+    {
+        return $this->productType === 'OnlineServicesNCE';
+    }
+
     public function price() {
         return $this->hasOne(Price::class, 'product_id', 'id');
     }

@@ -1,6 +1,6 @@
 <div>
     <x-dropdown.item wire:click="$toggle('showModal')" type="buttonmodal" wire:click="import" class="flex items-center space-x-2">
-        <x-icon.upload class="text-gray-400"/> <span>{{ ucwords(trans_choice('messages.import', 1)) }}</span>
+        <x-icon.upload class="text-gray-400"/> <span>{{ ucwords(trans_choice('messages.import_NCE', 1)) }}</span>
     </x-dropdown.item>
 
     <form wire:submit.prevent="import">

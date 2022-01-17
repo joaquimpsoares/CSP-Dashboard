@@ -16,14 +16,17 @@ class CartCounter extends Component
 
     public $qty;
     public $cycle;
+    public $terms;
     public $monthly;
     public $annualy;
+    public $selected = [];
     public $billing_cycle;
     public $billing = [];
     public $totalCartWithoutTax;
     public $customers;
     public $customer;
     public $city_id = '';
+
     protected $listeners = ['updateCart' => 'render'];
     protected $listener = ['updateCartCount' => 'open'];
 
@@ -55,7 +58,6 @@ class CartCounter extends Component
         } else {
             $cart = Cart::where('user_id', $user->id)->where('token', $token)->with(['products', 'customer'])->get();
         }
-
         return $cart;
     }
 
@@ -63,11 +65,9 @@ class CartCounter extends Component
     public function removeItem($item_id)
     {
         $cart = $this->getUserCart();
-
         $product = $cart->products->first(function ($value) use ($item_id) {
             return $value->pivot->id == $item_id;
         });
-
         if ($cart->products->count() <= 1)
         {
             $cart->delete();
@@ -77,16 +77,13 @@ class CartCounter extends Component
 
     public function increaseQuantity($id, $qty)
     {
-
         $cart = $this->getUserCart();
         $product = $cart->products->first(function ($value) use ($id) {
             return $value->pivot->id == $id;
         });
         $product->pivot->quantity = $qty + 1;
         $product->pivot->save();
-
         $this->emit('updateCart');
-
     }
 
     public function decreaseQuantity($id, $qty)
@@ -100,6 +97,17 @@ class CartCounter extends Component
         $product->pivot->save();
 
         $this->emit('updateCart');
+    }
+
+    public function changeQty($value, $id)
+    {
+        $cart = $this->getUserCart();
+        $product = $cart->products->first(function ($value) use ($id) {
+            return $value->pivot->id == $id;
+        });
+        $product->pivot->quantity = $value;
+        $product->pivot->save();
+        $this->qty = $value;
     }
 
     public function setCustomer(Customer $customer)
@@ -134,7 +142,10 @@ class CartCounter extends Component
 
     public function mount(){
         $user = Auth::user();
-
+        $cart = $this->getUserCart();
+        if($cart){
+            $this->qty = $cart->products->first()->pivot->quantity;
+        }
         if($user->userLevel->name == 'Reseller'){
             $this->customers =$user->reseller->customers;
         }
@@ -160,26 +171,32 @@ class CartCounter extends Component
 
     public function render()
     {
-
         $user = Auth::user();
-
         $cart = $this->getUserCart();
         if (isset($cart)){
-
-
-            $cart = $cart->products->map(function ($products) use($cart) {
+            $terms = $cart->products->map(function ($item, $key) {
+                if($item->IsNCE()){
+                   return  $item->terms->groupBy('duration')->all();
+                }
+            });
+            $this->terms = $terms->filter();
+            $cart = $cart->products->map(function ($product) use($cart, $terms) {
                 return (object)[
                     'token' => $cart->token,
-                    'id' => $products->pivot->id,
-                    'products' => $products->name,
-                    'price' => $products->pivot->price,
-                    'qty' => $products->pivot->quantity,
-                    'cycle' => $products->supported_billing_cycles,
-                    'billing_cycle' => $products->pivot->billing_cycle,
-                    'total' => ($products->pivot->quantity * $products->pivot->price) * ($products->pivot->billing_cycle === 'annual' ? 12 : 1 ),
+                    'productType' => $product->productType,
+                    'term_duration' => $product->pivot->term_duration,
+                    'terms' => $this->terms ?? null,
+                    'id' => $product->pivot->id,
+                    'product_name' => $product->name,
+                    'addon' => $product->is_addon,
+                    'currency' => $product->price->currency  ?? null,
+                    'price' => $product->pivot->price,
+                    'qty' => $product->pivot->quantity,
+                    'cycle' => $product->supported_billing_cycles,
+                    'billing_cycle' => $this->billing_cycle ?? $product->pivot->billing_cycle,
+                    'total' => ($product->pivot->quantity * $product->pivot->price) * ($product->pivot->billing_cycle === 'annual' ? 12 : 1 ),
                 ];
             });
-
         }
 
         if(isset($cart)){

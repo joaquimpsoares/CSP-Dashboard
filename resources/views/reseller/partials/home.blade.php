@@ -1,14 +1,105 @@
 @extends('layouts.master')
-@section('css')
+{{-- @section('css')
 
-@endsection
+@endsection --}}
 
 @section('content')
 
 <x-messages></x-messages>
 @include('layouts.messages')
+<dl class="grid grid-cols-1 gap-5 px-4 py-5 sm:p-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
+        <div class="flex-grow px-4 py-5 sm:p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0 p-3 bg-indigo-500 rounded-md">
+                    <!-- Heroicon name: outline/users -->
+                    <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                </div>
+                <div class="flex-1 w-0 ml-5">
+                    <dt class="text-sm font-medium text-gray-500 truncate">
+                        {{ucwords(trans_choice('messages.order', 2))}}
+                    </dt>
+                    <dd class="flex items-baseline">
+                        <div class="text-2xl font-semibold text-gray-900">
+                            @if($orders)
+                            {{$orders->count()}}
+                            @else
+                            0
+                            @endif
+                        </div>
+                    </dd>
+                </div>
+            </div>
+        </div>
+        <div class="px-4 py-4 bg-gray-50 sm:px-6">
+            <div class="text-sm">
+                <a href="/order" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Total Subscribers stats</span></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
+        <div class="flex-grow px-4 py-5 sm:p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0 p-3 bg-indigo-500 rounded-md">
+                    <!-- Heroicon name: outline/mail-open -->
+                    <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </div>
+                <div class="flex-1 w-0 ml-5">
+                    <dt class="text-sm font-medium text-gray-500 truncate">
+                        {{ucwords(trans_choice('messages.customer', 2))}}
+                    </dt>
+                    <dd class="flex items-baseline">
+                        <div class="text-2xl font-semibold text-gray-900">
+                            {{$countCustomers}}
+                        </div>
+                    </dd>
+                </div>
+            </div>
+        </div>
+        <div class="px-4 py-4 bg-gray-50 sm:px-6">
+            <div class="text-sm">
+                <a href="/customer" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Avg. Open Rate stats</span></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
+        <div class="flex-grow px-4 py-5 sm:p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0 p-3 bg-indigo-500 rounded-md">
+                    <!-- Heroicon name: outline/cursor-click -->
+                    <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+                <div class="flex-1 w-0 ml-5">
+                    <dt class="text-sm font-medium text-gray-500 truncate">
+                        {{ucwords(trans_choice('messages.subscription', 2))}}
+                    </dt>
+                    <dd class="flex items-baseline">
+                        <div class="text-2xl font-semibold text-gray-900">
+                            {{$countSubscriptions}}
+                        </div>
+                    </dd>
+                </div>
+            </div>
+        </div>
+        <div class="px-4 py-4 bg-gray-50 sm:px-6">
+            <div class="text-sm">
+                <a href="/subscription" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Avg. Click Rate stats</span></a>
+            </div>
+        </div>
+    </div>
+</dl>
 <div class="grid grid-cols-1 gap-6 mx-auto mt-8 sm:px-6 lg:grid-flow-col-dense lg:grid-cols-3">
+
     <div class="space-y-6 lg:col-start-1 lg:col-span-2">
+
         <section aria-labelledby="bignews-title">
             <div class="p-6 mb-10 bg-indigo-200 rounded-lg shadow">
                 <div class="md:flex">
@@ -36,7 +127,9 @@
                     </div>
                 </div>
             </section>
+
         </div>
+
         <!-- Announcements -->
         <section aria-labelledby="announcements-title" class="lg:col-start-3 lg:col-span-1">
             <div class="overflow-hidden bg-white rounded-lg shadow">
@@ -73,98 +166,47 @@
     </div>
 </div>
 <div class="p-6 mb-10 ">
-    <dl class="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-2 lg:grid-cols-3">
-        <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-            <div class="flex-grow px-4 py-5 sm:p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 p-3 bg-indigo-500 rounded-md">
-                        <!-- Heroicon name: outline/users -->
-                        <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                        </svg>
-                    </div>
-                    <div class="flex-1 w-0 ml-5">
-                        <dt class="text-sm font-medium text-gray-500 truncate">
-                            {{ucwords(trans_choice('messages.order', 2))}}
-                        </dt>
-                        <dd class="flex items-baseline">
-                            <div class="text-2xl font-semibold text-gray-900">
-                                @if($orders)
-                                {{$orders->count()}}
-                                @else
-                                0
-                                @endif
-                            </div>
-                        </dd>
-                    </div>
-                </div>
+    <div class="h-64 overflow-hidden bg-center bg-cover rounded-md" style="background-image: url('https://images.unsplash.com/photo-1530133532239-eda6f53fcf0f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1074&q=80')">
+        <div class="flex items-center h-full bg-gray-900 bg-opacity-50">
+            <div class="max-w-xl px-10">
+                <h2 class="text-2xl font-semibold text-white">Software Perpetual</h2>
+                <p class="mt-2 text-gray-400">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempore facere provident molestias ipsam sint voluptatum pariatur.</p>
+                <button class="flex items-center px-3 py-2 mt-4 text-sm font-medium text-white uppercase bg-blue-600 rounded hover:bg-blue-500 focus:outline-none focus:bg-blue-500">
+                    <span>Shop Now</span>
+                    <svg class="w-5 h-5 mx-2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </button>
             </div>
-            <div class="px-4 py-4 bg-gray-50 sm:px-6">
-                <div class="text-sm">
-                    <a href="/order" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Total Subscribers stats</span></a>
+        </div>
+    </div>
+    <div class="mt-8 md:flex md:-mx-4">
+        <div class="w-full h-64 overflow-hidden bg-center bg-cover rounded-md md:mx-4 md:w-1/2" style="background-image: url('https://images.unsplash.com/photo-1632239776255-0a7f24814df2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1171&q=80')">
+            <div class="flex items-center h-full bg-gray-900 bg-opacity-50">
+                <div class="max-w-xl px-10">
+                    <h2 class="text-2xl font-semibold text-white">Office 365</h2>
+                    <p class="mt-2 text-gray-400">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempore facere provident molestias ipsam sint voluptatum pariatur.</p>
+                    <button class="flex items-center mt-4 text-sm font-medium text-white uppercase rounded hover:underline focus:outline-none">
+                        <span>Shop Now</span>
+                        <svg class="w-5 h-5 mx-2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    </button>
                 </div>
             </div>
         </div>
-
-        <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-            <div class="flex-grow px-4 py-5 sm:p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 p-3 bg-indigo-500 rounded-md">
-                        <!-- Heroicon name: outline/mail-open -->
-                        <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex-1 w-0 ml-5">
-                        <dt class="text-sm font-medium text-gray-500 truncate">
-                            {{ucwords(trans_choice('messages.customer', 2))}}
-                        </dt>
-                        <dd class="flex items-baseline">
-                            <div class="text-2xl font-semibold text-gray-900">
-                                {{$countCustomers}}
-                            </div>
-                        </dd>
-                    </div>
-                </div>
-            </div>
-            <div class="px-4 py-4 bg-gray-50 sm:px-6">
-                <div class="text-sm">
-                    <a href="/customer" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Avg. Open Rate stats</span></a>
+        <div class="w-full h-64 mt-8 overflow-hidden bg-center bg-cover rounded-md md:mx-4 md:mt-0 md:w-1/2" style="background-image: url('https://images.unsplash.com/photo-1633113211800-4acbb59fc254?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=687&q=80')">
+            <div class="flex items-center h-full bg-gray-900 bg-opacity-50">
+                <div class="max-w-xl px-10">
+                    <h2 class="text-2xl font-semibold text-white">Office 365 NCE</h2>
+                    <p class="mt-2 text-gray-400">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempore facere provident molestias ipsam sint voluptatum pariatur.</p>
+                    <button class="flex items-center mt-4 text-sm font-medium text-white uppercase rounded hover:underline focus:outline-none">
+                        <span>Shop Now</span>
+                        <svg class="w-5 h-5 mx-2" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    </button>
                 </div>
             </div>
         </div>
-
-        <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-            <div class="flex-grow px-4 py-5 sm:p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 p-3 bg-indigo-500 rounded-md">
-                        <!-- Heroicon name: outline/cursor-click -->
-                        <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex-1 w-0 ml-5">
-                        <dt class="text-sm font-medium text-gray-500 truncate">
-                            {{ucwords(trans_choice('messages.subscription', 2))}}
-                        </dt>
-                        <dd class="flex items-baseline">
-                            <div class="text-2xl font-semibold text-gray-900">
-                                {{$countSubscriptions}}
-                            </div>
-                        </dd>
-                    </div>
-                </div>
-            </div>
-            <div class="px-4 py-4 bg-gray-50 sm:px-6">
-                <div class="text-sm">
-                    <a href="/subscription" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Avg. Click Rate stats</span></a>
-                </div>
-            </div>
-        </div>
-    </dl>
+    </div>
 
 
-    <div class="overflow-hidden bg-gray-200 divide-y divide-gray-200 rounded-lg shadow sm:divide-y-0 sm:grid sm:grid-cols-2 sm:gap-px">
+    <div class="mt-5 overflow-hidden bg-gray-200 divide-y divide-gray-200 rounded-lg shadow sm:divide-y-0 sm:grid sm:grid-cols-2 sm:gap-px">
         <div class="relative p-6 bg-white rounded-tl-lg rounded-tr-lg sm:rounded-tr-none group focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
             <div >
                 <span class="inline-flex p-3 rounded-lg bg-blue-50 ring-4 ring-white">
@@ -331,9 +373,9 @@
 
 
 
-    @endsection
+@endsection
 
-    @section('scripts')
+{{-- @section('scripts')
 
 
-    @endsection
+@endsection --}}

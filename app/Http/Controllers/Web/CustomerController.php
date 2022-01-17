@@ -97,12 +97,8 @@ class CustomerController extends Controller
 
 
     public function storeAndBuy(Request $request) {
-
         $validate = $this->validator($request->all())->validate();
-
         $user = $this->getUser();
-
-
     }
 
     public function show(Customer $customer) {

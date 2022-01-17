@@ -4,11 +4,9 @@ namespace App\Http\Livewire\Job;
 
 use App\Jobs;
 use Livewire\Component;
-use App\Models\FailedJobs;
 use App\Exports\JobsExport;
 use Livewire\WithPagination;
 use App\Http\Traits\UserTrait;
-use App\Notifications\FailedJob;
 use Maatwebsite\Excel\Facades\Excel;
 use romanzipp\QueueMonitor\Models\Monitor;
 use App\Http\Livewire\DataTable\WithSorting;
@@ -36,16 +34,7 @@ class JobTable extends Component
 
     public function render()
     {
-
-        $query = Monitor::query()->orderBy('id', 'DESC');
-
-        $jobs = $query
-        ->where(function ($q)  {
-            $q->orWhere('id', 'like', "%{$this->search}%");
-            $q->orWhere('queue', 'like', "%{$this->search}%");
-        })->paginate(10);
-
-        $failedjobs = FailedJobs::get();
-        return view('livewire.job.job-table',compact('jobs', 'failedjobs'));
+        $jobs= Monitor::orderBy('id', 'DESC')->get()->paginate(10);
+        return view('livewire.job.job-table', compact('jobs'));
     }
 }

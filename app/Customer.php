@@ -65,11 +65,6 @@ class Customer extends Model
         return $this->hasMany(Order::class);
     }
 
-    public function priceList()
-    {
-        return $this->belongsTo(PriceList::class);
-    }
-
     public function azure()
     {
         return Subscription::where('billing_type', 'usage')->paginate('10');

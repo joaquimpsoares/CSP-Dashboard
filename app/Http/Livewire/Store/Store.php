@@ -9,24 +9,27 @@ use App\Price;
 use App\Product;
 use Livewire\Component;
 use Illuminate\Support\Str;
-use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
+use App\Http\Livewire\DataTable\WithSorting;
+use App\Http\Livewire\DataTable\WithCachedRows;
+use App\Http\Livewire\DataTable\WithBulkActions;
+use App\Http\Livewire\DataTable\WithPerPagePagination;
 
 class Store extends Component
 {
-    use UserTrait;
-    use WithPagination;
+    use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows;
     protected $paginationTheme = 'bootstrap';
 
     public $showModal = false;
 
     public $details;
     public $search;
-    public $vendor;
+    public $vendor =[];
     public $category;
-    public $typeselected;
+    public $price;
     public $cartProducts = [];
+    public $selectproducttype;
 
     public $productName;
     public $productCategory;
@@ -37,7 +40,6 @@ class Store extends Component
     public $showmobilefilter = false;
     public $showproductdetails = false;
 
-    public function updatingSearch(){$this->resetPage();}
 
     public $filters = [
         'search' => '',
@@ -45,89 +47,62 @@ class Store extends Component
         'vendors' => '',
         'producttype' => '',
         'plugins' => false,
-        'notplugins' => true,
         'billing' => [],
         'terms' => [],
         'trial' => '',
     ];
 
-
-    public function updatedQtys($field){$this->recalc($field);}
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+    public function updatedQtys($field)
+    {
+        $this->recalc($field);
+    }
 
     public function addToCart(Product $productId)
     {
+        $billing_cycle = "Monthly";
         $this->showModal = false;
         $cart = $this->getUserCart();
-
         if (! $cart) {
             $cart = new Cart();
             $cart->save();
+        }
+
+        if($productId->IsNCE()){
+            $billing_cycle = $productId->price->billing_plan;
+            $term_duration = $productId->price->term_duration;
         }
         $cart->products()->attach($productId, [
             'id' => Str::uuid(),
             'price' => $productId->price->price,
             'retail_price' => $productId->price->msrp,
             'quantity' => $productId->minimum_quantity,
-            'billing_cycle' => "annual"
-        ]);
+            'billing_cycle' => $billing_cycle,
+            'term_duration' => $term_duration ?? null
+            ]);
 
         $this->emit('updateCart');
         $this->notify('Product added to cart: '. $productId->name );
     }
 
-    public function addToCartWithCustomer(Product $productId,Customer $customer)
+    public function showDetails(Product $product)
     {
-        $this->showModal = false;
-        $cart = Cart::where('customer_id',$customer)->first();
-        $cart = $this->getUserCart($cart->id);
-
-        //CHECK LIMITIS
-        $limits = $this->checkLimits($customer,$productId );
-
-        if($limits == false){
-        if (! $cart) {
-            $cart = new Cart();
-            $cart->save();
-        }
-            $cart->products()->attach($productId, [
-                'id' => Str::uuid(),
-                'price' => $productId->price->price,
-                'retail_price' => $productId->price->msrp,
-                'quantity' => $productId->minimum_quantity,
-                'billing_cycle' => "annual"
-            ]);
-
-            $this->notify('Product added to cart: '. $productId->name );
-        }
-        $this->emit('updateCart');
-
-    }
-
-    public function checkLimits($customer, $product){
-        if($product->IsSubscribed()){
-            $limit = $customer->subscriptions->where('product_id', $product->sku)->count();
-            if($limit >=  $product->limit){
-                $this->notify('you have reached the limits for: '. $product->name, 'error');
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public function showDetails($id)
-    {
-        $this->showModal = true;
-        $details = Product::where('id', $id)->first();
-        $this->productName          = $details->name;
-        $this->productCategory      = $details->category;
-        $this->productSku           = $details->sku;
-        $this->productDescription   = $details->description;
-        $this->productName          = $details->name;
-        $this->productMSRP          = $details->price->msrp;
-
+        $this->showproductdetails   = true;
+        $this->price                = Price::where('product_id', $product->id)->first();
+        $this->retail               = $product->price->price;
+        $this->msrp                 = $product->price->msrp;
+        $this->productName          = $product->name;
+        $this->productCategory      = $product->category;
+        $this->productSku           = $product->sku;
+        $this->productDescription   = $product->description;
+        $this->productMSRP          = $product->price->msrp;
     }
 
     public function close(){$this->showModal = false;}
+
 
     public static  function getUserCart($id = null, $token = null)
     {
@@ -144,66 +119,61 @@ class Store extends Component
         return $cart;
     }
 
+    public function updatedVendor()
+    {
+      if (!is_array($this->vendor)) return;
+
+      $this->vendor = array_filter($this->vendor, function ($vendors) {
+        return $vendors != false;
+      });
+    }
+
+    public function getRowsQueryProperty()
+    {
+        $query = Price::query()
+            ->when($this->filters['category'], fn($query, $category) => $query->whereHas('related_product', function(Builder $q) use($category){
+                $q->where('category',$category);
+            }))
+            ->when($this->filters['vendors'], fn($query, $vendors) => $query->whereHas('related_product', function(Builder $q) use($vendors){
+                $q->where('vendors', $vendors);
+            }))
+            ->when($this->filters['producttype'], fn($query, $producttype) => $query->whereHas('related_product', function(Builder $q) use($producttype){
+                $q->where('productType', $producttype);
+            }))
+            ->when($this->filters['plugins'], fn($query, $plugins) => $query->whereHas('related_product', function(Builder $q) use($plugins){
+                $q->where('is_addon', $plugins);
+            }))
+            ->when($this->filters['trial'], fn($query, $trial) => $query->whereHas('related_product', function(Builder $q) use($trial){
+                $q->where('is_trial', $trial);
+            }))
+            ->when($this->filters['billing'], fn($query, $billing) => $query->where('billing_plan', $billing))
+            ->when($this->filters['terms'], fn($query, $terms) => $query->where('term_duration', $terms))
+            ->when($this->search, fn($query, $search) => $query->where('name', 'like', '%'.$search.'%')
+                                                               ->orwhere('product_sku', 'like', '%'.$search.'%'))
+                                                               ->with('related_product');
+        return $this->applySorting($query);
+    }
+
+    public function getRowsProperty()
+    {
+        return $this->cache(function () {
+            return $this->applyPagination($this->rowsQuery);
+        });
+    }
+
     public function render()
     {
-        $user = Auth::user();
-        switch ($user->userLevel->name) {
-            case 'Reseller':
-                $priceList = $user->reseller->price_list_id;
-            break;
-            case 'Customer':
-                $priceList = $user->customer->price_list_id;
-                break;
-                default:
-                return abort(403, __('errors.access_with_resellers_credentials'));
-            }
-        $prices = Price::with('related_product')->where('price_list_id', $priceList)
-        ->whereHas('related_product', function(Builder $query){
-            if($this->vendor){
-                $query->where('vendor', $this->vendor);
-            }
-            if($this->category){
-                $query->where('category', $this->category);
-            }
-            if($this->typeselected){
-                $query->where('productType', $this->typeselected);
-            }
+            $categories     = Product::pluck('category')->unique()->filter();
+            $terms          = Price::pluck('term_duration')->unique()->filter();
+            $vendors        = Product::pluck('vendor')->unique()->filter();
+            $productType    = Product::pluck('productType')->unique()->filter();
 
-            $query->where(function(Builder $query){
-                $query->where('name', "LIKE", "%{$this->search}%");
-                $query->orWhere('sku', 'LIKE', "%{$this->search}%");
-                $query->orWhere('productType', 'LIKE', "%{$this->search}%");
-                $query->orWhere('category', 'LIKE', "%{$this->search}%");
-            });})->paginate(12);
-
-            if($prices->total() > 0){
-                $productType = $prices->map(function ($item, $key) {
-                    return ($item->related_product->pluck('productType')->unique());
-                });
-                if($productType){
-                    $productType = $productType->first()->filter();
-                }
-
-                $categories = $prices->map(function ($item, $key) {
-                    return ($item->related_product->pluck('category')->unique());
-                });
-                $categories = $categories->first()->filter();
-
-                $vendors = $prices->map(function ($item, $key) {
-                    return ($item->related_product->pluck('vendor')->unique());
-                });
-                $vendors = $vendors->first()->filter();
-
-            }else{
-                $productType = [];
-                $categories = [];
-                $vendors = [];
-            }
-            return view('livewire.store.store', [
-                'prices' => $prices,
-                'producttype' => collect($productType),
-                'categories' => $categories,
-                'vendors' => $vendors,
-            ]);
-        }
+        return view('livewire.store.store', [
+            'prices'        => $this->rows,
+            'vendors'       => $vendors,
+            'categories'    => $categories,
+            'terms'         => $terms,
+            'producttype'   => $productType,
+        ]);
+    }
 }

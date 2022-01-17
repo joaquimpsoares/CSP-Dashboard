@@ -103,9 +103,10 @@ public function newFromCartToken($token)
                 'retail_price' => $product->pivot->retail_price,
                 'billing_cycle' => $product->pivot->billing_cycle,
                 'id' => Str::uuid(),
-                'quantity' => $product->pivot->quantity
-                ]);
-            }
+                'quantity' => $product->pivot->quantity,
+                'term_duration' => $product->pivot->term_duration ?? null
+            ]);
+        }
 
             $cart->delete();
 

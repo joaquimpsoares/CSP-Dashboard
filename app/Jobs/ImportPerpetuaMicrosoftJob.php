@@ -56,9 +56,9 @@ class ImportPerpetuaMicrosoftJob implements ShouldQueue
                         'sku'                       => $importedProduct->productId.':'.$importedProduct->id,
                         'instance_id'               => $instance->id,
                         'billing'                   => "software",
-                        'addons'                    => "[]",
                         'category'                  => "Perpetual Software",
                     ], [
+                        'addons'                    => "[]",
                         'name'                      => $importedProduct->title,
                         'description'               => $importedProduct->description,
                         'uri'                       => $importedProduct->uri,

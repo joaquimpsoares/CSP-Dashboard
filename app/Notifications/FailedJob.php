@@ -2,14 +2,10 @@
 
 namespace App\Notifications;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use NotificationChannels\MsTeams\MsTeamsChannel;
 use NotificationChannels\MsTeams\MsTeamsMessage;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Support\Facades\Mail;
 
 class FailedJob extends Notification
 {

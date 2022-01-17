@@ -41,8 +41,6 @@ class StoreController extends Controller
                 # code...
                 break;
         }
-
-
         return view('store.index');
     }
 

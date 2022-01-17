@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
-use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
 
 // use App\Http\Controllers\TestController;
 
@@ -24,7 +23,6 @@ Route::prefix('jobis')->group(function () {
 
 Route::get('accept/{token}', 'InviteController@accept')->name('accept');
 Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('resetinvitationpassword');
-
 
 
 /**********************************************************************************

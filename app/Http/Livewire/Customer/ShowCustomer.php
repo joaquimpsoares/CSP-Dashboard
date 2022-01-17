@@ -170,18 +170,18 @@ class ShowCustomer extends Component
 
     public function save(Customer $customer)
     {
-        $this->validate();
-        try {
+        // $this->validate();
+        // try {
 
             $this->editing->save();
             $this->showEditModal = false;
 
 
-        } catch (ClientException $e) {
-            $this->showEditModal = false;
-            $this->notify('Customer ' . $e->getMessage() . ' created successfully');
-            Log::info('Error saving reseller: '.$e->getMessage());
-        }
+        // } catch (ClientException $e) {
+        //     $this->showEditModal = false;
+        //     $this->notify('Customer ' . $e->getMessage() . ' created successfully');
+        //     Log::info('Error saving reseller: '.$e->getMessage());
+        // }
         $this->notify('Customer ' . $customer->company_name . ' saved successfully, refresh page');
 
 

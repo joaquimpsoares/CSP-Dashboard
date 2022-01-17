@@ -9,8 +9,8 @@
 @endsection
 
 @section('content')
-
-<div class="container mt-5">
+@livewire('provider.create-provider')
+{{-- <div class="container mt-5">
     <section class="dark-grey-text">
         <div class="card">
             <div class="card-body">
@@ -28,21 +28,21 @@
                             @csrf
                             <h1></h1>
                             <div class="row">
-                                <div class="col-md-6 mb-4">
+                                <div class="mb-4 col-md-6">
                                     <label for="company_name" class="">{{ ucwords(trans_choice('messages.company_name', 1)) }}</label>
                                     <input type="text" id="company_name" name="company_name" class="form-control @error('company_name') is-invalid @enderror" value="{{ old('company_name') }}" >
                                     @error('company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
-                                <div class="col-md-6 mb-2">
+                                <div class="mb-2 col-md-6">
                                     <label for="nif">{{ ucwords(trans_choice('messages.nif', 1)) }}</label>
                                     <input type="text" id="nif" name="nif" class="form-control @error('nif') is-invalid @enderror" value="{{ old('nif') }}">
                                     @error('nif')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-12 mb-2">
+                                <div class="mb-2 col-md-12">
                                     <label for="country">{{ucwords(trans_choice('messages.country', 1))}}</label>
-                                    <div class="input-group mb-3">
+                                    <div class="mb-3 input-group">
                                         <div class="input-group-prepend">
                                             <label class="input-group-text" for="country_id"><i class="fa fa-plane" aria-hidden="true"></i>
                                             </label>
@@ -64,17 +64,17 @@
                             <input type="text" id="address_2" name="address_2" class="form-control mb-4 @error('address_2') is-invalid @enderror" value="{{ old('address_2') }}" placeholder="Appartment or numer">
                             @error('address_2')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                             <div class="row">
-                                <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="mb-4 col-lg-4 col-md-6">
                                     <label for="city" class="">{{ucwords(trans_choice('messages.city', 1))}}</label>
                                     <input type="text" id="city" name="city" class="form-control mb-4 @error('city') is-invalid @enderror" value="{{ old('city') }}">
                                     @error('city')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
-                                <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="mb-4 col-lg-4 col-md-6">
                                     <label for="state">{{ucwords(trans_choice('messages.state', 1))}}</label>
                                     <input name="state" type="text" class="form-control @error('state') is-invalid @enderror" id="state" placeholder="" value="{{ old('state') }}">
                                     @error('state')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
-                                <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="mb-4 col-lg-4 col-md-6">
                                     <label for="postal_code">Zip</label>
                                     <input name="postal_code" type="text" class="form-control @error('postal_code') is-invalid @enderror" id="zip" placeholder="" value="{{ old('postal_code') }}"  >
                                     @error('postal_code')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
@@ -120,13 +120,13 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 mb-4">
+            <div class="mb-4 col-lg-4">
                 <button class="btn btn-primary" type="submit">{{ucwords(trans_choice('messages.create', 1))}}</button>
             </div>
         </div>
     </div>
 </section>
-</div>
+</div> --}}
 
 @endsection
 

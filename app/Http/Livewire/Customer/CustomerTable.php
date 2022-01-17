@@ -190,6 +190,7 @@ class CustomerTable extends Component
         $countries  = Country::pluck( 'name','id');
         $roles      = Role::pluck( 'name','id');
         $statuses   = Status::pluck( 'name','id');
+
         return view('livewire.customer.customer-table', [
             'customers' => $this->rows,
             'countries' => $countries,
