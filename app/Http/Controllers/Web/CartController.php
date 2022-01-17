@@ -157,7 +157,7 @@ class CartController extends Controller
 
         if($customer->microsoftTenantInfo->first() != null){
 
-        
+
         // $subscriptions = $customer->subscriptions;
         // foreach ($subscriptions as $subscription) {
         //     foreach ($subscription->products as $product) {
@@ -453,14 +453,19 @@ class CartController extends Controller
 
     public function getMainUser(Request $request)
     {
+        // Log::info('This is customer cart!!: '.$request->cu);
+
         $validate = $request->validate([
             'token' => 'required|uuid'
         ]);
-        $cart = $this->getByToken($validate['token']);
-        Log::info('This is user for: '.$cart->customer);
 
-        $user = $cart->customer->users->first();
-        Log::info('This is user for: '.$user);
+        $cart = $this->getByToken($validate['token']);
+
+        $customer = Customer::Where('id', $cart->customer_id)->first();
+
+        Log::info('This is customer cart!!: '.$customer);
+
+        $user = $customer->users->first();
 
         return $user;
     }
