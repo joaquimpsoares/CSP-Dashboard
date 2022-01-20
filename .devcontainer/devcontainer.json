@@ -1,0 +1,18 @@
+// https://aka.ms/devcontainer.json
+{
+	"name": "Existing Docker Compose (Extend)",
+	"dockerComposeFile": [
+		"../docker-compose.yml"
+	],
+	"service": "laravel.test",
+	"workspaceFolder": "/var/www/html",
+	"settings": {},
+	"extensions": [
+		"onecentlin.laravel-extension-pack"
+	],
+	"remoteUser": "sail",
+	// "forwardPorts": [],
+	// "runServices": [],
+	// "postCreateCommand": "apt-get update && apt-get install -y curl",
+	// "shutdownAction": "none",
+}

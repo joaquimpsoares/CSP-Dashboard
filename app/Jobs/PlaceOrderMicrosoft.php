@@ -144,6 +144,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 throw $th;
             }
 
+            $this->order->errors = $orderConfirm->errors();
             if ($orderConfirm->errors()->count() > 0) {
                 foreach ($orderConfirm->errors() as $error) {
                     logger('Error found: ' . $error);
