@@ -31,6 +31,7 @@ class Subscription extends Model
     }
     protected $casts = [
         'changes_on_renew' => 'array',
+        'refundableQuantity' => 'array',
     ];
 
     const STATUSES = [
@@ -49,7 +50,7 @@ class Subscription extends Model
         return $this->belongsTo(Instance::class);
     }
 
-    public function activate()
+    public function active()
     {
         $subscription = new TagydesSubscription([
             'id'            => $this->subscription_id,
@@ -80,7 +81,6 @@ class Subscription extends Model
     }
     public function validatemigration ($customer,$subscription)
     {
-// dd($customer->microsoftTenantInfo->first()->tenant_id);
         $customer = new TagydesCustomer([
             'id' => $customer->microsoftTenantInfo->first()->tenant_id,
             'username' => 'bill@tagydes.com',
@@ -103,13 +103,12 @@ class Subscription extends Model
             'created_at'    => $this->created_at->__toString(),
         ]);
 
-
-
-    return SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token) //change status only
+        return SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)
         ->ValidateMigratioSubscription($customer, $subscription);
 
     }
-        public function changeBillingCycle($cycle)
+
+    public function changeBillingCycle($cycle)
     {
         $subscription = new TagydesSubscription([
             'id'            => $this->subscription_id,
@@ -123,13 +122,12 @@ class Subscription extends Model
             'billingCycle'  => $this->billing_period,
             'created_at'    => $this->created_at->__toString(),
         ]);
-            $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)->changeBillingCycle($subscription, $cycle);
+        $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)->changeBillingCycle($subscription, $cycle);
         return $this;
     }
 
     public function changeAmount($quantity)
     {
-        $product = Price::where('product_id', $this->product_id)->first();
         $subscription = new TagydesSubscription([
             'id'            => $this->subscription_id,
             'orderId'       => $this->order_id,
@@ -143,25 +141,43 @@ class Subscription extends Model
             'created_at'    => $this->created_at->__toString(),
         ]);
         try {
-            $order = new Order();
-            $order->details = "changing subscription ".$this->name ." amount from ". $subscription->amount. " to ". $quantity;
-            $order->token = Str::uuid();
-            $order->user_id = Auth::user()->id;
-            $order->save();
-            $order->products()->attach($this->product_id, [
-                'id' => Str::uuid(),
-                'price' => $product->price ?? '0',
-                'retail_price' => $product->msrp ?? '0',
-                'billing_cycle' => $this->billing_period,
-                'quantity' => $quantity
-                ]);
-
             $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)->
-            update($subscription, ['quantity' => $quantity]);
+            update($subscription, [
+                'quantity' => $quantity,
+            ]);
+
         } catch (\Exception $th) {
+            return $th->getMessage();
         }
-        return $this;
+        return $update;
     }
+
+    public function changeAutorenew($autorenew)
+    {
+        $subscription = new TagydesSubscription([
+            'id'            => $this->subscription_id,
+            'orderId'       => $this->order_id,
+            'offerId'       => $this->product_id,
+            'customerId'    => $this->customer->microsoftTenantInfo->first()->tenant_id,
+            'name'          => $this->name,
+            'status'        => $this->status_id,
+            'quantity'      => $this->amount,
+            'currency'      => $this->currency,
+            'billingCycle'  => $this->billing_period,
+            'created_at'    => $this->created_at->__toString(),
+        ]);
+        try {
+            $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)->
+            update($subscription, [
+                'AutoRenewEnabled' => $autorenew,
+            ]);
+
+        } catch (\Exception $th) {
+           return $th->getMessage();
+        }
+        return $update;
+    }
+
 
     public function suspend()
     {
@@ -179,9 +195,12 @@ class Subscription extends Model
         ]);
 
         $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token) //change status only
-        ->update($subscription, ['status' => 'suspended']);
+        ->update($subscription, [
+            'status' => 'suspended',
+            'AutoRenewEnabled' => true,
+        ]);
 
-        $this->markAsSuspended();
+        $this->markAsDisabled();
         Log::info('Status changed: Suspended');
 
         return $this;
@@ -215,13 +234,14 @@ class Subscription extends Model
     {
 
         SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token) //change status only
-        ->update($subscription, ['status' => 'suspended']);
+        ->update($value, ['status' => 'suspended']);
 
         $this->markAsDisabled();
         Log::info('Status changed: Suspended');
 
         return $this;
     }
+
 
     public function markAsDisabled()
     {
