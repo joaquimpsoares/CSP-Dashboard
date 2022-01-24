@@ -1,19 +1,24 @@
 <?php
 
 namespace App;
+use Throwable;
 use App\Models\Metafield;
+use Illuminate\Bus\Batch;
 use Illuminate\Support\Str;
 use GPBMetadata\Google\Api\Log;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use App\Jobs\ImportPerpetuaMicrosoftJob;
 use App\Jobs\ImportProductsMicrosoftJob;
 use Illuminate\Database\Eloquent\Builder;
 use App\Jobs\ImportProductsNECMicrosoftJob;
-
+use Illuminate\Foundation\Bus\Dispatchable;
 
 class Product extends Model
 {
+    use Dispatchable;
+
     protected $casts = [
         'has_addons'                => 'boolean',
         'is_addon'                  => 'boolean',
@@ -91,6 +96,11 @@ class Product extends Model
         return $this->hasOne(Price::class, 'product_id', 'id');
     }
 
+    public function orderproduct()
+    {
+        return $this->belongsTo(OrderProducts::class, 'id', 'product_id');
+    }
+
     public function instance() {
         return $this->hasOne(Instance::class, 'id', 'instance_id');
     }
@@ -123,8 +133,37 @@ class Product extends Model
 
     public function importNCELicenses($instance, $country)
     {
-        ImportProductsNECMicrosoftJob::dispatch($instance, $country->iso_3166_2)->onQueue('SyncProducts');
-        return $this;
+        $batch = Bus::batch([
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
+        ])->then(function (Batch $batch) {
+            // All jobs completed successfully...
+        })->catch(function (Batch $batch, Throwable $e) {
+            // First batch job failure detected...
+        })->finally(function (Batch $batch) {
+            // The batch has finished executing...
+        })->onQueue('SyncProducts')->dispatch();
+
+        // $batch = Bus::batch([])->onQueue('SyncProducts')->dispatch();
+        // $batch->add(New ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2));
+        // // ImportProductsNECMicrosoftJob::dispatch($instance, $country->iso_3166_2)->onQueue('SyncProducts');
+        return $batch;
     }
 
     public function importPerpetual($instance, $country)
