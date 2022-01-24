@@ -7,25 +7,35 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Exports\OrdersExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Livewire\DataTable\WithSorting;
+use App\Http\Livewire\DataTable\WithCachedRows;
+use App\Http\Livewire\DataTable\WithBulkActions;
+use App\Http\Livewire\DataTable\WithPerPagePagination;
 
 class OrderTable extends Component
 {
-    use WithPagination;
+    use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows;
 
     public $search = '';
+    public $order;
+    public $showEditModal = false;
 
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
+    public function updatingSearch(){$this->resetPage();}
+
 
     public function exportSelected()
     {
         return Excel::download(new OrdersExport, 'Orders.xlsx');
     }
-    public function render()
-    {
 
+    public function show(Order $order)
+    {
+        $this->order = $order;
+        $this->showEditModal = true;
+    }
+
+    public function getRowsQueryProperty()
+    {
         $search = $this->search;
 
         $query = Order::query()->orderBy('id', 'DESC');
@@ -35,13 +45,21 @@ class OrderTable extends Component
             $q->where('details', "like", "%{$this->search}%");
             $q->orWhere('id', 'like', "%{$this->search}%");
         })->
-        with(['customer', 'status'])->paginate(10);
+        with(['customer', 'status', 'orderproduct', 'products']);
 
-        $orders->getCollection()->map(function(Order $order){
-            $order->setRawAttributes(json_decode(json_encode($order->format()), true)); // Coverts to array recursively (make helper from it?)
-            return $order;
+        return $this->applySorting($orders);
+    }
+
+    public function getRowsProperty()
+    {
+        return $this->cache(function () {
+            return $this->applyPagination($this->rowsQuery);
         });
-
-        return view('livewire.order.order-table',compact('orders'));
+    }
+    public function render()
+    {
+        return view('livewire.order.order-table', [
+            'orders' => $this->rows,
+        ]);
     }
 }
