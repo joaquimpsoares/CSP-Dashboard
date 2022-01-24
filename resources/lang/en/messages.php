@@ -368,4 +368,5 @@ return [
     'edit_budget' => 'edit budget',
     'usage_date' => 'usage date',
     'nce' => 'new commerce experience',
+    'schedule_subscription' => 'schedule subscription',
 ];

@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Queue;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -41,32 +41,23 @@ class AppServiceProvider extends ServiceProvider
     {
         Builder::macro('toCsv', function () {
             $results = $this->get();
-
             if ($results->count() < 1) return;
-
             $titles = implode(',', array_keys((array) $results->first()->getAttributes()));
-
             $values = $results->map(function ($result) {
                 return implode(',', collect($result->getAttributes())->map(function ($thing) {
                     return '"'.$thing.'"';
                 })->toArray());
             });
-
             $values->prepend($titles);
-
             return $values->implode("\n");
         });
 
-        // Component::macro('notify', function ($message) {
-        //     $this->dispatchBrowserEvent('notify', $message);
-        // });
-
-        Component::macro('notify', function ($message,  $type = 'success') {
-            // dd($type);
-            $this->dispatchBrowserEvent('notify', ['message' => $message, 'type' => $type]);
+        Component::macro('notify', function ($message, $title = '', $type = 'success') {
+            $this->dispatchBrowserEvent('notify', ['message' => $message, 'title' => $title, 'type' => $type]);
         });
 
         Model::unguard();
+
         Blade::directive('money', function ($amount) {
             return "<?php echo number_format($amount , 2) ; ?>";
         });
