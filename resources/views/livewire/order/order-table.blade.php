@@ -95,7 +95,27 @@
                                         </div>
                                     </a>
                                 </x-table.cell>
-                                 <x-table.cell>
+                                @if ($value['status']['id']==4)
+                                <td class="px-2 py-2 text-xs text-gray-500 whitespace-nowrap lg:table-cell">
+                                    <p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 capitalize">{{ $value['status']['name'] }}</span></p>
+                                </td>
+                                @endif
+                                @if ($value['status']['id']==1)
+                                <td class="px-2 py-2 text-xs text-gray-500 whitespace-nowrap lg:table-cell">
+                                    <p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 capitalize">{{ $value['status']['name'] }}</span></p>
+                                </td>
+                                @endif
+                                @if ($value['status']['id']==2)
+                                <td class="px-2 py-2 text-xs text-gray-500 whitespace-nowrap lg:table-cell">
+                                    <p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 capitalize">{{ $value['status']['name'] }}</span></p>
+                                </td>
+                                @endif
+                                @if ($value['status']['id']==3)
+                                <td class="px-2 py-2 text-xs text-gray-500 whitespace-nowrap lg:table-cell">
+                                    <p><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 capitalize">{{ $value['status']['name'] }}</span></p>
+                                </td>
+                                @endif
+                                <x-table.cell>
                                     <div class="z-10">
                                         <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
@@ -105,7 +125,7 @@
                                         <div class="dropdown-menu">
                                             <a wire:click="show({{ $value['id'] }})" class="dropdown-item" href="#">
                                                 <x-icon.edit></x-icon.edit>
-                                                {{ ucwords(trans_choice('messages.edit', 1)) }}
+                                                {{ ucwords(trans_choice('messages.show', 1)) }}
                                             </a>
                                         </div>
                                     </div>
