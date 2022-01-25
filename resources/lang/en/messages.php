@@ -339,6 +339,7 @@ return [
     'title' => 'title',
     'video_youtube_link' => 'youtube link',
     'show_to' => 'show to',
+    'show' => 'show',
     'photo' => 'photo',
     'language' => 'language',
     'add_announcements' => 'add announcements',
@@ -369,4 +370,5 @@ return [
     'usage_date' => 'usage date',
     'nce' => 'new commerce experience',
     'schedule_subscription' => 'schedule subscription',
+    'upgradeOffers' => 'upgrade Offers',
 ];
