@@ -138,6 +138,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
             try {
                 $tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->create($tagydescart);
                 Log::info('Creating Cart: ' . $tagydesorder);
+                $this->order->request_body = $tagydesorder->requestBody;
                 $orderConfirm = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($tagydesorder);
                 Log::info('Confirmation of cart Cart: ', $orderConfirm->subscriptions()->toArray());
             } catch (\Throwable $th) {
