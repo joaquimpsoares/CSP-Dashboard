@@ -68,7 +68,7 @@
                                         <a href="#" wire:click="show({{ $value['id'] }})" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                             <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
-                                                    {{ $value->customer->company_name }}
+                                                    {{ $value->customer->company_name ?? null}}
                                                 </span>
                                             </div>
                                         </a>
