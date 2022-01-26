@@ -52,8 +52,10 @@ class ShowSubscription extends Component
         }
 
         if($this->subscription->productonce->isNCE()){
-            foreach ($this->subscription->refundableQuantity as $item){
-                $min_quantity = $this->subscription->amount - $item['totalQuantity'];
+            if($this->subscription->refundableQuantity){
+                foreach ($this->subscription->refundableQuantity as $item){
+                    $min_quantity = $this->subscription->amount - $item['totalQuantity'];
+                }
             }
         }
 
