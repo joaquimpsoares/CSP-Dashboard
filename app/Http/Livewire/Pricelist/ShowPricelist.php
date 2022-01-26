@@ -30,10 +30,11 @@ class ShowPricelist extends Component
     protected $queryString      = ['sorts'];
     protected $paginationTheme  = 'bootstrap';
     protected $listeners        = ['refreshTransactions' => '$refresh'];
-
+    public $highlightIndex;
     public $priceList;
     public $products;
     public $search;
+    public $query;
     public $license;
     public $perpetual;
     public $showImportModal = false;
@@ -53,7 +54,8 @@ class ShowPricelist extends Component
     ];
 
 
-    public function mount() { $this->editing = $this->makeBlankTransaction(); }
+
+    public function mount() {  $this->editing = $this->makeBlankTransaction(); }
     public function updatingSearch(){$this->resetPage();}
     public function makeBlankTransaction() { return Price::make(['date' => now(), 'status' => 'success']); }
     public function resetFilters(){ $this->reset(); }
@@ -61,23 +63,22 @@ class ShowPricelist extends Component
     public function toggleShowFilters() { $this->showFilters = ! $this->showFilters; }
 
     public function rules() {
-        // dd(0);
         return [
-            'fieldColumnMap.name' => 'required',
-        'fieldColumnMap.product_sku' => 'required',
-        'editing.product_sku'   => 'required|min:3|exists:products,sku',
-            'editing.product_sku'   => 'required|min:3|exists:products,sku',
-            'editing.product_id'   => 'required|min:3|exists:products,sku',
-            'editing.instance_id'   => 'required|min:3|exists:products,sku',
-            'editing.price_list_id'   => 'required|min:3|exists:products,sku',
-            'editing.name'          => 'required|min:3',
-            'editing.currency'      => 'required|min:2',
-            'editing.market'        => 'required|min:2',
-            'editing.term_duration' => 'required|min:2',
-            'editing.billing_plan'  => 'required|min:2',
-            'editing.price'         => 'required',
-            'editing.msrp'          => 'required',
-            'editing.product_vendor'          => 'required',
+            'fieldColumnMap.name'           => 'required',
+            'fieldColumnMap.product_sku'    => 'required',
+            'editing.product_sku'           => 'required|min:3|exists:products,sku',
+            'editing.product_sku'           => 'required|min:3|exists:products,sku',
+            'editing.product_id'            => 'required|min:3|exists:products,sku',
+            'editing.instance_id'           => 'required|min:3|exists:products,sku',
+            'editing.price_list_id'         => 'required|min:3|exists:products,sku',
+            'editing.name'                  => 'required|min:3',
+            'editing.currency'              => 'required|min:2',
+            'editing.market'                => 'required|min:2',
+            'editing.term_duration'         => 'required|min:2',
+            'editing.billing_plan'          => 'required|min:2',
+            'editing.price'                 => 'required',
+            'editing.msrp'                  => 'required',
+            'editing.product_vendor'        => 'required',
         ];
     }
 
@@ -99,23 +100,6 @@ class ShowPricelist extends Component
         'msrp'              => '',
         'currency'          => '',
     ];
-
-    // protected $rules = [
-    //     'fieldColumnMap.name' => 'required',
-    //     'fieldColumnMap.product_sku' => 'required',
-    //     'editing.product_sku'   => 'required|min:3|exists:products,sku',
-    //         'editing.product_id'   => 'required|min:3|exists:products,sku',
-    //         'editing.instance_id'   => 'required|min:3|exists:products,sku',
-    //         'editing.price_list_id'   => 'required|min:3|exists:products,sku',
-    //         'editing.name'          => 'required|min:3',
-    //         'editing.currency'      => 'required|min:2',
-    //         'editing.market'        => 'required|min:2',
-    //         'editing.term_duration' => 'required|min:2',
-    //         'editing.billing_plan'  => 'required|min:2',
-    //         'editing.price'         => 'required',
-    //         'editing.msrp'          => 'required',
-    //         'editing.product_vendor'          => 'required',
-    // ];
 
     protected $customAttributes = [
         'fieldColumnMap.name' => 'name',
@@ -144,7 +128,6 @@ class ShowPricelist extends Component
         Csv::from($this->upload)
         ->eachRow(function ($row) use (&$importCount) {
             $tt = $this->extractFieldsFromRow($row);
-            // dd($tt);
             if($tt['product_id'] != null){
                 Price::updateOrCreate([
                     'product_sku'   => $tt['product_sku'],
@@ -207,37 +190,6 @@ class ShowPricelist extends Component
         }
     }
 
-    public function importproducts(){
-
-        if($this->license == true){
-            Log::info('Started importing NCE');
-            // $id = Auth::user()->provider->id;
-            $product = new Product();
-            // $provider = Provider::where('id', $id)->select('country_id')->first();
-            // $country = Country::select('iso_3166_2')->where('id', $provider->country_id)->first();
-            $instance = Instance::where('provider_id', $id)->first();
-
-            $product->importNCELicenses($instance, $country);
-            // Log::debug('Subscription id: '.$product->name .' has renewed');
-
-        }
-
-        if($this->perpetual == true){
-
-            // Log::info('Started importing Perpetual');
-            // $id = Auth::user()->provider->id;
-            // $product = new Product();
-            // $provider = Provider::where('id', $id)->select('country_id')->first();
-            // $country = Country::select('iso_3166_2')->where('id', $provider->country_id)->first();
-            // $instance = Instance::where('provider_id', $id)->first();
-
-            // $product->importPerpetual($instance, $country);
-
-            // $this->notify('Import Scheduled for perpetual');
-        }
-        $this->showImportModal = false;
-    }
-
 
         public function create()
         {
@@ -273,7 +225,6 @@ class ShowPricelist extends Component
 
         public function savecreate()
         {
-
             $this->validate();
 
             $product = Product::where('sku', $this->editing->product_sku)->where('instance_id', $this->priceList->instance_id)->pluck('id')->first();
@@ -311,11 +262,16 @@ class ShowPricelist extends Component
             $this->notify('You\'ve updated '.  $fields .' prices');
         }
 
+        public function selectProduct()
+        {
+            $product = $this->products[$this->highlightIndex] ?? null;
+
+        }
+
         public function deleteSelected()
         {
             $deleteCount = $this->selectedRowsQuery->count();
             foreach($this->selectedRowsQuery->get() as $row){
-                // dump($row->related_product->IsSubscribed());
                 if($row->related_product->IsSubscribed() == null) {
                     $this->selectedRowsQuery->delete();
                     $this->showDeleteModal = false;
@@ -328,7 +284,6 @@ class ShowPricelist extends Component
             $this->notify('You\'ve deleted '.$deleteCount.' Price');
         }
 
-
         public function sortByColumn($column)
         {
             if ($this->sortColumn == $column) {
@@ -337,6 +292,31 @@ class ShowPricelist extends Component
                 $this->reset('sortDirection');
                 $this->sortColumn = $column;
             }
+        }
+
+        public function incrementHighlight()
+        {
+            if ($this->highlightIndex === count($this->products) - 1) {
+                $this->highlightIndex = 0;
+                return;
+            }
+            $this->highlightIndex++;
+        }
+
+        public function decrementHighlight()
+        {
+            if ($this->highlightIndex === 0) {
+                $this->highlightIndex = count($this->products) - 1;
+                return;
+            }
+            $this->highlightIndex--;
+        }
+
+        public function updatedQuery()
+        {
+            $this->products = Product::where('sku', 'like', '%' . $this->query . '%')->where('instance_id', $this->priceList->instance_id)
+            ->get()
+            ->toArray();
         }
 
         public function getRowsQueryProperty()
@@ -386,10 +366,7 @@ class ShowPricelist extends Component
             }else{
                 $customers='';
             }
-
-            $this->products = Product::where('sku', $this->editing->product_sku)->where('instance_id', $this->priceList->instance_id)->pluck('id')->first();
             $this->categories = Product::groupBy('category')->pluck('category');
-
             return view('livewire.pricelist.show-pricelist',[
                 'prices' => $this->rows,
                 'categories' => $this->categories,

@@ -133,7 +133,7 @@ class CartCounter extends Component
         if($product->IsSubscribed()){
             $limit = $customer->subscriptions->where('product_id', $product->sku)->count();
             if($limit >=  $product->limit){
-                $this->notify('you have reached the limits for: '. $product->name, 'error');
+                $this->notify('','you have reached the limits for: '. $product->name, 'error');
                 return true;
             }
         }

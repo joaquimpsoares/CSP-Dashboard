@@ -3,8 +3,10 @@
 
 
 use App\Instance;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 
@@ -46,6 +48,19 @@ Route::group(['middleware' => 'auth'], function ()
         Route::resource('permissions', 'PermissionController');
         Route::get('userloginfo', 'HomeController@userLogInfo')->name('userloginfo');
         Route::get('logactivity', 'HomeController@logActivity')->name('logactivity');
+
+        // Route::get('/batch/{batchId}', function (string $batchId) {
+        //     return Bus::findBatch($batchId);
+        // });
+        Route::get('/batchInProgress', function (string $batchId) {
+            $batches = DB::table('job_batches')->where('pending_jobs', '>', 0)->get();
+            if (count($batches) > 0) {
+                return Bus::findBatch($batches[0]->id);
+            }
+
+            return [];
+        });
+
     });
 
     /*****************************************************************************************************************/

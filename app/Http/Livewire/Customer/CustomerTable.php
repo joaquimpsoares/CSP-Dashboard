@@ -64,7 +64,6 @@ class CustomerTable extends Component
         'editing.markup'                => 'nullable|integer|min:1',
         'editing.price_list_id'         => 'required|integer|exists:price_lists,id',
 
-
         'creatingUser.name'             => 'sometimes|string|max:255|min:3',
         'creatingUser.last_name'        => 'sometimes|string|max:255|min:3',
         'creatingUser.socialite_id'     => 'sometimes|string|max:255|min:3',

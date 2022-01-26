@@ -118,15 +118,13 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 }
                 elseif($product->IsNCE()){
                     $catalogItemId = $product['catalog_item_id'];
-
                     Log::info('catalogItemId1: ' . $catalogItemId);
-
                     $TagydesProduct = new TagydesProduct([
                         'id' => $catalogItemId
                         ] + $productData);
                         $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
 
-                    Log::info('Adding NCE Product to Cart: ' . $tagydescart);
+                    // Log::info('Adding NCE Product to Cart: ' . $tagydescart);
                 }else{
                     $TagydesProduct = new TagydesProduct([
                         'id' => $product['sku'],
@@ -141,8 +139,9 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 $this->order->request_body = $tagydesorder->requestBody;
                 $orderConfirm = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($tagydesorder);
                 Log::info('Confirmation of cart Cart: ', $orderConfirm->subscriptions()->toArray());
-            } catch (\Throwable $th) {
-                throw $th;
+            } catch (Exception $th) {
+                // dd($th->getMessage());
+                Log::info('Error Cart.', ['message' => $th->getMessage()]);
             }
 
             $this->order->errors = $orderConfirm->errors();
