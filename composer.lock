@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "af9422ec6746ffde9a7c17a36f34a2b0",
+    "content-hash": "000f463d9e78e6f374826f8dd9fa88cd",
     "packages": [
         {
             "name": "alajusticia/laravel-expirable",
@@ -909,29 +909,29 @@
         },
         {
             "name": "dragonmantank/cron-expression",
-            "version": "v3.2.3",
+            "version": "v3.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dragonmantank/cron-expression.git",
-                "reference": "47c53bbb260d3c398fba9bfa9683dcf67add2579"
+                "reference": "be85b3f05b46c39bbc0d95f6c071ddff669510fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dragonmantank/cron-expression/zipball/47c53bbb260d3c398fba9bfa9683dcf67add2579",
-                "reference": "47c53bbb260d3c398fba9bfa9683dcf67add2579",
+                "url": "https://api.github.com/repos/dragonmantank/cron-expression/zipball/be85b3f05b46c39bbc0d95f6c071ddff669510fa",
+                "reference": "be85b3f05b46c39bbc0d95f6c071ddff669510fa",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.2|^8.0",
-                "webmozart/assert": "^1.7.0"
+                "webmozart/assert": "^1.0"
             },
             "replace": {
                 "mtdowling/cron-expression": "^1.0"
             },
             "require-dev": {
                 "phpstan/extension-installer": "^1.0",
-                "phpstan/phpstan": "^0.12",
-                "phpstan/phpstan-webmozart-assert": "^0.12.7",
+                "phpstan/phpstan": "^1.0",
+                "phpstan/phpstan-webmozart-assert": "^1.0",
                 "phpunit/phpunit": "^7.0|^8.0|^9.0"
             },
             "type": "library",
@@ -958,7 +958,7 @@
             ],
             "support": {
                 "issues": "https://github.com/dragonmantank/cron-expression/issues",
-                "source": "https://github.com/dragonmantank/cron-expression/tree/v3.2.3"
+                "source": "https://github.com/dragonmantank/cron-expression/tree/v3.3.1"
             },
             "funding": [
                 {
@@ -966,7 +966,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-01-06T05:35:07+00:00"
+            "time": "2022-01-18T15:43:28+00:00"
         },
         {
             "name": "egulias/email-validator",
@@ -1341,16 +1341,16 @@
         },
         {
             "name": "google/cloud-core",
-            "version": "v1.43.1",
+            "version": "v1.43.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-core.git",
-                "reference": "60b47793e0c83f0e02a8197ef11ab1f599c348da"
+                "reference": "93fc44af3ebf60a35fbc70e13e6113b1122ba495"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/60b47793e0c83f0e02a8197ef11ab1f599c348da",
-                "reference": "60b47793e0c83f0e02a8197ef11ab1f599c348da",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/93fc44af3ebf60a35fbc70e13e6113b1122ba495",
+                "reference": "93fc44af3ebf60a35fbc70e13e6113b1122ba495",
                 "shasum": ""
             },
             "require": {
@@ -1399,22 +1399,22 @@
             ],
             "description": "Google Cloud PHP shared dependency, providing functionality useful to all components.",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.43.1"
+                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.43.2"
             },
-            "time": "2021-10-20T17:52:15+00:00"
+            "time": "2022-01-12T16:19:20+00:00"
         },
         {
             "name": "google/cloud-translate",
-            "version": "v1.12.2",
+            "version": "v1.12.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-translate.git",
-                "reference": "58b3d2b0abc586035c9272eb8d45dfee0a39562a"
+                "reference": "2e770c18a865bd4aeab76a8c22d54fee555376d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-translate/zipball/58b3d2b0abc586035c9272eb8d45dfee0a39562a",
-                "reference": "58b3d2b0abc586035c9272eb8d45dfee0a39562a",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-translate/zipball/2e770c18a865bd4aeab76a8c22d54fee555376d0",
+                "reference": "2e770c18a865bd4aeab76a8c22d54fee555376d0",
                 "shasum": ""
             },
             "require": {
@@ -1452,22 +1452,22 @@
             ],
             "description": "Cloud Translation Client for PHP",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-translate/tree/v1.12.2"
+                "source": "https://github.com/googleapis/google-cloud-php-translate/tree/v1.12.3"
             },
-            "time": "2021-12-10T17:55:49+00:00"
+            "time": "2022-01-12T16:19:20+00:00"
         },
         {
             "name": "google/common-protos",
-            "version": "1.4.0",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/common-protos-php.git",
-                "reference": "b1ee63636d94fe88f6cff600a0f23fae06b6fa2e"
+                "reference": "a1bcb7b37f1fa1c92d65c3c6339fc701a65916ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/common-protos-php/zipball/b1ee63636d94fe88f6cff600a0f23fae06b6fa2e",
-                "reference": "b1ee63636d94fe88f6cff600a0f23fae06b6fa2e",
+                "url": "https://api.github.com/repos/googleapis/common-protos-php/zipball/a1bcb7b37f1fa1c92d65c3c6339fc701a65916ee",
+                "reference": "a1bcb7b37f1fa1c92d65c3c6339fc701a65916ee",
                 "shasum": ""
             },
             "require": {
@@ -1495,32 +1495,32 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/common-protos-php/issues",
-                "source": "https://github.com/googleapis/common-protos-php/tree/1.4.0"
+                "source": "https://github.com/googleapis/common-protos-php/tree/2.0.0"
             },
-            "time": "2021-11-18T21:49:24+00:00"
+            "time": "2022-01-13T20:17:53+00:00"
         },
         {
             "name": "google/gax",
-            "version": "v1.10.0",
+            "version": "v1.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/gax-php.git",
-                "reference": "5222f7712e73d266490c742dc9bc602602ae00a5"
+                "reference": "6e52480f7a15ca4ebab62ea02abed82a778afeb9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/gax-php/zipball/5222f7712e73d266490c742dc9bc602602ae00a5",
-                "reference": "5222f7712e73d266490c742dc9bc602602ae00a5",
+                "url": "https://api.github.com/repos/googleapis/gax-php/zipball/6e52480f7a15ca4ebab62ea02abed82a778afeb9",
+                "reference": "6e52480f7a15ca4ebab62ea02abed82a778afeb9",
                 "shasum": ""
             },
             "require": {
                 "google/auth": "^1.18.0",
-                "google/common-protos": "^1.0",
+                "google/common-protos": "^1.0||^2.0",
                 "google/grpc-gcp": "^0.2",
                 "google/protobuf": "^3.12.2",
                 "grpc/grpc": "^1.13",
                 "guzzlehttp/promises": "^1.3",
-                "guzzlehttp/psr7": "^1.7.0|^2",
+                "guzzlehttp/psr7": "^1.7.0||^2",
                 "php": ">=5.5"
             },
             "conflict": {
@@ -1548,9 +1548,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/gax-php/issues",
-                "source": "https://github.com/googleapis/gax-php/tree/v1.10.0"
+                "source": "https://github.com/googleapis/gax-php/tree/v1.11.1"
             },
-            "time": "2021-10-27T17:33:04+00:00"
+            "time": "2022-01-19T18:00:35+00:00"
         },
         {
             "name": "google/grpc-gcp",
@@ -2402,26 +2402,26 @@
         },
         {
             "name": "lab404/laravel-impersonate",
-            "version": "1.7.2",
+            "version": "1.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/404labfr/laravel-impersonate.git",
-                "reference": "14de9dbf3446406282fa16f7920a8049860b3832"
+                "reference": "7c1f9c5cefd40247993f52f4b7724fd8b580084f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/404labfr/laravel-impersonate/zipball/14de9dbf3446406282fa16f7920a8049860b3832",
-                "reference": "14de9dbf3446406282fa16f7920a8049860b3832",
+                "url": "https://api.github.com/repos/404labfr/laravel-impersonate/zipball/7c1f9c5cefd40247993f52f4b7724fd8b580084f",
+                "reference": "7c1f9c5cefd40247993f52f4b7724fd8b580084f",
                 "shasum": ""
             },
             "require": {
-                "laravel/framework": "^6.0 | ^7.0 | ^8.0",
+                "laravel/framework": "^6.0 | ^7.0 | ^8.0 | ^9.0",
                 "php": "^7.2 | ^8.0"
             },
             "require-dev": {
                 "mockery/mockery": "^1.3.3",
-                "orchestra/database": "^4.0 | ^5.0 | ^6.0",
-                "orchestra/testbench": "^4.0 | ^5.0 | ^6.0",
+                "orchestra/database": "^4.0 | ^5.0 | ^6.0 | ^7.0",
+                "orchestra/testbench": "^4.0 | ^5.0 | ^6.0 | ^7.0",
                 "phpunit/phpunit": "^7.5 | ^8.0 | ^9.0"
             },
             "type": "library",
@@ -2464,22 +2464,22 @@
             ],
             "support": {
                 "issues": "https://github.com/404labfr/laravel-impersonate/issues",
-                "source": "https://github.com/404labfr/laravel-impersonate/tree/1.7.2"
+                "source": "https://github.com/404labfr/laravel-impersonate/tree/1.7.3"
             },
-            "time": "2020-11-11T11:13:14+00:00"
+            "time": "2022-01-15T13:39:35+00:00"
         },
         {
             "name": "laravel/framework",
-            "version": "v8.79.0",
+            "version": "v8.80.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "8091f07558ff4a890435ff9d25fa9aca0189ad63"
+                "reference": "8949a2e46b0f274f39c61eee8d5de1dc6a1f686b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/8091f07558ff4a890435ff9d25fa9aca0189ad63",
-                "reference": "8091f07558ff4a890435ff9d25fa9aca0189ad63",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/8949a2e46b0f274f39c61eee8d5de1dc6a1f686b",
+                "reference": "8949a2e46b0f274f39c61eee8d5de1dc6a1f686b",
                 "shasum": ""
             },
             "require": {
@@ -2639,7 +2639,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2022-01-12T16:12:41+00:00"
+            "time": "2022-01-18T15:51:42+00:00"
         },
         {
             "name": "laravel/helpers",
@@ -3569,16 +3569,16 @@
         },
         {
             "name": "livewire/livewire",
-            "version": "v2.8.2",
+            "version": "v2.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/livewire/livewire.git",
-                "reference": "f6b1726d1068a5b7315f03dc4e58d5763b928374"
+                "reference": "e117c78f9a4b19edb294b5b576138fd1f896925a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/livewire/livewire/zipball/f6b1726d1068a5b7315f03dc4e58d5763b928374",
-                "reference": "f6b1726d1068a5b7315f03dc4e58d5763b928374",
+                "url": "https://api.github.com/repos/livewire/livewire/zipball/e117c78f9a4b19edb294b5b576138fd1f896925a",
+                "reference": "e117c78f9a4b19edb294b5b576138fd1f896925a",
                 "shasum": ""
             },
             "require": {
@@ -3629,7 +3629,7 @@
             "description": "A front-end framework for Laravel.",
             "support": {
                 "issues": "https://github.com/livewire/livewire/issues",
-                "source": "https://github.com/livewire/livewire/tree/v2.8.2"
+                "source": "https://github.com/livewire/livewire/tree/v2.9.0"
             },
             "funding": [
                 {
@@ -3637,7 +3637,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-12-10T19:37:40+00:00"
+            "time": "2022-01-13T20:07:05+00:00"
         },
         {
             "name": "maatwebsite/excel",
@@ -5315,25 +5315,26 @@
         },
         {
             "name": "php-http/stopwatch-plugin",
-            "version": "1.4.0",
+            "version": "1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/stopwatch-plugin.git",
-                "reference": "ca383509fa6d23c6fb98ada2102fad708482ad72"
+                "reference": "c59497f170d95c95decb69fd378d3c6f19f1cca1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/stopwatch-plugin/zipball/ca383509fa6d23c6fb98ada2102fad708482ad72",
-                "reference": "ca383509fa6d23c6fb98ada2102fad708482ad72",
+                "url": "https://api.github.com/repos/php-http/stopwatch-plugin/zipball/c59497f170d95c95decb69fd378d3c6f19f1cca1",
+                "reference": "c59497f170d95c95decb69fd378d3c6f19f1cca1",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.3 || ^8.0",
                 "php-http/client-common": "^1.9 || ^2.0",
-                "symfony/stopwatch": "^3.4 || ^4.0 || ^5.0"
+                "symfony/stopwatch": "^3.4 || ^4.0 || ^5.0 || ^6.0"
             },
             "require-dev": {
-                "phpspec/phpspec": "^7.0"
+                "guzzlehttp/psr7": "^2.1",
+                "symfony/phpunit-bridge": "^5.3"
             },
             "type": "library",
             "extra": {
@@ -5366,9 +5367,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-http/stopwatch-plugin/issues",
-                "source": "https://github.com/php-http/stopwatch-plugin/tree/1.4.0"
+                "source": "https://github.com/php-http/stopwatch-plugin/tree/1.4.1"
             },
-            "time": "2020-11-30T12:21:02+00:00"
+            "time": "2022-01-14T16:27:10+00:00"
         },
         {
             "name": "phpoffice/phpspreadsheet",
@@ -10888,7 +10889,8 @@
                 "tagydes"
             ],
             "support": {
-                "issues": "https://gitlab.com/api/v4/projects/19773892/issues"
+                "source": "https://gitlab.com/tagydes/kaspersky-connection/-/tree/master",
+                "issues": "https://gitlab.com/tagydes/kaspersky-connection/-/issues"
             },
             "time": "2020-11-08T15:34:08+00:00"
         },
@@ -10898,7 +10900,7 @@
             "dist": {
                 "type": "path",
                 "url": "../microsoft-connection",
-                "reference": "d0c95b1906e97b8466f13e5400de58d7142d741f"
+                "reference": "1edcad4293874cd37118670733c5f265b99ae2f1"
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.3",
@@ -11805,28 +11807,28 @@
         },
         {
             "name": "yajra/laravel-datatables-oracle",
-            "version": "v9.18.2",
+            "version": "v9.19.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables.git",
-                "reference": "f4eebc1dc2b067058dfb91e7c067de862353c40f"
+                "reference": "553482df5f68969928acc0ee1a3af032cdaaf824"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/f4eebc1dc2b067058dfb91e7c067de862353c40f",
-                "reference": "f4eebc1dc2b067058dfb91e7c067de862353c40f",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/553482df5f68969928acc0ee1a3af032cdaaf824",
+                "reference": "553482df5f68969928acc0ee1a3af032cdaaf824",
                 "shasum": ""
             },
             "require": {
-                "illuminate/database": "5.8.*|^6|^7|^8",
-                "illuminate/filesystem": "5.8.*|^6|^7|^8",
-                "illuminate/http": "5.8.*|^6|^7|^8",
-                "illuminate/support": "5.8.*|^6|^7|^8",
-                "illuminate/view": "5.8.*|^6|^7|^8",
+                "illuminate/database": "5.8.*|^6|^7|^8|^9",
+                "illuminate/filesystem": "5.8.*|^6|^7|^8|^9",
+                "illuminate/http": "5.8.*|^6|^7|^8|^9",
+                "illuminate/support": "5.8.*|^6|^7|^8|^9",
+                "illuminate/view": "5.8.*|^6|^7|^8|^9",
                 "php": "^7.1.3|^8"
             },
             "require-dev": {
-                "orchestra/testbench": "^3.8"
+                "orchestra/testbench": "^3.8|^4.0|^5.0|^6.0|^7.0"
             },
             "suggest": {
                 "yajra/laravel-datatables-buttons": "Plugin for server-side exporting of dataTables.",
@@ -11866,7 +11868,7 @@
                     "email": "aqangeles@gmail.com"
                 }
             ],
-            "description": "jQuery DataTables API for Laravel 4|5|6|7",
+            "description": "jQuery DataTables API for Laravel 5|6|7|8|9",
             "keywords": [
                 "datatables",
                 "jquery",
@@ -11874,7 +11876,7 @@
             ],
             "support": {
                 "issues": "https://github.com/yajra/laravel-datatables/issues",
-                "source": "https://github.com/yajra/laravel-datatables/tree/v9.18.2"
+                "source": "https://github.com/yajra/laravel-datatables/tree/v9.19.0"
             },
             "funding": [
                 {
@@ -11886,7 +11888,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2021-10-27T12:38:21+00:00"
+            "time": "2022-01-18T01:13:47+00:00"
         },
         {
             "name": "yandex/translate-api",
@@ -12460,16 +12462,16 @@
         },
         {
             "name": "laravel/sail",
-            "version": "v1.12.12",
+            "version": "v1.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/sail.git",
-                "reference": "c60773f04f093bd1d2f3b99ff9e5a1aa5b05b8b6"
+                "reference": "b9749028732eca8080c26d01cd88a2f3549c2e3e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/sail/zipball/c60773f04f093bd1d2f3b99ff9e5a1aa5b05b8b6",
-                "reference": "c60773f04f093bd1d2f3b99ff9e5a1aa5b05b8b6",
+                "url": "https://api.github.com/repos/laravel/sail/zipball/b9749028732eca8080c26d01cd88a2f3549c2e3e",
+                "reference": "b9749028732eca8080c26d01cd88a2f3549c2e3e",
                 "shasum": ""
             },
             "require": {
@@ -12516,7 +12518,7 @@
                 "issues": "https://github.com/laravel/sail/issues",
                 "source": "https://github.com/laravel/sail"
             },
-            "time": "2021-12-16T14:58:08+00:00"
+            "time": "2022-01-20T15:31:25+00:00"
         },
         {
             "name": "maximebf/debugbar",
@@ -12585,16 +12587,16 @@
         },
         {
             "name": "mockery/mockery",
-            "version": "1.4.4",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mockery/mockery.git",
-                "reference": "e01123a0e847d52d186c5eb4b9bf58b0c6d00346"
+                "reference": "c10a5f6e06fc2470ab1822fa13fa2a7380f8fbac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mockery/mockery/zipball/e01123a0e847d52d186c5eb4b9bf58b0c6d00346",
-                "reference": "e01123a0e847d52d186c5eb4b9bf58b0c6d00346",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/c10a5f6e06fc2470ab1822fa13fa2a7380f8fbac",
+                "reference": "c10a5f6e06fc2470ab1822fa13fa2a7380f8fbac",
                 "shasum": ""
             },
             "require": {
@@ -12651,9 +12653,9 @@
             ],
             "support": {
                 "issues": "https://github.com/mockery/mockery/issues",
-                "source": "https://github.com/mockery/mockery/tree/1.4.4"
+                "source": "https://github.com/mockery/mockery/tree/1.5.0"
             },
-            "time": "2021-09-13T15:28:59+00:00"
+            "time": "2022-01-20T13:18:17+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -12671,9 +12673,6 @@
             },
             "require": {
                 "php": "^7.1 || ^8.0"
-            },
-            "replace": {
-                "myclabs/deep-copy": "self.version"
             },
             "require-dev": {
                 "doctrine/collections": "^1.0",
@@ -14393,5 +14392,5 @@
         "php": "^7.2.5"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.2.0"
 }

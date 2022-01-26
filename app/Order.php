@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Order extends Model
 {
+    protected $casts = [
+        'errors' => 'collection',
+    ];
+
     public function format()
     {
         return [
