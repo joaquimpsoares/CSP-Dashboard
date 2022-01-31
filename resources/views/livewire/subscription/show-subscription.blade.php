@@ -1,5 +1,5 @@
 <div>
-    <div wire:init="validateisEligible({{ $subscription->id }})">
+    <div  wire:init="validateisEligible({{ $subscription->id }}) ">
         <div class="relative z-0 flex-col flex-1 overflow-y-auto">
             <div class="p-4 overflow-hidden bg-white">
                 <div class="flex flex-col items-center justify-between lg:flex-row">
@@ -52,7 +52,7 @@
                                         @endif
                                         @endif
                                         @if($subscription->productonce != null)
-                                        @if($subscription->productnce->IsNCE())
+                                        @if($subscription->productonce->IsNCE())
                                         @if($status == 'messages.active')
                                         <button wire:click="$toggle('showcancelconfirmationModal')" class="block px-4 py-2 text-sm text-red-700" role="menuitem" tabindex="-1" id="menu-item-6">
                                             <x-icon.trash></x-icon.trash>
@@ -67,14 +67,8 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="w-32 p-0 px-1 py-2 m-0 border-r shadow-xs">
-                    <span class="font-bold">{{ ucwords(trans_choice('messages.subscription_started', 1)) }}</span>
-                    <div>
-                        <span class="text-xs text-gray-500">{{$subscription->created_at}}</span>
-                    </div>
-                </div> --}}
                 <hr>
-                @if($subscription->productonce != null)
+                @if($subscription->billing_type == 'license')
                 @if (!$subscription->productonce->isNCE())
                 <div class="px-0 pt-0 mt-10 break-words border-b">
                     <div class="flex flex-col lg:flex-row">
@@ -83,65 +77,153 @@
                         </div>
                     </div>
                 </div>
-                <div class="grid grid-flow-col grid-cols-2 gap-4">
-                    <div class="mt-4 mb-8">
-                        <div class="w-auto p-0 m-0">
-                            @if($isLoading == true)
-                            <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-semibold leading-6 text-white bg-indigo-500 rounded-md shadow cursor-wait" disabled="">
-                                <svg class="w-5 h-5 mr-3 -ml-1 text-white motion-reduce:hidden animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                Checking migration...
-                            </button>
-                            @else
-                            @if($tt['isEligible'] == true)
-                            <div class="box-border focus:border-transparent">
-                                <a href="https://docs.microsoft.com/en-us/partner-center/migrate-subscriptions-to-new-commerce#ineligible-subscriptions" target="_blank" class="box-border p-0 leading-5 text-blue-700 no-underline bg-transparent cursor-pointer focus:border-transparent focus:text-blue-700 hover:text-blue-900 hover:underline" style="min-width: 0px; overflow: initial;">
-                                    Learn more about migrating subscriptions
-                                </a>
-                                <div style="display:flex" class="box-border flex leading-5 focus:border-transparent">
-                                    <span class="box-border relative inline-block pt-2 text-xl not-italic font-normal leading-none align-baseline focus:border-transparent" >
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path d="M4.555 5.168A1 1 0 003 6v8a1 1 0 001.555.832L10 11.202V14a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4A1 1 0 0010 6v2.798l-5.445-3.63z" />
-                                        </svg>
-                                    </span>
-                                    <button wire:click="migrateToMCE,({{$subscription->id}})" class="box-border relative inline-block max-w-full py-2 m-0 overflow-hidden font-semibold leading-none text-center whitespace-no-wrap align-middle bg-white border-2 border-transparent border-solid rounded-sm cursor-pointer focus:bg-black focus:border-white hover:bg-black hover:border-white">
-                                        Migrate to New Commerce Experience
-                                    </button>
-                                </div>
-                            </div>
-                            @else
-                            <div class="bg-white border border-gray-200 ">
-                                <ul class="shadow-box">
-                                    <li class="relative border-b border-gray-200" x-data="{selected:null}">
-                                        <button type="button" class="w-full px-8 py-6 -ml-1 text-left" @click="selected !== 1 ? selected = 1 : selected = null">
-                                            <div class="flex items-center justify-between">
-                                                <div class="flex">
-                                                    <div class="flex-shrink-0">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                        </svg>
+                <form wire:submit.prevent="migrateToMCE({{$subscription->id}},{{Auth::user()}})">
+                    <div class="grid grid-flow-col grid-cols-2 gap-4">
+                        <div class="mt-4 mb-8">
+                            <div class="w-auto p-0 m-0">
+                                @if($isLoading == true)
+                                <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-semibold leading-6 text-white bg-indigo-500 rounded-md shadow cursor-wait" disabled="">
+                                    <svg class="w-5 h-5 mr-3 -ml-1 text-white motion-reduce:hidden animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Checking migration...
+                                </button>
+                                @else
+                                @if($subscription->productonce->is_perpetual == false)
+                                {{-- @dd($tt->has('isEligible'))
+                                @if($tt->has('isEligible')) --}}
+                                @if($tt->has('isEligible')?? $tt['isEligible'] == true)
+                                <div class=" focus:border-transparent">
+                                    <a href="https://docs.microsoft.com/en-us/partner-center/migrate-subscriptions-to-new-commerce#ineligible-subscriptions" target="_blank" class="box-border p-0 leading-5 text-blue-700 no-underline bg-transparent cursor-pointer focus:border-transparent focus:text-blue-700 hover:text-blue-900 hover:underline" style="min-width: 0px; overflow: initial;">
+                                        Learn more about migrating subscriptions
+                                    </a>
+                                    <div class="bg-white ">
+                                        <ul class="">
+                                            <li class="relative " x-data="{selected:null}">
+                                                <button type="button" class="mt-3 inline-flex items-center px-4 py-2 text-sm font-semibold leading-6 text-white bg-indigo-500 rounded-md shadow cursor-wait"" @click="selected !== 1 ? selected = 1 : selected = null">
+                                                    <div class="ml-3 text-base text-white">
+                                                        Migrate to New Commerce Experience
                                                     </div>
-                                                    <div class="ml-3 text-base text-gray-500">
-                                                        Migration
+                                                </button>
+                                                <div class="relative overflow-hidden transition-all duration-700 max-h-0" style="" x-ref="container1" x-bind:style="selected == 1 ? 'max-height: ' + $refs.container1.scrollHeight + 'px' : ''">
+                                                    <div class="p-6">
+                                                        <section class="dark-grey-text">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <div class="row">
+                                                                        <div class="mb-2 col-md-4">
+                                                                            <x-label for="editing.amount">{{ ucwords(trans_choice('messages.amount', 1)) }}</x-label>
+                                                                            <p class="mt-2 text-xs text-gray-500">
+                                                                                <strong>current Seats:</strong>
+                                                                                {{$subscription->amount}}
+                                                                            </p>
+                                                                            <x-input wire:dirty wire:model="amount" type="number" id="amount" class="@error('amount') is-invalid @enderror">{{$subscription->amount}}</x-input>
+                                                                            @error('amount')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="mt-2 mb-2 col-md-4">
+                                                                            <x-label for="term">{{ucwords(trans_choice('messages.term', 1))}}</x-label>
+                                                                            <p class="mt-2 text-xs text-gray-500">
+                                                                                <strong>Current Term:</strong>
+                                                                                {{$subscription->term}}
+                                                                            </p>
+                                                                            <select wire:model="term" name="term" class="form-control @error('term') is-invalid @enderror" sf-validate="required">
+                                                                                <option value="No Change">No Change</option>
+                                                                                <option value="p1m">Monthly</option>
+                                                                                <option value="p1y">Annual</option>
+                                                                            </select>
+                                                                            @error('term')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+
+                                                                        </div>
+                                                                    </div>
+                                                                    @if($term == "p1y")
+                                                                    <div class="row">
+                                                                        <div class="mt-2 mb-2 col-md-4">
+                                                                            <x-label for="billing_period">{{ucwords(trans_choice('messages.billing_cycle', 1))}}</x-label>
+                                                                            <p class="mt-2 text-xs text-gray-500">
+                                                                                <strong>Current Billing Cycle:</strong>
+                                                                                {{$subscription->billing_period}}
+                                                                            </p>
+                                                                            <select wire:model="billing_period" name="billing_period" class="form-control @error('billing_period') is-invalid @enderror" sf-validate="required">
+                                                                                <option value="No Change">No Change</option>
+                                                                                <option value="Monthly">Monthly</option>
+                                                                                <option value="Annual">Annual</option>
+                                                                            </select>
+                                                                            @error('billing_period')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                                                        </div>
+                                                                    </div>
+                                                                    @endif
+                                                                    <div class="row">
+                                                                        <div class="mt-2 mb-2 col-md-12">
+                                                                            <x-label for="newterm">{{ucwords(trans_choice('messages.Start new term in New Commerce Experience', 1))}}</x-label>
+                                                                            <div class="mb-3 input-group">
+                                                                                <x-input.checkbox wire:model="newterm"></x-input.checkbox>
+                                                                                @error('newterm')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div wire:loading>
+                                                                        <button wire:loading type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                                            <svg class="w-5 h-5 text-white motion-reduce:hidden animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                                            </svg>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div wire:loading.remove>
+
+                                                                        <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                                            {{ucwords(trans_choice('save', 1))}}
+                                                                        </button>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </section>
                                                     </div>
                                                 </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                @else
+                                {{-- @if(!$tt->has('code')) --}}
+                                <div class="bg-white border border-gray-200 ">
+                                    <ul class="shadow-box">
+                                        <li class="relative border-b border-gray-200" x-data="{selected:null}">
+                                            <button type="button" class="w-full px-8 py-6 -ml-1 text-left" @click="selected !== 1 ? selected = 1 : selected = null">
+                                                <div class="flex items-center justify-between">
+                                                    <div class="flex">
+                                                        <div class="flex-shrink-0">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                            </svg>
+                                                        </div>
+                                                        <div class="ml-3 text-base text-gray-500">
+                                                            Migration
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </button>
+                                            <div class="relative overflow-hidden transition-all duration-700 max-h-0" style="" x-ref="container1" x-bind:style="selected == 1 ? 'max-height: ' + $refs.container1.scrollHeight + 'px' : ''">
+                                                <div class="p-6">
+                                                    <p>{{$tt['errors'][0]['description'] ?? $tt['description'] ?? $tt['message'] }}</p>
+                                                </div>
                                             </div>
-                                        </button>
-                                        <div class="relative overflow-hidden transition-all duration-700 max-h-0" style="" x-ref="container1" x-bind:style="selected == 1 ? 'max-height: ' + $refs.container1.scrollHeight + 'px' : ''">
-                                            <div class="p-6">
-                                                <p>{{$tt['errors'][0]['description']}}</p>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                                {{-- @endif --}}
+                                @endif
+                                {{-- @endif --}}
+                                @endif
+                                @endif
                             </div>
-                            @endif
-                            @endif
                         </div>
                     </div>
-                </div>
+                </form>
                 @else
                 <div class="px-0 pt-0 mt-10 break-words border-b">
                     <div class="flex flex-col lg:flex-row">
@@ -266,13 +348,13 @@
                             </dd>
                         </div>
                         <div class="py-1 sm:py-1 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-6">
-                            <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.tenant', 1)) }}</dt>
+                            <dt class="text-sm mt-3 font-medium text-gray-500">{{ ucwords(trans_choice('messages.tenant', 1)) }}</dt>
                             <dd class="mt-1 text-xm sm:mt-0 sm:col-span-2">
-                                <div class="relative flex items-center mt-0">
+                                <div class="mt-2 flex items-center text-sm text-gray-500">
                                     <input id="copy_{{ $subscription->tenant_name }}" value="{{$subscription->tenant_name}}" aria-invalid="false" readonly="" placeholder="" type="text"
                                     class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto"/>
-                                    <div class="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
-                                        <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->tenant_name }}')" class="inline-flex items-center border border-gray-200 px-2 text-sm font-sans font-medium text-gray-400 inline overflow-visible no-underline normal-case bg-transparent border-0 cursor-pointer focus:shadow-xs rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 text-gray-400 hover:text-gray-600 group ml-2.5">
+                                    <span class="text-sm font-medium text-gray-500">
+                                        <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->tenant_name }}')" class="inline-flex items-center border border-gray-200 -py-4 px-2 text-sm font-sans font-medium text-gray-400 overflow-visible no-underline normal-case bg-transparent border-0 cursor-pointer focus:shadow-xs rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
                                             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="transition transform stroke-current" >
                                                 <path d="M12.9975 10.7499L11.7475 10.7499C10.6429 10.7499 9.74747 11.6453 9.74747 12.7499L9.74747 21.2499C9.74747 22.3544 10.6429 23.2499 11.7475 23.2499L20.2475 23.2499C21.352 23.2499 22.2475 22.3544 22.2475 21.2499L22.2475 12.7499C22.2475 11.6453 21.352 10.7499 20.2475 10.7499L18.9975 10.7499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                 <path d="M17.9975 12.2499L13.9975 12.2499C13.4452 12.2499 12.9975 11.8022 12.9975 11.2499L12.9975 9.74988C12.9975 9.19759 13.4452 8.74988 13.9975 8.74988L17.9975 8.74988C18.5498 8.74988 18.9975 9.19759 18.9975 9.74988L18.9975 11.2499C18.9975 11.8022 18.5498 12.2499 17.9975 12.2499Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -280,20 +362,19 @@
                                                 <path d="M13.7475 19.2499L18.2475 19.2499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                             </svg>
                                         </button>
-                                    </div>
+                                    </span>
                                 </div>
                             </dd>
                         </div>
-                        <div class="py-1 sm:py-1 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-6">
-                            <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.tenant_id', 1)) }}</dt>
-                            <dd class="mt-1 text-xm sm:mt-0 sm:col-span-2">
 
-                                <div class="relative flex items-center mt-0">
-                                    <input aria-invalid="false" readonly="" placeholder="" type="text" id="copy_{{ $subscription->customer->microsoftTenantInfo->first()->tenant_id }}"
-                                    value="{{$subscription->customer->microsoftTenantInfo->first()->tenant_id}}"
+                        <div class="py-1 sm:py-1 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-6">
+                            <dt class="text-sm mt-3 font-medium text-gray-500">{{ ucwords(trans_choice('messages.tenant_id', 1)) }}</dt>
+                            <dd class="mt-1 text-xm sm:mt-0 sm:col-span-2">
+                                <div class="mt-2 flex items-center text-sm text-gray-500">
+                                    <input id="copy_{{ $subscription->customer->microsoftTenantInfo->first()->tenant_id }}" value="{{$subscription->customer->microsoftTenantInfo->first()->tenant_id}}" aria-invalid="false" readonly="" placeholder="" type="text"
                                     class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto"/>
-                                    <div class="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
-                                        <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->customer->microsoftTenantInfo->first()->tenant_id }}')" class="inline-flex items-center border border-gray-200 px-2 font-medium text-gray-400 overflow-visible  normal-case bg-transparent  cursor-pointer focus:shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500  font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100  rounded appearance-none select-auto  hover:text-gray-600 group ml-2.5">
+                                    <span class="text-sm font-medium text-gray-500">
+                                        <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->customer->microsoftTenantInfo->first()->tenant_id }}')" class="inline-flex items-center border border-gray-200 -py-4 px-2 text-sm font-sans font-medium text-gray-400 overflow-visible no-underline normal-case bg-transparent border-0 cursor-pointer focus:shadow-xs rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
                                             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="transition transform stroke-current" >
                                                 <path d="M12.9975 10.7499L11.7475 10.7499C10.6429 10.7499 9.74747 11.6453 9.74747 12.7499L9.74747 21.2499C9.74747 22.3544 10.6429 23.2499 11.7475 23.2499L20.2475 23.2499C21.352 23.2499 22.2475 22.3544 22.2475 21.2499L22.2475 12.7499C22.2475 11.6453 21.352 10.7499 20.2475 10.7499L18.9975 10.7499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                 <path d="M17.9975 12.2499L13.9975 12.2499C13.4452 12.2499 12.9975 11.8022 12.9975 11.2499L12.9975 9.74988C12.9975 9.19759 13.4452 8.74988 13.9975 8.74988L17.9975 8.74988C18.5498 8.74988 18.9975 9.19759 18.9975 9.74988L18.9975 11.2499C18.9975 11.8022 18.5498 12.2499 17.9975 12.2499Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -301,7 +382,7 @@
                                                 <path d="M13.7475 19.2499L18.2475 19.2499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                             </svg>
                                         </button>
-                                    </div>
+                                    </span>
                                 </div>
                             </dd>
                         </div>
@@ -348,12 +429,11 @@
                                         @endif
                                     </td>
                                     <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">
-                                        <div class="relative flex items-center mt-0">
-                                            <input aria-invalid="false" readonly="" placeholder="" type="text" id="copy_{{ $subscription->subscription_id }}"
-                                            value="{{$subscription->subscription_id}}"
-                                            class="relative inline-flex flex-auto w-1 px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto group"/>
-                                            <div class="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
-                                                <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->subscription_id }}')" class="inline-flex items-center border border-gray-200 px-2 font-medium text-gray-400 overflow-visible  normal-case bg-transparent  cursor-pointer focus:shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500  font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100  rounded appearance-none select-auto  hover:text-gray-600 group ml-2.5">
+                                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                                            <input id="copy_{{ $subscription->subscription_id }}" value="{{$subscription->subscription_id}}" aria-invalid="false" readonly="" placeholder="" type="text"
+                                            class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto"/>
+                                            <span class="text-sm font-medium text-gray-500">
+                                                <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->subscription_id }}')" class="inline-flex items-center border border-gray-200 -py-4 px-2 text-sm font-sans font-medium text-gray-400 overflow-visible no-underline normal-case bg-transparent border-0 cursor-pointer focus:shadow-xs rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
                                                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="transition transform stroke-current" >
                                                         <path d="M12.9975 10.7499L11.7475 10.7499C10.6429 10.7499 9.74747 11.6453 9.74747 12.7499L9.74747 21.2499C9.74747 22.3544 10.6429 23.2499 11.7475 23.2499L20.2475 23.2499C21.352 23.2499 22.2475 22.3544 22.2475 21.2499L22.2475 12.7499C22.2475 11.6453 21.352 10.7499 20.2475 10.7499L18.9975 10.7499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                         <path d="M17.9975 12.2499L13.9975 12.2499C13.4452 12.2499 12.9975 11.8022 12.9975 11.2499L12.9975 9.74988C12.9975 9.19759 13.4452 8.74988 13.9975 8.74988L17.9975 8.74988C18.5498 8.74988 18.9975 9.19759 18.9975 9.74988L18.9975 11.2499C18.9975 11.8022 18.5498 12.2499 17.9975 12.2499Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -361,7 +441,7 @@
                                                         <path d="M13.7475 19.2499L18.2475 19.2499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                     </svg>
                                                 </button>
-                                            </div>
+                                            </span>
                                         </div>
                                     </td>
                                     <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">
@@ -401,12 +481,11 @@
                                         @endif
                                     </td>
                                     <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">
-                                        <div class="relative flex items-center mt-0">
-                                            <input aria-invalid="false" readonly="" placeholder="" type="text" id="copy_{{ $subscription->subscription_id }}"
-                                            value="{{$subscription->subscription_id}}"
-                                            class="relative inline-flex flex-auto w-1 px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto group"/>
-                                            <div class="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
-                                                <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->subscription_id }}')" class="inline-flex items-center border border-gray-200 px-2 font-medium text-gray-400 overflow-visible  normal-case bg-transparent  cursor-pointer focus:shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500  font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100  rounded appearance-none select-auto  hover:text-gray-600 group ml-2.5">
+                                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                                            <input id="copy_{{ $subscription->subscription_id }}" value="{{$subscription->subscription_id}}" aria-invalid="false" readonly="" placeholder="" type="text"
+                                            class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto"/>
+                                            <span class="text-sm font-medium text-gray-500">
+                                                <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->subscription_id }}')" class="inline-flex items-center border border-gray-200 -py-4 px-2 text-sm font-sans font-medium text-gray-400 overflow-visible no-underline normal-case bg-transparent border-0 cursor-pointer focus:shadow-xs rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
                                                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="transition transform stroke-current" >
                                                         <path d="M12.9975 10.7499L11.7475 10.7499C10.6429 10.7499 9.74747 11.6453 9.74747 12.7499L9.74747 21.2499C9.74747 22.3544 10.6429 23.2499 11.7475 23.2499L20.2475 23.2499C21.352 23.2499 22.2475 22.3544 22.2475 21.2499L22.2475 12.7499C22.2475 11.6453 21.352 10.7499 20.2475 10.7499L18.9975 10.7499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                         <path d="M17.9975 12.2499L13.9975 12.2499C13.4452 12.2499 12.9975 11.8022 12.9975 11.2499L12.9975 9.74988C12.9975 9.19759 13.4452 8.74988 13.9975 8.74988L17.9975 8.74988C18.5498 8.74988 18.9975 9.19759 18.9975 9.74988L18.9975 11.2499C18.9975 11.8022 18.5498 12.2499 17.9975 12.2499Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -414,7 +493,7 @@
                                                         <path d="M13.7475 19.2499L18.2475 19.2499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                     </svg>
                                                 </button>
-                                            </div>
+                                            </span>
                                         </div>
                                     </td>
                                     <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">
@@ -634,9 +713,10 @@
                                                 <x-label for="billing_period">{{ucwords(trans_choice('messages.billing_cycle', 1))}}</x-label>
                                                 <div class="mb-3 input-group">
                                                     @if ($subscription->billing_type != 'software')
+                                                    {{-- @dd($subscription) --}}
                                                     <select wire:model="editing.billing_period" name="billing_period" class="form-control @error('editing.billing_period') is-invalid @enderror" sf-validate="required">
                                                         <option value="{{$subscription->billing_period}}">{{$subscription->billing_period}}</option>
-                                                        @foreach($subscription->products->first()->supported_billing_cycles as $cycle)
+                                                        @foreach($subscription->product->supported_billing_cycles as $cycle)
                                                         <option value="{{ $cycle }}" @if($cycle == $subscription->billing_period) selected @endif>
                                                             {{ $cycle }}
                                                         </option>
