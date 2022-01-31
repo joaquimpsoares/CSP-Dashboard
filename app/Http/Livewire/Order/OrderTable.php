@@ -7,6 +7,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Exports\OrdersExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Database\Eloquent\Builder;
 use App\Http\Livewire\DataTable\WithSorting;
 use App\Http\Livewire\DataTable\WithCachedRows;
 use App\Http\Livewire\DataTable\WithBulkActions;
@@ -36,14 +37,15 @@ class OrderTable extends Component
 
     public function getRowsQueryProperty()
     {
-        $search = $this->search;
-
         $query = Order::query()->orderBy('id', 'DESC');
 
         $orders = $query->orderBy('id', 'DESC')
         ->where(function ($q)  {
             $q->where('details', "like", "%{$this->search}%");
             $q->orWhere('id', 'like', "%{$this->search}%");
+            $q->orwhereHas('customer', function(Builder $q){
+                $q->where('company_name', 'like', "%{$this->search}%");
+            });
         })->
         with(['customer', 'status', 'orderproduct', 'products']);
 
