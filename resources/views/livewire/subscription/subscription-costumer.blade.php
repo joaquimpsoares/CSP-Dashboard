@@ -37,11 +37,11 @@
                                     <time datetime="2020-12-22">{{$subscription->billing_period}}</time>
                                 </dd>
                             </div>
-                            @if($subscription->products->first()->term)
+                            @if($subscription->term)
                             <div class="hidden sm:block">
                                 <dt class="font-medium text-gray-900">{{ ucwords(trans_choice('messages.product_term', 1)) }}</dt>
                                 <dd class="mt-1 text-gray-500">
-                                    <time datetime="2020-12-22">{{$subscription->products->first()->term}}</time>
+                                    <time datetime="2020-12-22">{{$subscription->term}}</time>
                                 </dd>
                             </div>
                             @endif
