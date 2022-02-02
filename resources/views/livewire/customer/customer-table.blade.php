@@ -218,7 +218,7 @@
                                     @error('editing.markup')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                                 <div class="row">
-                                    <div class="mb-4 col-lg-4 col-md-6">
+                                    {{-- <div class="mb-4 col-lg-4 col-md-6">
                                         <x-label for="country">{{ucwords(trans_choice('messages.price_list', 1))}}</x-label>
                                         <div class="mb-3 input-group">
                                             <select wire:model.debounce.500ms="editing.price_list_id" name="price_list_id" class="form-control @error('editing.price_list_id') is-invalid @enderror" sf-validate="required">
@@ -228,7 +228,7 @@
                                             </select>
                                             @error('editing.price_list_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <hr>
                                 </div>
                             </div>
