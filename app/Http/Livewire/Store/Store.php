@@ -26,7 +26,6 @@ class Store extends Component
     public $details;
     public $search;
     public $vendor =[];
-    public $category;
     public $price;
     public $cartProducts = [];
     public $selectproducttype;
@@ -131,6 +130,7 @@ class Store extends Component
     public function getRowsQueryProperty()
     {
         $user = Auth::user();
+
         switch ($user->userLevel->name) {
             case 'Reseller':
                 $priceList = $user->reseller->price_list_id;
@@ -141,70 +141,29 @@ class Store extends Component
                 default:
                 return abort(403, __('errors.access_with_resellers_credentials'));
             }
-        $prices = Price::with('related_product')->where('price_list_id', $priceList)
-        ->whereHas('related_product', function(Builder $query){
-            if($this->vendor){
-                $query->where('vendor', $this->vendor);
-            }
-            if($this->category){
-                $query->where('category', $this->category);
-            }
-            // if($this->typeselected){
-            //     $query->where('productType', $this->typeselected);
-            // }
 
-            $query->where(function(Builder $query){
-                $query->where('name', "LIKE", "%{$this->search}%");
-                $query->orWhere('sku', 'LIKE', "%{$this->search}%");
-                $query->orWhere('productType', 'LIKE', "%{$this->search}%");
-                $query->orWhere('category', 'LIKE', "%{$this->search}%");
-            });})->paginate(12);
-
-            if($prices->total() > 0){
-                $productType = $prices->map(function ($item, $key) {
-                    return ($item->related_product->pluck('productType')->unique());
-                });
-                if($productType){
-                    $productType = $productType->first()->filter();
-                }
-
-                $categories = $prices->map(function ($item, $key) {
-                    return ($item->related_product->pluck('category')->unique());
-                });
-                $categories = $categories->first()->filter();
-
-                $vendors = $prices->map(function ($item, $key) {
-                    return ($item->related_product->pluck('vendor')->unique());
-                });
-                $vendors = $vendors->first()->filter();
-
-            }else{
-                $productType = [];
-                $categories = [];
-                $vendors = [];
-            }
-        // $query = Price::query()
-        //     ->when($this->filters['category'], fn($query, $category) => $query->whereHas('related_product', function(Builder $q) use($category){
-        //         $q->where('category',$category);
-        //     }))
-        //     ->when($this->filters['vendors'], fn($query, $vendors) => $query->whereHas('related_product', function(Builder $q) use($vendors){
-        //         $q->where('vendors', $vendors);
-        //     }))
-        //     ->when($this->filters['producttype'], fn($query, $producttype) => $query->whereHas('related_product', function(Builder $q) use($producttype){
-        //         $q->where('productType', $producttype);
-        //     }))
-        //     ->when($this->filters['plugins'], fn($query, $plugins) => $query->whereHas('related_product', function(Builder $q) use($plugins){
-        //         $q->where('is_addon', $plugins);
-        //     }))
-        //     ->when($this->filters['trial'], fn($query, $trial) => $query->whereHas('related_product', function(Builder $q) use($trial){
-        //         $q->where('is_trial', $trial);
-        //     }))
-        //     ->when($this->filters['billing'], fn($query, $billing) => $query->where('billing_plan', $billing))
-        //     ->when($this->filters['terms'], fn($query, $terms) => $query->where('term_duration', $terms))
-        //     ->when($this->search, fn($query, $search) => $query->where('name', 'like', '%'.$search.'%')
-        //                                                        ->orwhere('product_sku', 'like', '%'.$search.'%'))
-        //                                                        ->with('related_product');
-        return $this->applySorting($prices);
+        $query = Price::query()->with('related_product')->where('price_list_id', $priceList)
+        ->when($this->filters['category'], fn($query, $category) => $query->whereHas('related_product', function(Builder $q) use($category){
+                $q->where('category',$category);
+            }))
+            ->when($this->filters['vendors'], fn($query, $vendors) => $query->whereHas('related_product', function(Builder $q) use($vendors){
+                $q->where('vendors', $vendors);
+            }))
+            ->when($this->filters['producttype'], fn($query, $producttype) => $query->whereHas('related_product', function(Builder $q) use($producttype){
+                $q->where('productType', $producttype);
+            }))
+            ->when($this->filters['plugins'], fn($query, $plugins) => $query->whereHas('related_product', function(Builder $q) use($plugins){
+                $q->where('is_addon', $plugins);
+            }))
+            ->when($this->filters['trial'], fn($query, $trial) => $query->whereHas('related_product', function(Builder $q) use($trial){
+                $q->where('is_trial', $trial);
+            }))
+            ->when($this->filters['billing'], fn($query, $billing) => $query->where('billing_plan', $billing))
+            ->when($this->filters['terms'], fn($query, $terms) => $query->where('term_duration', $terms))
+            ->when($this->search, fn($query, $search) => $query->where('name', 'like', '%'.$search.'%')
+                                                               ->orwhere('product_sku', 'like', '%'.$search.'%'))
+                                                               ->with('related_product');
+        return $this->applySorting($query);
     }
 
     public function getRowsProperty()
@@ -220,11 +179,11 @@ class Store extends Component
             $terms          = Price::pluck('term_duration')->unique()->filter();
             $vendors        = Product::pluck('vendor')->unique()->filter();
             $productType    = Product::pluck('productType')->unique()->filter();
-
+// dd($categories);
         return view('livewire.store.store', [
             'prices'        => $this->rows,
             'vendors'       => $vendors,
-            'categories'    => $categories,
+            'category'      => $categories,
             'terms'         => $terms,
             'producttype'   => $productType,
         ]);
