@@ -113,7 +113,6 @@ class CustomerTable extends Component
 
     public function savecreate()
     {
-        // $this->validate();
         $user = $this->getUser();
         try {
             $newCustomer =  Customer::create([
@@ -172,8 +171,7 @@ class CustomerTable extends Component
             $q->orwhereHas('country', function(Builder $q){
                 $q->where('name', 'like', "%{$this->search}%");
             });
-        })->
-        with(['country', 'subscriptions', 'status']);
+        })->with(['country', 'subscriptions', 'status']);
         return $this->applySorting($customers);
     }
 
