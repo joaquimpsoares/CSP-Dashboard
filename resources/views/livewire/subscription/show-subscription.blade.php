@@ -101,7 +101,7 @@
                                     <div class="bg-white ">
                                         <ul class="">
                                             <li class="relative " x-data="{selected:null}">
-                                                <button type="button" class="mt-3 inline-flex items-center px-4 py-2 text-sm font-semibold leading-6 text-white bg-indigo-500 rounded-md shadow cursor-wait"" @click="selected !== 1 ? selected = 1 : selected = null">
+                                                <button type="button" class="inline-flex items-center px-4 py-2 mt-3 text-sm font-semibold leading-6 text-white bg-indigo-500 rounded-md shadow cursor-wait"" @click="selected !== 1 ? selected = 1 : selected = null">
                                                     <div class="ml-3 text-base text-white">
                                                         Migrate to New Commerce Experience
                                                     </div>
@@ -348,13 +348,13 @@
                             </dd>
                         </div>
                         <div class="py-1 sm:py-1 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-6">
-                            <dt class="text-sm mt-3 font-medium text-gray-500">{{ ucwords(trans_choice('messages.tenant', 1)) }}</dt>
+                            <dt class="mt-3 text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.tenant', 1)) }}</dt>
                             <dd class="mt-1 text-xm sm:mt-0 sm:col-span-2">
-                                <div class="mt-2 flex items-center text-sm text-gray-500">
+                                <div class="flex items-center mt-2 text-sm text-gray-500">
                                     <input id="copy_{{ $subscription->tenant_name }}" value="{{$subscription->tenant_name}}" aria-invalid="false" readonly="" placeholder="" type="text"
                                     class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto"/>
                                     <span class="text-sm font-medium text-gray-500">
-                                        <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->tenant_name }}')" class="inline-flex items-center border border-gray-200 -py-4 px-2 text-sm font-sans font-medium text-gray-400 overflow-visible no-underline normal-case bg-transparent border-0 cursor-pointer focus:shadow-xs rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
+                                        <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->tenant_name }}')" class="inline-flex items-center px-2 overflow-visible font-sans text-sm font-medium text-gray-400 no-underline normal-case bg-transparent border border-0 border-gray-200 rounded-lg cursor-pointer -py-4 focus:shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
                                             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="transition transform stroke-current" >
                                                 <path d="M12.9975 10.7499L11.7475 10.7499C10.6429 10.7499 9.74747 11.6453 9.74747 12.7499L9.74747 21.2499C9.74747 22.3544 10.6429 23.2499 11.7475 23.2499L20.2475 23.2499C21.352 23.2499 22.2475 22.3544 22.2475 21.2499L22.2475 12.7499C22.2475 11.6453 21.352 10.7499 20.2475 10.7499L18.9975 10.7499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                 <path d="M17.9975 12.2499L13.9975 12.2499C13.4452 12.2499 12.9975 11.8022 12.9975 11.2499L12.9975 9.74988C12.9975 9.19759 13.4452 8.74988 13.9975 8.74988L17.9975 8.74988C18.5498 8.74988 18.9975 9.19759 18.9975 9.74988L18.9975 11.2499C18.9975 11.8022 18.5498 12.2499 17.9975 12.2499Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -368,13 +368,13 @@
                         </div>
 
                         <div class="py-1 sm:py-1 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-6">
-                            <dt class="text-sm mt-3 font-medium text-gray-500">{{ ucwords(trans_choice('messages.tenant_id', 1)) }}</dt>
+                            <dt class="mt-3 text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.tenant_id', 1)) }}</dt>
                             <dd class="mt-1 text-xm sm:mt-0 sm:col-span-2">
-                                <div class="mt-2 flex items-center text-sm text-gray-500">
+                                <div class="flex items-center mt-2 text-sm text-gray-500">
                                     <input id="copy_{{ $subscription->customer->microsoftTenantInfo->first()->tenant_id }}" value="{{$subscription->customer->microsoftTenantInfo->first()->tenant_id}}" aria-invalid="false" readonly="" placeholder="" type="text"
                                     class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto"/>
                                     <span class="text-sm font-medium text-gray-500">
-                                        <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->customer->microsoftTenantInfo->first()->tenant_id }}')" class="inline-flex items-center border border-gray-200 -py-4 px-2 text-sm font-sans font-medium text-gray-400 overflow-visible no-underline normal-case bg-transparent border-0 cursor-pointer focus:shadow-xs rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
+                                        <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->customer->microsoftTenantInfo->first()->tenant_id }}')" class="inline-flex items-center px-2 overflow-visible font-sans text-sm font-medium text-gray-400 no-underline normal-case bg-transparent border border-0 border-gray-200 rounded-lg cursor-pointer -py-4 focus:shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
                                             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="transition transform stroke-current" >
                                                 <path d="M12.9975 10.7499L11.7475 10.7499C10.6429 10.7499 9.74747 11.6453 9.74747 12.7499L9.74747 21.2499C9.74747 22.3544 10.6429 23.2499 11.7475 23.2499L20.2475 23.2499C21.352 23.2499 22.2475 22.3544 22.2475 21.2499L22.2475 12.7499C22.2475 11.6453 21.352 10.7499 20.2475 10.7499L18.9975 10.7499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                 <path d="M17.9975 12.2499L13.9975 12.2499C13.4452 12.2499 12.9975 11.8022 12.9975 11.2499L12.9975 9.74988C12.9975 9.19759 13.4452 8.74988 13.9975 8.74988L17.9975 8.74988C18.5498 8.74988 18.9975 9.19759 18.9975 9.74988L18.9975 11.2499C18.9975 11.8022 18.5498 12.2499 17.9975 12.2499Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -429,11 +429,11 @@
                                         @endif
                                     </td>
                                     <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">
-                                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                                        <div class="flex items-center mt-2 text-sm text-gray-500">
                                             <input id="copy_{{ $subscription->subscription_id }}" value="{{$subscription->subscription_id}}" aria-invalid="false" readonly="" placeholder="" type="text"
                                             class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto"/>
                                             <span class="text-sm font-medium text-gray-500">
-                                                <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->subscription_id }}')" class="inline-flex items-center border border-gray-200 -py-4 px-2 text-sm font-sans font-medium text-gray-400 overflow-visible no-underline normal-case bg-transparent border-0 cursor-pointer focus:shadow-xs rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
+                                                <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->subscription_id }}')" class="inline-flex items-center px-2 overflow-visible font-sans text-sm font-medium text-gray-400 no-underline normal-case bg-transparent border border-0 border-gray-200 rounded-lg cursor-pointer -py-4 focus:shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
                                                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="transition transform stroke-current" >
                                                         <path d="M12.9975 10.7499L11.7475 10.7499C10.6429 10.7499 9.74747 11.6453 9.74747 12.7499L9.74747 21.2499C9.74747 22.3544 10.6429 23.2499 11.7475 23.2499L20.2475 23.2499C21.352 23.2499 22.2475 22.3544 22.2475 21.2499L22.2475 12.7499C22.2475 11.6453 21.352 10.7499 20.2475 10.7499L18.9975 10.7499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                         <path d="M17.9975 12.2499L13.9975 12.2499C13.4452 12.2499 12.9975 11.8022 12.9975 11.2499L12.9975 9.74988C12.9975 9.19759 13.4452 8.74988 13.9975 8.74988L17.9975 8.74988C18.5498 8.74988 18.9975 9.19759 18.9975 9.74988L18.9975 11.2499C18.9975 11.8022 18.5498 12.2499 17.9975 12.2499Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -481,11 +481,11 @@
                                         @endif
                                     </td>
                                     <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">
-                                        <div class="mt-2 flex items-center text-sm text-gray-500">
+                                        <div class="flex items-center mt-2 text-sm text-gray-500">
                                             <input id="copy_{{ $subscription->subscription_id }}" value="{{$subscription->subscription_id}}" aria-invalid="false" readonly="" placeholder="" type="text"
                                             class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto"/>
                                             <span class="text-sm font-medium text-gray-500">
-                                                <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->subscription_id }}')" class="inline-flex items-center border border-gray-200 -py-4 px-2 text-sm font-sans font-medium text-gray-400 overflow-visible no-underline normal-case bg-transparent border-0 cursor-pointer focus:shadow-xs rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
+                                                <button value="copy" onclick="copyToClipboard('copy_{{ $subscription->subscription_id }}')" class="inline-flex items-center px-2 overflow-visible font-sans text-sm font-medium text-gray-400 no-underline normal-case bg-transparent border border-0 border-gray-200 rounded-lg cursor-pointer -py-4 focus:shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
                                                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="transition transform stroke-current" >
                                                         <path d="M12.9975 10.7499L11.7475 10.7499C10.6429 10.7499 9.74747 11.6453 9.74747 12.7499L9.74747 21.2499C9.74747 22.3544 10.6429 23.2499 11.7475 23.2499L20.2475 23.2499C21.352 23.2499 22.2475 22.3544 22.2475 21.2499L22.2475 12.7499C22.2475 11.6453 21.352 10.7499 20.2475 10.7499L18.9975 10.7499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                         <path d="M17.9975 12.2499L13.9975 12.2499C13.4452 12.2499 12.9975 11.8022 12.9975 11.2499L12.9975 9.74988C12.9975 9.19759 13.4452 8.74988 13.9975 8.74988L17.9975 8.74988C18.5498 8.74988 18.9975 9.19759 18.9975 9.74988L18.9975 11.2499C18.9975 11.8022 18.5498 12.2499 17.9975 12.2499Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
