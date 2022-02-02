@@ -29,6 +29,7 @@ class Store extends Component
     public $price;
     public $cartProducts = [];
     public $selectproducttype;
+    public $priceList;
 
     public $productName;
     public $productCategory;
@@ -133,16 +134,16 @@ class Store extends Component
 
         switch ($user->userLevel->name) {
             case 'Reseller':
-                $priceList = $user->reseller->price_list_id;
+                $this->priceList = $user->reseller->price_list_id;
             break;
             case 'Customer':
-                $priceList = $user->customer->price_list_id;
+                $this->priceList = $user->customer->price_list_id;
                 break;
                 default:
-                return abort(403, __('errors.access_with_resellers_credentials'));
-            }
+            return abort(403, __('errors.access_with_resellers_credentials'));
+        }
 
-        $query = Price::query()->with('related_product')->where('price_list_id', $priceList)
+        $query = Price::query()->with('related_product')->where('price_list_id', $this->priceList)
         ->when($this->filters['category'], fn($query, $category) => $query->whereHas('related_product', function(Builder $q) use($category){
                 $q->where('category',$category);
             }))
@@ -161,8 +162,9 @@ class Store extends Component
             ->when($this->filters['billing'], fn($query, $billing) => $query->where('billing_plan', $billing))
             ->when($this->filters['terms'], fn($query, $terms) => $query->where('term_duration', $terms))
             ->when($this->search, fn($query, $search) => $query->where('name', 'like', '%'.$search.'%')
-                                                               ->orwhere('product_sku', 'like', '%'.$search.'%'))
-                                                               ->with('related_product');
+            ->orwhere('product_sku', 'like', '%'.$search.'%'))
+            ->with('related_product');
+
         return $this->applySorting($query);
     }
 
@@ -175,11 +177,35 @@ class Store extends Component
 
     public function render()
     {
-            $categories     = Product::pluck('category')->unique()->filter();
-            $terms          = Price::pluck('term_duration')->unique()->filter();
-            $vendors        = Product::pluck('vendor')->unique()->filter();
-            $productType    = Product::pluck('productType')->unique()->filter();
-// dd($categories);
+        $user = Auth::user();
+
+        switch ($user->userLevel->name) {
+        case 'Reseller':
+            $this->priceList = $user->reseller->price_list_id;
+            break;
+            case 'Customer':
+                $this->priceList = $user->customer->price_list_id;
+            break;
+            default:
+            return abort(403, __('errors.access_with_resellers_credentials'));
+        }
+
+        $priceList = $this->priceList;
+
+        $categories = product::whereHas('price', function($query) use  ($priceList) {
+            $query->where('price_list_id', $priceList);
+        })->pluck('category')->unique()->filter();
+
+        $terms = Price::pluck('term_duration')->unique()->filter();
+
+        $vendors = product::whereHas('price', function($query) use  ($priceList) {
+            $query->where('price_list_id', $priceList);
+        })->pluck('vendor')->unique()->filter();
+
+        $productType = product::whereHas('price', function($query) use  ($priceList) {
+            $query->where('price_list_id', $priceList);
+        })->pluck('productType')->unique()->filter();
+
         return view('livewire.store.store', [
             'prices'        => $this->rows,
             'vendors'       => $vendors,
