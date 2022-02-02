@@ -77,13 +77,14 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
                             'is_addon'                  => $importedProduct->sku->dynamicAttributes->isAddon,
                             'has_addons'                => $importedProduct->sku->dynamicAttributes->hasAddOns,
 
+                            'limit'                     => $importedProduct->sku->dynamicAttributes->limit,
+
                             'is_perpetual'              => false,
                             'is_available_for_purchase' => true,
                         ], [
                             'minimum_quantity'          => $importedProduct->sku->minimumQuantity,
                             'maximum_quantity'          => $importedProduct->sku->maximumQuantity,
 
-                            'limit'                     => $importedProduct->sku->dynamicAttributes->limit,
                             'is_autorenewable'          => $importedProduct->sku->dynamicAttributes->isAutoRenewable,
                             'terms'                     => $importedProduct->terms,
                             'supported_billing_cycles'  => $importedProduct->sku->supportedBillingCycles,
