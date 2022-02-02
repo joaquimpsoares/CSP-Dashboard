@@ -57,19 +57,19 @@ class ImportPerpetuaMicrosoftJob implements ShouldQueue
                         'instance_id'               => $instance->id,
                         'billing'                   => "software",
                         'category'                  => "Perpetual Software",
-                    ], [
-                        'addons'                    => "[]",
                         'name'                      => $importedProduct->title,
                         'description'               => $importedProduct->description,
                         'uri'                       => $importedProduct->uri,
+                        'supported_billing_cycles'  => $importedProduct->supportedBillingCycles,
+                        'is_perpetual' => true,
+                        'addons'                    => "[]",
+                    ], [
                         'minimum_quantity'          => $importedProduct->minimumQuantity,
                         'maximum_quantity'          => $importedProduct->maximumQuantity,
                         'is_trial'                  => $importedProduct->isTrial,
                         'limit'                     => $importedProduct->limit,
                         'term'                      => $importedProduct->term,
                         'locale'                    => $importedProduct->locale,
-                        'supported_billing_cycles'  => $importedProduct->supportedBillingCycles,
-                        'is_perpetual' => true
                     ]);
                     $importCount++;
                 });

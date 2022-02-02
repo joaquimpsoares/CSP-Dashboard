@@ -45,10 +45,8 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
         Log::info('Country: '.$this->country);
 
         try {
-
             $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)
             ->forCountry($instance->provider->country->iso_3166_2)->softwareNCEAll($instance->provider->country->iso_3166_2);
-
             $products->each(function ($importedProduct) use ($instance) {
                 $importedProduct->each(function ($importedProduct) use ($instance) {
                     $importedProduct->each(function ($importedProduct) use ($instance) {
@@ -68,28 +66,28 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
                             'name'                      => $importedProduct->sku->title,
                             'instance_id'               => $instance->id,
                             'sku'                       => $sku,
-                            'catalog_item_id'           => $importedProduct->catalogItemId,
                             'uri'                       => $importedProduct->links->self->uri,
-                        ], [
+                            'catalog_item_id'           => $importedProduct->catalogItemId,
                             'billing'                   => $importedProduct->sku->dynamicAttributes->billingType,
                             'productType'               => $importedProduct->product->productType->displayName,
                             'country'                   => $importedProduct->country,
+                            'vendor'                    => $importedProduct->product->publisherName,
                             'description'               => $importedProduct->sku->description,
-                            'minimum_quantity'          => $importedProduct->sku->minimumQuantity,
-                            'maximum_quantity'          => $importedProduct->sku->maximumQuantity,
                             'is_trial'                  => $importedProduct->sku->isTrial,
                             'is_addon'                  => $importedProduct->sku->dynamicAttributes->isAddon,
                             'has_addons'                => $importedProduct->sku->dynamicAttributes->hasAddOns,
-                            'vendor'                    => $importedProduct->product->publisherName,
+
+                            'is_perpetual'              => false,
+                            'is_available_for_purchase' => true,
+                        ], [
+                            'minimum_quantity'          => $importedProduct->sku->minimumQuantity,
+                            'maximum_quantity'          => $importedProduct->sku->maximumQuantity,
 
                             'limit'                     => $importedProduct->sku->dynamicAttributes->limit,
                             'is_autorenewable'          => $importedProduct->sku->dynamicAttributes->isAutoRenewable,
                             'terms'                     => $importedProduct->terms,
                             'supported_billing_cycles'  => $importedProduct->sku->supportedBillingCycles,
                             'unitType'                  => $importedProduct->sku->dynamicAttributes->unitType,
-
-                            'is_perpetual'              => false,
-                            'is_available_for_purchase' => true,
 
                             'upgrade_target_offers'     => $importedProduct->sku->dynamicAttributes->upgradeTargetOffers,
                             'conversion_target_offers'  => $importedProduct->sku->dynamicAttributes->conversionTargetOffers,
