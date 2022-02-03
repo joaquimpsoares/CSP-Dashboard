@@ -177,12 +177,12 @@ class ShowSubscription extends Component
             } catch (UpdateSubscriptionException $th) {
                 $this->showEditModal = false;
                 $message = substr($th->getMessage(), strrpos($th->getMessage(), '"description":"' ));
-                $this->notify('',$message, 'error');
+                $this->notify('',$th->getMessage(), 'error');
                 DB::rollBack();
                 return false;
             } catch (\Exception $th) {
                 $this->showEditModal = false;
-                $this->notify('',$message, 'error');
+                $this->notify('',$th->getMessage(), 'error');
                 DB::rollBack();
                 return false;
             }
@@ -208,8 +208,7 @@ class ShowSubscription extends Component
         DB::commit();
 
         $this->showEditModal = false;
-        $fields = collect($this->editing->getChanges())->except(['updated_at','refundableQuantity','expiration_data']);
-
+        $fields = collect($this->editing->getChanges())->except(['updated_at','refundableQuantity','expiration_data','CancellationAllowedUntil']);
         $this->notify('You\'ve updated '.  $fields .' Subscription');
         $this->emit('refreshTransactions');
     }

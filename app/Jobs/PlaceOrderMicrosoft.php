@@ -116,15 +116,23 @@ class PlaceOrderMicrosoft implements ShouldQueue
                     $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
                     Log::info('Adding Perpetual Product to Cart: ' . $tagydescart);
                 }
+
                 elseif($product->IsNCE()){
-                    $catalogItemId = $product['catalog_item_id'];
+
+                    $country = $customer->country->iso_3166_2;
+
+                    $sku = strtok($product->sku, ':');
+                    $id = substr($product->sku, strpos($product->sku, ":") + 1);
+
+                    $catalogItemId = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)->getPerpetualCatalogItemIdNCE($country,$sku,$id);
                     Log::info('catalogItemId1: ' . $catalogItemId);
                     $TagydesProduct = new TagydesProduct([
                         'id' => $catalogItemId
                         ] + $productData);
-                        $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
 
-                    // Log::info('Adding NCE Product to Cart: ' . $tagydescart);
+                    $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
+
+                    Log::info('Adding NCE Product to Cart: ' . $tagydescart);
                 }else{
                     $TagydesProduct = new TagydesProduct([
                         'id' => $product['sku'],
@@ -135,12 +143,13 @@ class PlaceOrderMicrosoft implements ShouldQueue
             }
             try {
                 $tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->create($tagydescart);
-                Log::info('Creating Cart: ' . $tagydesorder);
+                // Log::info('Creating Cart: ' . $tagydesorder);
                 $this->order->request_body = $tagydesorder->requestBody;
                 $orderConfirm = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($tagydesorder);
-                Log::info('Confirmation of cart Cart: ', $orderConfirm->subscriptions()->toArray());
-            } catch (Exception $th) {
-                // dd($th->getMessage());
+                // Log::info('Confirmation of cart Cart: ', $orderConfirm->subscriptions()->toArray());
+                // dump("this is " .$orderConfirm);
+            } catch (Exception $th)
+            {
                 Log::info('Error Cart.', ['message' => $th->getMessage()]);
             }
 
@@ -151,16 +160,26 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 }
             }
 
-            logger("Tenemos {$orderConfirm->subscriptions()->count()} subscripciones");
-            foreach ($orderConfirm->subscriptions() as $subscription) {
+            // dump("Tenemos Subscription". $orderConfirm);
+            // logger("Tenemos {$orderConfirm->subscriptions()->count()} subscripciones");
 
+
+
+            foreach ($orderConfirm->subscriptions() as $subscription) {
+                logger('this is the subscription '.$subscription);
+                if($product->IsNCE()){
+                    $product_id = explode(':', $subscription->offerId);
+                    $product_id = $product_id[0].':'.$product_id[1];
+                }
                 $subscriptions = new Subscription();
                 $subscriptions->name = $subscription->name;
                 $subscriptions->subscription_id = $subscription->id;
                 $subscriptions->customer_id = $customer->id; //Local customer id
-                $subscriptions->product_id = $subscription->offerId;
-                $subscriptions->instance_id = $instanceid;
+                $subscriptions->product_id = $product_id ?? $subscription->offerId;
+                $subscriptions->catalog_item_id = $subscription->offerId ?? [];
+                $subscriptions->term = $subscription->termDuration ?? 'none';
                 $subscriptions->billing_type = $product->billing ?? 'license';
+                $subscriptions->instance_id = $instanceid;
                 $subscriptions->order_id = $subscription->orderId;
                 $subscriptions->amount = $subscription->quantity;
                 $subscriptions->msrpid = $this->order->customer->format()['mpnid'];
@@ -171,7 +190,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 $subscriptions->status_id = 1;
                 $subscriptions->save();
 
-                Log::info('Subscription created Successfully: before writing to order table' . $subscription);
+                // Log::info('Subscription created Successfully: before writing to order table' . $subscription);
 
                 $this->order->subscription_id   = $subscriptions->id;
                 $this->order->ext_order_id      = $subscription->orderId;

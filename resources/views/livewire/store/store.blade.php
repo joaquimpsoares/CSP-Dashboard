@@ -144,7 +144,6 @@
                                                     </svg>
                                                     @endif
                                                 </div>
-                                                {{$price->instance_id}}
                                                 <div class="bg-indigo-500 py-1.5 px-6 rounded">
                                                     @if($price->related_product->category)
                                                     <p tabindex="{{$index}}" class="text-xs text-white focus:outline-none">#{{ $price->related_product->category }}</p>

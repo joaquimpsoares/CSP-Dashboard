@@ -22,5 +22,6 @@ class FailedjobsTable extends Component
     {
         $failedjobs = FailedJobs::get()->paginate(10);
         return view('livewire.job.failedjobs-table', compact('failedjobs'));
+
     }
 }

@@ -52,14 +52,9 @@ class Store extends Component
         'trial' => '',
     ];
 
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-    public function updatedQtys($field)
-    {
-        $this->recalc($field);
-    }
+    public function updatingSearch(){$this->resetPage();}
+    public function updatedQtys($field){$this->recalc($field);}
+    public function close(){$this->showModal = false;}
 
     public function addToCart(Product $productId)
     {
@@ -101,7 +96,6 @@ class Store extends Component
         $this->productMSRP          = $product->price->msrp;
     }
 
-    public function close(){$this->showModal = false;}
 
 
     public static  function getUserCart($id = null, $token = null)

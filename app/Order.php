@@ -30,6 +30,55 @@ class Order extends Model
         ];
     }
 
+    public function createOrder($request, $user)
+    {
+        $token = Str::uuid();
+        $order = new Order();
+        $order->token = $token;
+        $order->customer_id = $request->customer->id;
+        $order->domain = $request->domain;
+        $order->user_id = $user['id'];
+        $order->verify = $request->verify;
+        $order->verified = $request->verified;
+        $order->agreement_firstname = $request->agreement_firstname;
+        $order->agreement_lastname = $request->agreement_lastname;
+        $order->agreement_email = $request->agreement_email;
+        $order->agreement_phone = $request->agreement_phone;
+        $order->comments = $request->comments;
+        $order->save();
+
+        return $order;
+
+    }
+
+    public function markAsOrderPlaced()
+    {
+        $this->fill([
+            'order_status_id' => '1',
+            ])->save();
+    }
+
+    public function markAsRunning()
+    {
+        $this->fill([
+            'order_status_id' => '2',
+            ])->save();
+    }
+
+    public function markAsFailed()
+    {
+        $this->fill([
+            'order_status_id' => '3',
+            ])->save();
+    }
+
+    public function markAsCompleted()
+    {
+        $this->fill([
+            'order_status_id' => '4',
+            ])->save();
+    }
+
     public function orderproduct()
     {
         return $this->hasMany(OrderProducts::class, 'id', 'order_id');
