@@ -55,15 +55,17 @@ class ImportPerpetuaMicrosoftJob implements ShouldQueue
                     $product = Product::updateOrCreate([
                         'sku'                       => $importedProduct->productId.':'.$importedProduct->id,
                         'instance_id'               => $instance->id,
-                        'billing'                   => "software",
-                        'category'                  => "Perpetual Software",
                         'name'                      => $importedProduct->title,
+                        'catalog_item_id'           => $importedProduct->catalogItemId,
                         'description'               => $importedProduct->description,
                         'uri'                       => $importedProduct->uri,
                         'supported_billing_cycles'  => $importedProduct->supportedBillingCycles,
-                        'is_perpetual' => true,
-                        'addons'                    => "[]",
                     ], [
+                        'is_perpetual'              => true,
+                        'billing'                   => "software",
+                        'category'                  => "Perpetual Software",
+                        'addons'                    => "[]",
+
                         'minimum_quantity'          => $importedProduct->minimumQuantity,
                         'maximum_quantity'          => $importedProduct->maximumQuantity,
                         'is_trial'                  => $importedProduct->isTrial,

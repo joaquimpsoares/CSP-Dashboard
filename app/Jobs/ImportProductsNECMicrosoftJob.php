@@ -58,8 +58,8 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
                             $sku =$importedProduct->sku->productId;
                         }
 
-                        Log::info('catalogItemIdy: '.$importedProduct->catalogItemId);
-                        Log::info('descriptyion: '.$importedProduct->sku->description);
+                        Log::info('catalogItemId: '.$importedProduct->catalogItemId);
+                        Log::info('Product description: '.$importedProduct->sku->description);
 
 
                         $product = Product::updateOrCreate([
@@ -79,9 +79,9 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
 
                             'limit'                     => $importedProduct->sku->dynamicAttributes->limit,
 
+                        ], [
                             'is_perpetual'              => false,
                             'is_available_for_purchase' => true,
-                        ], [
                             'minimum_quantity'          => $importedProduct->sku->minimumQuantity,
                             'maximum_quantity'          => $importedProduct->sku->maximumQuantity,
 
