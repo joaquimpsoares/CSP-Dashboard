@@ -371,5 +371,7 @@ return [
     'nce' => 'new commerce experience',
     'schedule_subscription' => 'schedule subscription',
     'upgradeOffers' => 'upgrade Offers',
-    'requestbody' => 'request body'
+    'requestbody' => 'request body',
+    'abouttoexpire' => 'about to expire',
+    'legacy' => 'legacy',
 ];

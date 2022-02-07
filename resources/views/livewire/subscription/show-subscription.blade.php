@@ -55,7 +55,7 @@
                                         @if($subscription->productonce->IsNCE())
                                         @if($status == 'messages.active')
                                         <button wire:click="$toggle('showcancelconfirmationModal')" class="block px-4 py-2 text-sm text-red-700" role="menuitem" tabindex="-1" id="menu-item-6">
-                                            <x-icon.trash></x-icon.trash>
+                                            <x-icon.stop></x-icon.stop>
                                             {{ ucwords(trans_choice('cancel', 1)) }}
                                         </button>
                                         @endif
