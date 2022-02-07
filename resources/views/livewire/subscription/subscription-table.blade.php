@@ -1,12 +1,12 @@
 <div>
     <div class="relative z-0 flex-col flex-1 overflow-y-auto">
         <div class="p-4 overflow-hidden bg-white">
-            <div class="flex flex-col items-center justify-between lg:flex-row">
-                <div class="flex items-center">
-                    <h4>{{ ucwords(trans_choice('messages.subscription_table', 2)) }}</h4>
-                </div>
-                <div class="flex items-center justify-between">
-                    <div>
+            <div class="relative pb-0 border-b border-gray-200 sm:pb-0">
+                <div class="md:flex md:items-center md:justify-between">
+                    <h3 class="text-lg font-medium leading-6 text-gray-900">
+                        {{ ucwords(trans_choice('messages.subscription_table', 2)) }}
+                    </h3>
+                    <div class="flex mt-3 md:mt-0 md:absolute md:top-3 md:right-0">
                         <div class="flex justify-center flex-1 lg:justify-end">
                             <!-- Search section -->
                             <div class="w-full max-w-lg lg:max-w-xs">
@@ -22,15 +22,11 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <a wire:click="$toggle('showFilters')"href="#" class="px-2 py-2 ml-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                        <a wire:click="$toggle('showFilters')" href="#" class="px-2 py-2 ml-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
                             <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                             </svg>
                         </a>
-                    </div>
-                    <div>
                         <a onclick="confirm('Are you sure you want to export these Records?') || event.stopImmediatePropagation()"wire:click="exportSelected()" href="#" class="px-2 py-2 ml-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
                             <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd" />
@@ -38,7 +34,63 @@
                             {{ ucwords(trans_choice('messages.export', 1)) }}
                         </a>
                     </div>
+                </div>
+                <div class="mt-4">
+                    <div class="sm:hidden" x-description="Dropdown menu on small screens">
+                        <label for="current-tab" class="sr-only">Select a tab</label>
+                        <select wire:model="filters" id="current-tab" name="current-tab" class="block w-full py-2 pl-3 pr-10 text-base border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <option wire:click="legacy">{{ ucwords(trans_choice('messages.legacy', 1)) }}</option>
+                            <option wire:click="perpetual">{{ ucwords(trans_choice('messages.perpetual_software', 1)) }}</option>
+                            <option wire:click="epiration" selected="">{{ ucwords(trans_choice('messages.abouttoexpire', 1)) }}</option>
+                            <option wire:click="nce" >{{ ucwords(trans_choice('messages.nce', 1)) }}</option>
 
+                            {{-- <option>Hired</option> --}}
+
+                        </select>
+                    </div>
+                    {{-- <div class="flex flex-col justify-center min-h-screen py-6 sm:py-12"> --}}
+                        {{-- <section class="py-20 mx-auto space-y-8 sm:py-20">
+                            <div style='width:800px;' class="container flex flex-row items-stretch justify-center w-full max-w-4xl space-x-12" x-data="{tab: 1}"> --}}
+                                {{-- <div class="flex flex-col justify-start w-1/4 space-y-4" x-data="{tab: 1}">
+                                    <a class="px-4 py-2 text-sm" :class="{'z-20 border-l-2 transform translate-x-2 border-blue-500 font-bold': tab === 1, ' transform -translate-x-2': tab !== 1}" href="#" @click.prevent="tab = 1">
+                                        BATMAN & ROBIN
+                                    </a>
+                                    <a class="px-4 py-2 text-sm" :class="{'z-20 border-l-2 transform translate-x-2 border-blue-500 font-bold': tab === 2, ' transform -translate-x-2': tab !== 2}" href="#" @click.prevent="tab = 2" @click.prevent="tab = 2">
+                                        BATMAN V SUPERMAN: DAWN OF JUSTICE (2016)
+                                    </a>
+                                    <a class="px-4 py-2 text-sm" :class="{'z-20 border-l-2 transform translate-x-2 border-blue-500 font-bold': tab === 3, ' transform -translate-x-2': tab !== 3}" href="#" @click.prevent="tab = 3" @click.prevent="tab = 3">
+                                        BATMAN FOREVER (1995)
+                                    </a>
+                                    <a class="px-4 py-2 text-sm" :class="{'z-20 border-l-2 transform translate-x-2 border-blue-500 font-bold': tab === 4, ' transform -translate-x-2': tab !== 4}" href="#" @click.prevent="tab = 4" @click.prevent="tab = 4">
+                                        BATMAN: THE KILLING JOKE (2016)
+                                    </a>
+                                    <a class="px-4 py-2 text-sm" :class="{'z-20 border-l-2 transform translate-x-2 border-blue-500 font-bold': tab === 5, ' transform -translate-x-2': tab !== 5}" href="#" @click.prevent="tab = 5" @click.prevent="tab = 5">
+                                        JUSTICE LEAGUE (2017)
+                                    </a>
+                                </div> --}}
+{{--
+                            </div>
+                        </section> --}}
+                    {{-- </div> --}}
+                    <div class="hidden sm:block" x-description="Tabs at small breakpoint and up" >
+                        <nav class="flex -mb-px space-x-8" x-data="{tab: 1}">
+                            <a wire:click="resetFilters" class="px-1 pb-4 text-sm font-medium text-gray-500 whitespace-nowrap" :class="{'z-20 text-indigo-600 border-b-2 border-indigo-500': tab === 1}" href="#" @click.prevent="tab = 1">
+                                {{ ucwords(trans_choice('messages.all', 1)) }}
+                            </a>
+                            <a href="#" wire:click="legacy" class="px-1 pb-4 text-sm font-medium text-gray-500 whitespace-nowrap" :class="{'z-20 text-indigo-600 border-b-2 border-indigo-500': tab === 2}" href="#" @click.prevent="tab = 2" @click.prevent="tab = 2">
+                                {{ ucwords(trans_choice('messages.legacy', 1)) }}
+                            </a>
+                            <a href="#" wire:click="perpetual" class="px-1 pb-4 text-sm font-medium text-gray-500 whitespace-nowrap" :class="{'z-20 text-indigo-600 border-b-2 border-indigo-500': tab === 3}" href="#" @click.prevent="tab = 3" @click.prevent="tab = 3">
+                                {{ ucwords(trans_choice('messages.perpetual_software', 1)) }}
+                            </a>
+                            <a href="#" wire:click="expiration" class="px-1 pb-4 text-sm font-medium text-gray-500 whitespace-nowrap" :class="{'z-20 text-indigo-600 border-b-2 border-indigo-500': tab === 4}" href="#" @click.prevent="tab = 4" @click.prevent="tab = 4">
+                                {{ ucwords(trans_choice('messages.abouttoexpire', 1)) }}
+                            </a>
+                            <a href="#" wire:click="nce" class="px-1 pb-4 text-sm font-medium text-gray-500 whitespace-nowrap" :class="{'z-20 text-indigo-600 border-b-2 border-indigo-500': tab === 5}" href="#" @click.prevent="tab = 5" @click.prevent="tab = 5">
+                                {{ ucwords(trans_choice('messages.nce', 1)) }}
+                            </a>
+                        </nav>
+                    </div>
                 </div>
             </div>
             <div>

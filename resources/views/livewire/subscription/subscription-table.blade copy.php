@@ -3,6 +3,13 @@
         <div class="flex flex-col items-center justify-between lg:flex-row">
             <div class="flex items-center">
                 <h4>{{ ucwords(trans_choice('messages.subscription_table', 2)) }}</h4>
+                <div class="mt-4 sm:mt-0 sm:ml-10">
+      <nav class="flex -mb-px space-x-8">
+        <!-- Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" -->
+        <a href="#" class="px-1 pb-4 text-sm font-medium text-indigo-600 border-b-2 border-indigo-500 whitespace-nowrap" aria-current="page"> Open </a>
+
+        <a href="#" class="px-1 pb-4 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300 whitespace-nowrap"> Closed </a>
+      </nav>
             </div>
             <div class="flex items-center justify-between">
                 <div>
