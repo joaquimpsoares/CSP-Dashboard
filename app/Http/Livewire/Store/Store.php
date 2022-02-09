@@ -61,8 +61,7 @@ class Store extends Component
     public function updatedQtys($field){$this->recalc($field);}
     public function close(){$this->showModal = false;}
 
-    public function addToCart(Product $productId)
-    {
+    public function addToCart(Product $productId){
         $billing_cycle = "Monthly";
         $this->showModal = false;
         $cart = $this->getUserCart();
@@ -88,8 +87,7 @@ class Store extends Component
         $this->notify('Product added to cart: '. $productId->name );
     }
 
-    public function showDetails(Product $product)
-    {
+    public function showDetails(Product $product){
         $this->showproductdetails   = true;
         $this->price                = Price::where('product_id', $product->id)->first();
         $this->retail               = $product->price->price;
@@ -103,8 +101,7 @@ class Store extends Component
 
 
 
-    public static  function getUserCart($id = null, $token = null)
-    {
+    public static  function getUserCart($id = null, $token = null){
         $user = Auth::user();
         if (empty($token)) {
             if (empty($id)) {
@@ -118,8 +115,7 @@ class Store extends Component
         return $cart;
     }
 
-    public function updatedVendor()
-    {
+    public function updatedVendor(){
         $this->useCachedRows();
       if (!is_array($this->vendor)) return;
 
@@ -128,8 +124,7 @@ class Store extends Component
       });
     }
 
-    public function getRowsQueryProperty()
-    {
+    public function getRowsQueryProperty(){
         $this->useCachedRows();
         $user = Auth::user();
         switch ($user->userLevel->name) {
@@ -142,33 +137,6 @@ class Store extends Component
                 default:
             return abort(403, __('errors.access_with_resellers_credentials'));
         }
-
-        switch ($user->userLevel->name) {
-            case 'Reseller':
-                $this->priceList = $user->reseller->price_list_id;
-                break;
-                case 'Customer':
-                    $this->priceList = $user->customer->price_list_id;
-                break;
-                default:
-                return abort(403, __('errors.access_with_resellers_credentials'));
-            }
-
-            $priceList = $this->priceList;
-
-        $this->categories = product::whereHas('price', function($query) use  ($priceList) {
-            $query->where('price_list_id', $priceList);
-        })->pluck('category')->unique()->filter();
-
-        $this->terms = Price::pluck('term_duration')->unique()->filter();
-
-        $this->vendors = product::whereHas('price', function($query) use  ($priceList) {
-            $query->where('price_list_id', $priceList);
-        })->pluck('vendor')->unique()->filter();
-
-        $this->productType = product::whereHas('price', function($query) use  ($priceList) {
-            $query->where('price_list_id', $priceList);
-        })->pluck('productType')->unique()->filter();
 
         $query = Price::query()->with('related_product')->where('price_list_id', $this->priceList)
         ->when($this->filters['category'], fn($query, $category) => $query->whereHas('related_product', function(Builder $q) use($category){
@@ -195,8 +163,50 @@ class Store extends Component
         return $this->applySorting($query);
     }
 
-    public function getRowsProperty()
-    {
+    public function mount(){
+        $this->useCachedRows();
+
+        $user = Auth::user();
+        switch ($user->userLevel->name) {
+            case 'Reseller':
+                $this->priceList = $user->reseller->price_list_id;
+            break;
+            case 'Customer':
+                $this->priceList = $user->customer->price_list_id;
+                break;
+                default:
+            return abort(403, __('errors.access_with_resellers_credentials'));
+        }
+
+        switch ($user->userLevel->name) {
+            case 'Reseller':
+                $this->priceList = $user->reseller->price_list_id;
+                break;
+                case 'Customer':
+                    $this->priceList = $user->customer->price_list_id;
+                break;
+                default:
+                return abort(403, __('errors.access_with_resellers_credentials'));
+            }
+
+            $priceList = $this->priceList;
+            $this->terms = Price::pluck('term_duration')->unique()->filter();
+
+        $this->categories = product::select(['term_duration'])->whereHas('price', function($query) use  ($priceList) {
+            $query->where('price_list_id', $priceList);
+        })->pluck('category')->unique()->filter();
+
+
+        $this->vendors = product::select(['vendor'])->whereHas('price', function($query) use  ($priceList) {
+            $query->where('price_list_id', $priceList);
+        })->pluck('vendor')->unique()->filter();
+
+        $this->productType = product::select(['productType'])->whereHas('price', function($query) use  ($priceList) {
+            $query->where('price_list_id', $priceList);
+        })->pluck('productType')->unique()->filter();
+    }
+
+    public function getRowsProperty(){
         $this->useCachedRows();
         return $this->cache(function () {
             return $this->applyPagination($this->rowsQuery);
