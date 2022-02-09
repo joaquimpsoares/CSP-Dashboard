@@ -189,19 +189,19 @@ class Store extends Component
                 return abort(403, __('errors.access_with_resellers_credentials'));
             }
 
-            $priceList = $this->priceList;
-            $this->terms = Price::pluck('term_duration')->unique()->filter();
+        $priceList = $this->priceList;
 
-        $this->categories = product::select(['term_duration'])->whereHas('price', function($query) use  ($priceList) {
+        $this->terms = Price::pluck('term_duration')->unique()->filter();
+
+        $this->categories = product::select(['category'])->whereHas('price', function($query) use  ($priceList) {
             $query->where('price_list_id', $priceList);
         })->pluck('category')->unique()->filter();
 
-
-        $this->vendors = product::whereHas('price', function($query) use  ($priceList) {
+        $this->vendors = product::select(['vendor'])->whereHas('price', function($query) use  ($priceList) {
             $query->where('price_list_id', $priceList);
         })->pluck('vendor')->unique()->filter();
 
-        $this->productType = product::whereHas('price', function($query) use  ($priceList) {
+        $this->productType = product::select(['productType'])->whereHas('price', function($query) use  ($priceList) {
             $query->where('price_list_id', $priceList);
         })->pluck('productType')->unique()->filter();
     }
