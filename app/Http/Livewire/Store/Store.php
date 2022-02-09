@@ -197,11 +197,11 @@ class Store extends Component
         })->pluck('category')->unique()->filter();
 
 
-        $this->vendors = product::select(['vendor'])->whereHas('price', function($query) use  ($priceList) {
+        $this->vendors = product::whereHas('price', function($query) use  ($priceList) {
             $query->where('price_list_id', $priceList);
         })->pluck('vendor')->unique()->filter();
 
-        $this->productType = product::select(['productType'])->whereHas('price', function($query) use  ($priceList) {
+        $this->productType = product::whereHas('price', function($query) use  ($priceList) {
             $query->where('price_list_id', $priceList);
         })->pluck('productType')->unique()->filter();
     }
