@@ -115,6 +115,7 @@ class Store extends Component
 
     public function updatedVendor()
     {
+        $this->useCachedRows();
       if (!is_array($this->vendor)) return;
 
       $this->vendor = array_filter($this->vendor, function ($vendors) {
@@ -124,8 +125,8 @@ class Store extends Component
 
     public function getRowsQueryProperty()
     {
+        $this->useCachedRows();
         $user = Auth::user();
-
         switch ($user->userLevel->name) {
             case 'Reseller':
                 $this->priceList = $user->reseller->price_list_id;
@@ -164,6 +165,7 @@ class Store extends Component
 
     public function getRowsProperty()
     {
+        $this->useCachedRows();
         return $this->cache(function () {
             return $this->applyPagination($this->rowsQuery);
         });
