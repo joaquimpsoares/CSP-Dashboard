@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\AzureResource;
 use App\Http\Traits\Expirable;
 use App\Http\Traits\ActivityTrait;
+use App\Models\Ncemigration;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
@@ -23,8 +24,7 @@ class Subscription extends Model
 {
     use ActivityTrait;
 
-    public function format()
-    {
+    public function format(){
         return [
             'path'          => $this->path(),
         ];
@@ -51,15 +51,13 @@ class Subscription extends Model
         return $this->belongsTo(Instance::class);
     }
 
-    public function markAsActive()
-    {
+    public function markAsActive(){
         $this->fill([
             'status_id' => '1',
         ])->save();
     }
 
-    public function validatemigration($customer,$subscription)
-    {
+    public function validatemigration($customer,$subscription){
         $customer = new TagydesCustomer([
             'id' => $customer->microsoftTenantInfo->first()->tenant_id,
             'username' => 'bill@tagydes.com',
@@ -68,6 +66,8 @@ class Subscription extends Model
             'lastName' => 'Apellido',
             'email' => 'bill@tagydes.com',
         ]);
+
+        $billingCycle =strtolower($this->billing_period);
 
         $subscription = new TagydesSubscription([
             'id'            => $this->subscription_id,
@@ -78,16 +78,15 @@ class Subscription extends Model
             'status'        => $this->status_id,
             'quantity'      => $this->amount,
             'currency'      => $this->currency,
-            'billingCycle'  => $this->billing_period,
+            'billingCycle'  => $billingCycle,
             'created_at'    => $this->created_at->__toString(),
         ]);
-
         return SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)
         ->ValidateMigratioSubscription($customer, $subscription);
     }
 
-    public function migrateSubscriptionMCE ($customer, $subscription, $amount, $billing_period, $term, $newterm)
-    {
+    public function migrateSubscriptionMCE ($customer, $subscription, $amount, $billing_period, $term, $newterm){
+
         $customer = new TagydesCustomer([
             'id' => $customer->microsoftTenantInfo->first()->tenant_id,
             'username' => 'bill@tagydes.com',
@@ -111,11 +110,24 @@ class Subscription extends Model
         ]);
 
         return SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)
-        ->CreateMigratioSubscription($customer, $subscription, $amount, $billing_period, $term, $newterm);
+        ->CreateMigrationSubscription($customer, $subscription, $amount, $billing_period, $term, $newterm);
     }
 
-    public function changeBillingCycle($cycle)
-    {
+    public function CheckMigrationSubscription ($customer, $migration_id){
+        $customer = new TagydesCustomer([
+            'id' => $customer->microsoftTenantInfo->first()->tenant_id,
+            'username' => 'bill@tagydes.com',
+            'password' => 'blabla',
+            'firstName' => 'Nombre',
+            'lastName' => 'Apellido',
+            'email' => 'bill@tagydes.com',
+        ]);
+
+        return SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)
+        ->CheckMigrationSubscription($customer, $migration_id);
+    }
+
+    public function changeBillingCycle($cycle){
 
         $order = new Order();
         $order->customer_id = $this->customer_id;
@@ -154,8 +166,7 @@ class Subscription extends Model
         return $this;
     }
 
-    public function changeAmount($quantity,$autorenew)
-    {
+    public function changeAmount($quantity,$autorenew){
         if($autorenew == 1){
             $autorenew == true;
         }else{
@@ -203,8 +214,7 @@ class Subscription extends Model
         return $update;
     }
 
-    public function changeAutorenew($quantity,$autorenew)
-    {
+    public function changeAutorenew($quantity,$autorenew){
 
         $order = new Order();
         $order->customer_id = $this->customer_id;
@@ -245,8 +255,17 @@ class Subscription extends Model
         return $update;
     }
 
-    public function active()
-    {
+    public function IsMigrated(){
+        if(Ncemigration::where('new_subscription_id', $this->id)->first()){
+            return true;
+        }
+        return false;
+        // return Ncemigration::where('new_subscription_id', $this->id)->first();
+    }
+
+    public function active(){
+        $this->billing_period = strtolower($this->billing_period);
+
         $order = new Order();
         $order->customer_id = $this->customer_id;
         $order->domain = $this->domain;
@@ -266,12 +285,11 @@ class Subscription extends Model
             'created_at'    => $this->created_at->__toString(),
         ]);
 
-
         try {
             $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token) //change status only
             ->update($subscription, [
                 'status' => 'active',
-                'AutoRenewEnabled' => true,
+                'AutoRenewEnabled' => false,
             ]);
 
         } catch (\Exception $th) {
@@ -280,12 +298,11 @@ class Subscription extends Model
             $order->save();
            return $th->getMessage();
         }
-        $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token) //change status only
-        ->update($subscription, ['status' => 'active']);
 
         $this->markAsActive();
-        $order->details = "changing subscription ".$this->name . " and changing the status to active";
+        $this->markAsDontrenew();
 
+        $order->details = "changing subscription ".$this->name . " and changing the status to active";
         $order->order_status_id = 4;
         $order->save();
         Log::info('Status changed: Suspended');
@@ -293,15 +310,15 @@ class Subscription extends Model
 
     }
 
-    public function suspend()
-    {
+    public function suspend(){
+        $this->billing_period = strtolower($this->billing_period);
+
         $order = new Order();
         $order->customer_id = $this->customer_id;
         $order->domain = $this->domain;
         $order->token = Str::uuid();
         $order->user_id = Auth::user()->id;
         $order->verify = $this->verify;
-
         $subscription = new TagydesSubscription([
             'id'            => $this->subscription_id,
             'orderId'       => $this->order_id,
@@ -339,8 +356,7 @@ class Subscription extends Model
         return $this;
     }
 
-    public function cancel()
-    {
+    public function cancel(){
         $subscription = new TagydesSubscription([
             'id'            => $this->subscription_id,
             'orderId'       => $this->order_id,
@@ -363,8 +379,7 @@ class Subscription extends Model
         return $this;
     }
 
-    public function setbudget($value)
-    {
+    public function setbudget($value){
 
         SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token) //change status only
         ->update($value, ['status' => 'suspended']);
@@ -375,58 +390,63 @@ class Subscription extends Model
         return $this;
     }
 
-
-    public function markAsDisabled()
-    {
+    public function markAsDisabled(){
         $this->fill([
             'status_id' => '2',
             ])->save();
     }
 
-    public function markAsCanceled()
-    {
+    public function markAsDontrenew(){
+        $this->fill([
+            'autorenew' => false,
+            ])->save();
+    }
+
+    public function markAsrenew(){
+        $this->fill([
+            'autorenew' => true,
+            ])->save();
+    }
+
+    public function markAsCanceled(){
         $this->fill([
             'status_id' => '3',
             ])->save();
     }
 
-    public function path()
-    {
+    public function path(){
         return url("/subscription/{$this->id}-" . Str::slug($this->name, '-'));
     }
 
-    public function addons()
-    {
+    public function addons(){
         return $this->hasMany(Addon::class);
     }
 
-    public function customer()
-    {
+    public function customer(){
         return $this->belongsTo(Customer::class);
     }
 
-    public function order()
-    {
+    public function migration(){
+        return $this->hasone(Ncemigration::class);
+    }
+
+    public function order(){
         return $this->hasMany(Order::class, 'subscription_id', 'id');
     }
 
-    public function products()
-    {
+    public function products(){
         return $this->hasMany(Product::class, 'sku', 'product_id');
     }
 
-    public function product()
-    {
+    public function product(){
         return $this->hasOne(Product::class, 'sku', 'product_id');
     }
 
-    public function productonce()
-    {
+    public function productonce(){
         return $this->hasOne(Product::class, 'sku', 'product_id');
     }
 
-    public function azureresources()
-    {
+    public function azureresources(){
         return $this->belongsToMany(AzureResource::class);
     }
 

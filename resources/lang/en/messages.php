@@ -374,4 +374,5 @@ return [
     'requestbody' => 'request body',
     'abouttoexpire' => 'about to expire',
     'legacy' => 'legacy',
+    'error' => 'error'|'errors'
 ];

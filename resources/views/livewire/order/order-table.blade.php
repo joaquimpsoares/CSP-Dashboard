@@ -178,7 +178,7 @@
                                         <h3 class="text-lg font-medium leading-6 text-gray-900">
                                             {{ ucwords(trans_choice('messages.customer', 1)) }}
                                         </h3>
-                                      </div>
+                                    </div>
                                     <dl class="">
                                         <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                             <dt class="text-sm font-medium text-gray-500">
@@ -214,7 +214,7 @@
                                         </div>
                                     </dl>
                                 </div>
-                <hr>
+                                <hr>
 
                                 @if(Auth::user()->userlevel->name == "Super Admin")
                                 <div class="sm:col-span-12 md:col-span-7">
@@ -230,6 +230,24 @@
                                     </div>
                                 </div>
                                 @endif
+
+                                <div class="sm:col-span-12 md:col-span-7">
+                                    <div class="px-0 py-1 sm:px-6">
+                                        <h3 class="text-lg font-medium leading-6 text-gray-900">
+                                            {{ ucwords(trans_choice('messages.error', 2)) }}
+                                        </h3>
+                                    </div>
+                                    <dl class="">
+                                        <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                            <dt class="text-sm font-medium text-gray-500">
+                                                {{ ucwords(trans_choice('messages.error', 1)) }}
+                                            </dt>
+                                            <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                                {{$order->errors}}
+                                            </dd>
+                                        </div>
+                                    </dl>
+                                </div>
 
                                 @foreach($order->products as $key => $value)
                                 <div class="px-1 py-1 sm:px-6">

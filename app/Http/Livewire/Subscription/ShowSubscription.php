@@ -15,8 +15,6 @@ use App\Jobs\CreateMigrationJob;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
 use App\Notifications\SubscriptionUpdate;
 use Illuminate\Support\Facades\Notification;
 use App\Exceptions\UpdateSubscriptionException;
@@ -55,8 +53,7 @@ class ShowSubscription extends Component
 
     public function updated($propertyName){$this->validateOnly($propertyName);}
 
-    public function rules()
-    {
+    public function rules(){
         if ($this->subscription->productonce){
             $max_quantity = $this->subscription->productonce->where('instance_id', $this->subscription->instance_id)->first()->maximum_quantity;
             $min_quantity = $this->subscription->productonce->where('instance_id', $this->subscription->instance_id)->first()->minimum_quantity;
@@ -64,7 +61,7 @@ class ShowSubscription extends Component
             $max_quantity = 1;
             $min_quantity = 1;
         }
-        if($this->subscription->productonce != null){
+        if($this->subscription->productonce[0] != null){
         if($this->subscription->productonce->isNCE()){
             if($this->subscription->refundableQuantity){
                 foreach ($this->subscription->refundableQuantity as $item){
@@ -73,7 +70,6 @@ class ShowSubscription extends Component
             }
         }
         }
-
         return [
             'editing.name'              => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
             'editing.amount'            => ['required', 'integer', 'max:'.$max_quantity, 'min:'.$min_quantity],
@@ -83,11 +79,7 @@ class ShowSubscription extends Component
             'editing.status_id'         => ['required', 'exists:statuses,id'],
         ];
     }
-
-
-
-    public function edit(Subscription $subs)
-    {
+    public function edit(Subscription $subs){
 
         $this->ScheduleEdit= false;
         $this->showEditModal = true;
@@ -96,8 +88,7 @@ class ShowSubscription extends Component
         $this->editing      = $subs;
     }
 
-    public function save()
-    {
+    public function save(){
         $this->showEditModal = false;
         $this->validate();
         DB::beginTransaction();
@@ -213,8 +204,7 @@ class ShowSubscription extends Component
         $this->emit('refreshTransactions');
     }
 
-    public function saveScheduled()
-    {
+    public function saveScheduled(){
         // TODO: Pending to adapt on Livewire usage
         $instance = Instance::where('id', $this->editing->instance_id)->first();
 
@@ -245,8 +235,7 @@ class ShowSubscription extends Component
             ]]);
     }
 
-    public function autorenewcheck(Subscription $subscription)
-    {
+    public function autorenewcheck(Subscription $subscription){
         if ($this->autorenew == true)
         {
             try {
@@ -321,12 +310,12 @@ class ShowSubscription extends Component
             $this->emit('refreshTransactions');
     }
 
-    public function migrateToMCE(Subscription $subscription, $user)
-    {
+    public function migrateToMCE(Subscription $subscription, $user){
+
         $order = new Order();
         $order = $order->createOrder($subscription, $user);
 
-        $migration = Bus::chain([
+        Bus::chain([
         new CreateMigrationJob($subscription, $this->amount, $this->billing_period, $this->term, $this->newterm, $order)])
         ->catch(function (Throwable $e) use($order){
             $order->details = ('Error migration subscription: '.$e->getMessage());
@@ -338,8 +327,7 @@ class ShowSubscription extends Component
 
     }
 
-    public function manageSchedule(Subscription $subscription)
-    {
+    public function manageSchedule(Subscription $subscription){
         $this->showEditModal = true;
         $this->ScheduleEdit = true;
         $this->quantity = $subscription->amount;
@@ -348,32 +336,42 @@ class ShowSubscription extends Component
         })->filter();
     }
 
-    public function validateisEligible(Subscription $subscription)
-    {
+    public function validateisEligible(Subscription $subscription){
         $this->tt = $this->subscription->validatemigration($subscription->customer, $subscription);
-        // dd($this->tt['description']);
         $this->isLoading = false;
         $this->emit('refreshTransactions');
-
     }
 
-    public function mount()
-    {
+    public function CheckMigrationSubscription(Subscription $subscription){
+        $migrations = Ncemigration::where('new_subscription_id', $subscription->id)->first();
+        $tt = $this->subscription->CheckMigrationSubscription($subscription->customer, $migrations);
+
+        $subscription->subscription_id = $tt['newCommerceSubscriptionId'];
+        $subscription->expiration_data = $tt['subscriptionEndDate'];
+        $subscription->term= $tt['termDuration'];
+        $subscription->save();
+
+        $migrations->completedTime             = $tt['completedTime'];
+        $migrations->newCommerceSubscriptionId = $tt['newCommerceSubscriptionId'];
+        $migrations->status                    = $tt['status'];
+        $migrations->save();
+        $this->emit('refreshTransactions');
+    }
+
+    public function mount(){
         $this->autorenew = $this->subscription->autorenew;
         $this->amount = $this->subscription->amount;
         $this->max_quantity = $this->subscription->products->where('instance_id', $this->subscription->instance_id)->first()->maximum_quantity ?? null;
         $this->status = $this->subscription->status->name;
     }
 
-    public function disable(Subscription $subscription)
-    {
+    public function disable(Subscription $subscription){
         $this->showconfirmationModal = false;
         $subscription->suspend();
         $this->emit('refreshTransactions');
     }
 
-    public function enable(Subscription $subscription)
-    {
+    public function enable(Subscription $subscription){
         $subscription->active();
         $this->notify('Subscription ' . $subscription->name . ' is Active, refresh page');
         Notification::send($subscription->customer->users->first(), new SubscriptionUpdate($subscription));
@@ -392,8 +390,7 @@ class ShowSubscription extends Component
 
     }
 
-    public function render()
-    {
+    public function render(){
         $subscription = $this->subscription;
         return view('livewire.subscription.show-subscription', compact('subscription'));
     }
