@@ -347,7 +347,7 @@ class ShowSubscription extends Component
         $tt = $this->subscription->CheckMigrationSubscription($subscription->customer, $migrations);
 
         $subscription->subscription_id = $tt['newCommerceSubscriptionId'];
-        $subscription->expiration_data = $tt['subscriptionEndDate'];
+        $subscription->expiration_data = $tt['subscriptionEndDate'] ?? null;
         $subscription->term= $tt['termDuration'];
         $subscription->save();
 
