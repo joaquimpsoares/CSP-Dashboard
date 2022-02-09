@@ -173,6 +173,8 @@ class Store extends Component
 
     public function render()
     {
+        $this->useCachedRows();
+
         $user = Auth::user();
 
         switch ($user->userLevel->name) {
