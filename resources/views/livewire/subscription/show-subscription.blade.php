@@ -196,7 +196,7 @@
                                                                         @endif
                                                                         <div class="row">
                                                                             <div class="mt-2 mb-2 col-md-12">
-                                                                                <x-label for="newterm">{{ucwords(trans_choice('messages.Start new term in New Commerce Experience', 1))}}</x-label>
+                                                                                <x-label for="newterm">{{ucwords(trans_choice('messages.start_new_term', 1))}}</x-label>
                                                                                 <div class="mb-3 input-group">
                                                                                     <x-input.checkbox wire:model="newterm"></x-input.checkbox>
                                                                                     @error('newterm')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
@@ -212,12 +212,10 @@
                                                                             </button>
                                                                         </div>
                                                                         <div wire:loading.remove>
-
-                                                                            <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                                                                {{ucwords(trans_choice('save', 1))}}
+                                                                            <button type="submit" class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                                                {{ucwords(trans_choice('accept', 1))}}
                                                                             </button>
                                                                         </div>
-
                                                                     </div>
                                                                 </div>
                                                             </section>
@@ -228,7 +226,6 @@
                                         </div>
                                     </div>
                                     @else
-                                    {{-- @if(!$tt->has('code')) --}}
                                     <div class="bg-white border border-gray-200 ">
                                         <ul class="shadow-box">
                                             <li class="relative border-b border-gray-200" x-data="{selected:null}">
@@ -254,9 +251,7 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    {{-- @endif --}}
                                     @endif
-                                    {{-- @endif --}}
                                     @endif
                                     @endif
                                 </div>
@@ -275,15 +270,6 @@
                     <div class="grid grid-flow-col grid-cols-2 gap-4 ml-7">
                         <div class="mt-4 mb-8">
                             <div class="w-auto p-0 m-0">
-                                {{-- <div class="relative flex items-start ml-1">
-                                    <div class="flex items-center h-5">
-                                        <input wire:model="autorenew" wire:click="autorenewcheck({{$subscription->id}})" id="comments" aria-describedby="comments-description" name="comments" type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-                                        @error('editing.billing_period')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                    </div>
-                                    <div class="ml-3 text-sm">
-                                        <label for="comments" class="font-medium text-gray-700">{{ucwords(trans_choice('messages.autorenew', 1))}}</label>
-                                    </div>
-                                </div> --}}
                                 <div class="box-border focus:border-transparent">
                                     <div style="display:flex" class="box-border flex leading-5 focus:border-transparent">
                                         <span class="box-border relative inline-block pt-2 text-xl not-italic font-normal leading-none align-baseline focus:border-transparent" >
@@ -496,10 +482,10 @@
                                                 </span>
                                             </div>
                                             @if($subscription->order->first() != null)
-                                            @if($subscription->order->first()->orderproduct != null)
+                                            @if($subscription->order->first()->orderproduct->first() != null)
 
                                             <span class="inline text-xs text-gray-600">
-                                                {{-- {{$subscription->order->first()->orderproduct->first()->retail_price}} {{$subscription->currency}} / {{$subscription->billing_period}} --}}
+                                                {{$subscription->order->first()->orderproduct->first()->retail_price}} {{$subscription->currency}} / {{$subscription->billing_period}}
                                             </span>
                                             @endif
                                             @endif
@@ -527,9 +513,9 @@
                                         </td>
                                         <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap">
                                             @if($subscription->order->first() != null)
-                                            @if($subscription->order->first()->orderproduct != null)
+                                            @if($subscription->order->first()->orderproduct->first() != null)
                                             <span class="inline text-sm font-normal leading-5">
-                                                {{-- {{number_format(($subscription->order->first()->orderproduct->first()->retail_price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}} --}}
+                                                {{number_format(($subscription->order->first()->orderproduct->first()->retail_price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
                                             </span>
                                             @endif
                                             @endif
