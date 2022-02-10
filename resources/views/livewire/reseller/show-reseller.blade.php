@@ -241,12 +241,13 @@
                                         </span>
                                     </td>
                                     <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-wrap lg:table-cell">
-                                        <a  href="{{$subscription->first()->customer->format()['path']}}" class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline">
+                                        {{-- <a  href="{{$subscription->first()->customer->format()['path']}}" class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline">
                                             @php
                                             $subscription->map(function ($item) use ($subscription){
                                                 if(isset($item->order)){
                                                     foreach ($item->order as $order) {
-                                                        if(isset($order->orderproduct)){
+                                                        if($order->orderproduct->first() != null){
+                                                            dd($order->orderproduct->first() != null);
                                                             $item['cost'] = ($order->orderproduct->first()->retail_price*$subscription->first()->amount)*($subscription->first()->billing_period === 'annual' ? 12 : 1);
                                                         }
                                                     }
@@ -257,7 +258,7 @@
                                             <span class="inline text-sm font-normal leading-5 text-gray-900">
                                                 @money($subscription->first()->cost) {{$subscription->first()->currency}} / {{$subscription->first()->billing_period}}
                                             </span>
-                                        </a>
+                                        </a> --}}
                                     </td>
                                 </tr>
                                 @endforeach
