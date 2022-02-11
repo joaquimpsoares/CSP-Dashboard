@@ -10,6 +10,10 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Log;
 
+
+ini_set('memory_limit', '4024M');
+ini_set('max_execution_time', 30000);
+
 class ImportTransactions extends Component
 {
     use WithFileUploads;
@@ -38,8 +42,8 @@ class ImportTransactions extends Component
     ];
 
     protected $customAttributes = [
-        'fieldColumnMap.name' => 'name',
-        'fieldColumnMap.product_sku' => 'product sku',
+        'fieldColumnMap.name'           => 'name',
+        'fieldColumnMap.product_sku'    => 'product sku',
     ];
 
     public function updatingUpload($value)
@@ -67,29 +71,32 @@ class ImportTransactions extends Component
             if($tt['product_id'] != null){
                 try {
                     $price = Price::updateOrCreate([
-                        'product_sku'   => $tt['product_sku'],
                         'instance_id'   => $this->priceList->instance_id,
                         'price_list_id' => $this->priceList->id,
-                        'name'          => $tt['name'],
-                    ],[
-                        'price'         => $tt['price'],
-                        'msrp'          => $tt['msrp'],
+                        'product_sku'   => $tt['product_sku'],
+                        'currency'      => $tt['currency'],
+                        'term_duration' => $tt['term_duration'],
+                        'billing_plan'  => $tt['billing_plan'],
                         'product_vendor'=> $tt['product_vendor'],
                         'product_id'    => $tt['product_id'],
-
+                    ],[
+                        'name'          => $tt['name'],
+                        'price'         => $tt['price'],
+                        'msrp'          => $tt['msrp'],
                     ]);
-                Log::info('Budget updated for: '. $price['product_sku'].' name:'. $price['name']);
-
-                } catch (\Throwable $th) {
+                    logger($price->getChanges());
+                Log::info('Price list updated with: '. $price['product_sku'].' name: '. $price['name'].' Billing: ' .$price['billing_plan'].' term duration: ' .$price['term_duration']  );
+                // logger('get changes: '. $price->getChanges());
+                } catch (\exception $th) {
                     dd($th->getMessage());
                 }
-
                 $importCount++;
             }
             });
         $this->reset();
+        $this->showModal = false;
         $this->emit('refreshTransactions');
-        $this->notify('Imported '.$importCount.' transactions!');
+        $this->notify('','Imported '.$importCount.' transactions!','info');
     }
 
     public function extractFieldsFromRow($row)
@@ -100,7 +107,6 @@ class ImportTransactions extends Component
         ->mapWithKeys(function($heading, $field) use ($row) {
             return [$field => $row[$heading]];
         })->toArray();
-
         return $attributes + [
             'product_vendor'    => 'microsoft',
             'instance_id'       => $this->priceList->instance_id,
@@ -110,22 +116,19 @@ class ImportTransactions extends Component
             'currency'          => $row['Currency'],
             'term_duration'     => $row['TermDuration'] ?? null,
             'product_id'        => $product,
-
         ];
     }
 
     public function guessWhichColumnsMapToWhichFields()
     {
         $guesses = [
-            'name'          => ['skutitle'],
+            'name'          => ['skutitle','SkuTitle'],
             'product_sku'   => ['skuid'],
-            'price'         => ['unitprice',],
-            'msrp'          => ['erp price',],
+            'price'         => ['unitprice','UnitPrice'],
+            'msrp'          => ['erp price','ERP Price'],
         ];
         foreach ($this->columns as $column) {
-
             $match = collect($guesses)->search(fn($options) => in_array(strtolower($column), $options));
-
             if ($match) $this->fieldColumnMap[$match] = $column;
         }
     }
