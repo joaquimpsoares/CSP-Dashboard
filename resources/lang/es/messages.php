@@ -1,4 +1,4 @@
-<?php 
+<?php
 return [
   'importproducts' => 'Importar productos de Microsoft, programado',
   'jobrescheduled' => 'Trabajo reprogramado',
@@ -232,7 +232,7 @@ return [
   'created_at' => 'Creado en',
   'edit_user' => 'editar usuario',
   'details' => 'detalles',
-  'address' => 'habla a',
+  'address' => 'dirección',
   'last_logged_in' => 'Último inicio de sesión',
   'latest_activity' => 'Última actividad',
   'impersonate' => 'personificar',
@@ -256,10 +256,10 @@ return [
   'after_total' => 'después del total',
   'estimated_billing' => 'facturación estimada',
   'provider_details' => 'Detalles del proveedor',
-  'edit_provider' => 'proveedor de edición',
+  'edit_provider' => 'editar proveedor',
   'no_instance' => 'Por favor, cree una nueva instancia',
   'new_instance' => 'nueva instancia',
-  'save' => 'ahorrar',
+  'save' => 'guardar',
   'prices_in_list' => 'precios en la lista',
   'prices_not_list' => 'Precios NO LISTA',
   'top5_resource_group_cost' => 'Top5 grupo de recursos por costo',
@@ -269,7 +269,7 @@ return [
   'total_cost' => 'coste total',
   'start_date' => 'fecha de inicio',
   'end_date' => 'fecha final',
-  'export_to_xlsx' => 'Exclación de Excel',
+  'export_to_xlsx' => 'exportar para Excel',
   'report' => 'informe',
   'about_to_expire' => 'A punto de expirar',
   'subscription_id' => 'ID de suscripción',
@@ -319,7 +319,7 @@ return [
   'analytic_table' => 'tabla analítica',
   'margin' => 'margen',
   'price_list_details' => 'detalles de la lista de precios',
-  'table' => 'mesa',
+  'table' => 'tabla',
   'relationship' => 'relación',
   'create_reseller' => 'agregar revendedor',
   'create_customer' => 'agregar cliente',
@@ -359,4 +359,7 @@ return [
   'schedule_subscription' => 'programar suscripción',
   'upgradeOffers' => 'ofertas de actualización',
   'requestbody' => 'cuerpo de solicitud',
+  'abouttoexpire' => 'a punto de caducar',
+  'legacy' => 'legado',
+  'start_new_term' => 'Comience un nuevo término en una nueva experiencia comercial',
 ];

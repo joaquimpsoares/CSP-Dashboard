@@ -374,5 +374,7 @@ return [
     'requestbody' => 'request body',
     'abouttoexpire' => 'about to expire',
     'legacy' => 'legacy',
-    'error' => 'error'|'errors'
+    'error' => 'error'|'errors',
+    'start_new_term' => 'Start New Term In New Commerce Experience',
+
 ];

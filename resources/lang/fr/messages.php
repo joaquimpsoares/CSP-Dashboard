@@ -359,4 +359,7 @@ return [
   'schedule_subscription' => 'programmer l\'abonnement',
   'upgradeOffers' => 'surclassement Offres',
   'requestbody' => 'corps de la demande',
+  'abouttoexpire' => 'sur le point d\'expirer',
+  'legacy' => 'héritage',
+  'start_new_term' => 'Commencer un nouveau mandat dans une nouvelle expérience commerciale',
 ];
