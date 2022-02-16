@@ -185,7 +185,10 @@
                                                 {{ ucwords(trans_choice('messages.company_name', 2)) }}
                                             </dt>
                                             <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{$order->customer['company_name']}}
+                                                <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline"href="{{$order->customer->format()['path']}}">
+                                                    {{$order->customer['company_name']}}
+                                                </a>
+
                                             </dd>
                                         </div>
                                         <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -303,6 +306,16 @@
                                     </div>
                                 </div> --}}
                                 @endforeach
+                                <dl>
+                                    <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                        <dt class="text-sm font-medium text-gray-500">
+                                            {{ ucwords(trans_choice('messages.details', 2)) }}
+                                        </dt>
+                                        <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                            {{$order->details}}
+                                        </dd>
+                                    </div>
+                                </dl>
                             </div>
                         </div>
                     </div>
