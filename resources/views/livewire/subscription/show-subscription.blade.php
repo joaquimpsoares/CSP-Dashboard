@@ -66,8 +66,9 @@
                                         </span>
                                     </span>
                                 </button>
+                                {{-- @dd($status) --}}
                                 <div  x-cloak x-show.transition="open" @click.away="open = false" class="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-                                    @if($status != 'messages.canceled')
+                                    @if($status != 'messages.canceled' && $status != 'messages.inactive')
                                     <div class="py-1" role="none">
                                         <a wire:click="edit({{ $subscription->id }})" href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-4">
                                             <x-icon.edit></x-icon.edit>
@@ -110,6 +111,8 @@
                         Check migration
                     </button>
                     @endif
+                    @if($subscription->status->id == 1)
+
                     @if($subscription->billing_type == 'license')
                     @if (!$subscription->productonce->isNCE())
                     <div class="px-0 pt-0 mt-10 break-words border-b">
@@ -123,6 +126,7 @@
                         <div class="grid grid-flow-col grid-cols-2 gap-4">
                             <div class="mt-4 mb-8">
                                 <div class="w-auto p-0 m-0">
+
                                     @if($isLoading == true)
                                     <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-semibold leading-6 text-white bg-indigo-500 rounded-md shadow cursor-wait" disabled="">
                                         <svg class="w-5 h-5 mr-3 -ml-1 text-white motion-reduce:hidden animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -164,7 +168,7 @@
                                                                         </div>
                                                                         <div class="row">
                                                                             <div class="mt-2 mb-2 col-md-4">
-                                                                                <x-label for="term">{{ucwords(trans_choice('messages.term', 1))}}</x-label>
+                                                                                <x-label for="term">{{ucwords(trans_choice('messages.product_term', 1))}}</x-label>
                                                                                 <p class="mt-2 text-xs text-gray-500">
                                                                                     <strong>Current Term:</strong>
                                                                                     {{$subscription->term}}
@@ -256,8 +260,9 @@
                                     @endif
                                 </div>
                             </div>
-                        </div>
                     </form>
+                    @endif
+
                     @else
                     <div class="px-0 pt-0 mt-10 break-words border-b">
                         <div class="flex flex-col lg:flex-row">
@@ -745,7 +750,7 @@
                                             @endforeach
                                             <div class="row">
                                                 <div class="mt-2 mb-2 col-md-12">
-                                                    <x-label for="billing_period">{{ucwords(trans_choice('messages.term', 1))}}</x-label>
+                                                    <x-label for="billing_period">{{ucwords(trans_choice('messages.product_term', 1))}}</x-label>
                                                     <div class="mb-3 input-group">
                                                         @if ($subscription->billing_type != 'software')
                                                         <select @if($subscription->term == "P1Y") disabled @endif wire:model="editing.billing_period" name="billing_period" class="form-control @error('editing.billing_period') is-invalid @enderror" sf-validate="required">
