@@ -80,23 +80,19 @@ class Provider extends Model
         return $this->hasMany(User::class);
     }
 
-    public function instances()
-    {
+    public function instances(){
         return $this->hasMany(Instance::class);
     }
 
-    public function availablePriceLists()
-    {
+    public function availablePriceLists(){
         return $this->hasMany(PriceList::class);
     }
 
-    public function news()
-    {
+    public function news(){
         return $this->hasMany(News::class);
     }
 
-    protected static function booted()
-    {
+    protected static function booted(){
         static::addGlobalScope('access_level', function (Builder $query) {
             $user = Auth::user();
             if ($user && $user->userLevel->name === config('app.super_admin')) {

@@ -376,5 +376,5 @@ return [
     'legacy' => 'legacy',
     'error' => 'error'|'errors',
     'start_new_term' => 'Start New Term In New Commerce Experience',
-
+    'qualification' => 'qualification|qualifications',
 ];

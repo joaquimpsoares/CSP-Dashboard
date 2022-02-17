@@ -8,6 +8,7 @@ use App\Customer;
 use App\Instance;
 use App\Models\Status;
 use Livewire\Component;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -27,9 +28,10 @@ class ShowCustomer extends Component
     public $showEditModal = false;
     public $showconfirmationModal = false;
 
+    protected $listeners = ['refreshTransactions' => '$refresh'];
 
-    public function rules()
-    {
+
+    public function rules(){
         return [
             'editing.company_name'  => ['required','string','regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/','max:255'],
             'editing.address_1'     => ['required','string','max:255','min:3'],
@@ -41,10 +43,23 @@ class ShowCustomer extends Component
             'editing.postal_code'   => ['required','string','max:255','min:3'],
             'editing.markup'        => ['required','min:1'],
             'editing.status_id'     => ['required','exists:statuses,id'],
-            'editing.price_list_id' => ['required','integer','exists:price_lists,id']
+            'editing.price_list_id' => ['required','integer','exists:price_lists,id'],
+            'editing.qualification' => ['nullable', 'string', 'min:1'],
+
         ];
     }
 
+    public function checkQualificationStatus(Customer $customer){
+
+        $return = $customer->checkCustomerQualification($customer);
+
+        $this->customer->update([
+            'qualification_status' => $return[0]['vettingStatus'],
+        ]);
+
+        $this->emit('refreshTransactions');
+
+    }
     public function updated($propertyName){$this->validateOnly($propertyName);}
 
     public function edit(Customer $customer)
@@ -53,8 +68,7 @@ class ShowCustomer extends Component
         $this->showEditModal = true;
     }
 
-    public function disable(Customer $customer)
-    {
+    public function disable(Customer $customer){
         $this->showconfirmationModal = false;
         foreach ($customer->subscriptions as $key => $subscriptions) {
             $subscription = new TagydesSubscription([
@@ -85,8 +99,7 @@ class ShowCustomer extends Component
         $this->notify('Customer ' . $customer->company_name . ' is disabled, refresh page');
     }
 
-    public function enable(Customer $customer)
-    {
+    public function enable(Customer $customer){
 
         foreach ($customer->subscriptions as $key => $subscriptions) {
             $subscription = new TagydesSubscription([
@@ -117,8 +130,7 @@ class ShowCustomer extends Component
         $this->notify('Customer ' . $customer->company_name . ' is enabled, refresh page');
     }
 
-    Public function CustomerServiceCosts($customer)
-    {
+    Public function CustomerServiceCosts($customer){
         if (!$customer->subscriptions->isEmpty()){
             $instance = $customer->subscriptions->first()->instance_id;
             $instance = Instance::find($instance);
@@ -141,8 +153,7 @@ class ShowCustomer extends Component
 
     }
 
-    Public function CustomerLicenseUsage($customer)
-    {
+    Public function CustomerLicenseUsage($customer){
         if (!$customer->subscriptions->isEmpty()){
             $instance = $customer->subscriptions->first()->instance_id;
             $instance = Instance::find($instance);
@@ -164,29 +175,45 @@ class ShowCustomer extends Component
         }
     }
 
+    public function save(Customer $customer){
+        $this->validate();
+        DB::beginTransaction();
+        $this->editing->save();
 
-    public function save(Customer $customer)
-    {
-        // $this->validate();
-        // try {
+        if(collect($this->editing->getChanges())->has('qualification')){
+            try {
+               $return = $this->editing->updateCustomerQualification($customer, $this->editing->qualification);
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                $this->showEditModal = false;
+                $this->notify('error','updating ' . $th->getMessage());
+            }
+        }
+        if ($return['vettingStatus'] == 'Denied') {
+            $this->notify('', $return['vettingReason'] ,'error' );
+            DB::rollBack();
+            $this->editing->qualification_status = $return['vettingReason']->update();
+            return false;
+        }
 
-            $this->editing->save();
-            $this->showEditModal = false;
+        if ($return['vettingStatus'] == 'InReview') {
+            $customer->update([
+                'qualification_status' => $return['vettingStatus']
+            ]);
+            $this->notify('','Your Qualification is '. $return['vettingStatus'] ,'info' );
+        }
 
 
-        // } catch (ClientException $e) {
-        //     $this->showEditModal = false;
-        //     $this->notify('Customer ' . $e->getMessage() . ' created successfully');
-        //     Log::info('Error saving reseller: '.$e->getMessage());
-        // }
+        DB::commit();
+
+        $this->showEditModal = false;
         $this->notify('Customer ' . $customer->company_name . ' saved successfully, refresh page');
-
+        $this->emit('refreshTransactions');
 
     }
 
 
-    public function render(Customer $customer)
-    {
+    public function render(Customer $customer){
         $customer = $this->customer;
         $countries = Country::get();
         $statuses = Status::get();

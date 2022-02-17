@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Web;
 
 use App\Role;
 use App\User;
-use App\Models\Status;
 use App\Country;
 use App\Customer;
 use App\Instance;
-use Carbon\Carbon;
+use App\Models\Status;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\DB;
@@ -16,10 +15,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\SubscriptionRepositoryInterface;
-use Tagydes\MicrosoftConnection\Facades\ServiceCosts;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
-use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 
 
 

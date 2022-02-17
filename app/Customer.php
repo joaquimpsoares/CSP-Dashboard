@@ -5,16 +5,18 @@ namespace App;
 use App\Status;
 use Illuminate\Support\Str;
 use App\Http\Traits\ActivityTrait;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
+use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 
 class Customer extends Model
 {
     use ActivityTrait;
 
-    public function format()
-    {
+    public function format(){
         return [
             'id'            => $this->id,
             'company_name'  => $this->company_name,
@@ -40,53 +42,47 @@ class Customer extends Model
         ];
     }
 
-    public function resellers()
-    {
+    const QUALIFICATIONS = [
+        '1' => 'Education',
+    ];
+
+    public function resellers(){
         return $this->belongsToMany(Reseller::class);
     }
 
-    public function country()
-    {
+    public function country(){
         return $this->belongsTo(Country::class, 'country_id');
     }
 
-    public function users()
-    {
+    public function users(){
         return $this->hasMany(User::class);
     }
 
-    public function subscriptions()
-    {
+    public function subscriptions(){
         return $this->hasMany(Subscription::class);
     }
 
-    public function orders()
-    {
+    public function orders(){
         return $this->hasMany(Order::class);
     }
 
-    public function azure()
-    {
+    public function azure(){
         return Subscription::where('billing_type', 'usage')->paginate('10');
     }
 
-    public function path()
-    {
+    public function path(){
         return url("/customer/{$this->id}-" . Str::slug($this->company_name, '-'));
     }
 
-    public function pathEdit()
-    {
+    public function pathEdit(){
         return url("/customer/{$this->id}-" . Str::slug($this->company_name, '-') . "/edit");
     }
 
-    public function pathUpdate()
-    {
+    public function pathUpdate(){
         return url("/customer/{$this->id}-" . Str::slug($this->company_name, '-') . "/update");
     }
 
-    public function getMyResellersId()
-    {
+    public function getMyResellersId(){
         $resellersList = [];
 
         $resellers = $this->resellers()->get(['id']);
@@ -98,23 +94,57 @@ class Customer extends Model
         return $resellersList;
     }
 
-    public function status()
-    {
+    public function status(){
         return $this->belongsTo(Status::class);
     }
 
-    public function microsoftTenantInfo()
-    {
+    public function microsoftTenantInfo(){
         return $this->hasMany(MicrosoftTenantInfo::class);
     }
 
-    public function microsoftLincenseInfo()
-    {
+    public function microsoftLincenseInfo(){
         return $this->hasMany(microsoftLincenseInfo::class);
     }
 
-    protected static function booted()
-    {
+    public function updateCustomerQualification($customer, $data){
+        $this->instance = $customer->resellers->first()->provider->instances->first();
+
+        $customer = new TagydesCustomer([
+            'id' => $customer->microsoftTenantInfo->first()->tenant_id,
+            'username' => 'bill@tagydes.com',
+            'password' => 'blabla',
+            'firstName' => 'Nombre',
+            'lastName' => 'Apellido',
+            'email' => 'bill@tagydes.com',
+        ]);
+
+        $resources = MicrosoftCustomer::withCredentials($this->instance->external_id, $this->instance->external_token)->UpdateCustomerQualification($customer, $data);
+
+        Log::info('Status changed: Suspended');
+
+        return $resources;
+    }
+
+    public function checkCustomerQualification($customer){
+        // dd($customer->microsoftTenantInfo->first()->tenant_id);
+        $this->instance = $customer->resellers->first()->provider->instances->first();
+        $customer = new TagydesCustomer([
+            'id' => $customer->microsoftTenantInfo->first()->tenant_id,
+            'username' => 'bill@tagydes.com',
+            'password' => 'blabla',
+            'firstName' => 'Nombre',
+            'lastName' => 'Apellido',
+            'email' => 'bill@tagydes.com',
+        ]);
+
+        $resources = MicrosoftCustomer::withCredentials($this->instance->external_id, $this->instance->external_token)->CheckCustomerQualification($customer);
+
+        Log::info('Status changed: Suspended');
+
+        return $resources;
+    }
+
+    protected static function booted(){
         static::addGlobalScope('access_level', function (Builder $query) {
             $user = Auth::user();
             if ($user && $user->userLevel->name === config('app.provider')) {

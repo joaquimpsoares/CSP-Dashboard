@@ -3,19 +3,15 @@
 namespace App;
 
 use App\Order;
-use App\Price;
 use App\Models\Addon;
 use Illuminate\Support\Str;
 use App\Models\AzureResource;
-use App\Http\Traits\Expirable;
 use App\Http\Traits\ActivityTrait;
 use App\Models\Ncemigration;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
-use App\Notifications\SubscriptionUpdate;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Notification;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Facades\Subscription as SubscriptionFacade;
 use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
