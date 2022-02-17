@@ -53,10 +53,16 @@ class ShowCustomer extends Component
 
         $return = $customer->checkCustomerQualification($customer);
 
+        if(!$return->isempty()){
         $this->customer->update([
             'qualification_status' => $return[0]['vettingStatus'],
         ]);
-
+        if($return[0]['vettingStatus'] == 'Denied'){
+            $this->customer->update([
+                'qualification' => $return[0]['vettingReason'],
+            ]);
+        }
+    }
         $this->emit('refreshTransactions');
 
     }
@@ -176,33 +182,33 @@ class ShowCustomer extends Component
     }
 
     public function save(Customer $customer){
-        $this->validate();
+        // $this->validate();
         DB::beginTransaction();
         $this->editing->save();
-
         if(collect($this->editing->getChanges())->has('qualification')){
             try {
                $return = $this->editing->updateCustomerQualification($customer, $this->editing->qualification);
+
+               if ($return['vettingStatus'] == 'Denied') {
+                $this->notify('', $return['vettingReason'] ,'error' );
+                DB::rollBack();
+                $this->editing->qualification_status = $return['vettingReason']->update();
+                return false;
+            }
+
+            if ($return['vettingStatus'] == 'InReview') {
+                $customer->update([
+                    'qualification_status' => $return['vettingStatus']
+                ]);
+                $this->notify('','Your Qualification is '. $return['vettingStatus'] ,'info' );
+            }
+
             } catch (\Throwable $th) {
                 DB::rollBack();
                 $this->showEditModal = false;
                 $this->notify('error','updating ' . $th->getMessage());
             }
         }
-        if ($return['vettingStatus'] == 'Denied') {
-            $this->notify('', $return['vettingReason'] ,'error' );
-            DB::rollBack();
-            $this->editing->qualification_status = $return['vettingReason']->update();
-            return false;
-        }
-
-        if ($return['vettingStatus'] == 'InReview') {
-            $customer->update([
-                'qualification_status' => $return['vettingStatus']
-            ]);
-            $this->notify('','Your Qualification is '. $return['vettingStatus'] ,'info' );
-        }
-
 
         DB::commit();
 
