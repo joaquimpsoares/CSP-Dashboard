@@ -79,7 +79,7 @@
                                             {{$subscription->subscription_id}}
                                         </p>
                                         <p class="hidden text-gray-500 sm:block sm:mt-2">
-                                            {{$subscription->product->description}}
+                                            {{-- {{$subscription->product->description}} --}}
                                         </p>
                                     </div>
                                 </div>
@@ -207,7 +207,7 @@
                                                 <div class="relative overflow-hidden transition-all duration-700 max-h-0" style="" x-ref="container1" x-bind:style="selected == 1 ? 'max-height: ' + $refs.container1.scrollHeight + 'px' : ''">
                                                     <div class="p-6">
                                                         @if ($subscription->billing_type != 'software')
-                                                        @foreach ($subscription->products->first()->getaddons()->all() as $item)
+                                                        {{-- @foreach ($subscription->products->first()->getaddons()->all() as $item)
                                                         <tr>
                                                             <td class="px-2 py-2 text-sm text-gray-500 whitespace-wrap"><strong>Add-on:</strong> {{$item->name}}</td>
                                                             <div class="w-56 pt-0 mb-3">
@@ -225,7 +225,7 @@
                                                                 </div>
                                                             </div>
                                                         </tr>
-                                                        @endforeach
+                                                        @endforeach --}}
                                                         @endif
                                                     </div>
                                                 </div>
@@ -251,3 +251,52 @@
         </div>
     </main>
 </div>
+
+{{-- <div>
+    <div class="relative z-0 flex-col flex-1 overflow-y-auto">
+
+        <div class="p-4 overflow-hidden bg-white">
+            <div class="lg:flex lg:items-center lg:justify-between">
+                <div class="flex-1 min-w-0">
+                    <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
+                        @foreach($subscriptions as $key => $subscription)
+                        <li class="col-span-1 bg-white divide-y divide-gray-200 rounded-lg shadow">
+                            <div class="flex overflow-hidden bg-white rounded-lg shadow-md" x-data="{selected:null}">
+                                <div class="w-56 p-4 bg-indigo-900">
+                                    <div class="text-sm tracking-wider text-indigo-400 uppercase">{{ ucwords(trans_choice('subscription', 1)) }}</div>
+                                    <div class="text-2xl text-white">{{$subscription->name}}</div>
+                                    <div class="mt-12 text-sm text-indigo-400">View all chapters <svg class="inline w-2 h-2 fill-current" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24"><path d="M7.33 24l-2.83-2.829 9.339-9.175-9.339-9.167 2.83-2.829 12.17 11.996z"/></svg></div>
+                                </div>
+                                <div class="p-4">
+                                    <div class="flex justify-between">
+                                        <div class="text-sm tracking-wider text-indigo-400 uppercase">{{ ucwords(trans_choice('license', 2)) }}</div>
+                                        <div class="pt-1 pl-32">
+                                            <div class="w-48 h-2 overflow-hidden bg-indigo-200 rounded-full">
+                                                <div class="w-32 h-2 bg-indigo-900"></div>
+                                            </div>
+                                            <div class="text-xs text-right text-indigo-400 uppercase">6/9 chapters</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-3xl text-indigo-900">Callbacks & Closures</div>
+                                    <div class="flex justify-end pt-12">
+                                        <button @click="selected !== 1 ? selected = 1 : selected = null" class="px-12 py-2 text-lg text-indigo-100 bg-indigo-900 rounded-full shadow-md hover:bg-indigo-800">
+                                            Edit
+                                        </button>
+                                    </div>
+                                    <div class="relative overflow-hidden transition-all duration-700 max-h-0" style="" x-ref="container1" x-bind:style="selected == 1 ? 'max-height: ' + $refs.container1.scrollHeight + 'px' : ''">
+                                        <div class="p-6">
+                                            <p>{{$tt['errors'][0]['description'] ?? $tt['description'] ?? $tt['message'] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ --}}
