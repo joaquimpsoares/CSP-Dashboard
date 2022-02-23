@@ -61,7 +61,7 @@ class Store extends Component
     public function updatedQtys($field){$this->recalc($field);}
     public function close(){$this->showModal = false;}
 
-    public function addToCart(Product $productId){
+    public function addToCart(Product $productId, Price $price){
         $billing_cycle = "Monthly";
         $this->showModal = false;
         $cart = $this->getUserCart();
@@ -71,8 +71,8 @@ class Store extends Component
         }
 
         if($productId->IsNCE()){
-            $billing_cycle = $productId->price->billing_plan;
-            $term_duration = $productId->price->term_duration;
+            $billing_cycle = $price->billing_plan;
+            $term_duration = $price->term_duration;
         }
         $cart->products()->attach($productId, [
             'id' => Str::uuid(),
