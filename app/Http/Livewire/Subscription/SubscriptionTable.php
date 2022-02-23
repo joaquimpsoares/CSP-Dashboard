@@ -62,6 +62,7 @@ class SubscriptionTable extends Component
 
     public Subscription $editing;
 
+    protected $listeners = ['refreshTransactions' => '$refresh'];
     public function updatingSearch(){$this->resetPage();}
     public function updatedFilters(){ $this->resetPage(); }
     public function resetFilters(){ $this->reset('filters'); }
@@ -112,12 +113,14 @@ class SubscriptionTable extends Component
         // $this->status = $this->subscription->status->name;
     }
 
-    public function save()
-    {
+    public function save(){
+
         $this->showEditModal = false;
-        $this->validate();
         DB::beginTransaction();
+        $before = $this->subscription->amount;
+
         $this->editing->update();
+
         if(collect($this->editing->getChanges())->has('autorenew')){
             if(collect($this->editing->getChanges())['autorenew'] == 1){
                 $this->editing->autorenew = true;
@@ -136,6 +139,7 @@ class SubscriptionTable extends Component
                 if(Str::contains($update, '800088')){
                     throw new UpdateSubscriptionException($update);
                 }
+
                 if($update){
                     $this->editing->update([
                         'refundableQuantity' => [$update->refundableQuantity] ?? null,
@@ -177,7 +181,7 @@ class SubscriptionTable extends Component
             }
 
             try {
-                $update =$this->editing->changeAmount($this->editing->amount, $this->editing->autorenew);
+                $update =$this->editing->changeAmount($this->editing->amount, $this->editing->autorenew, $before);
                 if(Str::contains($update, '800082')){
                     throw new UpdateSubscriptionException($update);
                 }
@@ -202,11 +206,11 @@ class SubscriptionTable extends Component
                 DB::rollBack();
                 return false;
             }
-
-            if(isset($update->refundableQuantity))
+            if($update)
             {
                 $this->editing->update([
                     'refundableQuantity' => [$update->refundableQuantity],
+                    'CancellationAllowedUntil' => $update->CancellationAllowedUntil,
                     'expiration_data'    => date('Y-m-d', strtotime($update->commitmentEndDate)),
                 ]);
             }

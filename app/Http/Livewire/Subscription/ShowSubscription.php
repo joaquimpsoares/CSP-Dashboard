@@ -223,8 +223,6 @@ class ShowSubscription extends Component
                 'term' => $this->editing->term,
             ]);
 
-            dump($tt);
-
             $this->editing->update(['changes_on_renew' => [
                 'amount' => $this->editing->amount,
                 'billingCycle' => $this->editing->billing_period,
