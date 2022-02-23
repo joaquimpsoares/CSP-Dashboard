@@ -6,7 +6,7 @@ Version        :   7.0
 Create Date    :   20/08/2020
 Copyright      :   Tagydes Limited
 Author         :   Tagydes Limited
-License        :   Licensed under ThemeForest Licence
+License        :   Tagydes Limited
 */
 
 define('LARAVEL_START', microtime(true));

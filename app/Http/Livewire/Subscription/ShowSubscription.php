@@ -33,7 +33,6 @@ class ShowSubscription extends Component
 
     public $subs;
     public $subscription;
-    public $validate;
     public $autorenew;
     public $max_quantity = '999999999';
     public $min_quantity = '1';
@@ -50,7 +49,6 @@ class ShowSubscription extends Component
     public Subscription $editing;
 
     protected $listeners = ['refreshTransactions' => '$refresh'];
-
     public function updated($propertyName){$this->validateOnly($propertyName);}
 
     public function rules(){
@@ -79,20 +77,23 @@ class ShowSubscription extends Component
             'editing.status_id'         => ['required', 'exists:statuses,id'],
         ];
     }
-    public function edit(Subscription $subs){
 
-        $this->ScheduleEdit= false;
-        $this->showEditModal = true;
-        $this->min_quantity = $subs->productonce->minimum_quantity;
-        $this->max_quantity = $subs->productonce->maximum_quantity;
-        $this->editing      = $subs;
+    public function edit(Subscription $subs){
+        $this->ScheduleEdit     = false;
+        $this->showEditModal    = true;
+        $this->min_quantity     = $subs->productonce->minimum_quantity;
+        $this->max_quantity     = $subs->productonce->maximum_quantity;
+        $this->editing          = $subs;
     }
 
     public function save(){
+
         $this->showEditModal = false;
-        $this->validate();
         DB::beginTransaction();
+        $before = $this->subscription->amount;
+
         $this->editing->update();
+
         if(collect($this->editing->getChanges())->has('autorenew')){
             if(collect($this->editing->getChanges())['autorenew'] == 1){
                 $this->editing->autorenew = true;
@@ -111,6 +112,7 @@ class ShowSubscription extends Component
                 if(Str::contains($update, '800088')){
                     throw new UpdateSubscriptionException($update);
                 }
+
                 if($update){
                     $this->editing->update([
                         'refundableQuantity' => [$update->refundableQuantity] ?? null,
@@ -152,7 +154,7 @@ class ShowSubscription extends Component
             }
 
             try {
-                $update =$this->editing->changeAmount($this->editing->amount, $this->editing->autorenew);
+                $update =$this->editing->changeAmount($this->editing->amount, $this->editing->autorenew, $before);
                 if(Str::contains($update, '800082')){
                     throw new UpdateSubscriptionException($update);
                 }
@@ -177,11 +179,11 @@ class ShowSubscription extends Component
                 DB::rollBack();
                 return false;
             }
-
-            if(isset($update->refundableQuantity))
+            if($update)
             {
                 $this->editing->update([
                     'refundableQuantity' => [$update->refundableQuantity],
+                    'CancellationAllowedUntil' => $update->CancellationAllowedUntil,
                     'expiration_data'    => date('Y-m-d', strtotime($update->commitmentEndDate)),
                 ]);
             }
@@ -197,6 +199,39 @@ class ShowSubscription extends Component
             }
         }
         DB::commit();
+
+        if($this->ScheduleEdit == true){
+             // TODO: Pending to adapt on Livewire usage
+            $instance = Instance::where('id', $this->editing->instance_id)->first();
+
+            $subscription = new TagydesSubscription([
+                'id'            => $this->editing->subscription_id,
+                'orderId'       => $this->editing->order_id,
+                'offerId'       => $this->editing->upgradeToOffer ?? $this->editing->product_id,
+                'customerId'    => $this->editing->customer->microsoftTenantInfo->first()->tenant_id,
+                'name'          => $this->editing->name,
+                'status'        => $this->editing->status_id,
+                'quantity'      => $this->editing->amount,
+                'currency'      => $this->editing->currency,
+                'billingCycle'  => $this->editing->billing_period,
+                'created_at'    => $this->editing->created_at->__toString(),
+            ]);
+
+            $tt = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->updateOnRenew($subscription, [
+                'billingCycle' => $this->editing->billing_period,
+                'quantity' => $this->editing->amount,
+                'term' => $this->editing->term,
+            ]);
+
+            dump($tt);
+
+            $this->editing->update(['changes_on_renew' => [
+                'amount' => $this->editing->amount,
+                'billingCycle' => $this->editing->billing_period,
+                'term' => $this->editing->term,
+                'product_id' => $this->editing->upgradeToOffer ?? $this->editing->product_id,
+                ]]);
+        }
 
         $this->showEditModal = false;
         $fields = collect($this->editing->getChanges())->except(['updated_at','refundableQuantity','expiration_data','CancellationAllowedUntil']);
@@ -324,6 +359,8 @@ class ShowSubscription extends Component
 
         $subscription->markAsDisabled();
         $this->emit('refreshTransactions');
+        $this->notify('','Order Placed', 'info');
+        return redirect('/order');
 
     }
 
@@ -332,15 +369,32 @@ class ShowSubscription extends Component
         $this->ScheduleEdit = true;
         $this->quantity = $subscription->amount;
         $this->upgradeOffers = $subscription->productonce->upgrade_target_offers->map(function ($item, $key) use($subscription) {
-            return Product::where('sku', $item)->where('catalog_item_id', '!=' ,$subscription->product_id)->first();
+            return Product::where('sku', $item)->where('sku', '!=' ,$subscription->product_id)->first();
         })->filter();
     }
 
     public function validateisEligible(Subscription $subscription){
         $this->tt = $this->subscription->validatemigration($subscription->customer, $subscription);
+        if($this->subscription->product->IsNce()){
+            $return = $this->subscription->getSubscription($subscription->customer, $subscription);
+            $subscription->update([
+                'refundableQuantity'        => [$return['refundableQuantity']] ?? null,
+                'expiration_data'           => date('Y-m-d', strtotime($return['commitmentEndDate'])),
+                'CancellationAllowedUntil'  => $return['cancellationAllowedUntilDate'],
+            ]);
+        }
         $this->isLoading = false;
         $this->emit('refreshTransactions');
     }
+
+    public function getSubscription(Subscription $subscription){
+            $return = $this->subscription->getSubscription($subscription->customer, $subscription);
+            $subscription->update([
+                'expiration_data'           => date('Y-m-d', strtotime($return['commitmentEndDate'])),
+            ]);
+        $this->emit('refreshTransactions');
+    }
+
 
     public function CheckMigrationSubscription(Subscription $subscription){
         $migrations = Ncemigration::where('new_subscription_id', $subscription->id)->first();
@@ -380,9 +434,10 @@ class ShowSubscription extends Component
     }
 
     public function cancel(Subscription $subscription){
-
         $this->showcancelconfirmationModal = false;
-        $subscription->cancel();
+
+        $subscription->cancel($this->subscription->customer,$this->subscription);
+
         $this->notify('Subscription ' . $subscription->name . ' was canceled, refresh page');
         Notification::send($subscription->customer->users->first(), new SubscriptionUpdate($subscription));
         Log::info('Status changed: canceled');

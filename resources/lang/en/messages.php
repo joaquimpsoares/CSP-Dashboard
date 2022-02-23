@@ -103,7 +103,7 @@ return [
     'edit_instance' => 'edit instance',
     'token_expiration' => 'token expiration date',
     'refresh_token' => 'refresh token',
-    'are_you_sure' => 'please confirm',
+    'are_you_sure' => 'please confirm|confirm',
     'provider_form' => 'provider form',
     'reseller_form' => 'reseller form',
     'customer_form' => 'customer form',

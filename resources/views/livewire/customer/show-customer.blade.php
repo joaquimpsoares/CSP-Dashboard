@@ -2,6 +2,7 @@
 <div @if($customer->microsoftTenantInfo->first())  wire:init="checkQualificationStatus({{ $customer->id }}) @endif">
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
+
     <!-- This example requires Tailwind CSS v2.0+ -->
     <div wire:loading wire:target="enable" class="fixed inset-x-0 bottom-0 pb-2 sm:pb-5">
         <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -51,7 +52,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex mt-5 lg:mt-0 lg:ml-4">
+                <div class="flex items-center justify-between mt-4 sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:justify-start">
+                    <div class="relative inline-block ml-3 text-left">
+                    </div>
                     <div x-data="{ open: false }"   @keydown.escape.stop="open = false; focusButton()" class="relative inline-block px-3 mt-6 text-left">
                         <button type="button" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none"  x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-2" @click="open = !open" aria-expanded="false" x-bind:aria-expanded="open.toString()" x-state-description="Current:"bg-gray-100 text-gray-900", Default:"bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900"">
                             <span class="block -mt-px normal-case whitespace-no-wrap" style='margin-top: -1px; font-feature-settings: "pnum"; font-variant: proportional-nums; transition: color 0.24s ease 0s; overflow-wrap: break-word;'>
@@ -247,7 +250,134 @@
                         </div>
                     </div>
                 </div>
-                <div class="p-0 m-0 break-words">
+                <div class="flex flex-col">
+                    <div class="px-0 pt-0 mt-10 break-words border-b">
+                        <div class="flex flex-col lg:flex-row">
+                            <div class="flex items-center">
+                                <h4>{{ ucwords(trans_choice('messages.subscription', 2)) }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+                            <div class="overflow-hidden shadow-md sm:rounded-lg">
+                                <table class="min-w-full">
+                                    <thead class="bg-gray-50 dark:bg-gray-700">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                                                {{ ucwords(trans_choice('messages.name', 2)) }}
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                                                {{ ucwords(trans_choice('messages.subscription_id', 1)) }}
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                                                {{ ucwords(trans_choice('messages.amount', 2)) }}
+                                            </th><th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                                                {{ ucwords(trans_choice('messages.status', 2)) }}
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                                                {{ ucwords(trans_choice('messages.price', 2)) }}
+                                            </th><th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                                                {{ ucwords(trans_choice('messages.total', 1)) }}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($subscriptions as $key => $subscription)
+                                        <tr class="border-b hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700">
+                                            <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
+                                                    <div class="p-0 mt-px mb-0 ml-px mr-0 pointer-events-auto">
+                                                        <span class="inline font-medium text-gray-900">
+                                                            {{$subscription->name ?? ''}}
+                                                            <span class="inline text-gray-600">
+                                                                •
+                                                            </span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="p-0 mt-px mb-0 ml-px mr-0 pointer-events-auto">
+                                                        <span class="inline text-xs text-gray-600">{{$subscription->product_id}}
+                                                        </span>
+                                                    </div>
+
+                                                    @if($subscription->orders->first())
+                                                    @if($subscription->orders->first()->orderproduct != null)
+                                                    <span class="inline text-xs text-gray-600">
+                                                        {{$subscription->orders->first()->orderproduct->retail_price}} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                    </span>
+                                                    @endif
+                                                    @endif
+                                                </a>
+                                            </td>
+                                            @if($subscription->billing_period === "one_time")
+                                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
+                                                <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
+                                                </a>
+                                            </td>
+                                            @else
+                                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
+                                                <div class="flex items-center mt-2 text-sm text-gray-500">
+                                                    <input id="copy_{{ $subscription->subscription_id }}" value="{{$subscription->subscription_id}}" aria-invalid="false" readonly="" placeholder="" type="text"
+                                                    class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto"/>
+                                                    <span class="text-sm font-medium text-gray-500">
+                                                        <button id="myButton" value="copy" onclick="copyToClipboard('copy_{{ $subscription->subscription_id }}')" class="inline-flex items-center px-2 overflow-visible font-sans text-sm font-medium text-gray-400 no-underline normal-case bg-transparent border border-0 border-gray-200 rounded-lg cursor-pointer -py-4 focus:shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
+                                                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="transition transform stroke-current" >
+                                                                <path d="M12.9975 10.7499L11.7475 10.7499C10.6429 10.7499 9.74747 11.6453 9.74747 12.7499L9.74747 21.2499C9.74747 22.3544 10.6429 23.2499 11.7475 23.2499L20.2475 23.2499C21.352 23.2499 22.2475 22.3544 22.2475 21.2499L22.2475 12.7499C22.2475 11.6453 21.352 10.7499 20.2475 10.7499L18.9975 10.7499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                <path d="M17.9975 12.2499L13.9975 12.2499C13.4452 12.2499 12.9975 11.8022 12.9975 11.2499L12.9975 9.74988C12.9975 9.19759 13.4452 8.74988 13.9975 8.74988L17.9975 8.74988C18.5498 8.74988 18.9975 9.19759 18.9975 9.74988L18.9975 11.2499C18.9975 11.8022 18.5498 12.2499 17.9975 12.2499Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                <path d="M13.7475 16.2499L18.2475 16.2499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                <path d="M13.7475 19.2499L18.2475 19.2499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                            </svg>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            @endif
+                                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
+                                                <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
+                                                    <span class="inline text-sm font-normal leading-5">
+                                                        {{$subscription->amount}}
+                                                    </span>
+                                                </a>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
+                                                <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $subscription->status->name == 'messages.active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'  }}  capitalize">
+                                                        {{ ucwords(trans_choice($subscription->status->name, 1)) }}
+                                                    </span>
+                                                </a>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
+                                                @if($subscription->orders->first() != null)
+                                                @if($subscription->orders->first()->orderproduct != null)
+                                                <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
+                                                    <span class="inline text-sm font-normal leading-5">
+                                                        {{number_format(($subscription->orders->first()->orderproduct->price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                    </span>
+                                                </a>
+                                                @endif
+                                                @endif
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
+                                                @if($subscription->orders->first())
+                                            @if($subscription->orders->first()->orderproduct != null)
+                                            <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
+                                                <span class="inline text-sm font-normal leading-5">
+                                                    {{number_format(($subscription->orders->first()->orderproduct->retail_price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                </span>
+                                            </a>
+                                            @endif
+                                            @endif
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- <div class="p-0 m-0 break-words">
                     <div class="px-0 pt-0 pb-5 m-0">
                         <div class="p-0 m-0 overflow-visible bg-white rounded" style="overflow: visible; outline: 0px; overflow-wrap: break-word;">
                             <div class="px-0 pt-0 mt-10 break-words border-b">
@@ -262,7 +392,7 @@
                                     <thead>
                                         <tr>
                                             <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.name', 2)) }}</th>
-                                            <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.subscription_id', 1)) }}</th>
+                                            <th scope="col" class="hidden px-2 py-2 text-xs font-medium tracking-wider text-left te lg:table-cell">  {{ ucwords(trans_choice('messages.subscription_id', 1)) }}</th>
                                             <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.amount', 2)) }}</th>
                                             <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.status', 2)) }}</th>
                                             <th scope="col" class="px-2 py-2 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">{{ ucwords(trans_choice('messages.price', 2)) }}</th>
@@ -287,10 +417,10 @@
                                                         </span>
                                                     </div>
 
-                                                    @if($subscription->order->first())
-                                                    @if($subscription->order->first()->orderproduct->first() != null)
+                                                    @if($subscription->orders->first())
+                                                    @if($subscription->orders->first()->orderproduct != null)
                                                     <span class="inline text-xs text-gray-600">
-                                                        {{$subscription->order->first()->orderproduct->first()->retail_price}} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                        {{$subscription->orders->first()->orderproduct->retail_price}} {{$subscription->currency}} / {{$subscription->billing_period}}
                                                     </span>
                                                     @endif
                                                     @endif
@@ -302,6 +432,7 @@
                                                 </a>
                                             </th>
                                             @else
+
                                             <td class="hidden px-2 py-2 text-sm font-medium text-gray-900 whitespace-nowrap lg:table-cell">
                                                 <div class="flex items-center mt-2 text-sm text-gray-500">
                                                     <input id="copy_{{ $subscription->subscription_id }}" value="{{$subscription->subscription_id}}" aria-invalid="false" readonly="" placeholder="" type="text"
@@ -335,22 +466,22 @@
                                             </a>
                                         </td>
                                         <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-wrap lg:table-cell">
-                                            @if($subscription->order->first() != null)
-                                            @if($subscription->order->first()->orderproduct->first() != null)
+                                            @if($subscription->orders->first() != null)
+                                            @if($subscription->orders->first()->orderproduct != null)
                                             <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
                                                 <span class="inline text-sm font-normal leading-5">
-                                                    {{number_format(($subscription->order->first()->orderproduct->first()->price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                    {{number_format(($subscription->orders->first()->orderproduct->price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
                                                 </span>
                                             </a>
                                             @endif
                                             @endif
                                         </td>
                                         <td class="px-2 py-2 text-sm font-medium text-gray-900 whitespace-wrap lg:table-cell">
-                                            @if($subscription->order->first())
-                                            @if($subscription->order->first()->orderproduct->first() != null)
+                                            @if($subscription->orders->first())
+                                            @if($subscription->orders->first()->orderproduct != null)
                                             <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
                                                 <span class="inline text-sm font-normal leading-5">
-                                                    {{number_format(($subscription->order->first()->orderproduct->first()->retail_price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                    {{number_format(($subscription->orders->first()->orderproduct->retail_price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
                                                 </span>
                                             </a>
                                             @endif
@@ -362,7 +493,7 @@
                             </table>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
             <!-- Start - Customer Users -->
             <div class="flex flex-col items-center justify-between lg:flex-row">

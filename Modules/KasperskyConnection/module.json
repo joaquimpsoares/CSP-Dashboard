@@ -1,0 +1,13 @@
+{
+    "name": "KasperskyConnection",
+    "alias": "kasperskyconnection",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\KasperskyConnection\\Providers\\KasperskyConnectionServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

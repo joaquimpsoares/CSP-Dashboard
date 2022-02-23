@@ -92,6 +92,22 @@ class Product extends Model
         return $this->productType === 'OnlineServicesNCE';
     }
 
+    public function IsPerpetual()
+    {
+        return $this->is_perpetual === 1;
+    }
+
+    public function IsAzure()
+    {
+        return $this->billing === 'usage';
+    }
+
+    public function IsLegacy()
+    {
+        return $this->productType === 'legacy';
+    }
+
+
     public function price() {
         return $this->hasOne(Price::class, 'product_id', 'id');
     }

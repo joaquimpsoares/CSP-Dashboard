@@ -108,7 +108,6 @@ class Customer extends Model
 
     public function updateCustomerQualification($customer, $data){
         $this->instance = $customer->resellers->first()->provider->instances->first();
-
         $customer = new TagydesCustomer([
             'id' => $customer->microsoftTenantInfo->first()->tenant_id,
             'username' => 'bill@tagydes.com',
@@ -119,7 +118,6 @@ class Customer extends Model
         ]);
 
         $resources = MicrosoftCustomer::withCredentials($this->instance->external_id, $this->instance->external_token)->UpdateCustomerQualification($customer, $data);
-
         Log::info('Status changed: Suspended');
 
         return $resources;

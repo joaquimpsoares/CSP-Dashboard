@@ -25,7 +25,6 @@
         <div class="page-main">
             @include('layouts.sidemenu')
             <div class="md:max-w-8xl md:mx-auto">
-                {{-- @include('layouts.messages') --}}
                 <x-messages></x-messages>
                 @yield('page-header')
                 {{ $slot  ?? '' }}
