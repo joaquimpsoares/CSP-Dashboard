@@ -12,7 +12,7 @@
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
-            <form class="space-y-6"action="{{ route('login') }}"  action="#" method="POST">
+            <form class="space-y-6"action="{{ route('login') }}" action="#" method="POST">
                 @csrf
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700">
@@ -68,7 +68,6 @@
                     </div>
                     <div>
                         <a href="/login/microsoft" class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
-                            <a href="#"></a>
                             <span class="sr-only">Sign in with Microsoft</span>
                             <svg class="w-25 h-25" xmlns="http://www.w3.org/2000/svg" fill="currentColor"  enable-background="new 0 0 2499.6 2500" viewBox="0 0 2499.6 2500">
                                 <path d="m1187.9 1187.9h-1187.9v-1187.9h1187.9z"/>
@@ -85,7 +84,6 @@
         </div>
     </div>
 </div>
-
 @endsection
 
 @section('js')
