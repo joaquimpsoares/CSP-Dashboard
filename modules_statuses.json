@@ -1,4 +1,5 @@
 {
     "AzureAnalytics": true,
-    "UpdateAzurePricesinResources": true
+    "UpdateAzurePricesinResources": true,
+    "KasperskyConnection": true
 }

@@ -66,9 +66,10 @@
                                 <x-table.heading class="w-8 pr-0">
                                     <x-input.checkbox wire:model="selectPage" />
                                 </x-table.heading>
+                                <x-table.heading sortable multi-column wire:click="sortBy('id')"          :direction="$sorts['id'] ?? null">{{ ucwords(trans_choice('messages.#', 1)) }}</x-table.heading>
                                 <x-table.heading sortable multi-column wire:click="sortBy('queue')"          :direction="$sorts['queue'] ?? null">{{ ucwords(trans_choice('messages.name', 1)) }}</x-table.heading>
-                                <x-table.heading sortable multi-column wire:click="sortBy('status')"    :direction="$sorts['status'] ?? null">{{ ucwords(trans_choice('messages.status', 1)) }}</x-table.heading>
-                                <x-table.heading sortable multi-column wire:click="sortBy('status')"    :direction="$sorts['status'] ?? null">{{ ucwords(trans_choice('messages.status', 1)) }}</x-table.heading>
+                                <x-table.heading sortable multi-column wire:click="sortBy('payload')"    :direction="$sorts['payload'] ?? null">{{ ucwords(trans_choice('messages.payload', 1)) }}</x-table.heading>
+                                {{-- <x-table.heading sortable multi-column wire:click="sortBy('status')"    :direction="$sorts['status'] ?? null">{{ ucwords(trans_choice('messages.status', 1)) }}</x-table.heading> --}}
                                 <x-table.heading sortable multi-column wire:click="sortBy('exception_message')"     :direction="$sorts['exception_message'] ?? null">{{ ucwords(trans_choice('messages.error', 1)) }}</x-table.heading>
                                 <x-table.heading sortable multi-column wire:click="sortBy('exception_class')"     :direction="$sorts['exception_class'] ?? null">{{ ucwords(trans_choice('messages.error_class', 1)) }}</x-table.heading>
                                 <x-table.heading sortable multi-column wire:click="sortBy('failed_at')"     :direction="$sorts['failed_at'] ?? null">{{ ucwords(trans_choice('messages.failed_at', 1)) }}</x-table.heading>
@@ -102,7 +103,7 @@
                                             <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                     {{-- <x-icon.cash class="text-cool-gray-400"/> --}}
-                                                    {{ $transaction['queue'] }}
+                                                    {{ $transaction['id'] }}
                                                 </span>
                                             </div>
                                         </a>
@@ -111,9 +112,21 @@
                                         <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                             <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
-                                                    {{ $transaction->payload }}
+                                                    {{-- <x-icon.cash class="text-cool-gray-400"/> --}}
+                                                    {{ $transaction['queue'] }}
                                                 </span>
                                             </div>
+                                        </a>
+                                    </x-table.cell>
+                                    <x-table.cell>
+                                        <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                            <textarea disabled rows="8" name="requestbody" id="requestbody" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                                {{json_encode(json_decode($transaction), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)}}
+                                            </textarea>
+                                            {{-- <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
+                                                </span>
+                                            </div> --}}
                                         </a>
                                     </x-table.cell>
 

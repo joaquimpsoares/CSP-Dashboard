@@ -11,10 +11,6 @@
         {
             "type": "vcs",
             "url": "https://gitlab.com/tagydes/microsoft-connection"
-        },
-        {
-            "type": "vcs",
-            "url": "https://gitlab.com/tagydes/kaspersky-connection.git"
         }
     ],
     "require": {
@@ -23,6 +19,7 @@
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "hwi/oauth-bundle": "^1.1",
+        "itsgoingd/clockwork": "^5.1",
         "jamesmills/laravel-timezone": "^1.9",
         "kordy/ticketit": "0.*",
         "lab404/laravel-impersonate": "^1.6",
@@ -45,7 +42,6 @@
         "soved/laravel-gdpr": "^1.5",
         "spatie/laravel-permission": "^3.11",
         "spatie/simple-excel": "^1.13",
-        "tagydes/kaspersky-connection": "dev-master",
         "tagydes/microsoft-connection": "dev-master",
         "tanmuhittin/laravel-google-translate": "^2.0",
         "webpatser/laravel-countries": "^1.5",
