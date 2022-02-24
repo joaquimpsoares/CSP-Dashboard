@@ -163,12 +163,6 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 Log::info('Error Cart.', ['message' => $th->getMessage()]);
             }
 
-            $this->order->errors = $orderConfirm->errors();
-            if ($orderConfirm->errors()->count() > 0) {
-                foreach ($orderConfirm->errors() as $error) {
-                    logger('Error found: ' . $error);
-                }
-            }
 
             foreach ($orderConfirm->subscriptions() as $subscription) {
                 logger('this is the subscription '.$subscription);
