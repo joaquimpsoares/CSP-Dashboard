@@ -158,12 +158,11 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 $orderConfirm = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($tagydesorder);
                 // Log::info('Confirmation of cart Cart: ', $orderConfirm->subscriptions()->toArray());
                 // dump("this is " .$orderConfirm);
-            } catch (Exception $th)
-            {
+            } catch (Exception $th){
                 Log::info('Error Cart.', ['message' => $th->getMessage()]);
             }
 
-
+            if($orderConfirm){
             foreach ($orderConfirm->subscriptions() as $subscription) {
                 logger('this is the subscription '.$subscription);
                 if($product->IsNCE()){
@@ -198,6 +197,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
 
                 Log::info('Subscription created Successfully: ' . $subscription);
             }
+        }
         } catch (Exception $e) {
             Log::info('Error Placing order to Microsoft: ' . $e->getMessage());
             $this->order->details = ('Error Placing order to Microsoft: ' . $e->getMessage());
