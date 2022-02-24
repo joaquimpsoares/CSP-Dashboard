@@ -146,12 +146,12 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 $tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->create($tagydescart);
                 Log::info('Creating Cart: ' . $tagydesorder);
 
-                $this->order->errors = $tagydesorder->errors();
-                if ($tagydesorder->errors()->count() > 0) {
-                    foreach ($tagydesorder->errors() as $error) {
-                        logger('Error found: ' . $error);
-                    }
-                }
+                // $this->order->errors = $tagydesorder->errors();
+                // if ($tagydesorder->errors()->count() > 0) {
+                //     foreach ($tagydesorder->errors() as $error) {
+                //         logger('Error found: ' . $error);
+                //     }
+                // }
 
                 $this->order->request_body = $tagydesorder->requestBody;
 
