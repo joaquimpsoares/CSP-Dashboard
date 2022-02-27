@@ -30,10 +30,14 @@ class ShowPricelist extends Component
     protected $queryString      = ['sorts'];
     protected $paginationTheme  = 'bootstrap';
     protected $listeners        = ['refreshTransactions' => '$refresh'];
-    public $highlightIndex;
+
+    public $productSelected;
     public $priceList;
     public $products;
     public $search;
+
+    public $keyword;
+    public $searchproduct;
     public $query;
     public $license;
     public $perpetual;
@@ -44,44 +48,58 @@ class ShowPricelist extends Component
     public $showCreate = false;
 
 
-    public Price $editing;
-
     public $filters = [
         'search' => '',
         'categories' => null,
         'price' => null,
         'msrp' => null,
+        'perpetual' => '',
+        'nce' => '',
+        'legacy' => '',
     ];
 
+    public Price $editing;
 
+    public function updatedKeyword(){
+        $this->searchproduct = Product::query()->where('instance_id', $this->priceList->instance_id)
+        ->where(function ($q) {
+            $q->orwhere('sku', 'like', '%'.$this->keyword.'%');
+            $q->orwhere('name', 'like', '%'.$this->keyword.'%');
+        })->orderBy('name')->get();
+   }
 
-    public function mount() {  $this->editing = $this->makeBlankTransaction(); }
-    public function updatingSearch(){$this->resetPage();}
-    public function makeBlankTransaction() { return Price::make(['date' => now(), 'status' => 'success']); }
-    public function resetFilters(){ $this->reset(); }
-    public function resetDate() { $this->reset(['taskduedate']); }
-    public function toggleShowFilters() { $this->showFilters = ! $this->showFilters; }
+   public function updatingSearch(){$this->resetPage();}
+   public function makeBlankTransaction() { return Price::make(['date' => now(), 'status' => 'success']); }
+   public function resetFilters(){ $this->reset('filters'); }
+   public function resetDate() { $this->reset(['taskduedate']); }
+   public function toggleShowFilters() { $this->showFilters = ! $this->showFilters; }
+   public function mount() {  $this->editing = $this->makeBlankTransaction(); }
 
     public function rules() {
+        if ($this->showCreate == true){
+            return [
+                'keyword'                       => 'required|min:3',
+                'editing.market'                => 'sometimes|min:2',
+                'editing.currency'              => 'required|min:2',
+                'editing.term_duration'         => 'required|min:2',
+                'editing.billing_plan'          => 'required|min:2',
+                'editing.price'                 => 'required',
+                'editing.msrp'                  => 'required',
+            ];
+        }else{
         return [
-            'fieldColumnMap.name'           => 'required',
-            'fieldColumnMap.product_sku'    => 'required',
-            'editing.product_sku'           => 'required|min:3|exists:products,sku',
-            'editing.product_sku'           => 'required|min:3|exists:products,sku',
-            'editing.product_id'            => 'required|min:3|exists:products,sku',
-            'editing.instance_id'           => 'required|min:3|exists:products,sku',
-            'editing.price_list_id'         => 'required|min:3|exists:products,sku',
+            // 'fieldColumnMap.name'           => 'required',
+            // 'fieldColumnMap.product_sku'    => 'required',
             'editing.name'                  => 'required|min:3',
-            'editing.currency'              => 'required|min:2',
             'editing.market'                => 'required|min:2',
+            'editing.currency'              => 'required|min:2',
             'editing.term_duration'         => 'required|min:2',
             'editing.billing_plan'          => 'required|min:2',
             'editing.price'                 => 'required',
             'editing.msrp'                  => 'required',
-            'editing.product_vendor'        => 'required',
         ];
     }
-
+    }
 
     public $showModal = false;
     public $upload;
@@ -106,23 +124,20 @@ class ShowPricelist extends Component
         'fieldColumnMap.product_sku' => 'product sku',
     ];
 
-    public function updatingUpload($value)
-    {
+    public function updatingUpload($value){
         Validator::make(
             ['upload' => $value],
             ['upload' => 'required|mimes:txt,csv,xlsx'],
         )->validate();
     }
 
-    public function updatedUpload()
-    {
+    public function updatedUpload(){
         $this->columns = Csv::from($this->upload)->columns();
 
         $this->guessWhichColumnsMapToWhichFields();
     }
 
-    public function import()
-    {
+    public function import(){
         $this->validate();
         $importCount = 0;
         Csv::from($this->upload)
@@ -152,8 +167,7 @@ class ShowPricelist extends Component
         $this->notify('Imported '.$importCount.' transactions!');
     }
 
-    public function extractFieldsFromRow($row)
-    {
+    public function extractFieldsFromRow($row){
         $product = Product::where('sku', $row['SkuId'])->where('instance_id', $this->priceList->instance_id)->pluck('id')->first();
         $attributes = collect($this->fieldColumnMap)
         ->filter()
@@ -174,8 +188,7 @@ class ShowPricelist extends Component
         ];
     }
 
-    public function guessWhichColumnsMapToWhichFields()
-    {
+    public function guessWhichColumnsMapToWhichFields(){
         $guesses = [
             'name'          => ['skutitle'],
             'product_sku'   => ['skuid'],
@@ -190,187 +203,185 @@ class ShowPricelist extends Component
         }
     }
 
+    public function create(){
+        $this->showCreate = true;
+        $this->useCachedRows();
+        if ($this->editing->getKey()) $this->editing = $this->makeBlankTransaction();
+        $this->showEditModal = true;
+    }
 
-        public function create()
-        {
-            $this->showCreate = true;
-            $this->useCachedRows();
-            if ($this->editing->getKey()) $this->editing = $this->makeBlankTransaction();
-            $this->showEditModal = true;
-        }
+    public function edit(Price $price){
+        $this->showEditModal = true;
+        $this->showCreate = false;
+        $this->useCachedRows();
+        $this->editing = $price;
+    }
 
-        public function edit(Price $price)
-        {
-            $this->showEditModal = true;
-            $this->showCreate = false;
-            $this->useCachedRows();
-            $this->editing = $price;
-        }
+    public function editList(PriceList $pricelist){
+        $this->showEditModalpricelist = true;
+        $this->useCachedRows();
+        $this->editingpricelist = $pricelist;
+    }
 
-        public function editList(PriceList $pricelist)
-        {
-            $this->showEditModalpricelist = true;
-            $this->useCachedRows();
-            $this->editingpricelist = $pricelist;
-        }
+    public function save(){
+        $this->validate();
+        $this->editing->save();
+        $this->showCreate = false;
+        $this->showEditModal = false;
+        $this->notify('You\'ve updated '.  $this->editing->name .' prices');
+    }
 
-        public function save()
-        {
-            $this->validate();
-            $this->editing->save();
-            $this->showCreate = false;
+    public function selectedProduct(Product $product){
+        $this->searchproduct = null;
+        $this->keyword = $product->name;
+        $this->productSelected = $product;
+    }
+
+    public function savecreate(){
+
+        $this->validate();
+
+        $attributes = $this->editing->toArray();
+        $tt = $attributes + [
+            'instance_id' => $this->priceList->instance_id,
+            'price_list_id' => $this->priceList->id,
+            'product_id' => $this->productSelected->id,
+        ];
+
+
+        if(Price::where('product_id', $this->productSelected->id)
+            ->where('instance_id', $this->priceList->instance_id)
+            ->where('term_duration', $tt['term_duration'])
+            ->where('billing_plan', $tt['billing_plan'])
+            ->where('price_list_id',$this->priceList->id)->first()){
             $this->showEditModal = false;
-            $this->notify('You\'ve updated '.  $this->editing->name .' prices');
+            $this->notify('', 'Cannot add the product. '. $this->keyword . 'This Price already exists in the table', 'error');
+            return back();
         }
 
-        public function savecreate()
-        {
-            $this->validate();
-
-            $product = Product::where('sku', $this->editing->product_sku)->where('instance_id', $this->priceList->instance_id)->pluck('id')->first();
-
-            $attributes = $this->editing->toArray();
-
-            $tt = $attributes + [
-                'product_vendor' => 'microsoft',
-                'instance_id' => $this->priceList->instance_id,
-                'price_list_id' => $this->priceList->id,
-                'product_id' => $product,
-            ];
-
-            if(Price::where('product_id', $product)->where('instance_id', $this->priceList->instance_id)->where('price_list_id',$this->priceList->id)->first()){
-                $this->showEditModal = false;
-                $this->notify('Cannot add the product. '. $tt['name'] . 'This Price already exists in the table');
-                return back();
-            }
-
-            $price =  Price::create([
-                'product_sku'       => $tt['product_sku'],
-                'name'              => $tt['name'],
-                'price'             => $tt['price'],
-                'msrp'              => $tt['msrp'],
-                'product_vendor'    => $tt['product_vendor'],
-                'instance_id'       => $tt['instance_id'],
-                'price_list_id'     => $tt['price_list_id'],
-                'product_id'        => $tt['product_id'],
-            ]);
-
-            $this->showEditModal = false;
-            $this->showCreate = false;
-            $fields = collect($this->editing->getChanges())->except(['updated_at']);
-
-            $this->notify('You\'ve updated '.  $fields .' prices');
-        }
-
-        public function selectProduct()
-        {
-            $product = $this->products[$this->highlightIndex] ?? null;
-
-        }
-
-        public function deleteSelected()
-        {
-            $deleteCount = $this->selectedRowsQuery->count();
-            foreach($this->selectedRowsQuery->get() as $row){
-                if($row->related_product->IsSubscribed() == null) {
-                    $this->selectedRowsQuery->delete();
-                    $this->showDeleteModal = false;
-                }else{
-                    $deleted = $row->name;
-                    $this->notify('This price '. $deleted . 'is already subscribed, cannot be deleted');
-                    $this->showDeleteModal = false;
-                }
-            }
-            $this->notify('You\'ve deleted '.$deleteCount.' Price');
-        }
-
-        public function sortByColumn($column)
-        {
-            if ($this->sortColumn == $column) {
-                $this->sortDirection = $this->sortDirection == 'asc' ? 'desc' : 'asc';
-            } else {
-                $this->reset('sortDirection');
-                $this->sortColumn = $column;
-            }
-        }
-
-        public function incrementHighlight()
-        {
-            if ($this->highlightIndex === count($this->products) - 1) {
-                $this->highlightIndex = 0;
-                return;
-            }
-            $this->highlightIndex++;
-        }
-
-        public function decrementHighlight()
-        {
-            if ($this->highlightIndex === 0) {
-                $this->highlightIndex = count($this->products) - 1;
-                return;
-            }
-            $this->highlightIndex--;
-        }
-
-        public function updatedQuery()
-        {
-            $this->products = Product::where('sku', 'like', '%' . $this->query . '%')->where('instance_id', $this->priceList->instance_id)
-            ->get()
-            ->toArray();
-        }
-
-        public function getRowsQueryProperty()
-        {
-            $prices = Price::query()
-            ->where(function ($q)  {
-                $q->orwhere('price_list_id', $this->priceList);
-                $q->orwhere('name', "like", "%{$this->filters['search']}%");
-                $q->orwhere('product_sku', "like", "%{$this->filters['search']}%");
-                $q->orWhere('price', 'like', "%{$this->filters['search']}%");
-                $q->orWhere('msrp', 'like', "%{$this->filters['search']}%");
-
-                $q->orwhereHas('product', function(Builder $q){
-                    $q->where('category', 'like', "%{$this->filters['search']}%");
-                });
-            });
+        $price = Price::updateOrCreate([
+            'name'              => $this->keyword,
+            'product_sku'       => $this->productSelected->sku,
+            'product_vendor'    => $this->productSelected->vendor,
+            'term_duration'     => $tt['term_duration'],
+            'billing_plan'      => $tt['billing_plan'],
+            'market'            => $tt['market'],
+            'instance_id'       => $tt['instance_id'],
+            'price_list_id'     => $tt['price_list_id'],
+            'product_id'        => $tt['product_id'],
+        ],[
+            'currency'          => $tt['currency'],
+            'price'             => $tt['price'],
+            'msrp'              => $tt['msrp'],
+        ]);
 
 
-            return $this->applySorting($prices);
-        }
+        $this->showEditModal = false;
+        $this->showCreate = false;
 
-        public function exportSelected()
-        {
-            return response()->streamDownload(function () {
-                echo $this->selectedRowsQuery->toCsv();
-            }, 'transactions.csv');
-        }
+        $this->notify('You\'ve Added '.  $price->name .' to Price List'. $this->priceList->name );
+    }
 
-        public function getRowsProperty()
-        {
-            return $this->cache(function () {
-                return $this->applyPagination($this->rowsQuery->where('price_list_id', $this->priceList->id));
-            });
-        }
-
-
-        public function render(PriceList $priceList)
-        {
-            $priceList = $this->priceList;
-            if(isset($priceList->reseller)){
-                $resellers=$priceList->reseller->paginate(10);
+    public function deleteSelected(){
+        $deleteCount = $this->selectedRowsQuery->count();
+        foreach($this->selectedRowsQuery->get() as $row){
+            if($row->related_product->IsSubscribed() == null) {
+                $this->selectedRowsQuery->delete();
+                $this->showDeleteModal = false;
             }else{
-                $resellers='';
+                $deleted = $row->name;
+                $this->notify('This price '. $deleted . 'is already subscribed, cannot be deleted');
+                $this->showDeleteModal = false;
             }
-            if(isset($priceList->customer)){
-                $customers=$priceList->customer->paginate(10);
-            }else{
-                $customers='';
-            }
-            $this->categories = Product::groupBy('category')->pluck('category');
-            return view('livewire.pricelist.show-pricelist',[
-                'prices' => $this->rows,
-                'categories' => $this->categories,
-            ]);
+        }
+        $this->notify('You\'ve deleted '.$deleteCount.' Price');
+    }
+
+    public function sortByColumn($column){
+        if ($this->sortColumn == $column) {
+            $this->sortDirection = $this->sortDirection == 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->reset('sortDirection');
+            $this->sortColumn = $column;
         }
     }
+
+    public function updatedQuery(){
+        $this->products = Product::where('sku', 'like', '%' . $this->query . '%')->where('instance_id', $this->priceList->instance_id)
+        ->get()
+        ->toArray();
+    }
+
+    public function legacy(){
+        $this->resetFilters();
+        $this->filters['legacy'] = true;
+    }
+
+    public function perpetual(){
+        $this->resetFilters();
+        $this->filters['perpetual'] = true;
+    }
+
+    public function nce(){
+        $this->resetFilters();
+        $this->filters['nce'] = true;
+    }
+
+    public function getRowsQueryProperty(){
+        $prices = Price::query()
+        ->when($this->filters['perpetual'], fn($query) => $query->whereHas('related_product', function(Builder $query){
+            $query->where('is_perpetual', true);
+        }))
+        ->when($this->filters['nce'], fn($query) => $query->whereHas('related_product', function(Builder $query){
+            $query->where('productType', 'OnlineServicesNCE');
+        }))
+        ->when($this->filters['legacy'], fn($query) => $query->whereHas('related_product', function(Builder $query){
+            $query->where('productType', 'Legacy');
+        }))
+        ->where(function ($q)  {
+            $q->orwhere('price_list_id', $this->priceList);
+            $q->orwhere('name', "like", "%{$this->filters['search']}%");
+            $q->orwhere('product_sku', "like", "%{$this->filters['search']}%");
+            $q->orWhere('price', 'like', "%{$this->filters['search']}%");
+            $q->orWhere('msrp', 'like', "%{$this->filters['search']}%");
+
+            $q->orwhereHas('product', function(Builder $q){
+                $q->where('category', 'like', "%{$this->filters['search']}%");
+            });
+        });
+
+        return $this->applySorting($prices);
+    }
+
+    public function exportSelected(){
+        return response()->streamDownload(function () {
+            echo $this->selectedRowsQuery->toCsv();
+        }, 'transactions.csv');
+    }
+
+    public function getRowsProperty(){
+        return $this->cache(function () {
+            return $this->applyPagination($this->rowsQuery->where('price_list_id', $this->priceList->id));
+        });
+    }
+
+    public function render(PriceList $priceList){
+        $priceList = $this->priceList;
+        if(isset($priceList->reseller)){
+            $resellers=$priceList->reseller->paginate(10);
+        }else{
+            $resellers='';
+        }
+        if(isset($priceList->customer)){
+            $customers=$priceList->customer->paginate(10);
+        }else{
+            $customers='';
+        }
+        $this->categories = Product::groupBy('category')->pluck('category');
+        return view('livewire.pricelist.show-pricelist',[
+            'prices' => $this->rows,
+            'categories' => $this->categories,
+        ]);
+    }
+}
 
