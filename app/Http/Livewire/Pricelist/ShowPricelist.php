@@ -34,7 +34,7 @@ class ShowPricelist extends Component
     public $productSelected;
     public $priceList;
     public $products;
-    public $search;
+    public $search = '';
 
     public $keyword;
     public $searchproduct;
@@ -49,7 +49,6 @@ class ShowPricelist extends Component
 
 
     public $filters = [
-        'search' => '',
         'categories' => null,
         'price' => null,
         'msrp' => null,
@@ -70,7 +69,10 @@ class ShowPricelist extends Component
 
    public function updatingSearch(){$this->resetPage();}
    public function makeBlankTransaction() { return Price::make(['date' => now(), 'status' => 'success']); }
-   public function resetFilters(){ $this->reset('filters'); }
+   public function resetFilters(){
+    $this->resetPage();
+    $this->reset('filters');
+    }
    public function resetDate() { $this->reset(['taskduedate']); }
    public function toggleShowFilters() { $this->showFilters = ! $this->showFilters; }
    public function mount() {  $this->editing = $this->makeBlankTransaction(); }
@@ -340,13 +342,13 @@ class ShowPricelist extends Component
         }))
         ->where(function ($q)  {
             $q->orwhere('price_list_id', $this->priceList);
-            $q->orwhere('name', "like", "%{$this->filters['search']}%");
-            $q->orwhere('product_sku', "like", "%{$this->filters['search']}%");
-            $q->orWhere('price', 'like', "%{$this->filters['search']}%");
-            $q->orWhere('msrp', 'like', "%{$this->filters['search']}%");
+            $q->orwhere('name', "like", "%{$this->search}%");
+            $q->orwhere('product_sku', "like", "%{$this->search}%");
+            $q->orWhere('price', 'like', "%{$this->search}%");
+            $q->orWhere('msrp', 'like', "%{$this->search}%");
 
             $q->orwhereHas('product', function(Builder $q){
-                $q->where('category', 'like', "%{$this->filters['search']}%");
+                $q->where('category', 'like', "%{$this->search}%");
             });
         });
 
