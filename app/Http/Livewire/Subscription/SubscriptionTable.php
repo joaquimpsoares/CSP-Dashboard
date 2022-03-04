@@ -62,7 +62,6 @@ class SubscriptionTable extends Component
 
 
     public function rules(){
-        dd($this->subscription);
         if ($this->subscription->productonce){
             $max_quantity = $this->subscription->productonce->where('instance_id', $this->subscription->instance_id)->first()->maximum_quantity;
             $min_quantity = $this->subscription->productonce->where('instance_id', $this->subscription->instance_id)->first()->minimum_quantity;
