@@ -1,4 +1,5 @@
 <div>
+    {{-- @dd($showuserCreateModal) --}}
     <div class="relative z-0 flex-col flex-1 overflow-y-auto">
         <div class="p-4 overflow-hidden bg-white">
             <div class="flex flex-col items-center justify-between lg:flex-row">
@@ -275,7 +276,7 @@
             </div>
             <div class="flex items-center justify-between">
                 <div>
-                    <a  href="{{ route('user.create') }}" class="px-2 py-2 ml-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <a  href="#" wire:click="addUser({{ $reseller->id }})" class="px-2 py-2 ml-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
                         </svg>
@@ -327,14 +328,17 @@
                                 </svg>
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="">
-                                    <x-icon.edit class="text-gray-400"/> <span>{{ ucwords(trans_choice('edit', 1)) }}</span>
-                                </a>
-                                <a class="dropdown-item" href="">
-                                    <x-icon.trash class="text-gray-400"/> <span>{{ ucwords(trans_choice('delete', 1)) }}</span>
-                                </a>
-                                <a class="dropdown-item" href="">
+                                @if($user->status_id == 1)
+                                <a class="dropdown-item" href="#" wire:click="disableUser({{ $user->id }})">
                                     <x-icon.ban class="text-gray-400"/> <span>{{ ucwords(trans_choice('disable', 1)) }}</span>
+                                </a>
+                                @else
+                                <a class="dropdown-item" href="#" wire:click="enableUser({{ $user->id }})">
+                                    <x-icon.play class="text-gray-400"/> <span>{{ ucwords(trans_choice('enable', 1)) }}</span>
+                                </a>
+                                @endif
+                                <a class="dropdown-item" href="#" wire:click="deleteUser({{ $user->id }})">
+                                    <x-icon.trash class="text-gray-400"/> <span>{{ ucwords(trans_choice('delete', 1)) }}</span>
                                 </a>
                             </div>
                         </div>
@@ -368,105 +372,175 @@
 </form>
 <!-- Save Transaction Modal -->
 <div>
-    <form wire:submit.prevent="save({{$reseller->id}})">
+    <form @if($showuserCreateModal == false) wire:submit.prevent="save({{$reseller->id}})" @else wire:submit.prevent="saveuser({{$reseller->id}})" @endif>
         <x-modal.slideout wire:model.defer="showEditModal">
-            <x-slot name="title">Edit Reseller
-                <p>This is where you can edit</p>
-            </x-slot>
-            <x-slot name="content">
-                <section class="dark-grey-text">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="row">
-                                <div class="mb-4 col-md-6">
-                                    <x-label for="company_name" class="">{{ ucwords(trans_choice('messages.company_name', 1)) }}</x-label>
-                                    <x-input  wire:model="editing.company_name" type="text" id="company_name" name="company_name" class="@error('editing.company_name') is-invalid @enderror"></x-input>
-                                    @error('editing.company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                </div>
-                                <div class="mb-2 col-md-6">
-                                    <x-label for="nif">{{ ucwords(trans_choice('messages.nif', 1)) }}</x-label>
-                                    <x-input wire:model="editing.nif" type="text" id="nif" name="nif" class="@error('editing.nif') is-invalid @enderror"></x-input>
-                                    @error('editing.nif')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="mb-2 col-md-12">
-                                    <x-label for="country">{{ucwords(trans_choice('messages.country', 1))}}</x-label>
-                                    <div class="mb-3 input-group">
-                                        <select wire:model="editing.country_id" name="country_id" class="form-control @error('editing.country_id') is-invalid @enderror" sf-validate="required">
-                                            <option value="{{$reseller->country->name}}">{{$reseller->country->name}}</option>
-                                            @foreach ($countries as $key => $country)
-                                            <option value="{{$country->id}}">{{$country->name}}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('editing.country_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <x-label for="address" class="">{{ucwords(trans_choice('messages.address_1', 1))}}</x-label>
-                                <x-input wire:model="editing.address_1" type="text" id="address_1" name="address_1" class="@error('editing.address_1') is-invalid @enderror" placeholder="1234 Main St"></x-input>
-                                @error('editing.address_1')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                            </div>
-                            <div class="mb-3">
-                                <x-label for="address_2" class="">{{ucwords(trans_choice('messages.address_2', 1))}} (optional)</x-label>
-                                <x-input wire:model="editing.address_2" type="text" id="address_2" name="address_2" class="@error('editing.address_2') is-invalid @enderror" placeholder="Appartment or numer"></x-input>
-                                @error('editing.address_2')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                            </div>
-                            <div class="row">
-                                <div class="mb-3 col-lg-4 col-md-6">
-                                    <x-label for="city" class="">{{ucwords(trans_choice('messages.city', 1))}}</x-label>
-                                    <x-input wire:model="editing.city" type="text" id="city" name="city" class=" mb-4 @error('editing.city') is-invalid @enderror"></x-input>
-                                    @error('editing.city')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                </div>
-                                <div class="mb-3 col-lg-4 col-md-6">
-                                    <x-label for="state">{{ucwords(trans_choice('messages.state', 1))}}</x-label>
-                                    <x-input wire:model="editing.state" name="state" type="text" class="@error('editing.state') is-invalid @enderror" id="state" placeholder=""></x-input>
-                                    @error('editing.state')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                </div>
-                                <div class="mb-3 col-lg-4 col-md-6">
-                                    <x-label for="zip">{{ucwords(trans_choice('messages.postal_code', 1))}}</x-label>
-                                    <x-input wire:model="editing.postal_code" name="postal_code" type="text" class="@error('editing.postal_code') is-invalid @enderror" id="postal_code" placeholder="" required></x-input>
-                                    @error('editing.postal_code')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="mb-4 col-lg-4 col-md-6">
-                                    <x-label for="mpnid" class="">{{ucwords(trans_choice('messages.mpnid', 1))}}</x-label>
-                                    <x-input wire:model="editing.mpnid" type="number" class="@error('editing.mpnid') is-invalid @enderror"></x-input>
-                                    @error('editing.mpnid')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                </div>
-                                <div class="mb-4 col-lg-4 col-md-6">
-
-                                    <x-label for="country">{{ucwords(trans_choice('messages.price_list', 1))}}</x-label>
-                                    <div class="mb-3 input-group">
-                                        <select wire:model="editing.price_list_id" name="price_list_id" class="form-control @error('editing.price_list_id') is-invalid @enderror" sf-validate="required">
-                                            @foreach ($reseller->provider->availablePriceLists as $pricelist)
-                                            <option value="{{$pricelist->id}}" {{ $reseller->pricelist->id === $pricelist->id ? 'selected' : '' }}>{{$pricelist->name}}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('editing.price_list_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                    </div>
-                                </div>
-                                <hr>
+            <x-slot name="title">@if($showuserCreateModal == false){{ ucwords(trans_choice('messages.edit_reseller', 1)) }}
+                {{-- <p class="text-sm text-gray-500">
+                    Changes take effect upon subscription renewal date:
+                    <strong>{{date('M d, Y', strtotime($subscription->expiration_data))}}.</strong>
+                    <br>
+                    For SKU upgrades, if the quantity doesn't change, licenses will be assigned automatically.
+                    <br>
+                    Otherwise, you will need to manually assign licenses. --}}
+                    @else{{ ucwords(trans_choice('messages.new_user', 1)) }}@endif
+                </x-slot>
+                @if($showuserCreateModal == false)
+                <x-slot name="content">
+                    <section class="dark-grey-text">
+                        <div class="row">
+                            <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <x-label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</x-label>
-                                        <div class="form-group">
-                                            <select wire:model="editing.status_id" name="status" class="form-control @error('editing.status') is-invalid @enderror" sf-validate="required">
-                                                <option value="{{$reseller->status->id}}" selected>{{ucwords(trans_choice($reseller->status->name, 1))}}</option>
-                                                @foreach ($statuses  as $key => $status)
-                                                <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
+                                    <div class="mb-4 col-md-6">
+                                        <x-label for="company_name" class="">{{ ucwords(trans_choice('messages.company_name', 1)) }}</x-label>
+                                        <x-input  wire:model="editing.company_name" type="text" id="company_name" name="company_name" class="@error('editing.company_name') is-invalid @enderror"></x-input>
+                                        @error('editing.company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                    <div class="mb-2 col-md-6">
+                                        <x-label for="nif">{{ ucwords(trans_choice('messages.nif', 1)) }}</x-label>
+                                        <x-input wire:model="editing.nif" type="text" id="nif" name="nif" class="@error('editing.nif') is-invalid @enderror"></x-input>
+                                        @error('editing.nif')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="mb-2 col-md-12">
+                                        <x-label for="country">{{ucwords(trans_choice('messages.country', 1))}}</x-label>
+                                        <div class="mb-3 input-group">
+                                            <select wire:model="editing.country_id" name="country_id" class="form-control @error('editing.country_id') is-invalid @enderror" sf-validate="required">
+                                                <option value="{{$reseller->country->name}}">{{$reseller->country->name}}</option>
+                                                @foreach ($countries as $key => $country)
+                                                <option value="{{$country->id}}">{{$country->name}}</option>
                                                 @endforeach
                                             </select>
-                                            @error('editing.status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                            @error('editing.country_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <x-label for="address" class="">{{ucwords(trans_choice('messages.address_1', 1))}}</x-label>
+                                    <x-input wire:model="editing.address_1" type="text" id="address_1" name="address_1" class="@error('editing.address_1') is-invalid @enderror" placeholder="1234 Main St"></x-input>
+                                    @error('editing.address_1')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                </div>
+                                <div class="mb-3">
+                                    <x-label for="address_2" class="">{{ucwords(trans_choice('messages.address_2', 1))}} (optional)</x-label>
+                                    <x-input wire:model="editing.address_2" type="text" id="address_2" name="address_2" class="@error('editing.address_2') is-invalid @enderror" placeholder="Appartment or numer"></x-input>
+                                    @error('editing.address_2')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                </div>
+                                <div class="row">
+                                    <div class="mb-3 col-lg-4 col-md-6">
+                                        <x-label for="city" class="">{{ucwords(trans_choice('messages.city', 1))}}</x-label>
+                                        <x-input wire:model="editing.city" type="text" id="city" name="city" class=" mb-4 @error('editing.city') is-invalid @enderror"></x-input>
+                                        @error('editing.city')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                    <div class="mb-3 col-lg-4 col-md-6">
+                                        <x-label for="state">{{ucwords(trans_choice('messages.state', 1))}}</x-label>
+                                        <x-input wire:model="editing.state" name="state" type="text" class="@error('editing.state') is-invalid @enderror" id="state" placeholder=""></x-input>
+                                        @error('editing.state')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                    <div class="mb-3 col-lg-4 col-md-6">
+                                        <x-label for="zip">{{ucwords(trans_choice('messages.postal_code', 1))}}</x-label>
+                                        <x-input wire:model="editing.postal_code" name="postal_code" type="text" class="@error('editing.postal_code') is-invalid @enderror" id="postal_code" placeholder="" required></x-input>
+                                        @error('editing.postal_code')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="mb-4 col-lg-4 col-md-6">
+                                        <x-label for="mpnid" class="">{{ucwords(trans_choice('messages.mpnid', 1))}}</x-label>
+                                        <x-input wire:model="editing.mpnid" type="number" class="@error('editing.mpnid') is-invalid @enderror"></x-input>
+                                        @error('editing.mpnid')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                    <div class="mb-4 col-lg-4 col-md-6">
+
+                                        <x-label for="country">{{ucwords(trans_choice('messages.price_list', 1))}}</x-label>
+                                        <div class="mb-3 input-group">
+                                            <select wire:model="editing.price_list_id" name="price_list_id" class="form-control @error('editing.price_list_id') is-invalid @enderror" sf-validate="required">
+                                                @foreach ($reseller->provider->availablePriceLists as $pricelist)
+                                                <option value="{{$pricelist->id}}" {{ $reseller->pricelist->id === $pricelist->id ? 'selected' : '' }}>{{$pricelist->name}}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('editing.price_list_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <x-label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</x-label>
+                                            <div class="form-group">
+                                                <select wire:model="editing.status_id" name="status" class="form-control @error('editing.status') is-invalid @enderror" sf-validate="required">
+                                                    <option value="{{$reseller->status->id}}" selected>{{ucwords(trans_choice($reseller->status->name, 1))}}</option>
+                                                    @foreach ($statuses  as $key => $status)
+                                                    <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('editing.status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </section>
                 </x-slot>
+                @else
+                <x-slot name="content">
+                    <section class="dark-grey-text">
+                        <div class="row">
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <x-label for="name">@lang('First Name')</x-label>
+                                    <x-input wire:model.debounce.500ms="creatingUser.name" type="text" class="@error('creatingUser.name') is-invalid @enderror" id="name" name="name" placeholder="First Name" value="{{ old('name') }}"></x-input>
+                                    @error('creatingUser.name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                </div>
+                                <div class="form-group">
+                                    <x-label for="last_name">@lang('Last Name')</x-label>
+                                    <x-input wire:model.debounce.500ms="creatingUser.last_name" type="text" class="@error('creatingUser.last_name') is-invalid @enderror" id="last_name" name="last_name" placeholder="Last Name" value="{{ old('last_name')  }}"></x-input>
+                                    @error('creatingUser.last_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <x-label for="socialite_id">@lang('socialite_id')</x-label>
+                                    <div class="form-group">
+                                        <x-input wire:model.debounce.500ms="creatingUser.socialite_id" class="@error('socialite_id') is-invalid @enderror" type="text" name="socialite_id" id='socialite_id' value="{{ old('socialite_id') }}"></x-input>
+                                        @error('creatingUser.socialite_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <x-label for="phone">@lang('Phone')</x-label>
+                                    <x-input wire:model.debounce.500ms="creatingUser.phone" type="text" class="@error('creatingUser.phone') is-invalid @enderror" id="phone_number" name="phone" placeholder="Phone" value="{{ old('phone') }}"></x-input>
+                                    @error('creatingUser.phone')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                </div>
+                                <div class="form-group">
+                                    <x-label for="address">@lang('Address')</x-label>
+                                    <x-input wire:model.debounce.500ms="creatingUser.address" type="text" class="@error('creatingUser.address') is-invalid @enderror" id="address"
+                                    name="address" placeholder="Address" value="{{ old('address') }}"></x-input>
+                                    @error('creatingUser.address')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <x-label for="email">@lang('Email')</x-label>
+                                    <x-input wire:model.debounce.500ms="email" type="email" class="@error('email') is-invalid @enderror" id="email" name="email" placeholder="Email" value="{{ old('email') }}"></x-input>
+                                    @error('email')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+
+                                </div>
+                                <div class="form-group">
+                                    <x-label for="password">{{ __('Password') }}</x-label>
+                                    <x-input wire:model.debounce.500ms="password" type="password" class="@error('password') is-invalid @enderror" id="password" name="password"  value="{{ old('password') }}"></x-input>
+                                    @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                </div>
+                                <div class="form-group">
+                                    <x-label for="password_confirmation">{{ __('Confirm Password') }}</x-label>
+                                    <x-input wire:model.debounce.500ms="password_confirmation" type="password" class="@error('password_confirmation') is-invalid @enderror" id="password_confirmation" name="password_confirmation"  value="{{ old('password_confirmation') }}"></x-input>
+                                    @error('password_confirmation')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </x-slot>
+                @endif
                 <x-slot name="footer">
                     <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         {{ucwords(trans_choice('cancel', 1))}}
@@ -478,7 +552,6 @@
             </x-modal.slideout>
         </form>
     </div>
-
 </div>
 <script>
     function copyToClipboard(subscription_id) {
