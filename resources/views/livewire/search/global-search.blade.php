@@ -28,9 +28,11 @@
                                 </h2>
                                 @forelse ($modelSearchResults as $index => $item)
                                 <ul class="mt-2 text-sm text-gray-800" role="none">
+                                    <a href="{{ $item->url }}">
                                     <li class="px-4 py-2 text-gray-800 cursor-default select-none hover:bg-gray-100" id="headlessui-combobox-option-91" role="option" tabindex="-1">
-                                        <a href="{{ $item->url }}">{{ $item->title }}</a>
-                                    </li>
+                                            {{ $item->title }}
+                                        </li>
+                                    </a>
                                 </ul>
                                 @empty
                                 <div class="px-6 text-sm text-center border-t border-gray-100 py-14 sm:px-14">
