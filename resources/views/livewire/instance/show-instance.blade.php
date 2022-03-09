@@ -71,7 +71,6 @@
                                                 <div class="mb-3 input-group">
                                                     <div class="input-group-prepend">
                                                     </div>
-                                                    {{-- @dd(\Carbon\Carbon::parse($expiration) < (Carbon\Carbon::now())) --}}
                                                     @if($instance->external_token_updated_at == null)
                                                     <a href=" {{('/instances/getMasterToken/'. $instance->id )}} " class="text-danger">Please update token</a>
                                                     @else
@@ -82,7 +81,6 @@
                                         </div>
                                     </div>
                                     <button type="submit" class="btn btn-primary">{{ ucwords(trans_choice('messages.update', 1)) }}</button>
-                                    {{-- <a href="{{ route('product.import', $instance->provider->id) }}" type="submit" class="btn btn-info">{{ ucwords(trans_choice('messages.import_product', 2)) }}</a> --}}
                                     <a href="{{url()->previous()}}" type="submit" class="btn btn-secondary">{{ ucwords(trans_choice('messages.cancel', 1)) }}</a>
                                     <div class="float-right">
                                         <a class="btn btn-outline-info" wire:click="clear"

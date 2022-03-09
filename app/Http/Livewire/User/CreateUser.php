@@ -53,7 +53,6 @@ class CreateUser extends Component
         'email'                 => ['nullable', 'email','unique:users', 'max:255', 'min:3'],
         'sendInvitation'        => ['nullable', 'integer'],
         'password'              => ['same:password_confirmation','required', 'min:8'],
-
     ];
 
 

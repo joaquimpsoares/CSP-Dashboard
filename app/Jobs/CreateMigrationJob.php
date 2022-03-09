@@ -88,7 +88,6 @@ class CreateMigrationJob implements ShouldQueue
     //     "purchaseFullTerm" => false,
     // ]);
 
-        // dd($update);
 
         if(Str::contains($update, '900215')){
             $this->order->errors = ('Error Migrating Subscription: ' . substr($update, strrpos($update, '"description":"' )));
