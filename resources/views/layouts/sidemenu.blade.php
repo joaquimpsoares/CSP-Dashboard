@@ -357,7 +357,7 @@
                                             @can(config('app.provider_index'))
                                             <a href="{{ route('jobs') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.job', 2)) }}</a>
                                             <a href="{{ route('jobsfailed') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.failed_job', 2)) }}</a>
-                                        @endcan
+                                            @endcan
                                             @can('users.manage')
                                             <a href="{{ route('user.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.user', 2)) }}</a>
                                             @endcan
@@ -384,32 +384,13 @@
                             <div class="flex flex-1">
                             </div>
                             <div class="flex items-center ml-4 lg:ml-6">
-                                @if (app('impersonate')->isImpersonating())
-                                <a href="{{ route('impersonate.leave') }} " class="flex items-center justify-center w-full px-8 py-3 mr-3 text-base text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">{{ ucwords(trans_choice('messages.stop_impersonation', 2)) }}</a>
-                                {{-- <a type="button" href="{{ route('impersonate.leave') }} ">
-                                    <span style="color: red" >{{ ucwords(trans_choice('messages.stop_impersonation', 2)) }} &rarr; </i></span>
-                                </a> --}}
-                                {{-- <div class="px-4 py-4 md:max-w-6xl md:mx-auto">
-                                    <div class="relative px-6 py-4 text-red-700 bg-red-200 rounded-lg" role="alert" x-data="{ open: true }" x-show.transition="open">
-                                        <div class="mr-4">
-                                            Currently impersonating user <strong class="font-bold">{{Auth::user()->name}} {{Auth::user()->last_name}}</strong>
-                                            <a href="{{ route('impersonate.leave') }} ">
-                                                <span style="color: red" >{{ ucwords(trans_choice('messages.stop_impersonation', 2)) }} &rarr;</i></span>
-                                            </a>
-                                        </div>
-                                        <span class="absolute top-0 bottom-0 right-0 inline-flex items-center justify-center w-10 h-10 mt-2 mr-3 rounded-full cursor-pointer hover:bg-red-100 hover:text-red-600" x-on:click="open = false">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                <rect x="0" y="0" width="24" height="24" stroke="none"></rect>
-                                                <line x1="18" y1="6" x2="6" y2="18" />
-                                                <line x1="6" y1="6" x2="18" y2="18" />
-                                            </svg>
-                                        </span>
-                                    </div>
-                                </div> --}}
-                                @endif
+                                @livewire('search.global-search')
+
                                 <x-database-notifications/>
+                                <span class="w-px h-6 mx-4 bg-gray-200 lg:mx-6" aria-hidden="true"></span>
+
                                 @can('marketplace.index')
-                                <a @click="cartOpen = !cartOpen"  href="#" class="p-2 mr-4 text-gray-500 rounded-full cursor-pointer hover:text-blue-600 hover:bg-gray-200">
+                                <a @click="cartOpen = !cartOpen" href="#" class="p-2 mr-4 text-gray-500 rounded-full cursor-pointer hover:text-blue-600 hover:bg-gray-200">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                     </svg>
@@ -429,25 +410,24 @@
                                             x-transition:leave-end="translate-x-full"
                                             class="w-screen max-w-2xl"
                                             x-description="Slide-over panel, show/hide based on slide-over state.">
-                                                <div class="flex flex-col h-full py-6 overflow-y-scroll bg-white shadow-xl">
-                                                    <div class="px-4 sm:px-6">
-                                                        <div class="flex items-start justify-between">
-                                                            <h2 class="text-lg text-gray-900 font-small" id="slide-over-title">
-                                                                Cart
-                                                            </h2>
-                                                            <div class="flex items-center ml-3 h-7">
-                                                                <button @click="cartOpen = !cartOpen" class="text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" >
-                                                                    <span class="sr-only">Close panel</span>
-                                                                    <svg class="w-6 h-6" x-description="Heroicon name: outline/x" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                                                    </svg>
-                                                                </button>
-                                                            </div>
+                                            <div class="flex flex-col h-full py-6 overflow-y-scroll bg-white shadow-xl">
+                                                <div class="px-4 sm:px-6">
+                                                    <div class="flex items-start justify-between">
+                                                        <h2 class="text-lg text-gray-900 font-small" id="slide-over-title">
+                                                            Cart
+                                                        </h2>
+                                                        <div class="flex items-center ml-3 h-7">
+                                                            <button @click="cartOpen = !cartOpen" class="text-gray-400 bg-white rounded-md hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" >
+                                                                <span class="sr-only">Close panel</span>
+                                                                <svg class="w-6 h-6" x-description="Heroicon name: outline/x" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                                </svg>
+                                                            </button>
                                                         </div>
                                                     </div>
-                                                    <div class="relative flex-1 px-4 mt-6 sm:px-6">
-                                                        <livewire:store.cart-counter/>
-                                                    </div>
+                                                </div>
+                                                <div class="relative flex-1 px-4 mt-6 sm:px-6">
+                                                    <livewire:store.cart-counter/>
                                                 </div>
                                             </div>
                                         </div>
@@ -456,8 +436,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
 
 
-                    <main class="relative flex-1 overflow-y-auto bg-white focus:outline-none">
-                        <div class="py-0 xl:py-0">
+                <main class="relative flex-1 overflow-y-auto bg-white focus:outline-none">
+                    <div class="py-0 xl:py-0">
 

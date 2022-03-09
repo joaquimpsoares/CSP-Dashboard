@@ -4,16 +4,19 @@ namespace App;
 
 use App\Status;
 use Illuminate\Support\Str;
+use Spatie\Searchable\Searchable;
 use App\Http\Traits\ActivityTrait;
 use Illuminate\Support\Facades\Log;
+use Spatie\Searchable\SearchResult;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 
-class Customer extends Model
+class Customer extends Model implements Searchable
 {
+
     use ActivityTrait;
 
     public function format(){
@@ -41,6 +44,19 @@ class Customer extends Model
             'azure'         => $this->azure(),
         ];
     }
+
+    public $searchableType = 'Customer';
+
+    public function getSearchResult(): SearchResult
+    {
+       $url = $this->path();
+        return new \Spatie\Searchable\SearchResult(
+           $this,
+           $this->company_name,
+           $url
+        );
+    }
+
 
     const QUALIFICATIONS = [
         '1' => 'Education',
@@ -124,7 +140,6 @@ class Customer extends Model
     }
 
     public function checkCustomerQualification($customer){
-        // dd($customer->microsoftTenantInfo->first()->tenant_id);
         $this->instance = $customer->resellers->first()->provider->instances->first();
         $customer = new TagydesCustomer([
             'id' => $customer->microsoftTenantInfo->first()->tenant_id,

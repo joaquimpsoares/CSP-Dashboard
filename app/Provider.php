@@ -3,15 +3,17 @@
 namespace App;
 
 use App\Status;
+use App\PriceList;
 use Illuminate\Support\Str;
+use Spatie\Searchable\Searchable;
 use App\Http\Traits\ActivityTrait;
 use Webpatser\Countries\Countries;
+use Spatie\Searchable\SearchResult;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use App\PriceList;
 
-class Provider extends Model
+class Provider extends Model implements Searchable
 {
     use ActivityTrait;
 
@@ -41,6 +43,18 @@ class Provider extends Model
             'mainUser' => $this->users()->first(),
             'instance' => $this->instances()->get(),
         ];
+    }
+
+    public $searchableType = 'Provider';
+
+    public function getSearchResult(): SearchResult
+    {
+       $url = $this->path();
+        return new \Spatie\Searchable\SearchResult(
+           $this,
+           $this->company_name,
+           $url
+        );
     }
 
     public function resellers()
