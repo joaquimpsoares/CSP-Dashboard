@@ -41,6 +41,7 @@
         "socialiteproviders/microsoft-graph": "^4.0",
         "soved/laravel-gdpr": "^1.5",
         "spatie/laravel-permission": "^3.11",
+        "spatie/laravel-searchable": "^1.11",
         "spatie/simple-excel": "^1.13",
         "tagydes/microsoft-connection": "dev-master",
         "tanmuhittin/laravel-google-translate": "^2.0",
