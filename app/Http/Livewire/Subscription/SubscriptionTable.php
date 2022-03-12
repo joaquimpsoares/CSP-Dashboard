@@ -218,10 +218,9 @@ class SubscriptionTable extends Component
     }
 
     public function exportSelected(){
-
-
-
-        return Excel::download(new SubscriptionsExport($this->rows), 'Subscriptions.xlsx');
+        return response()->streamDownload(function () {
+        echo $this->selectedRowsQuery->toCsv();
+        }, 'transactions.csv');
     }
 
     public function deleteSelected(){
