@@ -274,7 +274,7 @@
                                                 {{ ucwords(trans_choice('messages.product_term', 1)) }}
                                             </dt>
                                             <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{$value->orderproduct->term_duration}}
+                                                {{$order->orderproduct->term_duration}}
                                             </dd>
                                         </div>
                                         <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -282,7 +282,7 @@
                                                 {{ ucwords(trans_choice('messages.billing_cycle', 2)) }}
                                             </dt>
                                             <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{$value->orderproduct->billing_cycle}}
+                                                {{$order->orderproduct->billing_cycle}}
                                             </dd>
                                         </div>
                                         <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -290,7 +290,7 @@
                                                 {{ ucwords(trans_choice('messages.license', 2)) }}
                                             </dt>
                                             <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{ $value->orderproduct->quantity }}
+                                                {{ $order->orderproduct->quantity }}
                                             </dd>
                                         </div>
                                         <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -298,7 +298,7 @@
                                                 {{ ucwords(trans_choice('messages.price', 1)) }}
                                             </dt>
                                             <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{ number_format(($value->orderproduct->quantity*$value->orderproduct['retail_price']) * ($value->orderproduct['billing_cycle'] === 'annual' ? 12 : 1 ),2) }}
+                                                {{ number_format(($order->orderproduct->quantity*$order->orderproduct['retail_price']) * ($order->orderproduct['billing_cycle'] === 'annual' ? 12 : 1 ),2) }}
                                             </dd>
                                         </div>
                                         <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
