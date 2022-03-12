@@ -1,4 +1,4 @@
-<div wire:poll.5s>
+<div>
     {{-- @dd(session()->get('impersonated_by')) --}}
     <div>
         <div class="relative z-0 flex-col flex-1 overflow-y-auto">
@@ -314,16 +314,6 @@
                                     </dl>
                                 </div>
                                 @endforeach
-                                <dl>
-                                    <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                        <dt class="text-sm font-medium text-gray-500">
-                                            {{ ucwords(trans_choice('messages.details', 2)) }}
-                                        </dt>
-                                        <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                            {{$order->details}}
-                                        </dd>
-                                    </div>
-                                </dl>
                             </div>
                         </div>
                     </div>
@@ -333,9 +323,6 @@
                 <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     {{ucwords(trans_choice('close', 1))}}
                 </button>
-                {{-- <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    {{ucwords(trans_choice('save', 1))}}
-                </button> --}}
             </x-slot>
         </x-modal.slideout>
         @endif
