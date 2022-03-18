@@ -88,7 +88,6 @@ class ImportTransactions extends Component
                 Log::info('Price list updated with: '. $price['product_sku'].' name: '. $price['name'].' Billing: ' .$price['billing_plan'].' term duration: ' .$price['term_duration']  );
                 // logger('get changes: '. $price->getChanges());
                 } catch (\exception $th) {
-                    dd($th->getMessage());
                 }
                 $importCount++;
             }

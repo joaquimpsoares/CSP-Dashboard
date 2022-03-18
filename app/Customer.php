@@ -134,7 +134,7 @@ class Customer extends Model implements Searchable
         ]);
 
         $resources = MicrosoftCustomer::withCredentials($this->instance->external_id, $this->instance->external_token)->UpdateCustomerQualification($customer, $data);
-        Log::info('Status changed: Suspended');
+        // Log::info('Status changed: Suspended');
 
         return $resources;
     }
@@ -151,8 +151,6 @@ class Customer extends Model implements Searchable
         ]);
 
         $resources = MicrosoftCustomer::withCredentials($this->instance->external_id, $this->instance->external_token)->CheckCustomerQualification($customer);
-
-        Log::info('Status changed: Suspended');
 
         return $resources;
     }

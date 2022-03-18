@@ -159,41 +159,22 @@ class ShowReseller extends Component
 
     public function save(Reseller $reseller)
     {
-        // $validatedData = $this->validate();
-
         try {
-            // $newCustomer = TagydesCustomer::withCredentials($reseller->provider->instances->first()->external_id, $reseller->provider->instances->first()->external_token)
-            // ->checkAddress([
-                //     'AddressLine1'  => $this->editing->address_1,
-                //     'City'          => $this->editing->city,
-                //     'State'         => $this->editing->state,
-                //     'PostalCode'    => $this->editing->postal_code,
-                //     'Country'       => $this->editing->country->iso_3166_2,
-                // ]);
+            $this->editing->save();
+            $this->showEditModal = false;
 
-                // if($newCustomer->status === 'NotValidated'){
-                    //     $this->showEditModal = false;
-                    //     $this->notify($newCustomer->validationMessage);
-                    // }
-
-                    // $pricelist = PriceList::find($this->editing->price_list_id)->first();
-                    // $pricelist->update(['reseller_id' => $this->reseller->id]);
-
-                    $this->editing->save();
-                    $this->showEditModal = false;
-
-                } catch (ClientException $e) {
-                    $this->showEditModal = false;
-                    $this->notify('Customer ' . $e->getMessage() . ' created successfully');
-                    Log::info('Error saving reseller: '.$e->getMessage());
-                }
-
-            }
-
-            public function render(Reseller $reseller)
-            {
-                $countries = Country::get();
-                $statuses = Status::get();
-                return view('livewire.reseller.show-reseller', compact('statuses','countries', 'reseller'));
-            }
+        } catch (ClientException $e) {
+            $this->showEditModal = false;
+            $this->notify('Customer ' . $e->getMessage() . ' created successfully');
+            Log::info('Error saving reseller: '.$e->getMessage());
         }
+
+    }
+
+    public function render(Reseller $reseller)
+    {
+        $countries = Country::get();
+        $statuses = Status::get();
+        return view('livewire.reseller.show-reseller', compact('statuses','countries', 'reseller'));
+    }
+}

@@ -193,7 +193,7 @@ return [
         Lab404\Impersonate\ImpersonateServiceProvider::class,
         \SocialiteProviders\Manager\ServiceProvider::class,
         Kordy\Ticketit\TicketitServiceProvider::class,
-        // NotificationChannels\MsTeams\MsTeamsChannel::class,
+        NotificationChannels\MicrosoftTeams\MicrosoftTeamsServiceProvider::class,
     ],
 
     /*
@@ -245,7 +245,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Countries' => Webpatser\Countries\CountriesFacade::class,
-        'msteams' => NotificationChannels\MsTeams\MsTeamsChannel::class,
+        'msteams' => NotificationChannels\MicrosoftTeams\MicrosoftTeamsChannel::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'SchedulerKernel' => MatviiB\Scheduler\SchedulerServiceProvider::class,
         'LogActivity' => App\Helpers\LogActivity::class,

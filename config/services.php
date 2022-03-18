@@ -30,20 +30,20 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    'ms-teams' => [
-        'webhook_url' => env('MS_TEAMS_WEBHOOK_URL')
+    'teams' => [
+        'webhook_url' => env('TEAMS_WEBHOOK_URL'),
     ],
 
-    'microsoft' => [    
-        'client_id'     => env('MICROSOFT_CLIENT_ID'),  
-        'client_secret' => env('MICROSOFT_CLIENT_SECRET'),  
-        'redirect'      => env('MICROSOFT_REDIRECT_URI') 
+    'microsoft' => [
+        'client_id'     => env('MICROSOFT_CLIENT_ID'),
+        'client_secret' => env('MICROSOFT_CLIENT_SECRET'),
+        'redirect'      => env('MICROSOFT_REDIRECT_URI')
       ],
 
-      'graph' => [    
-        'client_id' => env('GRAPH_CLIENT_ID'),  
-        'client_secret' => env('GRAPH_CLIENT_SECRET'),  
-        'redirect' => env('GRAPH_REDIRECT_URI') 
+      'graph' => [
+        'client_id' => env('GRAPH_CLIENT_ID'),
+        'client_secret' => env('GRAPH_CLIENT_SECRET'),
+        'redirect' => env('GRAPH_REDIRECT_URI')
       ],
 
 ];

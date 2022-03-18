@@ -6,6 +6,7 @@ use App\Country;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Http\Traits\UserTrait;
+use App\Reseller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,6 +16,7 @@ class ShowProfile extends Component
 
     use UserTrait;
     use WithFileUploads;
+    protected $listeners = ['refreshTransactions' => '$refresh'];
 
     public $account;
     public $company_name;
@@ -39,6 +41,7 @@ class ShowProfile extends Component
     public $logo;
     public $photo;
 
+
     protected $rules = [
         'company_name'  => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
         'nif'           => ['required', 'min:3'],
@@ -47,6 +50,7 @@ class ShowProfile extends Component
         'city'          => ['required', 'string', 'max:255', 'min:3'],
         'state'         => ['required', 'string', 'max:255', 'min:3'],
         'postal_code'   => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255', 'min:3'],
+        'mpnid'         => ['sometimes', 'min:5'],
     ];
 
     public function mount()
@@ -63,6 +67,7 @@ class ShowProfile extends Component
             case config('app.reseller'):
                 $this->account = Auth::user()->reseller;
                 $this->logo = Auth::user()->reseller->provider->logo;
+                $this->mpnid = Auth::user()->reseller->mpnid;
             break;
 
             case config('app.customer'):
@@ -73,7 +78,6 @@ class ShowProfile extends Component
 
         break;
             }
-
 
         $this->company_name     = $this->account->company_name ?? '';
         $this->address          = $this->account->address_1 ?? '';
@@ -90,20 +94,21 @@ class ShowProfile extends Component
     {
         $validate = $this->validate();
 
-        $user = $this->getUser();
-
         try {
             DB::beginTransaction();
 
-            $updateCustomer = $this->account->update([
-                'company_name'  => $validate['company_name'],
-                'nif'           => $validate['nif'],
-                'country_id'    => $validate['country_id'],
-                'address_1'     => $validate['address'],
-                'city'          => $validate['city'],
-                'state'         => $validate['state'],
-                'postal_code'   => $validate['postal_code'],
-            ]);
+            // dd($this->account);
+
+            $this->account->company_name  = $this->company_name;
+            $this->account->nif         = $this->nif;
+            $this->account->country_id    = $this->country_id;
+            $this->account->address_1     = $this->address;
+            $this->account->city          = $this->city;
+            $this->account->state         = $this->state;
+            $this->account->postal_code   = $this->postal_code;
+            $this->account->mpnid         = $this->mpnid;
+            $this->account->save();
+
 
             DB::commit();
         } catch (\PDOException $e) {
@@ -116,8 +121,8 @@ class ShowProfile extends Component
             return redirect()->back()->with('danger', $errorMessage );
 
         }
-        session()->flash('success', 'Company details ' . $this->account->company_name . ' updated successfully Uploaded.');
-        return redirect()->back();
+        $this->notify('You\'ve updated '.  $this->account->company_name .' Account successfully', 'Account Details' , 'success');
+        $this->emit('refreshTransactions');
     }
 
 

@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Order;
 use Exception;
 use App\Instance;
+use App\Notifications\OrderStatus;
 use Carbon\Carbon;
 use App\Subscription;
 use Illuminate\Bus\Queueable;
@@ -13,12 +14,13 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Notification;
 use romanzipp\QueueMonitor\Traits\IsMonitored;
 use Tagydes\MicrosoftConnection\Models\Cart as TagydesCart;
 use Tagydes\MicrosoftConnection\Facades\Order as TagydesOrder;
 use Tagydes\MicrosoftConnection\Models\Product as TagydesProduct;
-use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
+use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
 
 
 class PlaceOrderMicrosoft implements ShouldQueue
@@ -107,7 +109,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 if ($product['is_perpetual']) {
                     Log::info('Catalog Item URL: ' . $product['uri']);
                     $catalogItemId = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)->getPerpetualCatalogItemId($product['uri']);
-                    Log::info('Catalog Item ID: ' . $catalogItemId);
+                    // Log::info('Catalog Item ID: ' . $catalogItemId);
 
                     $TagydesProduct = new TagydesProduct([
                         'id' => $catalogItemId
@@ -120,7 +122,6 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 elseif($product->IsNCE()){
 
                     $country = $customer->country->iso_3166_2;
-
                     $sku = strtok($product->sku, ':');
                     $id = substr($product->sku, strpos($product->sku, ":") + 1);
 
@@ -199,6 +200,8 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 $this->order->save();
 
                 Log::info('Subscription created Successfully: ' . $subscription);
+                Notification::send($subscription->customer->users->first(), new OrderStatus($this->order, 'success'));
+
             }
         } catch (Exception $e) {
             Log::info('Error Placing order to Microsoft: ' . $e->getMessage());

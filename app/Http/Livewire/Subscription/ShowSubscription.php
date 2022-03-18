@@ -236,21 +236,13 @@ class ShowSubscription extends Component
         $this->quantity = $subscription->amount;
 
         if($subscription->changes_on_renew != null){
-            // dd($subscription->changes_on_renew['product_id']);
             $product = Str::of($subscription->changes_on_renew['product_id'])->explode(':');
-
-            // dd($product[0].':'.$product[1]);
             $this->upgradeOfferselected = Product::where('sku', $product[0].':'.$product[1])->first();
-
-            // dd($subscription->changes_on_renew['product_id']);
-
             $this->editing = $subscription;
             $this->quantity = $subscription->changes_on_renew['amount'];
             $this->term = $subscription->changes_on_renew['term'];
             $this->billing_period = $subscription->changes_on_renew['billing_period'];
             $this->upgradeOfferselected = $this->upgradeOfferselected->name;
-
-            // dd($this->upgradeOfferselected);
         }
 
         $this->showEditModal = true;
@@ -276,8 +268,10 @@ class ShowSubscription extends Component
 
         $country = $this->subscription->customer->country->iso_3166_2;
 
+
         try {
             if($this->upgradeOfferselected != 'no change'){
+
                 $sku = strtok($this->upgradeOfferselected, ':');
                 $id = substr($this->upgradeOfferselected, strpos($this->upgradeOfferselected, ":") + 1);
 
@@ -285,7 +279,6 @@ class ShowSubscription extends Component
                 Log::info('catalogItemId: ' . $catalogItemId);
                 $catalogitemid = $catalogItemId;
             }
-
             $tt =  SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->updateOnRenew($subscription, [
                 'product' => $catalogitemid ?? $this->editing->catalog_item_id,
                 'billingCycle' => $this->billing_period,
@@ -296,7 +289,6 @@ class ShowSubscription extends Component
             if ($tt->has('code') && $tt['code'] == 900212){
                 $this->notify('',$tt['description'], 'error');
             }
-
 
             if($tt->contains('scheduledNextTermInstructions') ){
                 $this->notify('',"Scheduled successfully", 'success');
@@ -309,14 +301,9 @@ class ShowSubscription extends Component
                     ]]);
             }
         } catch (\PDOException $e) {
-            dd($e->getMessage());
             $this->notify('',$e->getMessage(), 'error');
-
         }
-
-
         $this->showEditModal = false;
-
     }
 
     public function autorenewcheck(Subscription $subscription){
@@ -433,10 +420,50 @@ class ShowSubscription extends Component
         if ($return->first() == '1000'){
             return false;
         }
+        if ($return->first() == '20002'){
+            return false;
+        }
+
         $subscription->update([
             'expiration_data' => date('Y-m-d', strtotime($return['commitmentEndDate'])) ?? null,
         ]);
         $this->emit('refreshTransactions');
+    }
+
+    public function removeScheduled(){
+        $instance = Instance::where('id', $this->editing->instance_id)->first();
+
+        $subscription = new TagydesSubscription([
+            'id'            => $this->editing->subscription_id,
+            'orderId'       => $this->editing->order_id,
+            'offerId'       => $this->editing->upgradeToOffer ?? $this->editing->product_id,
+            'customerId'    => $this->editing->customer->microsoftTenantInfo->first()->tenant_id,
+            'name'          => $this->editing->name,
+            'status'        => $this->editing->status_id,
+            'quantity'      => $this->editing->amount,
+            'currency'      => $this->editing->currency,
+            'billingCycle'  => $this->editing->billing_period,
+            'created_at'    => $this->editing->created_at->__toString(),
+        ]);
+
+        $country = $this->subscription->customer->country->iso_3166_2;
+
+        try {
+
+            $tt =  SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->RemoveSchedule($subscription);
+
+            if ($tt->has('code') && $tt['code'] == 900212){
+                $this->notify('',$tt['description'], 'error');
+            }
+
+            if(!$tt->contains('scheduledNextTermInstructions') ){
+                $this->notify('',"Scheduled removed successfully", 'success');
+                $this->editing->update(['changes_on_renew' => null]);
+            }
+        } catch (\PDOException $e) {
+            $this->notify('',$e->getMessage(), 'error');
+        }
+        $this->showEditModal = false;
     }
 
     public function CheckMigrationSubscription(Subscription $subscription){
@@ -465,6 +492,8 @@ class ShowSubscription extends Component
     public function disable(Subscription $subscription){
         $this->showconfirmationModal = false;
         $subscription->suspend();
+        Notification::send($subscription->customer->users->first(), new SubscriptionUpdate($subscription));
+        Log::info('Status changed: Disabled'. $subscription->id);
         $this->emit('refreshTransactions');
     }
 
@@ -472,7 +501,7 @@ class ShowSubscription extends Component
         $subscription->active();
         $this->notify('Subscription ' . $subscription->name . ' is Active, refresh page');
         Notification::send($subscription->customer->users->first(), new SubscriptionUpdate($subscription));
-        Log::info('Status changed: Enabled');
+        Log::info('Status changed: Enabled'. $subscription->id);
         $this->emit('refreshTransactions');
     }
 
@@ -483,7 +512,7 @@ class ShowSubscription extends Component
 
         $this->notify('Subscription ' . $subscription->name . ' was canceled, refresh page');
         Notification::send($subscription->customer->users->first(), new SubscriptionUpdate($subscription));
-        Log::info('Status changed: canceled');
+        Log::info('Status changed: canceled'. $subscription->id);
         $this->emit('refreshTransactions');
 
     }

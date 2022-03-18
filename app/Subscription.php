@@ -332,7 +332,7 @@ class Subscription extends Model
         $order->details = "changing subscription ".$this->name . " and changing the status to active";
         $order->order_status_id = 4;
         $order->save();
-        Log::info('Status changed: Suspended');
+        Log::info('Status changed: Active'. $subscription->id);
         return $this;
 
     }
@@ -379,7 +379,7 @@ class Subscription extends Model
 
         $order->order_status_id = 4;
         $order->save();
-        Log::info('Status changed: Suspended');
+        Log::info('Status changed: Suspended'. $subscription->id);
 
         return $this;
     }
@@ -423,7 +423,6 @@ class Subscription extends Model
         ->update($value, ['status' => 'suspended']);
 
         $this->markAsDisabled();
-        Log::info('Status changed: Suspended');
 
         return $this;
     }

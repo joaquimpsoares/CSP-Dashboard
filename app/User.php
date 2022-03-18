@@ -5,16 +5,16 @@ namespace App;
 use Soved\Laravel\Gdpr\Portable;
 use Laravel\Sanctum\HasApiTokens;
 use Webpatser\Countries\Countries;
-use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Builder;
 use Lab404\Impersonate\Models\Impersonate;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Soved\Laravel\Gdpr\Contracts\Portable as PortableContract;
 
 class User extends Authenticatable implements PortableContract
 {
+    use SoftDeletes;
     use Notifiable;
     use HasRoles;
     use Impersonate;

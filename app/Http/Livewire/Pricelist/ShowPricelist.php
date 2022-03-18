@@ -351,7 +351,6 @@ class ShowPricelist extends Component
                 $q->where('category', 'like', "%{$this->search}%");
             });
         });
-
         return $this->applySorting($prices);
     }
 
