@@ -126,16 +126,17 @@ class ProviderTable extends Component
 
                 $priceList->update(['provider_id' => $newProvider->id]);
             $user = User::create ([
-                'email'             => $this->email,
-                'name'              => $this->creatingUser->name,
-                'last_name'         => $this->creatingUser->last_name,
-                'address'           => $this->creatingUser->address,
-                'phone'             => $this->creatingUser->phone,
-                'country_id'        => $this->editing->country_id,
-                'password'          => Hash::make($this->password),
-                'user_level_id'     => 3, //Customer role id = 3
-                'status_id'         => $this->creatingUser->status_id,
-                'provider_id'       => $newProvider->id,
+                'email'                     => $this->email,
+                'name'                      => $this->creatingUser->name,
+                'last_name'                 => $this->creatingUser->last_name,
+                'address'                   => $this->creatingUser->address,
+                'phone'                     => $this->creatingUser->phone,
+                'country_id'                => $this->editing->country_id,
+                'notifications_preferences' => 'database',
+                'password'                  => Hash::make($this->password),
+                'user_level_id'             => 3, //Customer role id = 3
+                'status_id'                 => $this->creatingUser->status_id,
+                'provider_id'               => $newProvider->id,
             ]);
 
             $user->assignRole(config('app.provider'));
