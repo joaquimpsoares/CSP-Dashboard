@@ -96,17 +96,21 @@
                                 <x-table.cell>
                                     <a href="#" wire:click="show({{ $value['id'] }})" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
-                                            @if ($value['status']['id']==4)
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 bg-green-100 text-green-800 capitalize">{{ $value['status']['name'] }}</span>
-                                            @endif
-                                            @if ($value['status']['id']==1)
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 bg-green-100 text-green-800 capitalize">{{ $value['status']['name'] }}</span>
-                                            @endif
-                                            @if ($value['status']['id']==3)
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 bg-gray-100 text-gray-800 capitalize">{{ $value['status']['name'] }}</span>
-                                            @endif
-                                            @if ($value['status']['id']==2)
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 bg-yellow-100 text-yellow-800 capitalize">{{ $value['status']['name'] }}</span>
+                                            @if (! $value['verified_at'] && $value['asked_verification_by'])
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 bg-green-100 text-green-800 capitalize">Pending verification</span>
+                                            @else
+                                                @if ($value['status']['id']==4)
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 bg-green-100 text-green-800 capitalize">{{ $value['status']['name'] }}</span>
+                                                @endif
+                                                @if ($value['status']['id']==1)
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 bg-green-100 text-green-800 capitalize">{{ $value['status']['name'] }}</span>
+                                                @endif
+                                                @if ($value['status']['id']==3)
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 bg-gray-100 text-gray-800 capitalize">{{ $value['status']['name'] }}</span>
+                                                @endif
+                                                @if ($value['status']['id']==2)
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 bg-yellow-100 text-yellow-800 capitalize">{{ $value['status']['name'] }}</span>
+                                                @endif
                                             @endif
                                         </div>
                                     </a>
@@ -123,6 +127,12 @@
                                                 <x-icon.show></x-icon.show>
                                                 {{ ucwords(trans_choice('messages.show', 1)) }}
                                             </a>
+                                            @if (! $value['verified_at'] && $value['asked_verification_by'] && Auth::user()->can('verify order '.$value['id']))
+                                                <a class="dropdown-item" href="{{ route('order.verify', ['order_id' => $value['id']]) }}">
+                                                    <x-icon.play></x-icon.play>
+                                                    {{ ucwords(__('Verify order')) }}
+                                                </a>
+                                            @endif
                                         </div>
                                     </div>
                                 </x-table.cell>

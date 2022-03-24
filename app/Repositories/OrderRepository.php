@@ -129,8 +129,6 @@ public function newFromCartToken($token)
         $order->domain = $cart->domain;
         $order->token = $cart->token;
         $order->user_id = $cart->user_id;
-        $order->verify = $cart->verify;
-        $order->verified = $cart->verified;
         $order->agreement_firstname = $cart->agreement_firstname;
         $order->agreement_lastname = $cart->agreement_lastname;
         $order->agreement_email = $cart->agreement_email;
