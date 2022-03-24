@@ -1,7 +1,5 @@
 <?php
 
-use App\Customer;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
 
@@ -15,42 +13,37 @@ use App\Http\Controllers\Api\Auth\AuthController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout']);
+
 Route::group(['middleware' => ['auth:sanctum']], function() {
-    // Route::post('/login', [AuthController::class, 'login']);
-    // Route::post('/register', [AuthController::class, 'register']);
-    // Route::post('/logout', [AuthController::class, 'logout']);
-    // Route::post('/refresh', [AuthController::class, 'refresh']);
-    // Route::get('/user-profile', [AuthController::class, 'userProfile']);
-    // Route::get('createNewToken', [AuthController::class, 'createNewToken']);
+    /*
+    |--------------------------------------------------------------------------
+    | API Resellers
+    |--------------------------------------------------------------------------
+    */
+    Route::get('resellers', 'ResellerController@index');
 
-    #Customers Routes
-
-    Route::group([
-        'middleware' => 'auth:api',
-    ], function ($router) {
-
-        Route::get('customers', 'CustomerController@index');
-        Route::get('customers/{customer}', 'CustomerController@show');
-        Route::post('customers', 'CustomerController@store');
-
-        #Resellers Routes
-        Route::get('resellers', 'ResellerController@index');
-
-        #Subscriptions Routes
-        Route::get('subscriptions', 'SubscriptionsController@index');
-
-    });
-    Route::group([
-        'middleware' => 'auth:api',
-    ], function ($router) {
-
-        Route::get('customers', 'CustomerController@index');
-        Route::get('customers/{customer}', 'CustomerController@show');
-        Route::post('customers', 'CustomerController@store');
-
-        Route::get('resellers', 'ResellerController@index');
-
-        Route::get('subscriptions', 'SubscriptionsController@index');
-
-    });
+    /*
+    |--------------------------------------------------------------------------
+    | API Customers
+    |--------------------------------------------------------------------------
+    */
+    Route::get('customers', 'CustomerController@index');
+    Route::get('customers/{customer}', 'CustomerController@show');
+    Route::get('customers/{customer}/subscriptions', 'CustomerController@customerSubscription');
+    Route::get('customers/{customer}/subscriptions/{subscription}', 'CustomerController@customerSubscriptionID');
+    Route::post('customers', 'CustomerController@store');
+    
+    /*
+    |--------------------------------------------------------------------------
+    | API Subscriptions
+    |--------------------------------------------------------------------------
+    */
+    Route::get('subscriptions', 'SubscriptionsController@index');
+    Route::get('subscriptions/{subscription}', 'SubscriptionsController@show');
+    Route::post('subscriptions/{subscription}/update/', 'SubscriptionsController@update');
+    
+    Route::get('createNewToken', [AuthController::class, 'createNewToken']);
 });

@@ -165,7 +165,7 @@
                                                                                     <strong>current Seats:</strong>
                                                                                     {{$subscription->amount}}
                                                                                 </p>
-                                                                                <x-input wire:dirty wire:model="amount" type="number" id="amount" class="@error('amount') is-invalid @enderror">{{$subscription->amount}}</x-input>
+                                                                                <x-input wire:model="amount" type="number" id="amount" class="@error('amount') is-invalid @enderror">{{$subscription->amount}}</x-input>
                                                                                 @error('amount')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                                                             </div>
                                                                         </div>
@@ -274,8 +274,6 @@
                             </div>
                         </div>
                     </div>
-
-
                     <div class="grid grid-flow-col grid-cols-2 gap-4 ml-7">
                         <div class="mt-4 mb-8">
                             <div class="w-auto p-0 m-0">
@@ -484,7 +482,6 @@
                                                         <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
                                                             {{$subscription->amount}}
                                                         </td>
-                                                        {{-- @dd($subscription->product->IsAzure()) --}}
                                                         <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
                                                             @if($subscription->orders->first() != null)
                                                             @if($subscription->orders->first()->orderproduct != null)
@@ -581,7 +578,7 @@
             </x-slot>
         </x-modal.confirmation>
     </form>
-    <form wire:submit.prevent="save({{$subscription->id}})" class="flex flex-col h-full bg-white divide-y divide-gray-200 shadow-xl">
+    <form @if($ScheduleEdit == false) wire:submit.prevent="save({{$subscription->id}})" @else wire:submit.prevent="saveScheduled({{$subscription->id}})" @endif class="flex flex-col h-full bg-white divide-y divide-gray-200 shadow-xl">
         <x-modal.slideout wire:model.defer="showEditModal">
             <x-slot name="title">@if($ScheduleEdit == true){{ ucwords(trans_choice('messages.schedule_subscription', 1)) }}
                 <p class="text-sm text-gray-500">
@@ -759,15 +756,23 @@
                                             <div class="row">
                                                 <div class="mb-2 col-md-6">
                                                     <x-label for="status">{{ ucwords(trans_choice('messages.upgradeOffers', 1)) }}</x-label>
-                                                    <select wire:model="upgradeOfferselected" name="upgradeOffers" class="form-control @error('editing.upgradeOffers') is-invalid @enderror" sf-validate="required">
+                                                    @if($subscription->changes_on_renew != null)
+                                                    <select wire:model="upgradeOfferselected" name="upgradeOfferselected" class="form-control "required>
+                                                        <option value="no change">no change</option>
+                                                        <option value="{{ $upgradeOfferselected }}" >
+                                                            {{ $upgradeOfferselected }}
+                                                        </option>
+                                                    </select>
+                                                    @else
+                                                    <select wire:model="upgradeOfferselected" name="upgradeOfferselected" class="form-control "required>
                                                         <option value="no change">no change</option>
                                                         @foreach($upgradeOffers as $key => $value)
-                                                        <option value="{{ $value['name'] }}" >
+                                                        <option value="{{ $value['sku'] }}" >
                                                             {{ $value['name'] }}
                                                         </option>
                                                         @endforeach
                                                     </select>
-                                                    @error('upgradeOffers')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                                    @endif
                                                 </div>
                                                 <div class="mb-2 col-md-6">
                                                     <x-label for="editing.amount">{{ ucwords(trans_choice('messages.amount', 1)) }}
@@ -795,20 +800,23 @@
                                                     </p>
                                                     <select wire:model="term" name="term" class="form-control @error('term') is-invalid @enderror" @if($subscription->term == "P1Y") disabled @endif sf-validate="required">
                                                         <option value={{$subscription->term}}>No Change</option>
-                                                        <option value="p1m">Monthly</option>
+                                                        @if($subscription->term == "P1M")
                                                         <option value="p1y">Annual</option>
+                                                        @else
+                                                        <option value="p1m">Monthly</option>
+                                                        @endif
                                                     </select>
                                                     @error('term')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                                 </div>
                                                 <div class="mb-2 col-md-6">
-                                                    @if($subscription->term == "P1Y")
+                                                    @if($subscription->term == "P1Y" || $subscription->term == "P1M")
                                                     <x-label for="billing_period">{{ucwords(trans_choice('messages.billing_cycle', 1))}}</x-label>
                                                     <p class="mt-2 text-xs text-gray-500">
                                                         <strong>Current Billing Cycle:</strong> {{$subscription->billing_period}}
                                                     </p>
                                                     <select wire:model="billing_period" name="billing_period" class="form-control @error('billing_period') is-invalid @enderror" sf-validate="required">
                                                         <option value={{$subscription->billing_period}}>No Change</option>
-                                                        @if($subscription->term == "P1Y")
+                                                        @if($subscription->term == "P1M")
                                                         <option value="Annual">Annual</option>
                                                         @else
                                                         <option value="Monthly">Monthly</option>
@@ -817,22 +825,19 @@
                                                     @error('billing_period')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                                     @endif
                                                 </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="mt-3 mb-2 col-md-6">
-                                                    {{-- <x-label for="newterm">{{ucwords(trans_choice('messages.start_new_term', 1))}}</x-label> --}}
-                                                    <div class="mb-3 input-group">
-                                                        <div class="relative flex items-start">
-                                                            <div class="flex items-center h-5">
-                                                              <input wire:model="newterm" id="comments" aria-describedby="comments-description" name="comments" type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                                <div class="mt-4 mb-2 col-md-12">
+                                                    <div class="mt-4 bg-white shadow sm:rounded-lg">
+                                                        <div class="px-4 py-4 sm:p-6">
+                                                            <h3 class="text-lg font-medium leading-6 text-gray-900">Remove Schedule</h3>
+                                                            <div class="mt-2 sm:flex sm:items-start sm:justify-between">
+                                                                <div class="max-w-xl text-sm text-gray-500">
+                                                                    <p>This action will remove current schedule settings</p>
+                                                                </div>
+                                                                <div class="sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:flex sm:items-center">
+                                                                    <button wire:click="removeScheduled({{ $subscription->id }})" type="button" class="inline-flex items-center px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">Remove</button>
+                                                                </div>
                                                             </div>
-                                                            <div class="ml-3 text-sm">
-                                                              <label for="comments" class="font-medium text-gray-700">{{ucwords(trans_choice('messages.start_new_term', 1))}}</label>
-                                                              <span id="comments-description" class="text-gray-500"><span class="sr-only">New comments </span></span>
-                                                            </div>
-                                                          </div>
-                                                        {{-- <x-input.checkbox wire:model="newterm"></x-input.checkbox> --}}
-                                                        @error('newterm')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -865,17 +870,18 @@
             </form>
         </div>
     </div>
-    <script>
-        function copyToClipboard(subscription_id) {
-            document.getElementById(subscription_id).select();
-            document.execCommand('copy');1
-        }
-    </script>
-    <script>
-        tippy('#myButton', {
-            animation: 'fade',
-            delay: [0,500],
-            trigger: 'click',
-            content: "Copied",
-        });
-    </script>
+</div>
+<script>
+    function copyToClipboard(subscription_id) {
+        document.getElementById(subscription_id).select();
+        document.execCommand('copy');1
+    }
+</script>
+<script>
+    tippy('#myButton', {
+        animation: 'fade',
+        delay: [0,500],
+        trigger: 'click',
+        content: "Copied",
+    });
+</script>

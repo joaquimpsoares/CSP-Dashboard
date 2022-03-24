@@ -21,66 +21,11 @@ class AdminController extends Controller
 {
     use UserTrait;
 
-
     public function news(Request $request)
     {
         $user = $this->getUser();
-
         $news = News::orderBy('created_at', 'desc')->paginate(5);
-
-        // switch ($this->getUserLevel()) {
-        //     case 'Super Admin':
-
-
-        //         $news = News::whereHas('provider', function($query) use  ($user) {
-        //             $query->where('user_id', $user->id);
-        //         })->get();
-
-        //         return view('news.list', compact('news'));
-
-        //         break;
-        //     case config('app.admin'):
-        //         dd('eh');
-
-        //         $news = News::get();
-
-        //         break;
-        //     case config('app.provider'):
-
-        //         $provider = $user->provider;
-        //         $dt = Carbon::now()->toDateString();
-
-        //         $news = News::whereHas('provider', function($query) use  ($provider,$dt) {
-        //             $query->where('id', $provider->id)->where('provider',true);
-        //         })->get();
-
-
-        //         break;
-        //     case config('app.reseller'):
-        //         $provider = $user->reseller->provider;
-
-        //         $news = News::whereHas('provider', function($query) use  ($provider) {
-        //             $query->where('id', $provider->id)->where('reseller',true);
-        //         })->get();
-        //         return view('news.list', compact('news'));
-        //         break;
-        //     case config('app.subreseller'):
-        //         break;
-        //     case config('app.customer'):
-        //         $reseller = $user->customer->resellers['0']->provider;
-
-        //         $news = News::whereHas('provider', function($query) use  ($reseller) {
-        //             $query->where('id', $reseller->id)->where('customer',true);
-        //         })->get();
-
-        //         break;
-        //     default:
-        //         # code...
-        //         break;
-
-        //     }
-
-            return view('news.list', compact('news'));
+        return view('news.list', compact('news'));
     }
 
     public function viewNews(News $news)

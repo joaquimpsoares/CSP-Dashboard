@@ -14,34 +14,39 @@ class Security extends Component
     public $password;
     public $password_confirmation;
     public $token;
+    public $name;
 
+    protected $listeners = ['refreshTransactions' => '$refresh'];
 
     protected $rules = [
         'password'              => ['required', 'confirmed', 'min:8'],
         'password_confirmation' => ['required'],
+        'name'                  => ['required'],
     ];
 
-
-    public function updated($propertyName)
-    {
+    public function updated($propertyName){
         $this->validateOnly($propertyName);
     }
 
 
-    public function saveauth()
-    {
-        $this->validate();
+    public function saveauth(){
         $this->user->password = Hash::make($this->password);
-        $this->user->update();
+        $this->user->save();
+        $this->notify('User ' . $this->user->name . ' Password updated successfully','success');
 
-        session()->flash('success','User ' . $this->user->name . ' Password updated successfully');
-        return redirect()->to('/');
     }
 
-    public function generateToken()
-    {
-        $user = Auth::user()->createToken('myapp')->plainTextToken;
-        $this->token = $user;
+    public function generateToken(){
+        if($this->name){
+            $user = Auth::user()->createToken($this->name)->plainTextToken;
+            $this->token = $user;
+            $this->emit('refreshTransactions');
+        }
+    }
+
+    public function deleteToken($tokenId){
+        Auth::user()->tokens()->where('id', $tokenId)->delete();
+        $this->emit('refreshTransactions');
     }
 
     public function render(Request $request)

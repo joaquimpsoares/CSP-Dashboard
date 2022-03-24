@@ -62,14 +62,13 @@ class ShowCustomer extends Component
                 'qualification' => $return[0]['vettingReason'],
             ]);
         }
-    }
+        }
         $this->emit('refreshTransactions');
 
     }
     public function updated($propertyName){$this->validateOnly($propertyName);}
 
-    public function edit(Customer $customer)
-    {
+    public function edit(Customer $customer){
         $this->editing = $customer;
         $this->showEditModal = true;
     }
@@ -156,7 +155,44 @@ class ShowCustomer extends Component
 
             }
         }
+    }
 
+    Public function ImportSubscriptions(Customer $customer){
+        if (!$customer->subscriptions->isEmpty()){
+            $instance = $customer->subscriptions->first()->instance_id;
+            $instance = Instance::find($instance);
+            $subscriptions = $customer->subscriptions;
+            try {
+                $customer = new TagydesCustomer([
+                    'id' => $customer->microsoftTenantInfo->first()->tenant_id,
+                    'username' => 'bill@tagydes.com',
+                    'password' => 'blabla',
+                    'firstName' => 'Nombre',
+                    'lastName' => 'Apellido',
+                    'email' => 'bill@tagydes.com',
+                ]);
+                $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->CheckCustomerSubscriptions($customer);
+
+                foreach ($resources['items'] as $key => $subscription) {
+
+                    $subscriptions->each(function ($item, $key) use($subscription) {
+                        if ($item->where('subscription_id', $subscription['id'])->first()) {
+                            if ($subscription['quantity'] != $item->amount) {
+                                dd($item->amount, $subscription['quantity']);
+                            }
+                        }
+                    });
+                    // dd($customer->subscriptopns->each()where('subscription_id', $subscription->id)->first());
+                    if($subscription->id == $customer->subscriptopns->find($subscription->id)){
+                        dd($subscription);
+                    }
+                }
+
+                return $resources;
+            } catch (\Throwable $th) {
+
+            }
+        }
     }
 
     Public function CustomerLicenseUsage($customer){
@@ -217,7 +253,6 @@ class ShowCustomer extends Component
         $this->emit('refreshTransactions');
 
     }
-
 
     public function render(Customer $customer){
         $customer = $this->customer;

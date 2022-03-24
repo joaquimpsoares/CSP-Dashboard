@@ -14,8 +14,8 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Pagination\LengthAwarePaginator;
-
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,8 +30,6 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
-
-
     /**
      * Bootstrap any application services.
      *
@@ -39,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
         Builder::macro('toCsv', function () {
             $results = $this->get();
             if ($results->count() < 1) return;
@@ -65,7 +64,6 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
 
         if (!Collection::hasMacro('paginate')) {
-
             Collection::macro('paginate',
                 function ($perPage = 10, $page = null, $options = []) {
                 $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
@@ -82,7 +80,6 @@ class AppServiceProvider extends ServiceProvider
         * Job dispatched & processing
         */
         Queue::before(function (JobProcessing $event) {
-
             Log::info('Job UUID: ' . $event->job->uuid());
             Log::info('Job ID: ' . $event->job->getJobId());
             Log::info('Job ready: ' . $event->job->resolveName());
@@ -101,6 +98,28 @@ class AppServiceProvider extends ServiceProvider
             Log::notice('Job done: ' . $event->job->resolveName());
             Log::notice('Job Attempts: ' . $event->job->attempts());
             // User::first()->notify(new SuccessJob($event));
+        });
+
+        Builder::macro('whereLike', function ($attributes, string $searchTerm) {
+            $this->where(function (Builder $query) use ($attributes, $searchTerm) {
+                foreach (array_wrap($attributes) as $attribute) {
+                    $query->when(
+                        str_contains($attribute, '.'),
+                        function (Builder $query) use ($attribute, $searchTerm) {
+                            [$relationName, $relationAttribute] = explode('.', $attribute);
+
+                            $query->orWhereHas($relationName, function (Builder $query) use ($relationAttribute, $searchTerm) {
+                                $query->where($relationAttribute, 'LIKE', "%{$searchTerm}%");
+                            });
+                        },
+                        function (Builder $query) use ($attribute, $searchTerm) {
+                            $query->orWhere($attribute, 'LIKE', "%{$searchTerm}%");
+                        }
+                    );
+                }
+            });
+
+            return $this;
         });
 
         /**

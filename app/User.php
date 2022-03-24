@@ -14,12 +14,7 @@ use Soved\Laravel\Gdpr\Contracts\Portable as PortableContract;
 
 class User extends Authenticatable implements PortableContract
 {
-    use SoftDeletes;
-    use Notifiable;
-    use HasRoles;
-    use Impersonate;
-    use Portable;
-    use HasApiTokens;
+    use HasApiTokens, SoftDeletes, Notifiable, HasRoles, Impersonate, Portable;
 
     protected $gdprWith = ['orders', 'customer', 'reseller', 'provider'];
     protected $gdprHidden = ['password', 'markup'];

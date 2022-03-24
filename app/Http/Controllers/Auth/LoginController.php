@@ -35,6 +35,11 @@ class LoginController extends Controller
     */
     protected $redirectTo = RouteServiceProvider::HOME;
 
+    protected function authenticated(Request $request, $user)
+    {
+        dd('d');
+         return redirect('/home');
+    }
     /**
     * Create a new controller instance.
     *
@@ -60,13 +65,9 @@ class LoginController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
-    public function handleProviderCallback(Request $request)
-    {
-
+    public function handleProviderCallback(Request $request){
         $socialiteUser = Socialite::driver('graph')->setTenantId(env('GRAPH_TENANT_ID'))->stateless()->user();
-
         $user = User::where('socialite_id', $socialiteUser->getId())->first();
-
         if(empty($user)){
             return Redirect::route('login')->with('danger','Please ask for the correct permissions to access the app: ');
         }else {

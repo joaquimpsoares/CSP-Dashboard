@@ -3,9 +3,7 @@
 namespace App\Exports;
 ini_set('memory_limit', '1024M');
 ini_set('max_execution_time', 300);
-use App\Models\Student;
 use App\Models\AzureUsageReport;
-use Illuminate\Support\Facades\Date;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMapping;

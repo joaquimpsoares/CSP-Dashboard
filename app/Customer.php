@@ -170,6 +170,12 @@ class Customer extends Model implements Searchable
                     $query->where('id', $user->reseller->id);
                 });
             }
+            if ($user && $user->userLevel->name === config('app.customer')) {
+                return false;
+                // $query->whereHas('resellers', function (Builder $query) use ($user) {
+                //     $query->where('id', $user->reseller->id);
+                // });
+            }
         });
     }
 }

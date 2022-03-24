@@ -129,17 +129,18 @@ class ShowReseller extends Component
 
     public function saveuser(Reseller $reseller){
         $user = User::create ([
-            'email'             => $this->email,
-            'name'              => $this->creatingUser->name,
-            'last_name'         => $this->creatingUser->last_name,
-            'address'           => $this->creatingUser->address,
-            'phone'             => $this->creatingUser->phone,
-            'country_id'        => $reseller->country_id,
-            'password'          => Hash::make($this->password),
-            'user_level_id'     => 4, //reseller role id = 4
-            'status_id'         => 1,
-            'reseller_id'       => $reseller->id,
-            // 'notify'            => $this->sendInvitation ?? false,
+            'email'                     => $this->email,
+            'name'                      => $this->creatingUser->name,
+            'last_name'                 => $this->creatingUser->last_name,
+            'address'                   => $this->creatingUser->address,
+            'phone'                     => $this->creatingUser->phone,
+            'notifications_preferences' => 'database',
+            'country_id'                => $reseller->country_id,
+            'password'                  => Hash::make($this->password),
+            'user_level_id'             => 4, //reseller role id = 4
+            'status_id'                 => 1,
+            'reseller_id'               => $reseller->id,
+            // 'notify'                 => $this->sendInvitation ?? false,
         ]);
 
         $user->assignRole(config('app.reseller'));

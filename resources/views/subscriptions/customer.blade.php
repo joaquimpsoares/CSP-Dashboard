@@ -7,5 +7,4 @@
 
 @livewire('subscription.subscription-costumer')
 
-
 @endsection

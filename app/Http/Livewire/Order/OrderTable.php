@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Order;
 
 use App\Order;
 use Livewire\Component;
+use Stripe\StripeClient;
 use Livewire\WithPagination;
 use App\Exports\OrdersExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -60,6 +61,22 @@ class OrderTable extends Component
     }
     public function render()
     {
+        $stripe = new \Stripe\StripeClient(
+            'sk_test_UOBjZFg9i8X3VZ5BsSKV6z1R00Gv19nybH'
+          );
+        $tt =  $stripe->accounts->create([
+            'type' => 'custom',
+            'country' => 'US',
+            'email' => 'jenny.rosen@example.com',
+            'capabilities' => [
+              'card_payments' => ['requested' => true],
+              'transfers' => ['requested' => true],
+            ],
+            'business_type' => 'company',
+          ]);
+dd($tt);
+
+        
         return view('livewire.order.order-table', [
             'orders' => $this->rows,
         ]);

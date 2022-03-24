@@ -1,97 +1,11 @@
-/******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = function(exports) {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/
-/******/ 	// create a fake namespace object
-/******/ 	// mode & 1: value is a module id, require it
-/******/ 	// mode & 2: merge all properties of value into the ns
-/******/ 	// mode & 4: return value when already ns object
-/******/ 	// mode & 8|1: behave like require
-/******/ 	__webpack_require__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __webpack_require__(value);
-/******/ 		if(mode & 8) return value;
-/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
-/******/ 		var ns = Object.create(null);
-/******/ 		__webpack_require__.r(ns);
-/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
-/******/ 		return ns;
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/";
-/******/
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
-/******/ })
-/************************************************************************/
-/******/ ({
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
 
 /***/ "./node_modules/axios/index.js":
 /*!*************************************!*\
   !*** ./node_modules/axios/index.js ***!
   \*************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 module.exports = __webpack_require__(/*! ./lib/axios */ "./node_modules/axios/lib/axios.js");
 
@@ -101,8 +15,7 @@ module.exports = __webpack_require__(/*! ./lib/axios */ "./node_modules/axios/li
 /*!************************************************!*\
   !*** ./node_modules/axios/lib/adapters/xhr.js ***!
   \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
@@ -120,6 +33,7 @@ module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
     var requestData = config.data;
     var requestHeaders = config.headers;
+    var responseType = config.responseType;
 
     if (utils.isFormData(requestData)) {
       delete requestHeaders['Content-Type']; // Let the browser set it
@@ -140,23 +54,14 @@ module.exports = function xhrAdapter(config) {
     // Set the request timeout in MS
     request.timeout = config.timeout;
 
-    // Listen for ready state
-    request.onreadystatechange = function handleLoad() {
-      if (!request || request.readyState !== 4) {
+    function onloadend() {
+      if (!request) {
         return;
       }
-
-      // The request errored out and we didn't get a response, this will be
-      // handled by onerror instead
-      // With one exception: request that using file: protocol, most browsers
-      // will return status as 0 even though it's a successful request
-      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
-        return;
-      }
-
       // Prepare the response
       var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
-      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
+      var responseData = !responseType || responseType === 'text' ||  responseType === 'json' ?
+        request.responseText : request.response;
       var response = {
         data: responseData,
         status: request.status,
@@ -170,7 +75,30 @@ module.exports = function xhrAdapter(config) {
 
       // Clean up request
       request = null;
-    };
+    }
+
+    if ('onloadend' in request) {
+      // Use onloadend if available
+      request.onloadend = onloadend;
+    } else {
+      // Listen for ready state to emulate onloadend
+      request.onreadystatechange = function handleLoad() {
+        if (!request || request.readyState !== 4) {
+          return;
+        }
+
+        // The request errored out and we didn't get a response, this will be
+        // handled by onerror instead
+        // With one exception: request that using file: protocol, most browsers
+        // will return status as 0 even though it's a successful request
+        if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+          return;
+        }
+        // readystate handler is calling before onerror or ontimeout handlers,
+        // so we should call onloadend on the next 'tick'
+        setTimeout(onloadend);
+      };
+    }
 
     // Handle browser request cancellation (as opposed to a manual cancellation)
     request.onabort = function handleAbort() {
@@ -200,7 +128,10 @@ module.exports = function xhrAdapter(config) {
       if (config.timeoutErrorMessage) {
         timeoutErrorMessage = config.timeoutErrorMessage;
       }
-      reject(createError(timeoutErrorMessage, config, 'ECONNABORTED',
+      reject(createError(
+        timeoutErrorMessage,
+        config,
+        config.transitional && config.transitional.clarifyTimeoutError ? 'ETIMEDOUT' : 'ECONNABORTED',
         request));
 
       // Clean up request
@@ -240,16 +171,8 @@ module.exports = function xhrAdapter(config) {
     }
 
     // Add responseType to request if needed
-    if (config.responseType) {
-      try {
-        request.responseType = config.responseType;
-      } catch (e) {
-        // Expected DOMException thrown by browsers not compatible XMLHttpRequest Level 2.
-        // But, this can be suppressed for 'json' type as it can be parsed by default 'transformResponse' function.
-        if (config.responseType !== 'json') {
-          throw e;
-        }
-      }
+    if (responseType && responseType !== 'json') {
+      request.responseType = config.responseType;
     }
 
     // Handle progress if needed
@@ -292,8 +215,7 @@ module.exports = function xhrAdapter(config) {
 /*!*****************************************!*\
   !*** ./node_modules/axios/lib/axios.js ***!
   \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
@@ -351,7 +273,7 @@ axios.isAxiosError = __webpack_require__(/*! ./helpers/isAxiosError */ "./node_m
 module.exports = axios;
 
 // Allow use of default import syntax in TypeScript
-module.exports.default = axios;
+module.exports["default"] = axios;
 
 
 /***/ }),
@@ -360,8 +282,7 @@ module.exports.default = axios;
 /*!*************************************************!*\
   !*** ./node_modules/axios/lib/cancel/Cancel.js ***!
   \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module) => {
 
 "use strict";
 
@@ -391,8 +312,7 @@ module.exports = Cancel;
 /*!******************************************************!*\
   !*** ./node_modules/axios/lib/cancel/CancelToken.js ***!
   \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
@@ -460,8 +380,7 @@ module.exports = CancelToken;
 /*!***************************************************!*\
   !*** ./node_modules/axios/lib/cancel/isCancel.js ***!
   \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module) => {
 
 "use strict";
 
@@ -477,8 +396,7 @@ module.exports = function isCancel(value) {
 /*!**********************************************!*\
   !*** ./node_modules/axios/lib/core/Axios.js ***!
   \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
@@ -488,7 +406,9 @@ var buildURL = __webpack_require__(/*! ../helpers/buildURL */ "./node_modules/ax
 var InterceptorManager = __webpack_require__(/*! ./InterceptorManager */ "./node_modules/axios/lib/core/InterceptorManager.js");
 var dispatchRequest = __webpack_require__(/*! ./dispatchRequest */ "./node_modules/axios/lib/core/dispatchRequest.js");
 var mergeConfig = __webpack_require__(/*! ./mergeConfig */ "./node_modules/axios/lib/core/mergeConfig.js");
+var validator = __webpack_require__(/*! ../helpers/validator */ "./node_modules/axios/lib/helpers/validator.js");
 
+var validators = validator.validators;
 /**
  * Create a new instance of Axios
  *
@@ -528,20 +448,71 @@ Axios.prototype.request = function request(config) {
     config.method = 'get';
   }
 
-  // Hook up interceptors middleware
-  var chain = [dispatchRequest, undefined];
-  var promise = Promise.resolve(config);
+  var transitional = config.transitional;
 
+  if (transitional !== undefined) {
+    validator.assertOptions(transitional, {
+      silentJSONParsing: validators.transitional(validators.boolean, '1.0.0'),
+      forcedJSONParsing: validators.transitional(validators.boolean, '1.0.0'),
+      clarifyTimeoutError: validators.transitional(validators.boolean, '1.0.0')
+    }, false);
+  }
+
+  // filter out skipped interceptors
+  var requestInterceptorChain = [];
+  var synchronousRequestInterceptors = true;
   this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
-    chain.unshift(interceptor.fulfilled, interceptor.rejected);
+    if (typeof interceptor.runWhen === 'function' && interceptor.runWhen(config) === false) {
+      return;
+    }
+
+    synchronousRequestInterceptors = synchronousRequestInterceptors && interceptor.synchronous;
+
+    requestInterceptorChain.unshift(interceptor.fulfilled, interceptor.rejected);
   });
 
+  var responseInterceptorChain = [];
   this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
-    chain.push(interceptor.fulfilled, interceptor.rejected);
+    responseInterceptorChain.push(interceptor.fulfilled, interceptor.rejected);
   });
 
-  while (chain.length) {
-    promise = promise.then(chain.shift(), chain.shift());
+  var promise;
+
+  if (!synchronousRequestInterceptors) {
+    var chain = [dispatchRequest, undefined];
+
+    Array.prototype.unshift.apply(chain, requestInterceptorChain);
+    chain = chain.concat(responseInterceptorChain);
+
+    promise = Promise.resolve(config);
+    while (chain.length) {
+      promise = promise.then(chain.shift(), chain.shift());
+    }
+
+    return promise;
+  }
+
+
+  var newConfig = config;
+  while (requestInterceptorChain.length) {
+    var onFulfilled = requestInterceptorChain.shift();
+    var onRejected = requestInterceptorChain.shift();
+    try {
+      newConfig = onFulfilled(newConfig);
+    } catch (error) {
+      onRejected(error);
+      break;
+    }
+  }
+
+  try {
+    promise = dispatchRequest(newConfig);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+
+  while (responseInterceptorChain.length) {
+    promise = promise.then(responseInterceptorChain.shift(), responseInterceptorChain.shift());
   }
 
   return promise;
@@ -584,8 +555,7 @@ module.exports = Axios;
 /*!***********************************************************!*\
   !*** ./node_modules/axios/lib/core/InterceptorManager.js ***!
   \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
@@ -604,10 +574,12 @@ function InterceptorManager() {
  *
  * @return {Number} An ID used to remove interceptor later
  */
-InterceptorManager.prototype.use = function use(fulfilled, rejected) {
+InterceptorManager.prototype.use = function use(fulfilled, rejected, options) {
   this.handlers.push({
     fulfilled: fulfilled,
-    rejected: rejected
+    rejected: rejected,
+    synchronous: options ? options.synchronous : false,
+    runWhen: options ? options.runWhen : null
   });
   return this.handlers.length - 1;
 };
@@ -648,8 +620,7 @@ module.exports = InterceptorManager;
 /*!******************************************************!*\
   !*** ./node_modules/axios/lib/core/buildFullPath.js ***!
   \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
@@ -680,8 +651,7 @@ module.exports = function buildFullPath(baseURL, requestedURL) {
 /*!****************************************************!*\
   !*** ./node_modules/axios/lib/core/createError.js ***!
   \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
@@ -710,8 +680,7 @@ module.exports = function createError(message, config, code, request, response) 
 /*!********************************************************!*\
   !*** ./node_modules/axios/lib/core/dispatchRequest.js ***!
   \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
@@ -743,7 +712,8 @@ module.exports = function dispatchRequest(config) {
   config.headers = config.headers || {};
 
   // Transform request data
-  config.data = transformData(
+  config.data = transformData.call(
+    config,
     config.data,
     config.headers,
     config.transformRequest
@@ -769,7 +739,8 @@ module.exports = function dispatchRequest(config) {
     throwIfCancellationRequested(config);
 
     // Transform response data
-    response.data = transformData(
+    response.data = transformData.call(
+      config,
       response.data,
       response.headers,
       config.transformResponse
@@ -782,7 +753,8 @@ module.exports = function dispatchRequest(config) {
 
       // Transform response data
       if (reason && reason.response) {
-        reason.response.data = transformData(
+        reason.response.data = transformData.call(
+          config,
           reason.response.data,
           reason.response.headers,
           config.transformResponse
@@ -801,8 +773,7 @@ module.exports = function dispatchRequest(config) {
 /*!*****************************************************!*\
   !*** ./node_modules/axios/lib/core/enhanceError.js ***!
   \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module) => {
 
 "use strict";
 
@@ -855,8 +826,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 /*!****************************************************!*\
   !*** ./node_modules/axios/lib/core/mergeConfig.js ***!
   \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
@@ -954,8 +924,7 @@ module.exports = function mergeConfig(config1, config2) {
 /*!***********************************************!*\
   !*** ./node_modules/axios/lib/core/settle.js ***!
   \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
@@ -991,13 +960,13 @@ module.exports = function settle(resolve, reject, response) {
 /*!******************************************************!*\
   !*** ./node_modules/axios/lib/core/transformData.js ***!
   \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
 var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/utils.js");
+var defaults = __webpack_require__(/*! ./../defaults */ "./node_modules/axios/lib/defaults.js");
 
 /**
  * Transform the data for a request or a response
@@ -1008,9 +977,10 @@ var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/util
  * @returns {*} The resulting transformed data
  */
 module.exports = function transformData(data, headers, fns) {
+  var context = this || defaults;
   /*eslint no-param-reassign:0*/
   utils.forEach(fns, function transform(fn) {
-    data = fn(data, headers);
+    data = fn.call(context, data, headers);
   });
 
   return data;
@@ -1023,14 +993,15 @@ module.exports = function transformData(data, headers, fns) {
 /*!********************************************!*\
   !*** ./node_modules/axios/lib/defaults.js ***!
   \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
+/* provided dependency */ var process = __webpack_require__(/*! process/browser.js */ "./node_modules/process/browser.js");
+
 
 var utils = __webpack_require__(/*! ./utils */ "./node_modules/axios/lib/utils.js");
 var normalizeHeaderName = __webpack_require__(/*! ./helpers/normalizeHeaderName */ "./node_modules/axios/lib/helpers/normalizeHeaderName.js");
+var enhanceError = __webpack_require__(/*! ./core/enhanceError */ "./node_modules/axios/lib/core/enhanceError.js");
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -1054,12 +1025,35 @@ function getDefaultAdapter() {
   return adapter;
 }
 
+function stringifySafely(rawValue, parser, encoder) {
+  if (utils.isString(rawValue)) {
+    try {
+      (parser || JSON.parse)(rawValue);
+      return utils.trim(rawValue);
+    } catch (e) {
+      if (e.name !== 'SyntaxError') {
+        throw e;
+      }
+    }
+  }
+
+  return (encoder || JSON.stringify)(rawValue);
+}
+
 var defaults = {
+
+  transitional: {
+    silentJSONParsing: true,
+    forcedJSONParsing: true,
+    clarifyTimeoutError: false
+  },
+
   adapter: getDefaultAdapter(),
 
   transformRequest: [function transformRequest(data, headers) {
     normalizeHeaderName(headers, 'Accept');
     normalizeHeaderName(headers, 'Content-Type');
+
     if (utils.isFormData(data) ||
       utils.isArrayBuffer(data) ||
       utils.isBuffer(data) ||
@@ -1076,20 +1070,32 @@ var defaults = {
       setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
       return data.toString();
     }
-    if (utils.isObject(data)) {
-      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
-      return JSON.stringify(data);
+    if (utils.isObject(data) || (headers && headers['Content-Type'] === 'application/json')) {
+      setContentTypeIfUnset(headers, 'application/json');
+      return stringifySafely(data);
     }
     return data;
   }],
 
   transformResponse: [function transformResponse(data) {
-    /*eslint no-param-reassign:0*/
-    if (typeof data === 'string') {
+    var transitional = this.transitional;
+    var silentJSONParsing = transitional && transitional.silentJSONParsing;
+    var forcedJSONParsing = transitional && transitional.forcedJSONParsing;
+    var strictJSONParsing = !silentJSONParsing && this.responseType === 'json';
+
+    if (strictJSONParsing || (forcedJSONParsing && utils.isString(data) && data.length)) {
       try {
-        data = JSON.parse(data);
-      } catch (e) { /* Ignore */ }
+        return JSON.parse(data);
+      } catch (e) {
+        if (strictJSONParsing) {
+          if (e.name === 'SyntaxError') {
+            throw enhanceError(e, this, 'E_JSON_PARSE');
+          }
+          throw e;
+        }
+      }
     }
+
     return data;
   }],
 
@@ -1126,7 +1132,6 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../process/browser.js */ "./node_modules/process/browser.js")))
 
 /***/ }),
 
@@ -1134,8 +1139,7 @@ module.exports = defaults;
 /*!************************************************!*\
   !*** ./node_modules/axios/lib/helpers/bind.js ***!
   \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module) => {
 
 "use strict";
 
@@ -1157,8 +1161,7 @@ module.exports = function bind(fn, thisArg) {
 /*!****************************************************!*\
   !*** ./node_modules/axios/lib/helpers/buildURL.js ***!
   \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
@@ -1239,8 +1242,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 /*!*******************************************************!*\
   !*** ./node_modules/axios/lib/helpers/combineURLs.js ***!
   \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module) => {
 
 "use strict";
 
@@ -1265,8 +1267,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 /*!***************************************************!*\
   !*** ./node_modules/axios/lib/helpers/cookies.js ***!
   \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
@@ -1330,8 +1331,7 @@ module.exports = (
 /*!*********************************************************!*\
   !*** ./node_modules/axios/lib/helpers/isAbsoluteURL.js ***!
   \*********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module) => {
 
 "use strict";
 
@@ -1356,8 +1356,7 @@ module.exports = function isAbsoluteURL(url) {
 /*!********************************************************!*\
   !*** ./node_modules/axios/lib/helpers/isAxiosError.js ***!
   \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module) => {
 
 "use strict";
 
@@ -1379,8 +1378,7 @@ module.exports = function isAxiosError(payload) {
 /*!***********************************************************!*\
   !*** ./node_modules/axios/lib/helpers/isURLSameOrigin.js ***!
   \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
@@ -1459,8 +1457,7 @@ module.exports = (
 /*!***************************************************************!*\
   !*** ./node_modules/axios/lib/helpers/normalizeHeaderName.js ***!
   \***************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
@@ -1483,8 +1480,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 /*!********************************************************!*\
   !*** ./node_modules/axios/lib/helpers/parseHeaders.js ***!
   \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
@@ -1548,8 +1544,7 @@ module.exports = function parseHeaders(headers) {
 /*!**************************************************!*\
   !*** ./node_modules/axios/lib/helpers/spread.js ***!
   \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module) => {
 
 "use strict";
 
@@ -1583,19 +1578,132 @@ module.exports = function spread(callback) {
 
 /***/ }),
 
+/***/ "./node_modules/axios/lib/helpers/validator.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/axios/lib/helpers/validator.js ***!
+  \*****************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var pkg = __webpack_require__(/*! ./../../package.json */ "./node_modules/axios/package.json");
+
+var validators = {};
+
+// eslint-disable-next-line func-names
+['object', 'boolean', 'number', 'function', 'string', 'symbol'].forEach(function(type, i) {
+  validators[type] = function validator(thing) {
+    return typeof thing === type || 'a' + (i < 1 ? 'n ' : ' ') + type;
+  };
+});
+
+var deprecatedWarnings = {};
+var currentVerArr = pkg.version.split('.');
+
+/**
+ * Compare package versions
+ * @param {string} version
+ * @param {string?} thanVersion
+ * @returns {boolean}
+ */
+function isOlderVersion(version, thanVersion) {
+  var pkgVersionArr = thanVersion ? thanVersion.split('.') : currentVerArr;
+  var destVer = version.split('.');
+  for (var i = 0; i < 3; i++) {
+    if (pkgVersionArr[i] > destVer[i]) {
+      return true;
+    } else if (pkgVersionArr[i] < destVer[i]) {
+      return false;
+    }
+  }
+  return false;
+}
+
+/**
+ * Transitional option validator
+ * @param {function|boolean?} validator
+ * @param {string?} version
+ * @param {string} message
+ * @returns {function}
+ */
+validators.transitional = function transitional(validator, version, message) {
+  var isDeprecated = version && isOlderVersion(version);
+
+  function formatMessage(opt, desc) {
+    return '[Axios v' + pkg.version + '] Transitional option \'' + opt + '\'' + desc + (message ? '. ' + message : '');
+  }
+
+  // eslint-disable-next-line func-names
+  return function(value, opt, opts) {
+    if (validator === false) {
+      throw new Error(formatMessage(opt, ' has been removed in ' + version));
+    }
+
+    if (isDeprecated && !deprecatedWarnings[opt]) {
+      deprecatedWarnings[opt] = true;
+      // eslint-disable-next-line no-console
+      console.warn(
+        formatMessage(
+          opt,
+          ' has been deprecated since v' + version + ' and will be removed in the near future'
+        )
+      );
+    }
+
+    return validator ? validator(value, opt, opts) : true;
+  };
+};
+
+/**
+ * Assert object's properties type
+ * @param {object} options
+ * @param {object} schema
+ * @param {boolean?} allowUnknown
+ */
+
+function assertOptions(options, schema, allowUnknown) {
+  if (typeof options !== 'object') {
+    throw new TypeError('options must be an object');
+  }
+  var keys = Object.keys(options);
+  var i = keys.length;
+  while (i-- > 0) {
+    var opt = keys[i];
+    var validator = schema[opt];
+    if (validator) {
+      var value = options[opt];
+      var result = value === undefined || validator(value, opt, options);
+      if (result !== true) {
+        throw new TypeError('option ' + opt + ' must be ' + result);
+      }
+      continue;
+    }
+    if (allowUnknown !== true) {
+      throw Error('Unknown option ' + opt);
+    }
+  }
+}
+
+module.exports = {
+  isOlderVersion: isOlderVersion,
+  assertOptions: assertOptions,
+  validators: validators
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/axios/lib/utils.js":
 /*!*****************************************!*\
   !*** ./node_modules/axios/lib/utils.js ***!
   \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
 
 var bind = __webpack_require__(/*! ./helpers/bind */ "./node_modules/axios/lib/helpers/bind.js");
-
-/*global toString:true*/
 
 // utils is a library of generic helper functions non-specific to axios
 
@@ -1780,7 +1888,7 @@ function isURLSearchParams(val) {
  * @returns {String} The String freed of excess whitespace
  */
 function trim(str) {
-  return str.replace(/^\s*/, '').replace(/\s*$/, '');
+  return str.trim ? str.trim() : str.replace(/^\s+|\s+$/g, '');
 }
 
 /**
@@ -1946,61 +2054,107 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./resources/js/app.js":
+/*!*****************************!*\
+  !*** ./resources/js/app.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
+
+var Turbolinks = __webpack_require__(/*! turbolinks */ "./node_modules/turbolinks/dist/turbolinks.js");
+
+Turbolinks.start();
+
+/***/ }),
+
+/***/ "./resources/js/bootstrap.js":
+/*!***********************************!*\
+  !*** ./resources/js/bootstrap.js ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/**
+ * We'll load the axios HTTP library which allows us to easily issue requests
+ * to our Laravel back-end. This library automatically handles sending the
+ * CSRF token as a header based on the value of the "XSRF" token cookie.
+ */
+
+window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.chart = __webpack_require__(/*! chart.js */ "./node_modules/chart.js/dist/chart.esm.js");
+/**
+ * Echo exposes an expressive API for subscribing to channels and listening
+ * for events that are broadcast by Laravel. Echo and event broadcasting
+ * allows your team to easily build robust real-time web applications.
+ */
+// import Echo from 'laravel-echo';
+// window.Pusher = require('pusher-js');
+// window.Echo = new Echo({
+//     broadcaster: 'pusher',
+//     key: process.env.MIX_PUSHER_APP_KEY,
+//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+//     forceTLS: true
+// });
+
+/***/ }),
+
 /***/ "./node_modules/chart.js/dist/chart.esm.js":
 /*!*************************************************!*\
   !*** ./node_modules/chart.js/dist/chart.esm.js ***!
   \*************************************************/
-/*! exports provided: defaults, Animation, Animations, ArcElement, BarController, BarElement, BasePlatform, BasicPlatform, BubbleController, CategoryScale, Chart, DatasetController, Decimation, DomPlatform, DoughnutController, Element, Filler, Interaction, Legend, LineController, LineElement, LinearScale, LogarithmicScale, PieController, PointElement, PolarAreaController, RadarController, RadialLinearScale, Scale, ScatterController, Ticks, TimeScale, TimeSeriesScale, Title, Tooltip, _adapters, animator, controllers, elements, layouts, plugins, registerables, registry, scales */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Animation", function() { return Animation; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Animations", function() { return Animations; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ArcElement", function() { return ArcElement; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BarController", function() { return BarController; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BarElement", function() { return BarElement; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BasePlatform", function() { return BasePlatform; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BasicPlatform", function() { return BasicPlatform; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BubbleController", function() { return BubbleController; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CategoryScale", function() { return CategoryScale; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Chart", function() { return Chart; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DatasetController", function() { return DatasetController; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Decimation", function() { return plugin_decimation; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DomPlatform", function() { return DomPlatform; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DoughnutController", function() { return DoughnutController; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Element", function() { return Element; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Filler", function() { return plugin_filler; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Interaction", function() { return Interaction; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Legend", function() { return plugin_legend; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LineController", function() { return LineController; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LineElement", function() { return LineElement; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LinearScale", function() { return LinearScale; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LogarithmicScale", function() { return LogarithmicScale; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PieController", function() { return PieController; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PointElement", function() { return PointElement; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PolarAreaController", function() { return PolarAreaController; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RadarController", function() { return RadarController; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RadialLinearScale", function() { return RadialLinearScale; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Scale", function() { return Scale; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ScatterController", function() { return ScatterController; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Ticks", function() { return Ticks; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TimeScale", function() { return TimeScale; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TimeSeriesScale", function() { return TimeSeriesScale; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Title", function() { return plugin_title; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Tooltip", function() { return plugin_tooltip; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "_adapters", function() { return adapters; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "animator", function() { return animator; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "controllers", function() { return controllers; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "elements", function() { return elements; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "layouts", function() { return layouts; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "plugins", function() { return plugins; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "registerables", function() { return registerables; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "registry", function() { return registry; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "scales", function() { return scales; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "defaults": () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d),
+/* harmony export */   "Animation": () => (/* binding */ Animation),
+/* harmony export */   "Animations": () => (/* binding */ Animations),
+/* harmony export */   "ArcElement": () => (/* binding */ ArcElement),
+/* harmony export */   "BarController": () => (/* binding */ BarController),
+/* harmony export */   "BarElement": () => (/* binding */ BarElement),
+/* harmony export */   "BasePlatform": () => (/* binding */ BasePlatform),
+/* harmony export */   "BasicPlatform": () => (/* binding */ BasicPlatform),
+/* harmony export */   "BubbleController": () => (/* binding */ BubbleController),
+/* harmony export */   "CategoryScale": () => (/* binding */ CategoryScale),
+/* harmony export */   "Chart": () => (/* binding */ Chart),
+/* harmony export */   "DatasetController": () => (/* binding */ DatasetController),
+/* harmony export */   "Decimation": () => (/* binding */ plugin_decimation),
+/* harmony export */   "DomPlatform": () => (/* binding */ DomPlatform),
+/* harmony export */   "DoughnutController": () => (/* binding */ DoughnutController),
+/* harmony export */   "Element": () => (/* binding */ Element),
+/* harmony export */   "Filler": () => (/* binding */ plugin_filler),
+/* harmony export */   "Interaction": () => (/* binding */ Interaction),
+/* harmony export */   "Legend": () => (/* binding */ plugin_legend),
+/* harmony export */   "LineController": () => (/* binding */ LineController),
+/* harmony export */   "LineElement": () => (/* binding */ LineElement),
+/* harmony export */   "LinearScale": () => (/* binding */ LinearScale),
+/* harmony export */   "LogarithmicScale": () => (/* binding */ LogarithmicScale),
+/* harmony export */   "PieController": () => (/* binding */ PieController),
+/* harmony export */   "PointElement": () => (/* binding */ PointElement),
+/* harmony export */   "PolarAreaController": () => (/* binding */ PolarAreaController),
+/* harmony export */   "RadarController": () => (/* binding */ RadarController),
+/* harmony export */   "RadialLinearScale": () => (/* binding */ RadialLinearScale),
+/* harmony export */   "Scale": () => (/* binding */ Scale),
+/* harmony export */   "ScatterController": () => (/* binding */ ScatterController),
+/* harmony export */   "Ticks": () => (/* binding */ Ticks),
+/* harmony export */   "TimeScale": () => (/* binding */ TimeScale),
+/* harmony export */   "TimeSeriesScale": () => (/* binding */ TimeSeriesScale),
+/* harmony export */   "Title": () => (/* binding */ plugin_title),
+/* harmony export */   "Tooltip": () => (/* binding */ plugin_tooltip),
+/* harmony export */   "_adapters": () => (/* binding */ adapters),
+/* harmony export */   "animator": () => (/* binding */ animator),
+/* harmony export */   "controllers": () => (/* binding */ controllers),
+/* harmony export */   "elements": () => (/* binding */ elements),
+/* harmony export */   "layouts": () => (/* binding */ layouts),
+/* harmony export */   "plugins": () => (/* binding */ plugins),
+/* harmony export */   "registerables": () => (/* binding */ registerables),
+/* harmony export */   "registry": () => (/* binding */ registry),
+/* harmony export */   "scales": () => (/* binding */ scales)
+/* harmony export */ });
 /* harmony import */ var _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./chunks/helpers.segment.js */ "./node_modules/chart.js/dist/chunks/helpers.segment.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "defaults", function() { return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"]; });
-
 /*!
  * Chart.js v3.3.2
  * https://www.chartjs.org
@@ -2033,7 +2187,7 @@ class Animator {
       return;
     }
     me._running = true;
-    me._request = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["r"].call(window, () => {
+    me._request = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.r.call(window, () => {
       me._update();
       me._request = null;
       if (me._running) {
@@ -2155,8 +2309,8 @@ const interpolators = {
     return factor > 0.5 ? to : from;
   },
   color(from, to, factor) {
-    const c0 = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["c"])(from || transparent);
-    const c1 = c0.valid && Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["c"])(to || transparent);
+    const c0 = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.c)(from || transparent);
+    const c1 = c0.valid && (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.c)(to || transparent);
     return c1 && c1.valid
       ? c1.mix(c0, factor).hexString()
       : to;
@@ -2168,11 +2322,11 @@ const interpolators = {
 class Animation {
   constructor(cfg, target, prop, to) {
     const currentValue = target[prop];
-    to = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a"])([cfg.to, to, currentValue, cfg.from]);
-    const from = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a"])([cfg.from, currentValue, to]);
+    to = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a)([cfg.to, to, currentValue, cfg.from]);
+    const from = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a)([cfg.from, currentValue, to]);
     this._active = true;
     this._fn = cfg.fn || interpolators[cfg.type || typeof from];
-    this._easing = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["e"][cfg.easing] || _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["e"].linear;
+    this._easing = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.e[cfg.easing] || _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.e.linear;
     this._start = Math.floor(Date.now() + (cfg.delay || 0));
     this._duration = this._total = Math.floor(cfg.duration);
     this._loop = !!cfg.loop;
@@ -2196,8 +2350,8 @@ class Animation {
       me._duration = Math.floor(Math.max(remain, cfg.duration));
       me._total += elapsed;
       me._loop = !!cfg.loop;
-      me._to = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a"])([cfg.to, to, currentValue, cfg.from]);
-      me._from = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a"])([cfg.from, currentValue, to]);
+      me._to = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a)([cfg.to, to, currentValue, cfg.from]);
+      me._from = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a)([cfg.from, currentValue, to]);
     }
   }
   cancel() {
@@ -2249,7 +2403,7 @@ class Animation {
 
 const numbers = ['x', 'y', 'borderWidth', 'radius', 'tension'];
 const colors = ['color', 'borderColor', 'backgroundColor'];
-_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].set('animation', {
+_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.set('animation', {
   delay: undefined,
   duration: 1000,
   easing: 'easeOutQuart',
@@ -2259,13 +2413,13 @@ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].set('animation', {
   to: undefined,
   type: undefined,
 });
-const animationOptions = Object.keys(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].animation);
-_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].describe('animation', {
+const animationOptions = Object.keys(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.animation);
+_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.describe('animation', {
   _fallback: false,
   _indexable: false,
   _scriptable: (name) => name !== 'onProgress' && name !== 'onComplete' && name !== 'fn',
 });
-_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].set('animations', {
+_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.set('animations', {
   colors: {
     type: 'color',
     properties: colors
@@ -2275,10 +2429,10 @@ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].set('animations', {
     properties: numbers
   },
 });
-_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].describe('animations', {
+_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.describe('animations', {
   _fallback: 'animation',
 });
-_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].set('transitions', {
+_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.set('transitions', {
   active: {
     animation: {
       duration: 400
@@ -2320,20 +2474,20 @@ class Animations {
     this.configure(config);
   }
   configure(config) {
-    if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["i"])(config)) {
+    if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.i)(config)) {
       return;
     }
     const animatedProps = this._properties;
     Object.getOwnPropertyNames(config).forEach(key => {
       const cfg = config[key];
-      if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["i"])(cfg)) {
+      if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.i)(cfg)) {
         return;
       }
       const resolved = {};
       for (const option of animationOptions) {
         resolved[option] = cfg[option];
       }
-      (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["b"])(cfg.properties) && cfg.properties || [key]).forEach((prop) => {
+      ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(cfg.properties) && cfg.properties || [key]).forEach((prop) => {
         if (prop === key || !animatedProps.has(prop)) {
           animatedProps.set(prop, resolved);
         }
@@ -2454,7 +2608,7 @@ function defaultClip(xScale, yScale, allowedOverflow) {
 }
 function toClip(value) {
   let t, r, b, l;
-  if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["i"])(value)) {
+  if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.i)(value)) {
     t = value.top;
     r = value.right;
     b = value.bottom;
@@ -2494,7 +2648,7 @@ function applyStack(stack, value, dsIndex, options) {
       break;
     }
     otherValue = stack.values[datasetIndex];
-    if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(otherValue) && (singleMode || (value === 0 || Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["s"])(value) === Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["s"])(otherValue)))) {
+    if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(otherValue) && (singleMode || (value === 0 || (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.s)(value) === (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.s)(otherValue)))) {
       value += otherValue;
     }
   }
@@ -2643,9 +2797,9 @@ class DatasetController {
     const meta = me._cachedMeta;
     const dataset = me.getDataset();
     const chooseId = (axis, x, y, r) => axis === 'x' ? x : axis === 'r' ? r : y;
-    const xid = meta.xAxisID = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(dataset.xAxisID, getFirstScaleId(chart, 'x'));
-    const yid = meta.yAxisID = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(dataset.yAxisID, getFirstScaleId(chart, 'y'));
-    const rid = meta.rAxisID = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(dataset.rAxisID, getFirstScaleId(chart, 'r'));
+    const xid = meta.xAxisID = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(dataset.xAxisID, getFirstScaleId(chart, 'x'));
+    const yid = meta.yAxisID = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(dataset.yAxisID, getFirstScaleId(chart, 'y'));
+    const rid = meta.rAxisID = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(dataset.rAxisID, getFirstScaleId(chart, 'r'));
     const indexAxis = meta.indexAxis;
     const iid = meta.iAxisID = chooseId(indexAxis, xid, yid, rid);
     const vid = meta.vAxisID = chooseId(indexAxis, yid, xid, rid);
@@ -2676,7 +2830,7 @@ class DatasetController {
   _destroy() {
     const meta = this._cachedMeta;
     if (this._data) {
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["u"])(this._data, this);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.u)(this._data, this);
     }
     if (meta._stacked) {
       clearStacks(meta);
@@ -2687,17 +2841,17 @@ class DatasetController {
     const dataset = me.getDataset();
     const data = dataset.data || (dataset.data = []);
     const _data = me._data;
-    if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["i"])(data)) {
+    if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.i)(data)) {
       me._data = convertObjectDataToArray(data);
     } else if (_data !== data) {
       if (_data) {
-        Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["u"])(_data, me);
+        (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.u)(_data, me);
         const meta = me._cachedMeta;
         clearStacks(meta);
         meta._parsed = [];
       }
       if (data && Object.isExtensible(data)) {
-        Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["l"])(data, me);
+        (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.l)(data, me);
       }
       me._syncList = [];
       me._data = data;
@@ -2750,9 +2904,9 @@ class DatasetController {
       meta._sorted = true;
       parsed = data;
     } else {
-      if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["b"])(data[start])) {
+      if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(data[start])) {
         parsed = me.parseArrayData(meta, data, start, count);
-      } else if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["i"])(data[start])) {
+      } else if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.i)(data[start])) {
         parsed = me.parseObjectData(meta, data, start, count);
       } else {
         parsed = me.parsePrimitiveData(meta, data, start, count);
@@ -2813,8 +2967,8 @@ class DatasetController {
       index = i + start;
       item = data[index];
       parsed[i] = {
-        x: xScale.parse(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["f"])(item, xAxisKey), index),
-        y: yScale.parse(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["f"])(item, yAxisKey), index)
+        x: xScale.parse((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.f)(item, xAxisKey), index),
+        y: yScale.parse((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.f)(item, yAxisKey), index)
       };
     }
     return parsed;
@@ -2863,7 +3017,7 @@ class DatasetController {
       parsed = _parsed[i];
       value = parsed[scale.axis];
       otherValue = parsed[otherScale.axis];
-      return !Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(value) || otherMin > otherValue || otherMax < otherValue;
+      return !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(value) || otherMin > otherValue || otherMax < otherValue;
     }
     for (i = 0; i < ilen; ++i) {
       if (_skip()) {
@@ -2891,7 +3045,7 @@ class DatasetController {
     let i, ilen, value;
     for (i = 0, ilen = parsed.length; i < ilen; ++i) {
       value = parsed[i][scale.axis];
-      if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(value)) {
+      if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(value)) {
         values.push(value);
       }
     }
@@ -2917,7 +3071,7 @@ class DatasetController {
     me.configure();
     me._cachedDataOpts = {};
     me.update(mode || 'default');
-    meta._clip = toClip(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(me.options.clip, defaultClip(meta.xScale, meta.yScale, me.getMaxOverflow())));
+    meta._clip = toClip((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(me.options.clip, defaultClip(meta.xScale, meta.yScale, me.getMaxOverflow())));
   }
   update(mode) {}
   draw() {
@@ -2985,7 +3139,7 @@ class DatasetController {
     const cache = me._cachedDataOpts;
     const cacheKey = elementType + '-' + mode;
     const cached = cache[cacheKey];
-    const sharing = me.enableOptionSharing && Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["h"])(index);
+    const sharing = me.enableOptionSharing && (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.h)(index);
     if (cached) {
       return cloneIfNotShared(cached, sharing);
     }
@@ -2993,7 +3147,7 @@ class DatasetController {
     const scopeKeys = config.datasetElementScopeKeys(me._type, elementType);
     const prefixes = active ? [`${elementType}Hover`, 'hover', elementType, ''] : [elementType, ''];
     const scopes = config.getOptionScopes(me.getDataset(), scopeKeys);
-    const names = Object.keys(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].elements[elementType]);
+    const names = Object.keys(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.elements[elementType]);
     const context = () => me.getContext(index, active);
     const values = config.resolveNamedOptions(scopes, names, context, prefixes);
     if (values.$shared) {
@@ -3155,7 +3309,7 @@ function getAllScaleValues(scale) {
     for (let i = 0, ilen = metas.length; i < ilen; i++) {
       values = values.concat(metas[i].controller.getAllParsedValues(scale));
     }
-    scale._cache.$bar = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["_"])(values.sort((a, b) => a - b));
+    scale._cache.$bar = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__._)(values.sort((a, b) => a - b));
   }
   return scale._cache.$bar;
 }
@@ -3167,7 +3321,7 @@ function computeMinSampleSize(scale) {
     if (curr === 32767 || curr === -32768) {
       return;
     }
-    if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["h"])(prev)) {
+    if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.h)(prev)) {
       min = Math.min(min, Math.abs(curr - prev) || min);
     }
     prev = curr;
@@ -3186,7 +3340,7 @@ function computeMinSampleSize(scale) {
 function computeFitCategoryTraits(index, ruler, options, stackCount) {
   const thickness = options.barThickness;
   let size, ratio;
-  if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(thickness)) {
+  if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(thickness)) {
     size = ruler.min * options.categoryPercentage;
     ratio = options.barPercentage;
   } else {
@@ -3241,7 +3395,7 @@ function parseFloatBar(entry, item, vScale, i) {
   };
 }
 function parseValue(entry, item, vScale, i) {
-  if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["b"])(entry)) {
+  if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(entry)) {
     parseFloatBar(entry, item, vScale, i);
   } else {
     item[vScale.axis] = vScale.parse(entry, i);
@@ -3283,8 +3437,8 @@ class BarController extends DatasetController {
     for (i = start, ilen = start + count; i < ilen; ++i) {
       obj = data[i];
       item = {};
-      item[iScale.axis] = iScale.parse(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["f"])(obj, iAxisKey), i);
-      parsed.push(parseValue(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["f"])(obj, vAxisKey), item, vScale, i));
+      item[iScale.axis] = iScale.parse((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.f)(obj, iAxisKey), i);
+      parsed.push(parseValue((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.f)(obj, vAxisKey), item, vScale, i));
     }
     return parsed;
   }
@@ -3335,7 +3489,7 @@ class BarController extends DatasetController {
     me.updateSharedOptions(sharedOptions, mode, firstOpts);
     for (let i = start; i < start + count; i++) {
       const parsed = me.getParsed(i);
-      const vpixels = reset || Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(parsed[vScale.axis]) ? {base, head: base} : me._calculateBarValuePixels(i);
+      const vpixels = reset || (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(parsed[vScale.axis]) ? {base, head: base} : me._calculateBarValuePixels(i);
       const ipixels = me._calculateBarIndexPixels(i, ruler);
       const stack = (parsed._stacks || {})[vScale.axis];
       const properties = {
@@ -3368,7 +3522,7 @@ class BarController extends DatasetController {
         const val = item.controller.getParsed(dataIndex)[
           item.controller._cachedMeta.vScale.axis
         ];
-        if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(val) || isNaN(val)) {
+        if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(val) || isNaN(val)) {
           continue;
         }
       }
@@ -3438,12 +3592,12 @@ class BarController extends DatasetController {
     if (floating) {
       value = custom.barStart;
       length = custom.barEnd - custom.barStart;
-      if (value !== 0 && Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["s"])(value) !== Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["s"])(custom.barEnd)) {
+      if (value !== 0 && (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.s)(value) !== (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.s)(custom.barEnd)) {
         start = 0;
       }
       start += value;
     }
-    const startValue = !Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(baseValue) && !floating ? baseValue : start;
+    const startValue = !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(baseValue) && !floating ? baseValue : start;
     let base = vScale.getPixelForValue(startValue);
     if (this.chart.getDataVisibility(index)) {
       head = vScale.getPixelForValue(start + length);
@@ -3481,7 +3635,7 @@ class BarController extends DatasetController {
     const scale = ruler.scale;
     const options = me.options;
     const skipNull = options.skipNull;
-    const maxBarThickness = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(options.maxBarThickness, Infinity);
+    const maxBarThickness = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(options.maxBarThickness, Infinity);
     let center, size;
     if (ruler.grouped) {
       const stackCount = skipNull ? me._getStackCount(index) : ruler.stackCount;
@@ -3510,13 +3664,13 @@ class BarController extends DatasetController {
     const rects = meta.data;
     const ilen = rects.length;
     let i = 0;
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["k"])(chart.ctx, chart.chartArea);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.k)(chart.ctx, chart.chartArea);
     for (; i < ilen; ++i) {
       if (me.getParsed(i)[vScale.axis] !== null) {
         rects[i].draw(me._ctx);
       }
     }
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["m"])(chart.ctx);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.m)(chart.ctx);
   }
 }
 BarController.id = 'bar';
@@ -3565,8 +3719,8 @@ class BubbleController extends DatasetController {
     for (i = start, ilen = start + count; i < ilen; ++i) {
       item = data[i];
       parsed.push({
-        x: xScale.parse(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["f"])(item, xAxisKey), i),
-        y: yScale.parse(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["f"])(item, yAxisKey), i),
+        x: xScale.parse((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.f)(item, xAxisKey), i),
+        y: yScale.parse((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.f)(item, yAxisKey), i),
         _custom: item && item.r && +item.r
       });
     }
@@ -3634,7 +3788,7 @@ class BubbleController extends DatasetController {
     if (mode !== 'active') {
       values.radius = 0;
     }
-    values.radius += Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(parsed && parsed._custom, radius);
+    values.radius += (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(parsed && parsed._custom, radius);
     return values;
   }
 }
@@ -3674,19 +3828,19 @@ function getRatioAndOffset(rotation, circumference, cutout) {
   let ratioY = 1;
   let offsetX = 0;
   let offsetY = 0;
-  if (circumference < _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"]) {
+  if (circumference < _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T) {
     const startAngle = rotation;
     const endAngle = startAngle + circumference;
     const startX = Math.cos(startAngle);
     const startY = Math.sin(startAngle);
     const endX = Math.cos(endAngle);
     const endY = Math.sin(endAngle);
-    const calcMax = (angle, a, b) => Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["q"])(angle, startAngle, endAngle, true) ? 1 : Math.max(a, a * cutout, b, b * cutout);
-    const calcMin = (angle, a, b) => Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["q"])(angle, startAngle, endAngle, true) ? -1 : Math.min(a, a * cutout, b, b * cutout);
+    const calcMax = (angle, a, b) => (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.q)(angle, startAngle, endAngle, true) ? 1 : Math.max(a, a * cutout, b, b * cutout);
+    const calcMin = (angle, a, b) => (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.q)(angle, startAngle, endAngle, true) ? -1 : Math.min(a, a * cutout, b, b * cutout);
     const maxX = calcMax(0, startX, endX);
-    const maxY = calcMax(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["H"], startY, endY);
-    const minX = calcMin(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["P"], startX, endX);
-    const minY = calcMin(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["P"] + _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["H"], startY, endY);
+    const maxY = calcMax(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.H, startY, endY);
+    const minX = calcMin(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.P, startX, endX);
+    const minY = calcMin(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.P + _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.H, startY, endY);
     ratioX = (maxX - minX) / 2;
     ratioY = (maxY - minY) / 2;
     offsetX = -(maxX + minX) / 2;
@@ -3713,14 +3867,14 @@ class DoughnutController extends DatasetController {
     }
   }
   _getRotation() {
-    return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["t"])(this.options.rotation - 90);
+    return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.t)(this.options.rotation - 90);
   }
   _getCircumference() {
-    return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["t"])(this.options.circumference);
+    return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.t)(this.options.circumference);
   }
   _getRotationExtents() {
-    let min = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"];
-    let max = -_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"];
+    let min = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T;
+    let max = -_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T;
     const me = this;
     for (let i = 0; i < me.chart.data.datasets.length; ++i) {
       if (me.chart.isDatasetVisible(i)) {
@@ -3744,14 +3898,14 @@ class DoughnutController extends DatasetController {
     const arcs = meta.data;
     const spacing = me.getMaxBorderWidth() + me.getMaxOffset(arcs);
     const maxSize = Math.max((Math.min(chartArea.width, chartArea.height) - spacing) / 2, 0);
-    const cutout = Math.min(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["n"])(me.options.cutout, maxSize), 1);
+    const cutout = Math.min((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.n)(me.options.cutout, maxSize), 1);
     const chartWeight = me._getRingWeight(me.index);
     const {circumference, rotation} = me._getRotationExtents();
     const {ratioX, ratioY, offsetX, offsetY} = getRatioAndOffset(rotation, circumference, cutout);
     const maxWidth = (chartArea.width - spacing) / ratioX;
     const maxHeight = (chartArea.height - spacing) / ratioY;
     const maxRadius = Math.max(Math.min(maxWidth, maxHeight) / 2, 0);
-    const outerRadius = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["o"])(me.options.radius, maxRadius);
+    const outerRadius = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.o)(me.options.radius, maxRadius);
     const innerRadius = Math.max(outerRadius * cutout, 0);
     const radiusLength = (outerRadius - innerRadius) / me._getVisibleDatasetWeightTotal();
     me.offsetX = offsetX * outerRadius;
@@ -3769,7 +3923,7 @@ class DoughnutController extends DatasetController {
     if ((reset && opts.animation.animateRotate) || !this.chart.getDataVisibility(i) || meta._parsed[i] === null) {
       return 0;
     }
-    return me.calculateCircumference(meta._parsed[i] * circumference / _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"]);
+    return me.calculateCircumference(meta._parsed[i] * circumference / _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T);
   }
   updateElements(arcs, start, count, mode) {
     const me = this;
@@ -3827,7 +3981,7 @@ class DoughnutController extends DatasetController {
   calculateCircumference(value) {
     const total = this._cachedMeta.total;
     if (total > 0 && !isNaN(value)) {
-      return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"] * (Math.abs(value) / total);
+      return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T * (Math.abs(value) / total);
     }
     return 0;
   }
@@ -3836,7 +3990,7 @@ class DoughnutController extends DatasetController {
     const meta = me._cachedMeta;
     const chart = me.chart;
     const labels = chart.data.labels || [];
-    const value = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["p"])(meta._parsed[index], chart.options.locale);
+    const value = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.p)(meta._parsed[index], chart.options.locale);
     return {
       label: labels[index] || '',
       value,
@@ -3889,7 +4043,7 @@ class DoughnutController extends DatasetController {
     return ringWeightOffset;
   }
   _getRingWeight(datasetIndex) {
-    return Math.max(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(this.chart.data.datasets[datasetIndex].weight, 1), 0);
+    return Math.max((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(this.chart.data.datasets[datasetIndex].weight, 1), 0);
   }
   _getVisibleDatasetWeightTotal() {
     return this._getRingWeightOffset(this.chart.data.datasets.length) || 1;
@@ -3952,7 +4106,7 @@ DoughnutController.overrides = {
         label(tooltipItem) {
           let dataLabel = tooltipItem.label;
           const value = ': ' + tooltipItem.formattedValue;
-          if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["b"])(dataLabel)) {
+          if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(dataLabel)) {
             dataLabel = dataLabel.slice();
             dataLabel[0] += value;
           } else {
@@ -4005,14 +4159,14 @@ class LineController extends DatasetController {
     const iAxis = iScale.axis;
     const vAxis = vScale.axis;
     const spanGaps = me.options.spanGaps;
-    const maxGapLength = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["w"])(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
+    const maxGapLength = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.w)(spanGaps) ? spanGaps : Number.POSITIVE_INFINITY;
     const directUpdate = me.chart._animationsDisabled || reset || mode === 'none';
     let prevParsed = start > 0 && me.getParsed(start - 1);
     for (let i = start; i < start + count; ++i) {
       const point = points[i];
       const parsed = me.getParsed(i);
       const properties = directUpdate ? point : {};
-      const nullData = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(parsed[vAxis]);
+      const nullData = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(parsed[vAxis]);
       const iPixel = properties[iAxis] = iScale.getPixelForValue(parsed[iAxis], i);
       const vPixel = properties[vAxis] = reset || nullData ? vScale.getBasePixel() : vScale.getPixelForValue(_stacked ? me.applyStack(vScale, parsed, _stacked) : parsed[vAxis], i);
       properties.skip = isNaN(iPixel) || isNaN(vPixel) || nullData;
@@ -4073,15 +4227,15 @@ function getStartAndCountOfVisiblePoints(meta, points, animationsDisabled) {
     const axis = iScale.axis;
     const {min, max, minDefined, maxDefined} = iScale.getUserBounds();
     if (minDefined) {
-      start = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["x"])(Math.min(
-        Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["y"])(_parsed, iScale.axis, min).lo,
-        animationsDisabled ? pointCount : Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["y"])(points, axis, iScale.getPixelForValue(min)).lo),
+      start = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.x)(Math.min(
+        (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.y)(_parsed, iScale.axis, min).lo,
+        animationsDisabled ? pointCount : (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.y)(points, axis, iScale.getPixelForValue(min)).lo),
       0, pointCount - 1);
     }
     if (maxDefined) {
-      count = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["x"])(Math.max(
-        Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["y"])(_parsed, iScale.axis, max).hi + 1,
-        animationsDisabled ? 0 : Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["y"])(points, axis, iScale.getPixelForValue(max)).hi + 1),
+      count = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.x)(Math.max(
+        (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.y)(_parsed, iScale.axis, max).hi + 1,
+        animationsDisabled ? 0 : (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.y)(points, axis, iScale.getPixelForValue(max)).hi + 1),
       start, pointCount) - start;
     } else {
       count = pointCount - start;
@@ -4120,7 +4274,7 @@ class PolarAreaController extends DatasetController {
     const meta = me._cachedMeta;
     const chart = me.chart;
     const labels = chart.data.labels || [];
-    const value = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["p"])(meta._parsed[index].r, chart.options.locale);
+    const value = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.p)(meta._parsed[index].r, chart.options.locale);
     return {
       label: labels[index] || '',
       value,
@@ -4153,7 +4307,7 @@ class PolarAreaController extends DatasetController {
     const scale = me._cachedMeta.rScale;
     const centerX = scale.xCenter;
     const centerY = scale.yCenter;
-    const datasetStartAngle = scale.getIndexAngle(0) - 0.5 * _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["P"];
+    const datasetStartAngle = scale.getIndexAngle(0) - 0.5 * _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.P;
     let angle = datasetStartAngle;
     let i;
     const defaultAngle = 360 / me.countVisibleElements();
@@ -4199,7 +4353,7 @@ class PolarAreaController extends DatasetController {
   }
   _computeAngle(index, mode, defaultAngle) {
     return this.chart.getDataVisibility(index)
-      ? Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["t"])(this.resolveDataElementOptions(index, mode).angle || defaultAngle)
+      ? (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.t)(this.resolveDataElementOptions(index, mode).angle || defaultAngle)
       : 0;
   }
 }
@@ -4449,7 +4603,7 @@ function getRelativePosition(e, chart) {
       y: e.y
     };
   }
-  return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["z"])(e, chart);
+  return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.z)(e, chart);
 }
 function evaluateAllVisibleItems(chart, handler) {
   const metasets = chart.getSortedVisibleDatasetMetas();
@@ -4468,7 +4622,7 @@ function binarySearch(metaset, axis, value, intersect) {
   const {controller, data, _sorted} = metaset;
   const iScale = controller._cachedMeta.iScale;
   if (iScale && axis === iScale.axis && _sorted && data.length) {
-    const lookupMethod = iScale._reversePixels ? _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["B"] : _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["y"];
+    const lookupMethod = iScale._reversePixels ? _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.B : _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.y;
     if (!intersect) {
       return lookupMethod(data, axis, value);
     } else if (controller._sharedOptions) {
@@ -4508,7 +4662,7 @@ function getDistanceMetricForAxis(axis) {
 }
 function getIntersectItems(chart, position, axis, useFinalPosition) {
   const items = [];
-  if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["A"])(position, chart.chartArea, chart._minPadding)) {
+  if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.A)(position, chart.chartArea, chart._minPadding)) {
     return items;
   }
   const evaluationFunc = function(element, datasetIndex, index) {
@@ -4523,7 +4677,7 @@ function getNearestItems(chart, position, axis, intersect, useFinalPosition) {
   const distanceMetric = getDistanceMetricForAxis(axis);
   let minDistance = Number.POSITIVE_INFINITY;
   let items = [];
-  if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["A"])(position, chart.chartArea, chart._minPadding)) {
+  if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.A)(position, chart.chartArea, chart._minPadding)) {
     return items;
   }
   const evaluationFunc = function(element, datasetIndex, index) {
@@ -4531,7 +4685,7 @@ function getNearestItems(chart, position, axis, intersect, useFinalPosition) {
       return;
     }
     const center = element.getCenterPoint(useFinalPosition);
-    if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["A"])(center, chart.chartArea, chart._minPadding)) {
+    if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.A)(center, chart.chartArea, chart._minPadding)) {
       return;
     }
     const distance = distanceMetric(position, center);
@@ -4696,7 +4850,7 @@ function updateMaxPadding(maxPadding, boxPadding) {
 function updateDims(chartArea, params, layout) {
   const box = layout.box;
   const maxPadding = chartArea.maxPadding;
-  if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["i"])(layout.pos)) {
+  if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.i)(layout.pos)) {
     if (layout.size) {
       chartArea[layout.pos] -= layout.size;
     }
@@ -4788,7 +4942,7 @@ function placeBoxes(boxes, chartArea, params) {
   chartArea.x = x;
   chartArea.y = y;
 }
-_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].set('layout', {
+_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.set('layout', {
   padding: {
     top: 0,
     right: 0,
@@ -4829,13 +4983,13 @@ var layouts = {
     if (!chart) {
       return;
     }
-    const padding = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["C"])(chart.options.layout.padding);
+    const padding = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.C)(chart.options.layout.padding);
     const availableWidth = Math.max(width - padding.width, 0);
     const availableHeight = Math.max(height - padding.height, 0);
     const boxes = buildLayoutBoxes(chart.boxes);
     const verticalBoxes = boxes.vertical;
     const horizontalBoxes = boxes.horizontal;
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(chart.boxes, box => {
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(chart.boxes, box => {
       if (typeof box.beforeLayout === 'function') {
         box.beforeLayout();
       }
@@ -4852,7 +5006,7 @@ var layouts = {
       hBoxMaxHeight: availableHeight / 2
     });
     const maxPadding = Object.assign({}, padding);
-    updateMaxPadding(maxPadding, Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["C"])(minPadding));
+    updateMaxPadding(maxPadding, (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.C)(minPadding));
     const chartArea = Object.assign({
       maxPadding,
       w: availableWidth,
@@ -4879,7 +5033,7 @@ var layouts = {
       height: chartArea.h,
       width: chartArea.w,
     };
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(boxes.chartArea, (layout) => {
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(boxes.chartArea, (layout) => {
       const box = layout.box;
       Object.assign(box, chart.chartArea);
       box.update(chartArea.w, chartArea.h);
@@ -4947,7 +5101,7 @@ function initCanvas(canvas, aspectRatio) {
   style.display = style.display || 'block';
   style.boxSizing = style.boxSizing || 'border-box';
   if (isNullOrEmpty(renderWidth)) {
-    const displayWidth = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["G"])(canvas, 'width');
+    const displayWidth = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.G)(canvas, 'width');
     if (displayWidth !== undefined) {
       canvas.width = displayWidth;
     }
@@ -4956,7 +5110,7 @@ function initCanvas(canvas, aspectRatio) {
     if (canvas.style.height === '') {
       canvas.height = canvas.width / (aspectRatio || 2);
     } else {
-      const displayHeight = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["G"])(canvas, 'height');
+      const displayHeight = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.G)(canvas, 'height');
       if (displayHeight !== undefined) {
         canvas.height = displayHeight;
       }
@@ -4964,7 +5118,7 @@ function initCanvas(canvas, aspectRatio) {
   }
   return canvas;
 }
-const eventListenerOptions = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["J"] ? {passive: true} : false;
+const eventListenerOptions = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.J ? {passive: true} : false;
 function addListener(node, type, listener) {
   node.addEventListener(type, listener, eventListenerOptions);
 }
@@ -4973,7 +5127,7 @@ function removeListener(chart, type, listener) {
 }
 function fromNativeEvent(event, chart) {
   const type = EVENT_TYPES[event.type] || event.type;
-  const {x, y} = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["z"])(event, chart);
+  const {x, y} = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.z)(event, chart);
   return {
     type,
     chart,
@@ -4984,10 +5138,10 @@ function fromNativeEvent(event, chart) {
 }
 function createAttachObserver(chart, type, listener) {
   const canvas = chart.canvas;
-  const container = canvas && Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["F"])(canvas);
+  const container = canvas && (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.F)(canvas);
   const element = container || canvas;
   const observer = new MutationObserver(entries => {
-    const parent = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["F"])(element);
+    const parent = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.F)(element);
     entries.forEach(entry => {
       for (let i = 0; i < entry.addedNodes.length; i++) {
         const added = entry.addedNodes[i];
@@ -5002,7 +5156,7 @@ function createAttachObserver(chart, type, listener) {
 }
 function createDetachObserver(chart, type, listener) {
   const canvas = chart.canvas;
-  const container = canvas && Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["F"])(canvas);
+  const container = canvas && (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.F)(canvas);
   if (!container) {
     return;
   }
@@ -5047,11 +5201,11 @@ function unlistenDevicePixelRatioChanges(chart) {
 }
 function createResizeObserver(chart, type, listener) {
   const canvas = chart.canvas;
-  const container = canvas && Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["F"])(canvas);
+  const container = canvas && (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.F)(canvas);
   if (!container) {
     return;
   }
-  const resize = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["I"])((width, height) => {
+  const resize = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.I)((width, height) => {
     const w = container.clientWidth;
     listener(width, height);
     if (w < container.clientWidth) {
@@ -5081,7 +5235,7 @@ function releaseObserver(chart, type, observer) {
 }
 function createProxyAndListen(chart, type, listener) {
   const canvas = chart.canvas;
-  const proxy = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["I"])((event) => {
+  const proxy = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.I)((event) => {
     if (chart.ctx !== null) {
       listener(fromNativeEvent(event, chart));
     }
@@ -5109,7 +5263,7 @@ class DomPlatform extends BasePlatform {
     const initial = canvas[EXPANDO_KEY].initial;
     ['height', 'width'].forEach((prop) => {
       const value = initial[prop];
-      if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(value)) {
+      if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(value)) {
         canvas.removeAttribute(prop);
       } else {
         canvas.setAttribute(prop, value);
@@ -5153,11 +5307,11 @@ class DomPlatform extends BasePlatform {
     return window.devicePixelRatio;
   }
   getMaximumSize(canvas, width, height, aspectRatio) {
-    return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["E"])(canvas, width, height, aspectRatio);
+    return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.E)(canvas, width, height, aspectRatio);
   }
   isAttached(canvas) {
-    const container = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["F"])(canvas);
-    return !!(container && Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["F"])(container));
+    const container = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.F)(canvas);
+    return !!(container && (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.F)(container));
   }
 }
 
@@ -5174,7 +5328,7 @@ class Element {
     return {x, y};
   }
   hasValue() {
-    return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["w"])(this.x) && Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["w"])(this.y);
+    return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.w)(this.x) && (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.w)(this.y);
   }
   getProps(props, final) {
     const me = this;
@@ -5194,7 +5348,7 @@ Element.defaultRoutes = undefined;
 
 const formatters = {
   values(value) {
-    return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["b"])(value) ? value : '' + value;
+    return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(value) ? value : '' + value;
   },
   numeric(tickValue, index, ticks) {
     if (tickValue === 0) {
@@ -5210,17 +5364,17 @@ const formatters = {
       }
       delta = calculateDelta(tickValue, ticks);
     }
-    const logDelta = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["K"])(Math.abs(delta));
+    const logDelta = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.K)(Math.abs(delta));
     const numDecimal = Math.max(Math.min(-1 * Math.floor(logDelta), 20), 0);
     const options = {notation, minimumFractionDigits: numDecimal, maximumFractionDigits: numDecimal};
     Object.assign(options, this.options.ticks.format);
-    return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["p"])(tickValue, locale, options);
+    return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.p)(tickValue, locale, options);
   },
   logarithmic(tickValue, index, ticks) {
     if (tickValue === 0) {
       return '0';
     }
-    const remain = tickValue / (Math.pow(10, Math.floor(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["K"])(tickValue))));
+    const remain = tickValue / (Math.pow(10, Math.floor((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.K)(tickValue))));
     if (remain === 1 || remain === 2 || remain === 5) {
       return formatters.numeric.call(this, tickValue, index, ticks);
     }
@@ -5236,7 +5390,7 @@ function calculateDelta(tickValue, ticks) {
 }
 var Ticks = {formatters};
 
-_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].set('scale', {
+_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.set('scale', {
   display: true,
   offset: false,
   reverse: false,
@@ -5286,16 +5440,16 @@ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].set('scale', {
     backdropPadding: 2,
   }
 });
-_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].route('scale.ticks', 'color', '', 'color');
-_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].route('scale.grid', 'color', '', 'borderColor');
-_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].route('scale.grid', 'borderColor', '', 'borderColor');
-_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].route('scale.title', 'color', '', 'color');
-_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].describe('scale', {
+_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.route('scale.ticks', 'color', '', 'color');
+_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.route('scale.grid', 'color', '', 'borderColor');
+_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.route('scale.grid', 'borderColor', '', 'borderColor');
+_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.route('scale.title', 'color', '', 'color');
+_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.describe('scale', {
   _fallback: false,
   _scriptable: (name) => !name.startsWith('before') && !name.startsWith('after') && name !== 'callback' && name !== 'parser',
   _indexable: (name) => name !== 'borderDash' && name !== 'tickBorderDash',
 });
-_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].describe('scales', {
+_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.describe('scales', {
   _fallback: 'scale',
 });
 
@@ -5315,11 +5469,11 @@ function autoSkip(scale, ticks) {
   if (numMajorIndices > 0) {
     let i, ilen;
     const avgMajorSpacing = numMajorIndices > 1 ? Math.round((last - first) / (numMajorIndices - 1)) : null;
-    skip(ticks, newTicks, spacing, Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(avgMajorSpacing) ? 0 : first - avgMajorSpacing, first);
+    skip(ticks, newTicks, spacing, (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(avgMajorSpacing) ? 0 : first - avgMajorSpacing, first);
     for (i = 0, ilen = numMajorIndices - 1; i < ilen; i++) {
       skip(ticks, newTicks, spacing, majorIndices[i], majorIndices[i + 1]);
     }
-    skip(ticks, newTicks, spacing, last, Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(avgMajorSpacing) ? ticks.length : last + avgMajorSpacing);
+    skip(ticks, newTicks, spacing, last, (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(avgMajorSpacing) ? ticks.length : last + avgMajorSpacing);
     return newTicks;
   }
   skip(ticks, newTicks, spacing);
@@ -5338,7 +5492,7 @@ function calculateSpacing(majorIndices, ticks, ticksLimit) {
   if (!evenMajorSpacing) {
     return Math.max(spacing, 1);
   }
-  const factors = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["L"])(evenMajorSpacing);
+  const factors = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.L)(evenMajorSpacing);
   for (let i = 0, ilen = factors.length - 1; i < ilen; i++) {
     const factor = factors[i];
     if (factor > spacing) {
@@ -5371,8 +5525,8 @@ function skipMajors(ticks, newTicks, majorIndices, spacing) {
   }
 }
 function skip(ticks, newTicks, spacing, majorStart, majorEnd) {
-  const start = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(majorStart, 0);
-  const end = Math.min(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(majorEnd, ticks.length), ticks.length);
+  const start = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(majorStart, 0);
+  const end = Math.min((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(majorEnd, ticks.length), ticks.length);
   let count = 0;
   let length, i, next;
   spacing = Math.ceil(spacing);
@@ -5443,7 +5597,7 @@ function getPixelForGridLine(scale, index, offsetGridLines) {
   return lineValue;
 }
 function garbageCollect(caches, length) {
-  Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(caches, (cache) => {
+  (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(caches, (cache) => {
     const gc = cache.gc;
     const gcLen = gc.length / 2;
     let i;
@@ -5462,9 +5616,9 @@ function getTitleHeight(options, fallback) {
   if (!options.display) {
     return 0;
   }
-  const font = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(options.font, fallback);
-  const padding = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["C"])(options.padding);
-  const lines = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["b"])(options.text) ? options.text.length : 1;
+  const font = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(options.font, fallback);
+  const padding = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.C)(options.padding);
+  const lines = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(options.text) ? options.text.length : 1;
   return (lines * font.lineHeight) + padding.height;
 }
 function createScaleContext(parent, scale) {
@@ -5481,7 +5635,7 @@ function createTickContext(parent, index, tick) {
   });
 }
 function titleAlign(align, position, reverse) {
-  let ret = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["X"])(align);
+  let ret = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.X)(align);
   if ((reverse && position !== 'right') || (!reverse && position === 'right')) {
     ret = reverseAlign(ret);
   }
@@ -5492,13 +5646,13 @@ function titleArgs(scale, offset, position, align) {
   let rotation = 0;
   let maxWidth, titleX, titleY;
   if (scale.isHorizontal()) {
-    titleX = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Y"])(align, left, right);
+    titleX = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Y)(align, left, right);
     titleY = offsetFromEdge(scale, position, offset);
     maxWidth = right - left;
   } else {
     titleX = offsetFromEdge(scale, position, offset);
-    titleY = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Y"])(align, bottom, top);
-    rotation = position === 'left' ? -_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["H"] : _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["H"];
+    titleY = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Y)(align, bottom, top);
+    rotation = position === 'left' ? -_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.H : _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.H;
   }
   return {titleX, titleY, maxWidth, rotation};
 }
@@ -5567,15 +5721,15 @@ class Scale extends Element {
   }
   getUserBounds() {
     let {_userMin, _userMax, _suggestedMin, _suggestedMax} = this;
-    _userMin = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["M"])(_userMin, Number.POSITIVE_INFINITY);
-    _userMax = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["M"])(_userMax, Number.NEGATIVE_INFINITY);
-    _suggestedMin = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["M"])(_suggestedMin, Number.POSITIVE_INFINITY);
-    _suggestedMax = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["M"])(_suggestedMax, Number.NEGATIVE_INFINITY);
+    _userMin = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.M)(_userMin, Number.POSITIVE_INFINITY);
+    _userMax = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.M)(_userMax, Number.NEGATIVE_INFINITY);
+    _suggestedMin = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.M)(_suggestedMin, Number.POSITIVE_INFINITY);
+    _suggestedMax = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.M)(_suggestedMax, Number.NEGATIVE_INFINITY);
     return {
-      min: Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["M"])(_userMin, _suggestedMin),
-      max: Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["M"])(_userMax, _suggestedMax),
-      minDefined: Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(_userMin),
-      maxDefined: Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(_userMax)
+      min: (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.M)(_userMin, _suggestedMin),
+      max: (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.M)(_userMax, _suggestedMax),
+      minDefined: (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(_userMin),
+      maxDefined: (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(_userMax)
     };
   }
   getMinMax(canStack) {
@@ -5596,8 +5750,8 @@ class Scale extends Element {
       }
     }
     return {
-      min: Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["M"])(min, Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["M"])(max, min)),
-      max: Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["M"])(max, Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["M"])(min, max))
+      min: (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.M)(min, (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.M)(max, min)),
+      max: (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.M)(max, (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.M)(min, max))
     };
   }
   getPadding() {
@@ -5621,7 +5775,7 @@ class Scale extends Element {
     this._dataLimitsCached = false;
   }
   beforeUpdate() {
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(this.options.beforeUpdate, [this]);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(this.options.beforeUpdate, [this]);
   }
   update(maxWidth, maxHeight, margins) {
     const me = this;
@@ -5650,7 +5804,7 @@ class Scale extends Element {
       me.beforeDataLimits();
       me.determineDataLimits();
       me.afterDataLimits();
-      me._range = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["O"])(me, me.options.grace);
+      me._range = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.O)(me, me.options.grace);
       me._dataLimitsCached = true;
     }
     me.beforeBuildTicks();
@@ -5693,10 +5847,10 @@ class Scale extends Element {
     me._alignToPixels = me.options.alignToPixels;
   }
   afterUpdate() {
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(this.options.afterUpdate, [this]);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(this.options.afterUpdate, [this]);
   }
   beforeSetDimensions() {
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(this.options.beforeSetDimensions, [this]);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(this.options.beforeSetDimensions, [this]);
   }
   setDimensions() {
     const me = this;
@@ -5715,12 +5869,12 @@ class Scale extends Element {
     me.paddingBottom = 0;
   }
   afterSetDimensions() {
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(this.options.afterSetDimensions, [this]);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(this.options.afterSetDimensions, [this]);
   }
   _callHooks(name) {
     const me = this;
     me.chart.notifyPlugins(name, me.getContext());
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(me.options[name], [me]);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(me.options[name], [me]);
   }
   beforeDataLimits() {
     this._callHooks('beforeDataLimits');
@@ -5739,7 +5893,7 @@ class Scale extends Element {
     this._callHooks('afterBuildTicks');
   }
   beforeTickToLabelConversion() {
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(this.options.beforeTickToLabelConversion, [this]);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(this.options.beforeTickToLabelConversion, [this]);
   }
   generateTickLabels(ticks) {
     const me = this;
@@ -5747,10 +5901,10 @@ class Scale extends Element {
     let i, ilen, tick;
     for (i = 0, ilen = ticks.length; i < ilen; i++) {
       tick = ticks[i];
-      tick.label = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(tickOpts.callback, [tick.value, i, ticks], me);
+      tick.label = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(tickOpts.callback, [tick.value, i, ticks], me);
     }
     for (i = 0; i < ilen; i++) {
-      if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(ticks[i].label)) {
+      if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(ticks[i].label)) {
         ticks.splice(i, 1);
         ilen--;
         i--;
@@ -5758,10 +5912,10 @@ class Scale extends Element {
     }
   }
   afterTickToLabelConversion() {
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(this.options.afterTickToLabelConversion, [this]);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(this.options.afterTickToLabelConversion, [this]);
   }
   beforeCalculateLabelRotation() {
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(this.options.beforeCalculateLabelRotation, [this]);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(this.options.beforeCalculateLabelRotation, [this]);
   }
   calculateLabelRotation() {
     const me = this;
@@ -5779,14 +5933,14 @@ class Scale extends Element {
     const labelSizes = me._getLabelSizes();
     const maxLabelWidth = labelSizes.widest.width;
     const maxLabelHeight = labelSizes.highest.height;
-    const maxWidth = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["x"])(me.chart.width - maxLabelWidth, 0, me.maxWidth);
+    const maxWidth = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.x)(me.chart.width - maxLabelWidth, 0, me.maxWidth);
     tickWidth = options.offset ? me.maxWidth / numTicks : maxWidth / (numTicks - 1);
     if (maxLabelWidth + 6 > tickWidth) {
       tickWidth = maxWidth / (numTicks - (options.offset ? 0.5 : 1));
       maxHeight = me.maxHeight - getTickMarkLength(options.grid)
 				- tickOpts.padding - getTitleHeight(options.title, me.chart.options.font);
       maxLabelDiagonal = Math.sqrt(maxLabelWidth * maxLabelWidth + maxLabelHeight * maxLabelHeight);
-      labelRotation = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Q"])(Math.min(
+      labelRotation = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Q)(Math.min(
         Math.asin(Math.min((labelSizes.highest.height + 6) / tickWidth, 1)),
         Math.asin(Math.min(maxHeight / maxLabelDiagonal, 1)) - Math.asin(maxLabelHeight / maxLabelDiagonal)
       ));
@@ -5795,10 +5949,10 @@ class Scale extends Element {
     me.labelRotation = labelRotation;
   }
   afterCalculateLabelRotation() {
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(this.options.afterCalculateLabelRotation, [this]);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(this.options.afterCalculateLabelRotation, [this]);
   }
   beforeFit() {
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(this.options.beforeFit, [this]);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(this.options.beforeFit, [this]);
   }
   fit() {
     const me = this;
@@ -5821,7 +5975,7 @@ class Scale extends Element {
       if (tickOpts.display && me.ticks.length) {
         const {first, last, widest, highest} = me._getLabelSizes();
         const tickPadding = tickOpts.padding * 2;
-        const angleRadians = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["t"])(me.labelRotation);
+        const angleRadians = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.t)(me.labelRotation);
         const cos = Math.cos(angleRadians);
         const sin = Math.sin(angleRadians);
         if (isHorizontal) {
@@ -5895,7 +6049,7 @@ class Scale extends Element {
     }
   }
   afterFit() {
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(this.options.afterFit, [this]);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(this.options.afterFit, [this]);
   }
   isHorizontal() {
     const {axis, position} = this.options;
@@ -5937,14 +6091,14 @@ class Scale extends Element {
       cache = caches[fontString] = caches[fontString] || {data: {}, gc: []};
       lineHeight = tickFont.lineHeight;
       width = height = 0;
-      if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(label) && !Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["b"])(label)) {
-        width = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["R"])(ctx, cache.data, cache.gc, width, label);
+      if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(label) && !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(label)) {
+        width = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.R)(ctx, cache.data, cache.gc, width, label);
         height = lineHeight;
-      } else if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["b"])(label)) {
+      } else if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(label)) {
         for (j = 0, jlen = label.length; j < jlen; ++j) {
           nestedLabel = label[j];
-          if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(nestedLabel) && !Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["b"])(nestedLabel)) {
-            width = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["R"])(ctx, cache.data, cache.gc, width, nestedLabel);
+          if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(nestedLabel) && !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(nestedLabel)) {
+            width = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.R)(ctx, cache.data, cache.gc, width, nestedLabel);
             height += lineHeight;
           }
         }
@@ -5987,7 +6141,7 @@ class Scale extends Element {
       decimal = 1 - decimal;
     }
     const pixel = me._startPixel + decimal * me._length;
-    return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["S"])(me._alignToPixels ? Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["U"])(me.chart, pixel, 0) : pixel);
+    return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.S)(me._alignToPixels ? (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.U)(me.chart, pixel, 0) : pixel);
   }
   getDecimalForPixel(pixel) {
     const decimal = (pixel - this._startPixel) / this._length;
@@ -6016,7 +6170,7 @@ class Scale extends Element {
   _tickSize() {
     const me = this;
     const optionTicks = me.options.ticks;
-    const rot = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["t"])(me.labelRotation);
+    const rot = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.t)(me.labelRotation);
     const cos = Math.abs(Math.cos(rot));
     const sin = Math.abs(Math.sin(rot));
     const labelSizes = me._getLabelSizes();
@@ -6050,7 +6204,7 @@ class Scale extends Element {
     const axisWidth = borderOpts.drawBorder ? borderOpts.borderWidth : 0;
     const axisHalfWidth = axisWidth / 2;
     const alignBorderValue = function(pixel) {
-      return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["U"])(chart, pixel, axisWidth);
+      return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.U)(chart, pixel, axisWidth);
     };
     let borderValue, i, lineValue, alignedLineValue;
     let tx1, ty1, tx2, ty2, x1, y1, x2, y2;
@@ -6081,7 +6235,7 @@ class Scale extends Element {
     } else if (axis === 'x') {
       if (position === 'center') {
         borderValue = alignBorderValue((chartArea.top + chartArea.bottom) / 2 + 0.5);
-      } else if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["i"])(position)) {
+      } else if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.i)(position)) {
         const positionAxisID = Object.keys(position)[0];
         const value = position[positionAxisID];
         borderValue = alignBorderValue(me.chart.scales[positionAxisID].getPixelForValue(value));
@@ -6093,7 +6247,7 @@ class Scale extends Element {
     } else if (axis === 'y') {
       if (position === 'center') {
         borderValue = alignBorderValue((chartArea.left + chartArea.right) / 2);
-      } else if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["i"])(position)) {
+      } else if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.i)(position)) {
         const positionAxisID = Object.keys(position)[0];
         const value = position[positionAxisID];
         borderValue = alignBorderValue(me.chart.scales[positionAxisID].getPixelForValue(value));
@@ -6117,7 +6271,7 @@ class Scale extends Element {
       if (lineValue === undefined) {
         continue;
       }
-      alignedLineValue = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["U"])(chart, lineValue, lineWidth);
+      alignedLineValue = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.U)(chart, lineValue, lineWidth);
       if (isHorizontal) {
         tx1 = tx2 = x1 = x2 = alignedLineValue;
       } else {
@@ -6157,7 +6311,7 @@ class Scale extends Element {
     const tl = getTickMarkLength(options.grid);
     const tickAndPadding = tl + padding;
     const hTickAndPadding = mirror ? -padding : tickAndPadding;
-    const rotation = -Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["t"])(me.labelRotation);
+    const rotation = -(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.t)(me.labelRotation);
     const items = [];
     let i, ilen, tick, label, x, y, textAlign, pixel, font, lineHeight, lineCount, textOffset;
     let textBaseline = 'middle';
@@ -6178,7 +6332,7 @@ class Scale extends Element {
     } else if (axis === 'x') {
       if (position === 'center') {
         y = ((chartArea.top + chartArea.bottom) / 2) + tickAndPadding;
-      } else if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["i"])(position)) {
+      } else if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.i)(position)) {
         const positionAxisID = Object.keys(position)[0];
         const value = position[positionAxisID];
         y = me.chart.scales[positionAxisID].getPixelForValue(value) + tickAndPadding;
@@ -6187,7 +6341,7 @@ class Scale extends Element {
     } else if (axis === 'y') {
       if (position === 'center') {
         x = ((chartArea.left + chartArea.right) / 2) - tickAndPadding;
-      } else if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["i"])(position)) {
+      } else if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.i)(position)) {
         const positionAxisID = Object.keys(position)[0];
         const value = position[positionAxisID];
         x = me.chart.scales[positionAxisID].getPixelForValue(value);
@@ -6209,7 +6363,7 @@ class Scale extends Element {
       pixel = me.getPixelForTick(i) + optionTicks.labelOffset;
       font = me._resolveTickFontOptions(i);
       lineHeight = font.lineHeight;
-      lineCount = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["b"])(label) ? label.length : 1;
+      lineCount = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(label) ? label.length : 1;
       const halfCount = lineCount / 2;
       const color = optsAtIndex.color;
       const strokeColor = optsAtIndex.textStrokeColor;
@@ -6242,7 +6396,7 @@ class Scale extends Element {
       }
       let backdrop;
       if (optsAtIndex.showLabelBackdrop) {
-        const labelPadding = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["C"])(optsAtIndex.backdropPadding);
+        const labelPadding = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.C)(optsAtIndex.backdropPadding);
         const height = labelSizes.heights[i];
         const width = labelSizes.widths[i];
         let top = y + textOffset - labelPadding.top;
@@ -6290,7 +6444,7 @@ class Scale extends Element {
   _getXAxisLabelAlignment() {
     const me = this;
     const {position, ticks} = me.options;
-    const rotation = -Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["t"])(me.labelRotation);
+    const rotation = -(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.t)(me.labelRotation);
     if (rotation) {
       return position === 'top' ? 'left' : 'right';
     }
@@ -6441,12 +6595,12 @@ class Scale extends Element {
     const borderValue = me._borderValue;
     let x1, x2, y1, y2;
     if (me.isHorizontal()) {
-      x1 = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["U"])(chart, me.left, axisWidth) - axisWidth / 2;
-      x2 = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["U"])(chart, me.right, lastLineWidth) + lastLineWidth / 2;
+      x1 = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.U)(chart, me.left, axisWidth) - axisWidth / 2;
+      x2 = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.U)(chart, me.right, lastLineWidth) + lastLineWidth / 2;
       y1 = y2 = borderValue;
     } else {
-      y1 = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["U"])(chart, me.top, axisWidth) - axisWidth / 2;
-      y2 = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["U"])(chart, me.bottom, lastLineWidth) + lastLineWidth / 2;
+      y1 = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.U)(chart, me.top, axisWidth) - axisWidth / 2;
+      y2 = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.U)(chart, me.bottom, lastLineWidth) + lastLineWidth / 2;
       x1 = x2 = borderValue;
     }
     ctx.save();
@@ -6467,7 +6621,7 @@ class Scale extends Element {
     const ctx = me.ctx;
     const area = me._computeLabelArea();
     if (area) {
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["k"])(ctx, area);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.k)(ctx, area);
     }
     const items = me._labelItems || (me._labelItems = me._computeLabelItems(chartArea));
     let i, ilen;
@@ -6480,10 +6634,10 @@ class Scale extends Element {
         ctx.fillRect(item.backdrop.left, item.backdrop.top, item.backdrop.width, item.backdrop.height);
       }
       let y = item.textOffset;
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["V"])(ctx, label, 0, y, tickFont, item);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.V)(ctx, label, 0, y, tickFont, item);
     }
     if (area) {
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["m"])(ctx);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.m)(ctx);
     }
   }
   drawTitle() {
@@ -6491,20 +6645,20 @@ class Scale extends Element {
     if (!title.display) {
       return;
     }
-    const font = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(title.font);
-    const padding = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["C"])(title.padding);
+    const font = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(title.font);
+    const padding = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.C)(title.padding);
     const align = title.align;
     let offset = font.lineHeight / 2;
     if (position === 'bottom') {
       offset += padding.bottom;
-      if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["b"])(title.text)) {
+      if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(title.text)) {
         offset += font.lineHeight * (title.text.length - 1);
       }
     } else {
       offset += padding.top;
     }
     const {titleX, titleY, maxWidth, rotation} = titleArgs(this, offset, position, align);
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["V"])(ctx, title.text, 0, 0, font, {
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.V)(ctx, title.text, 0, 0, font, {
       color: title.color,
       maxWidth,
       rotation,
@@ -6572,7 +6726,7 @@ class Scale extends Element {
   }
   _resolveTickFontOptions(index) {
     const opts = this.options.ticks.setContext(this.getContext(index));
-    return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(opts.font);
+    return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(opts.font);
   }
   _maxDigits() {
     const me = this;
@@ -6610,7 +6764,7 @@ class TypedRegistry {
     items[id] = item;
     registerDefaults(item, scope, parentScope);
     if (me.override) {
-      _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].override(item.id, item.overrides);
+      _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.override(item.id, item.overrides);
     }
     return scope;
   }
@@ -6624,26 +6778,26 @@ class TypedRegistry {
     if (id in items) {
       delete items[id];
     }
-    if (scope && id in _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"][scope]) {
-      delete _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"][scope][id];
+    if (scope && id in _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d[scope]) {
+      delete _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d[scope][id];
       if (this.override) {
-        delete _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Z"][id];
+        delete _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Z[id];
       }
     }
   }
 }
 function registerDefaults(item, scope, parentScope) {
-  const itemDefaults = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["$"])(Object.create(null), [
-    parentScope ? _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].get(parentScope) : {},
-    _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].get(scope),
+  const itemDefaults = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.$)(Object.create(null), [
+    parentScope ? _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.get(parentScope) : {},
+    _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.get(scope),
     item.defaults
   ]);
-  _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].set(scope, itemDefaults);
+  _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.set(scope, itemDefaults);
   if (item.defaultRoutes) {
     routeDefaults(scope, item.defaultRoutes);
   }
   if (item.descriptors) {
-    _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].describe(scope, item.descriptors);
+    _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.describe(scope, item.descriptors);
   }
 }
 function routeDefaults(scope, routes) {
@@ -6654,7 +6808,7 @@ function routeDefaults(scope, routes) {
     const parts = routes[property].split('.');
     const targetName = parts.pop();
     const targetScope = parts.join('.');
-    _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].route(sourceScope, sourceName, targetScope, targetName);
+    _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.route(sourceScope, sourceName, targetScope, targetName);
   });
 }
 function isIChartComponent(proto) {
@@ -6718,7 +6872,7 @@ class Registry {
       if (typedRegistry || reg.isForType(arg) || (reg === me.plugins && arg.id)) {
         me._exec(method, reg, arg);
       } else {
-        Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(arg, item => {
+        (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(arg, item => {
           const itemReg = typedRegistry || me._getRegistryForType(item);
           me._exec(method, itemReg, item);
         });
@@ -6726,10 +6880,10 @@ class Registry {
     });
   }
   _exec(method, registry, component) {
-    const camelMethod = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a0"])(method);
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(component['before' + camelMethod], [], component);
+    const camelMethod = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a0)(method);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(component['before' + camelMethod], [], component);
     registry[method](component);
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(component['after' + camelMethod], [], component);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(component['after' + camelMethod], [], component);
   }
   _getRegistryForType(type) {
     for (let i = 0; i < this._typedRegistries.length; i++) {
@@ -6774,14 +6928,14 @@ class PluginService {
       const plugin = descriptor.plugin;
       const method = plugin[hook];
       const params = [chart, args, descriptor.options];
-      if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(method, params, plugin) === false && args.cancelable) {
+      if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(method, params, plugin) === false && args.cancelable) {
         return false;
       }
     }
     return true;
   }
   invalidate() {
-    if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(this._cache)) {
+    if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(this._cache)) {
       this._oldCache = this._cache;
       this._cache = undefined;
     }
@@ -6796,7 +6950,7 @@ class PluginService {
   }
   _createDescriptors(chart, all) {
     const config = chart && chart.config;
-    const options = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(config.options && config.options.plugins, {});
+    const options = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(config.options && config.options.plugins, {});
     const plugins = allPlugins(config);
     return options === false && !all ? [] : createDescriptors(chart, plugins, options, all);
   }
@@ -6856,7 +7010,7 @@ function pluginOpts(config, plugin, opts, context) {
 }
 
 function getIndexAxis(type, options) {
-  const datasetDefaults = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].datasets[type] || {};
+  const datasetDefaults = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.datasets[type] || {};
   const datasetOptions = (options.datasets || {})[type] || {};
   return datasetOptions.indexAxis || options.indexAxis || datasetDefaults.indexAxis || 'x';
 }
@@ -6887,7 +7041,7 @@ function determineAxis(id, scaleOptions) {
   return scaleOptions.axis || axisFromPosition(scaleOptions.position) || id.charAt(0).toLowerCase();
 }
 function mergeScaleConfig(config, options) {
-  const chartDefaults = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Z"][config.type] || {scales: {}};
+  const chartDefaults = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Z[config.type] || {scales: {}};
   const configScales = options.scales || {};
   const chartIndexAxis = getIndexAxis(config.type, options);
   const firstIDs = Object.create(null);
@@ -6898,29 +7052,29 @@ function mergeScaleConfig(config, options) {
     const defaultId = getDefaultScaleIDFromAxis(axis, chartIndexAxis);
     const defaultScaleOptions = chartDefaults.scales || {};
     firstIDs[axis] = firstIDs[axis] || id;
-    scales[id] = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a6"])(Object.create(null), [{axis}, scaleConf, defaultScaleOptions[axis], defaultScaleOptions[defaultId]]);
+    scales[id] = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a6)(Object.create(null), [{axis}, scaleConf, defaultScaleOptions[axis], defaultScaleOptions[defaultId]]);
   });
   config.data.datasets.forEach(dataset => {
     const type = dataset.type || config.type;
     const indexAxis = dataset.indexAxis || getIndexAxis(type, options);
-    const datasetDefaults = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Z"][type] || {};
+    const datasetDefaults = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Z[type] || {};
     const defaultScaleOptions = datasetDefaults.scales || {};
     Object.keys(defaultScaleOptions).forEach(defaultID => {
       const axis = getAxisFromDefaultScaleID(defaultID, indexAxis);
       const id = dataset[axis + 'AxisID'] || firstIDs[axis] || axis;
       scales[id] = scales[id] || Object.create(null);
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a6"])(scales[id], [{axis}, configScales[id], defaultScaleOptions[defaultID]]);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a6)(scales[id], [{axis}, configScales[id], defaultScaleOptions[defaultID]]);
     });
   });
   Object.keys(scales).forEach(key => {
     const scale = scales[key];
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a6"])(scale, [_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].scales[scale.type], _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].scale]);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a6)(scale, [_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.scales[scale.type], _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.scale]);
   });
   return scales;
 }
 function initOptions(config) {
   const options = config.options || (config.options = {});
-  options.plugins = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(options.plugins, {});
+  options.plugins = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(options.plugins, {});
   options.scales = mergeScaleConfig(config, options);
 }
 function initData(data) {
@@ -6947,7 +7101,7 @@ function cachedKeys(cacheKey, generate) {
   return keys;
 }
 const addIfFound = (set, obj, key) => {
-  const opts = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["f"])(obj, key);
+  const opts = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.f)(obj, key);
   if (opts !== undefined) {
     set.add(opts);
   }
@@ -7049,9 +7203,9 @@ class Config {
         keys.forEach(key => addIfFound(scopes, mainScope, key));
       }
       keys.forEach(key => addIfFound(scopes, options, key));
-      keys.forEach(key => addIfFound(scopes, _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Z"][type] || {}, key));
-      keys.forEach(key => addIfFound(scopes, _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"], key));
-      keys.forEach(key => addIfFound(scopes, _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a1"], key));
+      keys.forEach(key => addIfFound(scopes, _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Z[type] || {}, key));
+      keys.forEach(key => addIfFound(scopes, _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d, key));
+      keys.forEach(key => addIfFound(scopes, _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a1, key));
     });
     const array = [...scopes];
     if (keysCached.has(keyLists)) {
@@ -7063,11 +7217,11 @@ class Config {
     const {options, type} = this;
     return [
       options,
-      _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Z"][type] || {},
-      _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].datasets[type] || {},
+      _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Z[type] || {},
+      _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.datasets[type] || {},
       {type},
-      _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"],
-      _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a1"]
+      _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d,
+      _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a1
     ];
   }
   resolveNamedOptions(scopes, names, context, prefixes = ['']) {
@@ -7076,9 +7230,9 @@ class Config {
     let options = resolver;
     if (needContext(resolver, names)) {
       result.$shared = false;
-      context = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a2"])(context) ? context() : context;
+      context = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a2)(context) ? context() : context;
       const subResolver = this.createResolver(scopes, context, subPrefixes);
-      options = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a3"])(resolver, context, subResolver);
+      options = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a3)(resolver, context, subResolver);
     }
     for (const prop of names) {
       result[prop] = options[prop];
@@ -7087,8 +7241,8 @@ class Config {
   }
   createResolver(scopes, context, prefixes = [''], descriptorDefaults) {
     const {resolver} = getResolver(this._resolverCache, scopes, prefixes);
-    return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["i"])(context)
-      ? Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a3"])(resolver, context, undefined, descriptorDefaults)
+    return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.i)(context)
+      ? (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a3)(resolver, context, undefined, descriptorDefaults)
       : resolver;
   }
 }
@@ -7101,7 +7255,7 @@ function getResolver(resolverCache, scopes, prefixes) {
   const cacheKey = prefixes.join();
   let cached = cache.get(cacheKey);
   if (!cached) {
-    const resolver = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a4"])(scopes, prefixes);
+    const resolver = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a4)(scopes, prefixes);
     cached = {
       resolver,
       subPrefixes: prefixes.filter(p => !p.toLowerCase().includes('hover'))
@@ -7111,10 +7265,10 @@ function getResolver(resolverCache, scopes, prefixes) {
   return cached;
 }
 function needContext(proxy, names) {
-  const {isScriptable, isIndexable} = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a5"])(proxy);
+  const {isScriptable, isIndexable} = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a5)(proxy);
   for (const prop of names) {
-    if ((isScriptable(prop) && Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a2"])(proxy[prop]))
-      || (isIndexable(prop) && Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["b"])(proxy[prop]))) {
+    if ((isScriptable(prop) && (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a2)(proxy[prop]))
+      || (isIndexable(prop) && (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(proxy[prop]))) {
       return true;
     }
   }
@@ -7138,12 +7292,12 @@ function onAnimationsComplete(context) {
   const chart = context.chart;
   const animationOptions = chart.options.animation;
   chart.notifyPlugins('afterRender');
-  Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(animationOptions && animationOptions.onComplete, [context], chart);
+  (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(animationOptions && animationOptions.onComplete, [context], chart);
 }
 function onAnimationProgress(context) {
   const chart = context.chart;
   const animationOptions = chart.options.animation;
-  Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(animationOptions && animationOptions.onProgress, [context], chart);
+  (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(animationOptions && animationOptions.onProgress, [context], chart);
 }
 function isDomSupported() {
   return typeof window !== 'undefined' && typeof document !== 'undefined';
@@ -7182,7 +7336,7 @@ class Chart {
     const canvas = context && context.canvas;
     const height = canvas && canvas.height;
     const width = canvas && canvas.width;
-    this.id = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a7"])();
+    this.id = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a7)();
     this.ctx = context;
     this.canvas = canvas;
     this.width = width;
@@ -7208,7 +7362,7 @@ class Chart {
     this.attached = false;
     this._animationsDisabled = undefined;
     this.$context = undefined;
-    this._doResize = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a8"])(() => this.update('resize'), options.resizeDelay || 0);
+    this._doResize = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a8)(() => this.update('resize'), options.resizeDelay || 0);
     instances[me.id] = me;
     if (!context || !canvas) {
       console.error("Failed to create chart: can't acquire context from the given item");
@@ -7223,7 +7377,7 @@ class Chart {
   }
   get aspectRatio() {
     const {options: {aspectRatio, maintainAspectRatio}, width, height, _aspectRatio} = this;
-    if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(aspectRatio)) {
+    if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(aspectRatio)) {
       return aspectRatio;
     }
     if (maintainAspectRatio && _aspectRatio) {
@@ -7249,7 +7403,7 @@ class Chart {
     if (me.options.responsive) {
       me.resize();
     } else {
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a9"])(me, me.options.devicePixelRatio);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a9)(me, me.options.devicePixelRatio);
     }
     me.bindEvents();
     me.notifyPlugins('afterInit');
@@ -7264,7 +7418,7 @@ class Chart {
     return new DomPlatform();
   }
   clear() {
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aa"])(this.canvas, this.ctx);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aa)(this.canvas, this.ctx);
     return this;
   }
   stop() {
@@ -7288,11 +7442,11 @@ class Chart {
     me.width = newSize.width;
     me.height = newSize.height;
     me._aspectRatio = me.aspectRatio;
-    if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a9"])(me, newRatio, true)) {
+    if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a9)(me, newRatio, true)) {
       return;
     }
     me.notifyPlugins('resize', {size: newSize});
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(options.onResize, [me, newSize], me);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(options.onResize, [me, newSize], me);
     if (me.attached) {
       if (me._doResize()) {
         me.render();
@@ -7302,7 +7456,7 @@ class Chart {
   ensureScalesHaveIDs() {
     const options = this.options;
     const scalesOptions = options.scales || {};
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(scalesOptions, (axisOptions, axisID) => {
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(scalesOptions, (axisOptions, axisID) => {
       axisOptions.id = axisID;
     });
   }
@@ -7331,11 +7485,11 @@ class Chart {
         })
       );
     }
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(items, (item) => {
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(items, (item) => {
       const scaleOptions = item.options;
       const id = scaleOptions.id;
       const axis = determineAxis(id, scaleOptions);
-      const scaleType = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(scaleOptions.type, item.dtype);
+      const scaleType = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(scaleOptions.type, item.dtype);
       if (scaleOptions.position === undefined || positionIsHorizontal(scaleOptions.position, axis) !== positionIsHorizontal(item.dposition)) {
         scaleOptions.position = item.dposition;
       }
@@ -7355,12 +7509,12 @@ class Chart {
       }
       scale.init(scaleOptions, options);
     });
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(updated, (hasUpdated, id) => {
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(updated, (hasUpdated, id) => {
       if (!hasUpdated) {
         delete scales[id];
       }
     });
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(scales, (scale) => {
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(scales, (scale) => {
       layouts.configure(me, scale, scale.options);
       layouts.addBox(me, scale);
     });
@@ -7416,7 +7570,7 @@ class Chart {
         meta.controller.linkScales();
       } else {
         const ControllerClass = registry.getController(type);
-        const {datasetElementType, dataElementType} = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].datasets[type];
+        const {datasetElementType, dataElementType} = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.datasets[type];
         Object.assign(ControllerClass.prototype, {
           dataElementType: registry.getElement(dataElementType),
           datasetElementType: datasetElementType && registry.getElement(datasetElementType)
@@ -7430,7 +7584,7 @@ class Chart {
   }
   _resetElements() {
     const me = this;
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(me.data.datasets, (dataset, datasetIndex) => {
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(me.data.datasets, (dataset, datasetIndex) => {
       me.getDatasetMeta(datasetIndex).controller.reset();
     }, me);
   }
@@ -7443,7 +7597,7 @@ class Chart {
     const config = me.config;
     config.update();
     me._options = config.createResolver(config.chartOptionScopes(), me.getContext());
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(me.scales, (scale) => {
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(me.scales, (scale) => {
       layouts.removeBox(me, scale);
     });
     const animsDisabled = me._animationsDisabled = !me.options.animation;
@@ -7451,7 +7605,7 @@ class Chart {
     me.buildOrUpdateScales();
     const existingEvents = new Set(Object.keys(me._listeners));
     const newEvents = new Set(me.options.events);
-    if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ab"])(existingEvents, newEvents) || !!this._responsiveListeners !== me.options.responsive) {
+    if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ab)(existingEvents, newEvents) || !!this._responsiveListeners !== me.options.responsive) {
       me.unbindEvents();
       me.bindEvents();
     }
@@ -7471,7 +7625,7 @@ class Chart {
     me._minPadding = minPadding;
     me._updateLayout(minPadding);
     if (!animsDisabled) {
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(newControllers, (controller) => {
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(newControllers, (controller) => {
         controller.reset();
       });
     }
@@ -7492,7 +7646,7 @@ class Chart {
     const area = me.chartArea;
     const noArea = area.width <= 0 || area.height <= 0;
     me._layers = [];
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(me.boxes, (box) => {
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(me.boxes, (box) => {
       if (noArea && box.position === 'chartArea') {
         return;
       }
@@ -7607,14 +7761,14 @@ class Chart {
     if (me.notifyPlugins('beforeDatasetDraw', args) === false) {
       return;
     }
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["k"])(ctx, {
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.k)(ctx, {
       left: clip.left === false ? 0 : area.left - clip.left,
       right: clip.right === false ? me.width : area.right + clip.right,
       top: clip.top === false ? 0 : area.top - clip.top,
       bottom: clip.bottom === false ? me.height : area.bottom + clip.bottom
     });
     meta.controller.draw();
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["m"])(ctx);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.m)(ctx);
     args.cancelable = false;
     me.notifyPlugins('afterDatasetDraw', args);
   }
@@ -7708,7 +7862,7 @@ class Chart {
     me.config.clearCache();
     if (canvas) {
       me.unbindEvents();
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aa"])(canvas, ctx);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aa)(canvas, ctx);
       me.platform.releaseContext(ctx);
       me.canvas = null;
       me.ctx = null;
@@ -7740,7 +7894,7 @@ class Chart {
       e.offsetY = y;
       me._eventHandler(e);
     };
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(me.options.events, (type) => _add(type, listener));
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(me.options.events, (type) => _add(type, listener));
   }
   bindResponsiveEvents() {
     const me = this;
@@ -7785,11 +7939,11 @@ class Chart {
   }
   unbindEvents() {
     const me = this;
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(me._listeners, (listener, type) => {
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(me._listeners, (listener, type) => {
       me.platform.removeEventListener(me, type, listener);
     });
     me._listeners = {};
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(me._responsiveListeners, (listener, type) => {
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(me._responsiveListeners, (listener, type) => {
       me.platform.removeEventListener(me, type, listener);
     });
     me._responsiveListeners = undefined;
@@ -7826,7 +7980,7 @@ class Chart {
         index,
       };
     });
-    const changed = !Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ac"])(active, lastActive);
+    const changed = !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ac)(active, lastActive);
     if (changed) {
       me._active = active;
       me._updateHoverStyles(active, lastActive);
@@ -7876,13 +8030,13 @@ class Chart {
       lastEvent = e.type === 'click' ? me._lastEvent : e;
     }
     me._lastEvent = null;
-    if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["A"])(e, me.chartArea, me._minPadding)) {
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(options.onHover, [e, active, me], me);
+    if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.A)(e, me.chartArea, me._minPadding)) {
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(options.onHover, [e, active, me], me);
       if (e.type === 'mouseup' || e.type === 'click' || e.type === 'contextmenu') {
-        Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(options.onClick, [e, active, me], me);
+        (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(options.onClick, [e, active, me], me);
       }
     }
-    changed = !Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ac"])(active, lastActive);
+    changed = !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ac)(active, lastActive);
     if (changed || replay) {
       me._active = active;
       me._updateHoverStyles(active, lastActive, replay);
@@ -7891,12 +8045,12 @@ class Chart {
     return changed;
   }
 }
-const invalidatePlugins = () => Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(Chart.instances, (chart) => chart._plugins.invalidate());
+const invalidatePlugins = () => (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(Chart.instances, (chart) => chart._plugins.invalidate());
 const enumerable = true;
 Object.defineProperties(Chart, {
   defaults: {
     enumerable,
-    value: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"]
+    value: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d
   },
   instances: {
     enumerable,
@@ -7904,7 +8058,7 @@ Object.defineProperties(Chart, {
   },
   overrides: {
     enumerable,
-    value: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Z"]
+    value: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Z
   },
   registry: {
     enumerable,
@@ -7943,13 +8097,13 @@ function clipArc(ctx, element, endAngle) {
     angleMargin = pixelMargin / innerRadius;
     ctx.arc(x, y, innerRadius, endAngle + angleMargin, startAngle - angleMargin, true);
   } else {
-    ctx.arc(x, y, pixelMargin, endAngle + _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["H"], startAngle - _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["H"]);
+    ctx.arc(x, y, pixelMargin, endAngle + _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.H, startAngle - _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.H);
   }
   ctx.closePath();
   ctx.clip();
 }
 function toRadiusCorners(value) {
-  return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ae"])(value, ['outerStart', 'outerEnd', 'innerStart', 'innerEnd']);
+  return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ae)(value, ['outerStart', 'outerEnd', 'innerStart', 'innerEnd']);
 }
 function parseBorderRadius$1(arc, innerRadius, outerRadius, angleDelta) {
   const o = toRadiusCorners(arc.options.borderRadius);
@@ -7957,13 +8111,13 @@ function parseBorderRadius$1(arc, innerRadius, outerRadius, angleDelta) {
   const innerLimit = Math.min(halfThickness, angleDelta * innerRadius / 2);
   const computeOuterLimit = (val) => {
     const outerArcLimit = (outerRadius - Math.min(halfThickness, val)) * angleDelta / 2;
-    return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["x"])(val, 0, Math.min(halfThickness, outerArcLimit));
+    return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.x)(val, 0, Math.min(halfThickness, outerArcLimit));
   };
   return {
     outerStart: computeOuterLimit(o.outerStart),
     outerEnd: computeOuterLimit(o.outerEnd),
-    innerStart: Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["x"])(o.innerStart, 0, innerLimit),
-    innerEnd: Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["x"])(o.innerEnd, 0, innerLimit),
+    innerStart: (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.x)(o.innerStart, 0, innerLimit),
+    innerEnd: (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.x)(o.innerEnd, 0, innerLimit),
   };
 }
 function rThetaToXY(r, theta, x, y) {
@@ -7977,7 +8131,7 @@ function pathArc(ctx, element, offset, end) {
   const outerRadius = Math.max(element.outerRadius + offset - pixelMargin, 0);
   const innerRadius = innerR > 0 ? innerR + offset + pixelMargin : 0;
   const alpha = end - start;
-  const beta = Math.max(0.001, alpha * outerRadius - offset / _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["P"]) / outerRadius;
+  const beta = Math.max(0.001, alpha * outerRadius - offset / _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.P) / outerRadius;
   const angleOffset = (alpha - beta) / 2;
   const startAngle = start + angleOffset;
   const endAngle = end - angleOffset;
@@ -7994,24 +8148,24 @@ function pathArc(ctx, element, offset, end) {
   ctx.arc(x, y, outerRadius, outerStartAdjustedAngle, outerEndAdjustedAngle);
   if (outerEnd > 0) {
     const pCenter = rThetaToXY(outerEndAdjustedRadius, outerEndAdjustedAngle, x, y);
-    ctx.arc(pCenter.x, pCenter.y, outerEnd, outerEndAdjustedAngle, endAngle + _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["H"]);
+    ctx.arc(pCenter.x, pCenter.y, outerEnd, outerEndAdjustedAngle, endAngle + _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.H);
   }
   const p4 = rThetaToXY(innerEndAdjustedRadius, endAngle, x, y);
   ctx.lineTo(p4.x, p4.y);
   if (innerEnd > 0) {
     const pCenter = rThetaToXY(innerEndAdjustedRadius, innerEndAdjustedAngle, x, y);
-    ctx.arc(pCenter.x, pCenter.y, innerEnd, endAngle + _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["H"], innerEndAdjustedAngle + Math.PI);
+    ctx.arc(pCenter.x, pCenter.y, innerEnd, endAngle + _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.H, innerEndAdjustedAngle + Math.PI);
   }
   ctx.arc(x, y, innerRadius, endAngle - (innerEnd / innerRadius), startAngle + (innerStart / innerRadius), true);
   if (innerStart > 0) {
     const pCenter = rThetaToXY(innerStartAdjustedRadius, innerStartAdjustedAngle, x, y);
-    ctx.arc(pCenter.x, pCenter.y, innerStart, innerStartAdjustedAngle + Math.PI, startAngle - _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["H"]);
+    ctx.arc(pCenter.x, pCenter.y, innerStart, innerStartAdjustedAngle + Math.PI, startAngle - _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.H);
   }
   const p8 = rThetaToXY(outerStartAdjustedRadius, startAngle, x, y);
   ctx.lineTo(p8.x, p8.y);
   if (outerStart > 0) {
     const pCenter = rThetaToXY(outerStartAdjustedRadius, outerStartAdjustedAngle, x, y);
-    ctx.arc(pCenter.x, pCenter.y, outerStart, startAngle - _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["H"], outerStartAdjustedAngle);
+    ctx.arc(pCenter.x, pCenter.y, outerStart, startAngle - _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.H, outerStartAdjustedAngle);
   }
   ctx.closePath();
 }
@@ -8019,14 +8173,14 @@ function drawArc(ctx, element, offset) {
   const {fullCircles, startAngle, circumference} = element;
   let endAngle = element.endAngle;
   if (fullCircles) {
-    pathArc(ctx, element, offset, startAngle + _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"]);
+    pathArc(ctx, element, offset, startAngle + _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T);
     for (let i = 0; i < fullCircles; ++i) {
       ctx.fill();
     }
     if (!isNaN(circumference)) {
-      endAngle = startAngle + circumference % _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"];
-      if (circumference % _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"] === 0) {
-        endAngle += _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"];
+      endAngle = startAngle + circumference % _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T;
+      if (circumference % _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T === 0) {
+        endAngle += _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T;
       }
     }
   }
@@ -8040,15 +8194,15 @@ function drawFullCircleBorders(ctx, element, inner) {
   const innerRadius = element.innerRadius + pixelMargin;
   let i;
   if (inner) {
-    clipArc(ctx, element, startAngle + _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"]);
+    clipArc(ctx, element, startAngle + _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T);
   }
   ctx.beginPath();
-  ctx.arc(x, y, innerRadius, startAngle + _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"], startAngle, true);
+  ctx.arc(x, y, innerRadius, startAngle + _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T, startAngle, true);
   for (i = 0; i < fullCircles; ++i) {
     ctx.stroke();
   }
   ctx.beginPath();
-  ctx.arc(x, y, outerRadius, startAngle, startAngle + _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"]);
+  ctx.arc(x, y, outerRadius, startAngle, startAngle + _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T);
   for (i = 0; i < fullCircles; ++i) {
     ctx.stroke();
   }
@@ -8092,7 +8246,7 @@ class ArcElement extends Element {
   }
   inRange(chartX, chartY, useFinalPosition) {
     const point = this.getProps(['x', 'y'], useFinalPosition);
-    const {angle, distance} = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ad"])(point, {x: chartX, y: chartY});
+    const {angle, distance} = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ad)(point, {x: chartX, y: chartY});
     const {startAngle, endAngle, innerRadius, outerRadius, circumference} = this.getProps([
       'startAngle',
       'endAngle',
@@ -8100,7 +8254,7 @@ class ArcElement extends Element {
       'outerRadius',
       'circumference'
     ], useFinalPosition);
-    const betweenAngles = circumference >= _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"] || Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["q"])(angle, startAngle, endAngle);
+    const betweenAngles = circumference >= _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T || (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.q)(angle, startAngle, endAngle);
     const withinRadius = (distance >= innerRadius && distance <= outerRadius);
     return (betweenAngles && withinRadius);
   }
@@ -8129,7 +8283,7 @@ class ArcElement extends Element {
     const {options, circumference} = me;
     const offset = (options.offset || 0) / 2;
     me.pixelMargin = (options.borderAlign === 'inner') ? 0.33 : 0;
-    me.fullCircles = circumference > _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"] ? Math.floor(circumference / _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"]) : 0;
+    me.fullCircles = circumference > _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T ? Math.floor(circumference / _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T) : 0;
     if (circumference === 0 || me.innerRadius < 0 || me.outerRadius < 0) {
       return;
     }
@@ -8139,7 +8293,7 @@ class ArcElement extends Element {
       radiusOffset = offset / 2;
       const halfAngle = (me.startAngle + me.endAngle) / 2;
       ctx.translate(Math.cos(halfAngle) * radiusOffset, Math.sin(halfAngle) * radiusOffset);
-      if (me.circumference >= _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["P"]) {
+      if (me.circumference >= _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.P) {
         radiusOffset = offset;
       }
     }
@@ -8164,22 +8318,22 @@ ArcElement.defaultRoutes = {
 };
 
 function setStyle(ctx, options, style = options) {
-  ctx.lineCap = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(style.borderCapStyle, options.borderCapStyle);
-  ctx.setLineDash(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(style.borderDash, options.borderDash));
-  ctx.lineDashOffset = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(style.borderDashOffset, options.borderDashOffset);
-  ctx.lineJoin = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(style.borderJoinStyle, options.borderJoinStyle);
-  ctx.lineWidth = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(style.borderWidth, options.borderWidth);
-  ctx.strokeStyle = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(style.borderColor, options.borderColor);
+  ctx.lineCap = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(style.borderCapStyle, options.borderCapStyle);
+  ctx.setLineDash((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(style.borderDash, options.borderDash));
+  ctx.lineDashOffset = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(style.borderDashOffset, options.borderDashOffset);
+  ctx.lineJoin = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(style.borderJoinStyle, options.borderJoinStyle);
+  ctx.lineWidth = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(style.borderWidth, options.borderWidth);
+  ctx.strokeStyle = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(style.borderColor, options.borderColor);
 }
 function lineTo(ctx, previous, target) {
   ctx.lineTo(target.x, target.y);
 }
 function getLineMethod(options) {
   if (options.stepped) {
-    return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["al"];
+    return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.al;
   }
   if (options.tension || options.cubicInterpolationMode === 'monotone') {
-    return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["am"];
+    return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.am;
   }
   return lineTo;
 }
@@ -8274,12 +8428,12 @@ function _getSegmentMethod(line) {
 }
 function _getInterpolationMethod(options) {
   if (options.stepped) {
-    return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ai"];
+    return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ai;
   }
   if (options.tension || options.cubicInterpolationMode === 'monotone') {
-    return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aj"];
+    return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aj;
   }
-  return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ak"];
+  return _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ak;
 }
 function strokePathWithCache(ctx, line, start, count) {
   let path = line._path;
@@ -8333,7 +8487,7 @@ class LineElement extends Element {
     const options = me.options;
     if ((options.tension || options.cubicInterpolationMode === 'monotone') && !options.stepped && !me._pointsUpdated) {
       const loop = options.spanGaps ? me._loop : me._fullLoop;
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["af"])(me._points, options, chartArea, loop, indexAxis);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.af)(me._points, options, chartArea, loop, indexAxis);
       me._pointsUpdated = true;
     }
   }
@@ -8348,7 +8502,7 @@ class LineElement extends Element {
     return this._points;
   }
   get segments() {
-    return this._segments || (this._segments = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ag"])(this, this.options.segment));
+    return this._segments || (this._segments = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ag)(this, this.options.segment));
   }
   first() {
     const segments = this.segments;
@@ -8366,7 +8520,7 @@ class LineElement extends Element {
     const options = me.options;
     const value = point[property];
     const points = me.points;
-    const segments = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ah"])(me, {property, start: value, end: value});
+    const segments = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ah)(me, {property, start: value, end: value});
     if (!segments.length) {
       return;
     }
@@ -8490,7 +8644,7 @@ class PointElement extends Element {
     ctx.strokeStyle = options.borderColor;
     ctx.lineWidth = options.borderWidth;
     ctx.fillStyle = options.backgroundColor;
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["an"])(ctx, options, me.x, me.y);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.an)(ctx, options, me.x, me.y);
   }
   getRange() {
     const options = this.options || {};
@@ -8563,7 +8717,7 @@ function skipOrLimit(skip, value, min, max) {
 function parseBorderWidth(bar, maxW, maxH) {
   const value = bar.options.borderWidth;
   const skip = parseBorderSkipped(bar);
-  const o = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ap"])(value);
+  const o = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ap)(value);
   return {
     t: skipOrLimit(skip.top, o.top, 0, maxH),
     r: skipOrLimit(skip.right, o.right, 0, maxW),
@@ -8574,10 +8728,10 @@ function parseBorderWidth(bar, maxW, maxH) {
 function parseBorderRadius(bar, maxW, maxH) {
   const {enableBorderRadius} = bar.getProps(['enableBorderRadius']);
   const value = bar.options.borderRadius;
-  const o = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aq"])(value);
+  const o = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aq)(value);
   const maxR = Math.min(maxW, maxH);
   const skip = parseBorderSkipped(bar);
-  const enableBorder = enableBorderRadius || Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["i"])(value);
+  const enableBorder = enableBorderRadius || (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.i)(value);
   return {
     topLeft: skipOrLimit(!enableBorder || skip.top || skip.left, o.topLeft, 0, maxR),
     topRight: skipOrLimit(!enableBorder || skip.top || skip.right, o.topRight, 0, maxR),
@@ -8643,7 +8797,7 @@ class BarElement extends Element {
   draw(ctx) {
     const options = this.options;
     const {inner, outer} = boundingRects(this);
-    const addRectPath = hasRadius(outer.radius) ? _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ao"] : addNormalRectPath;
+    const addRectPath = hasRadius(outer.radius) ? _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ao : addNormalRectPath;
     ctx.save();
     if (outer.w !== inner.w || outer.h !== inner.h) {
       ctx.beginPath();
@@ -8771,7 +8925,7 @@ function minMaxDecimation(data, start, count, availableWidth) {
       avgX = (countX * avgX + point.x) / ++countX;
     } else {
       const lastIndex = i - 1;
-      if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(minIndex) && !Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(maxIndex)) {
+      if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(minIndex) && !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(maxIndex)) {
         const intermediateIndex1 = Math.min(minIndex, maxIndex);
         const intermediateIndex2 = Math.max(minIndex, maxIndex);
         if (intermediateIndex1 !== startIndex && intermediateIndex1 !== lastIndex) {
@@ -8819,10 +8973,10 @@ function getStartAndCountOfVisiblePointsSimplified(meta, points) {
   const {iScale} = meta;
   const {min, max, minDefined, maxDefined} = iScale.getUserBounds();
   if (minDefined) {
-    start = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["x"])(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["y"])(points, iScale.axis, min).lo, 0, pointCount - 1);
+    start = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.x)((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.y)(points, iScale.axis, min).lo, 0, pointCount - 1);
   }
   if (maxDefined) {
-    count = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["x"])(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["y"])(points, iScale.axis, max).hi + 1, start, pointCount) - start;
+    count = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.x)((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.y)(points, iScale.axis, max).hi + 1, start, pointCount) - start;
   } else {
     count = pointCount - start;
   }
@@ -8844,7 +8998,7 @@ var plugin_decimation = {
       const {_data, indexAxis} = dataset;
       const meta = chart.getDatasetMeta(datasetIndex);
       const data = _data || dataset.data;
-      if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a"])([indexAxis, chart.options.indexAxis]) === 'y') {
+      if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a)([indexAxis, chart.options.indexAxis]) === 'y') {
         return;
       }
       if (meta.type !== 'line') {
@@ -8862,7 +9016,7 @@ var plugin_decimation = {
         cleanDecimatedDataset(dataset);
         return;
       }
-      if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(_data)) {
+      if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(_data)) {
         dataset._data = data;
         delete dataset.data;
         Object.defineProperty(dataset, 'data', {
@@ -8903,7 +9057,7 @@ function getLineByIndex(chart, index) {
 function parseFillOption(line) {
   const options = line.options;
   const fillOption = options.fill;
-  let fill = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(fillOption && fillOption.target, fillOption);
+  let fill = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(fillOption && fillOption.target, fillOption);
   if (fill === undefined) {
     fill = !!options.backgroundColor;
   }
@@ -8917,11 +9071,11 @@ function parseFillOption(line) {
 }
 function decodeFill(line, index, count) {
   const fill = parseFillOption(line);
-  if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["i"])(fill)) {
+  if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.i)(fill)) {
     return isNaN(fill.value) ? false : fill;
   }
   let target = parseFloat(fill);
-  if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(target) && Math.floor(target) === target) {
+  if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(target) && Math.floor(target) === target) {
     if (fill[0] === '-' || fill[0] === '+') {
       target = index + target;
     }
@@ -8940,12 +9094,12 @@ function computeLinearBoundary(source) {
     target = scale.bottom;
   } else if (fill === 'end') {
     target = scale.top;
-  } else if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["i"])(fill)) {
+  } else if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.i)(fill)) {
     target = scale.getPixelForValue(fill.value);
   } else if (scale.getBasePixel) {
     target = scale.getBasePixel();
   }
-  if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(target)) {
+  if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(target)) {
     horizontal = scale.isHorizontal();
     return {
       x: horizontal ? target : null,
@@ -8962,7 +9116,7 @@ class simpleArc {
   }
   pathSegment(ctx, bounds, opts) {
     const {x, y, radius} = this;
-    bounds = bounds || {start: 0, end: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"]};
+    bounds = bounds || {start: 0, end: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T};
     ctx.arc(x, y, radius, bounds.end, bounds.start, true);
     return !opts.bounds;
   }
@@ -8988,7 +9142,7 @@ function computeCircularBoundary(source) {
     value = start;
   } else if (fill === 'end') {
     value = end;
-  } else if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["i"])(fill)) {
+  } else if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.i)(fill)) {
     value = fill.value;
   } else {
     value = scale.getBaseValue();
@@ -9103,7 +9257,7 @@ function findPoint(line, sourcePoint, property) {
 }
 function getTarget(source) {
   const {chart, fill, line} = source;
-  if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(fill)) {
+  if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(fill)) {
     return getLineByIndex(chart, fill);
   }
   if (fill === 'stack') {
@@ -9118,7 +9272,7 @@ function getTarget(source) {
 function createBoundaryLine(boundary, line) {
   let points = [];
   let _loop = false;
-  if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["b"])(boundary)) {
+  if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(boundary)) {
     _loop = true;
     points = boundary;
   } else {
@@ -9140,7 +9294,7 @@ function resolveTarget(sources, index, propagate) {
     return fill;
   }
   while (fill !== false && visited.indexOf(fill) === -1) {
-    if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(fill)) {
+    if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(fill)) {
       return fill;
     }
     target = sources[fill];
@@ -9170,8 +9324,8 @@ function getBounds(property, first, last, loop) {
   let start = first[property];
   let end = last[property];
   if (property === 'angle') {
-    start = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["as"])(start);
-    end = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["as"])(end);
+    start = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.as)(start);
+    end = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.as)(end);
   }
   return {property, start, end};
 }
@@ -9197,10 +9351,10 @@ function _segments(line, target, property) {
       });
       continue;
     }
-    const targetSegments = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ah"])(target, bounds);
+    const targetSegments = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ah)(target, bounds);
     for (const tgt of targetSegments) {
       const subBounds = getBounds(property, tpoints[tgt.start], tpoints[tgt.end], tgt.loop);
-      const fillSources = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ar"])(segment, points, subBounds);
+      const fillSources = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ar)(segment, points, subBounds);
       for (const fillSource of fillSources) {
         parts.push({
           source: fillSource,
@@ -9279,9 +9433,9 @@ function drawfill(ctx, source, area) {
   const color = lineOpts.backgroundColor;
   const {above = color, below = color} = fillOption || {};
   if (target && line.points.length) {
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["k"])(ctx, area);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.k)(ctx, area);
     doFill(ctx, {line, target, above, below, area, scale, axis});
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["m"])(ctx);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.m)(ctx);
   }
 }
 var plugin_filler = {
@@ -9419,7 +9573,7 @@ class Legend extends Element {
   buildLabels() {
     const me = this;
     const labelOpts = me.options.labels || {};
-    let legendItems = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(labelOpts.generateLabels, [me.chart], me) || [];
+    let legendItems = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(labelOpts.generateLabels, [me.chart], me) || [];
     if (labelOpts.filter) {
       legendItems = legendItems.filter((item) => labelOpts.filter(item, me.chart.data));
     }
@@ -9439,7 +9593,7 @@ class Legend extends Element {
       return;
     }
     const labelOpts = options.labels;
-    const labelFont = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(labelOpts.font);
+    const labelFont = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(labelOpts.font);
     const fontSize = labelFont.size;
     const titleHeight = me._computeTitleHeight();
     const {boxWidth, itemHeight} = getBoxSize(labelOpts, fontSize);
@@ -9519,11 +9673,11 @@ class Legend extends Element {
     const {legendHitBoxes: hitboxes, options: {align, labels: {padding}}} = me;
     if (this.isHorizontal()) {
       let row = 0;
-      let left = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Y"])(align, me.left + padding, me.right - me.lineWidths[row]);
+      let left = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Y)(align, me.left + padding, me.right - me.lineWidths[row]);
       for (const hitbox of hitboxes) {
         if (row !== hitbox.row) {
           row = hitbox.row;
-          left = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Y"])(align, me.left + padding, me.right - me.lineWidths[row]);
+          left = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Y)(align, me.left + padding, me.right - me.lineWidths[row]);
         }
         hitbox.top += me.top + titleHeight + padding;
         hitbox.left = left;
@@ -9531,11 +9685,11 @@ class Legend extends Element {
       }
     } else {
       let col = 0;
-      let top = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Y"])(align, me.top + titleHeight + padding, me.bottom - me.columnSizes[col].height);
+      let top = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Y)(align, me.top + titleHeight + padding, me.bottom - me.columnSizes[col].height);
       for (const hitbox of hitboxes) {
         if (hitbox.col !== col) {
           col = hitbox.col;
-          top = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Y"])(align, me.top + titleHeight + padding, me.bottom - me.columnSizes[col].height);
+          top = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Y)(align, me.top + titleHeight + padding, me.bottom - me.columnSizes[col].height);
         }
         hitbox.top = top;
         hitbox.left += me.left + padding;
@@ -9550,18 +9704,18 @@ class Legend extends Element {
     const me = this;
     if (me.options.display) {
       const ctx = me.ctx;
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["k"])(ctx, me);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.k)(ctx, me);
       me._draw();
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["m"])(ctx);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.m)(ctx);
     }
   }
   _draw() {
     const me = this;
     const {options: opts, columnSizes, lineWidths, ctx} = me;
     const {align, labels: labelOpts} = opts;
-    const defaultColor = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].color;
-    const rtlHelper = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["at"])(opts.rtl, me.left, me.width);
-    const labelFont = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(labelOpts.font);
+    const defaultColor = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.color;
+    const rtlHelper = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.at)(opts.rtl, me.left, me.width);
+    const labelFont = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(labelOpts.font);
     const {color: fontColor, padding} = labelOpts;
     const fontSize = labelFont.size;
     const halfFontSize = fontSize / 2;
@@ -9577,14 +9731,14 @@ class Legend extends Element {
         return;
       }
       ctx.save();
-      const lineWidth = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(legendItem.lineWidth, 1);
-      ctx.fillStyle = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(legendItem.fillStyle, defaultColor);
-      ctx.lineCap = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(legendItem.lineCap, 'butt');
-      ctx.lineDashOffset = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(legendItem.lineDashOffset, 0);
-      ctx.lineJoin = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(legendItem.lineJoin, 'miter');
+      const lineWidth = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(legendItem.lineWidth, 1);
+      ctx.fillStyle = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(legendItem.fillStyle, defaultColor);
+      ctx.lineCap = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(legendItem.lineCap, 'butt');
+      ctx.lineDashOffset = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(legendItem.lineDashOffset, 0);
+      ctx.lineJoin = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(legendItem.lineJoin, 'miter');
       ctx.lineWidth = lineWidth;
-      ctx.strokeStyle = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(legendItem.strokeStyle, defaultColor);
-      ctx.setLineDash(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(legendItem.lineDash, []));
+      ctx.strokeStyle = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(legendItem.strokeStyle, defaultColor);
+      ctx.setLineDash((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(legendItem.lineDash, []));
       if (labelOpts.usePointStyle) {
         const drawOptions = {
           radius: boxWidth * Math.SQRT2 / 2,
@@ -9594,14 +9748,14 @@ class Legend extends Element {
         };
         const centerX = rtlHelper.xPlus(x, boxWidth / 2);
         const centerY = y + halfFontSize;
-        Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["an"])(ctx, drawOptions, centerX, centerY);
+        (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.an)(ctx, drawOptions, centerX, centerY);
       } else {
         const yBoxTop = y + Math.max((fontSize - boxHeight) / 2, 0);
         const xBoxLeft = rtlHelper.leftForLtr(x, boxWidth);
-        const borderRadius = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aq"])(legendItem.borderRadius);
+        const borderRadius = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aq)(legendItem.borderRadius);
         ctx.beginPath();
         if (Object.values(borderRadius).some(v => v !== 0)) {
-          Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ao"])(ctx, {
+          (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ao)(ctx, {
             x: xBoxLeft,
             y: yBoxTop,
             w: boxWidth,
@@ -9619,7 +9773,7 @@ class Legend extends Element {
       ctx.restore();
     };
     const fillText = function(x, y, legendItem) {
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["V"])(ctx, legendItem.text, x, y + (itemHeight / 2), labelFont, {
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.V)(ctx, legendItem.text, x, y + (itemHeight / 2), labelFont, {
         strikethrough: legendItem.hidden,
         textAlign: legendItem.textAlign
       });
@@ -9628,18 +9782,18 @@ class Legend extends Element {
     const titleHeight = this._computeTitleHeight();
     if (isHorizontal) {
       cursor = {
-        x: Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Y"])(align, me.left + padding, me.right - lineWidths[0]),
+        x: (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Y)(align, me.left + padding, me.right - lineWidths[0]),
         y: me.top + padding + titleHeight,
         line: 0
       };
     } else {
       cursor = {
         x: me.left + padding,
-        y: Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Y"])(align, me.top + titleHeight + padding, me.bottom - columnSizes[0].height),
+        y: (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Y)(align, me.top + titleHeight + padding, me.bottom - columnSizes[0].height),
         line: 0
       };
     }
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["au"])(me.ctx, opts.textDirection);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.au)(me.ctx, opts.textDirection);
     const lineHeight = itemHeight + padding;
     me.legendItems.forEach((legendItem, i) => {
       ctx.strokeStyle = legendItem.fontColor || fontColor;
@@ -9654,16 +9808,16 @@ class Legend extends Element {
         if (i > 0 && x + width + padding > me.right) {
           y = cursor.y += lineHeight;
           cursor.line++;
-          x = cursor.x = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Y"])(align, me.left + padding, me.right - lineWidths[cursor.line]);
+          x = cursor.x = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Y)(align, me.left + padding, me.right - lineWidths[cursor.line]);
         }
       } else if (i > 0 && y + lineHeight > me.bottom) {
         x = cursor.x = x + columnSizes[cursor.line].width + padding;
         cursor.line++;
-        y = cursor.y = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Y"])(align, me.top + titleHeight + padding, me.bottom - columnSizes[cursor.line].height);
+        y = cursor.y = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Y)(align, me.top + titleHeight + padding, me.bottom - columnSizes[cursor.line].height);
       }
       const realX = rtlHelper.x(x);
       drawLegendBox(realX, y, legendItem);
-      x = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["av"])(textAlign, x + boxWidth + halfFontSize, me.right);
+      x = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.av)(textAlign, x + boxWidth + halfFontSize, me.right);
       fillText(rtlHelper.x(x), y, legendItem);
       if (isHorizontal) {
         cursor.x += width + padding;
@@ -9671,18 +9825,18 @@ class Legend extends Element {
         cursor.y += lineHeight;
       }
     });
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aw"])(me.ctx, opts.textDirection);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aw)(me.ctx, opts.textDirection);
   }
   drawTitle() {
     const me = this;
     const opts = me.options;
     const titleOpts = opts.title;
-    const titleFont = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(titleOpts.font);
-    const titlePadding = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["C"])(titleOpts.padding);
+    const titleFont = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(titleOpts.font);
+    const titlePadding = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.C)(titleOpts.padding);
     if (!titleOpts.display) {
       return;
     }
-    const rtlHelper = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["at"])(opts.rtl, me.left, me.width);
+    const rtlHelper = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.at)(opts.rtl, me.left, me.width);
     const ctx = me.ctx;
     const position = titleOpts.position;
     const halfFontSize = titleFont.size / 2;
@@ -9693,23 +9847,23 @@ class Legend extends Element {
     if (this.isHorizontal()) {
       maxWidth = Math.max(...me.lineWidths);
       y = me.top + topPaddingPlusHalfFontSize;
-      left = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Y"])(opts.align, left, me.right - maxWidth);
+      left = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Y)(opts.align, left, me.right - maxWidth);
     } else {
       const maxHeight = me.columnSizes.reduce((acc, size) => Math.max(acc, size.height), 0);
-      y = topPaddingPlusHalfFontSize + Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Y"])(opts.align, me.top, me.bottom - maxHeight - opts.labels.padding - me._computeTitleHeight());
+      y = topPaddingPlusHalfFontSize + (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Y)(opts.align, me.top, me.bottom - maxHeight - opts.labels.padding - me._computeTitleHeight());
     }
-    const x = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Y"])(position, left, left + maxWidth);
-    ctx.textAlign = rtlHelper.textAlign(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["X"])(position));
+    const x = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Y)(position, left, left + maxWidth);
+    ctx.textAlign = rtlHelper.textAlign((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.X)(position));
     ctx.textBaseline = 'middle';
     ctx.strokeStyle = titleOpts.color;
     ctx.fillStyle = titleOpts.color;
     ctx.font = titleFont.string;
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["V"])(ctx, titleOpts.text, x, y, titleFont);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.V)(ctx, titleOpts.text, x, y, titleFont);
   }
   _computeTitleHeight() {
     const titleOpts = this.options.title;
-    const titleFont = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(titleOpts.font);
-    const titlePadding = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["C"])(titleOpts.padding);
+    const titleFont = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(titleOpts.font);
+    const titlePadding = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.C)(titleOpts.padding);
     return titleOpts.display ? titleFont.lineHeight + titlePadding.height : 0;
   }
   _getLegendItemAt(x, y) {
@@ -9737,14 +9891,14 @@ class Legend extends Element {
       const previous = me._hoveredItem;
       const sameItem = itemsEqual(previous, hoveredItem);
       if (previous && !sameItem) {
-        Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(opts.onLeave, [e, previous, me], me);
+        (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(opts.onLeave, [e, previous, me], me);
       }
       me._hoveredItem = hoveredItem;
       if (hoveredItem && !sameItem) {
-        Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(opts.onHover, [e, hoveredItem, me], me);
+        (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(opts.onHover, [e, hoveredItem, me], me);
       }
     } else if (hoveredItem) {
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(opts.onClick, [e, hoveredItem, me], me);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(opts.onClick, [e, hoveredItem, me], me);
     }
   }
 }
@@ -9813,7 +9967,7 @@ var plugin_legend = {
         const {labels: {usePointStyle, pointStyle, textAlign, color}} = chart.legend.options;
         return chart._getSortedDatasetMetas().map((meta) => {
           const style = meta.controller.getStyle(usePointStyle ? 0 : undefined);
-          const borderWidth = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["C"])(style.borderWidth);
+          const borderWidth = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.C)(style.borderWidth);
           return {
             text: datasets[meta.index].label,
             fillStyle: style.backgroundColor,
@@ -9877,9 +10031,9 @@ class Title extends Element {
     }
     me.width = me.right = maxWidth;
     me.height = me.bottom = maxHeight;
-    const lineCount = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["b"])(opts.text) ? opts.text.length : 1;
-    me._padding = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["C"])(opts.padding);
-    const textSize = lineCount * Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(opts.font).lineHeight + me._padding.height;
+    const lineCount = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(opts.text) ? opts.text.length : 1;
+    me._padding = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.C)(opts.padding);
+    const textSize = lineCount * (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(opts.font).lineHeight + me._padding.height;
     if (me.isHorizontal()) {
       me.height = textSize;
     } else {
@@ -9896,18 +10050,18 @@ class Title extends Element {
     let rotation = 0;
     let maxWidth, titleX, titleY;
     if (this.isHorizontal()) {
-      titleX = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Y"])(align, left, right);
+      titleX = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Y)(align, left, right);
       titleY = top + offset;
       maxWidth = right - left;
     } else {
       if (options.position === 'left') {
         titleX = left + offset;
-        titleY = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Y"])(align, bottom, top);
-        rotation = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["P"] * -0.5;
+        titleY = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Y)(align, bottom, top);
+        rotation = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.P * -0.5;
       } else {
         titleX = right - offset;
-        titleY = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Y"])(align, top, bottom);
-        rotation = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["P"] * 0.5;
+        titleY = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Y)(align, top, bottom);
+        rotation = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.P * 0.5;
       }
       maxWidth = bottom - top;
     }
@@ -9920,15 +10074,15 @@ class Title extends Element {
     if (!opts.display) {
       return;
     }
-    const fontOpts = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(opts.font);
+    const fontOpts = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(opts.font);
     const lineHeight = fontOpts.lineHeight;
     const offset = lineHeight / 2 + me._padding.top;
     const {titleX, titleY, maxWidth, rotation} = me._drawArgs(offset);
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["V"])(ctx, opts.text, 0, 0, fontOpts, {
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.V)(ctx, opts.text, 0, 0, fontOpts, {
       color: opts.color,
       maxWidth,
       rotation,
-      textAlign: Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["X"])(opts.align),
+      textAlign: (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.X)(opts.align),
       textBaseline: 'middle',
       translation: [titleX, titleY],
     });
@@ -10016,7 +10170,7 @@ const positioners = {
       const el = items[i].element;
       if (el && el.hasValue()) {
         const center = el.getCenterPoint();
-        const d = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ay"])(eventPosition, center);
+        const d = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ay)(eventPosition, center);
         if (d < minDistance) {
           minDistance = d;
           nearestElement = el;
@@ -10036,7 +10190,7 @@ const positioners = {
 };
 function pushOrConcat(base, toPush) {
   if (toPush) {
-    if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["b"])(toPush)) {
+    if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(toPush)) {
       Array.prototype.push.apply(base, toPush);
     } else {
       base.push(toPush);
@@ -10070,13 +10224,13 @@ function getTooltipSize(tooltip, options) {
   const ctx = tooltip._chart.ctx;
   const {body, footer, title} = tooltip;
   const {boxWidth, boxHeight} = options;
-  const bodyFont = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(options.bodyFont);
-  const titleFont = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(options.titleFont);
-  const footerFont = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(options.footerFont);
+  const bodyFont = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(options.bodyFont);
+  const titleFont = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(options.titleFont);
+  const footerFont = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(options.footerFont);
   const titleLineCount = title.length;
   const footerLineCount = footer.length;
   const bodyLineItemCount = body.length;
-  const padding = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["C"])(options.padding);
+  const padding = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.C)(options.padding);
   let height = padding.height;
   let width = 0;
   let combinedBodyLength = body.reduce((count, bodyItem) => count + bodyItem.before.length + bodyItem.lines.length + bodyItem.after.length, 0);
@@ -10103,18 +10257,18 @@ function getTooltipSize(tooltip, options) {
   };
   ctx.save();
   ctx.font = titleFont.string;
-  Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(tooltip.title, maxLineWidth);
+  (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(tooltip.title, maxLineWidth);
   ctx.font = bodyFont.string;
-  Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(tooltip.beforeBody.concat(tooltip.afterBody), maxLineWidth);
+  (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(tooltip.beforeBody.concat(tooltip.afterBody), maxLineWidth);
   widthPadding = options.displayColors ? (boxWidth + 2) : 0;
-  Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(body, (bodyItem) => {
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(bodyItem.before, maxLineWidth);
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(bodyItem.lines, maxLineWidth);
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(bodyItem.after, maxLineWidth);
+  (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(body, (bodyItem) => {
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(bodyItem.before, maxLineWidth);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(bodyItem.lines, maxLineWidth);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(bodyItem.after, maxLineWidth);
   });
   widthPadding = 0;
   ctx.font = footerFont.string;
-  Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(tooltip.footer, maxLineWidth);
+  (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(tooltip.footer, maxLineWidth);
   ctx.restore();
   width += padding.width;
   return {width, height};
@@ -10200,12 +10354,12 @@ function getBackgroundPoint(options, size, alignment, chart) {
     x += radiusAndPadding;
   }
   return {
-    x: Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["x"])(x, 0, chart.width - size.width),
-    y: Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["x"])(y, 0, chart.height - size.height)
+    x: (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.x)(x, 0, chart.width - size.width),
+    y: (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.x)(y, 0, chart.height - size.height)
   };
 }
 function getAlignedX(tooltip, align, options) {
-  const padding = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["C"])(options.padding);
+  const padding = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.C)(options.padding);
   return align === 'center'
     ? tooltip.x + tooltip.width / 2
     : align === 'right'
@@ -10301,7 +10455,7 @@ class Tooltip extends Element {
     const me = this;
     const {callbacks} = options;
     const bodyItems = [];
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(tooltipItems, (context) => {
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(tooltipItems, (context) => {
       const bodyItem = {
         before: [],
         lines: [],
@@ -10348,7 +10502,7 @@ class Tooltip extends Element {
     if (options.itemSort) {
       tooltipItems = tooltipItems.sort((a, b) => options.itemSort(a, b, data));
     }
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(tooltipItems, (context) => {
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(tooltipItems, (context) => {
       const scoped = overrideCallbacks(options.callbacks, context);
       labelColors.push(scoped.labelColor.call(me, context));
       labelPointStyles.push(scoped.labelPointStyle.call(me, context));
@@ -10460,11 +10614,11 @@ class Tooltip extends Element {
     const length = title.length;
     let titleFont, titleSpacing, i;
     if (length) {
-      const rtlHelper = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["at"])(options.rtl, me.x, me.width);
+      const rtlHelper = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.at)(options.rtl, me.x, me.width);
       pt.x = getAlignedX(me, options.titleAlign, options);
       ctx.textAlign = rtlHelper.textAlign(options.titleAlign);
       ctx.textBaseline = 'middle';
-      titleFont = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(options.titleFont);
+      titleFont = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(options.titleFont);
       titleSpacing = options.titleSpacing;
       ctx.fillStyle = options.titleColor;
       ctx.font = titleFont.string;
@@ -10482,7 +10636,7 @@ class Tooltip extends Element {
     const labelColors = me.labelColors[i];
     const labelPointStyle = me.labelPointStyles[i];
     const {boxHeight, boxWidth} = options;
-    const bodyFont = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(options.bodyFont);
+    const bodyFont = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(options.bodyFont);
     const colorX = getAlignedX(me, 'left', options);
     const rtlColorX = rtlHelper.x(colorX);
     const yOffSet = boxHeight < bodyFont.lineHeight ? (bodyFont.lineHeight - boxHeight) / 2 : 0;
@@ -10498,10 +10652,10 @@ class Tooltip extends Element {
       const centerY = colorY + boxHeight / 2;
       ctx.strokeStyle = options.multiKeyBackground;
       ctx.fillStyle = options.multiKeyBackground;
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["an"])(ctx, drawOptions, centerX, centerY);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.an)(ctx, drawOptions, centerX, centerY);
       ctx.strokeStyle = labelColors.borderColor;
       ctx.fillStyle = labelColors.backgroundColor;
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["an"])(ctx, drawOptions, centerX, centerY);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.an)(ctx, drawOptions, centerX, centerY);
     } else {
       ctx.lineWidth = labelColors.borderWidth || 1;
       ctx.strokeStyle = labelColors.borderColor;
@@ -10509,11 +10663,11 @@ class Tooltip extends Element {
       ctx.lineDashOffset = labelColors.borderDashOffset || 0;
       const outerX = rtlHelper.leftForLtr(rtlColorX, boxWidth);
       const innerX = rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), boxWidth - 2);
-      const borderRadius = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aq"])(labelColors.borderRadius);
+      const borderRadius = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aq)(labelColors.borderRadius);
       if (Object.values(borderRadius).some(v => v !== 0)) {
         ctx.beginPath();
         ctx.fillStyle = options.multiKeyBackground;
-        Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ao"])(ctx, {
+        (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ao)(ctx, {
           x: outerX,
           y: colorY,
           w: boxWidth,
@@ -10524,7 +10678,7 @@ class Tooltip extends Element {
         ctx.stroke();
         ctx.fillStyle = labelColors.backgroundColor;
         ctx.beginPath();
-        Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ao"])(ctx, {
+        (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ao)(ctx, {
           x: innerX,
           y: colorY + 1,
           w: boxWidth - 2,
@@ -10546,10 +10700,10 @@ class Tooltip extends Element {
     const me = this;
     const {body} = me;
     const {bodySpacing, bodyAlign, displayColors, boxHeight, boxWidth} = options;
-    const bodyFont = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(options.bodyFont);
+    const bodyFont = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(options.bodyFont);
     let bodyLineHeight = bodyFont.lineHeight;
     let xLinePadding = 0;
-    const rtlHelper = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["at"])(options.rtl, me.x, me.width);
+    const rtlHelper = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.at)(options.rtl, me.x, me.width);
     const fillLineOfText = function(line) {
       ctx.fillText(line, rtlHelper.x(pt.x + xLinePadding), pt.y + bodyLineHeight / 2);
       pt.y += bodyLineHeight + bodySpacing;
@@ -10561,7 +10715,7 @@ class Tooltip extends Element {
     ctx.font = bodyFont.string;
     pt.x = getAlignedX(me, bodyAlignForCalculation, options);
     ctx.fillStyle = options.bodyColor;
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(me.beforeBody, fillLineOfText);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(me.beforeBody, fillLineOfText);
     xLinePadding = displayColors && bodyAlignForCalculation !== 'right'
       ? bodyAlign === 'center' ? (boxWidth / 2 + 1) : (boxWidth + 2)
       : 0;
@@ -10569,7 +10723,7 @@ class Tooltip extends Element {
       bodyItem = body[i];
       textColor = me.labelTextColors[i];
       ctx.fillStyle = textColor;
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(bodyItem.before, fillLineOfText);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(bodyItem.before, fillLineOfText);
       lines = bodyItem.lines;
       if (displayColors && lines.length) {
         me._drawColorBox(ctx, pt, i, rtlHelper, options);
@@ -10579,11 +10733,11 @@ class Tooltip extends Element {
         fillLineOfText(lines[j]);
         bodyLineHeight = bodyFont.lineHeight;
       }
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(bodyItem.after, fillLineOfText);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(bodyItem.after, fillLineOfText);
     }
     xLinePadding = 0;
     bodyLineHeight = bodyFont.lineHeight;
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["D"])(me.afterBody, fillLineOfText);
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D)(me.afterBody, fillLineOfText);
     pt.y -= bodySpacing;
   }
   drawFooter(pt, ctx, options) {
@@ -10592,12 +10746,12 @@ class Tooltip extends Element {
     const length = footer.length;
     let footerFont, i;
     if (length) {
-      const rtlHelper = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["at"])(options.rtl, me.x, me.width);
+      const rtlHelper = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.at)(options.rtl, me.x, me.width);
       pt.x = getAlignedX(me, options.footerAlign, options);
       pt.y += options.footerMarginTop;
       ctx.textAlign = rtlHelper.textAlign(options.footerAlign);
       ctx.textBaseline = 'middle';
-      footerFont = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(options.footerFont);
+      footerFont = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(options.footerFont);
       ctx.fillStyle = options.footerColor;
       ctx.font = footerFont.string;
       for (i = 0; i < length; ++i) {
@@ -10685,18 +10839,18 @@ class Tooltip extends Element {
       y: me.y
     };
     opacity = Math.abs(opacity) < 1e-3 ? 0 : opacity;
-    const padding = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["C"])(options.padding);
+    const padding = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.C)(options.padding);
     const hasTooltipContent = me.title.length || me.beforeBody.length || me.body.length || me.afterBody.length || me.footer.length;
     if (options.enabled && hasTooltipContent) {
       ctx.save();
       ctx.globalAlpha = opacity;
       me.drawBackground(pt, ctx, tooltipSize, options);
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["au"])(ctx, options.textDirection);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.au)(ctx, options.textDirection);
       pt.y += padding.top;
       me.drawTitle(pt, ctx, options);
       me.drawBody(pt, ctx, options);
       me.drawFooter(pt, ctx, options);
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aw"])(ctx, options.textDirection);
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aw)(ctx, options.textDirection);
       ctx.restore();
     }
   }
@@ -10717,7 +10871,7 @@ class Tooltip extends Element {
         index,
       };
     });
-    const changed = !Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ac"])(lastActive, active);
+    const changed = !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ac)(lastActive, active);
     const positionChanged = me._positionChanged(active, eventPosition);
     if (changed || positionChanged) {
       me._active = active;
@@ -10738,7 +10892,7 @@ class Tooltip extends Element {
       }
     }
     const positionChanged = me._positionChanged(active, e);
-    changed = replay || !Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ac"])(active, lastActive) || positionChanged;
+    changed = replay || !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ac)(active, lastActive) || positionChanged;
     if (changed) {
       me._active = active;
       if (options.enabled || options.external) {
@@ -10847,7 +11001,7 @@ var plugin_tooltip = {
       }
     },
     callbacks: {
-      beforeTitle: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ax"],
+      beforeTitle: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax,
       title(tooltipItems) {
         if (tooltipItems.length > 0) {
           const item = tooltipItems[0];
@@ -10863,9 +11017,9 @@ var plugin_tooltip = {
         }
         return '';
       },
-      afterTitle: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ax"],
-      beforeBody: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ax"],
-      beforeLabel: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ax"],
+      afterTitle: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax,
+      beforeBody: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax,
+      beforeLabel: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax,
       label(tooltipItem) {
         if (this && this.options && this.options.mode === 'dataset') {
           return tooltipItem.label + ': ' + tooltipItem.formattedValue || tooltipItem.formattedValue;
@@ -10875,7 +11029,7 @@ var plugin_tooltip = {
           label += ': ';
         }
         const value = tooltipItem.formattedValue;
-        if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(value)) {
+        if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(value)) {
           label += value;
         }
         return label;
@@ -10903,11 +11057,11 @@ var plugin_tooltip = {
           rotation: options.rotation,
         };
       },
-      afterLabel: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ax"],
-      afterBody: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ax"],
-      beforeFooter: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ax"],
-      footer: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ax"],
-      afterFooter: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["ax"]
+      afterLabel: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax,
+      afterBody: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax,
+      beforeFooter: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax,
+      footer: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax,
+      afterFooter: _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax
     }
   },
   defaultRoutes: {
@@ -10952,7 +11106,7 @@ function findOrAddLabel(labels, raw, index) {
   const last = labels.lastIndexOf(raw);
   return first !== last ? index : first;
 }
-const validIndex = (index, max) => index === null ? null : Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["x"])(Math.round(index), 0, max);
+const validIndex = (index, max) => index === null ? null : (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.x)(Math.round(index), 0, max);
 class CategoryScale extends Scale {
   constructor(cfg) {
     super(cfg);
@@ -10960,12 +11114,12 @@ class CategoryScale extends Scale {
     this._valueRange = 0;
   }
   parse(raw, index) {
-    if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(raw)) {
+    if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(raw)) {
       return null;
     }
     const labels = this.getLabels();
     index = isFinite(index) && labels[index] === raw ? index
-      : findOrAddLabel(labels, raw, Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(index, raw));
+      : findOrAddLabel(labels, raw, (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(index, raw));
     return validIndex(index, labels.length - 1);
   }
   determineDataLimits() {
@@ -11050,20 +11204,20 @@ function generateTicks$1(generationOptions, dataRange) {
   const unit = step || 1;
   const maxSpaces = maxTicks - 1;
   const {min: rmin, max: rmax} = dataRange;
-  const minDefined = !Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(min);
-  const maxDefined = !Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(max);
-  const countDefined = !Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(count);
+  const minDefined = !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(min);
+  const maxDefined = !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(max);
+  const countDefined = !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(count);
   const minSpacing = (rmax - rmin) / (maxDigits + 1);
-  let spacing = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aA"])((rmax - rmin) / maxSpaces / unit) * unit;
+  let spacing = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aA)((rmax - rmin) / maxSpaces / unit) * unit;
   let factor, niceMin, niceMax, numSpaces;
   if (spacing < MIN_SPACING && !minDefined && !maxDefined) {
     return [{value: rmin}, {value: rmax}];
   }
   numSpaces = Math.ceil(rmax / spacing) - Math.floor(rmin / spacing);
   if (numSpaces > maxSpaces) {
-    spacing = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aA"])(numSpaces * spacing / maxSpaces / unit) * unit;
+    spacing = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aA)(numSpaces * spacing / maxSpaces / unit) * unit;
   }
-  if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(precision)) {
+  if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(precision)) {
     factor = Math.pow(10, precision);
     spacing = Math.ceil(spacing * factor) / factor;
   }
@@ -11074,7 +11228,7 @@ function generateTicks$1(generationOptions, dataRange) {
     niceMin = rmin;
     niceMax = rmax;
   }
-  if (minDefined && maxDefined && step && Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aB"])((max - min) / step, spacing / 1000)) {
+  if (minDefined && maxDefined && step && (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aB)((max - min) / step, spacing / 1000)) {
     numSpaces = Math.min((max - min) / spacing, maxTicks);
     spacing = (max - min) / numSpaces;
     niceMin = min;
@@ -11086,17 +11240,17 @@ function generateTicks$1(generationOptions, dataRange) {
     spacing = (niceMax - niceMin) / numSpaces;
   } else {
     numSpaces = (niceMax - niceMin) / spacing;
-    if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aC"])(numSpaces, Math.round(numSpaces), spacing / 1000)) {
+    if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aC)(numSpaces, Math.round(numSpaces), spacing / 1000)) {
       numSpaces = Math.round(numSpaces);
     } else {
       numSpaces = Math.ceil(numSpaces);
     }
   }
   const decimalPlaces = Math.max(
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aD"])(spacing),
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aD"])(niceMin),
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aD)(spacing),
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aD)(niceMin),
   );
-  factor = Math.pow(10, Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(precision) ? decimalPlaces : precision);
+  factor = Math.pow(10, (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(precision) ? decimalPlaces : precision);
   niceMin = Math.round(niceMin * factor) / factor;
   niceMax = Math.round(niceMax * factor) / factor;
   let j = 0;
@@ -11106,7 +11260,7 @@ function generateTicks$1(generationOptions, dataRange) {
       if (niceMin < min) {
         j++;
       }
-      if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aC"])(Math.round((niceMin + j * spacing) * factor) / factor, min, relativeLabelSize(min, minSpacing, generationOptions))) {
+      if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aC)(Math.round((niceMin + j * spacing) * factor) / factor, min, relativeLabelSize(min, minSpacing, generationOptions))) {
         j++;
       }
     } else if (niceMin < min) {
@@ -11117,7 +11271,7 @@ function generateTicks$1(generationOptions, dataRange) {
     ticks.push({value: Math.round((niceMin + j * spacing) * factor) / factor});
   }
   if (maxDefined && includeBounds && niceMax !== max) {
-    if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aC"])(ticks[ticks.length - 1].value, max, relativeLabelSize(max, minSpacing, generationOptions))) {
+    if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aC)(ticks[ticks.length - 1].value, max, relativeLabelSize(max, minSpacing, generationOptions))) {
       ticks[ticks.length - 1].value = max;
     } else {
       ticks.push({value: max});
@@ -11128,7 +11282,7 @@ function generateTicks$1(generationOptions, dataRange) {
   return ticks;
 }
 function relativeLabelSize(value, minSpacing, {horizontal, minRotation}) {
-  const rad = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["t"])(minRotation);
+  const rad = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.t)(minRotation);
   const ratio = (horizontal ? Math.sin(rad) : Math.cos(rad)) || 0.001;
   const length = 0.75 * minSpacing * ('' + value).length;
   return Math.min(minSpacing / ratio, length);
@@ -11143,7 +11297,7 @@ class LinearScaleBase extends Scale {
     this._valueRange = 0;
   }
   parse(raw, index) {
-    if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(raw)) {
+    if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(raw)) {
       return null;
     }
     if ((typeof raw === 'number' || raw instanceof Number) && !isFinite(+raw)) {
@@ -11159,8 +11313,8 @@ class LinearScaleBase extends Scale {
     const setMin = v => (min = minDefined ? min : v);
     const setMax = v => (max = maxDefined ? max : v);
     if (beginAtZero) {
-      const minSign = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["s"])(min);
-      const maxSign = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["s"])(max);
+      const minSign = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.s)(min);
+      const maxSign = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.s)(max);
       if (minSign < 0 && maxSign < 0) {
         setMax(0);
       } else if (minSign > 0 && maxSign > 0) {
@@ -11217,7 +11371,7 @@ class LinearScaleBase extends Scale {
     const dataRange = me._range || me;
     const ticks = generateTicks$1(numericGeneratorOptions, dataRange);
     if (opts.bounds === 'ticks') {
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["az"])(ticks, me, 'value');
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.az)(ticks, me, 'value');
     }
     if (opts.reverse) {
       ticks.reverse();
@@ -11245,7 +11399,7 @@ class LinearScaleBase extends Scale {
     me._valueRange = end - start;
   }
   getLabelForValue(value) {
-    return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["p"])(value, this.chart.options.locale);
+    return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.p)(value, this.chart.options.locale);
   }
 }
 
@@ -11253,15 +11407,15 @@ class LinearScale extends LinearScaleBase {
   determineDataLimits() {
     const me = this;
     const {min, max} = me.getMinMax(true);
-    me.min = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(min) ? min : 0;
-    me.max = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(max) ? max : 1;
+    me.min = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(min) ? min : 0;
+    me.max = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(max) ? max : 1;
     me.handleTickRangeOptions();
   }
   computeTickLimit() {
     const me = this;
     const horizontal = me.isHorizontal();
     const length = horizontal ? me.width : me.height;
-    const minRotation = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["t"])(me.options.ticks.minRotation);
+    const minRotation = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.t)(me.options.ticks.minRotation);
     const ratio = (horizontal ? Math.sin(minRotation) : Math.cos(minRotation)) || 0.001;
     const tickFont = me._resolveTickFontOptions(0);
     return Math.ceil(length / Math.min(40, tickFont.lineHeight / ratio));
@@ -11281,15 +11435,15 @@ LinearScale.defaults = {
 };
 
 function isMajor(tickVal) {
-  const remain = tickVal / (Math.pow(10, Math.floor(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["K"])(tickVal))));
+  const remain = tickVal / (Math.pow(10, Math.floor((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.K)(tickVal))));
   return remain === 1;
 }
 function generateTicks(generationOptions, dataRange) {
-  const endExp = Math.floor(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["K"])(dataRange.max));
+  const endExp = Math.floor((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.K)(dataRange.max));
   const endSignificand = Math.ceil(dataRange.max / Math.pow(10, endExp));
   const ticks = [];
-  let tickVal = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["M"])(generationOptions.min, Math.pow(10, Math.floor(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["K"])(dataRange.min))));
-  let exp = Math.floor(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["K"])(tickVal));
+  let tickVal = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.M)(generationOptions.min, Math.pow(10, Math.floor((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.K)(dataRange.min))));
+  let exp = Math.floor((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.K)(tickVal));
   let significand = Math.floor(tickVal / Math.pow(10, exp));
   let precision = exp < 0 ? Math.pow(10, Math.abs(exp)) : 1;
   do {
@@ -11302,7 +11456,7 @@ function generateTicks(generationOptions, dataRange) {
     }
     tickVal = Math.round(significand * Math.pow(10, exp) * precision) / precision;
   } while (exp < endExp || (exp === endExp && significand < endSignificand));
-  const lastTick = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["M"])(generationOptions.max, tickVal);
+  const lastTick = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.M)(generationOptions.max, tickVal);
   ticks.push({value: lastTick, major: isMajor(tickVal)});
   return ticks;
 }
@@ -11320,13 +11474,13 @@ class LogarithmicScale extends Scale {
       this._zero = true;
       return undefined;
     }
-    return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(value) && value > 0 ? value : null;
+    return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(value) && value > 0 ? value : null;
   }
   determineDataLimits() {
     const me = this;
     const {min, max} = me.getMinMax(true);
-    me.min = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(min) ? Math.max(0, min) : null;
-    me.max = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(max) ? Math.max(0, max) : null;
+    me.min = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(min) ? Math.max(0, min) : null;
+    me.max = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(max) ? Math.max(0, max) : null;
     if (me.options.beginAtZero) {
       me._zero = true;
     }
@@ -11339,7 +11493,7 @@ class LogarithmicScale extends Scale {
     let max = me.max;
     const setMin = v => (min = minDefined ? min : v);
     const setMax = v => (max = maxDefined ? max : v);
-    const exp = (v, m) => Math.pow(10, Math.floor(Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["K"])(v)) + m);
+    const exp = (v, m) => Math.pow(10, Math.floor((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.K)(v)) + m);
     if (min === max) {
       if (min <= 0) {
         setMin(1);
@@ -11370,7 +11524,7 @@ class LogarithmicScale extends Scale {
     };
     const ticks = generateTicks(generationOptions, me);
     if (opts.bounds === 'ticks') {
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["az"])(ticks, me, 'value');
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.az)(ticks, me, 'value');
     }
     if (opts.reverse) {
       ticks.reverse();
@@ -11383,14 +11537,14 @@ class LogarithmicScale extends Scale {
     return ticks;
   }
   getLabelForValue(value) {
-    return value === undefined ? '0' : Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["p"])(value, this.chart.options.locale);
+    return value === undefined ? '0' : (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.p)(value, this.chart.options.locale);
   }
   configure() {
     const me = this;
     const start = me.min;
     super.configure();
-    me._startValue = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["K"])(start);
-    me._valueRange = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["K"])(me.max) - Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["K"])(start);
+    me._startValue = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.K)(start);
+    me._valueRange = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.K)(me.max) - (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.K)(start);
   }
   getPixelForValue(value) {
     const me = this;
@@ -11402,7 +11556,7 @@ class LogarithmicScale extends Scale {
     }
     return me.getPixelForDecimal(value === me.min
       ? 0
-      : (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["K"])(value) - me._startValue) / me._valueRange);
+      : ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.K)(value) - me._startValue) / me._valueRange);
   }
   getValueForPixel(pixel) {
     const me = this;
@@ -11423,15 +11577,15 @@ LogarithmicScale.defaults = {
 function getTickBackdropHeight(opts) {
   const tickOpts = opts.ticks;
   if (tickOpts.display && opts.display) {
-    const padding = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["C"])(tickOpts.backdropPadding);
-    return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(tickOpts.font && tickOpts.font.size, _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["d"].font.size) + padding.height;
+    const padding = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.C)(tickOpts.backdropPadding);
+    return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(tickOpts.font && tickOpts.font.size, _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.d.font.size) + padding.height;
   }
   return 0;
 }
 function measureLabelSize(ctx, lineHeight, label) {
-  if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["b"])(label)) {
+  if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b)(label)) {
     return {
-      w: Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aE"])(ctx, ctx.font, label),
+      w: (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aE)(ctx, ctx.font, label),
       h: label.length * lineHeight
     };
   }
@@ -11473,12 +11627,12 @@ function fitWithPointLabels(scale) {
     const opts = scale.options.pointLabels.setContext(scale.getContext(i));
     padding[i] = opts.padding;
     pointPosition = scale.getPointPosition(i, scale.drawingArea + padding[i]);
-    const plFont = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(opts.font);
+    const plFont = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(opts.font);
     scale.ctx.font = plFont.string;
     textSize = measureLabelSize(scale.ctx, plFont.lineHeight, scale._pointLabels[i]);
     labelSizes[i] = textSize;
     const angleRadians = scale.getIndexAngle(i);
-    const angle = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Q"])(angleRadians);
+    const angle = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Q)(angleRadians);
     const hLimits = determineLimits(angle, pointPosition.x, textSize.w, 0, 180);
     const vLimits = determineLimits(angle, pointPosition.y, textSize.h, 90, 270);
     if (hLimits.start < furthestLimits.l) {
@@ -11506,7 +11660,7 @@ function fitWithPointLabels(scale) {
   for (i = 0; i < valueCount; i++) {
     const extra = (i === 0 ? tickBackdropHeight / 2 : 0);
     const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + padding[i]);
-    const angle = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["Q"])(scale.getIndexAngle(i));
+    const angle = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Q)(scale.getIndexAngle(i));
     const size = labelSizes[i];
     adjustPointPositionForLabelHeight(angle, size, pointLabelPosition);
     const textAlign = getTextAlignForAngle(angle);
@@ -11549,15 +11703,15 @@ function drawPointLabels(scale, labelCount) {
   const {ctx, options: {pointLabels}} = scale;
   for (let i = labelCount - 1; i >= 0; i--) {
     const optsAtIndex = pointLabels.setContext(scale.getContext(i));
-    const plFont = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(optsAtIndex.font);
+    const plFont = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(optsAtIndex.font);
     const {x, y, textAlign, left, top, right, bottom} = scale._pointLabelItems[i];
     const {backdropColor} = optsAtIndex;
-    if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(backdropColor)) {
-      const padding = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["C"])(optsAtIndex.backdropPadding);
+    if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(backdropColor)) {
+      const padding = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.C)(optsAtIndex.backdropPadding);
       ctx.fillStyle = backdropColor;
       ctx.fillRect(left - padding.left, top - padding.top, right - left + padding.width, bottom - top + padding.height);
     }
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["V"])(
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.V)(
       ctx,
       scale._pointLabels[i],
       x,
@@ -11574,7 +11728,7 @@ function drawPointLabels(scale, labelCount) {
 function pathRadiusLine(scale, radius, circular, labelCount) {
   const {ctx} = scale;
   if (circular) {
-    ctx.arc(scale.xCenter, scale.yCenter, radius, 0, _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"]);
+    ctx.arc(scale.xCenter, scale.yCenter, radius, 0, _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T);
   } else {
     let pointPosition = scale.getPointPosition(0, radius);
     ctx.moveTo(pointPosition.x, pointPosition.y);
@@ -11603,7 +11757,7 @@ function drawRadiusLine(scale, gridLineOpts, radius, labelCount) {
   ctx.restore();
 }
 function numberOrZero(param) {
-  return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["w"])(param) ? param : 0;
+  return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.w)(param) ? param : 0;
 }
 class RadialLinearScale extends LinearScaleBase {
   constructor(cfg) {
@@ -11626,8 +11780,8 @@ class RadialLinearScale extends LinearScaleBase {
   determineDataLimits() {
     const me = this;
     const {min, max} = me.getMinMax(false);
-    me.min = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(min) && !isNaN(min) ? min : 0;
-    me.max = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(max) && !isNaN(max) ? max : 0;
+    me.min = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(min) && !isNaN(min) ? min : 0;
+    me.max = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(max) && !isNaN(max) ? max : 0;
     me.handleTickRangeOptions();
   }
   computeTickLimit() {
@@ -11637,7 +11791,7 @@ class RadialLinearScale extends LinearScaleBase {
     const me = this;
     LinearScaleBase.prototype.generateTickLabels.call(me, ticks);
     me._pointLabels = me.getLabels().map((value, index) => {
-      const label = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(me.options.pointLabels.callback, [value, index], me);
+      const label = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(me.options.pointLabels.callback, [value, index], me);
       return label || label === 0 ? label : '';
     });
   }
@@ -11675,13 +11829,13 @@ class RadialLinearScale extends LinearScaleBase {
     me.yCenter = Math.floor(((maxTop + maxBottom) / 2) + me.top + me.paddingTop);
   }
   getIndexAngle(index) {
-    const angleMultiplier = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["T"] / this.getLabels().length;
+    const angleMultiplier = _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T / this.getLabels().length;
     const startAngle = this.options.startAngle || 0;
-    return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["as"])(index * angleMultiplier + Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["t"])(startAngle));
+    return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.as)(index * angleMultiplier + (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.t)(startAngle));
   }
   getDistanceFromCenterForValue(value) {
     const me = this;
-    if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(value)) {
+    if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(value)) {
       return NaN;
     }
     const scalingFactor = me.drawingArea / (me.max - me.min);
@@ -11691,7 +11845,7 @@ class RadialLinearScale extends LinearScaleBase {
     return (value - me.min) * scalingFactor;
   }
   getValueForDistanceFromCenter(distance) {
-    if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(distance)) {
+    if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(distance)) {
       return NaN;
     }
     const me = this;
@@ -11700,7 +11854,7 @@ class RadialLinearScale extends LinearScaleBase {
   }
   getPointPosition(index, distanceFromCenter) {
     const me = this;
-    const angle = me.getIndexAngle(index) - _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["H"];
+    const angle = me.getIndexAngle(index) - _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.H;
     return {
       x: Math.cos(angle) * distanceFromCenter + me.xCenter,
       y: Math.sin(angle) * distanceFromCenter + me.yCenter,
@@ -11798,12 +11952,12 @@ class RadialLinearScale extends LinearScaleBase {
         return;
       }
       const optsAtIndex = tickOpts.setContext(me.getContext(index));
-      const tickFont = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["W"])(optsAtIndex.font);
+      const tickFont = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W)(optsAtIndex.font);
       offset = me.getDistanceFromCenterForValue(me.ticks[index].value);
       if (optsAtIndex.showLabelBackdrop) {
         width = ctx.measureText(tick.label).width;
         ctx.fillStyle = optsAtIndex.backdropColor;
-        const padding = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["C"])(optsAtIndex.backdropPadding);
+        const padding = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.C)(optsAtIndex.backdropPadding);
         ctx.fillRect(
           -width / 2 - padding.left,
           -offset - tickFont.size / 2 - padding.top,
@@ -11811,7 +11965,7 @@ class RadialLinearScale extends LinearScaleBase {
           tickFont.size + padding.height
         );
       }
-      Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["V"])(ctx, tick.label, 0, -offset, tickFont, {
+      (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.V)(ctx, tick.label, 0, -offset, tickFont, {
         color: optsAtIndex.color,
       });
     });
@@ -11878,7 +12032,7 @@ function sorter(a, b) {
   return a - b;
 }
 function parse(scale, input) {
-  if (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(input)) {
+  if ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(input)) {
     return null;
   }
   const adapter = scale._adapter;
@@ -11887,7 +12041,7 @@ function parse(scale, input) {
   if (typeof parser === 'function') {
     value = parser(value);
   }
-  if (!Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(value)) {
+  if (!(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(value)) {
     value = typeof parser === 'string'
       ? adapter.parse(value, parser)
       : adapter.parse(value);
@@ -11896,7 +12050,7 @@ function parse(scale, input) {
     return null;
   }
   if (round) {
-    value = round === 'week' && (Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["w"])(isoWeekday) || isoWeekday === true)
+    value = round === 'week' && ((0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.w)(isoWeekday) || isoWeekday === true)
       ? adapter.startOf(value, 'isoWeek', isoWeekday)
       : adapter.startOf(value, round);
   }
@@ -11933,7 +12087,7 @@ function addTick(ticks, time, timestamps) {
   if (!timestamps) {
     ticks[time] = true;
   } else if (timestamps.length) {
-    const {lo, hi} = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aG"])(timestamps, time);
+    const {lo, hi} = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aG)(timestamps, time);
     const timestamp = timestamps[lo] >= time ? timestamps[lo] : timestamps[hi];
     ticks[timestamp] = true;
   }
@@ -11983,7 +12137,7 @@ class TimeScale extends Scale {
   init(scaleOpts, opts) {
     const time = scaleOpts.time || (scaleOpts.time = {});
     const adapter = this._adapter = new adapters._date(scaleOpts.adapters.date);
-    Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["a6"])(time.displayFormats, adapter.formats());
+    (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a6)(time.displayFormats, adapter.formats());
     this._parseOpts = {
       parser: time.parser,
       round: time.round,
@@ -12026,8 +12180,8 @@ class TimeScale extends Scale {
         _applyBounds(me.getMinMax(false));
       }
     }
-    min = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(min) && !isNaN(min) ? min : +adapter.startOf(Date.now(), unit);
-    max = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["g"])(max) && !isNaN(max) ? max : +adapter.endOf(Date.now(), unit) + 1;
+    min = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(min) && !isNaN(min) ? min : +adapter.startOf(Date.now(), unit);
+    max = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g)(max) && !isNaN(max) ? max : +adapter.endOf(Date.now(), unit) + 1;
     me.min = Math.min(min, max - 1);
     me.max = Math.max(min + 1, max);
   }
@@ -12053,7 +12207,7 @@ class TimeScale extends Scale {
     }
     const min = me.min;
     const max = me.max;
-    const ticks = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aF"])(timestamps, min, max);
+    const ticks = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aF)(timestamps, min, max);
     me._unit = timeOpts.unit || (tickOpts.autoSkip
       ? determineUnitForAutoTicks(timeOpts.minUnit, me.min, me.max, me._getLabelCapacity(min))
       : determineUnitForFormatting(me, ticks.length, timeOpts.minUnit, me.min, me.max));
@@ -12085,8 +12239,8 @@ class TimeScale extends Scale {
       }
     }
     const limit = timestamps.length < 3 ? 0.5 : 0.25;
-    start = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["x"])(start, 0, limit);
-    end = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["x"])(end, 0, limit);
+    start = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.x)(start, 0, limit);
+    end = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.x)(end, 0, limit);
     me._offsets = {start, end, factor: 1 / (start + 1 + end)};
   }
   _generate() {
@@ -12097,9 +12251,9 @@ class TimeScale extends Scale {
     const options = me.options;
     const timeOpts = options.time;
     const minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, me._getLabelCapacity(min));
-    const stepSize = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["v"])(timeOpts.stepSize, 1);
+    const stepSize = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)(timeOpts.stepSize, 1);
     const weekday = minor === 'week' ? timeOpts.isoWeekday : false;
-    const hasWeekday = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["w"])(weekday) || weekday === true;
+    const hasWeekday = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.w)(weekday) || weekday === true;
     const ticks = {};
     let first = min;
     let time, count;
@@ -12140,7 +12294,7 @@ class TimeScale extends Scale {
     const major = majorUnit && majorFormat && tick && tick.major;
     const label = me._adapter.format(time, format || (major ? majorFormat : minorFormat));
     const formatter = options.ticks.callback;
-    return formatter ? Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["N"])(formatter, [label, index, ticks], me) : label;
+    return formatter ? (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N)(formatter, [label, index, ticks], me) : label;
   }
   generateTickLabels(ticks) {
     let i, ilen, tick;
@@ -12169,7 +12323,7 @@ class TimeScale extends Scale {
     const me = this;
     const ticksOpts = me.options.ticks;
     const tickLabelWidth = me.ctx.measureText(label).width;
-    const angle = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["t"])(me.isHorizontal() ? ticksOpts.maxRotation : ticksOpts.minRotation);
+    const angle = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.t)(me.isHorizontal() ? ticksOpts.maxRotation : ticksOpts.minRotation);
     const cosRotation = Math.cos(angle);
     const sinRotation = Math.sin(angle);
     const tickFontSize = me._resolveTickFontOptions(0).size;
@@ -12218,7 +12372,7 @@ class TimeScale extends Scale {
     return (me._cache.labels = me._normalized ? timestamps : me.normalize(timestamps));
   }
   normalize(values) {
-    return Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["_"])(values.sort(sorter));
+    return (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__._)(values.sort(sorter));
   }
 }
 TimeScale.id = 'time';
@@ -12249,7 +12403,7 @@ function interpolate(table, val, reverse) {
     prevTarget = table[prevSource];
     nextTarget = table[nextSource];
   } else {
-    const result = Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["aG"])(table, val);
+    const result = (0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aG)(table, val);
     prevTarget = result.lo;
     nextTarget = result.hi;
     prevSource = table[prevTarget];
@@ -12310,7 +12464,7 @@ class TimeSeriesScale extends TimeScale {
   getPixelForValue(value, index) {
     const me = this;
     const offsets = me._offsets;
-    const pos = me._normalized && me._maxIndex > 0 && !Object(_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__["j"])(index)
+    const pos = me._normalized && me._maxIndex > 0 && !(0,_chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j)(index)
       ? index / me._maxIndex : me.getDecimalForValue(value);
     return me.getPixelForDecimal((offsets.start + pos) * offsets.factor);
   }
@@ -12353,125 +12507,126 @@ const registerables = [
 /*!**************************************************************!*\
   !*** ./node_modules/chart.js/dist/chunks/helpers.segment.js ***!
   \**************************************************************/
-/*! exports provided: $, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, _, a, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, aA, aB, aC, aD, aE, aF, aG, aH, aI, aJ, aK, aL, aM, aN, aO, aP, aQ, aR, aS, aT, aU, aV, aW, aX, aa, ab, ac, ad, ae, af, ag, ah, ai, aj, ak, al, am, an, ao, ap, aq, ar, as, at, au, av, aw, ax, ay, az, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "$", function() { return merge; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "A", function() { return _isPointInArea; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "B", function() { return _rlookupByKey; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "C", function() { return toPadding; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "D", function() { return each; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "E", function() { return getMaximumSize; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "F", function() { return _getParentNode; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "G", function() { return readUsedSize; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "H", function() { return HALF_PI; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "I", function() { return throttled; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "J", function() { return supportsEventListenerOptions; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "K", function() { return log10; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "L", function() { return _factorize; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "M", function() { return finiteOrDefault; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "N", function() { return callback; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "O", function() { return _addGrace; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "P", function() { return PI; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Q", function() { return toDegrees; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "R", function() { return _measureText; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "S", function() { return _int16Range; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "T", function() { return TAU; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "U", function() { return _alignPixel; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "V", function() { return renderText; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "W", function() { return toFont; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "X", function() { return _toLeftRightCenter; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Y", function() { return _alignStartEnd; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Z", function() { return overrides; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "_", function() { return _arrayUnique; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return resolve; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a0", function() { return _capitalize; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a1", function() { return descriptors; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a2", function() { return isFunction; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a3", function() { return _attachContext; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a4", function() { return _createResolver; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a5", function() { return _descriptors; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a6", function() { return mergeIf; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a7", function() { return uid; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a8", function() { return debounce; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a9", function() { return retinaScale; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aA", function() { return niceNum; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aB", function() { return almostWhole; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aC", function() { return almostEquals; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aD", function() { return _decimalPlaces; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aE", function() { return _longestText; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aF", function() { return _filterBetween; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aG", function() { return _lookup; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aH", function() { return getHoverColor; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aI", function() { return clone$1; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aJ", function() { return _merger; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aK", function() { return _mergerIf; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aL", function() { return _deprecated; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aM", function() { return toFontString; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aN", function() { return splineCurve; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aO", function() { return splineCurveMonotone; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aP", function() { return getStyle; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aQ", function() { return fontString; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aR", function() { return toLineHeight; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aS", function() { return PITAU; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aT", function() { return INFINITY; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aU", function() { return RAD_PER_DEG; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aV", function() { return QUARTER_PI; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aW", function() { return TWO_THIRDS_PI; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aX", function() { return _angleDiff; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aa", function() { return clearCanvas; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ab", function() { return setsEqual; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ac", function() { return _elementsEqual; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ad", function() { return getAngleFromPoint; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ae", function() { return _readValueToProps; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "af", function() { return _updateBezierControlPoints; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ag", function() { return _computeSegments; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ah", function() { return _boundSegments; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ai", function() { return _steppedInterpolation; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aj", function() { return _bezierInterpolation; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ak", function() { return _pointInLine; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "al", function() { return _steppedLineTo; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "am", function() { return _bezierCurveTo; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "an", function() { return drawPoint; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ao", function() { return addRoundedRectPath; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ap", function() { return toTRBL; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aq", function() { return toTRBLCorners; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ar", function() { return _boundSegment; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "as", function() { return _normalizeAngle; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "at", function() { return getRtlAdapter; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "au", function() { return overrideTextDirection; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "av", function() { return _textX; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "aw", function() { return restoreTextDirection; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ax", function() { return noop; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ay", function() { return distanceBetweenPoints; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "az", function() { return _setMinAndMaxByKey; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return isArray; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return color; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return defaults; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return effects; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return resolveObjectKey; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return isNumberFinite; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return defined; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return isObject; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return isNullOrUndef; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return clipArea; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "l", function() { return listenArrayEvents; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "m", function() { return unclipArea; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "n", function() { return toPercentage; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "o", function() { return toDimension; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "p", function() { return formatNumber; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "q", function() { return _angleBetween; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "r", function() { return requestAnimFrame; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "s", function() { return sign; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "t", function() { return toRadians; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "u", function() { return unlistenArrayEvents; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "v", function() { return valueOrDefault; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "w", function() { return isNumber; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "x", function() { return _limitValue; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "y", function() { return _lookupByKey; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "z", function() { return getRelativePosition; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "$": () => (/* binding */ merge),
+/* harmony export */   "A": () => (/* binding */ _isPointInArea),
+/* harmony export */   "B": () => (/* binding */ _rlookupByKey),
+/* harmony export */   "C": () => (/* binding */ toPadding),
+/* harmony export */   "D": () => (/* binding */ each),
+/* harmony export */   "E": () => (/* binding */ getMaximumSize),
+/* harmony export */   "F": () => (/* binding */ _getParentNode),
+/* harmony export */   "G": () => (/* binding */ readUsedSize),
+/* harmony export */   "H": () => (/* binding */ HALF_PI),
+/* harmony export */   "I": () => (/* binding */ throttled),
+/* harmony export */   "J": () => (/* binding */ supportsEventListenerOptions),
+/* harmony export */   "K": () => (/* binding */ log10),
+/* harmony export */   "L": () => (/* binding */ _factorize),
+/* harmony export */   "M": () => (/* binding */ finiteOrDefault),
+/* harmony export */   "N": () => (/* binding */ callback),
+/* harmony export */   "O": () => (/* binding */ _addGrace),
+/* harmony export */   "P": () => (/* binding */ PI),
+/* harmony export */   "Q": () => (/* binding */ toDegrees),
+/* harmony export */   "R": () => (/* binding */ _measureText),
+/* harmony export */   "S": () => (/* binding */ _int16Range),
+/* harmony export */   "T": () => (/* binding */ TAU),
+/* harmony export */   "U": () => (/* binding */ _alignPixel),
+/* harmony export */   "V": () => (/* binding */ renderText),
+/* harmony export */   "W": () => (/* binding */ toFont),
+/* harmony export */   "X": () => (/* binding */ _toLeftRightCenter),
+/* harmony export */   "Y": () => (/* binding */ _alignStartEnd),
+/* harmony export */   "Z": () => (/* binding */ overrides),
+/* harmony export */   "_": () => (/* binding */ _arrayUnique),
+/* harmony export */   "a": () => (/* binding */ resolve),
+/* harmony export */   "a0": () => (/* binding */ _capitalize),
+/* harmony export */   "a1": () => (/* binding */ descriptors),
+/* harmony export */   "a2": () => (/* binding */ isFunction),
+/* harmony export */   "a3": () => (/* binding */ _attachContext),
+/* harmony export */   "a4": () => (/* binding */ _createResolver),
+/* harmony export */   "a5": () => (/* binding */ _descriptors),
+/* harmony export */   "a6": () => (/* binding */ mergeIf),
+/* harmony export */   "a7": () => (/* binding */ uid),
+/* harmony export */   "a8": () => (/* binding */ debounce),
+/* harmony export */   "a9": () => (/* binding */ retinaScale),
+/* harmony export */   "aA": () => (/* binding */ niceNum),
+/* harmony export */   "aB": () => (/* binding */ almostWhole),
+/* harmony export */   "aC": () => (/* binding */ almostEquals),
+/* harmony export */   "aD": () => (/* binding */ _decimalPlaces),
+/* harmony export */   "aE": () => (/* binding */ _longestText),
+/* harmony export */   "aF": () => (/* binding */ _filterBetween),
+/* harmony export */   "aG": () => (/* binding */ _lookup),
+/* harmony export */   "aH": () => (/* binding */ getHoverColor),
+/* harmony export */   "aI": () => (/* binding */ clone$1),
+/* harmony export */   "aJ": () => (/* binding */ _merger),
+/* harmony export */   "aK": () => (/* binding */ _mergerIf),
+/* harmony export */   "aL": () => (/* binding */ _deprecated),
+/* harmony export */   "aM": () => (/* binding */ toFontString),
+/* harmony export */   "aN": () => (/* binding */ splineCurve),
+/* harmony export */   "aO": () => (/* binding */ splineCurveMonotone),
+/* harmony export */   "aP": () => (/* binding */ getStyle),
+/* harmony export */   "aQ": () => (/* binding */ fontString),
+/* harmony export */   "aR": () => (/* binding */ toLineHeight),
+/* harmony export */   "aS": () => (/* binding */ PITAU),
+/* harmony export */   "aT": () => (/* binding */ INFINITY),
+/* harmony export */   "aU": () => (/* binding */ RAD_PER_DEG),
+/* harmony export */   "aV": () => (/* binding */ QUARTER_PI),
+/* harmony export */   "aW": () => (/* binding */ TWO_THIRDS_PI),
+/* harmony export */   "aX": () => (/* binding */ _angleDiff),
+/* harmony export */   "aa": () => (/* binding */ clearCanvas),
+/* harmony export */   "ab": () => (/* binding */ setsEqual),
+/* harmony export */   "ac": () => (/* binding */ _elementsEqual),
+/* harmony export */   "ad": () => (/* binding */ getAngleFromPoint),
+/* harmony export */   "ae": () => (/* binding */ _readValueToProps),
+/* harmony export */   "af": () => (/* binding */ _updateBezierControlPoints),
+/* harmony export */   "ag": () => (/* binding */ _computeSegments),
+/* harmony export */   "ah": () => (/* binding */ _boundSegments),
+/* harmony export */   "ai": () => (/* binding */ _steppedInterpolation),
+/* harmony export */   "aj": () => (/* binding */ _bezierInterpolation),
+/* harmony export */   "ak": () => (/* binding */ _pointInLine),
+/* harmony export */   "al": () => (/* binding */ _steppedLineTo),
+/* harmony export */   "am": () => (/* binding */ _bezierCurveTo),
+/* harmony export */   "an": () => (/* binding */ drawPoint),
+/* harmony export */   "ao": () => (/* binding */ addRoundedRectPath),
+/* harmony export */   "ap": () => (/* binding */ toTRBL),
+/* harmony export */   "aq": () => (/* binding */ toTRBLCorners),
+/* harmony export */   "ar": () => (/* binding */ _boundSegment),
+/* harmony export */   "as": () => (/* binding */ _normalizeAngle),
+/* harmony export */   "at": () => (/* binding */ getRtlAdapter),
+/* harmony export */   "au": () => (/* binding */ overrideTextDirection),
+/* harmony export */   "av": () => (/* binding */ _textX),
+/* harmony export */   "aw": () => (/* binding */ restoreTextDirection),
+/* harmony export */   "ax": () => (/* binding */ noop),
+/* harmony export */   "ay": () => (/* binding */ distanceBetweenPoints),
+/* harmony export */   "az": () => (/* binding */ _setMinAndMaxByKey),
+/* harmony export */   "b": () => (/* binding */ isArray),
+/* harmony export */   "c": () => (/* binding */ color),
+/* harmony export */   "d": () => (/* binding */ defaults),
+/* harmony export */   "e": () => (/* binding */ effects),
+/* harmony export */   "f": () => (/* binding */ resolveObjectKey),
+/* harmony export */   "g": () => (/* binding */ isNumberFinite),
+/* harmony export */   "h": () => (/* binding */ defined),
+/* harmony export */   "i": () => (/* binding */ isObject),
+/* harmony export */   "j": () => (/* binding */ isNullOrUndef),
+/* harmony export */   "k": () => (/* binding */ clipArea),
+/* harmony export */   "l": () => (/* binding */ listenArrayEvents),
+/* harmony export */   "m": () => (/* binding */ unclipArea),
+/* harmony export */   "n": () => (/* binding */ toPercentage),
+/* harmony export */   "o": () => (/* binding */ toDimension),
+/* harmony export */   "p": () => (/* binding */ formatNumber),
+/* harmony export */   "q": () => (/* binding */ _angleBetween),
+/* harmony export */   "r": () => (/* binding */ requestAnimFrame),
+/* harmony export */   "s": () => (/* binding */ sign),
+/* harmony export */   "t": () => (/* binding */ toRadians),
+/* harmony export */   "u": () => (/* binding */ unlistenArrayEvents),
+/* harmony export */   "v": () => (/* binding */ valueOrDefault),
+/* harmony export */   "w": () => (/* binding */ isNumber),
+/* harmony export */   "x": () => (/* binding */ _limitValue),
+/* harmony export */   "y": () => (/* binding */ _lookupByKey),
+/* harmony export */   "z": () => (/* binding */ getRelativePosition)
+/* harmony export */ });
 /*!
  * Chart.js v3.3.2
  * https://www.chartjs.org
@@ -14937,10 +15092,10 @@ function styleChanged(style, prevStyle) {
 /*!***************************************!*\
   !*** ./node_modules/lodash/lodash.js ***!
   \***************************************/
-/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
+/* module decorator */ module = __webpack_require__.nmd(module);
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
  * @license
  * Lodash <https://lodash.com/>
  * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
@@ -14954,14 +15109,15 @@ function styleChanged(style, prevStyle) {
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.20';
+  var VERSION = '4.17.21';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
 
   /** Error message constants. */
   var CORE_ERROR_TEXT = 'Unsupported core-js use. Try https://npms.io/search?q=ponyfill.',
-      FUNC_ERROR_TEXT = 'Expected a function';
+      FUNC_ERROR_TEXT = 'Expected a function',
+      INVALID_TEMPL_VAR_ERROR_TEXT = 'Invalid `variable` option passed into `_.template`';
 
   /** Used to stand-in for `undefined` hash values. */
   var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -15094,10 +15250,11 @@ function styleChanged(style, prevStyle) {
   var reRegExpChar = /[\\^$.*+?()[\]{}|]/g,
       reHasRegExpChar = RegExp(reRegExpChar.source);
 
-  /** Used to match leading and trailing whitespace. */
-  var reTrim = /^\s+|\s+$/g,
-      reTrimStart = /^\s+/,
-      reTrimEnd = /\s+$/;
+  /** Used to match leading whitespace. */
+  var reTrimStart = /^\s+/;
+
+  /** Used to match a single whitespace character. */
+  var reWhitespace = /\s/;
 
   /** Used to match wrap detail comments. */
   var reWrapComment = /\{(?:\n\/\* \[wrapped with .+\] \*\/)?\n?/,
@@ -15106,6 +15263,18 @@ function styleChanged(style, prevStyle) {
 
   /** Used to match words composed of alphanumeric characters. */
   var reAsciiWord = /[^\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\x7f]+/g;
+
+  /**
+   * Used to validate the `validate` option in `_.template` variable.
+   *
+   * Forbids characters which could potentially change the meaning of the function argument definition:
+   * - "()," (modification of function parameters)
+   * - "=" (default value)
+   * - "[]{}" (destructuring of function parameters)
+   * - "/" (beginning of a comment)
+   * - whitespace
+   */
+  var reForbiddenIdentifierChars = /[()=,{}\[\]\/\s]/;
 
   /** Used to match backslashes in property paths. */
   var reEscapeChar = /\\(\\)?/g;
@@ -15355,7 +15524,7 @@ function styleChanged(style, prevStyle) {
       freeParseInt = parseInt;
 
   /** Detect free variable `global` from Node.js. */
-  var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+  var freeGlobal = typeof __webpack_require__.g == 'object' && __webpack_require__.g && __webpack_require__.g.Object === Object && __webpack_require__.g;
 
   /** Detect free variable `self`. */
   var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
@@ -15367,7 +15536,7 @@ function styleChanged(style, prevStyle) {
   var freeExports =  true && exports && !exports.nodeType && exports;
 
   /** Detect free variable `module`. */
-  var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
+  var freeModule = freeExports && "object" == 'object' && module && !module.nodeType && module;
 
   /** Detect the popular CommonJS extension `module.exports`. */
   var moduleExports = freeModule && freeModule.exports === freeExports;
@@ -15936,6 +16105,19 @@ function styleChanged(style, prevStyle) {
   }
 
   /**
+   * The base implementation of `_.trim`.
+   *
+   * @private
+   * @param {string} string The string to trim.
+   * @returns {string} Returns the trimmed string.
+   */
+  function baseTrim(string) {
+    return string
+      ? string.slice(0, trimmedEndIndex(string) + 1).replace(reTrimStart, '')
+      : string;
+  }
+
+  /**
    * The base implementation of `_.unary` without support for storing metadata.
    *
    * @private
@@ -16266,6 +16448,21 @@ function styleChanged(style, prevStyle) {
     return hasUnicode(string)
       ? unicodeToArray(string)
       : asciiToArray(string);
+  }
+
+  /**
+   * Used by `_.trim` and `_.trimEnd` to get the index of the last non-whitespace
+   * character of `string`.
+   *
+   * @private
+   * @param {string} string The string to inspect.
+   * @returns {number} Returns the index of the last non-whitespace character.
+   */
+  function trimmedEndIndex(string) {
+    var index = string.length;
+
+    while (index-- && reWhitespace.test(string.charAt(index))) {}
+    return index;
   }
 
   /**
@@ -27436,7 +27633,7 @@ function styleChanged(style, prevStyle) {
       if (typeof value != 'string') {
         return value === 0 ? value : +value;
       }
-      value = value.replace(reTrim, '');
+      value = baseTrim(value);
       var isBinary = reIsBinary.test(value);
       return (isBinary || reIsOctal.test(value))
         ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
@@ -29808,6 +30005,12 @@ function styleChanged(style, prevStyle) {
       if (!variable) {
         source = 'with (obj) {\n' + source + '\n}\n';
       }
+      // Throw an error if a forbidden character was found in `variable`, to prevent
+      // potential command injection attacks.
+      else if (reForbiddenIdentifierChars.test(variable)) {
+        throw new Error(INVALID_TEMPL_VAR_ERROR_TEXT);
+      }
+
       // Cleanup code by stripping empty strings.
       source = (isEvaluating ? source.replace(reEmptyStringLeading, '') : source)
         .replace(reEmptyStringMiddle, '$1')
@@ -29921,7 +30124,7 @@ function styleChanged(style, prevStyle) {
     function trim(string, chars, guard) {
       string = toString(string);
       if (string && (guard || chars === undefined)) {
-        return string.replace(reTrim, '');
+        return baseTrim(string);
       }
       if (!string || !(chars = baseToString(chars))) {
         return string;
@@ -29956,7 +30159,7 @@ function styleChanged(style, prevStyle) {
     function trimEnd(string, chars, guard) {
       string = toString(string);
       if (string && (guard || chars === undefined)) {
-        return string.replace(reTrimEnd, '');
+        return string.slice(0, trimmedEndIndex(string) + 1);
       }
       if (!string || !(chars = baseToString(chars))) {
         return string;
@@ -32088,13 +32291,25 @@ function styleChanged(style, prevStyle) {
     !(__WEBPACK_AMD_DEFINE_RESULT__ = (function() {
       return _;
     }).call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   }
   // Check for `exports` after `define` in case a build optimizer adds it.
   else {}
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js"), __webpack_require__(/*! ./../webpack/buildin/module.js */ "./node_modules/webpack/buildin/module.js")(module)))
+
+/***/ }),
+
+/***/ "./resources/css/app.css":
+/*!*******************************!*\
+  !*** ./resources/css/app.css ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
 
 /***/ }),
 
@@ -32102,8 +32317,7 @@ function styleChanged(style, prevStyle) {
 /*!*****************************************!*\
   !*** ./node_modules/process/browser.js ***!
   \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/***/ ((module) => {
 
 // shim for using process in browser
 var process = module.exports = {};
@@ -32297,7 +32511,6 @@ process.umask = function() { return 0; };
 /*!****************************************************!*\
   !*** ./node_modules/turbolinks/dist/turbolinks.js ***!
   \****************************************************/
-/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -32306,147 +32519,200 @@ Copyright © 2018 Basecamp, LLC
  */
 (function(){var t=this;(function(){(function(){this.Turbolinks={supported:function(){return null!=window.history.pushState&&null!=window.requestAnimationFrame&&null!=window.addEventListener}(),visit:function(t,r){return e.controller.visit(t,r)},clearCache:function(){return e.controller.clearCache()},setProgressBarDelay:function(t){return e.controller.setProgressBarDelay(t)}}}).call(this)}).call(t);var e=t.Turbolinks;(function(){(function(){var t,r,n,o=[].slice;e.copyObject=function(t){var e,r,n;r={};for(e in t)n=t[e],r[e]=n;return r},e.closest=function(e,r){return t.call(e,r)},t=function(){var t,e;return t=document.documentElement,null!=(e=t.closest)?e:function(t){var e;for(e=this;e;){if(e.nodeType===Node.ELEMENT_NODE&&r.call(e,t))return e;e=e.parentNode}}}(),e.defer=function(t){return setTimeout(t,1)},e.throttle=function(t){var e;return e=null,function(){var r;return r=1<=arguments.length?o.call(arguments,0):[],null!=e?e:e=requestAnimationFrame(function(n){return function(){return e=null,t.apply(n,r)}}(this))}},e.dispatch=function(t,e){var r,o,i,s,a,u;return a=null!=e?e:{},u=a.target,r=a.cancelable,o=a.data,i=document.createEvent("Events"),i.initEvent(t,!0,r===!0),i.data=null!=o?o:{},i.cancelable&&!n&&(s=i.preventDefault,i.preventDefault=function(){return this.defaultPrevented||Object.defineProperty(this,"defaultPrevented",{get:function(){return!0}}),s.call(this)}),(null!=u?u:document).dispatchEvent(i),i},n=function(){var t;return t=document.createEvent("Events"),t.initEvent("test",!0,!0),t.preventDefault(),t.defaultPrevented}(),e.match=function(t,e){return r.call(t,e)},r=function(){var t,e,r,n;return t=document.documentElement,null!=(e=null!=(r=null!=(n=t.matchesSelector)?n:t.webkitMatchesSelector)?r:t.msMatchesSelector)?e:t.mozMatchesSelector}(),e.uuid=function(){var t,e,r;for(r="",t=e=1;36>=e;t=++e)r+=9===t||14===t||19===t||24===t?"-":15===t?"4":20===t?(Math.floor(4*Math.random())+8).toString(16):Math.floor(15*Math.random()).toString(16);return r}}).call(this),function(){e.Location=function(){function t(t){var e,r;null==t&&(t=""),r=document.createElement("a"),r.href=t.toString(),this.absoluteURL=r.href,e=r.hash.length,2>e?this.requestURL=this.absoluteURL:(this.requestURL=this.absoluteURL.slice(0,-e),this.anchor=r.hash.slice(1))}var e,r,n,o;return t.wrap=function(t){return t instanceof this?t:new this(t)},t.prototype.getOrigin=function(){return this.absoluteURL.split("/",3).join("/")},t.prototype.getPath=function(){var t,e;return null!=(t=null!=(e=this.requestURL.match(/\/\/[^\/]*(\/[^?;]*)/))?e[1]:void 0)?t:"/"},t.prototype.getPathComponents=function(){return this.getPath().split("/").slice(1)},t.prototype.getLastPathComponent=function(){return this.getPathComponents().slice(-1)[0]},t.prototype.getExtension=function(){var t,e;return null!=(t=null!=(e=this.getLastPathComponent().match(/\.[^.]*$/))?e[0]:void 0)?t:""},t.prototype.isHTML=function(){return this.getExtension().match(/^(?:|\.(?:htm|html|xhtml))$/)},t.prototype.isPrefixedBy=function(t){var e;return e=r(t),this.isEqualTo(t)||o(this.absoluteURL,e)},t.prototype.isEqualTo=function(t){return this.absoluteURL===(null!=t?t.absoluteURL:void 0)},t.prototype.toCacheKey=function(){return this.requestURL},t.prototype.toJSON=function(){return this.absoluteURL},t.prototype.toString=function(){return this.absoluteURL},t.prototype.valueOf=function(){return this.absoluteURL},r=function(t){return e(t.getOrigin()+t.getPath())},e=function(t){return n(t,"/")?t:t+"/"},o=function(t,e){return t.slice(0,e.length)===e},n=function(t,e){return t.slice(-e.length)===e},t}()}.call(this),function(){var t=function(t,e){return function(){return t.apply(e,arguments)}};e.HttpRequest=function(){function r(r,n,o){this.delegate=r,this.requestCanceled=t(this.requestCanceled,this),this.requestTimedOut=t(this.requestTimedOut,this),this.requestFailed=t(this.requestFailed,this),this.requestLoaded=t(this.requestLoaded,this),this.requestProgressed=t(this.requestProgressed,this),this.url=e.Location.wrap(n).requestURL,this.referrer=e.Location.wrap(o).absoluteURL,this.createXHR()}return r.NETWORK_FAILURE=0,r.TIMEOUT_FAILURE=-1,r.timeout=60,r.prototype.send=function(){var t;return this.xhr&&!this.sent?(this.notifyApplicationBeforeRequestStart(),this.setProgress(0),this.xhr.send(),this.sent=!0,"function"==typeof(t=this.delegate).requestStarted?t.requestStarted():void 0):void 0},r.prototype.cancel=function(){return this.xhr&&this.sent?this.xhr.abort():void 0},r.prototype.requestProgressed=function(t){return t.lengthComputable?this.setProgress(t.loaded/t.total):void 0},r.prototype.requestLoaded=function(){return this.endRequest(function(t){return function(){var e;return 200<=(e=t.xhr.status)&&300>e?t.delegate.requestCompletedWithResponse(t.xhr.responseText,t.xhr.getResponseHeader("Turbolinks-Location")):(t.failed=!0,t.delegate.requestFailedWithStatusCode(t.xhr.status,t.xhr.responseText))}}(this))},r.prototype.requestFailed=function(){return this.endRequest(function(t){return function(){return t.failed=!0,t.delegate.requestFailedWithStatusCode(t.constructor.NETWORK_FAILURE)}}(this))},r.prototype.requestTimedOut=function(){return this.endRequest(function(t){return function(){return t.failed=!0,t.delegate.requestFailedWithStatusCode(t.constructor.TIMEOUT_FAILURE)}}(this))},r.prototype.requestCanceled=function(){return this.endRequest()},r.prototype.notifyApplicationBeforeRequestStart=function(){return e.dispatch("turbolinks:request-start",{data:{url:this.url,xhr:this.xhr}})},r.prototype.notifyApplicationAfterRequestEnd=function(){return e.dispatch("turbolinks:request-end",{data:{url:this.url,xhr:this.xhr}})},r.prototype.createXHR=function(){return this.xhr=new XMLHttpRequest,this.xhr.open("GET",this.url,!0),this.xhr.timeout=1e3*this.constructor.timeout,this.xhr.setRequestHeader("Accept","text/html, application/xhtml+xml"),this.xhr.setRequestHeader("Turbolinks-Referrer",this.referrer),this.xhr.onprogress=this.requestProgressed,this.xhr.onload=this.requestLoaded,this.xhr.onerror=this.requestFailed,this.xhr.ontimeout=this.requestTimedOut,this.xhr.onabort=this.requestCanceled},r.prototype.endRequest=function(t){return this.xhr?(this.notifyApplicationAfterRequestEnd(),null!=t&&t.call(this),this.destroy()):void 0},r.prototype.setProgress=function(t){var e;return this.progress=t,"function"==typeof(e=this.delegate).requestProgressed?e.requestProgressed(this.progress):void 0},r.prototype.destroy=function(){var t;return this.setProgress(1),"function"==typeof(t=this.delegate).requestFinished&&t.requestFinished(),this.delegate=null,this.xhr=null},r}()}.call(this),function(){var t=function(t,e){return function(){return t.apply(e,arguments)}};e.ProgressBar=function(){function e(){this.trickle=t(this.trickle,this),this.stylesheetElement=this.createStylesheetElement(),this.progressElement=this.createProgressElement()}var r;return r=300,e.defaultCSS=".turbolinks-progress-bar {\n  position: fixed;\n  display: block;\n  top: 0;\n  left: 0;\n  height: 3px;\n  background: #0076ff;\n  z-index: 9999;\n  transition: width "+r+"ms ease-out, opacity "+r/2+"ms "+r/2+"ms ease-in;\n  transform: translate3d(0, 0, 0);\n}",e.prototype.show=function(){return this.visible?void 0:(this.visible=!0,this.installStylesheetElement(),this.installProgressElement(),this.startTrickling())},e.prototype.hide=function(){return this.visible&&!this.hiding?(this.hiding=!0,this.fadeProgressElement(function(t){return function(){return t.uninstallProgressElement(),t.stopTrickling(),t.visible=!1,t.hiding=!1}}(this))):void 0},e.prototype.setValue=function(t){return this.value=t,this.refresh()},e.prototype.installStylesheetElement=function(){return document.head.insertBefore(this.stylesheetElement,document.head.firstChild)},e.prototype.installProgressElement=function(){return this.progressElement.style.width=0,this.progressElement.style.opacity=1,document.documentElement.insertBefore(this.progressElement,document.body),this.refresh()},e.prototype.fadeProgressElement=function(t){return this.progressElement.style.opacity=0,setTimeout(t,1.5*r)},e.prototype.uninstallProgressElement=function(){return this.progressElement.parentNode?document.documentElement.removeChild(this.progressElement):void 0},e.prototype.startTrickling=function(){return null!=this.trickleInterval?this.trickleInterval:this.trickleInterval=setInterval(this.trickle,r)},e.prototype.stopTrickling=function(){return clearInterval(this.trickleInterval),this.trickleInterval=null},e.prototype.trickle=function(){return this.setValue(this.value+Math.random()/100)},e.prototype.refresh=function(){return requestAnimationFrame(function(t){return function(){return t.progressElement.style.width=10+90*t.value+"%"}}(this))},e.prototype.createStylesheetElement=function(){var t;return t=document.createElement("style"),t.type="text/css",t.textContent=this.constructor.defaultCSS,t},e.prototype.createProgressElement=function(){var t;return t=document.createElement("div"),t.className="turbolinks-progress-bar",t},e}()}.call(this),function(){var t=function(t,e){return function(){return t.apply(e,arguments)}};e.BrowserAdapter=function(){function r(r){this.controller=r,this.showProgressBar=t(this.showProgressBar,this),this.progressBar=new e.ProgressBar}var n,o,i;return i=e.HttpRequest,n=i.NETWORK_FAILURE,o=i.TIMEOUT_FAILURE,r.prototype.visitProposedToLocationWithAction=function(t,e){return this.controller.startVisitToLocationWithAction(t,e)},r.prototype.visitStarted=function(t){return t.issueRequest(),t.changeHistory(),t.loadCachedSnapshot()},r.prototype.visitRequestStarted=function(t){return this.progressBar.setValue(0),t.hasCachedSnapshot()||"restore"!==t.action?this.showProgressBarAfterDelay():this.showProgressBar()},r.prototype.visitRequestProgressed=function(t){return this.progressBar.setValue(t.progress)},r.prototype.visitRequestCompleted=function(t){return t.loadResponse()},r.prototype.visitRequestFailedWithStatusCode=function(t,e){switch(e){case n:case o:return this.reload();default:return t.loadResponse()}},r.prototype.visitRequestFinished=function(t){return this.hideProgressBar()},r.prototype.visitCompleted=function(t){return t.followRedirect()},r.prototype.pageInvalidated=function(){return this.reload()},r.prototype.showProgressBarAfterDelay=function(){return this.progressBarTimeout=setTimeout(this.showProgressBar,this.controller.progressBarDelay)},r.prototype.showProgressBar=function(){return this.progressBar.show()},r.prototype.hideProgressBar=function(){return this.progressBar.hide(),clearTimeout(this.progressBarTimeout)},r.prototype.reload=function(){return window.location.reload()},r}()}.call(this),function(){var t=function(t,e){return function(){return t.apply(e,arguments)}};e.History=function(){function r(e){this.delegate=e,this.onPageLoad=t(this.onPageLoad,this),this.onPopState=t(this.onPopState,this)}return r.prototype.start=function(){return this.started?void 0:(addEventListener("popstate",this.onPopState,!1),addEventListener("load",this.onPageLoad,!1),this.started=!0)},r.prototype.stop=function(){return this.started?(removeEventListener("popstate",this.onPopState,!1),removeEventListener("load",this.onPageLoad,!1),this.started=!1):void 0},r.prototype.push=function(t,r){return t=e.Location.wrap(t),this.update("push",t,r)},r.prototype.replace=function(t,r){return t=e.Location.wrap(t),this.update("replace",t,r)},r.prototype.onPopState=function(t){var r,n,o,i;return this.shouldHandlePopState()&&(i=null!=(n=t.state)?n.turbolinks:void 0)?(r=e.Location.wrap(window.location),o=i.restorationIdentifier,this.delegate.historyPoppedToLocationWithRestorationIdentifier(r,o)):void 0},r.prototype.onPageLoad=function(t){return e.defer(function(t){return function(){return t.pageLoaded=!0}}(this))},r.prototype.shouldHandlePopState=function(){return this.pageIsLoaded()},r.prototype.pageIsLoaded=function(){return this.pageLoaded||"complete"===document.readyState},r.prototype.update=function(t,e,r){var n;return n={turbolinks:{restorationIdentifier:r}},history[t+"State"](n,null,e)},r}()}.call(this),function(){e.HeadDetails=function(){function t(t){var e,r,n,s,a,u;for(this.elements={},n=0,a=t.length;a>n;n++)u=t[n],u.nodeType===Node.ELEMENT_NODE&&(s=u.outerHTML,r=null!=(e=this.elements)[s]?e[s]:e[s]={type:i(u),tracked:o(u),elements:[]},r.elements.push(u))}var e,r,n,o,i;return t.fromHeadElement=function(t){var e;return new this(null!=(e=null!=t?t.childNodes:void 0)?e:[])},t.prototype.hasElementWithKey=function(t){return t in this.elements},t.prototype.getTrackedElementSignature=function(){var t,e;return function(){var r,n;r=this.elements,n=[];for(t in r)e=r[t].tracked,e&&n.push(t);return n}.call(this).join("")},t.prototype.getScriptElementsNotInDetails=function(t){return this.getElementsMatchingTypeNotInDetails("script",t)},t.prototype.getStylesheetElementsNotInDetails=function(t){return this.getElementsMatchingTypeNotInDetails("stylesheet",t)},t.prototype.getElementsMatchingTypeNotInDetails=function(t,e){var r,n,o,i,s,a;o=this.elements,s=[];for(n in o)i=o[n],a=i.type,r=i.elements,a!==t||e.hasElementWithKey(n)||s.push(r[0]);return s},t.prototype.getProvisionalElements=function(){var t,e,r,n,o,i,s;r=[],n=this.elements;for(e in n)o=n[e],s=o.type,i=o.tracked,t=o.elements,null!=s||i?t.length>1&&r.push.apply(r,t.slice(1)):r.push.apply(r,t);return r},t.prototype.getMetaValue=function(t){var e;return null!=(e=this.findMetaElementByName(t))?e.getAttribute("content"):void 0},t.prototype.findMetaElementByName=function(t){var r,n,o,i;r=void 0,i=this.elements;for(o in i)n=i[o].elements,e(n[0],t)&&(r=n[0]);return r},i=function(t){return r(t)?"script":n(t)?"stylesheet":void 0},o=function(t){return"reload"===t.getAttribute("data-turbolinks-track")},r=function(t){var e;return e=t.tagName.toLowerCase(),"script"===e},n=function(t){var e;return e=t.tagName.toLowerCase(),"style"===e||"link"===e&&"stylesheet"===t.getAttribute("rel")},e=function(t,e){var r;return r=t.tagName.toLowerCase(),"meta"===r&&t.getAttribute("name")===e},t}()}.call(this),function(){e.Snapshot=function(){function t(t,e){this.headDetails=t,this.bodyElement=e}return t.wrap=function(t){return t instanceof this?t:"string"==typeof t?this.fromHTMLString(t):this.fromHTMLElement(t)},t.fromHTMLString=function(t){var e;return e=document.createElement("html"),e.innerHTML=t,this.fromHTMLElement(e)},t.fromHTMLElement=function(t){var r,n,o,i;return o=t.querySelector("head"),r=null!=(i=t.querySelector("body"))?i:document.createElement("body"),n=e.HeadDetails.fromHeadElement(o),new this(n,r)},t.prototype.clone=function(){return new this.constructor(this.headDetails,this.bodyElement.cloneNode(!0))},t.prototype.getRootLocation=function(){var t,r;return r=null!=(t=this.getSetting("root"))?t:"/",new e.Location(r)},t.prototype.getCacheControlValue=function(){return this.getSetting("cache-control")},t.prototype.getElementForAnchor=function(t){try{return this.bodyElement.querySelector("[id='"+t+"'], a[name='"+t+"']")}catch(e){}},t.prototype.getPermanentElements=function(){return this.bodyElement.querySelectorAll("[id][data-turbolinks-permanent]")},t.prototype.getPermanentElementById=function(t){return this.bodyElement.querySelector("#"+t+"[data-turbolinks-permanent]")},t.prototype.getPermanentElementsPresentInSnapshot=function(t){var e,r,n,o,i;for(o=this.getPermanentElements(),i=[],r=0,n=o.length;n>r;r++)e=o[r],t.getPermanentElementById(e.id)&&i.push(e);return i},t.prototype.findFirstAutofocusableElement=function(){return this.bodyElement.querySelector("[autofocus]")},t.prototype.hasAnchor=function(t){return null!=this.getElementForAnchor(t)},t.prototype.isPreviewable=function(){return"no-preview"!==this.getCacheControlValue()},t.prototype.isCacheable=function(){return"no-cache"!==this.getCacheControlValue()},t.prototype.isVisitable=function(){return"reload"!==this.getSetting("visit-control")},t.prototype.getSetting=function(t){return this.headDetails.getMetaValue("turbolinks-"+t)},t}()}.call(this),function(){var t=[].slice;e.Renderer=function(){function e(){}var r;return e.render=function(){var e,r,n,o;return n=arguments[0],r=arguments[1],e=3<=arguments.length?t.call(arguments,2):[],o=function(t,e,r){r.prototype=t.prototype;var n=new r,o=t.apply(n,e);return Object(o)===o?o:n}(this,e,function(){}),o.delegate=n,o.render(r),o},e.prototype.renderView=function(t){return this.delegate.viewWillRender(this.newBody),t(),this.delegate.viewRendered(this.newBody)},e.prototype.invalidateView=function(){return this.delegate.viewInvalidated()},e.prototype.createScriptElement=function(t){var e;return"false"===t.getAttribute("data-turbolinks-eval")?t:(e=document.createElement("script"),e.textContent=t.textContent,e.async=!1,r(e,t),e)},r=function(t,e){var r,n,o,i,s,a,u;for(i=e.attributes,a=[],r=0,n=i.length;n>r;r++)s=i[r],o=s.name,u=s.value,a.push(t.setAttribute(o,u));return a},e}()}.call(this),function(){var t,r,n=function(t,e){function r(){this.constructor=t}for(var n in e)o.call(e,n)&&(t[n]=e[n]);return r.prototype=e.prototype,t.prototype=new r,t.__super__=e.prototype,t},o={}.hasOwnProperty;e.SnapshotRenderer=function(e){function o(t,e,r){this.currentSnapshot=t,this.newSnapshot=e,this.isPreview=r,this.currentHeadDetails=this.currentSnapshot.headDetails,this.newHeadDetails=this.newSnapshot.headDetails,this.currentBody=this.currentSnapshot.bodyElement,this.newBody=this.newSnapshot.bodyElement}return n(o,e),o.prototype.render=function(t){return this.shouldRender()?(this.mergeHead(),this.renderView(function(e){return function(){return e.replaceBody(),e.isPreview||e.focusFirstAutofocusableElement(),t()}}(this))):this.invalidateView()},o.prototype.mergeHead=function(){return this.copyNewHeadStylesheetElements(),this.copyNewHeadScriptElements(),this.removeCurrentHeadProvisionalElements(),this.copyNewHeadProvisionalElements()},o.prototype.replaceBody=function(){var t;return t=this.relocateCurrentBodyPermanentElements(),this.activateNewBodyScriptElements(),this.assignNewBody(),this.replacePlaceholderElementsWithClonedPermanentElements(t)},o.prototype.shouldRender=function(){return this.newSnapshot.isVisitable()&&this.trackedElementsAreIdentical()},o.prototype.trackedElementsAreIdentical=function(){return this.currentHeadDetails.getTrackedElementSignature()===this.newHeadDetails.getTrackedElementSignature()},o.prototype.copyNewHeadStylesheetElements=function(){var t,e,r,n,o;for(n=this.getNewHeadStylesheetElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.appendChild(t));return o},o.prototype.copyNewHeadScriptElements=function(){var t,e,r,n,o;for(n=this.getNewHeadScriptElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.appendChild(this.createScriptElement(t)));return o},o.prototype.removeCurrentHeadProvisionalElements=function(){var t,e,r,n,o;for(n=this.getCurrentHeadProvisionalElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.removeChild(t));return o},o.prototype.copyNewHeadProvisionalElements=function(){var t,e,r,n,o;for(n=this.getNewHeadProvisionalElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.appendChild(t));return o},o.prototype.relocateCurrentBodyPermanentElements=function(){var e,n,o,i,s,a,u;for(a=this.getCurrentBodyPermanentElements(),u=[],e=0,n=a.length;n>e;e++)i=a[e],s=t(i),o=this.newSnapshot.getPermanentElementById(i.id),r(i,s.element),r(o,i),u.push(s);return u},o.prototype.replacePlaceholderElementsWithClonedPermanentElements=function(t){var e,n,o,i,s,a,u;for(u=[],o=0,i=t.length;i>o;o++)a=t[o],n=a.element,s=a.permanentElement,e=s.cloneNode(!0),u.push(r(n,e));return u},o.prototype.activateNewBodyScriptElements=function(){var t,e,n,o,i,s;for(i=this.getNewBodyScriptElements(),s=[],e=0,o=i.length;o>e;e++)n=i[e],t=this.createScriptElement(n),s.push(r(n,t));return s},o.prototype.assignNewBody=function(){return document.body=this.newBody},o.prototype.focusFirstAutofocusableElement=function(){var t;return null!=(t=this.newSnapshot.findFirstAutofocusableElement())?t.focus():void 0},o.prototype.getNewHeadStylesheetElements=function(){return this.newHeadDetails.getStylesheetElementsNotInDetails(this.currentHeadDetails)},o.prototype.getNewHeadScriptElements=function(){return this.newHeadDetails.getScriptElementsNotInDetails(this.currentHeadDetails)},o.prototype.getCurrentHeadProvisionalElements=function(){return this.currentHeadDetails.getProvisionalElements()},o.prototype.getNewHeadProvisionalElements=function(){return this.newHeadDetails.getProvisionalElements()},o.prototype.getCurrentBodyPermanentElements=function(){return this.currentSnapshot.getPermanentElementsPresentInSnapshot(this.newSnapshot)},o.prototype.getNewBodyScriptElements=function(){return this.newBody.querySelectorAll("script")},o}(e.Renderer),t=function(t){var e;return e=document.createElement("meta"),e.setAttribute("name","turbolinks-permanent-placeholder"),e.setAttribute("content",t.id),{element:e,permanentElement:t}},r=function(t,e){var r;return(r=t.parentNode)?r.replaceChild(e,t):void 0}}.call(this),function(){var t=function(t,e){function n(){this.constructor=t}for(var o in e)r.call(e,o)&&(t[o]=e[o]);return n.prototype=e.prototype,t.prototype=new n,t.__super__=e.prototype,t},r={}.hasOwnProperty;e.ErrorRenderer=function(e){function r(t){var e;e=document.createElement("html"),e.innerHTML=t,this.newHead=e.querySelector("head"),this.newBody=e.querySelector("body")}return t(r,e),r.prototype.render=function(t){return this.renderView(function(e){return function(){return e.replaceHeadAndBody(),e.activateBodyScriptElements(),t()}}(this))},r.prototype.replaceHeadAndBody=function(){var t,e;return e=document.head,t=document.body,e.parentNode.replaceChild(this.newHead,e),t.parentNode.replaceChild(this.newBody,t)},r.prototype.activateBodyScriptElements=function(){var t,e,r,n,o,i;for(n=this.getScriptElements(),i=[],e=0,r=n.length;r>e;e++)o=n[e],t=this.createScriptElement(o),i.push(o.parentNode.replaceChild(t,o));return i},r.prototype.getScriptElements=function(){return document.documentElement.querySelectorAll("script")},r}(e.Renderer)}.call(this),function(){e.View=function(){function t(t){this.delegate=t,this.htmlElement=document.documentElement}return t.prototype.getRootLocation=function(){return this.getSnapshot().getRootLocation()},t.prototype.getElementForAnchor=function(t){return this.getSnapshot().getElementForAnchor(t)},t.prototype.getSnapshot=function(){return e.Snapshot.fromHTMLElement(this.htmlElement)},t.prototype.render=function(t,e){var r,n,o;return o=t.snapshot,r=t.error,n=t.isPreview,this.markAsPreview(n),null!=o?this.renderSnapshot(o,n,e):this.renderError(r,e)},t.prototype.markAsPreview=function(t){return t?this.htmlElement.setAttribute("data-turbolinks-preview",""):this.htmlElement.removeAttribute("data-turbolinks-preview")},t.prototype.renderSnapshot=function(t,r,n){return e.SnapshotRenderer.render(this.delegate,n,this.getSnapshot(),e.Snapshot.wrap(t),r)},t.prototype.renderError=function(t,r){return e.ErrorRenderer.render(this.delegate,r,t)},t}()}.call(this),function(){var t=function(t,e){return function(){return t.apply(e,arguments)}};e.ScrollManager=function(){function r(r){this.delegate=r,this.onScroll=t(this.onScroll,this),this.onScroll=e.throttle(this.onScroll)}return r.prototype.start=function(){return this.started?void 0:(addEventListener("scroll",this.onScroll,!1),this.onScroll(),this.started=!0)},r.prototype.stop=function(){return this.started?(removeEventListener("scroll",this.onScroll,!1),this.started=!1):void 0},r.prototype.scrollToElement=function(t){return t.scrollIntoView()},r.prototype.scrollToPosition=function(t){var e,r;return e=t.x,r=t.y,window.scrollTo(e,r)},r.prototype.onScroll=function(t){return this.updatePosition({x:window.pageXOffset,y:window.pageYOffset})},r.prototype.updatePosition=function(t){var e;return this.position=t,null!=(e=this.delegate)?e.scrollPositionChanged(this.position):void 0},r}()}.call(this),function(){e.SnapshotCache=function(){function t(t){this.size=t,this.keys=[],this.snapshots={}}var r;return t.prototype.has=function(t){var e;return e=r(t),e in this.snapshots},t.prototype.get=function(t){var e;if(this.has(t))return e=this.read(t),this.touch(t),e},t.prototype.put=function(t,e){return this.write(t,e),this.touch(t),e},t.prototype.read=function(t){var e;return e=r(t),this.snapshots[e]},t.prototype.write=function(t,e){var n;return n=r(t),this.snapshots[n]=e},t.prototype.touch=function(t){var e,n;return n=r(t),e=this.keys.indexOf(n),e>-1&&this.keys.splice(e,1),this.keys.unshift(n),this.trim()},t.prototype.trim=function(){var t,e,r,n,o;for(n=this.keys.splice(this.size),o=[],t=0,r=n.length;r>t;t++)e=n[t],o.push(delete this.snapshots[e]);return o},r=function(t){return e.Location.wrap(t).toCacheKey()},t}()}.call(this),function(){var t=function(t,e){return function(){return t.apply(e,arguments)}};e.Visit=function(){function r(r,n,o){this.controller=r,this.action=o,this.performScroll=t(this.performScroll,this),this.identifier=e.uuid(),this.location=e.Location.wrap(n),this.adapter=this.controller.adapter,this.state="initialized",this.timingMetrics={}}var n;return r.prototype.start=function(){return"initialized"===this.state?(this.recordTimingMetric("visitStart"),this.state="started",this.adapter.visitStarted(this)):void 0},r.prototype.cancel=function(){var t;return"started"===this.state?(null!=(t=this.request)&&t.cancel(),this.cancelRender(),this.state="canceled"):void 0},r.prototype.complete=function(){var t;return"started"===this.state?(this.recordTimingMetric("visitEnd"),this.state="completed","function"==typeof(t=this.adapter).visitCompleted&&t.visitCompleted(this),this.controller.visitCompleted(this)):void 0},r.prototype.fail=function(){var t;return"started"===this.state?(this.state="failed","function"==typeof(t=this.adapter).visitFailed?t.visitFailed(this):void 0):void 0},r.prototype.changeHistory=function(){var t,e;return this.historyChanged?void 0:(t=this.location.isEqualTo(this.referrer)?"replace":this.action,e=n(t),this.controller[e](this.location,this.restorationIdentifier),this.historyChanged=!0)},r.prototype.issueRequest=function(){return this.shouldIssueRequest()&&null==this.request?(this.progress=0,this.request=new e.HttpRequest(this,this.location,this.referrer),this.request.send()):void 0},r.prototype.getCachedSnapshot=function(){var t;return!(t=this.controller.getCachedSnapshotForLocation(this.location))||null!=this.location.anchor&&!t.hasAnchor(this.location.anchor)||"restore"!==this.action&&!t.isPreviewable()?void 0:t},r.prototype.hasCachedSnapshot=function(){return null!=this.getCachedSnapshot()},r.prototype.loadCachedSnapshot=function(){var t,e;return(e=this.getCachedSnapshot())?(t=this.shouldIssueRequest(),this.render(function(){var r;return this.cacheSnapshot(),this.controller.render({snapshot:e,isPreview:t},this.performScroll),"function"==typeof(r=this.adapter).visitRendered&&r.visitRendered(this),t?void 0:this.complete()})):void 0},r.prototype.loadResponse=function(){return null!=this.response?this.render(function(){var t,e;return this.cacheSnapshot(),this.request.failed?(this.controller.render({error:this.response},this.performScroll),"function"==typeof(t=this.adapter).visitRendered&&t.visitRendered(this),this.fail()):(this.controller.render({snapshot:this.response},this.performScroll),"function"==typeof(e=this.adapter).visitRendered&&e.visitRendered(this),this.complete())}):void 0},r.prototype.followRedirect=function(){return this.redirectedToLocation&&!this.followedRedirect?(this.location=this.redirectedToLocation,this.controller.replaceHistoryWithLocationAndRestorationIdentifier(this.redirectedToLocation,this.restorationIdentifier),this.followedRedirect=!0):void 0},r.prototype.requestStarted=function(){var t;return this.recordTimingMetric("requestStart"),"function"==typeof(t=this.adapter).visitRequestStarted?t.visitRequestStarted(this):void 0},r.prototype.requestProgressed=function(t){var e;return this.progress=t,"function"==typeof(e=this.adapter).visitRequestProgressed?e.visitRequestProgressed(this):void 0},r.prototype.requestCompletedWithResponse=function(t,r){return this.response=t,null!=r&&(this.redirectedToLocation=e.Location.wrap(r)),this.adapter.visitRequestCompleted(this)},r.prototype.requestFailedWithStatusCode=function(t,e){return this.response=e,this.adapter.visitRequestFailedWithStatusCode(this,t)},r.prototype.requestFinished=function(){var t;return this.recordTimingMetric("requestEnd"),"function"==typeof(t=this.adapter).visitRequestFinished?t.visitRequestFinished(this):void 0},r.prototype.performScroll=function(){return this.scrolled?void 0:("restore"===this.action?this.scrollToRestoredPosition()||this.scrollToTop():this.scrollToAnchor()||this.scrollToTop(),this.scrolled=!0)},r.prototype.scrollToRestoredPosition=function(){var t,e;return t=null!=(e=this.restorationData)?e.scrollPosition:void 0,null!=t?(this.controller.scrollToPosition(t),!0):void 0},r.prototype.scrollToAnchor=function(){return null!=this.location.anchor?(this.controller.scrollToAnchor(this.location.anchor),!0):void 0},r.prototype.scrollToTop=function(){return this.controller.scrollToPosition({x:0,y:0})},r.prototype.recordTimingMetric=function(t){var e;return null!=(e=this.timingMetrics)[t]?e[t]:e[t]=(new Date).getTime()},r.prototype.getTimingMetrics=function(){return e.copyObject(this.timingMetrics)},n=function(t){switch(t){case"replace":return"replaceHistoryWithLocationAndRestorationIdentifier";case"advance":case"restore":return"pushHistoryWithLocationAndRestorationIdentifier"}},r.prototype.shouldIssueRequest=function(){return"restore"===this.action?!this.hasCachedSnapshot():!0},r.prototype.cacheSnapshot=function(){return this.snapshotCached?void 0:(this.controller.cacheSnapshot(),this.snapshotCached=!0)},r.prototype.render=function(t){return this.cancelRender(),this.frame=requestAnimationFrame(function(e){return function(){return e.frame=null,t.call(e)}}(this))},r.prototype.cancelRender=function(){return this.frame?cancelAnimationFrame(this.frame):void 0},r}()}.call(this),function(){var t=function(t,e){return function(){return t.apply(e,arguments)}};e.Controller=function(){function r(){this.clickBubbled=t(this.clickBubbled,this),this.clickCaptured=t(this.clickCaptured,this),this.pageLoaded=t(this.pageLoaded,this),this.history=new e.History(this),this.view=new e.View(this),this.scrollManager=new e.ScrollManager(this),this.restorationData={},this.clearCache(),this.setProgressBarDelay(500)}return r.prototype.start=function(){return e.supported&&!this.started?(addEventListener("click",this.clickCaptured,!0),addEventListener("DOMContentLoaded",this.pageLoaded,!1),this.scrollManager.start(),this.startHistory(),this.started=!0,this.enabled=!0):void 0},r.prototype.disable=function(){return this.enabled=!1},r.prototype.stop=function(){return this.started?(removeEventListener("click",this.clickCaptured,!0),removeEventListener("DOMContentLoaded",this.pageLoaded,!1),this.scrollManager.stop(),this.stopHistory(),this.started=!1):void 0},r.prototype.clearCache=function(){return this.cache=new e.SnapshotCache(10)},r.prototype.visit=function(t,r){var n,o;return null==r&&(r={}),t=e.Location.wrap(t),this.applicationAllowsVisitingLocation(t)?this.locationIsVisitable(t)?(n=null!=(o=r.action)?o:"advance",this.adapter.visitProposedToLocationWithAction(t,n)):window.location=t:void 0},r.prototype.startVisitToLocationWithAction=function(t,r,n){var o;return e.supported?(o=this.getRestorationDataForIdentifier(n),this.startVisit(t,r,{restorationData:o})):window.location=t},r.prototype.setProgressBarDelay=function(t){return this.progressBarDelay=t},r.prototype.startHistory=function(){return this.location=e.Location.wrap(window.location),this.restorationIdentifier=e.uuid(),this.history.start(),this.history.replace(this.location,this.restorationIdentifier)},r.prototype.stopHistory=function(){return this.history.stop()},r.prototype.pushHistoryWithLocationAndRestorationIdentifier=function(t,r){return this.restorationIdentifier=r,this.location=e.Location.wrap(t),this.history.push(this.location,this.restorationIdentifier)},r.prototype.replaceHistoryWithLocationAndRestorationIdentifier=function(t,r){return this.restorationIdentifier=r,this.location=e.Location.wrap(t),this.history.replace(this.location,this.restorationIdentifier)},r.prototype.historyPoppedToLocationWithRestorationIdentifier=function(t,r){var n;return this.restorationIdentifier=r,this.enabled?(n=this.getRestorationDataForIdentifier(this.restorationIdentifier),this.startVisit(t,"restore",{restorationIdentifier:this.restorationIdentifier,restorationData:n,historyChanged:!0}),this.location=e.Location.wrap(t)):this.adapter.pageInvalidated()},r.prototype.getCachedSnapshotForLocation=function(t){var e;return null!=(e=this.cache.get(t))?e.clone():void 0},r.prototype.shouldCacheSnapshot=function(){return this.view.getSnapshot().isCacheable();
 },r.prototype.cacheSnapshot=function(){var t,r;return this.shouldCacheSnapshot()?(this.notifyApplicationBeforeCachingSnapshot(),r=this.view.getSnapshot(),t=this.lastRenderedLocation,e.defer(function(e){return function(){return e.cache.put(t,r.clone())}}(this))):void 0},r.prototype.scrollToAnchor=function(t){var e;return(e=this.view.getElementForAnchor(t))?this.scrollToElement(e):this.scrollToPosition({x:0,y:0})},r.prototype.scrollToElement=function(t){return this.scrollManager.scrollToElement(t)},r.prototype.scrollToPosition=function(t){return this.scrollManager.scrollToPosition(t)},r.prototype.scrollPositionChanged=function(t){var e;return e=this.getCurrentRestorationData(),e.scrollPosition=t},r.prototype.render=function(t,e){return this.view.render(t,e)},r.prototype.viewInvalidated=function(){return this.adapter.pageInvalidated()},r.prototype.viewWillRender=function(t){return this.notifyApplicationBeforeRender(t)},r.prototype.viewRendered=function(){return this.lastRenderedLocation=this.currentVisit.location,this.notifyApplicationAfterRender()},r.prototype.pageLoaded=function(){return this.lastRenderedLocation=this.location,this.notifyApplicationAfterPageLoad()},r.prototype.clickCaptured=function(){return removeEventListener("click",this.clickBubbled,!1),addEventListener("click",this.clickBubbled,!1)},r.prototype.clickBubbled=function(t){var e,r,n;return this.enabled&&this.clickEventIsSignificant(t)&&(r=this.getVisitableLinkForNode(t.target))&&(n=this.getVisitableLocationForLink(r))&&this.applicationAllowsFollowingLinkToLocation(r,n)?(t.preventDefault(),e=this.getActionForLink(r),this.visit(n,{action:e})):void 0},r.prototype.applicationAllowsFollowingLinkToLocation=function(t,e){var r;return r=this.notifyApplicationAfterClickingLinkToLocation(t,e),!r.defaultPrevented},r.prototype.applicationAllowsVisitingLocation=function(t){var e;return e=this.notifyApplicationBeforeVisitingLocation(t),!e.defaultPrevented},r.prototype.notifyApplicationAfterClickingLinkToLocation=function(t,r){return e.dispatch("turbolinks:click",{target:t,data:{url:r.absoluteURL},cancelable:!0})},r.prototype.notifyApplicationBeforeVisitingLocation=function(t){return e.dispatch("turbolinks:before-visit",{data:{url:t.absoluteURL},cancelable:!0})},r.prototype.notifyApplicationAfterVisitingLocation=function(t){return e.dispatch("turbolinks:visit",{data:{url:t.absoluteURL}})},r.prototype.notifyApplicationBeforeCachingSnapshot=function(){return e.dispatch("turbolinks:before-cache")},r.prototype.notifyApplicationBeforeRender=function(t){return e.dispatch("turbolinks:before-render",{data:{newBody:t}})},r.prototype.notifyApplicationAfterRender=function(){return e.dispatch("turbolinks:render")},r.prototype.notifyApplicationAfterPageLoad=function(t){return null==t&&(t={}),e.dispatch("turbolinks:load",{data:{url:this.location.absoluteURL,timing:t}})},r.prototype.startVisit=function(t,e,r){var n;return null!=(n=this.currentVisit)&&n.cancel(),this.currentVisit=this.createVisit(t,e,r),this.currentVisit.start(),this.notifyApplicationAfterVisitingLocation(t)},r.prototype.createVisit=function(t,r,n){var o,i,s,a,u;return i=null!=n?n:{},a=i.restorationIdentifier,s=i.restorationData,o=i.historyChanged,u=new e.Visit(this,t,r),u.restorationIdentifier=null!=a?a:e.uuid(),u.restorationData=e.copyObject(s),u.historyChanged=o,u.referrer=this.location,u},r.prototype.visitCompleted=function(t){return this.notifyApplicationAfterPageLoad(t.getTimingMetrics())},r.prototype.clickEventIsSignificant=function(t){return!(t.defaultPrevented||t.target.isContentEditable||t.which>1||t.altKey||t.ctrlKey||t.metaKey||t.shiftKey)},r.prototype.getVisitableLinkForNode=function(t){return this.nodeIsVisitable(t)?e.closest(t,"a[href]:not([target]):not([download])"):void 0},r.prototype.getVisitableLocationForLink=function(t){var r;return r=new e.Location(t.getAttribute("href")),this.locationIsVisitable(r)?r:void 0},r.prototype.getActionForLink=function(t){var e;return null!=(e=t.getAttribute("data-turbolinks-action"))?e:"advance"},r.prototype.nodeIsVisitable=function(t){var r;return(r=e.closest(t,"[data-turbolinks]"))?"false"!==r.getAttribute("data-turbolinks"):!0},r.prototype.locationIsVisitable=function(t){return t.isPrefixedBy(this.view.getRootLocation())&&t.isHTML()},r.prototype.getCurrentRestorationData=function(){return this.getRestorationDataForIdentifier(this.restorationIdentifier)},r.prototype.getRestorationDataForIdentifier=function(t){var e;return null!=(e=this.restorationData)[t]?e[t]:e[t]={}},r}()}.call(this),function(){!function(){var t,e;if((t=e=document.currentScript)&&!e.hasAttribute("data-turbolinks-suppress-warning"))for(;t=t.parentNode;)if(t===document.body)return console.warn("You are loading Turbolinks from a <script> element inside the <body> element. This is probably not what you meant to do!\n\nLoad your application\u2019s JavaScript bundle inside the <head> element instead. <script> elements in <body> are evaluated with each page change.\n\nFor more information, see: https://github.com/turbolinks/turbolinks#working-with-script-elements\n\n\u2014\u2014\nSuppress this warning by adding a `data-turbolinks-suppress-warning` attribute to: %s",e.outerHTML)}()}.call(this),function(){var t,r,n;e.start=function(){return r()?(null==e.controller&&(e.controller=t()),e.controller.start()):void 0},r=function(){return null==window.Turbolinks&&(window.Turbolinks=e),n()},t=function(){var t;return t=new e.Controller,t.adapter=new e.BrowserAdapter(t),t},n=function(){return window.Turbolinks===e},n()&&e.start()}.call(this)}).call(this), true&&module.exports?module.exports=e: true&&!(__WEBPACK_AMD_DEFINE_FACTORY__ = (e),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
-				__WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))}).call(this);
+		__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+		(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+		__WEBPACK_AMD_DEFINE_FACTORY__),
+		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))}).call(this);
 
 /***/ }),
 
-/***/ "./node_modules/webpack/buildin/global.js":
-/*!***********************************!*\
-  !*** (webpack)/buildin/global.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/***/ "./node_modules/axios/package.json":
+/*!*****************************************!*\
+  !*** ./node_modules/axios/package.json ***!
+  \*****************************************/
+/***/ ((module) => {
 
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-
-/***/ "./node_modules/webpack/buildin/module.js":
-/*!***********************************!*\
-  !*** (webpack)/buildin/module.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if (!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if (!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
-
-/***/ "./resources/css/app.css":
-/*!*******************************!*\
-  !*** ./resources/css/app.css ***!
-  \*******************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-throw new Error("Module build failed (from ./node_modules/css-loader/index.js):\nModuleBuildError: Module build failed (from ./node_modules/postcss-loader/src/index.js):\nTypeError: [(...variantsValue),(...extensions)].flat is not a function\n    at /var/www/html/clean-dashboard/node_modules/tailwindcss/lib/util/resolveConfig.js:219:73\n    at baseMergeDeep (/var/www/html/clean-dashboard/node_modules/tailwindcss/node_modules/lodash/_baseMergeDeep.js:42:7)\n    at /var/www/html/clean-dashboard/node_modules/tailwindcss/node_modules/lodash/_baseMerge.js:27:7\n    at /var/www/html/clean-dashboard/node_modules/tailwindcss/node_modules/lodash/_createBaseFor.js:17:11\n    at baseMerge (/var/www/html/clean-dashboard/node_modules/tailwindcss/node_modules/lodash/_baseMerge.js:24:3)\n    at /var/www/html/clean-dashboard/node_modules/tailwindcss/node_modules/lodash/mergeWith.js:36:3\n    at /var/www/html/clean-dashboard/node_modules/tailwindcss/node_modules/lodash/_createAssigner.js:30:9\n    at apply (/var/www/html/clean-dashboard/node_modules/tailwindcss/node_modules/lodash/_apply.js:15:25)\n    at /var/www/html/clean-dashboard/node_modules/tailwindcss/node_modules/lodash/_overRest.js:32:12\n    at mergeVariantExtensions (/var/www/html/clean-dashboard/node_modules/tailwindcss/lib/util/resolveConfig.js:218:33)\n    at resolveVariants (/var/www/html/clean-dashboard/node_modules/tailwindcss/lib/util/resolveConfig.js:235:10)\n    at resolveConfig (/var/www/html/clean-dashboard/node_modules/tailwindcss/lib/util/resolveConfig.js:271:15)\n    at /var/www/html/clean-dashboard/node_modules/tailwindcss/lib/index.js:81:37\n    at _postcss.default.plugin.config (/var/www/html/clean-dashboard/node_modules/tailwindcss/lib/index.js:90:36)\n    at creator (/var/www/html/clean-dashboard/node_modules/postcss/lib/postcss.js:133:35)\n    at Function.get (/var/www/html/clean-dashboard/node_modules/postcss/lib/postcss.js:142:27)\n    at Processor.normalize (/var/www/html/clean-dashboard/node_modules/postcss-loader/node_modules/postcss/lib/processor.js:151:13)\n    at new Processor (/var/www/html/clean-dashboard/node_modules/postcss-loader/node_modules/postcss/lib/processor.js:56:25)\n    at postcss (/var/www/html/clean-dashboard/node_modules/postcss-loader/node_modules/postcss/lib/postcss.js:55:10)\n    at Promise.resolve.then.then (/var/www/html/clean-dashboard/node_modules/postcss-loader/src/index.js:140:12)\n    at process._tickCallback (internal/process/next_tick.js:68:7)\n    at runLoaders (/var/www/html/clean-dashboard/node_modules/webpack/lib/NormalModule.js:316:20)\n    at /var/www/html/clean-dashboard/node_modules/loader-runner/lib/LoaderRunner.js:367:11\n    at /var/www/html/clean-dashboard/node_modules/loader-runner/lib/LoaderRunner.js:233:18\n    at context.callback (/var/www/html/clean-dashboard/node_modules/loader-runner/lib/LoaderRunner.js:111:13)\n    at Promise.resolve.then.then.catch (/var/www/html/clean-dashboard/node_modules/postcss-loader/src/index.js:208:9)\n    at process._tickCallback (internal/process/next_tick.js:68:7)");
-
-/***/ }),
-
-/***/ "./resources/js/app.js":
-/*!*****************************!*\
-  !*** ./resources/js/app.js ***!
-  \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
-
-var Turbolinks = __webpack_require__(/*! turbolinks */ "./node_modules/turbolinks/dist/turbolinks.js");
-
-Turbolinks.start();
-
-/***/ }),
-
-/***/ "./resources/js/bootstrap.js":
-/*!***********************************!*\
-  !*** ./resources/js/bootstrap.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
-/**
- * We'll load the axios HTTP library which allows us to easily issue requests
- * to our Laravel back-end. This library automatically handles sending the
- * CSRF token as a header based on the value of the "XSRF" token cookie.
- */
-
-window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-window.chart = __webpack_require__(/*! chart.js */ "./node_modules/chart.js/dist/chart.esm.js");
-/**
- * Echo exposes an expressive API for subscribing to channels and listening
- * for events that are broadcast by Laravel. Echo and event broadcasting
- * allows your team to easily build robust real-time web applications.
- */
-// import Echo from 'laravel-echo';
-// window.Pusher = require('pusher-js');
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: process.env.MIX_PUSHER_APP_KEY,
-//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-//     forceTLS: true
-// });
-
-/***/ }),
-
-/***/ 0:
-/*!***********************************************************!*\
-  !*** multi ./resources/js/app.js ./resources/css/app.css ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(/*! /var/www/html/clean-dashboard/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /var/www/html/clean-dashboard/resources/css/app.css */"./resources/css/app.css");
-
+"use strict";
+module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"Promise based HTTP client for the browser and node.js","main":"index.js","scripts":{"test":"grunt test","start":"node ./sandbox/server.js","build":"NODE_ENV=production grunt build","preversion":"npm test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json","postversion":"git push && git push --tags","examples":"node ./examples/server.js","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","fix":"eslint --fix lib/**/*.js"},"repository":{"type":"git","url":"https://github.com/axios/axios.git"},"keywords":["xhr","http","ajax","promise","node"],"author":"Matt Zabriskie","license":"MIT","bugs":{"url":"https://github.com/axios/axios/issues"},"homepage":"https://axios-http.com","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"jsdelivr":"dist/axios.min.js","unpkg":"dist/axios.min.js","typings":"./index.d.ts","dependencies":{"follow-redirects":"^1.14.0"},"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}]}');
 
 /***/ })
 
-/******/ });
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			id: moduleId,
+/******/ 			loaded: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = __webpack_modules__;
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/chunk loaded */
+/******/ 	(() => {
+/******/ 		var deferred = [];
+/******/ 		__webpack_require__.O = (result, chunkIds, fn, priority) => {
+/******/ 			if(chunkIds) {
+/******/ 				priority = priority || 0;
+/******/ 				for(var i = deferred.length; i > 0 && deferred[i - 1][2] > priority; i--) deferred[i] = deferred[i - 1];
+/******/ 				deferred[i] = [chunkIds, fn, priority];
+/******/ 				return;
+/******/ 			}
+/******/ 			var notFulfilled = Infinity;
+/******/ 			for (var i = 0; i < deferred.length; i++) {
+/******/ 				var [chunkIds, fn, priority] = deferred[i];
+/******/ 				var fulfilled = true;
+/******/ 				for (var j = 0; j < chunkIds.length; j++) {
+/******/ 					if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
+/******/ 						chunkIds.splice(j--, 1);
+/******/ 					} else {
+/******/ 						fulfilled = false;
+/******/ 						if(priority < notFulfilled) notFulfilled = priority;
+/******/ 					}
+/******/ 				}
+/******/ 				if(fulfilled) {
+/******/ 					deferred.splice(i--, 1)
+/******/ 					var r = fn();
+/******/ 					if (r !== undefined) result = r;
+/******/ 				}
+/******/ 			}
+/******/ 			return result;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/node module decorator */
+/******/ 	(() => {
+/******/ 		__webpack_require__.nmd = (module) => {
+/******/ 			module.paths = [];
+/******/ 			if (!module.children) module.children = [];
+/******/ 			return module;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/jsonp chunk loading */
+/******/ 	(() => {
+/******/ 		// no baseURI
+/******/ 		
+/******/ 		// object to store loaded and loading chunks
+/******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
+/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
+/******/ 		var installedChunks = {
+/******/ 			"/js/app": 0,
+/******/ 			"css/app": 0
+/******/ 		};
+/******/ 		
+/******/ 		// no chunk on demand loading
+/******/ 		
+/******/ 		// no prefetching
+/******/ 		
+/******/ 		// no preloaded
+/******/ 		
+/******/ 		// no HMR
+/******/ 		
+/******/ 		// no HMR manifest
+/******/ 		
+/******/ 		__webpack_require__.O.j = (chunkId) => (installedChunks[chunkId] === 0);
+/******/ 		
+/******/ 		// install a JSONP callback for chunk loading
+/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
+/******/ 			var [chunkIds, moreModules, runtime] = data;
+/******/ 			// add "moreModules" to the modules object,
+/******/ 			// then flag all "chunkIds" as loaded and fire callback
+/******/ 			var moduleId, chunkId, i = 0;
+/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
+/******/ 				for(moduleId in moreModules) {
+/******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
+/******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
+/******/ 					}
+/******/ 				}
+/******/ 				if(runtime) var result = runtime(__webpack_require__);
+/******/ 			}
+/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
+/******/ 			for(;i < chunkIds.length; i++) {
+/******/ 				chunkId = chunkIds[i];
+/******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
+/******/ 					installedChunks[chunkId][0]();
+/******/ 				}
+/******/ 				installedChunks[chunkIds[i]] = 0;
+/******/ 			}
+/******/ 			return __webpack_require__.O(result);
+/******/ 		}
+/******/ 		
+/******/ 		var chunkLoadingGlobal = self["webpackChunk"] = self["webpackChunk"] || [];
+/******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
+/******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
+/******/ 	__webpack_require__.O(undefined, ["css/app"], () => (__webpack_require__("./resources/js/app.js")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["css/app"], () => (__webpack_require__("./resources/css/app.css")))
+/******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
+/******/ 	
+/******/ })()
+;

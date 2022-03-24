@@ -22,6 +22,8 @@ class Store extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $showModal = false;
+    public $keyword;
+    public $searchproduct = null;
 
     public $details;
     public $search;
@@ -60,6 +62,28 @@ class Store extends Component
     public function updatingSearch(){$this->resetPage();}
     public function updatedQtys($field){$this->recalc($field);}
     public function close(){$this->showModal = false;}
+
+    public function updatedKeyword(){
+        if(!$this->keyword){
+            return $this->searchproduct = null;
+        }
+
+        $this->searchproduct =  Price::query()->where('instance_id', $this->priceList)
+        ->where(function ($q) {
+            $q->orwhere('product_sku', 'like', '%'.$this->keyword.'%');
+            $q->orwhere('name', 'like', '%'.$this->keyword.'%');
+        })->orderBy('name')->get()->filter();
+
+        $this->searchproduct->groupBy('productType');
+
+
+   }
+
+    public function selectedProduct(Price $price){
+        $this->searchproduct = null;
+        $this->keyword = $price->name;
+        $this->prices = $price;
+    }
 
     public function addToCart(Product $productId, Price $price){
         $billing_cycle = "Monthly";
@@ -156,8 +180,8 @@ class Store extends Component
             }))
             ->when($this->filters['billing'], fn($query, $billing) => $query->where('billing_plan', $billing))
             ->when($this->filters['terms'], fn($query, $terms) => $query->where('term_duration', $terms))
-            ->when($this->search, fn($query, $search) => $query->where('name', 'like', '%'.$search.'%')
-            ->orwhere('product_sku', 'like', '%'.$search.'%'))
+            // ->when($this->search, fn($query, $search) => $query->where('name', 'like', '%'.$search.'%')
+            // ->orwhere('product_sku', 'like', '%'.$search.'%'))
             ->with('related_product');
 
         return $this->applySorting($query);

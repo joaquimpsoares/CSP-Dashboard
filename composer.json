@@ -44,6 +44,7 @@
         "spatie/laravel-permission": "^3.11",
         "spatie/laravel-searchable": "^1.11",
         "spatie/simple-excel": "^1.13",
+        "stripe/stripe-php": "^7.118",
         "tagydes/microsoft-connection": "dev-master",
         "tanmuhittin/laravel-google-translate": "^2.0",
         "webpatser/laravel-countries": "^1.5"

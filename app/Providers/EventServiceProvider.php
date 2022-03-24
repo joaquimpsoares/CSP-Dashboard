@@ -2,15 +2,17 @@
 
 namespace App\Providers;
 
+use App\Subscription;
 use App\Events\PriceChanged;
-use App\Listeners\MarkPriceListsAsChangedListener;
+use Lab404\Impersonate\Impersonate;
 use App\Listeners\SetLeveIdInSession;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
+use Lab404\Impersonate\Events\TakeImpersonation;
+use App\Listeners\MarkPriceListsAsChangedListener;
+use App\Observers\SubscriptionObserver;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Lab404\Impersonate\Events\TakeImpersonation;
-use Lab404\Impersonate\Impersonate;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -24,7 +26,6 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\MSCustomerCreationListener::class,
         ],
         \SocialiteProviders\Manager\SocialiteWasCalled::class => [
-            // ... other providers
             'SocialiteProviders\Graph\GraphExtendSocialite@handle',
             'SocialiteProviders\Microsoft\MicrosoftExtendSocialite@handle',
         ],
@@ -59,6 +60,6 @@ class EventServiceProvider extends ServiceProvider
     {
         parent::boot();
 
-        //
+        Subscription::observe(SubscriptionObserver::class);
     }
 }

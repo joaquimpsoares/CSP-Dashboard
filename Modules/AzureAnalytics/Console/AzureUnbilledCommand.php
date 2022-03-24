@@ -58,7 +58,6 @@ class AzureUnbilledCommand extends Command
             foreach ($resources as $key => $value) {
                 foreach ($value as $key => $value) {
                     $tenant = MicrosoftTenantInfo::where('tenant_id', $value['customerId'])->first();
-                    // dd($tenant->customer->subscriptions->where('billing_type', 'usage'));
                     if(isset($tenant->customer)){
                         $tenant->customer->subscriptions->where('billing_type', 'usage')->each(function ($subscription) use($value) {
                             try{

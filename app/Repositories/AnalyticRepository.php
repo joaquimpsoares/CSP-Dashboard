@@ -113,13 +113,15 @@ class AnalyticRepository implements AnalyticRepositoryInterface
             'created_at'    => "5trvfvczdfv",
             ]);
 
-        $budget = FacadesAzureResource::withCredentials(
-            $instance->external_id,$instance->external_token
-            )->budget($customer, $subscription);
-            return (int) $budget;
+        // $budget = FacadesAzureResource::withCredentials(
+        //     $instance->external_id,$instance->external_token
+        //     )->budget($customer, $subscription);
+        //     return (int) $budget;
+
+            $budget = 2000;
         });
 
-        $subscription->budget = $budget;
+        $subscription->budget = 1;
         $subscription->save();
         $budget = $subscription->budget;
         $costSum = AzureResource::where('subscription_id', $subscription->id)->sum('cost');

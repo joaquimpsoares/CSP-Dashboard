@@ -55,47 +55,41 @@
                                         @error('address')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                     </div>
                                 </div>
+
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <h5 class="card-title">
+                                            @lang('Login Details')
+                                        </h5>
+                                        <p class="text-muted font-weight-light">
+                                            @lang('Details used for authenticating with the application.')
+                                        </p>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="form-group">
+                                            <label for="email">@lang('Email')</label>
+                                            <input wire:model="email" type="email" class="form-control input-solid @error('email') is-invalid @enderror" id="email" name="email" placeholder="@lang('Email')" value="{{ old('email') }}">
+                                            @error('email')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="password">{{ __('Password') }}</label>
+                                            <input wire:model="password" type="password" class="form-control input-solid @error('password') is-invalid @enderror" id="password" name="password"  value="{{ old('password') }}">
+                                            @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="password_confirmation">{{ __('Confirm Password') }}</label>
+                                            <input wire:model="password_confirmation" type="password" class="form-control input-solid @error('password') is-invalid @enderror" id="password_confirmation" name="password_confirmation"  value="{{ old('password_confirmation') }}">
+                                            @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+                        <div class="mb-4 col-lg-4">
+                            <button wire:click.prevent="save">{{ucwords(trans_choice('messages.create', 1))}}</button>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <h5 class="card-title">
-                                @lang('Login Details')
-                            </h5>
-                            <p class="text-muted font-weight-light">
-                                @lang('Details used for authenticating with the application.')
-                            </p>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="form-group">
-                                <label for="email">@lang('Email')</label>
-                                <input wire:model="email" type="email" class="form-control input-solid @error('email') is-invalid @enderror" id="email" name="email" placeholder="@lang('Email')" value="{{ old('email') }}">
-                                @error('email')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                            </div>
-                            <div class="form-group">
-                                <label for="password">{{ __('Password') }}</label>
-                                <input wire:model="password" type="password" class="form-control input-solid @error('password') is-invalid @enderror" id="password" name="password"  value="{{ old('password') }}">
-                                @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                            </div>
-                            <div class="form-group">
-                                <label for="password_confirmation">{{ __('Confirm Password') }}</label>
-                                <input wire:model="password_confirmation" type="password" class="form-control input-solid @error('password') is-invalid @enderror" id="password_confirmation" name="password_confirmation"  value="{{ old('password_confirmation') }}">
-                                @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mb-4 col-lg-4">
-                <button wire:click.prevent="save">{{ucwords(trans_choice('messages.create', 1))}}</button>
-            </div>
+            </section>
         </div>
-    </div>
-</section>
-</div>
-</form>
+    </form>
