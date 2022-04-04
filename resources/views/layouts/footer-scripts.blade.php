@@ -28,5 +28,18 @@
 @yield('js')
 <!-- Custom js-->
 <script src="{{URL::asset('assets/js/custom.js')}}"></script>
+{{-- <script src="./node_modules/dist/js/index.min.js"></script> --}}
+<script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/index.min.js"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
 {{-- <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script> --}}
 

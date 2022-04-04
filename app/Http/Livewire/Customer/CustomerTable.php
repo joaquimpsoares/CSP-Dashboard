@@ -128,16 +128,17 @@ class CustomerTable extends Component
                 'price_list_id' => $this->editing->price_list_id,
             ]);
             $user = User::create ([
-                'email'             => $this->email,
-                'name'              => $this->creatingUser->name,
-                'last_name'         => $this->creatingUser->last_name,
-                'address'           => $this->creatingUser->address,
-                'phone'             => $this->creatingUser->phone,
-                'country_id'        => $this->editing->country_id,
-                'password'          => Hash::make($this->password),
-                'user_level_id'     => 6, //Customer role id = 6
-                'status_id'         => $this->creatingUser->status_id,
-                'customer_id'       => $newCustomer->id,
+                'email'                     => $this->email,
+                'name'                      => $this->creatingUser->name,
+                'last_name'                 => $this->creatingUser->last_name,
+                'address'                   => $this->creatingUser->address,
+                'phone'                     => $this->creatingUser->phone,
+                'country_id'                => $this->editing->country_id,
+                'notifications_preferences' => 'database',
+                'password'                  => Hash::make($this->password),
+                'user_level_id'             => 6, //Customer role id = 6
+                'status_id'                 => $this->creatingUser->status_id,
+                'customer_id'               => $newCustomer->id,
                 // 'notify'            => $this->sendInvitation ?? false,
             ]);
 

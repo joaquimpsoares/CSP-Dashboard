@@ -71,7 +71,7 @@ class CreateMigrationJob implements ShouldQueue
         $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->
         CreateMigrationSubscription($subscription->customerId, $subscription, $this->amount, $this->billing_period, $this->term, $this->newterm);
 
-        Log::info('Creating: ' . $update);
+        Log::info('Creating Migration JSON: ' . $update);
 
     // $update =  collect([
     //     "id" => "f779c1e6-e49f-4819-8aad-a818ced86fba",
@@ -88,7 +88,6 @@ class CreateMigrationJob implements ShouldQueue
     //     "purchaseFullTerm" => false,
     // ]);
 
-        // dd($update);
 
         if(Str::contains($update, '900215')){
             $this->order->errors = ('Error Migrating Subscription: ' . substr($update, strrpos($update, '"description":"' )));
@@ -117,7 +116,7 @@ class CreateMigrationJob implements ShouldQueue
         $subscription->instance_id     = $this->subscription->instance_id;
         $subscription->billing_type    = 'license';
         $subscription->term            = $update['termDuration'];
-        $subscription->order_id        = $update['newCommerceOrderId'];
+        $subscription->order_id        = 123;
         $subscription->amount          = $update['quantity'];
         $subscription->msrpid          = $this->subscription->msrpid;
         $subscription->expiration_data = $this->subscription->expiration_data;
@@ -136,7 +135,7 @@ class CreateMigrationJob implements ShouldQueue
             'status'                    => $update['status'],
             'customerTenantId'          => $update['customerTenantId'],
             'catalogItemId'             => $update['catalogItemId'],
-            'newCommerceOrderId'        => $update['newCommerceOrderId'],
+            'newCommerceOrderId'        => 123,
             'quantity'                  => $update['quantity'],
             'termDuration'              => $update['termDuration'],
             'billingCycle'              => $update['billingCycle'],

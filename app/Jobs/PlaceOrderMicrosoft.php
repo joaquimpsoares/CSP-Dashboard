@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Order;
 use Exception;
 use App\Instance;
+use App\Notifications\OrderStatus;
 use Carbon\Carbon;
 use App\Subscription;
 use Illuminate\Bus\Queueable;
@@ -13,12 +14,13 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Notification;
 use romanzipp\QueueMonitor\Traits\IsMonitored;
 use Tagydes\MicrosoftConnection\Models\Cart as TagydesCart;
 use Tagydes\MicrosoftConnection\Facades\Order as TagydesOrder;
 use Tagydes\MicrosoftConnection\Models\Product as TagydesProduct;
-use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
+use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
 
 
 class PlaceOrderMicrosoft implements ShouldQueue
@@ -49,8 +51,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
         $customer = $this->order->customer;
 
         foreach ($products as $product) {
-
-            $this->order->details = ('Placing Order product: ' . $product['name'] . ' for Customer: ' . $customer->company_name);
+            $this->order->details = ('Stage 2 - Placing Order for: ' . $product['name'] . ' for Customer: ' . $customer->company_name);
             $this->order->save();
         }
         Log::info('tenant Cart: ' . $this->order->customer->microsoftTenantInfo->first());
@@ -108,7 +109,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 if ($product['is_perpetual']) {
                     Log::info('Catalog Item URL: ' . $product['uri']);
                     $catalogItemId = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)->getPerpetualCatalogItemId($product['uri']);
-                    Log::info('Catalog Item ID: ' . $catalogItemId);
+                    // Log::info('Catalog Item ID: ' . $catalogItemId);
 
                     $TagydesProduct = new TagydesProduct([
                         'id' => $catalogItemId
@@ -121,7 +122,6 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 elseif($product->IsNCE()){
 
                     $country = $customer->country->iso_3166_2;
-
                     $sku = strtok($product->sku, ':');
                     $id = substr($product->sku, strpos($product->sku, ":") + 1);
 
@@ -146,23 +146,27 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 $tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->create($tagydescart);
                 Log::info('Creating Cart: ' . $tagydesorder);
 
-                // $this->order->errors = $tagydesorder->errors();
-                // if ($tagydesorder->errors()->count() > 0) {
-                //     foreach ($tagydesorder->errors() as $error) {
-                //         logger('Error found: ' . $error);
-                //     }
-                // }
-
                 $this->order->request_body = $tagydesorder->requestBody;
+                $this->order->save();
 
                 $orderConfirm = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($tagydesorder);
-                // Log::info('Confirmation of cart Cart: ', $orderConfirm->subscriptions()->toArray());
-                // dump("this is " .$orderConfirm);
+
+                $this->order->errors = $orderConfirm->errors();
+                if ($orderConfirm->errors()->count() > 0) {
+                    foreach ($orderConfirm->errors() as $error) {
+                        logger('Error found: ' . $error);
+                    }
+                }
+
+
             } catch (Exception $th){
+
+                $this->order->errors = ('Error Placing order to Microsoft: ' . $th->getMessage());
+                $this->order->order_status_id = 3;
+                $this->order->save();
                 Log::info('Error Cart.', ['message' => $th->getMessage()]);
             }
 
-            if($orderConfirm){
             foreach ($orderConfirm->subscriptions() as $subscription) {
                 logger('this is the subscription '.$subscription);
                 if($product->IsNCE()){
@@ -196,13 +200,11 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 $this->order->save();
 
                 Log::info('Subscription created Successfully: ' . $subscription);
+                Notification::send($subscription->customer->users->first(), new OrderStatus($this->order, 'success'));
+
             }
-        }
         } catch (Exception $e) {
             Log::info('Error Placing order to Microsoft: ' . $e->getMessage());
-            $this->order->details = ('Error Placing order to Microsoft: ' . $e->getMessage());
-            $this->order->order_status_id = 3;
-            $this->order->save();
         }
     }
 }

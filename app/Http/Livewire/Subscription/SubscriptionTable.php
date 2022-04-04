@@ -2,28 +2,20 @@
 
 namespace App\Http\Livewire\Subscription;
 
-use App\Order;
-use Exception;
-use App\Instance;
 use App\Subscription;
 use Livewire\Component;
 use Illuminate\Support\Str;
 use Livewire\WithPagination;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use App\Exports\SubscriptionsExport;
-use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Database\Eloquent\Builder;
 use App\Http\Livewire\DataTable\WithSorting;
 use App\Exceptions\UpdateSubscriptionException;
 use App\Http\Livewire\DataTable\WithCachedRows;
 use App\Http\Livewire\DataTable\WithBulkActions;
 use App\Http\Livewire\DataTable\WithPerPagePagination;
-use Tagydes\MicrosoftConnection\Facades\Subscription as SubscriptionFacade;
-use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 
 class SubscriptionTable extends Component
 {
@@ -33,11 +25,9 @@ class SubscriptionTable extends Component
     public $search = '';
     public $quantity = '';
     public $addons = '';
+    public $tt;
     public $subscription;
 
-
-    public $subs;
-    public $validate;
     public $autorenew;
     public $max_quantity = '999999999';
     public $min_quantity = '1';
@@ -48,7 +38,6 @@ class SubscriptionTable extends Component
     public $showFilters = false;
     public $selected = [];
     public $filters = [
-        'search' => '',
         'status' => '',
         'amount-min' => null,
         'amount-max' => null,
@@ -65,10 +54,14 @@ class SubscriptionTable extends Component
     protected $listeners = ['refreshTransactions' => '$refresh'];
     public function updatingSearch(){$this->resetPage();}
     public function updatedFilters(){ $this->resetPage(); }
-    public function resetFilters(){ $this->reset('filters'); }
 
-    public function rules()
-    {
+    public function resetFilters(){
+        $this->resetPage();
+        $this->reset('filters');
+    }
+
+
+    public function rules(){
         if ($this->subscription->productonce){
             $max_quantity = $this->subscription->productonce->where('instance_id', $this->subscription->instance_id)->first()->maximum_quantity;
             $min_quantity = $this->subscription->productonce->where('instance_id', $this->subscription->instance_id)->first()->minimum_quantity;
@@ -77,13 +70,13 @@ class SubscriptionTable extends Component
             $min_quantity = 1;
         }
         if($this->subscription->productonce != null){
-        if($this->subscription->productonce->isNCE()){
-            if($this->subscription->refundableQuantity){
-                foreach ($this->subscription->refundableQuantity as $item){
-                    $min_quantity = $this->subscription->amount - $item['totalQuantity'];
+            if($this->subscription->productonce->isNCE()){
+                if($this->subscription->refundableQuantity){
+                    foreach ($this->subscription->refundableQuantity as $item){
+                        $min_quantity = $this->subscription->amount - $item['totalQuantity'];
+                    }
                 }
             }
-        }
         }
 
         return [
@@ -96,21 +89,12 @@ class SubscriptionTable extends Component
         ];
     }
 
-    public function edit(Subscription $subscription)
-    {
+    public function edit(Subscription $subscription){
         $this->subscription     = $subscription;
         $this->showEditModal    = true;
         $this->min_quantity     = $subscription->productonce->minimum_quantity;
         $this->max_quantity     = $subscription->productonce->maximum_quantity;
         $this->editing          = $subscription;
-    }
-
-    public function mount()
-    {
-        // $this->autorenew = $this->subscription->autorenew;
-        // $this->amount = $this->subscription->amount;
-        // $this->max_quantity = $this->subscription->products->where('instance_id', $this->subscription->instance_id)->first()->maximum_quantity ?? null;
-        // $this->status = $this->subscription->status->name;
     }
 
     public function save(){
@@ -233,13 +217,13 @@ class SubscriptionTable extends Component
         $this->emit('refreshTransactions');
     }
 
-    public function exportSelected()
-    {
-        return Excel::download(new SubscriptionsExport, 'Subscriptions.xlsx');
+    public function exportSelected(){
+        return response()->streamDownload(function () {
+        echo $this->selectedRowsQuery->toCsv();
+        }, 'transactions.csv');
     }
 
-    public function deleteSelected()
-    {
+    public function deleteSelected(){
         $deleteCount = $this->selectedRowsQuery->count();
 
         $this->selectedRowsQuery->delete();
@@ -249,46 +233,39 @@ class SubscriptionTable extends Component
         $this->notify('You\'ve deleted '.$deleteCount.' transactions');
     }
 
-    public function legacy()
-    {
+    public function legacy(){
         $this->resetFilters();
         $this->filters['legacy'] = true;
         $this->expirationdate = $this->filters['abouttoexpire'];
-
     }
 
-    public function expiration()
-    {
+    public function expiration(){
         $this->resetFilters();
         $this->filters['abouttoexpire'] = 30;
     }
 
-    public function perpetual()
-    {
+    public function perpetual(){
         $this->resetFilters();
         $this->filters['perpetual'] = true;
     }
 
-    public function nce()
-    {
+    public function nce(){
         $this->resetFilters();
         $this->filters['nce'] = true;
     }
 
-    public function getRowsQueryProperty()
-    {
-        // dd($this->filters['perpetual']);
+    public function getRowsQueryProperty(){
         $query = Subscription::query();
         $subscriptions = $query
             ->when($this->filters['status'], fn($query, $status) => $query->where('status_id', $status))
             ->when($this->filters['perpetual'], fn($query) => $query->whereHas('productonce', function(Builder $query){
                     $query->where('is_perpetual', true);
                 }))
-            ->when($this->filters['nce'], fn($query, $status) => $query->whereHas('productonce', function(Builder $query){
+            ->when($this->filters['nce'], fn($query) => $query->whereHas('productonce', function(Builder $query){
                 $query->where('productType', 'OnlineServicesNCE');
             }))
-            ->when($this->filters['legacy'], fn($query, $status) => $query->whereHas('productonce', function(Builder $query){
-                $query->where('productType', '<>', 'OnlineServicesNCE');
+            ->when($this->filters['legacy'], fn($query) => $query->whereHas('productonce', function(Builder $query){
+                $query->where('productType', 'Legacy');
             }))
             ->when($this->filters['abouttoexpire'], fn($query)
             => $query->where('expiration_data', '<=', Carbon::now()->subDays($this->expirationdate)->toDateTimeString()))
@@ -302,18 +279,16 @@ class SubscriptionTable extends Component
                     $q->where('company_name', 'like', "%{$this->search}%");
                 });
             });
-        return $this->applySorting($subscriptions);
+            return $this->applySorting($subscriptions);
     }
 
-    public function getRowsProperty()
-    {
+    public function getRowsProperty(){
         return $this->cache(function () {
             return $this->applyPagination($this->rowsQuery);
         });
     }
 
-    public function render()
-    {
+    public function render(){
         return view('livewire.subscription.subscription-table', [
             'subscriptions' => $this->rows,
         ]);

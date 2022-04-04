@@ -68,12 +68,11 @@
                                             {{ucwords(trans_choice('descriptions.notifications_description', 1))}}
                                         </p>
                                     </div>
-                                    <ul class="mt-2 divide-y divide-gray-200">
+                                    <ul class="mt-2 ">
                                         <li class="flex items-center justify-between py-4" x-data="{ on: true }">
                                             <div class="flex flex-col">
                                                 <p class="text-sm font-medium text-gray-900" id="privacy-option-1-label">
                                                     {{ucwords(trans_choice('messages.email', 1))}}
-
                                                 </p>
                                                 <p class="text-sm text-gray-500" id="privacy-option-1-description">
                                                     {{ucwords(trans_choice('descriptions.recieve_email_notifications', 1))}}
@@ -81,71 +80,77 @@
                                                 </p>
                                             </div>
                                             <label for="toogle-a" class="relative inline-flex items-center cursor-pointer toogle-a">
-                                                <input id="toogle-a" type="checkbox" class="hidden">
+                                                <input wire:model='mail' id="toogle-a" type="checkbox" class="hidden">
                                                 <div class="w-10 h-4 transition duration-300 bg-gray-300 border border-gray-100 rounded-full shadow-inner bar"></div>
                                                 <div class="absolute w-6 h-6 transition duration-300 bg-gray-400 rounded-full shadow-md dot -left-1"></div>
                                             </label>
                                         </li>
-                                        <li class="flex items-center justify-between py-4" x-data="{ on: false }">
-                                            <div class="flex flex-col">
-                                                <p class="text-sm font-medium text-gray-900" id="privacy-option-2-label">
-                                                    {{ucwords(trans_choice('messages.teams', 1))}}
-                                                </p>
-                                                <p class="text-sm text-gray-500" id="privacy-option-2-description">
-                                                    {{ucwords(trans_choice('descriptions.recieve_teams_notifications', 1))}}
-                                                </p>
+                                        @if($mail == true)
+                                        <section aria-labelledby="payment-details-heading">
+                                            <div class="grid grid-cols-4 gap-6 mt-0">
+                                                <div class="col-span-4 sm:col-span-2">
+                                                    <x-label for="hostname" class="block text-sm font-medium text-gray-700">{{ucwords(trans_choice('messages.hostname', 1))}}</x-label>
+                                                    <x-input wire:click='hostname' type="text" name="hostname" id="hostname" autocomplete="hostname" class="w-full form-input"></x-input>
+                                                </div>
+
+                                                <div class="col-span-4 sm:col-span-1">
+                                                    <x-label for="port" class="block text-sm font-medium text-gray-700">{{ucwords(trans_choice('messages.port', 1))}}</x-label>
+                                                    <x-input wire:click='port' type="text" name="port" id="port" autocomplete="port" class="w-full form-input" ></x-input>
+                                                </div>
+
+                                                <div class="col-span-4 sm:col-span-1">
+                                                    <x-label for="encryption" class="flex items-center text-sm font-medium text-gray-700">{{ucwords(trans_choice('messages.encryption', 1))}}</x-label>
+                                                    <x-input wire:click='encryption' type="text" name="encryption" id="encryption" autocomplete="encryption" class="w-full form-input"></x-input>
+                                                </div>
+                                                <div class="col-span-4 sm:col-span-2">
+                                                    <x-label for="username" class="block text-sm font-medium text-gray-700">{{ucwords(trans_choice('messages.username', 1))}}</x-label>
+                                                    <x-input wire:click='username' type="text" name="username" id="username" autocomplete="username" class="w-full form-input"></x-input>
+                                                </div>
+                                                <div class="col-span-4 sm:col-span-2">
+                                                    <x-label for="password" class="block text-sm font-medium text-gray-700">{{ucwords(trans_choice('messages.password', 1))}}</x-label>
+                                                    <x-input wire:click='password' type="password" name="password" id="password" autocomplete="password" class="w-full form-input"></x-input>
+                                                </div>
                                             </div>
+                                    </section>
+                                    @endif
+                                    <li class="flex items-center justify-between py-4" x-data="{ on: false }">
+                                        <div class="flex flex-col">
+                                            <p class="text-sm font-medium text-gray-900" id="privacy-option-2-label">
+                                                {{ucwords(trans_choice('messages.teams', 1))}}
+                                            </p>
+                                            <p class="text-sm text-gray-500" id="privacy-option-2-description">
+                                                {{ucwords(trans_choice('descriptions.recieve_teams_notifications', 1))}}
+                                            </p>
+                                        </div>
+                                        <div class="flex flex-col">
                                             <label for="toogle-b" class="relative inline-flex items-center cursor-pointer toogle-b">
-                                                <input id="toogle-b" type="checkbox" class="hidden">
+                                                <input wire:model='teams' id="toogle-b" type="checkbox" class="hidden">
                                                 <div class="w-10 h-4 transition duration-300 bg-gray-300 border border-gray-100 rounded-full shadow-inner bar"></div>
                                                 <div class="absolute w-6 h-6 transition duration-300 bg-gray-400 rounded-full shadow-md dot -left-1"></div>
                                             </label>
-                                        </li>
-                                        {{-- <li class="flex items-center justify-between py-4" x-data="{ on: true }">
-                                            <div class="flex flex-col">
-                                                <p class="text-sm font-medium text-gray-900" id="privacy-option-3-label">
-                                                    Allow commenting
-                                                </p>
-                                                <p class="text-sm text-gray-500" id="privacy-option-3-description">
-                                                    Integer amet, nunc hendrerit adipiscing nam. Elementum ame
-                                                </p>
-                                            </div>
-                                            <label for="toogle-c" class="relative inline-flex items-center cursor-pointer toogle-c">
-                                                <input id="toogle-c" type="checkbox" class="hidden">
-                                                <div class="w-10 h-4 transition duration-300 bg-gray-300 border border-gray-100 rounded-full shadow-inner bar"></div>
-                                                <div class="absolute w-6 h-6 transition duration-300 bg-gray-400 rounded-full shadow-md dot -left-1"></div>
-                                            </label>
-                                        </li>
-                                        <li class="flex items-center justify-between py-4" x-data="{ on: true }">
-                                            <div class="flex flex-col">
-                                                <p class="text-sm font-medium text-gray-900" id="privacy-option-4-label">
-                                                    Allow mentions
-                                                </p>
-                                                <p class="text-sm text-gray-500" id="privacy-option-4-description">
-                                                    Adipiscing est venenatis enim molestie commodo eu gravid
-                                                </p>
-                                            </div>
-                                            <label for="toogle-d" class="relative inline-flex items-center cursor-pointer toogle-d">
-                                                <input id="toogle-d" type="checkbox" class="hidden">
-                                                <div class="w-10 h-4 transition duration-300 bg-gray-300 border border-gray-100 rounded-full shadow-inner bar"></div>
-                                                <div class="absolute w-6 h-6 transition duration-300 bg-gray-400 rounded-full shadow-md dot -left-1"></div>
-                                            </label>
-                                        </li> --}}
-                                    </ul>
-                                </div>
-                                <div class="flex justify-end px-4 py-4 mt-4 sm:px-6">
-                                    <x-a class="inline-flex justify-center px-4 py-2 ml-5 text-sm font-medium " color="red" type="button" >
-                                        Cancel
-                                    </x-a>
-                                    <x-a type="submit" class="inline-flex justify-center px-4 py-2 ml-5 text-sm font-medium ">
-                                        Save
-                                    </x-a>
-                                </div>
+                                        </div>
+                                    </li>
+                                    @if($teams == true)
+                                    <div class="col-span-12">
+                                        <label for="url" class="block text-sm font-medium text-gray-700">URL</label>
+                                        <input wire:model='teams_webhook' type="text" name="url" id="url" class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm">
+                                    </div>
+                                    @endif
+                                </ul>
                             </div>
-                        </section>
-                    </div>
+                            <div class="flex justify-end px-4 py-4 mt-4 sm:px-6">
+                                <x-a class="inline-flex justify-center px-4 py-2 ml-5 text-sm font-medium " color="red" type="button" >
+                                    Cancel
+                                </x-a>
+                                <x-a type="submit" wire:click='save' class="inline-flex justify-center px-4 py-2 ml-5 text-sm font-medium ">
+                                    Save
+                                </x-a>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 </div>

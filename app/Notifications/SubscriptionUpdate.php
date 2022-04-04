@@ -3,9 +3,11 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
+use NotificationChannels\MicrosoftTeams\MicrosoftTeamsChannel;
+use NotificationChannels\MicrosoftTeams\MicrosoftTeamsMessage;
 
 class SubscriptionUpdate extends Notification
 {
@@ -16,9 +18,9 @@ class SubscriptionUpdate extends Notification
      *
      * @return void
      */
-    public function __construct($details)
+    public function __construct($subscription)
     {
-        $this->details = $details;
+        $this->subscription = $subscription;
     }
 
     /**
@@ -29,7 +31,10 @@ class SubscriptionUpdate extends Notification
      */
     public function via($notifiable)
     {
-        return ['database','mail'];
+        // dd(explode(',', $notifiable->notifications_preferences));
+
+        // return ['database','mail','msteams' ];
+        return explode(',', $notifiable->notifications_preferences);
     }
 
     /**
@@ -40,14 +45,32 @@ class SubscriptionUpdate extends Notification
      */
     public function toMail($notifiable)
     {
-        $status = $this->details->status_id == 1 ? 'Running' : 'Suspended';
+        $status = $this->subscription->status_id == 1 ? 'Running' : 'Suspended';
 
         return (new MailMessage)
-                    ->line('Subscription ' . $this->details->name . ' changed status to '.$status)
-                    ->line('Please review this information in your dashboard')
-                    ->line('Thank you for using our application!');
-                    // ->action('Notification Action', url(''))
-                }
+            ->line('Subscription ' . $this->subscription->name . ' changed status to '.$status)
+            ->line('Please review this information in your dashboard')
+            ->line('Thank you for using our application!');
+            // ->action('Notification Action', url(''))
+    }
+
+    public function toMicrosoftTeams($notifiable)
+    {
+        logger('TeamsWebhook '. $notifiable->teams_webhook);
+
+        $status = $this->subscription->status_id == 1 ? 'Running' : 'Suspended';
+        if($status == 'Running'){
+            $type = 'success';
+        }else{
+            $type = 'error';
+        }
+        return MicrosoftTeamsMessage::create()
+            ->to($notifiable->teams_webhook)
+            ->type($type)
+            ->title('Subscription Updated')
+            ->content('Subscription ' . $this->subscription->name . ' changed status to '.$status);
+            // ->button('Check User', 'https://foo.bar/users/123');
+    }
 
     /**
      * Get the array representation of the notification.
@@ -57,10 +80,9 @@ class SubscriptionUpdate extends Notification
      */
     public function toArray($notifiable)
     {
-        $status = $this->details->status_id == 1 ? 'Running' : 'Suspended';
-
+        $status = $this->subscription->status_id == 1 ? 'Running' : 'Suspended';
         return [
-            'data' => "Subscription " . $this->details->name . " changed status to ". $status
+            'data' => "Subscription " . $this->subscription->name . " changed status to ". $status
         ];
 
     }

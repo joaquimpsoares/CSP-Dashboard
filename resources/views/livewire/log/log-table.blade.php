@@ -78,26 +78,8 @@
                             </x-slot>
 
                             <x-slot name="body">
-                                {{-- @if ($selectPage)
-                                <x-table.row class="bg-cool-gray-200" wire:key="row-message">
-                                    <x-table.cell colspan="6">
-                                        @unless ($selectAll)
-                                        <div>
-                                            <span>You have selected <strong>{{ $priceLists->count() }}</strong> transactions, do you want to select all <strong>{{ $priceLists->total() }}</strong>?</span>
-                                            <x-button.link wire:click="selectAll" class="ml-1 text-blue-600">Select All</x-button.link>
-                                        </div>
-                                        @else
-                                        <span>You are currently selecting all <strong>{{ $priceLists->total() }}</strong> transactions.</span>
-                                        @endif
-                                    </x-table.cell>
-                                </x-table.row>
-                                @endif --}}
                                 @forelse ($logs as $transaction)
-                                {{-- @dd($transaction) --}}
                                 <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $transaction['id'] }}">
-                                    {{-- <x-table.cell class="pr-0">
-                                        <x-input.checkbox wire:model="selected" value="{{ $transaction['id'] }}" ></x-input.checkbox>
-                                    </x-table.cell> --}}
                                     <x-table.cell>
                                         <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                             <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
@@ -154,10 +136,15 @@
                                     </a>
                                 </x-table.cell>
                                 <x-table.cell>
+                                    @php
+                                    $user_name = App\User::where('id', $transaction->user_id)->first();
+                                    @endphp
                                     <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
-                                                {{ $transaction->user_id }}
+                                                @if($user_name)
+                                                {{ $user_name->name }}
+                                                @endif
                                             </span>
                                         </div>
                                     </a>

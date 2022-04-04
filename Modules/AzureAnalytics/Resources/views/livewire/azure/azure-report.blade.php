@@ -122,7 +122,6 @@
                     </x-slot>
                     <x-slot name="body">
                         @forelse ($reports as $item)
-                        {{-- @dd($item) --}}
                         <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $item['id'] }}">
                             <x-table.cell visibility='hidden' tablecell='lg:table-cell'>
                                 <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">

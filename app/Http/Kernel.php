@@ -40,7 +40,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\CheckBlocked::class,
             \App\Http\Middleware\Subscribed::class,
             \App\Http\Middleware\LocaleDetector::class,
-            \App\Http\Middleware\SessionTimeout::class,
+            // \App\Http\Middleware\SessionTimeout::class,
         ],
 
         'api' => [

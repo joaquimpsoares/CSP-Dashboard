@@ -57,11 +57,11 @@ class ImportProductsMicrosoftJob implements ShouldQueue
                 $updated = Product::updateOrCreate([
                     'sku' => $importedProduct->id,
                     'instance_id' => $instance->id,
-                ],[
                     'name' => $importedProduct->name,
                     'description' => $importedProduct->description,
                     'uri' => $importedProduct->uri,
                     'productType' => $importedProduct,
+                ],[
                     'minimum_quantity' => $importedProduct->minimumQuantity,
                     'maximum_quantity' => $importedProduct->maximumQuantity,
                     'limit' => $importedProduct->limit,

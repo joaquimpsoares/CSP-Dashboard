@@ -2,14 +2,16 @@
 
 namespace App\Http\Livewire\Reseller;
 
-use App\Models\Status;
+use App\User;
 use App\Country;
-use App\PriceList;
 use App\Reseller;
+use App\PriceList;
+use App\Models\Status;
 use Livewire\Component;
 use App\Rules\checkvatIdRule;
 use App\Rules\checkPostalCodeRule;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 use GuzzleHttp\Exception\ClientException;
 use Tagydes\MicrosoftConnection\Facades\Customer as TagydesCustomer;
 
@@ -18,9 +20,14 @@ class ShowReseller extends Component
     public $reseller;
     public $country;
     public $countries;
+    public $email;
+    public $password;
+    public $password_confirmation;
     public $statuses;
     public Reseller $editing;
+    public User $creatingUser;
     public $showEditModal = false;
+    public $showuserCreateModal = false;
     public $showconfirmationModal = false;
 
     public function rules()
@@ -39,62 +46,123 @@ class ShowReseller extends Component
             'editing.status_id'             => ['required', 'exists:statuses,id'],
             'editing.markup'                => ['nullable', 'integer', 'min:3'],
             'editing.mpnid'                 => ['nullable', 'integer', 'min:3'],
-            'editing.price_list_id'         => ['integer', 'exists:price_lists,id']
+            'editing.price_list_id'         => ['integer', 'exists:price_lists,id'],
+
+            'creatingUser.name'             => ['sometimes', 'string', 'max:255', 'min:3'],
+            'creatingUser.last_name'        => ['sometimes', 'string', 'max:255', 'min:3'],
+            'creatingUser.socialite_id'     => ['sometimes', 'string', 'max:255', 'min:3'],
+            'creatingUser.phone'            => ['sometimes', 'string', 'max:20', 'min:3'],
+            'creatingUser.address'          => ['sometimes', 'string', 'max:255', 'min:3'],
+            'email'                         => ['required', 'email', 'unique:users', 'max:255', 'min:3'],
+            'creatingUser.status_id'        => ['required', 'integer', 'exists:statuses,id'],
+            'password'                      => ['same:password_confirmation', 'required', 'min:6'],
+            'password_confirmation'         => ['same:password', 'required', 'min:6'],
         ];
     }
 
-    public function updated($propertyName)
-    {
-        $this->validateOnly($propertyName);
-    }
+    public function updated($propertyName){$this->validateOnly($propertyName);}
+    public function makeBlankTransaction(){return Reseller::make(['date' => now(), 'status' => 'success']);}
+    public function makeBlankTransactionUser(){return User::make(['date' => now(), 'status' => 'success']);}
+    protected $listeners = ['refreshTransactions' => '$refresh'];
 
-    public function edit(Reseller $reseller)
-    {
+    public function edit(Reseller $reseller){
+        $this->showuserCreateModal = false;
         $this->editing = $reseller;
         $this->showEditModal = true;
     }
 
-    public function disable(Reseller $reseller)
-    {
+    public function disable(Reseller $reseller){
         $this->showconfirmationModal = false;
         $reseller->status_id = 2;
         $reseller->save();
         $this->notify('Reseller ' . $reseller->company_name . ' is disabled, refresh page');
     }
 
-    public function enable(Reseller $reseller)
-    {
+    public function enable(Reseller $reseller){
         $reseller->status_id = 1;
         $reseller->save();
         $this->notify('Reseller ' . $reseller->company_name . ' is enabled, refresh page');
     }
 
+    public function addUser(){
+        $this->creatingUser = $this->makeBlankTransactionUser();
+        $this->showEditModal = true;
+        $this->showuserCreateModal = true;
+    }
+
+    public function deleteUser(User $user){
+        $user->delete();
+        $this->notify(' ', 'User ' . $user->name . ' Deleted successfully', 'info');
+        $this->emit('refreshTransactions');
+
+
+    }
+
+    public function disableUser(User $user){
+        if($user->status_id == 2){
+            $this->notify(' ', 'User ' . $user->name . ' already disabled', 'info');
+            return false;
+        }
+        $user->fill([
+            'status_id' => '2',
+        ]);
+        $user->save();
+        $this->notify(' ', 'User ' . $user->name . ' Disabled successfully', 'info');
+
+        $this->emit('refreshTransactions');
+    }
+
+    public function enableUser(User $user){
+        if($user->status_id == 1){
+            $this->notify(' ', 'User ' . $user->name . ' already Enabled', 'info');
+            return false;
+        }
+
+        $user->fill([
+            'status_id' => '1',
+        ]);
+        $user->save();
+        $this->notify(' ', 'User ' . $user->name . ' Activated successfully', 'info');
+
+        $this->emit('refreshTransactions');
+    }
+
+    public function saveuser(Reseller $reseller){
+        $user = User::create ([
+            'email'                     => $this->email,
+            'name'                      => $this->creatingUser->name,
+            'last_name'                 => $this->creatingUser->last_name,
+            'address'                   => $this->creatingUser->address,
+            'phone'                     => $this->creatingUser->phone,
+            'notifications_preferences' => 'database',
+            'country_id'                => $reseller->country_id,
+            'password'                  => Hash::make($this->password),
+            'user_level_id'             => 4, //reseller role id = 4
+            'status_id'                 => 1,
+            'reseller_id'               => $reseller->id,
+            // 'notify'                 => $this->sendInvitation ?? false,
+        ]);
+
+        $user->assignRole(config('app.reseller'));
+        $this->notify(' ', 'User ' . $user->name . ' Created successfully', 'info');
+
+        $this->emit('refreshTransactions');
+
+        $this->showuserCreateModal = false;
+        $this->showEditModal = false;
+    }
+
+    public function mount()
+    {
+        $this->editing      = $this->makeBlankTransaction();
+        $this->creatingUser = $this->makeBlankTransactionUser();
+    }
+
     public function save(Reseller $reseller)
     {
-        // $validatedData = $this->validate();
-
         try {
-            // $newCustomer = TagydesCustomer::withCredentials($reseller->provider->instances->first()->external_id, $reseller->provider->instances->first()->external_token)
-            // ->checkAddress([
-            //     'AddressLine1'  => $this->editing->address_1,
-            //     'City'          => $this->editing->city,
-            //     'State'         => $this->editing->state,
-            //     'PostalCode'    => $this->editing->postal_code,
-            //     'Country'       => $this->editing->country->iso_3166_2,
-            // ]);
-
-            // if($newCustomer->status === 'NotValidated'){
-            //     $this->showEditModal = false;
-            //     $this->notify($newCustomer->validationMessage);
-            // }
-
-            // $pricelist = PriceList::find($this->editing->price_list_id)->first();
-            // $pricelist->update(['reseller_id' => $this->reseller->id]);
-
             $this->editing->save();
             $this->showEditModal = false;
-
-
 
         } catch (ClientException $e) {
             $this->showEditModal = false;

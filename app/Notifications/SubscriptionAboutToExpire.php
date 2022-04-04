@@ -44,8 +44,8 @@ class SubscriptionAboutToExpire extends Notification
         return (new MailMessage)
                     ->line("You have a Subscription about to Expire:")
                     ->line($this->details->name . " days Left to expire: " . $this->days)
-                    // ->action('Notification Action', url('/'))
                     ->line('Please Review subscription');
+                    // ->action('Notification Action', url('/'))
     }
 
     /**

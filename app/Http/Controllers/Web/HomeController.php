@@ -321,7 +321,7 @@ class HomeController extends Controller
                 $news = News::orderBy('id', 'DESC')->take(2)->get();
 
 
-                return view('subscriptions.customer', compact('subscriptions', 'customer','abouttoexpire','news','orders'));
+                return view('customer.home', compact('subscriptions', 'customer','abouttoexpire','news','orders'));
 
             break;
 

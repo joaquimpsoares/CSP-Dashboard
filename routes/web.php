@@ -205,7 +205,7 @@ Route::group(['middleware' => 'auth'], function ()
             Route::get('DatabaseNotificationsMarkasRead', function () { auth()->user()->unreadNotifications->markAsRead(); return redirect()->back(); })->name('databasenotifications.markasread');
             //PriceList Routes
             Route::resource('/priceList', 'PriceListController');
-            Route::resource('/price', 'PriceController');
+            // Route::resource('/price', 'PriceController');
             Route::get('/order/placeOrder', 'OrderController@placeOrder')->name('order.place_order');
             Route::get('/order/placeOrderForVerification', 'OrderController@saveOrderForVerification')->name('order.save_order_for_verification');
             Route::get('/order/verifyOrder', 'OrderController@verifyOrder')->name('order.verify');

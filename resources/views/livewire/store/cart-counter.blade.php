@@ -1,5 +1,6 @@
 
 <div>
+
     @if (isset($cart))
     <div class="flex mt-10 mb-3">
         <h3 class="w-2/5 text-xs font-semibold text-gray-600 uppercase">Product Details</h3>
@@ -44,20 +45,14 @@
         </div>
 
         @else
-        {{-- <div class="flex justify-center w-1/5 ml-3">
-            <select name="terms[{{$key}}][billingCycle" class="form-control" wire:change.defer="selectBilling($event.target.value, '{{$item->id}}')" name="terms" class="block w-full p-2 text-sm text-gray-600 form-control"  required>
-                @foreach ($billing_cycle as $key => $billing)
-                <option  value="{{ $billing['billingCycle'] }}">{{ $billing['billingCycle']}}</option>
-                @endforeach
-            </select>
-        </div> --}}
         <div class="flex justify-center w-1/5">
-            <select class="block p-2 text-sm text-gray-600 form-control" wire:change="changeBilling($event.target.value, '{{$item->id}}')" >
-                <option value="" selected="selected" hidden>{{ ucfirst($item->billing_cycle) }}</option>
+            <select wire:model="billing_cycle" class="block p-2 text-sm text-gray-600 form-control @error('billing_cycle') is-invalid @enderror" sf-validate="required" wire:change="changeBilling($event.target.value, '{{$item->id}}')" >
+                <option value="" selected="selected" hidden>Select one...</option>
                 @foreach($item->cycle as $cycle)
                 <option  value="{{$cycle}}" >{{ucfirst($cycle) }}</option>
                 @endforeach
             </select>
+            @error('billing_cycle')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
         </div>
         @endif
         <span class="w-1/5 text-sm font-semibold text-center">{{'$'.number_format($item->price, 2)}}</span>
@@ -79,8 +74,8 @@
     <h1 class="pb-8 text-2xl font-semibold border-b"></h1>
     <div >
         <label class="inline-block mb-3 text-sm font-medium uppercase">Choose customer</label>
-        <select class="block w-full p-2 text-sm text-gray-600 form-control" wire:change="setCustomer($event.target.value, '{{$item->id}}')" >
-            <option value="" selected disabled hidden>Choose here</option>
+        <select wire:model="company_name" class="block w-full p-2 text-sm text-gray-600 form-control" wire:change="setCustomer($event.target.value, '{{$item->id}}')" >
+            <option value="" selected hidden>Choose here</option>
             @foreach($customers as $customer)
             <option value="{{ $customer->id }}">{{$customer->company_name}}</option>
             @endforeach

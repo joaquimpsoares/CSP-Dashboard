@@ -61,6 +61,7 @@ class ImportPerpetuaMicrosoftJob implements ShouldQueue
                         'uri'                       => $importedProduct->uri,
                         'supported_billing_cycles'  => $importedProduct->supportedBillingCycles,
                     ], [
+                        'productType'               => "Perpetual Software",
                         'is_perpetual'              => true,
                         'billing'                   => "software",
                         'category'                  => "Perpetual Software",

@@ -63,8 +63,6 @@
                                 @endif
                             </div>
                         </div>
-
-
                         <section>
                             <form action="#" method="POST" wire:submit.prevent="save">
                                 <div class="px-4 py-6 bg-white sm:p-6">
@@ -115,11 +113,15 @@
                                                 @error('country_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                             </div>
                                         </div>
-
                                         <div class="col-span-4 sm:col-span-2">
                                             <x-label for="postal_code">{{ucwords(trans_choice('messages.postal_code', 1))}}</x-label>
                                             <x-input wire:model="postal_code" type="text" name="postal_code"   class="@error('postal_code') is-invalid @enderror" id='postal_code' ></x-input>
                                             @error('postal_code')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div>
+                                        <div class="col-span-4 sm:col-span-2">
+                                            <x-label for="mpnid">{{ucwords(trans_choice('messages.mpnid', 1))}}</x-label>
+                                            <x-input wire:model="mpnid" type="text" name="mpnid"   class="@error('mpnid') is-invalid @enderror" id='mpnid' ></x-input>
+                                                @error('mpnid')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                         </div>
                                     </div>
                                     <div class="flex flex-col py-5 mt-3 mb-3 border-t border-gray-200">

@@ -72,7 +72,6 @@ class AzureBilledCommand extends Command
                     if($resources){
                         foreach ($resources as $key => $value) {
                             foreach ($value as $key => $value) {
-                                // dd($value);
                                 $tenant = MicrosoftTenantInfo::where('tenant_id', $value['customerId'])->first();
                                 if(isset($tenant->customer)){
                                     $tenant->customer->subscriptions->where('billing_type', 'usage')->each(function ($subscription) use($value,$Count) {

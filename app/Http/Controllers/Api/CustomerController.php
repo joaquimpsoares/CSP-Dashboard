@@ -5,58 +5,73 @@ namespace App\Http\Controllers\Api;
 use App\User;
 use App\Country;
 use App\Customer;
-use App\Reseller;
+use App\Subscription;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
+use App\Http\Traits\ApiResponser;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Api\ApiController;
 
-
 class CustomerController extends ApiController
 {
-    use UserTrait;
+    use UserTrait, ApiResponser;
 
-
-
-    public function index()
-    {
-        $customers = Customer::get();
-
-    return $customers;
-
-
+    public function index() {
+        if (Customer::get() == null) {
+            return $this->error('Customer not found', 401);
+        }
+        return $this->success([
+            'message' => 'All customers',
+            'total' => Customer::get()->count(),
+            'customers' => Customer::all(),
+        ]);
     }
 
-    public function show($id)
-    {
-        return Customer::find($id)->format();
+    public function show(Customer $customer) {
+        if ($customer == null) {
+            return $this->error('Customer not found', 401);
+        }
+
+        return $this->success([
+            'message' => 'Customer',
+            'total' => Customer::where('id',$customer->id)->count(),
+            'customer' => $customer,
+        ]);
+    }
+    
+    public function customerSubscription(Customer $customer) {
+        if (Customer::find($customer) == null) {
+            return $this->error('Customer not found', 401);
+        }
+
+        return $this->success([
+            'message' => 'Customer Subscriptions',
+            'total' => Customer::find($customer->id)->first()->subscriptions->count(),
+            'subscriptions' => $customer->subscriptions,
+        ]);
     }
 
-    public function store(Request $request)
-    {
+    public function customerSubscriptionID(Customer $customer, $subscriptionid) {
+        if (Customer::find($customer->id) == null) {
+            return $this->error('Customer not found', 401);
+        }elseif(Customer::find($customer->id)->subscriptions->find($subscriptionid) == null){
+            return $this->error('Subscription not found', 401);
+        }
+        return $this->success([
+            'message' => 'Customer Subscriptions',
+            'total' => Customer::find($customer->id)->subscriptions->where('id', $subscriptionid)->count(),
+            'subscription' => $customer->subscriptions->where('id',$subscriptionid),
+        ]);
+        return ;
+    }
 
-        // return $request->only([
-        //     'email', 'password', 'username', 'first_name', 'last_name',
-        //     'phone', 'address', 'country_id', 'birthday', 'role_id'
-        // ]);
-        // return $request->all();
-            // return $request->all();
-            // return $country_id;
-            // $request->address_1,
-            // $request->address_2,
-            // $country_id,
-            // $request->city,
-            // $request->state,
-            // $request->nif,
-            // $request->postal_code);
-            $user = $this->getUser();
+    
+    public function store(Request $request){
 
-            $country_id = Country::where('name', $request->country)->first();
+    $user = $this->getUser();
 
-            // return $country_id->id;
-
+    $country_id = Country::where('name', $request->country)->first();
     try {
         DB::beginTransaction();
         $newCustomer =  Customer::create([
@@ -72,7 +87,7 @@ class CustomerController extends ApiController
             ]);
 
             $newCustomer->save();
-            $newCustomer->resellers()->attach($request->reseller_id);
+            $newCustomer->resellers()->attach($user->reseller->id);
 
 
         $user = User::create ([
@@ -91,7 +106,6 @@ class CustomerController extends ApiController
             ]);
 
             $user->assignRole(config('app.customer'));
-
             $user->save();
 
             DB::commit();

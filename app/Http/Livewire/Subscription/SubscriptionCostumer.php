@@ -2,9 +2,11 @@
 
 namespace App\Http\Livewire\Subscription;
 
+use App\News;
 use App\Subscription;
 use Livewire\Component;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use App\Notifications\SubscriptionUpdate;
 use Illuminate\Support\Facades\Notification;
 
@@ -36,6 +38,8 @@ class SubscriptionCostumer extends Component
             'editing.status_id'         => ['required', 'exists:statuses,id'],
         ];
     }
+
+
 
     public function updated($propertyName)
     {
@@ -100,6 +104,7 @@ class SubscriptionCostumer extends Component
     {
         $query = Subscription::all();
         $subscriptions = $query;
-        return view('livewire.subscription.subscription-costumer', compact('subscriptions'));
+        $news = News::orderBy('id', 'DESC')->take(2)->get();
+        return view('livewire.subscription.subscription-costumer', compact('subscriptions','news'));
     }
 }

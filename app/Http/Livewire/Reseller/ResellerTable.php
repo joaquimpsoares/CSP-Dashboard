@@ -6,25 +6,20 @@ use App\Role;
 use App\User;
 use App\Country;
 use App\Reseller;
-use App\Countryrules;
 use App\Models\Status;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Http\Traits\UserTrait;
 use App\Exports\ResellersExport;
-use App\Rules\checkPostalCodeRule;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Livewire\DataTable\WithSorting;
 use App\Http\Livewire\DataTable\WithCachedRows;
 use App\Http\Livewire\DataTable\WithBulkActions;
 use App\Http\Livewire\DataTable\WithPerPagePagination;
-use Tagydes\MicrosoftConnection\Facades\Customer as TagydesCustomer;
-
 
 class ResellerTable extends Component
 {
@@ -100,8 +95,6 @@ class ResellerTable extends Component
         $this->editing = $reseller;
     }
 
-
-
     public function create()
     {
         if ($this->editing->getKey()) $this->editing = $this->makeBlankTransaction();
@@ -138,16 +131,17 @@ class ResellerTable extends Component
             ]);
 
             $user = User::create ([
-                'email'             => $this->email,
-                'name'              => $this->creatingUser->name,
-                'last_name'         => $this->creatingUser->last_name,
-                'address'           => $this->creatingUser->address,
-                'phone'             => $this->creatingUser->phone,
-                'country_id'        => $this->editing->country_id,
-                'password'          => Hash::make($this->password),
-                'user_level_id'     => 4, //reseller role id = 4
-                'status_id'         => $this->creatingUser->status_id,
-                'reseller_id'       => $newReseller->id,
+                'email'                     => $this->email,
+                'name'                      => $this->creatingUser->name,
+                'last_name'                 => $this->creatingUser->last_name,
+                'address'                   => $this->creatingUser->address,
+                'phone'                     => $this->creatingUser->phone,
+                'country_id'                => $this->editing->country_id,
+                'notifications_preferences' => 'database',
+                'password'                  => Hash::make($this->password),
+                'user_level_id'             => 4, //reseller role id = 4
+                'status_id'                 => $this->creatingUser->status_id,
+                'reseller_id'               => $newReseller->id,
                 // 'notify'            => $this->sendInvitation ?? false,
             ]);
 
@@ -192,10 +186,7 @@ class ResellerTable extends Component
         });
     }
 
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
+    public function updatingSearch(){$this->resetPage();}
 
     public function exportSelected(){return Excel::download(new ResellersExport, 'resellers.xlsx');}
 

@@ -77,11 +77,12 @@ class ImportTransactionsnce extends Component
                         'term_duration' => $tt['term_duration'],
                         'price'         => $tt['price'],
                         'msrp'          => $tt['msrp'],
+                        'currency'      => $tt['currency'],
                         'product_vendor'=> $tt['product_vendor'],
                         'product_id'    => $tt['product_id'],
 
                     ]);
-                Log::info('Budget updated for: '. $price['product_sku'].' name:'. $price['name']);
+                Log::info('Budget updated for: '. $price['product_sku'].' name: '. $price['name']);
 
                 } catch (\Throwable $th) {
                 }

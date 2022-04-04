@@ -4,13 +4,15 @@ namespace App;
 
 use App\Status;
 use Illuminate\Support\Str;
+use Spatie\Searchable\Searchable;
 use App\Http\Traits\ActivityTrait;
 use Webpatser\Countries\Countries;
+use Spatie\Searchable\SearchResult;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
-class Reseller extends Model
+class Reseller extends Model implements Searchable
 {
     use ActivityTrait;
 
@@ -36,6 +38,18 @@ class Reseller extends Model
             'mainUser' => $this->users()->first(),
             'users' => $this->users(),
         ];
+    }
+
+    public $searchableType = 'Reseller';
+
+    public function getSearchResult(): SearchResult
+    {
+       $url = $this->path();
+        return new \Spatie\Searchable\SearchResult(
+           $this,
+           $this->company_name,
+           $url
+        );
     }
 
     public function country()

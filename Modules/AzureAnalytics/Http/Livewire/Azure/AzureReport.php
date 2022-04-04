@@ -101,13 +101,11 @@ class AzureReport extends Component
         }else{
             $dates = (['0' => '1', '1' => '2']);
         }
-        // dd($dates[0]."T00:00:00Z");
         $query = AzureUsageReport::query();
         $query->where('subscription_id', $this->subscription->id)
         ->whereBetween('usageStartTime',[$dates[0]."T00:00:00Z", $dates[1]."T00:00:00Z"])
         ->whereBetween('usageEndTime',[$dates[0]."T00:00:00Z", $dates[1]."T00:00:00Z"])
         ->Where('resource_name', 'like', "%{$this->search}%");
-        // dd($query);
         // ->where('name', "like", "%{$this->search}%")
         // ->orWhere('resource_location', 'like', "%{$this->search}%")
         // ->orWhere('resource_group', 'like', "%{$this->search}%")

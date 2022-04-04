@@ -9,7 +9,6 @@
 @endsection
 
 @section('content')
-
 @if($cart)
 <section class="product_description_area">
 	<div class="container">

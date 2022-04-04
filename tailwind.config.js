@@ -5,6 +5,7 @@ module.exports = {
         './resources/**/*.blade.php',
         './resources/**/*.js',
         './resources/**/*.vue',
+        './src/**/*.{html,js}', './node_modules/tw-elements/dist/js/**/*.js',
     ],
     presets: [],
     theme: {
@@ -824,7 +825,7 @@ module.exports = {
     plugins: [
         require('@tailwindcss/forms'),
         require('@tailwindcss/typography'),
-        require('@tailwindcss/aspect-ratio')
-
+        require('@tailwindcss/aspect-ratio'),
+        require('tw-elements/dist/plugin'),
     ],
 }

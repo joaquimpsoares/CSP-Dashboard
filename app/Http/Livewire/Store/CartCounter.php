@@ -14,11 +14,13 @@ class CartCounter extends Component
 
     private $cart;
 
+
     public $qty;
     public $cycle;
     public $terms;
     public $monthly;
     public $annualy;
+    public $company_name;
     public $selected = [];
     public $billing_cycle;
     public $billing = [];
@@ -28,7 +30,7 @@ class CartCounter extends Component
     public $city_id = '';
 
     protected $listeners = ['updateCart' => 'render'];
-    protected $listener = ['updateCartCount' => 'open'];
+    // protected $listener = ['updateCartCount' => 'open'];
 
     public $cartOpen = false;
     public $isOpen = false;
@@ -39,11 +41,13 @@ class CartCounter extends Component
         $this->isOpen = true;
     }
 
-    protected $rules =
+    // protected $rules =
+    // [
+    //     'company_name'=> ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
+    //     'billing_cycle'=> ['required', 'string'],
+    // ];
 
-    [
-        'company_name'          => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-    ];
+    // public function updated($propertyName){$this->validateOnly($propertyName);}
 
     public static  function getUserCart($id = null, $token = null)
     {
@@ -59,7 +63,6 @@ class CartCounter extends Component
         }
         return $cart;
     }
-
 
     public function removeItem($item_id)
     {
@@ -118,28 +121,32 @@ class CartCounter extends Component
 
         $cart->update(['customer_id' => $customer->id]);
 
-        $limits = $this->checkLimits($customer,$productId);
+        // $limits = $this->checkLimits($customer,$productId);
 
-        if($limits == true){
-            $this->removeItem($cart->id);
-        }
+        // if($limits == true){
+        //     $this->removeItem($cart->id);
+        // }
 
         $this->emit('updateCart');
     }
 
 
-    public function checkLimits($customer, $product){
+    public function checkLimits($customer, $product)
+    {
         if($product->IsSubscribed()){
             $limit = $customer->subscriptions->where('product_id', $product->sku)->count();
-            if($limit >=  $product->limit){
+            if($limit !=  null){
+              if($limit >=  $product->limit){
                 $this->notify('','you have reached the limits for: '. $product->name, 'error');
                 return true;
             }
         }
+        }
         return false;
     }
 
-    public function mount(){
+    public function mount()
+    {
         $user = Auth::user();
         $cart = $this->getUserCart();
         if($cart){
@@ -152,18 +159,13 @@ class CartCounter extends Component
 
     public function changeBilling($value, $id)
     {
-
         $cart = $this->getUserCart();
-
         $product = $cart->products->first(function ($value) use ($id) {
             return $value->pivot->id == $id;
         });
-
         $product->pivot->billing_cycle = $value;
         $product->pivot->save();
-
         $this->billing = $value;
-
         $this->emit('updateCart');
     }
 
@@ -201,6 +203,15 @@ class CartCounter extends Component
         if(isset($cart)){
             $this->totalCartWithoutTax = $cart->sum('total');
         }
-        return view('livewire.store.cart-counter', compact('cart'));
+        if ($cart !=null){
+            $cartAmount = $cart->count();
+        }else{
+            $cartAmount = '0';
+        }
+
+        return view('livewire.store.cart-counter', [
+            'cartAmount' => $cartAmount,
+            'cart' => $cart
+        ]);
     }
 }
