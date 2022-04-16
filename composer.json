@@ -21,7 +21,6 @@
         "hwi/oauth-bundle": "^1.1",
         "itsgoingd/clockwork": "^5.1",
         "jamesmills/laravel-timezone": "^1.9",
-        "kordy/ticketit": "0.*",
         "lab404/laravel-impersonate": "^1.6",
         "laravel-notification-channels/microsoft-teams": "^1.1",
         "laravel/framework": "^8.0",

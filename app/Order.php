@@ -2,14 +2,20 @@
 
 namespace App;
 
+use App\Jobs\CreateCustomerMicrosoft;
+use App\Jobs\PlaceOrderMicrosoft;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class Order extends Model
 {
+    protected $dates = ['verified_at'];
+
     protected $casts = [
         'errors' => 'collection',
     ];
@@ -48,35 +54,52 @@ class Order extends Model
         $order->save();
 
         return $order;
+    }
 
+    public function sendToMicrosoft()
+    {
+        $tt = MicrosoftTenantInfo::where('tenant_domain', 'like', $this->domain . '%')->first();
+
+        if ($tt == null) {
+            Bus::chain([
+                new CreateCustomerMicrosoft($this),
+                new PlaceOrderMicrosoft($this)
+            ])->catch(function (Throwable $e) {
+                $this->details = ('Error placing order to Microsoft: ' . $e->getMessage());
+                $this->save();
+            })->onQueue('PlaceordertoMS')->dispatch();
+        } else {
+            PlaceOrderMicrosoft::dispatch($this)->OnQueue('PlaceordertoMS');
+            Log::info('Data to Place order: ' . $this);
+        }
     }
 
     public function markAsOrderPlaced()
     {
         $this->fill([
             'order_status_id' => '1',
-            ])->save();
+        ])->save();
     }
 
     public function markAsRunning()
     {
         $this->fill([
             'order_status_id' => '2',
-            ])->save();
+        ])->save();
     }
 
     public function markAsFailed()
     {
         $this->fill([
             'order_status_id' => '3',
-            ])->save();
+        ])->save();
     }
 
     public function markAsCompleted()
     {
         $this->fill([
             'order_status_id' => '4',
-            ])->save();
+        ])->save();
     }
 
     public function orderproduct()
