@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Customer;
 use App\Order;
 use Throwable;
 use App\MicrosoftTenantInfo;
@@ -16,7 +17,10 @@ use App\Jobs\CreateCustomerMicrosoft;
 use App\Jobs\ImportProductsMicrosoftJob;
 use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
-
+use App\User;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Facades\Auth;
+use App\Notifications\OrderPendingToConfirm;
 
 class OrderController extends Controller
 {
@@ -33,10 +37,6 @@ class OrderController extends Controller
         $this->orderRepository = $orderRepository;
     }
 
-    public function show() {
-
-    }
-
     public function index()
     {
         return view('order.index');
@@ -46,41 +46,62 @@ class OrderController extends Controller
     {
         $validate = $request->validate([
             'token' => 'required|uuid',
-            ]);
+        ]);
 
-            $order = $this->orderRepository->newFromCartToken($validate['token']);
+        $order = $this->orderRepository->newFromCartToken($validate['token']);
 
-            $tt = MicrosoftTenantInfo::where('tenant_domain', 'like', $order->domain.'%')->first();
+        $order->sendToMicrosoft();
 
-            if($tt == null){
-                Bus::chain([
-                    new CreateCustomerMicrosoft($order),
-                    new PlaceOrderMicrosoft($order)])
-                    ->catch(function (Throwable $e) use($order){
-                        $order->details = ('Error placing order to Microsoft: '.$e->getMessage());
-                        $order->save();
-                    })->onQueue('PlaceordertoMS')
-                ->dispatch();
-            }
-            else{
+        return view('store.index')->with(['alert' => 'success', 'message' => trans('messages.order_placed_susscessfully')]);
+    }
 
-                PlaceOrderMicrosoft::dispatch($order)->OnQueue('PlaceordertoMS');
-                Log::info('Data to Place order: '.$order);
-            }
+    public function syncproducts(Request $request)
+    {
+        $order = $this->orderRepository->ImportProductsMicrosoftOrder();
 
-            return view('store.index')->with(['alert' => 'success', 'message' => trans('messages.order_placed_susscessfully')]);
-        }
-
-        public function syncproducts(Request $request)
-        {
-
-            $order = $this->orderRepository->ImportProductsMicrosoftOrder();
-
-            ImportProductsMicrosoftJob::dispatch($request, $order)->onQueue('SyncProducts')
+        ImportProductsMicrosoftJob::dispatch($request, $order)->onQueue('SyncProducts')
             ->delay(now()->addSeconds(10));
 
-            return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
+        return view('order')->with(['alert' => 'success', 'message' => trans('messages.Provider Updated successfully')]);
+    }
+
+    public function saveOrderForVerification(Request $request){
+        $validate = $request->validate([
+            'token' => 'required|uuid',
+        ]);
+
+        $order = $this->orderRepository->newFromCartToken($validate['token']);
+
+        $order->update(['asked_verification_by' => Auth::user()->id]);
+
+        if(Auth::user()->hasRole('reseller')){
+            $verifier = $order->customer->user;
+
+            $verifier->givePermissionTo('verify order '.$order->id);
+
+            $verifier->notify(new OrderPendingToConfirm);
         }
 
+        if(Auth::user()->hasRole('customer')){
+            $verifier = Auth::user()->customer->resellers->first()->user;
 
+            $verifier->givePermissionTo('verify order '.$order->id);
+
+            $verifier->notify(new OrderPendingToConfirm);
+        }
+
+        return view('store.index')->with(['alert' => 'success', 'message' => trans('messages.order_placed_susscessfully')]);
     }
+
+    public function verifyOrder(Request $request){
+        $order = Order::find($request->order_id);
+
+        throw_unless(Auth::user()->can('verify order '.$order->id), AuthorizationException::class);
+
+        $order->update(['verified_at' => now()]);
+
+        $order->sendToMicrosoft();
+
+        return view('store.index')->with(['alert' => 'success', 'message' => trans('messages.order_placed_susscessfully')]);
+    }
+}

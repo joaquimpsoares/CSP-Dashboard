@@ -192,7 +192,6 @@ return [
         Webpatser\Countries\CountriesServiceProvider::class,
         Lab404\Impersonate\ImpersonateServiceProvider::class,
         \SocialiteProviders\Manager\ServiceProvider::class,
-        Kordy\Ticketit\TicketitServiceProvider::class,
         NotificationChannels\MicrosoftTeams\MicrosoftTeamsServiceProvider::class,
     ],
 
