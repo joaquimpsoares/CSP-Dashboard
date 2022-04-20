@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Subscription;
 use Livewire\Component;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -41,9 +42,15 @@ class AppServiceProvider extends ServiceProvider
         Builder::macro('toCsv', function () {
             $results = $this->get();
             if ($results->count() < 1) return;
-            $titles = implode(',', array_keys((array) $results->first()->getAttributes()));
+            $titles = implode(',', array_keys((array) $results->first()->only(
+                ['id', 'name','customer_name','reseller_name','amount','expiration_data','product_id','billing_period','term','msrpid','product_type','category']
+            )));
             $values = $results->map(function ($result) {
-                return implode(',', collect($result->getAttributes())->map(function ($thing) {
+                $result['customer_name'] = $result->customer->company_name;
+                $result['reseller_name'] = $result->customer->resellers->first()->company_name;
+                $result['product_type'] = $result->product->productType ?? null;
+                $result['category'] = $result->product->category ?? null;
+                return implode(',', collect($result->only(['id', 'name','customer_name','reseller_name','amount','expiration_data','product_id','billing_period','term','msrpid','product_type','category']))->map(function ($thing) {
                     return '"'.$thing.'"';
                 })->toArray());
             });

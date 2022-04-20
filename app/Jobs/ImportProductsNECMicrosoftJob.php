@@ -57,10 +57,9 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
                         }else{
                             $sku =$importedProduct->sku->productId;
                         }
-
                         Log::info('catalogItemId: '.$importedProduct->catalogItemId);
                         Log::info('Product description: '.$importedProduct->sku->description);
-
+                        dd($importedProduct->sku->dynamicAttributes->billingType);
 
                         $product = Product::updateOrCreate([
                             'name'                      => $importedProduct->sku->title,
@@ -76,9 +75,7 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
                             'is_trial'                  => $importedProduct->sku->isTrial,
                             'is_addon'                  => $importedProduct->sku->dynamicAttributes->isAddon,
                             'has_addons'                => $importedProduct->sku->dynamicAttributes->hasAddOns,
-
                             'limit'                     => $importedProduct->sku->dynamicAttributes->limit,
-
                         ], [
                             'is_perpetual'              => false,
                             'is_available_for_purchase' => true,
@@ -95,7 +92,6 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
                             'resellee_qualifications'   => $importedProduct->sku->dynamicAttributes->reselleeQualifications,
                             'reseller_qualifications'   => $importedProduct->sku->dynamicAttributes->resellerQualifications,
                         ]);
-
                         Log::info('Imported: '.$product->name.' transactions!');
                     });
                 });

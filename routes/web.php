@@ -118,7 +118,7 @@ Route::group(['middleware' => 'auth'], function ()
             Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
             Route::get('jobs/pending', 'JobsController@pending')->name('jobs.pending');
             Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
-            Route::get('/reseller', 'ResellerController@index')->middleware('permission:' . config('app.reseller_index'))->name('reseller.index');
+
             Route::get('/customer/create', 'CustomerController@create')->middleware('permission:' . config('app.customer_create'))->name('customer.create');
             Route::post('/customer', 'CustomerController@store')->middleware('permission:' . config('app.customer_create'))->name('customer.store');
             Route::get('/customer', 'CustomerController@index')->middleware('permission:' . config('app.customer_index'))->name('customer.index');
@@ -129,29 +129,22 @@ Route::group(['middleware' => 'auth'], function ()
             Route::post('pricelist/import', 'PriceListController@import');
             Route::post('pricelist/storePriceList', 'PriceListController@storePriceList')->name('priceList.storePriceList');
 
-            Route::group(['middleware' => ['check_reseller']], function ()
-            {
-                Route::get('/reseller/{reseller}-{slug}', 'ResellerController@show')->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
-                Route::patch('/reseller/update/{reseller}', 'ResellerController@update')->name('reseller.update');
-                Route::get('reseller/{reseller}-{slug}/edit', 'ResellerController@edit')->middleware('permission:' . config('app.reseller_edit'))->name('reseller.edit');
-                Route::get('reseller/{reseller}-{slug}/customers', 'ResellerController@getCustomersFromReseller')->middleware('permission:' . config('app.customer_index'))->name('reseller.customers');
 
-                /*
-                Inicio Confirmar nivel de acesso reseller->provider
-                */
-                Route::get('reseller/{reseller}/priceList', 'ResellerController@getPriceList')->name('reseller.price_lists');
-                Route::get('/jobs', 'JobsController@index')->name('jobs');
-                Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
-                Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
-                /*
-                Fim Confirmar nivel de acesso reseller->provider
-                */
-            });
+            Route::get('/reseller/{reseller}-{slug}', 'ResellerController@show')->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
+            Route::get('/reseller/{reseller}-{slug}', [\App\Http\Livewire\Reseller\ShowReseller ::class, '__invoke'])->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
+            Route::get('/reseller', [\App\Http\Livewire\Reseller\ResellerTable::class, '__invoke'])->middleware('permission:' . config('app.reseller_index'))->name('reseller.index');
 
-            Route::group(['middleware' => ['check_customer']], function ()
-            {
+            /*
+            Inicio Confirmar nivel de acesso reseller->provider
+            */
+            Route::get('reseller/{reseller}/priceList', 'ResellerController@getPriceList')->name('reseller.price_lists');
+            Route::get('/jobs', 'JobsController@index')->name('jobs');
+            Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
+            Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
+            /*
+            Fim Confirmar nivel de acesso reseller->provider
+            */
 
-            });
 
         });
 
@@ -181,11 +174,10 @@ Route::group(['middleware' => 'auth'], function ()
             Route::group(['middleware' => ['check_customer']], function ()
             {
                 Route::get('/customer/{customer}-{slug}', 'CustomerController@show') ->middleware('permission:' . config('app.customer_show'), 'check_customer') ->name('customer.show');
-
-                Route::get('/customer/{customer}-{slug}/edit', 'CustomerController@edit')->middleware('permission:' . config('app.customer_show'), 'check_customer')->name('customer.edit');
+                // Route::get('/customer/{customer}-{slug}/edit', 'CustomerController@edit')->middleware('permission:' . config('app.customer_show'), 'check_customer')->name('customer.edit');
 
                 //need to check permissions has a reseller to be able tp edit.... customer_update
-                Route::post('customer/update/{customer}', 'CustomerController@update')->middleware('permission:' . config('app.customer_show'))->name('customer.update');
+                // Route::post('customer/update/{customer}', 'CustomerController@update')->middleware('permission:' . config('app.customer_show'))->name('customer.update');
 
                 /*
                 Inicio Confirmar nivel de acesso reseller->provider

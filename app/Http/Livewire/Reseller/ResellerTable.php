@@ -89,7 +89,6 @@ class ResellerTable extends Component
     {
         $this->showCreateUser = false;
         $this->showEditModal = true;
-        $this->useCachedRows();
 
         if ($this->editing->isNot($reseller)) $this->editing = $reseller;
         $this->editing = $reseller;
@@ -175,7 +174,7 @@ class ResellerTable extends Component
             });
         })->
         with(['country', 'customers', 'status']);
-
+        $this->useCachedRows();
         return $this->applySorting($resellers);
     }
 
@@ -201,6 +200,6 @@ class ResellerTable extends Component
             'countries' => $countries,
             'statuses'  => $statuses,
             'roles'     => $roles
-        ]);
+        ])->extends('layouts.master');
     }
 }

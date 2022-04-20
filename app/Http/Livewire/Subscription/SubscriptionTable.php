@@ -220,7 +220,7 @@ class SubscriptionTable extends Component
     public function exportSelected(){
         return response()->streamDownload(function () {
         echo $this->selectedRowsQuery->toCsv();
-        }, 'transactions.csv');
+        }, 'Subscriptions.csv');
     }
 
     public function deleteSelected(){

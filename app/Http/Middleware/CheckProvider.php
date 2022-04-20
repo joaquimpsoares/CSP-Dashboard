@@ -18,7 +18,7 @@ class CheckProvider
      */
     public function handle($request, Closure $next)
     {
-        
+
         $user = $this->getUser();
         $userLevel = $this->getUserLevel();
         $provider = $request->route('provider');
@@ -28,16 +28,16 @@ class CheckProvider
             switch ($userLevel) {
                 case config('app.admin'):
                     break;
-                
+
                 case config('app.provider'):
 
                     $check = $provider->id === $user->provider->id;
-                    
+
                     if (!$check)
                         return abort(403, __('errors.unauthorized_action'));
 
                     break;
-                
+
                 default:
                     return abort(403, __('errors.unauthorized_action'));
                     break;

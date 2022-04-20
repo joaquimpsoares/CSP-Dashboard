@@ -10,6 +10,7 @@ use App\Models\Status;
 use Livewire\Component;
 use App\Rules\checkvatIdRule;
 use App\Rules\checkPostalCodeRule;
+use App\Status as AppStatus;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use GuzzleHttp\Exception\ClientException;
@@ -20,10 +21,10 @@ class ShowReseller extends Component
     public $reseller;
     public $country;
     public $countries;
+    public $statuses;
     public $email;
     public $password;
     public $password_confirmation;
-    public $statuses;
     public Reseller $editing;
     public User $creatingUser;
     public $showEditModal = false;
@@ -154,6 +155,10 @@ class ShowReseller extends Component
 
     public function mount()
     {
+        $this->countries = Country::get();
+        $this->statuses = Status::get();
+        $this->reseller = Reseller::where('id', $this->reseller)->first();
+        // dd($this->reseller);
         $this->editing      = $this->makeBlankTransaction();
         $this->creatingUser = $this->makeBlankTransactionUser();
     }
@@ -172,10 +177,8 @@ class ShowReseller extends Component
 
     }
 
-    public function render(Reseller $reseller)
+    public function render(Reseller $reseller, Status $statuses, Country $countries)
     {
-        $countries = Country::get();
-        $statuses = Status::get();
-        return view('livewire.reseller.show-reseller', compact('statuses','countries', 'reseller'));
+        return view('livewire.reseller.show-reseller', compact('statuses','countries', 'reseller'))->extends('layouts.master');
     }
 }

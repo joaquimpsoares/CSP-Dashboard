@@ -1,4 +1,4 @@
-    @props(['color' => 'gray'] )
+@props(['color' => 'gray'] )
 <button
 {{
     $attributes->merge

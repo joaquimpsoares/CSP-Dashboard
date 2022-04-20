@@ -102,6 +102,7 @@ class ProductTable extends Component
     public function importproducts(){
 
         if($this->license == true){
+
             Log::info('Started importing NCE');
 
             $id = Auth::user()->provider->id;
@@ -111,8 +112,6 @@ class ProductTable extends Component
             $instance = Instance::where('provider_id', $id)->first();
 
             $product->importNCELicenses($instance, $country);
-            Log::debug('Subscription id: '.$product->name .' has renewed');
-
         }
 
         if($this->perpetual == true){
