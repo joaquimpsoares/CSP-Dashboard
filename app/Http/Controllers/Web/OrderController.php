@@ -21,6 +21,7 @@ use App\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\OrderPendingToConfirm;
+use Spatie\Permission\Models\Permission;
 
 class OrderController extends Controller
 {
@@ -77,6 +78,7 @@ class OrderController extends Controller
         if(Auth::user()->hasRole('reseller')){
             $verifier = $order->customer->user;
 
+            Permission::create(['name' => 'verify order '.$order->id]);
             $verifier->givePermissionTo('verify order '.$order->id);
 
             $verifier->notify(new OrderPendingToConfirm);
@@ -85,6 +87,7 @@ class OrderController extends Controller
         if(Auth::user()->hasRole('customer')){
             $verifier = Auth::user()->customer->resellers->first()->user;
 
+            Permission::create(['name' => 'verify order '.$order->id]);
             $verifier->givePermissionTo('verify order '.$order->id);
 
             $verifier->notify(new OrderPendingToConfirm);
