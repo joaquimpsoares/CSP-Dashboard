@@ -41,11 +41,11 @@ class CartCounter extends Component
         $this->isOpen = true;
     }
 
-    // protected $rules =
-    // [
-    //     'company_name'=> ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-    //     'billing_cycle'=> ['required', 'string'],
-    // ];
+    protected $rules =
+    [
+        'company_name'=> ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
+        'billing_cycle'=> ['required', 'string'],
+    ];
 
     // public function updated($propertyName){$this->validateOnly($propertyName);}
 
@@ -145,8 +145,8 @@ class CartCounter extends Component
         return false;
     }
 
-    public function mount()
-    {
+    public function mount(){
+
         $user = Auth::user();
         $cart = $this->getUserCart();
         if($cart){
@@ -157,8 +157,8 @@ class CartCounter extends Component
         }
     }
 
-    public function changeBilling($value, $id)
-    {
+    public function changeBilling($value, $id){
+
         $cart = $this->getUserCart();
         $product = $cart->products->first(function ($value) use ($id) {
             return $value->pivot->id == $id;
@@ -170,8 +170,7 @@ class CartCounter extends Component
     }
 
 
-    public function render()
-    {
+    public function render(){
         $user = Auth::user();
         $cart = $this->getUserCart();
         if (isset($cart)){

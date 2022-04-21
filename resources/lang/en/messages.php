@@ -377,4 +377,6 @@ return [
     'error' => 'error'|'errors',
     'start_new_term' => 'Start New Term In New Commerce Experience',
     'qualification' => 'qualification|qualifications',
+    'select_one' => 'select one',
+    'choose_customer' => 'choose customer'
 ];

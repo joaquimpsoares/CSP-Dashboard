@@ -18,11 +18,11 @@
 <div class="card">
     <div class="card-body">
 
-        <div class="row mb-3 pb-3 border-bottom-light">
+        <div class="pb-3 mb-3 row border-bottom-light">
             <div class="col-lg-12">
                 <div class="float-right">
                     <a href="{{ route('permissions.create') }}" class="btn btn-primary btn-rounded">
-                        <i class="fas fa-plus mr-2"></i>
+                        <i class="mr-2 fas fa-plus"></i>
                         @lang('Add Permission')
                     </a>
                 </div>

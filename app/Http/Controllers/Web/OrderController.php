@@ -2,22 +2,14 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Customer;
 use App\Order;
-use Throwable;
-use App\MicrosoftTenantInfo;
 use Illuminate\Http\Request;
 use App\Http\Traits\UserTrait;
-use App\Jobs\PlaceOrderMicrosoft;
 use App\Http\Traits\ActivityTrait;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Jobs\CreateCustomerMicrosoft;
 use App\Jobs\ImportProductsMicrosoftJob;
 use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
-use App\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\OrderPendingToConfirm;
@@ -75,16 +67,18 @@ class OrderController extends Controller
 
         $order->update(['asked_verification_by' => Auth::user()->id]);
 
-        if(Auth::user()->hasRole('reseller')){
-            $verifier = $order->customer->user;
+        if(Auth::user()->hasRole('Reseller')){
+
+            $verifier = $order->customer->users->first();
 
             Permission::create(['name' => 'verify order '.$order->id]);
+
             $verifier->givePermissionTo('verify order '.$order->id);
 
             $verifier->notify(new OrderPendingToConfirm);
         }
 
-        if(Auth::user()->hasRole('customer')){
+        if(Auth::user()->hasRole('Customer')){
             $verifier = Auth::user()->customer->resellers->first()->user;
 
             Permission::create(['name' => 'verify order '.$order->id]);

@@ -46,13 +46,13 @@ $totalPrice = null;
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="tab-content pt-4">
+                                <div class="pt-4 tab-content">
                                     <div class="card-body">
                                         <H1></H1>
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div id="printableArea">
-                                                    <div class="card overflow-hidden">
+                                                    <div class="overflow-hidden card">
                                                         <div class="card-status bg-primary"></div>
                                                         <div class="card-body">
                                                             <h2 class="text-muted font-weight-bold">{{ ucwords(trans_choice('messages.please_review_details', 1)) }}</h2>
@@ -61,7 +61,7 @@ $totalPrice = null;
                                                                 This is the details for the order placed for customer <strong> {{$cart->customer->company_name}} </strong>
                                                             </div>
                                                             <div class="dropdown-divider"></div>
-                                                            <div class="row pt-4">
+                                                            <div class="pt-4 row">
                                                                 <div class="col-sm-6 ">
                                                                     <h3 class="text-muted font-weight-bold">{{ ucwords(trans_choice('messages.customer', 1)) }}</span><br></h3>
                                                                     <dl class="row">
@@ -104,7 +104,7 @@ $totalPrice = null;
 
                                                             <div class="table-responsive push">
                                                                 <table class="table table-bordered table-hover text-nowrap">
-                                                                    <tr class=" ">
+                                                                    <tr class="">
                                                                         <th class="text-center " style="width: 1%"></th>
                                                                         <th>Product</th>
                                                                         <th class="text-center" style="width: 1%">Qnty</th>
@@ -115,7 +115,7 @@ $totalPrice = null;
                                                                     <tr>
                                                                         <td class="text-center">1</td>
                                                                         <td>
-                                                                            <p class="font-weight-semibold mb-1">{{ $product->name }} - Billing Cycle ({{$product->pivot->billing_cycle}}) </p>
+                                                                            <p class="mb-1 font-weight-semibold">{{ $product->name }} - Billing Cycle ({{$product->pivot->billing_cycle}}) </p>
                                                                             <div class="text-muted">{{ $product->sku }}</div>
                                                                         </td>
                                                                         <td class="text-center">{{$product->pivot->quantity}}</td>
@@ -135,8 +135,8 @@ $totalPrice = null;
                                                                         @endforeach
 
                                                                         <tr>
-                                                                            <td colspan="4" class="font-weight-bold text-uppercase text-right h4 mb-0">Total Order</td>
-                                                                            <td class="font-weight-bold text-right h4 mb-0"> $ {{ number_format(floatval($totalPrice), 2) }}</td>
+                                                                            <td colspan="4" class="mb-0 text-right font-weight-bold text-uppercase h4">Total Order</td>
+                                                                            <td class="mb-0 text-right font-weight-bold h4"> $ {{ number_format(floatval($totalPrice), 2) }}</td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td colspan="5" class="text-right">
@@ -149,7 +149,7 @@ $totalPrice = null;
                                                                         </tr>
                                                                     </table>
                                                                 </div>
-                                                                <p class="text-muted text-center">After order place it can take up to 1 hour for the suscription to be available on Microsoft!</p>
+                                                                <p class="text-center text-muted">After order place it can take up to 1 hour for the suscription to be available on Microsoft!</p>
                                                             </div>
                                                         </div>
                                                     </div>

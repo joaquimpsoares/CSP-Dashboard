@@ -76,7 +76,7 @@ class OrderTable extends Component
 //           ]);
 // dd($tt);
 
-        
+
         return view('livewire.order.order-table', [
             'orders' => $this->rows,
         ]);

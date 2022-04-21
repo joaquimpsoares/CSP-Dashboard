@@ -3,10 +3,10 @@
 
     @if (isset($cart))
     <div class="flex mt-10 mb-3">
-        <h3 class="w-2/5 text-xs font-semibold text-gray-600 uppercase">Product Details</h3>
-        <h3 class="w-1/5 text-xs font-semibold text-center text-gray-600 uppercase">Quantity</h3>
-        <h3 class="w-1/5 text-xs font-semibold text-center text-gray-600 uppercase">Price</h3>
-        <h3 class="w-1/5 text-xs font-semibold text-center text-gray-600 uppercase">Total</h3>
+        <h3 class="w-2/5 text-xs font-semibold text-gray-600 uppercase">{{ ucwords(trans_choice('messages.name', 1)) }}</h3>
+        <h3 class="w-1/5 text-xs font-semibold text-center text-gray-600 uppercase">{{ ucwords(trans_choice('messages.quantity', 1)) }}</h3>
+        <h3 class="w-1/5 text-xs font-semibold text-center text-gray-600 uppercase">{{ ucwords(trans_choice('messages.billing_cycle', 1)) }}</h3>
+        <h3 class="w-1/5 text-xs font-semibold text-center text-gray-600 uppercase">{{ ucwords(trans_choice('messages.price', 1)) }}</h3>
     </div>
     @forelse ($cart as $key => $item)
 
@@ -18,7 +18,6 @@
                     <x-tooltip>These add-ons require a compatible base product subscription to work. Expand the description for more information.</x-tooltip>
                     @endif
                 </span>
-                {{-- @dd($item) --}}
             </div>
         </div>
         <div class="flex justify-center w-1/5">
@@ -34,7 +33,6 @@
                     viewBox="0 0 448 512">
                     <path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"/>
                 </svg>
-
             </button>
         </div>
         @if($item->productType == 'OnlineServicesNCE')
@@ -43,11 +41,10 @@
                 {{$item->term_duration}}/{{$item->billing_cycle}}
             </span>
         </div>
-
-        @else
+            @else
         <div class="flex justify-center w-1/5">
-            <select wire:model="billing_cycle" class="block p-2 text-sm text-gray-600 form-control @error('billing_cycle') is-invalid @enderror" sf-validate="required" wire:change="changeBilling($event.target.value, '{{$item->id}}')" >
-                <option value="" selected="selected" hidden>Select one...</option>
+            <select wire:model="billing_cycle" class="block p-2 text-sm text-gray-600 form-control @error('billing_cycle') is-invalid @enderror" sf-validate="required" wire:change="changeBilling($event.target.value, '{{$item->id}}')" required >
+                <option value="" selected="selected" hidden>{{ ucwords(trans_choice('messages.select_one', 1)) }}</option>
                 @foreach($item->cycle as $cycle)
                 <option  value="{{$cycle}}" >{{ucfirst($cycle) }}</option>
                 @endforeach
@@ -73,9 +70,9 @@
     @else
     <h1 class="pb-8 text-2xl font-semibold border-b"></h1>
     <div >
-        <label class="inline-block mb-3 text-sm font-medium uppercase">Choose customer</label>
-        <select wire:model="company_name" class="block w-full p-2 text-sm text-gray-600 form-control" wire:change="setCustomer($event.target.value, '{{$item->id}}')" >
-            <option value="" selected hidden>Choose here</option>
+        <label class="inline-block mb-3 text-sm font-medium uppercase">{{ ucwords(trans_choice('messages.choose_customer', 1)) }}</label>
+        <select wire:model="company_name" class="block w-full p-2 text-sm text-gray-600 form-control" wire:change="setCustomer($event.target.value, '{{$item->id}}')" required >
+            <option value="" selected hidden>{{ ucwords(trans_choice('messages.select_one', 1)) }}</option>
             @foreach($customers as $customer)
             <option value="{{ $customer->id }}">{{$customer->company_name}}</option>
             @endforeach
@@ -84,7 +81,7 @@
     @endif
     <div class="mt-8 border-t ">
         <div class="flex justify-between py-6 text-sm font-semibold uppercase">
-            <span>Total cost</span>
+            <span>{{ ucwords(trans_choice('messages.total_cost', 1)) }}</span>
             <span>{{'$'.number_format($totalCartWithoutTax, 2)}}</span>
         </div>
         <form action="{{ route('cart.add_customer') }}" method="POST">
@@ -93,12 +90,12 @@
             @if(Auth::user()->userLevel->name == 'Customer')
             <input type="hidden"  name="cart" value="{{ $cart->first()->token }}">
             <button type="submit"  class="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
-                Checkout
+                {{ ucwords(trans_choice('messages.checkout', 1)) }}
             </button>
             @else
             <input type="hidden" name="cart" value="{{ $cart->first()->token }}">
             <button type="submit" class="w-full py-3 text-sm font-semibold text-white uppercase bg-indigo-500 hover:bg-indigo-600">
-                Checkout
+                {{ ucwords(trans_choice('messages.checkout', 1)) }}
             </button>
             @endif
         </form>
