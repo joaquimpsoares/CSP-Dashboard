@@ -384,11 +384,10 @@
                             <div class="flex flex-1">
                             </div>
                             <div class="flex items-center ml-4 lg:ml-6">
+                                <x-a href='https://tagydes.com/docs' target="_blank">Documentation</x-a>
                                 @livewire('search.global-search')
-
-                                <x-database-notifications/>
+                                {{-- <x-database-notifications/> --}}
                                 <span class="w-px h-6 mx-4 bg-gray-200 lg:mx-6" aria-hidden="true"></span>
-
                                 @can('marketplace.index')
                                 <a @click="cartOpen = !cartOpen" href="#" class="p-2 mr-4 text-gray-500 rounded-full cursor-pointer hover:text-blue-600 hover:bg-gray-200">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">

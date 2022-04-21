@@ -22,7 +22,7 @@ class Subscription extends Model
 
     public function format(){
         return [
-            'path'          => $this->path(),
+            'path' => $this->path(),
         ];
     }
 

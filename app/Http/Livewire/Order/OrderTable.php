@@ -61,20 +61,20 @@ class OrderTable extends Component
     }
     public function render()
     {
-        $stripe = new \Stripe\StripeClient(
-            'sk_test_UOBjZFg9i8X3VZ5BsSKV6z1R00Gv19nybH'
-          );
-        $tt =  $stripe->accounts->create([
-            'type' => 'custom',
-            'country' => 'US',
-            'email' => 'jenny.rosen@example.com',
-            'capabilities' => [
-              'card_payments' => ['requested' => true],
-              'transfers' => ['requested' => true],
-            ],
-            'business_type' => 'company',
-          ]);
-dd($tt);
+//         $stripe = new \Stripe\StripeClient(
+//             'sk_test_UOBjZFg9i8X3VZ5BsSKV6z1R00Gv19nybH'
+//           );
+//         $tt =  $stripe->accounts->create([
+//             'type' => 'custom',
+//             'country' => 'US',
+//             'email' => 'jenny.rosen@example.com',
+//             'capabilities' => [
+//               'card_payments' => ['requested' => true],
+//               'transfers' => ['requested' => true],
+//             ],
+//             'business_type' => 'company',
+//           ]);
+// dd($tt);
 
         
         return view('livewire.order.order-table', [

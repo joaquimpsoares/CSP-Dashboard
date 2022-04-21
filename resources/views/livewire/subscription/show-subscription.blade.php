@@ -194,8 +194,8 @@
                                                                                 </p>
                                                                                 <select wire:model="billing_period" name="billing_period" class="form-control @error('billing_period') is-invalid @enderror" sf-validate="required">
                                                                                     <option value={{$subscription->billing_period}}>No Change</option>
-                                                                                    <option value="Monthly">Monthly</option>
-                                                                                    <option value="Annual">Annual</option>
+                                                                                    <option value="monthly">Monthly</option>
+                                                                                    <option value="annual">Annual</option>
                                                                                 </select>
                                                                                 @error('billing_period')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                                                             </div>
@@ -817,9 +817,9 @@
                                                     <select wire:model="billing_period" name="billing_period" class="form-control @error('billing_period') is-invalid @enderror" sf-validate="required">
                                                         <option value={{$subscription->billing_period}}>No Change</option>
                                                         @if($subscription->term == "P1M")
-                                                        <option value="Annual">Annual</option>
+                                                        <option value="annual">Annual</option>
                                                         @else
-                                                        <option value="Monthly">Monthly</option>
+                                                        <option value="monthly">Monthly</option>
                                                         @endif
                                                     </select>
                                                     @error('billing_period')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
