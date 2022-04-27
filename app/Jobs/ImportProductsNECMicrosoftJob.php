@@ -47,10 +47,12 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
         try {
             $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)
             ->forCountry($instance->provider->country->iso_3166_2)->softwareNCEAll($instance->provider->country->iso_3166_2);
-            $products->each(function ($importedProduct) use ($instance) {
+
+            $products->filter()->each(function ($importedProduct) use ($instance) {
                 $importedProduct->each(function ($importedProduct) use ($instance) {
                     $importedProduct->each(function ($importedProduct) use ($instance) {
                         Log::info('this is NCE: '.$importedProduct->product->productType->displayName);
+                        Log::info('this is Microsoft Product True or False: '.$importedProduct->isMicrosoftProduct);
 
                         if($importedProduct->product->productType->displayName=='OnlineServicesNCE'){
                             $sku = $importedProduct->sku->productId.':'.$importedProduct->sku->id;
@@ -59,7 +61,6 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
                         }
                         Log::info('catalogItemId: '.$importedProduct->catalogItemId);
                         Log::info('Product description: '.$importedProduct->sku->description);
-                        dd($importedProduct->sku->dynamicAttributes->billingType);
 
                         $product = Product::updateOrCreate([
                             'name'                      => $importedProduct->sku->title,
@@ -74,16 +75,16 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
                             'description'               => $importedProduct->sku->description,
                             'is_trial'                  => $importedProduct->sku->isTrial,
                             'is_addon'                  => $importedProduct->sku->dynamicAttributes->isAddon,
-                            'has_addons'                => $importedProduct->sku->dynamicAttributes->hasAddOns,
-                            'limit'                     => $importedProduct->sku->dynamicAttributes->limit,
-                        ], [
                             'is_perpetual'              => false,
                             'is_available_for_purchase' => true,
+                            'terms'                     => $importedProduct->terms,
+                        ], [
+                            'has_addons'                => $importedProduct->sku->dynamicAttributes->hasAddOns,
+                            'limit'                     => $importedProduct->sku->dynamicAttributes->limit,
                             'minimum_quantity'          => $importedProduct->sku->minimumQuantity,
                             'maximum_quantity'          => $importedProduct->sku->maximumQuantity,
 
                             'is_autorenewable'          => $importedProduct->sku->dynamicAttributes->isAutoRenewable,
-                            'terms'                     => $importedProduct->terms,
                             'supported_billing_cycles'  => $importedProduct->sku->supportedBillingCycles,
                             'unitType'                  => $importedProduct->sku->dynamicAttributes->unitType,
 
