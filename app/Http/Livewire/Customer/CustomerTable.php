@@ -63,6 +63,7 @@ class CustomerTable extends Component
         'editing.status_id'             => 'required|integer|exists:statuses,id',
         'editing.markup'                => 'nullable|integer|min:1',
         'editing.price_list_id'         => 'required|integer|exists:price_lists,id',
+        'editing.direct_buy'         => 'required|boolean',
 
         'creatingUser.name'             => 'sometimes|string|max:255|min:3',
         'creatingUser.last_name'        => 'sometimes|string|max:255|min:3',

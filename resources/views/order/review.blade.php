@@ -140,8 +140,11 @@ $totalPrice = null;
                                                                         </tr>
                                                                         <tr>
                                                                             <td colspan="5" class="text-right">
-                                                                                <a class="btn btn-warning" href="{{ route('order.save_order_for_verification', ['token' => $cart->token]) }}" > {{ ucwords(__('Send for verification')) }} <i class="si si-paper-plane"> </i></a>
-                                                                                <a class="btn btn-primary" href="{{ route('order.place_order', ['token' => $cart->token]) }}" > {{ ucwords(trans_choice('messages.place_order', 1)) }} <i class="si si-paper-plane"> </i></a>
+                                                                                @if(!app('impersonate')->isImpersonating() && Auth::user()->customer && !Auth::user()->customer->direct_buy)
+                                                                                    <a class="btn btn-warning" href="{{ route('order.save_order_for_verification', ['token' => $cart->token]) }}" > {{ ucwords(trans_choice('messages.place_order', 1)) }} <i class="si si-paper-plane"> </i></a>
+                                                                                @else
+                                                                                    <a class="btn btn-primary" href="{{ route('order.place_order', ['token' => $cart->token]) }}" > {{ ucwords(trans_choice('messages.place_order', 1)) }} <i class="si si-paper-plane"> </i></a>
+                                                                                @endif
                                                                                 {{-- <button type="button" class="btn btn-primary" onClick="javascript:window.print();"><i class="si si-wallet"></i> Pay Invoice</button> --}}
                                                                                 {{-- <button type="button" class="btn btn-secondary" onClick="javascript:window.send();"><i class="si si-paper-plane"></i> Send Invoice</button> --}}
                                                                                 <button type="button" class="btn btn-info" onClick="printDiv('printableArea');"><i class="si si-printer"></i> Print Invoice</button>
