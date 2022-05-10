@@ -262,6 +262,7 @@
                                         </div>
                                     </dl>
                                 </div>
+                                <span class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">Total Products {{$order->orderproduct->where('order_id', $order->id)->count()}}</span>
 
                                 @foreach($order->products as $key => $value)
                                 <div class="px-1 py-1 sm:px-6">
@@ -285,7 +286,7 @@
                                                 {{ ucwords(trans_choice('messages.product_term', 1)) }}
                                             </dt>
                                             <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{$order->orderproduct->term_duration}}
+                                                {{$order->orderproduct->where('product_id', $value->id)->first()->term_duration}}
                                             </dd>
                                         </div>
                                         <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -293,15 +294,16 @@
                                                 {{ ucwords(trans_choice('messages.billing_cycle', 2)) }}
                                             </dt>
                                             <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{$order->orderproduct->billing_cycle}}
+                                                {{$order->orderproduct->where('product_id', $value->id)->first()->billing_cycle}}
                                             </dd>
                                         </div>
                                         <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                             <dt class="text-sm font-medium text-gray-500">
                                                 {{ ucwords(trans_choice('messages.license', 2)) }}
                                             </dt>
+                                            {{-- @dd($order->orderproduct->where('product_id', $value->id)->first()) --}}
                                             <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{ $order->orderproduct->quantity }}
+                                                {{ $order->orderproduct->where('product_id', $value->id)->first()->quantity }}
                                             </dd>
                                         </div>
                                         <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -309,7 +311,7 @@
                                                 {{ ucwords(trans_choice('messages.price', 1)) }}
                                             </dt>
                                             <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{ number_format(($order->orderproduct->quantity*$order->orderproduct['retail_price']) * ($order->orderproduct['billing_cycle'] === 'annual' ? 12 : 1 ),2) }}
+                                                {{ number_format(($order->orderproduct->where('product_id', $value->id)->first()->quantity*$order->orderproduct['retail_price']) * ($order->orderproduct->where('product_id', $value->id)->first()['billing_cycle'] === 'annual' ? 12 : 1 ),2) }}
                                             </dd>
                                         </div>
                                         <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
