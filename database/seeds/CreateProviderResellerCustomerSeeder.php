@@ -233,23 +233,23 @@ class CreateProviderResellerCustomerSeeder extends Seeder
 
 
 
-        $priceList1 = PriceList::find(1);
+        $priceList1 = priceList::find(1);
         $priceList2 = PriceList::find(2);
 
-        $provider->priceList()->associate($priceList1);
-        $provider2->priceList()->associate($priceList2);
+        $provider->availablePriceLists()->associate($priceList1);
+        $provider2->availablePriceLists()->associate($priceList2);
 
         $provider->save();
         $provider2->save();
 
 
         foreach ($provider->resellers as $reseller) {
-            $reseller->priceList()->associate($priceList1);
+            $reseller->availablePriceLists()->associate($priceList1);
             $reseller->save();
         }
 
         foreach ($provider2->resellers as $reseller) {
-            $reseller->priceList()->associate($priceList2);
+            $reseller->availablePriceLists()->associate($priceList2);
             $reseller->save();
         }
     }
