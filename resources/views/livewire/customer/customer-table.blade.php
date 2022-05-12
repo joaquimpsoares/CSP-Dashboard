@@ -245,6 +245,16 @@
                                     <x-input wire:model.debounce.500ms="editing.markup" type="text" id="markup" name="markup" class="@error('editing.markup') is-invalid @enderror" placeholder="Markup % for Azure Subscription"></x-input>
                                     @error('editing.markup')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
+                                <div class="mb-3">
+                                    <x-label for="direct_buy">Direct buy</x-label>
+                                    <div class="mb-3 input-group">
+                                        <select wire:model.debounce.500ms="editing.direct_buy" name="direct_buy" class="form-control @error('editing.direct_buy') is-invalid @enderror" sf-validate="required" >
+                                            <option value="1" {{ $editing->direct_buy ? 'selected' : '' }}>The customer can buy directly</option>
+                                            <option value="0" {{ $editing->direct_buy ? '' : 'selected' }}>Customer buys need to be verified</option>
+                                        </select>
+                                        @error('editing.direct_buy')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                </div>
                                 <div class="row">
                                     {{-- <div class="mb-4 col-lg-4 col-md-6">
                                         <x-label for="country">{{ucwords(trans_choice('messages.price_list', 1))}}</x-label>
