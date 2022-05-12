@@ -61,13 +61,15 @@ class CreateProviderResellerCustomerSeeder extends Seeder
         PriceList::create([
             'name' => 'Default',
             'instance_id' => '1',
-            'description' => 'Default Price List Provider 1.'
+            'description' => 'Default Price List Provider 1.',
+            'provider_id' => '1',
         ]);
 
         PriceList::create([
             'name' => 'Default',
             'instance_id' => '1',
-            'description' => 'Default Price List Provider 2.'
+            'description' => 'Default Price List Provider 2.',
+            'provider_id' => '2',
         ]);
 
     	$reseller = Reseller::create([
@@ -258,24 +260,24 @@ class CreateProviderResellerCustomerSeeder extends Seeder
 
 
 
-        $priceList1 = PriceList::find(1);
-        $priceList2 = PriceList::find(2);
+        // $priceList1 = PriceList::find(1);
+        // $priceList2 = PriceList::find(2);
 
-        $provider->priceList()->associate($priceList1);
-        $provider2->priceList()->associate($priceList2);
+        // $provider->availablePriceLists()->associate($priceList1);
+        // $provider2->availablePriceLists()->associate($priceList2);
 
-        $provider->save();
-        $provider2->save();
+        // $provider->save();
+        // $provider2->save();
 
 
-        foreach ($provider->resellers as $reseller) {
-            $reseller->priceList()->associate($priceList1);
-            $reseller->save();
-        }
+        // foreach ($provider->resellers as $reseller) {
+        //     $reseller->priceList()->associate($priceList1);
+        //     $reseller->save();
+        // }
 
-        foreach ($provider2->resellers as $reseller) {
-            $reseller->priceList()->associate($priceList2);
-            $reseller->save();
-        }
+        // foreach ($provider2->resellers as $reseller) {
+        //     $reseller->priceList()->associate($priceList2);
+        //     $reseller->save();
+        // }
     }
 }
