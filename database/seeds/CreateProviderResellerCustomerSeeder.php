@@ -34,7 +34,6 @@ class CreateProviderResellerCustomerSeeder extends Seeder
     		'nif' => '12345',
     		'postal_code' => '28000',
     		'status_id' => $active->id,
-            'price_list_id' => '1',
 
     	]);
 
@@ -48,7 +47,6 @@ class CreateProviderResellerCustomerSeeder extends Seeder
             'nif' => '12344',
             'postal_code' => '28000',
             'status_id' => $active->id,
-            'price_list_id' => '2',
         ]);
 
     	$reseller = Reseller::create([
