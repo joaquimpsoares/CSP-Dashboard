@@ -34,7 +34,7 @@ class CreateProviderResellerCustomerSeeder extends Seeder
     		'nif' => '12345',
     		'postal_code' => '28000',
     		'status_id' => $active->id,
-            'price_list_id' => $priceList1->id,
+            'price_list_id' => '1',
 
     	]);
 
@@ -48,7 +48,7 @@ class CreateProviderResellerCustomerSeeder extends Seeder
             'nif' => '12344',
             'postal_code' => '28000',
             'status_id' => $active->id,
-            'price_list_id' => $priceList2->id,
+            'price_list_id' => '2',
         ]);
 
     	$reseller = Reseller::create([
@@ -62,7 +62,7 @@ class CreateProviderResellerCustomerSeeder extends Seeder
     		'nif' => '12345',
     		'postal_code' => '28000',
     		'status_id' => $active->id,
-            'price_list_id' => $priceList1->id,
+            'price_list_id' => '1',
     	]);
 
         $subReseller = Reseller::create([
@@ -77,7 +77,7 @@ class CreateProviderResellerCustomerSeeder extends Seeder
             'nif' => '12345',
             'postal_code' => '28000',
             'status_id' => $active->id,
-            'price_list_id' => $priceList2->id,
+            'price_list_id' => '2',
         ]);
 
         $customer1 = Customer::create([
@@ -137,7 +137,7 @@ class CreateProviderResellerCustomerSeeder extends Seeder
             'nif' => '12345',
             'postal_code' => '28000',
             'status_id' => $active->id,
-            'price_list_id' => $priceList2->id,
+            'price_list_id' => '2',
         ]);
 
         $customer4 = Customer::create([
@@ -195,7 +195,7 @@ class CreateProviderResellerCustomerSeeder extends Seeder
             'nif' => '12310',
             'postal_code' => '28000',
             'status_id' => $active->id,
-            'price_list_id' => $priceList1->id,
+            'price_list_id' => '1',
         ]);
 
         $customer7 = Customer::create([
