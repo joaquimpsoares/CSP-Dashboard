@@ -367,16 +367,6 @@
                                         <x-input wire:model="editing.resellee_qualifications" type="text" id="resellee_qualifications" name="resellee_qualifications" class=" mb-4 @error('editing.resellee_qualifications') is-invalid @enderror"></x-input>
                                         @error('editing.resellee_qualifications')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                     </div>
-                                    {{-- <div class="mb-3 col-lg-4 col-md-6">
-                                        <x-label for="state">{{ucwords(trans_choice('messages.state', 1))}}</x-label>
-                                        <x-input wire:model="editing.state" name="state" type="text" class="@error('editing.state') is-invalid @enderror" id="state" placeholder=""></x-input>
-                                        @error('editing.state')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                    </div>
-                                    <div class="mb-3 col-lg-4 col-md-6">
-                                        <x-label for="zip">{{ucwords(trans_choice('messages.postal_code', 1))}}</x-label>
-                                        <x-input wire:model="editing.postal_code" name="postal_code" type="text" class="@error('editing.postal_code') is-invalid @enderror" id="postal_code" placeholder="" required></x-input>
-                                        @error('editing.postal_code')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                    </div> --}}
                                 </div>
                                 <div class="row">
                                     <div class="mb-4 col-lg-4 col-md-6">
@@ -402,16 +392,11 @@
                                     <hr>
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <x-label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</x-label>
-                                            {{-- <div class="form-group">
-                                                <select wire:model="editing.status_id" name="status" class="form-control @error('editing.status') is-invalid @enderror" sf-validate="required">
-                                                    <option value="{{$product->status->id}}" selected>{{ucwords(trans_choice($product->status->name, 1))}}</option>
-                                                    @foreach ($statuses  as $key => $status)
-                                                    <option value="{{$status->id}}">{{ucwords(trans_choice($status->name, 1))}}</option>
-                                                    @endforeach
-                                                </select>
-                                                @error('editing.status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                            </div> --}}
+                                            <div class="mb-2 shadow-none col-md-6">
+                                                <x-label for="availability">{{ ucwords(trans_choice('messages.available_for_purchase', 1)) }}</x-label>
+                                                <input wire:model="isAvailable" type="checkbox" id="availability" name="isAvailable" class="block transition duration-150 ease-in-out border-indigo-300 form-checkbox sm:text-sm sm:leading-5"/>
+                                                @error('editing.availability')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

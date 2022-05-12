@@ -346,7 +346,6 @@
                                     <div class="mb-2 shadow-none col-md-6">
                                         <x-label for="availability">{{ ucwords(trans_choice('messages.available_for_purchase', 1)) }}</x-label>
                                         <input wire:model="isAvailable" type="checkbox" id="availability" name="isAvailable" class="block transition duration-150 ease-in-out border-indigo-300 form-checkbox sm:text-sm sm:leading-5"/>
-
                                         @error('editing.availability')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                     </div>
                                 </div>

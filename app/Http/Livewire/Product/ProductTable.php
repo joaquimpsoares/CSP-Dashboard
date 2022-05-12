@@ -27,6 +27,7 @@ class ProductTable extends Component
 
     public $password;
     public $license = false;
+    public $isAvailable = true;
     public $perpetual = false;
     public $showDeleteModal = false;
     public $password_confirmation;
@@ -65,6 +66,7 @@ class ProductTable extends Component
             'editing.supported_billing_cycles'  => 'required'|'integer'|'exists:price_list,id',
             'editing.terms'                     => 'required'|'integer'|'exists:price_list,id',
             'editing.resellee_qualifications'   => 'required'|'integer'|'exists:price_list,id',
+            'is_available_for_purchase'         => 'required',
         ];
     }
 
@@ -77,18 +79,16 @@ class ProductTable extends Component
         $this->editing = $product;
     }
 
-    public function save()
-    {
+    public function save(){
+
+        $this->editing->is_available_for_purchase = $this->isAvailable;
         $this->editing->save();
         $this->showEditModal = false;
     }
-    public function makeBlankTransaction()
-    {
-        return Product::make(['date' => now(), 'status' => 'success']);
-    }
 
-    public function deleteSelected()
-    {
+    public function makeBlankTransaction(){return Product::make(['date' => now(), 'status' => 'success']);}
+
+    public function deleteSelected(){
         $deleteCount = $this->selectedRowsQuery->count();
         foreach($this->selectedRowsQuery->get() as $row){
             if($row->hasPrice() != null) {
@@ -136,8 +136,7 @@ class ProductTable extends Component
         $this->showImportModal = false;
     }
 
-    public function getRowsQueryProperty()
-    {
+    public function getRowsQueryProperty(){
         $products = Product::query()
         ->where(function ($query)  {
             $query->where('id', "like", "%{$this->filters['search']}%");
@@ -150,15 +149,13 @@ class ProductTable extends Component
 
         return $this->applySorting($products);
     }
-    public function getRowsProperty()
-    {
+    public function getRowsProperty(){
         return $this->cache(function () {
             return $this->applyPagination($this->rowsQuery);
         });
     }
 
-    public function exportSelected()
-    {
+    public function exportSelected(){
         return Excel::download(new ProductsExport, 'products.xlsx');
     }
     public function render()
