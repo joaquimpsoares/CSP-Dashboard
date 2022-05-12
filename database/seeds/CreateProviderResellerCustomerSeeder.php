@@ -21,6 +21,9 @@ class CreateProviderResellerCustomerSeeder extends Seeder
 
         $active = Status::where('name', 'messages.active')->first();
 
+        $priceList1 = priceList::find(1);
+        $priceList2 = PriceList::find(2);
+
         $provider = Provider::create([
     		'company_name' => 'Provider 1',
     		'address_1' => 'Address',
@@ -31,6 +34,8 @@ class CreateProviderResellerCustomerSeeder extends Seeder
     		'nif' => '12345',
     		'postal_code' => '28000',
     		'status_id' => $active->id,
+            'price_list_id' => $priceList1->id,
+
     	]);
 
         $provider2 = Provider::create([
@@ -43,6 +48,7 @@ class CreateProviderResellerCustomerSeeder extends Seeder
             'nif' => '12344',
             'postal_code' => '28000',
             'status_id' => $active->id,
+            'price_list_id' => $priceList2->id,
         ]);
 
     	$reseller = Reseller::create([
@@ -56,6 +62,7 @@ class CreateProviderResellerCustomerSeeder extends Seeder
     		'nif' => '12345',
     		'postal_code' => '28000',
     		'status_id' => $active->id,
+            'price_list_id' => $priceList1->id,
     	]);
 
         $subReseller = Reseller::create([
@@ -70,6 +77,7 @@ class CreateProviderResellerCustomerSeeder extends Seeder
             'nif' => '12345',
             'postal_code' => '28000',
             'status_id' => $active->id,
+            'price_list_id' => $priceList2->id,
         ]);
 
         $customer1 = Customer::create([
@@ -129,6 +137,7 @@ class CreateProviderResellerCustomerSeeder extends Seeder
             'nif' => '12345',
             'postal_code' => '28000',
             'status_id' => $active->id,
+            'price_list_id' => $priceList2->id,
         ]);
 
         $customer4 = Customer::create([
@@ -186,6 +195,7 @@ class CreateProviderResellerCustomerSeeder extends Seeder
             'nif' => '12310',
             'postal_code' => '28000',
             'status_id' => $active->id,
+            'price_list_id' => $priceList1->id,
         ]);
 
         $customer7 = Customer::create([
@@ -233,24 +243,23 @@ class CreateProviderResellerCustomerSeeder extends Seeder
 
 
 
-        $priceList1 = priceList::find(1);
-        $priceList2 = PriceList::find(2);
 
-        $provider->availablePriceLists()->associate($priceList1);
-        $provider2->availablePriceLists()->associate($priceList2);
+
+        // $provider->availablePriceLists()->associate($priceList1);
+        // $provider2->availablePriceLists()->associate($priceList2);
 
         $provider->save();
         $provider2->save();
 
 
-        foreach ($provider->resellers as $reseller) {
-            $reseller->availablePriceLists()->associate($priceList1);
-            $reseller->save();
-        }
+        // foreach ($provider->resellers as $reseller) {
+        //     $reseller->availablePriceLists()->associate($priceList1);
+        //     $reseller->save();
+        // }
 
-        foreach ($provider2->resellers as $reseller) {
-            $reseller->availablePriceLists()->associate($priceList2);
-            $reseller->save();
-        }
+        // foreach ($provider2->resellers as $reseller) {
+        //     $reseller->availablePriceLists()->associate($priceList2);
+        //     $reseller->save();
+        // }
     }
 }

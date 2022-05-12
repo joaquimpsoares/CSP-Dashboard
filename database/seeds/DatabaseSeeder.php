@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CreateProviderResellerCustomerSeeder::class);
         $this->call(InstanceSeeder::class);
         $this->call(PriceListSeeder::class);
-        
+
         $this->call(UserSeeder::class);
         $this->call(VendorSeeder::class);
 
