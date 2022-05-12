@@ -47,7 +47,6 @@ class Store extends Component
     public $showmobilefilter = false;
     public $showproductdetails = false;
 
-
     public $filters = [
         'search' => '',
         'category' => '',
@@ -63,33 +62,36 @@ class Store extends Component
     public function updatedQtys($field){$this->recalc($field);}
     public function close(){$this->showModal = false;}
 
-    public function updatedKeyword(){
-        if(!$this->keyword){
-            return $this->searchproduct = null;
-        }
+//     public function updatedKeyword(){
+//         if(!$this->keyword){
+//             return $this->searchproduct = null;
+//         }
 
-        $this->searchproduct =  Price::query()->where('instance_id', $this->priceList)
-        ->where(function ($q) {
-            $q->orwhere('product_sku', 'like', '%'.$this->keyword.'%');
-            $q->orwhere('name', 'like', '%'.$this->keyword.'%');
-        })->orderBy('name')->get()->filter();
+//         $this->searchproduct =  Price::query()->where('instance_id', $this->priceList)
+//         ->where(function ($q) {
+//             $q->orwhere('product_sku', 'like', '%'.$this->keyword.'%');
+//             $q->orwhere('name', 'like', '%'.$this->keyword.'%');
+//         })->orderBy('name')->get()->filter();
 
-        $this->searchproduct->groupBy('productType');
+//         $this->searchproduct->groupBy('productType');
 
 
-   }
+//    }
 
-    public function selectedProduct(Price $price){
-        $this->searchproduct = null;
-        $this->keyword = $price->name;
-        $this->prices = $price;
-    }
+    // public function selectedProduct(Price $price){
+    //     $this->searchproduct = null;
+    //     $this->keyword = $price->name;
+    //     $this->prices = $price;
+    // }
 
     public function addToCart(Product $productId, Price $price){
-        $billing_cycle = "Monthly";
+
+        $billing_cycle = [];
         $this->showModal = false;
+
         $cart = $this->getUserCart();
-        if (! $cart) {
+
+        if (!$cart) {
             $cart = new Cart();
             $cart->save();
         }
@@ -98,6 +100,11 @@ class Store extends Component
             $billing_cycle = $price->billing_plan;
             $term_duration = $price->term_duration;
         }
+
+        if($productId->IsPerpetual()){
+            $billing_cycle = $productId->supported_billing_cycles[0];
+        }
+
         $cart->products()->attach($productId, [
             'id' => Str::uuid(),
             'price' => $productId->price->price,
@@ -122,8 +129,6 @@ class Store extends Component
         $this->productDescription   = $product->description;
         $this->productMSRP          = $product->price->msrp;
     }
-
-
 
     public static  function getUserCart($id = null, $token = null){
         $user = Auth::user();
@@ -163,6 +168,7 @@ class Store extends Component
         }
 
         $query = Price::query()->with('related_product')->where('price_list_id', $this->priceList)
+        ->whereRelation('related_product', 'is_available_for_purchase', 1)
         ->when($this->filters['category'], fn($query, $category) => $query->whereHas('related_product', function(Builder $q) use($category){
                 $q->where('category',$category);
             }))
@@ -180,8 +186,8 @@ class Store extends Component
             }))
             ->when($this->filters['billing'], fn($query, $billing) => $query->where('billing_plan', $billing))
             ->when($this->filters['terms'], fn($query, $terms) => $query->where('term_duration', $terms))
-            // ->when($this->search, fn($query, $search) => $query->where('name', 'like', '%'.$search.'%')
-            // ->orwhere('product_sku', 'like', '%'.$search.'%'))
+            ->when($this->search, fn($query, $search) => $query->where('name', 'like', '%'.$search.'%')
+            ->orwhere('product_sku', 'like', '%'.$search.'%'))
             ->with('related_product');
 
         return $this->applySorting($query);

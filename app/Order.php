@@ -36,8 +36,7 @@ class Order extends Model
         ];
     }
 
-    public function createOrder($request, $user)
-    {
+    public function createOrder($request, $user){
         $token = Str::uuid();
         $order = new Order();
         $order->token = $token;
@@ -56,11 +55,10 @@ class Order extends Model
         return $order;
     }
 
-    public function sendToMicrosoft()
-    {
-        $tt = MicrosoftTenantInfo::where('tenant_domain', 'like', $this->domain . '%')->first();
+    public function sendToMicrosoft(){
+        $tenant = MicrosoftTenantInfo::where('tenant_domain', 'like', $this->domain . '%')->first();
 
-        if ($tt == null) {
+        if ($tenant == null) {
             Bus::chain([
                 new CreateCustomerMicrosoft($this),
                 new PlaceOrderMicrosoft($this)
@@ -74,61 +72,51 @@ class Order extends Model
         }
     }
 
-    public function markAsOrderPlaced()
-    {
+    public function markAsOrderPlaced(){
         $this->fill([
             'order_status_id' => '1',
         ])->save();
     }
 
-    public function markAsRunning()
-    {
+    public function markAsRunning(){
         $this->fill([
             'order_status_id' => '2',
         ])->save();
     }
 
-    public function markAsFailed()
-    {
+    public function markAsFailed(){
         $this->fill([
             'order_status_id' => '3',
         ])->save();
     }
 
-    public function markAsCompleted()
-    {
+    public function markAsCompleted(){
         $this->fill([
             'order_status_id' => '4',
         ])->save();
     }
 
-    public function orderproduct()
-    {
+    public function orderproduct(){
         return $this->belongsTo(OrderProducts::class, 'id', 'order_id');
     }
 
-    public function status()
-    {
+    public function status(){
         return $this->hasOne(OrderStatus::class, 'id', 'order_status_id');
     }
 
-    public function products()
-    {
+    public function products(){
         return $this->belongsToMany(Product::class)->withPivot('id', 'quantity', 'price', 'retail_price', 'billing_cycle', 'term_duration');
     }
 
-    public function customer()
-    {
+    public function customer(){
         return $this->belongsTo(Customer::class);
     }
 
-    public function user()
-    {
+    public function user(){
         return $this->belongsTo(User::class);
     }
 
-    public function importProducts()
-    {
+    public function importProducts(){
         $order = new Order([
             'token' => Str::uuid(),
             'user_id' => Auth::user()->id,
@@ -138,8 +126,7 @@ class Order extends Model
     }
 
 
-    protected static function booted()
-    {
+    protected static function booted(){
         static::addGlobalScope('access_level', function (Builder $query) {
             $user = Auth::user();
             if ($user && $user->userLevel->name === config('app.provider')) {

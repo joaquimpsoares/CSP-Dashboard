@@ -57,10 +57,10 @@ class PlaceOrderMicrosoft implements ShouldQueue
         Log::info('tenant Cart: ' . $this->order->customer->microsoftTenantInfo->first());
 
         $instanceid = $products->first()->instance_id;
-        Log::info('Creating Cart: ' . $instanceid);
+        Log::info('Instance ID: ' . $instanceid);
 
         $instance = Instance::where('id', $instanceid)->first();
-        Log::info('Creating Cart: ' . $instance);
+        Log::info('Instance: ' . $instance);
 
         $quantity = 0;
         $billing_cycle = null;

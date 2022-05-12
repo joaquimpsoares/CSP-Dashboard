@@ -53,7 +53,7 @@ class PricelistTable extends Component
 
     public function save()
     {
-        $this->validate();
+        // $this->validate();
         $this->editing->save();
 
         switch ($this->getUserLevel()) {

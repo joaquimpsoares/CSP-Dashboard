@@ -137,6 +137,7 @@
                                 <x-table.heading sortable multi-column wire:click="sortBy('currency')"    :direction="$sorts['currency'] ?? null">{{ ucwords(trans_choice('messages.currency', 1)) }}</x-table.heading>
                                 <x-table.heading sortable multi-column wire:click="sortBy('price')"    :direction="$sorts['price'] ?? null">{{ ucwords(trans_choice('messages.price', 1)) }}</x-table.heading>
                                 <x-table.heading sortable multi-column wire:click="sortBy('msrp')"    :direction="$sorts['msrp'] ?? null">{{ ucwords(trans_choice('messages.msrp', 1)) }}</x-table.heading>
+                                <x-table.heading multi-column wire:click="sortBy('product->category')" :direction="$sorts['product']['category'] ?? null " >{{ ucwords(trans_choice('messages.available_for_purchase', 1)) }}</x-table.heading>
                             </x-slot>
                             <x-slot name="body">
                                 @if ($selectPage)
@@ -199,6 +200,23 @@
                                             <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                     {{ $price['msrp'] }} {{$price['currency']}}
+                                                </div>
+                                            </span>
+                                        </a>
+                                    </x-table.cell>
+                                    <x-table.cell>
+                                        <a wire:click="edit({{ $price->id }})" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                            <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
+                                                    @if($price->product->is_available_for_purchase == true)
+                                                    <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400" x-description="Heroicon name: solid/check-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    @else
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 mr-1.5 h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                                      </svg>
+                                                    @endif
                                                 </div>
                                             </span>
                                         </a>
@@ -272,8 +290,7 @@
                                                     </path>
                                                 </svg>
                                             </div>
-                                            <input wire:model.debounce.300ms="keyword"
-                                            class="w-full h-12 pr-4 text-gray-800 placeholder-gray-400 bg-transparent border-0 pl-11 focus:ring-0 sm:text-sm" placeholder="Search..." id="headlessui-combobox-input-6" role="combobox" type="text" aria-expanded="true" value="se" aria-controls="headlessui-combobox-options-7"
+                                            <input wire:model.debounce.300ms="keyword" class="w-full h-12 pr-4 text-gray-800 placeholder-gray-400 bg-transparent border-0 pl-11 focus:ring-0 sm:text-sm" placeholder="Search..." id="headlessui-combobox-input-6" role="combobox" type="text" aria-expanded="true" value="se" aria-controls="headlessui-combobox-options-7"
                                             @if(isset($selectedProduct))
                                             value="{{$selectedProduct}}"
                                             @endif>
@@ -282,7 +299,7 @@
                                                 @foreach ($searchproduct as $index => $item)
                                                 <li wire:click="selectedProduct({{ $item->id }})"
                                                     class="px-4 py-2 cursor-default select-none hover:bg-gray-200" role="option" tabindex="-1">
-                                                    {{$item->name}}
+                                                    {{$item->id}} - {{$item->name}}
                                                 </li>
                                                 @endforeach
                                             </ul>
@@ -326,6 +343,12 @@
                                         <x-input wire:model="editing.msrp" type="text" id="msrp" name="msrp" placeholder="" class="@error('editing.msrp') is-invalid @enderror"></x-input>
                                         @error('editing.msrp')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                     </div>
+                                    <div class="mb-2 shadow-none col-md-6">
+                                        <x-label for="availability">{{ ucwords(trans_choice('messages.available_for_purchase', 1)) }}</x-label>
+                                        <input wire:model="isAvailable" type="checkbox" id="availability" name="isAvailable" class="block transition duration-150 ease-in-out border-indigo-300 form-checkbox sm:text-sm sm:leading-5"/>
+
+                                        @error('editing.availability')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -334,16 +357,15 @@
                 <x-slot name="footer">
                     <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         {{ucwords(trans_choice('cancel', 1))}}
-                    </button>
-                    <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        {{ucwords(trans_choice('save', 1))}}
-                    </button>
-                </x-slot>
-            </x-modal.slideout>
-        </form>
-    </div>
+                        <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            {{ucwords(trans_choice('save', 1))}}
+                        </button>
+                    </x-slot>
+                </x-modal.slideout>
+            </form>
+        </div>
 
-</div>
+    </div>
 </div>
 
 

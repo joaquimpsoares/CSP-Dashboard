@@ -48,8 +48,7 @@ class OrderController extends Controller
         return view('store.index')->with(['alert' => 'success', 'message' => trans('messages.order_placed_susscessfully')]);
     }
 
-    public function syncproducts(Request $request)
-    {
+    public function syncproducts(Request $request){
         $order = $this->orderRepository->ImportProductsMicrosoftOrder();
 
         ImportProductsMicrosoftJob::dispatch($request, $order)->onQueue('SyncProducts')

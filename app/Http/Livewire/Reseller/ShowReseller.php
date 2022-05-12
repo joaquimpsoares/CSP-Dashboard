@@ -5,16 +5,11 @@ namespace App\Http\Livewire\Reseller;
 use App\User;
 use App\Country;
 use App\Reseller;
-use App\PriceList;
 use App\Models\Status;
 use Livewire\Component;
-use App\Rules\checkvatIdRule;
-use App\Rules\checkPostalCodeRule;
-use App\Status as AppStatus;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use GuzzleHttp\Exception\ClientException;
-use Tagydes\MicrosoftConnection\Facades\Customer as TagydesCustomer;
 
 class ShowReseller extends Component
 {
@@ -95,8 +90,6 @@ class ShowReseller extends Component
         $user->delete();
         $this->notify(' ', 'User ' . $user->name . ' Deleted successfully', 'info');
         $this->emit('refreshTransactions');
-
-
     }
 
     public function disableUser(User $user){
@@ -116,8 +109,8 @@ class ShowReseller extends Component
     public function enableUser(User $user){
         if($user->status_id == 1){
             $this->notify(' ', 'User ' . $user->name . ' already Enabled', 'info');
-            return false;
-        }
+        return false;
+    }
 
         $user->fill([
             'status_id' => '1',

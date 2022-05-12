@@ -64,12 +64,13 @@
                             <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('productType')" :direction="$sorts['productType'] ?? null">{{ ucwords(trans_choice('messages.productType', 1)) }}</x-table.heading>
                             <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('category')"  :direction="$sorts['category'] ?? null">{{ ucwords(trans_choice('messages.category', 2)) }}</x-table.heading>
                             <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('vendor')"  :direction="$sorts['vendor'] ?? null">{{ ucwords(trans_choice('messages.vendor', 2)) }}</x-table.heading>
+                            <x-table.heading sortable multi-column wire:click="sortBy('is_available_for_purchase')"    :direction="$sorts['is_available_for_purchase'] ?? null">{{ ucwords(trans_choice('messages.available_for_purchase', 1)) }}</x-table.heading>
                             <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('created_at')"  :direction="$sorts['created_at'] ?? null">{{ ucwords(trans_choice('messages.created_at', 2)) }}</x-table.heading>
                         </x-slot>
                         <x-slot name="body">
                             @if ($selectPage)
                             <x-table.row class="bg-cool-gray-200" wire:key="row-message">
-                                <x-table.cell colspan="6">
+                                <x-table.cell colspan="10">
                                     @unless ($selectAll)
                                     <div>
                                         <span>You have selected <strong>{{ $products->count() }}</strong> transactions, do you want to select all <strong>{{ $products->total() }}</strong>?</span>
@@ -113,7 +114,7 @@
                                         </a>
                                     </span>
                                 </x-table.cell>
-                                <x-table.cell>
+                                <x-table.cell  visibility='hidden' tablecell='lg:table-cell'>
                                     <a wire:click="edit({{ $product->id }})" href="#" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
@@ -122,7 +123,7 @@
                                         </a>
                                     </span>
                                 </x-table.cell>
-                                <x-table.cell>
+                                <x-table.cell  visibility='hidden' tablecell='lg:table-cell'>
                                     <a wire:click="edit({{ $product->id }})" href="#" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
@@ -131,7 +132,7 @@
                                         </a>
                                     </span>
                                 </x-table.cell>
-                                <x-table.cell>
+                                <x-table.cell  visibility='hidden' tablecell='lg:table-cell'>
                                     <a wire:click="edit({{ $product->id }})" href="#" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
@@ -141,6 +142,23 @@
                                     </span>
                                 </x-table.cell>
                                 <x-table.cell>
+                                    <a wire:click="edit({{ $product->id }})" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                        <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
+                                                @if($product->is_available_for_purchase == true)
+                                                <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400" x-description="Heroicon name: solid/check-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                @else
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 mr-1.5 h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                                  </svg>
+                                                @endif
+                                            </div>
+                                        </span>
+                                    </a>
+                                </x-table.cell>
+                                <x-table.cell  visibility='hidden' tablecell='lg:table-cell'>
                                     <a wire:click="edit({{ $product->id }})" href="#" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">

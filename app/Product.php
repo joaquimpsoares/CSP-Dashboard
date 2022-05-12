@@ -31,8 +31,7 @@ class Product extends Model
         'terms'                     => 'collection',
     ];
 
-    public function format()
-    {
+    public function format(){
         return [
             'vendor' => $this->vendor,
             'instance_id' => $this->instance_id,
@@ -78,8 +77,7 @@ class Product extends Model
         });
     }
 
-    public function IsSubscribed()
-    {
+    public function IsSubscribed(){
         if($this->subsription){
             return true;
         }else{
@@ -87,53 +85,55 @@ class Product extends Model
         }
     }
 
-    public function IsNCE()
-    {
+    public function IsNCE(){
         return $this->productType === 'OnlineServicesNCE';
     }
 
-    public function IsPerpetual()
-    {
+    public function IsPerpetual(){
         return $this->is_perpetual === 1;
     }
 
-    public function IsAzure()
-    {
+    public function IsAzure(){
         return $this->billing === 'usage';
     }
 
-    public function IsLegacy()
-    {
+    public function IsLegacy(){
         return $this->productType === 'legacy';
     }
 
+    public function hasPrice(){
+        if($this->price){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
-    public function price() {
+    public function price(){
         return $this->hasOne(Price::class, 'product_id', 'id');
     }
 
-    public function orderproduct()
-    {
+    public function orderproduct(){
         return $this->belongsTo(OrderProducts::class, 'id', 'product_id');
     }
 
-    public function instance() {
+    public function instance(){
         return $this->hasOne(Instance::class, 'id', 'instance_id');
     }
 
-    public function path() {
+    public function path(){
         return url("/product/{$this->id}-" . Str::slug($this->name, '-'));
     }
 
-    public function subsriptions() {
+    public function subsriptions(){
         return $this->hasMany(Subscription::class, 'sku', 'product_id');
     }
 
-    public function subsription() {
+    public function subsription(){
         return $this->belongsTo(Subscription::class, 'sku', 'product_id');
     }
 
-    public function tiers() {
+    public function tiers(){
         return $this->hasMany(Tier::class, 'product_sku', 'sku');
     }
 
@@ -141,49 +141,12 @@ class Product extends Model
         return $this->morphMany(Metafield::class, 'metafieldable');
     }
 
-    public function importLicenses($instance, $country)
-    {
+    public function importLicenses($instance, $country){
         ImportProductsMicrosoftJob::dispatch($instance, $country->iso_3166_2)->onQueue('SyncProducts');
         return $this;
     }
 
-    public function importNCELicenses($instance, $country)
-    {
-        $batch = Bus::batch([
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-            new ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2),
-        ])->then(function (Batch $batch) {
-            // All jobs completed successfully...
-        })->catch(function (Batch $batch, Throwable $e) {
-            // First batch job failure detected...
-        })->finally(function (Batch $batch) {
-            // The batch has finished executing...
-        })->onQueue('SyncProducts')->dispatch();
-
-        // $batch = Bus::batch([])->onQueue('SyncProducts')->dispatch();
-        // $batch->add(New ImportProductsNECMicrosoftJob($instance, $country->iso_3166_2));
-        // // ImportProductsNECMicrosoftJob::dispatch($instance, $country->iso_3166_2)->onQueue('SyncProducts');
-        return $batch;
-    }
-
-    public function importPerpetual($instance, $country)
-    {
+    public function importPerpetual($instance, $country){
         ImportPerpetuaMicrosoftJob::dispatch($instance, $country->iso_3166_2)->onQueue('SyncProducts');
         return $this;
     }

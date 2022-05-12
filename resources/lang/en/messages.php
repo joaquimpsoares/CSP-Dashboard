@@ -378,5 +378,6 @@ return [
     'start_new_term' => 'Start New Term In New Commerce Experience',
     'qualification' => 'qualification|qualifications',
     'select_one' => 'select one',
-    'choose_customer' => 'choose customer'
+    'choose_customer' => 'choose customer',
+    'available_for_purchase' => 'available for purchase',
 ];

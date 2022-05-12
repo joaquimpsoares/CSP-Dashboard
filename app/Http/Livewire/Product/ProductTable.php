@@ -90,12 +90,18 @@ class ProductTable extends Component
     public function deleteSelected()
     {
         $deleteCount = $this->selectedRowsQuery->count();
-
-        $this->selectedRowsQuery->delete();
-
-        $this->showDeleteModal = false;
-
-        $this->notify('You\'ve deleted '.$deleteCount.' transactions');
+        foreach($this->selectedRowsQuery->get() as $row){
+            if($row->hasPrice() != null) {
+                $product = $row->name;
+                $this->notify('','This Product '. $product . ' has a price associated, cannot be deleted','error');
+                $this->showDeleteModal = false;
+                return false;
+            }elseif($row->hasPrice() == null){
+                $this->selectedRowsQuery->delete();
+                $this->showDeleteModal = false;
+            }
+        }
+        $this->notify('You\'ve deleted '.$deleteCount.' Product');
     }
 
 
@@ -125,7 +131,7 @@ class ProductTable extends Component
 
             $product->importPerpetual($instance, $country);
 
-            $this->notify('Import Scheduled for perpetual');
+            $this->notify('Perpetual Software has been scheduled for import');
         }
         $this->showImportModal = false;
     }

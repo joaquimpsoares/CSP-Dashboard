@@ -1,6 +1,6 @@
 @auth
-    <div x-data="{ dropdownOpen: false }" class="relative my-32">
-        <button @click="dropdownOpen = !dropdownOpen" class="bg-white rounded-md relativeblock focus:outline-none">
+    <div x-data="{ dropdownOpen: false }" class="inline-block">
+        <button @click="dropdownOpen = !dropdownOpen" class="p-2 bg-white rounded-md relativeblock focus:outline-none">
             @if (auth()->user()->unreadNotifications->count())
             <span class="sr-only">Notifications</span>
             <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
@@ -29,9 +29,8 @@
                     </p>
                 </a>
                 @endforeach
-
             </div>
-            <a href="#" class="block py-2 font-bold text-center text-white bg-gray-800">See all notifications</a>
+            {{-- <a href="#" class="block py-2 font-bold text-center text-white bg-gray-800">See all notifications</a> --}}
         </div>
     </div>
 {{-- <div class="btn-group">

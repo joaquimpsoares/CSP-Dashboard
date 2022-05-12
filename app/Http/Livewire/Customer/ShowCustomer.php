@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Customer;
 
+use App\User;
 use Exception;
 use App\Country;
 use App\Customer;
@@ -11,8 +12,7 @@ use Livewire\Component;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
-use GuzzleHttp\Exception\ClientException;
+use Illuminate\Support\Facades\Hash;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 use Tagydes\MicrosoftConnection\Facades\Subscription as SubscriptionFacade;
@@ -24,9 +24,15 @@ class ShowCustomer extends Component
     public $country;
     public $countries;
     public $statuses;
+    public $email;
+    public $password;
+    public $password_confirmation;
     public Customer $editing;
+    public User $creatingUser;
     public $showEditModal = false;
     public $showconfirmationModal = false;
+    public $showuserCreateModal = false;
+
 
     protected $listeners = ['refreshTransactions' => '$refresh'];
 
@@ -46,7 +52,23 @@ class ShowCustomer extends Component
             'editing.price_list_id' => ['required','integer','exists:price_lists,id'],
             'editing.qualification' => ['nullable', 'string', 'min:1'],
 
+            'creatingUser.name'             => ['sometimes', 'string', 'max:255', 'min:3'],
+            'creatingUser.last_name'        => ['sometimes', 'string', 'max:255', 'min:3'],
+            'creatingUser.socialite_id'     => ['sometimes', 'string', 'max:255', 'min:3'],
+            'creatingUser.phone'            => ['sometimes', 'string', 'max:20', 'min:3'],
+            'creatingUser.address'          => ['sometimes', 'string', 'max:255', 'min:3'],
+            'email'                         => ['required', 'email', 'unique:users', 'max:255', 'min:3'],
+            'creatingUser.status_id'        => ['required', 'integer', 'exists:statuses,id'],
+            'password'                      => ['same:password_confirmation', 'required', 'min:6'],
+            'password_confirmation'         => ['same:password', 'required', 'min:6'],
+
         ];
+    }
+    public function makeBlankTransactionUser(){return User::make(['date' => now(), 'status' => 'success']);}
+
+    public function mount()
+    {
+        $this->creatingUser = $this->makeBlankTransactionUser();
     }
 
     public function checkQualificationStatus(Customer $customer){
@@ -217,6 +239,25 @@ class ShowCustomer extends Component
         }
     }
 
+    public function enableUser(User $user){
+        if($user->status_id == 1){
+            $this->notify(' ', 'User ' . $user->name . ' already Enabled', 'info');
+            return false;
+        }
+    }
+
+    public function deleteUser(User $user){
+        $user->delete();
+        $this->notify(' ', 'User ' . $user->name . ' Deleted successfully', 'info');
+        $this->emit('refreshTransactions');
+    }
+
+    public function addUser(){
+        $this->creatingUser = $this->makeBlankTransactionUser();
+        $this->showEditModal = true;
+        $this->showuserCreateModal = true;
+    }
+
     public function save(Customer $customer){
         // $this->validate();
         DB::beginTransaction();
@@ -252,6 +293,45 @@ class ShowCustomer extends Component
         $this->notify('Customer ' . $customer->company_name . ' saved successfully, refresh page');
         $this->emit('refreshTransactions');
 
+    }
+
+    public function saveuser(Customer $customer){
+        $user = User::create ([
+            'email'                     => $this->email,
+            'name'                      => $this->creatingUser->name,
+            'last_name'                 => $this->creatingUser->last_name,
+            'address'                   => $this->creatingUser->address,
+            'phone'                     => $this->creatingUser->phone,
+            'notifications_preferences' => 'database',
+            'country_id'                => $customer->country_id,
+            'password'                  => Hash::make($this->password),
+            'user_level_id'             => 6, //customer role id = 6
+            'status_id'                 => 1,
+            'customer_id'               => $customer->id,
+            // 'notify'                 => $this->sendInvitation ?? false,
+        ]);
+
+        $user->assignRole(config('app.customer'));
+
+        $this->notify(' ', 'User ' . $user->name . ' Created successfully', 'info');
+        $this->emit('refreshTransactions');
+
+        $this->showuserCreateModal = false;
+        $this->showEditModal = false;
+    }
+
+    public function disableUser(User $user){
+        if($user->status_id == 2){
+            $this->notify(' ', 'User ' . $user->name . ' already disabled', 'info');
+            return false;
+        }
+        $user->fill([
+            'status_id' => '2',
+        ]);
+        $user->save();
+        $this->notify(' ', 'User ' . $user->name . ' Disabled successfully', 'info');
+
+        $this->emit('refreshTransactions');
     }
 
     public function render(Customer $customer){

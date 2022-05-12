@@ -38,7 +38,7 @@ class OrderTable extends Component
 
     public function getRowsQueryProperty()
     {
-        $query = Order::query()->orderBy('id', 'DESC');
+        $query = Order::query();
 
         $orders = $query
         ->where(function ($q)  {
@@ -53,12 +53,12 @@ class OrderTable extends Component
         return $this->applySorting($orders);
     }
 
-    public function getRowsProperty()
-    {
+    public function getRowsProperty(){
         return $this->cache(function () {
             return $this->applyPagination($this->rowsQuery);
         });
     }
+
     public function render()
     {
 //         $stripe = new \Stripe\StripeClient(

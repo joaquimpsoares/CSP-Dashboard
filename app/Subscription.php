@@ -463,8 +463,12 @@ class Subscription extends Model
         return $this->belongsTo(Customer::class);
     }
 
-    public function migration(){
-        return $this->hasone(Ncemigration::class);
+    public function migratedTo(){
+        return $this->hasOne(Ncemigration::class, 'new_subscription_id', 'id');
+    }
+
+    public function migratedToOrders(){
+        return $this->hasMany(Order::class, 'subscription_id', 'currentSubscriptionId');
     }
 
     public function orders(){

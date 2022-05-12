@@ -107,24 +107,18 @@ public function newFromCartToken($token)
                 'term_duration' => $product->pivot->term_duration ?? null
             ]);
         }
-
             $cart->delete();
-
             DB::commit();
-
         } catch (\PDOException $e) {
             DB::rollBack();
             return false;
         }
-
-
         return $order;
     }
 
     private function createOrderFromCart($cart)
     {
         $order = new Order();
-
         $order->customer_id = $cart->customer_id;
         $order->domain = $cart->domain;
         $order->token = $cart->token;
@@ -134,16 +128,13 @@ public function newFromCartToken($token)
         $order->agreement_email = $cart->agreement_email;
         $order->agreement_phone = $cart->agreement_phone;
         $order->comments = $cart->comments;
-
         $order->save();
 
         return $order;
 
     }
 
-    public function UpdateMSSubscription($subscription, $request)
-    {
-
+    public function UpdateMSSubscription($subscription, $request){
 
         $amount = collect($request->amount)->diff(collect($subscription->amount));
         $billing_period = collect($request->billing_period)->diff(collect($subscription->billing_period));
@@ -177,9 +168,7 @@ public function newFromCartToken($token)
 
     }
 
-
-    public function ImportProductsMicrosoftOrder()
-    {
+    public function ImportProductsMicrosoftOrder(){
 
         $order = new Order();
 
@@ -192,8 +181,5 @@ public function newFromCartToken($token)
         return $order;
 
     }
-
-
-
 
 }

@@ -5,20 +5,15 @@ namespace App\Http\Livewire\Pricelist;
 use App\Csv;
 use App\Price;
 use App\Product;
-use App\Instance;
 use App\PriceList;
 use Livewire\Component;
-use PhpParser\JsonDecoder;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Livewire\DataTable\WithSorting;
 use App\Http\Livewire\DataTable\WithCachedRows;
 use App\Http\Livewire\DataTable\WithBulkActions;
-use PHPUnit\Framework\MockObject\Stub\ReturnSelf;
 use App\Http\Livewire\DataTable\WithPerPagePagination;
 
 class ShowPricelist extends Component
@@ -35,7 +30,7 @@ class ShowPricelist extends Component
     public $priceList;
     public $products;
     public $search = '';
-
+    public $isAvailable = true;
     public $keyword;
     public $searchproduct;
     public $query;
@@ -67,15 +62,17 @@ class ShowPricelist extends Component
         })->orderBy('name')->get();
    }
 
-   public function updatingSearch(){$this->resetPage();}
-   public function makeBlankTransaction() { return Price::make(['date' => now(), 'status' => 'success']); }
-   public function resetFilters(){
-    $this->resetPage();
-    $this->reset('filters');
+    public function updatingSearch(){$this->resetPage();}
+    public function makeBlankTransaction() { return Price::make(['date' => now(), 'status' => 'success']); }
+    public function resetFilters(){
+        $this->resetPage();
+        $this->reset('filters');
     }
-   public function resetDate() { $this->reset(['taskduedate']); }
-   public function toggleShowFilters() { $this->showFilters = ! $this->showFilters; }
-   public function mount() {  $this->editing = $this->makeBlankTransaction(); }
+    public function resetDate() { $this->reset(['taskduedate']); }
+    public function toggleShowFilters() { $this->showFilters = ! $this->showFilters; }
+    public function mount() {
+        $this->editing = $this->makeBlankTransaction();
+    }
 
     public function rules() {
         if ($this->showCreate == true){
@@ -90,8 +87,6 @@ class ShowPricelist extends Component
             ];
         }else{
         return [
-            // 'fieldColumnMap.name'           => 'required',
-            // 'fieldColumnMap.product_sku'    => 'required',
             'editing.name'                  => 'required|min:3',
             'editing.market'                => 'required|min:2',
             'editing.currency'              => 'required|min:2',
@@ -213,6 +208,7 @@ class ShowPricelist extends Component
     }
 
     public function edit(Price $price){
+        $this->isAvailable = $price->related_product->is_available_for_purchase;
         $this->showEditModal = true;
         $this->showCreate = false;
         $this->useCachedRows();
@@ -228,6 +224,8 @@ class ShowPricelist extends Component
     public function save(){
         $this->validate();
         $this->editing->save();
+        $this->editing->product->is_available_for_purchase = $this->isAvailable;
+        $this->editing->product->save();
         $this->showCreate = false;
         $this->showEditModal = false;
         $this->notify('You\'ve updated '.  $this->editing->name .' prices');
@@ -287,25 +285,16 @@ class ShowPricelist extends Component
     public function deleteSelected(){
         $deleteCount = $this->selectedRowsQuery->count();
         foreach($this->selectedRowsQuery->get() as $row){
-            if($row->related_product->IsSubscribed() == null) {
-                $this->selectedRowsQuery->delete();
+            if($row->related_product->IsSubscribed() != null) {
+                $this->notify('','The price '. $row->name . ' is already subscribed, cannot be deleted','error');
                 $this->showDeleteModal = false;
-            }else{
-                $deleted = $row->name;
-                $this->notify('This price '. $deleted . 'is already subscribed, cannot be deleted');
+                return false;
+            }elseif($row->related_product->IsSubscribed() == null){
+                $this->selectedRowsQuery->delete();
                 $this->showDeleteModal = false;
             }
         }
         $this->notify('You\'ve deleted '.$deleteCount.' Price');
-    }
-
-    public function sortByColumn($column){
-        if ($this->sortColumn == $column) {
-            $this->sortDirection = $this->sortDirection == 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->reset('sortDirection');
-            $this->sortColumn = $column;
-        }
     }
 
     public function updatedQuery(){
@@ -351,6 +340,7 @@ class ShowPricelist extends Component
                 $q->where('category', 'like', "%{$this->search}%");
             });
         });
+
         return $this->applySorting($prices);
     }
 
@@ -378,6 +368,7 @@ class ShowPricelist extends Component
         }else{
             $customers='';
         }
+
         $this->categories = Product::groupBy('category')->pluck('category');
         return view('livewire.pricelist.show-pricelist',[
             'prices' => $this->rows,

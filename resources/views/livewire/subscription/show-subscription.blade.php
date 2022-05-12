@@ -483,6 +483,17 @@
                                                             {{$subscription->amount}}
                                                         </td>
                                                         <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
+
+                                                            @if($subscription->IsMigrated())
+                                                            @if($subscription->migratedTo->orders->first() != null)
+                                                            @if($subscription->migratedTo->orders->first()->orderproduct != null)
+                                                            <span class="inline text-sm font-normal leading-5">
+                                                                {{number_format(($subscription->migratedTo->orders->first()->orderproduct->retail_price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                            </span>
+                                                            @endif
+                                                            @endif
+                                                            @endif
+
                                                             @if($subscription->orders->first() != null)
                                                             @if($subscription->orders->first()->orderproduct != null)
                                                             @if($subscription->product->IsPerpetual())
@@ -519,12 +530,25 @@
 
                             <div class="ml-6">
                                 <div class="mt-4 mb-8"><ol class="relative border-l border-gray-200 dark:border-gray-700">
+                                    @if($subscription->IsMigrated())
+                                    @foreach ($subscription->migratedTo->orders->sortByDesc('id') as $item)
+                                    <li class="mb-10 ml-6">
+                                        <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-200 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                            <svg class="w-3 h-3 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
+                                        </span>
+                                        <h3 class="flex items-center mb-1 text-lg font-semibold text-gray-900 dark:text-white">{{$subscription->name}} <span class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ml-3">Latest</span></h3>
+                                        <time class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">{{$item->created_at}}</time>
+                                        <p class="mb-3 text-base font-normal text-gray-500 dark:text-gray-400">{{$item->details}}</p>
+                                    </li>
+                                    @endforeach
+                                    @endif
+
                                     @foreach ($subscription->orders->sortByDesc('id') as $item)
                                     <li class="mb-10 ml-6">
                                         <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-200 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
                                             <svg class="w-3 h-3 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
                                         </span>
-                                        {{-- <h3 class="flex items-center mb-1 text-lg font-semibold text-gray-900 dark:text-white">{{$subscription->name}} <span class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ml-3">Latest</span></h3> --}}
+                                        <h3 class="flex items-center mb-1 text-lg font-semibold text-gray-900 dark:text-white">{{$subscription->name}} <span class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ml-3">Latest</span></h3>
                                         <time class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">{{$item->created_at}}</time>
                                         <p class="mb-3 text-base font-normal text-gray-500 dark:text-gray-400">{{$item->details}}</p>
                                     </li>

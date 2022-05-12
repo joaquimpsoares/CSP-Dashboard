@@ -14,7 +14,6 @@ class CartCounter extends Component
 
     private $cart;
 
-
     public $qty;
     public $cycle;
     public $terms;
@@ -30,6 +29,7 @@ class CartCounter extends Component
     public $city_id = '';
 
     protected $listeners = ['updateCart' => 'render'];
+
     // protected $listener = ['updateCartCount' => 'open'];
 
     public $cartOpen = false;
@@ -43,14 +43,13 @@ class CartCounter extends Component
 
     protected $rules =
     [
-        'company_name'=> ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-        'billing_cycle'=> ['required', 'string'],
+        'company_name'=> 'required|exists:customers,id',
+        // 'billing_cycle'=> 'sometimes|string',
     ];
 
-    // public function updated($propertyName){$this->validateOnly($propertyName);}
+    public function updated($propertyName){$this->validateOnly($propertyName);}
 
-    public static  function getUserCart($id = null, $token = null)
-    {
+    public static  function getUserCart($id = null, $token = null){
         $user = Auth::user();
         if (empty($token)) {
             if (empty($id)) {
@@ -64,8 +63,7 @@ class CartCounter extends Component
         return $cart;
     }
 
-    public function removeItem($item_id)
-    {
+    public function removeItem($item_id){
         $cart = $this->getUserCart();
         $product = $cart->products->first(function ($value) use ($item_id) {
             return $value->pivot->id == $item_id;
@@ -75,10 +73,11 @@ class CartCounter extends Component
             $cart->delete();
         }
         $cart->products()->wherePivot('id', $item_id)->detach();
+        $this->emit('updateCart');
+
     }
 
-    public function increaseQuantity($id, $qty)
-    {
+    public function increaseQuantity($id, $qty){
         $cart = $this->getUserCart();
         $product = $cart->products->first(function ($value) use ($id) {
             return $value->pivot->id == $id;
@@ -88,8 +87,7 @@ class CartCounter extends Component
         $this->emit('updateCart');
     }
 
-    public function decreaseQuantity($id, $qty)
-    {
+    public function decreaseQuantity($id, $qty){
         $cart = $this->getUserCart();
 
         $product = $cart->products->first(function ($value) use ($id) {
@@ -101,8 +99,7 @@ class CartCounter extends Component
         $this->emit('updateCart');
     }
 
-    public function changeQty($value, $id)
-    {
+    public function changeQty($value, $id){
         $cart = $this->getUserCart();
         $product = $cart->products->first(function ($value) use ($id) {
             return $value->pivot->id == $id;
@@ -112,8 +109,8 @@ class CartCounter extends Component
         $this->qty = $value;
     }
 
-    public function setCustomer(Customer $customer)
-    {
+    public function setCustomer(Customer $customer){
+        $this->customer =$customer;
         $cart = $this->getUserCart();
         $productId = $cart->products->first(function ($customer) {
             return $customer->pivot->id;
@@ -130,9 +127,7 @@ class CartCounter extends Component
         $this->emit('updateCart');
     }
 
-
-    public function checkLimits($customer, $product)
-    {
+    public function checkLimits($customer, $product){
         if($product->IsSubscribed()){
             $limit = $customer->subscriptions->where('product_id', $product->sku)->count();
             if($limit !=  null){
@@ -169,6 +164,42 @@ class CartCounter extends Component
         $this->emit('updateCart');
     }
 
+    public function cartHasTenant($cart) {
+        $hasTenant = false;
+
+        foreach ($cart['products'] as $product) {
+            if ($product->vendor === "microsoft") {
+                $hasTenant = true;
+                break;
+            }
+            if(strtolower($product->vendor) === "microsoft corporation"){
+                $hasTenant = true;
+                break;
+            }
+        }
+
+        return $hasTenant;
+    }
+
+    public function checkout(){
+        $this->validate();
+        $customerTenant = null;
+
+
+        if($this->customer->microsoftTenantInfo->first() != null){
+            $customerTenant = explode('.onmicrosoft.com',  $this->customer->microsoftTenantInfo->first()->tenant_domain);
+            $customerTenant = $customerTenant[0];
+        }
+
+        $cart = $this->getUserCart();
+
+        if ($this->cartHasTenant($cart))
+        return redirect()->route('cart.tenant', ['cart' => $cart->token, 'customerTenant' => $customerTenant]);
+        else
+        return redirect()->route('cart.review', ['cart' => $cart->token]);
+
+        // $this->emit('updateCart');
+    }
 
     public function render(){
         $user = Auth::user();
@@ -210,7 +241,7 @@ class CartCounter extends Component
 
         return view('livewire.store.cart-counter', [
             'cartAmount' => $cartAmount,
-            'cart' => $cart
+            'cart' => $cart,
         ]);
     }
 }

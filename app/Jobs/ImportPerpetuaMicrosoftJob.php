@@ -39,10 +39,9 @@ class ImportPerpetuaMicrosoftJob implements ShouldQueue
     public function handle()
     {
         $instance = $this->instance;
-        Log::info('instance: '.$instance);
+        Log::info('instance: '.$instance->name);
         Log::info('Country: '.$this->country);
 
-        try {
 
             $this->queueProgress(0);
 
@@ -52,38 +51,37 @@ class ImportPerpetuaMicrosoftJob implements ShouldQueue
             $importCount = 0;
             $products->each(function ($importedProduct) use ($instance, $importCount) {
                 $importedProduct->each(function ($importedProduct) use ($instance, $importCount) {
+                    // dd($importedProduct->supportedBillingCycles);
                     $product = Product::updateOrCreate([
-                        'sku'                       => $importedProduct->productId.':'.$importedProduct->id,
                         'instance_id'               => $instance->id,
+                        'vendor'                    => 'microsoft',
+                        'sku'                       => $importedProduct->productId.':'.$importedProduct->id,
+                        'catalog_item_id'           => $importedProduct->productId.':'.$importedProduct->id,
                         'name'                      => $importedProduct->title,
-                        'catalog_item_id'           => $importedProduct->catalogItemId,
-                        'description'               => $importedProduct->description,
-                        'uri'                       => $importedProduct->uri,
-                        'supported_billing_cycles'  => $importedProduct->supportedBillingCycles,
                     ], [
+                        'description'               => $importedProduct->description,
                         'productType'               => "Perpetual Software",
-                        'is_perpetual'              => true,
+                        'term'                      => 'one_time',
+                        'is_available_for_purchase' => true,
+                        'has_addons'                => false,
+                        'addons'                    => "[]",
                         'billing'                   => "software",
                         'category'                  => "Perpetual Software",
-                        'addons'                    => "[]",
-
+                        'is_perpetual'              => true,
+                        'supported_billing_cycles'  => ["one_time"],
                         'minimum_quantity'          => $importedProduct->minimumQuantity,
                         'maximum_quantity'          => $importedProduct->maximumQuantity,
                         'is_trial'                  => $importedProduct->isTrial,
-                        'limit'                     => $importedProduct->limit,
-                        'term'                      => $importedProduct->term,
-                        'locale'                    => $importedProduct->locale,
+                        'uri'                       => $importedProduct->uri,
                     ]);
+                    Log::info('Imported Product'.$product->name);
                     $importCount++;
+                    Log::info('Imported '. $importCount.' transactions!');
                 });
             });
-            Log::info('Imported '.$importCount.' transactions!');
             $this->queueProgress(90);
 
-        } catch (Exception $e) {
-            Log::info('Error importing products: '.$e->getMessage());
-            Log::info('Error: '.$e->getMessage());
-        }
+
         Log::info('Imported '.$importCount.' transactions!');
 
         $this->queueProgress(100);

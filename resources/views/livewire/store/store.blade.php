@@ -1,33 +1,20 @@
 <div>
     <main class="px-4 mx-auto sm:px-6 lg:px-8"  x-data="{'layout': 'grid'}">
-        <div class="mx-auto mt-6 bg-transparent border rounded-md dark:border-gray-700 lg:w-96 focus-within:ring ring-primary focus-within:border-teal-500">
-            <div class="relative" x-data="{ search: '' }">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-400" aria-hidden="true">
-                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd">
-                    </path>
-                </svg>
-            </div>
-            <input wire:model.debounce.300ms="keyword" class="w-full h-12 pr-4 text-gray-800 placeholder-gray-400 bg-transparent border-0 pl-11 focus:ring-0 sm:text-sm" placeholder="Search..." id="headlessui-combobox-input-6" role="combobox" type="text" aria-expanded="true" value="" aria-controls="headlessui-combobox-options-7"
-            @if(isset($selectedProduct)) value="{{$selectedProduct}}" @endif>
-            @if(isset($searchproduct))
-            <ul class="pb-2 space-y-2 overflow-y-auto max-h-80 scroll-pt-11 scroll-pb-2" id="options" role="listbox">
-                <li role="none">
-                    @foreach ($searchproduct as $index => $item)
-                    @php
-                        // dd($item->get()->groupBy('productType'));
-                    @endphp
-                    <h2 class="bg-gray-100 py-2.5 px-4 text-xs font-semibold text-gray-900" role="none">
-                    </h2>
-                    <ul class="mt-2 text-sm text-gray-800">
-                        <li class="px-4 py-2 cursor-default select-none" id="option-{{$index}}" role="option" tabindex="-1">{{$item->name}}</li>
-                        @endforeach
-                    </ul>
-                </li>
-            </ul>
-            @endif
-        </div>
+
         <div class="relative flex items-baseline justify-between pt-8 pb-6 border-b border-gray-200">
-            <div class="flex items-center col-span-5 sm:col-span-3">
+
+            <div class="text-sm font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                <div class="w-full max-w-lg ml-3 lg:max-w-xs">
+                    <label for="search" class="sr-only">Search</label>
+                    <div class="relative text-gray-400 focus-within:text-gray-500">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <input wire:model="search" id="search" class="block w-full bg-white py-1.5 pl-10 pr-3 border border-gray-300 rounded-md leading-5 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 focus:placeholder-gray-500 sm:text-sm" placeholder="Search" type="search" name="search">
+                    </div>
+                </div>
             </div>
             <div class="flex items-center col-span-5 sm:col-span-3">
                 <x-input.group borderless paddingless for="perPage" label="Per Page">

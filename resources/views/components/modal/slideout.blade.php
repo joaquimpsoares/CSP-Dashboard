@@ -3,7 +3,7 @@
 <x-slideout :id="$id" :maxWidth="$maxWidth" {{ $attributes }}>
     <div class="flex flex-col h-full divide-y divide-gray-200 shadow-xl">
         <div class="flex flex-col flex-1 min-h-0 py-6 overflow-y-scroll">
-            <div class="px-4 bg-gray-50 sm:px-6">
+            <div class="px-4 sm:px-6">
                 <div class="flex items-start justify-between">
                     <h2 class="text-lg font-medium text-gray-900" id="slide-over-title">
                         {{ $title }}
@@ -24,7 +24,6 @@
         </div>
         <div class="flex justify-end flex-shrink-0 px-4 py-4">
             {{ $footer }}
-
         </div>
     </div>
 </x-slideout>

@@ -29,20 +29,20 @@ class DatabaseNotifications extends Component
         return view('components.database-notifications');
     }
 
-    public function sendNotification()
-    {
-        $user = User::first();
+    // public function sendNotification()
+    // {
+    //     $user = User::first();
 
-        $details = [
-            'greeting' => 'Hi Artisan',
-            'body' => 'This is my first notification from RajTechnologies.com',
-            'thanks' => 'Thank you for using RajTechnologies.com tuto!',
-            'actionText' => 'View My Site',
-            'actionURL' => url('/'),
-            'order_id' => 101
-        ];
+    //     $details = [
+    //         'greeting' => 'Hi Artisan',
+    //         'body' => 'This is my first notification from RajTechnologies.com',
+    //         'thanks' => 'Thank you for using RajTechnologies.com tuto!',
+    //         'actionText' => 'View My Site',
+    //         'actionURL' => url('/'),
+    //         'order_id' => 101
+    //     ];
 
-        Notification::send($user, new UserNotification($details));
+    //     Notification::send($user, new UserNotification($details));
 
-    }
+    // }
 }

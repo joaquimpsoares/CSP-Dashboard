@@ -37,8 +37,7 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
-        dd('d');
-         return redirect('/home');
+         return redirect('/home#');
     }
     /**
     * Create a new controller instance.

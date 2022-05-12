@@ -140,7 +140,12 @@
                         <dl>
                             <div class="py-1 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.company_name', 1)) }}</dt>
-                                <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{$reseller->provider->company_name}}</dd>
+                                    <dd class="flex items-center text-sm font-medium text-gray-500 capitalize sm:mr-6 sm:mt-0">
+                                    {{$reseller->provider->company_name}}</dd>
+                                    <a  class="text-sm text-gray-500 " href="{{$reseller->provider->format()['path']}}}}">
+                                        <x-icon.external class="flex-shrink-0 w-5 h-5 text-gray-400"></x-icon.external>
+                                    </a>
+                                </dd>
                             </div>
                             <div class="py-1 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.main_contact', 1)) }}</dt>
@@ -347,7 +352,6 @@
             </tbody>
         </table>
     </div>
-
 </div>
 <form wire:submit.prevent="disable({{$reseller->id}})">
     <x-modal.confirmation wire:model.defer="showconfirmationModal">
