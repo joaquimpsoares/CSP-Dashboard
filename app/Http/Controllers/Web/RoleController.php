@@ -79,9 +79,6 @@ class RoleController extends Controller
 
     public function updateAll(Request $request) {
 
-
-
-
         /*foreach ($request->permission as $key => $value) {
                 $permissions[$key] = 'boolean';
         }*/
