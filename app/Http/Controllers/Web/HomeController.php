@@ -174,7 +174,7 @@ class HomeController extends Controller
 
 
 
-                $chartDataCurrentCustomerByDay = [];
+                $chartDataSubscriptionYear = [];
                 foreach ($subscriptionsperMonth as $data) {
                     $chartDataSubscriptionYear[$data['monthname']] = $data['count'];
                     // $chartDataCurrentCustomerByDay[] = $data['count'];
@@ -197,17 +197,17 @@ class HomeController extends Controller
                     $Top5LicensesSubscriptions[$data['name']] = $data['total'];
                 }
 
-                $orderrecord = Order::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
-                ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
-                ->groupBy('day_name','month')
-                ->orderBy('month')
-                ->get();
+                // $orderrecord = Order::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
+                // ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
+                // ->groupBy('day_name','month')
+                // ->orderBy('month')
+                // ->get();
 
-                $customerrecord = Customer::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
-                ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
-                ->groupBy('day_name','month')
-                ->orderBy('month')
-                ->get();
+                // $customerrecord = Customer::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
+                // ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
+                // ->groupBy('day_name','month')
+                // ->orderBy('month')
+                // ->get();
 
                 // $sales = MsftInvoices::
                 // select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
