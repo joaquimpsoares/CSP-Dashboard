@@ -138,7 +138,7 @@
             <div class="p-4">
                 <div class="flex items-center">
                     <div class="text-xs font-medium text-gray-500 uppercase">{{ucwords(trans_choice('messages.customer', 2))}}</div>
-                    <div class="ml-auto text-gray-500">Last 30 days</div>
+                    <div class="ml-auto text-gray-500">{{ucwords(trans_choice('messages.last_30Days', 2))}}</div>
                 </div>
                 <div class="flex items-center">
                     <div class="text-2xl font-semibold">{{array_sum($chartDataCurrentCustomerByDay)}}</div>
@@ -161,7 +161,7 @@
                 tooltip: { x: { show: false } },
                 series: [
                 {
-                    name: "orders",
+                    name: "{{ucwords(trans_choice('messages.order', 2))}}",
                     data: {!! json_encode($ChartRevenew) !!},
                 }
                 ]
@@ -196,7 +196,7 @@
                 colors: ["#20c439", "#a8aeb7"],
                 series: [
                 {
-                    name: "Aktywacje",
+                    name: "{{ucwords(trans_choice('messages.reseller', 2))}}",
                     data: {!! json_encode($chartDataCurrentResellerByDay) !!},
                 }
                 ]
@@ -213,13 +213,12 @@
                 colors: ["#c48020", "#a8aeb7"],
                 series: [
                 {
-                    name: "Aktywacje",
+                    name: "{{ucwords(trans_choice('messages.customer', 2))}}",
                     data: {!! json_encode($chartDataCurrentCustomerByDay) !!},
                 }
                 ]
             }).render();
         });
-
     </script>
 
 

@@ -446,16 +446,11 @@ class HomeController extends Controller
                 ->get()
                 ->toArray();
 
-                // dd($top5Products);
 
                 $Top5LicensesSubscriptions = [];
                 foreach ($top5Products as $data) {
                     $Top5LicensesSubscriptions[$data['name']] = $data['total'];
                 }
-
-                // dd($top5Products,$Top5LicensesSubscriptions);
-
-
 
                 // $orderrecord = Order::select(DB::raw("COUNT(*) as count"),
                 // \DB::raw("MONTHNAME(created_at) as day_name"),
