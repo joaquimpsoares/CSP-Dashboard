@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Web;
 use App\News;
 use App\User;
 use App\Order;
-use App\Models\Status;
 use App\Country;
 use App\Customer;
 use App\Instance;
@@ -13,6 +12,7 @@ use App\Provider;
 use App\Reseller;
 use Carbon\Carbon;
 use App\Subscription;
+use App\Models\Status;
 use App\OrderProducts;
 use App\Models\Activities;
 use App\Models\LogActivity;
@@ -77,7 +77,125 @@ class HomeController extends Controller
                 $providers = Provider::get();
                 $customers = Customer::get();
 
-                $news = News::orderBy('id', 'DESC')->take(2)->get();
+                $news = News::orderBy('id', 'DESC')->take(4)->get();
+
+                $subscriptions = $this->subscriptionRepository->all();
+                $news = News::orderBy('created_at', 'desc')->take(4)->get();
+
+
+                $previousMonth = Order::select([
+                    DB::raw('DATE(created_at) AS date'),
+                    DB::raw('COUNT(id) AS count'),
+                ])
+                ->whereMonth('created_at', Carbon::now()->subMonth(1)->month)
+                ->groupBy('date')
+                ->orderBy('date', 'ASC')
+                ->get()
+                ->toArray();
+
+                $chartDataPreviousByDay = [];
+                foreach ($previousMonth as $data) {
+                    $chartDataPreviousByDay[] = $data['count'];
+                }
+
+                $currentMonth = Order::select([
+                    DB::raw('DATE(created_at) AS date'),
+                    DB::raw('COUNT(id) AS count'),
+                ])
+                ->whereMonth('created_at', [Carbon::now()->subMonth(0)->month])
+                ->groupBy('date')
+                ->orderBy('date', 'ASC')
+                ->get()
+                ->toArray();
+
+
+                $chartDataCurrentByDay = [];
+                foreach ($currentMonth as $data) {
+                    // $chartDataCurrentByDay[$data['date']] = $data['count'];
+                    $chartDataCurrentByDay[] = $data['count'];
+                }
+
+                $chartDataTotalOrders = array_sum($chartDataCurrentByDay)+array_sum($chartDataPreviousByDay);
+
+
+                $revenue = Order::select()
+                ->with('orderproduct','subscriptions')
+                ->where('order_status_id', '4')
+                ->whereMonth('created_at', [Carbon::now()->subMonth(0)->month])
+                ->get();
+
+                $ChartRevenew = [];
+                foreach ($revenue as $data) {
+                    if($data->orderproduct != null){
+                        $ChartRevenew[] = $data->orderproduct['retail_price']*$data->orderproduct['quantity'];
+                    }
+                }
+
+                $resellercurrentMonth = Reseller::select([
+                    DB::raw('DATE(created_at) AS date'),
+                    DB::raw('COUNT(id) AS count'),
+                ])
+                ->whereMonth('created_at', [Carbon::now()->subMonth(0)->month])
+                ->groupBy('date')
+                ->orderBy('date', 'ASC')
+                ->get()
+                ->toArray();
+
+                $chartDataCurrentResellerByDay = [];
+                foreach ($resellercurrentMonth as $data) {
+                    // $chartDataCurrentByDay[$data['date']] = $data['count'];
+                    $chartDataCurrentResellerByDay[] = $data['count'];
+                }
+
+                $customercurrentMonth = Customer::select([
+                    DB::raw('DATE(created_at) AS date'),
+                    DB::raw('COUNT(id) AS count'),
+                ])
+                ->whereMonth('created_at', [Carbon::now()->subMonth(0)->month])
+                ->groupBy('date')
+                ->orderBy('date', 'ASC')
+                ->get()
+                ->toArray();
+
+                $chartDataCurrentCustomerByDay = [];
+                foreach ($customercurrentMonth as $data) {
+                    // $chartDataCurrentByDay[$data['date']] = $data['count'];
+                    $chartDataCurrentCustomerByDay[] = $data['count'];
+                }
+
+                $subscriptionsperMonth = Subscription::select(
+                    DB::raw('SUM(amount) AS count'),
+                    DB::raw("MONTHNAME(created_at) as monthname"))
+                    ->whereYear('created_at', date('Y', strtotime('-1 year')))
+                    ->where('billing_type', 'license')
+                    ->groupBy('monthname')
+                    ->get()
+                    ->toArray();
+
+
+
+                $chartDataCurrentCustomerByDay = [];
+                foreach ($subscriptionsperMonth as $data) {
+                    $chartDataSubscriptionYear[$data['monthname']] = $data['count'];
+                    // $chartDataCurrentCustomerByDay[] = $data['count'];
+                }
+
+
+            $top5Products = Subscription::select('name')
+                ->where('status_id', '1')
+                ->selectRaw('COALESCE(sum(amount),0) total')
+                ->groupBy('id')
+                ->orderBy('total','desc')
+                ->take(5)
+                ->get()
+                ->toArray();
+
+                // dd($top5Products);
+
+                $Top5LicensesSubscriptions = [];
+                foreach ($top5Products as $data) {
+                    $Top5LicensesSubscriptions[$data['name']] = $data['total'];
+                }
 
                 $orderrecord = Order::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
                 ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
@@ -132,7 +250,8 @@ class HomeController extends Controller
             $invoicelabel = [];
             $invoicedata = [];
 
-            return view('home', compact('orders','providers','resellers','customers','subscriptions','news',
+            return view('home', compact('Top5LicensesSubscriptions', 'chartDataSubscriptionYear','chartDataCurrentCustomerByDay','chartDataCurrentResellerByDay',
+            'ChartRevenew','chartDataTotalOrders','chartDataCurrentByDay', 'chartDataPreviousByDay','orders','providers','resellers','customers','subscriptions','news',
                 'orderdata','orderlabel','customerlabel','customerdata','invoicelabel','invoicedata'));
             break;
 
@@ -183,7 +302,9 @@ class HomeController extends Controller
                 }])->get();
 
 
-                return view('home', compact('providers','provider','orders','countOrders','customersweek','topProducts','invoicelabel','invoicedata'));
+                return view('home', compact('Top5LicensesSubscriptions', 'chartDataSubscriptionYear','chartDataCurrentCustomerByDay','chartDataCurrentResellerByDay',
+                'ChartRevenew','chartDataTotalOrders','chartDataCurrentByDay', 'chartDataPreviousByDay','providers','provider','orders','countOrders','customersweek','topProducts',
+                'invoicelabel','invoicedata'));
 
             break;
 
@@ -212,80 +333,198 @@ class HomeController extends Controller
                 $resellers = $this->resellerRepository->all();
                 $customers = $this->customerRepository->all();
 
-                $customersweek = Customer::whereMonth(
-                    'created_at', '=', Carbon::now()->subWeekdays('1')
-                )->get();
+                // $customersweek = Customer::whereMonth(
+                //     'created_at', '=', Carbon::now()->subWeekdays('1')
+                // )->get();
 
                 $subscriptions = $this->subscriptionRepository->all();
+                $news = News::orderBy('created_at', 'desc')->take(4)->get();
 
-                $news = News::orderBy('created_at', 'desc')->take(2)->get();
+                $previousMonth = Order::select([
+                    DB::raw('DATE(created_at) AS date'),
+                    DB::raw('COUNT(id) AS count'),
+                ])
+                ->whereMonth('created_at', Carbon::now()->subMonth(1)->month)
+                ->groupBy('date')
+                ->orderBy('date', 'ASC')
+                ->get()
+                ->toArray();
 
-                $orderrecord = Order::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
-                ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
-                ->groupBy('day_name','month')
-                ->orderBy('month')
-                ->get();
-
-                foreach($orderrecord as $row) {
-                    $orderlabel['label'][] = json_encode($row->day_name);
-                    $orderdata['data'][] = (int) $row->count;
+                $chartDataPreviousByDay = [];
+                foreach ($previousMonth as $data) {
+                    $chartDataPreviousByDay[] = $data['count'];
                 }
 
-                if(!$orderrecord->isEmpty()){
-                    $orderlabel = $orderlabel['label'];
-                    $orderdata  = $orderdata['data'];
-                }else{
-                    $orderlabel = ['0'];
-                    $orderdata  = ['0'];
-                };
+                $currentMonth = Order::select([
+                    DB::raw('DATE(created_at) AS date'),
+                    DB::raw('COUNT(id) AS count'),
+                ])
+                ->whereMonth('created_at', [Carbon::now()->subMonth(0)->month])
+                ->groupBy('date')
+                ->orderBy('date', 'ASC')
+                ->get()
+                ->toArray();
 
 
-                  $customerrecord = Customer::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
-                ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
-                ->groupBy('day_name','month')
-                ->orderBy('month')
+                $chartDataCurrentByDay = [];
+                foreach ($currentMonth as $data) {
+                    // $chartDataCurrentByDay[$data['date']] = $data['count'];
+                    $chartDataCurrentByDay[] = $data['count'];
+                }
+
+                $chartDataTotalOrders = array_sum($chartDataCurrentByDay)+array_sum($chartDataPreviousByDay);
+
+
+                $revenue = Order::select()
+                ->with('orderproduct','subscriptions')
+                ->where('order_status_id', '4')
+                ->whereMonth('created_at', [Carbon::now()->subMonth(0)->month])
                 ->get();
 
-                 foreach($customerrecord as $row) {
-                    $customerlabel['label'][] = json_encode($row->day_name);
-                    $customerdata['data'][] = (int) $row->count;
-                  }
-                  if(!$customerrecord->isEmpty()){
-                  $customerlabel = $customerlabel['label'];
-                  $customerdata  = $customerdata['data'];
-                }else{
-                    $customerlabel = ['0'];
-                    $customerdata  = ['0'];
-                };
+                $ChartRevenew = [];
+                foreach ($revenue as $data) {
+                    if($data->orderproduct != null){
+                        $ChartRevenew[] = $data->orderproduct['retail_price']*$data->orderproduct['quantity'];
+                    }
+                }
 
-                  $sales = MsftInvoices::
-                select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
-                ->whereyear('invoiceDate', Carbon::today()->year)
-                ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
-                ->orderBy('invoiceDate', 'asc')
-                ->get();
+                $resellercurrentMonth = Reseller::select([
+                    DB::raw('DATE(created_at) AS date'),
+                    DB::raw('COUNT(id) AS count'),
+                ])
+                ->whereMonth('created_at', [Carbon::now()->subMonth(0)->month])
+                ->groupBy('date')
+                ->orderBy('date', 'ASC')
+                ->get()
+                ->toArray();
+
+                $chartDataCurrentResellerByDay = [];
+                foreach ($resellercurrentMonth as $data) {
+                    // $chartDataCurrentByDay[$data['date']] = $data['count'];
+                    $chartDataCurrentResellerByDay[] = $data['count'];
+                }
+
+                $customercurrentMonth = Customer::select([
+                    DB::raw('DATE(created_at) AS date'),
+                    DB::raw('COUNT(id) AS count'),
+                ])
+                ->whereMonth('created_at', [Carbon::now()->subMonth(0)->month])
+                ->groupBy('date')
+                ->orderBy('date', 'ASC')
+                ->get()
+                ->toArray();
+
+                $chartDataCurrentCustomerByDay = [];
+                foreach ($customercurrentMonth as $data) {
+                    // $chartDataCurrentByDay[$data['date']] = $data['count'];
+                    $chartDataCurrentCustomerByDay[] = $data['count'];
+                }
+
+                $subscriptionsperMonth = Subscription::select(
+                    DB::raw('SUM(amount) AS count'),
+                    DB::raw("MONTHNAME(created_at) as monthname"))
+                    ->whereYear('created_at', date('Y', strtotime('-1 year')))
+                    ->where('billing_type', 'license')
+                    ->groupBy('monthname')
+                    ->get()
+                    ->toArray();
 
 
-                foreach($sales as $row) {
-                    $invoicelabel['label'][] = json_encode($row->date);
-                    $invoicedata['data'][] = (int) $row->total;
-                  }
-                  if(!$sales->isEmpty()){
-                  $invoicelabel = $invoicelabel['label'];
-                  $invoicedata  = $invoicedata['data'];
-                }else{
-                    $invoicelabel = ['0'];
-                    $invoicedata  = ['0'];
-                };
 
-                return view('home', compact('resellers','orders','countOrders','customersweek','provider','customers',
-                'subscriptions','news','orderdata','orderlabel','customerlabel','customerdata','invoicelabel','invoicedata'));
+                $chartDataCurrentCustomerByDay = [];
+                foreach ($subscriptionsperMonth as $data) {
+                    $chartDataSubscriptionYear[$data['monthname']] = $data['count'];
+                    // $chartDataCurrentCustomerByDay[] = $data['count'];
+                }
 
 
+            $top5Products = Subscription::select('name')
+                ->where('status_id', '1')
+                ->selectRaw('COALESCE(sum(amount),0) total')
+                ->groupBy('id')
+                ->orderBy('total','desc')
+                ->take(5)
+                ->get()
+                ->toArray();
+
+                // dd($top5Products);
+
+                $Top5LicensesSubscriptions = [];
+                foreach ($top5Products as $data) {
+                    $Top5LicensesSubscriptions[$data['name']] = $data['total'];
+                }
+
+                // dd($top5Products,$Top5LicensesSubscriptions);
+
+
+
+                // $orderrecord = Order::select(DB::raw("COUNT(*) as count"),
+                // \DB::raw("MONTHNAME(created_at) as day_name"),
+                // \DB::raw("MONTH(created_at) as month"))
+                // ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
+                // ->groupBy('day_name','month')
+                // ->orderBy('month')
+                // ->get();
+
+
+                // foreach($orderrecord as $row) {
+                //     $orderlabel['label'][] = json_encode($row->day_name);
+                //     $orderdata['data'][] = (int) $row->count;
+                // }
+
+                // if(!$orderrecord->isEmpty()){
+                //     $orderlabel = $orderlabel['label'];
+                //     $orderdata  = $orderdata['data'];
+                // }else{
+                //     $orderlabel = ['0'];
+                //     $orderdata  = ['0'];
+                // };
+
+
+                //   $customerrecord = Customer::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
+                // ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
+                // ->groupBy('day_name','month')
+                // ->orderBy('month')
+                // ->get();
+
+                //  foreach($customerrecord as $row) {
+                //     $customerlabel['label'][] = json_encode($row->day_name);
+                //     $customerdata['data'][] = (int) $row->count;
+                //   }
+                //   if(!$customerrecord->isEmpty()){
+                //   $customerlabel = $customerlabel['label'];
+                //   $customerdata  = $customerdata['data'];
+                // }else{
+                //     $customerlabel = ['0'];
+                //     $customerdata  = ['0'];
+                // };
+
+                //   $sales = MsftInvoices::
+                // select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
+                // ->whereyear('invoiceDate', Carbon::today()->year)
+                // ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
+                // ->orderBy('invoiceDate', 'asc')
+                // ->get();
+
+
+                // foreach($sales as $row) {
+                //     $invoicelabel['label'][] = json_encode($row->date);
+                //     $invoicedata['data'][] = (int) $row->total;
+                //   }
+                //   if(!$sales->isEmpty()){
+                //   $invoicelabel = $invoicelabel['label'];
+                //   $invoicedata  = $invoicedata['data'];
+                // }else{
+                //     $invoicelabel = ['0'];
+                //     $invoicedata  = ['0'];
+                // };
+
+                return view('home', compact('Top5LicensesSubscriptions', 'chartDataSubscriptionYear','chartDataCurrentCustomerByDay','chartDataCurrentResellerByDay',
+                'ChartRevenew','chartDataTotalOrders','chartDataCurrentByDay', 'chartDataPreviousByDay','resellers','orders',
+                'countOrders','provider','customers', 'subscriptions','news'));
             break;
 
             case config('app.reseller'):
-
                 $countCustomers = $user->reseller->customers->count();
                 $subscriptions = $this->resellerRepository->getSubscriptions($user->reseller);
                 $countSubscriptions = $subscriptions->count();

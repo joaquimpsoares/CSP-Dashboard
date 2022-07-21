@@ -86,7 +86,6 @@ class ImportTransactions extends Component
                     ]);
                     logger($price->getChanges());
                 Log::info('Price list updated with: '. $price['product_sku'].' name: '. $price['name'].' Billing: ' .$price['billing_plan'].' term duration: ' .$price['term_duration']  );
-                // logger('get changes: '. $price->getChanges());
                 } catch (\exception $th) {
                 }
                 $importCount++;
@@ -104,6 +103,7 @@ class ImportTransactions extends Component
         $attributes = collect($this->fieldColumnMap)
         ->filter()
         ->mapWithKeys(function($heading, $field) use ($row) {
+            logger($row);
             return [$field => $row[$heading]];
         })->toArray();
         return $attributes + [
@@ -124,7 +124,7 @@ class ImportTransactions extends Component
             'name'          => ['skutitle','SkuTitle'],
             'product_sku'   => ['skuid'],
             'price'         => ['unitprice','UnitPrice'],
-            'msrp'          => ['erp price','ERP Price'],
+            'msrp'          => ['erp price','ERP Price','erp','ERP'],
         ];
         foreach ($this->columns as $column) {
             $match = collect($guesses)->search(fn($options) => in_array(strtolower($column), $options));

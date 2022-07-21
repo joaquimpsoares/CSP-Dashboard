@@ -13,6 +13,7 @@
 @php
 $totalPrice = null;
 @endphp
+
 <section class="product_description_area">
     <div class="container">
         <div class="align-self-center">
@@ -24,13 +25,13 @@ $totalPrice = null;
                                 <div class="row">
                                     <div class="col">
                                         <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                            <li class="nav-item">
+                                            {{-- <li class="nav-item">
                                                 <a class="nav-link" href="#home" onclick="event.preventDefault(); document.getElementById('changeCustomer').submit();">{{ ucwords(trans_choice('messages.customer', 1)) }}</a>
                                                 <form id="changeCustomer" method="post" action="{{ route('cart.change.customer') }}">
                                                     @csrf
                                                     <input type="hidden" name="cart" value="{{ $cart->token }}" />
                                                 </form>
-                                            </li>
+                                            </li> --}}
                                             @if($hasTenant)
                                             <li class="nav-item">
                                                 <a class="nav-link"href="#" onclick="event.preventDefault(); document.getElementById('changeTenant').submit();">{{ ucwords(trans_choice('messages.tenant', 1)) }}</a>

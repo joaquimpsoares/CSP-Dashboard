@@ -8,8 +8,6 @@ use Illuminate\Support\Str;
 use Livewire\WithPagination;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use App\Exports\SubscriptionsExport;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Database\Eloquent\Builder;
 use App\Http\Livewire\DataTable\WithSorting;
 use App\Exceptions\UpdateSubscriptionException;
@@ -101,7 +99,8 @@ class SubscriptionTable extends Component
 
         $this->showEditModal = false;
         DB::beginTransaction();
-        $before = $this->subscription->amount;
+        // $before = $this->subscription->amount;
+        // dd($this->editing->getOriginal('amount'));
 
         $this->editing->update();
 
@@ -165,7 +164,7 @@ class SubscriptionTable extends Component
             }
 
             try {
-                $update =$this->editing->changeAmount($this->editing->amount, $this->editing->autorenew, $before);
+                $update =$this->editing->changeAmount($this->editing->amount, $this->editing->autorenew, $this->editing->getOriginal('amount'));
                 if(Str::contains($update, '800082')){
                     throw new UpdateSubscriptionException($update);
                 }
@@ -225,11 +224,8 @@ class SubscriptionTable extends Component
 
     public function deleteSelected(){
         $deleteCount = $this->selectedRowsQuery->count();
-
         $this->selectedRowsQuery->delete();
-
         $this->showDeleteModal = false;
-
         $this->notify('You\'ve deleted '.$deleteCount.' transactions');
     }
 

@@ -17,7 +17,7 @@ class CheckInstanceExpiration extends Command
     *
     * @var string
     */
-    protected $signature = 'command:name';
+    protected $signature = 'command:CheckInstanceExpiration';
 
     /**
     * The console command description.
@@ -46,14 +46,14 @@ class CheckInstanceExpiration extends Command
         $fechahoy = new DateTime();
         $instances = Instance::get();
         foreach ($instances as $key => $instance) {
+
             if(isset($instance->external_token_updated_at)){
                 $expiration = $instance->external_token_updated_at->addDays(90);
-                foreach ($instance->provider->users->where('user_level_id', 2) as $key => $user) {
+                foreach ($instance->provider->users->where('name', 'Provider') as $key => $user) {
                     $date = new DateTime($expiration);
                     $interval = $fechahoy->diff($date);
                     if ($interval->format('%R%a') <= 90){
-                        Notification::send($user->provider->users, new InstanceAboutToExpire($instance, $interval->format('%R%a')));
-                        $user->update(['notified' => true]);
+                        Notification::send($user, new InstanceAboutToExpire($instance, $interval->format('%R%a')));
                         Log::debug($user->email.' notified');
                     }
                 }

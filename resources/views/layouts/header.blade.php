@@ -6,6 +6,7 @@
                 <i class="fas fa-bars"></i>
             </button>
         </div>
+
         <div class="flex-grow lg:flex" id="navbar-collapse">
             <div class="flex flex-col mt-3 mb-1 lg:flex-row lg:mx-auto lg:mt-0 lg:mb-0">
             </div>
@@ -16,7 +17,9 @@
                 @livewire('search.global-search')
                 <x-database-notifications/>
                 <span class="hidden w-px h-6 mx-4 bg-gray-200 lg:flex" aria-hidden="true"></span>
-                <x-cart/>
+                {{-- <x-cart/> --}}
+                {{-- @livewire('store.cart') --}}
+                @livewire('store.cart-counter')
             </div>
         </div>
     </nav>

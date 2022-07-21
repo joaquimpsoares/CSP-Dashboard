@@ -3,9 +3,12 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use App\Mail\SubscriptionAlertRenew;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
+use NotificationChannels\MicrosoftTeams\MicrosoftTeamsMessage;
 
 class SubscriptionAboutToExpire extends Notification
 {
@@ -19,7 +22,7 @@ class SubscriptionAboutToExpire extends Notification
     public function __construct($details, $days)
     {
         $this->days = $days;
-         $this->details = $details;
+        $this->details = $details;
     }
 
     /**
@@ -30,7 +33,19 @@ class SubscriptionAboutToExpire extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail','database'];
+        return explode(',', $notifiable->notifications_preferences);
+    }
+
+    public function toMicrosoftTeams($notifiable)
+    {
+        return MicrosoftTeamsMessage::create()
+        ->to($notifiable->teams_webhook)
+        ->type('success')
+        ->title('Renew your Microsoft subscriptions to avoid disruption')
+        ->content('You have 1 expired subscriptions that will be disabled on **'. date('j F, Y', strtotime($this->details->expiration_data)) .
+        '** To avoid disruption, renew your subscriptions in **Tagydes Portal** by that date.')
+        ->button('Check Subscription', $this->details->format()['path']);
+        logger('TeamsWebhook '. $notifiable->teams_webhook);
     }
 
     /**
@@ -41,11 +56,8 @@ class SubscriptionAboutToExpire extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-                    ->line("You have a Subscription about to Expire:")
-                    ->line($this->details->name . " days Left to expire: " . $this->days)
-                    ->line('Please Review subscription');
-                    // ->action('Notification Action', url('/'))
+        $mail = new \App\Mail\SubscriptionAlertRenew($this->details);
+        return $mail->locale($notifiable->locale)->to($notifiable->email);
     }
 
     /**
@@ -57,7 +69,10 @@ class SubscriptionAboutToExpire extends Notification
     public function toArray($notifiable)
     {
         return [
-            'data' => "Subscription About to Expire: ".$this->details->name. " days Left to expire: " . $this->days
+            'data' => trans('mail.title_your_microsoft_subscriptions', [
+                    'Expiration Date' => date('j F, Y', strtotime($this->details->expiration_data)),
+                ]
+            )
         ];
     }
 }

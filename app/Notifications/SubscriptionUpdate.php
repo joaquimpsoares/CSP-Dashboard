@@ -18,8 +18,9 @@ class SubscriptionUpdate extends Notification
      *
      * @return void
      */
-    public function __construct($subscription)
+    public function __construct($subscription, $changes)
     {
+        $this->changes = $changes;
         $this->subscription = $subscription;
     }
 
@@ -31,9 +32,6 @@ class SubscriptionUpdate extends Notification
      */
     public function via($notifiable)
     {
-        // dd(explode(',', $notifiable->notifications_preferences));
-
-        // return ['database','mail','msteams' ];
         return explode(',', $notifiable->notifications_preferences);
     }
 
@@ -56,21 +54,34 @@ class SubscriptionUpdate extends Notification
 
     public function toMicrosoftTeams($notifiable)
     {
-        logger('TeamsWebhook '. $notifiable->teams_webhook);
-
-        $status = $this->subscription->status_id == 1 ? 'Running' : 'Suspended';
-        if($status == 'Running'){
-            $type = 'success';
-        }else{
-            $type = 'error';
-        }
-        return MicrosoftTeamsMessage::create()
+        if(collect($this->changes)->has('amount')){
+            return MicrosoftTeamsMessage::create()
             ->to($notifiable->teams_webhook)
-            ->type($type)
+            ->type('success')
             ->title('Subscription Updated')
-            ->content('Subscription ' . $this->subscription->name . ' changed status to '.$status);
-            // ->button('Check User', 'https://foo.bar/users/123');
-    }
+            ->content('Subscription ' . $this->subscription->name . ' changed quantity from ' . $this->subscription->getOriginal('amount') . ' to ' . $this->changes['amount'])
+            ->button('Check subscription', $this->subscription->format()['path']);
+        }
+
+        if(collect($this->changes)->has('status_id')){
+            $status = $this->subscription->status_id == 1 ? 'Running' : 'Suspended';
+            if($status == 'Running'){
+                $type = 'success';
+            }else{
+                $type = 'error';
+            }
+            return MicrosoftTeamsMessage::create()
+                ->to($notifiable->teams_webhook)
+                ->type($type)
+                ->title('Subscription Updated')
+                ->content('Subscription ' . $this->subscription->name . ' changed status to '.$status)
+                ->button('Check subscription', $this->subscription->format()['path']);
+            }
+            logger('TeamsWebhook '. $notifiable->teams_webhook);
+        }
+
+
+
 
     /**
      * Get the array representation of the notification.
@@ -81,9 +92,17 @@ class SubscriptionUpdate extends Notification
     public function toArray($notifiable)
     {
         $status = $this->subscription->status_id == 1 ? 'Running' : 'Suspended';
-        return [
-            'data' => "Subscription " . $this->subscription->name . " changed status to ". $status
-        ];
+        if(collect($this->changes)->has('amount')){
+            return [
+                'data' => 'Subscription ' . $this->subscription->name . ' changed quantity from ' . $this->subscription->getOriginal('amount') . ' to ' . $this->changes['amount']
+            ];
+        }
+
+        if(collect($this->changes)->has('status_id')){
+            return [
+                'data' => "Subscription " . $this->subscription->name . " changed status to ". $status
+            ];
+        }
 
     }
 }

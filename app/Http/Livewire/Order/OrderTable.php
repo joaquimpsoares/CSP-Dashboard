@@ -24,7 +24,6 @@ class OrderTable extends Component
 
     public function updatingSearch(){$this->resetPage();}
 
-
     public function exportSelected()
     {
         return Excel::download(new OrdersExport, 'Orders.xlsx');
@@ -34,6 +33,16 @@ class OrderTable extends Component
     {
         $this->order = $order;
         $this->showEditModal = true;
+    }
+
+    public function resendtoMicrosoft(Order $order){
+        if($order->status->id == 3 || $order->status->id == 1){
+
+            $order->markAsRunning();
+            $order->sendToMicrosoft();
+            $this->notify('','Order Resent to Microsoft Successfully','success');
+        }
+
     }
 
     public function getRowsQueryProperty()
@@ -74,7 +83,6 @@ class OrderTable extends Component
 //             ],
 //             'business_type' => 'company',
 //           ]);
-// dd($tt);
 
 
         return view('livewire.order.order-table', [

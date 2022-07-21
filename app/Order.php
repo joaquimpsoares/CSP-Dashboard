@@ -2,15 +2,16 @@
 
 namespace App;
 
-use App\Jobs\CreateCustomerMicrosoft;
-use App\Jobs\PlaceOrderMicrosoft;
+use Throwable;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
+use App\Jobs\PlaceOrderMicrosoft;
+use App\Services\CheckoutServices;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
-use Throwable;
+use Illuminate\Support\Facades\Auth;
+use App\Jobs\CreateCustomerMicrosoft;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Order extends Model
 {
@@ -36,19 +37,18 @@ class Order extends Model
         ];
     }
 
-    public function createOrder($request, $user){
+    public function createOrder($request, $user, $details){
         $token = Str::uuid();
         $order = new Order();
         $order->token = $token;
         $order->customer_id = $request->customer->id;
         $order->domain = $request->domain;
         $order->user_id = $user['id'];
-        $order->verify = $request->verify;
-        $order->verified = $request->verified;
         $order->agreement_firstname = $request->agreement_firstname;
         $order->agreement_lastname = $request->agreement_lastname;
         $order->agreement_email = $request->agreement_email;
         $order->agreement_phone = $request->agreement_phone;
+        $order->details = $details;
         $order->comments = $request->comments;
         $order->save();
 
@@ -56,20 +56,26 @@ class Order extends Model
     }
 
     public function sendToMicrosoft(){
-        $tenant = MicrosoftTenantInfo::where('tenant_domain', 'like', $this->domain . '%')->first();
 
-        if ($tenant == null) {
-            Bus::chain([
-                new CreateCustomerMicrosoft($this),
-                new PlaceOrderMicrosoft($this)
-            ])->catch(function (Throwable $e) {
-                $this->details = ('Error placing order to Microsoft: ' . $e->getMessage());
-                $this->save();
-            })->onQueue('PlaceordertoMS')->dispatch();
-        } else {
-            PlaceOrderMicrosoft::dispatch($this)->OnQueue('PlaceordertoMS');
-            Log::info('Data to Place order: ' . $this);
-        }
+        $tenant = MicrosoftTenantInfo::where('tenant_domain', 'like', $this->domain . '%')->first();
+        $reseller = $this->customer->resellers->first();
+
+        $co = new CheckoutServices($reseller);
+        $co = $co->scan($reseller->mpnid);
+        if($co == true){
+            if ($tenant == null) {
+                Bus::chain([
+                    new CreateCustomerMicrosoft($this),
+                    new PlaceOrderMicrosoft($this)
+                    ])->catch(function (Throwable $e) {
+                        $this->details = ('Error placing order to Microsoft: ' . $e->getMessage());
+                        $this->save();
+                    })->onQueue('PlaceordertoMS')->dispatch();
+                } else {
+                    PlaceOrderMicrosoft::dispatch($this)->OnQueue('PlaceordertoMS');
+                    Log::info('Data to Place order: ' . $this);
+                }
+            }
     }
 
     public function markAsOrderPlaced(){
@@ -98,6 +104,10 @@ class Order extends Model
 
     public function orderproduct(){
         return $this->belongsTo(OrderProducts::class, 'id', 'order_id');
+    }
+
+    public function subscriptions(){
+        return $this->hasOne(Subscription::class, 'id' , 'subscription_id');
     }
 
     public function status(){

@@ -362,4 +362,11 @@ return [
   'abouttoexpire' => 'sur le point d\'expirer',
   'legacy' => 'héritage',
   'start_new_term' => 'Commencer un nouveau mandat dans une nouvelle expérience commerciale',
+  'qualification' => 'qualification|qualifications',
+  'select_one' => 'sélectionnez-en un',
+  'choose_customer' => 'choisir le client',
+  'available_for_purchase' => 'disponible à l\'achat',
+  'import_subscription' => 'importer des abonnements',
+  'checking' => 'vérification...',
+  'new_order' => 'nouvelle commande',
 ];

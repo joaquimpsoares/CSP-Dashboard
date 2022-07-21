@@ -1,4 +1,4 @@
-<?php
+<?php 
 return [
   'importproducts' => 'Importar productos de Microsoft, programado',
   'jobrescheduled' => 'Trabajo reprogramado',
@@ -362,4 +362,11 @@ return [
   'abouttoexpire' => 'a punto de caducar',
   'legacy' => 'legado',
   'start_new_term' => 'Comience un nuevo término en una nueva experiencia comercial',
+  'qualification' => 'cualificación|cualificaciones',
+  'select_one' => 'Seleccione uno',
+  'choose_customer' => 'elegir cliente',
+  'available_for_purchase' => 'disponible para compra',
+  'import_subscription' => 'importar suscripciones',
+  'checking' => 'comprobación...',
+  'new_order' => 'Nuevo orden',
 ];

@@ -24,7 +24,7 @@
 <!-- P-scroll js-->
 <script src="{{URL::asset('assets/plugins/p-scrollbar/p-scrollbar.js')}}"></script>
 <script src="{{URL::asset('assets/plugins/p-scrollbar/p-scroll1.js')}}"></script>
-
+<script src="{{ asset('bladewind/js/helpers.js') }}" type="text/javascript"></script>
 @yield('js')
 <!-- Custom js-->
 <script src="{{URL::asset('assets/js/custom.js')}}"></script>

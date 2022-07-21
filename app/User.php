@@ -57,6 +57,11 @@ class User extends Authenticatable implements PortableContract
         return $this->belongsTo(Reseller::class);
     }
 
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
+    }
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);

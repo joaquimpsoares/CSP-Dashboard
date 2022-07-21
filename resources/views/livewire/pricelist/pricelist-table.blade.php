@@ -73,9 +73,7 @@
                             <x-table.heading sortable multi-column wire:click="sortBy('name')"          :direction="$sorts['name'] ?? null">{{ ucwords(trans_choice('messages.name', 1)) }}</x-table.heading>
                             <x-table.heading sortable multi-column wire:click="sortBy('description')"   :direction="$sorts['description'] ?? null">{{ ucwords(trans_choice('messages.description', 1)) }}</x-table.heading>
                             <x-table.heading sortable multi-column wire:click="sortBy('provider')"      :direction="$sorts['provider'] ?? null">{{ ucwords(trans_choice('messages.provider', 1)) }}</x-table.heading>
-                            {{-- <x-table.heading sortable multi-column wire:click="sortBy('reseller')"      :direction="$sorts['reseller'] ?? null">{{ ucwords(trans_choice('messages.reseller', 1)) }}</x-table.heading> --}}
                         </x-slot>
-
                         <x-slot name="body">
                             @if ($selectPage)
                             <x-table.row class="bg-cool-gray-200" wire:key="row-message">

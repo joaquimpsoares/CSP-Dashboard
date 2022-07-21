@@ -90,25 +90,25 @@
                                             <div class="grid grid-cols-4 gap-6 mt-0">
                                                 <div class="col-span-4 sm:col-span-2">
                                                     <x-label for="hostname" class="block text-sm font-medium text-gray-700">{{ucwords(trans_choice('messages.hostname', 1))}}</x-label>
-                                                    <x-input wire:click='hostname' type="text" name="hostname" id="hostname" autocomplete="hostname" class="w-full form-input"></x-input>
+                                                    <x-input wire:model='hostname' type="text" name="hostname" id="hostname" autocomplete="hostname" class="w-full form-input"></x-input>
                                                 </div>
 
                                                 <div class="col-span-4 sm:col-span-1">
                                                     <x-label for="port" class="block text-sm font-medium text-gray-700">{{ucwords(trans_choice('messages.port', 1))}}</x-label>
-                                                    <x-input wire:click='port' type="text" name="port" id="port" autocomplete="port" class="w-full form-input" ></x-input>
+                                                    <x-input wire:model='port' type="text" name="port" id="port" autocomplete="port" class="w-full form-input" ></x-input>
                                                 </div>
 
                                                 <div class="col-span-4 sm:col-span-1">
                                                     <x-label for="encryption" class="flex items-center text-sm font-medium text-gray-700">{{ucwords(trans_choice('messages.encryption', 1))}}</x-label>
-                                                    <x-input wire:click='encryption' type="text" name="encryption" id="encryption" autocomplete="encryption" class="w-full form-input"></x-input>
+                                                    <x-input wire:model='encryption' type="text" name="encryption" id="encryption" autocomplete="encryption" class="w-full form-input"></x-input>
                                                 </div>
                                                 <div class="col-span-4 sm:col-span-2">
                                                     <x-label for="username" class="block text-sm font-medium text-gray-700">{{ucwords(trans_choice('messages.username', 1))}}</x-label>
-                                                    <x-input wire:click='username' type="text" name="username" id="username" autocomplete="username" class="w-full form-input"></x-input>
+                                                    <x-input wire:model='username' type="text" name="username" id="username" autocomplete="username" class="w-full form-input"></x-input>
                                                 </div>
                                                 <div class="col-span-4 sm:col-span-2">
                                                     <x-label for="password" class="block text-sm font-medium text-gray-700">{{ucwords(trans_choice('messages.password', 1))}}</x-label>
-                                                    <x-input wire:click='password' type="password" name="password" id="password" autocomplete="password" class="w-full form-input"></x-input>
+                                                    <x-input wire:model='password' type="password" name="password" id="password" autocomplete="password" class="w-full form-input"></x-input>
                                                 </div>
                                             </div>
                                     </section>
@@ -139,12 +139,9 @@
                                 </ul>
                             </div>
                             <div class="flex justify-end px-4 py-4 mt-4 sm:px-6">
-                                <x-a class="inline-flex justify-center px-4 py-2 ml-5 text-sm font-medium " color="red" type="button" >
-                                    Cancel
-                                </x-a>
-                                <x-a type="submit" wire:click='save' class="inline-flex justify-center px-4 py-2 ml-5 text-sm font-medium ">
-                                    Save
-                                </x-a>
+                                <x-button type="submit" wire:click='save' class="inline-flex justify-center px-4 py-2 ml-5 text-sm font-medium ">
+                                    {{ucwords(trans_choice('messages.save', 1))}}
+                                </x-button>
                             </div>
                         </div>
                     </section>

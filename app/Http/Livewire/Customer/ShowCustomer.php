@@ -3,16 +3,26 @@
 namespace App\Http\Livewire\Customer;
 
 use App\User;
+use App\Price;
 use Exception;
 use App\Country;
+use App\Product;
 use App\Customer;
 use App\Instance;
+use App\PriceList;
+use App\Subscription;
 use App\Models\Status;
 use Livewire\Component;
+use Livewire\WithPagination;
+use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Livewire\DataTable\WithSorting;
+use App\Http\Livewire\DataTable\WithCachedRows;
+use App\Http\Livewire\DataTable\WithBulkActions;
+use App\Http\Livewire\DataTable\WithPerPagePagination;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
 use Tagydes\MicrosoftConnection\Facades\Subscription as SubscriptionFacade;
@@ -20,11 +30,16 @@ use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 
 class ShowCustomer extends Component
 {
+    use WithPagination;
+    use WithPerPagePagination, WithCachedRows;
+
     public $customer;
     public $country;
     public $countries;
     public $statuses;
+    public $toImport;
     public $email;
+    public $filtered;
     public $password;
     public $password_confirmation;
     public Customer $editing;
@@ -32,7 +47,87 @@ class ShowCustomer extends Component
     public $showEditModal = false;
     public $showconfirmationModal = false;
     public $showuserCreateModal = false;
+    public $showImportModal = false;
+    public $selectPage = false;
+    public $selectAll = false;
+    public $selected = [];
 
+    public function renderingWithBulkActions(){
+        if ($this->selectAll) $this->selectPageRows();
+    }
+
+    public function selectAll(){
+        $this->selectAll = true;
+    }
+
+    public function updatedSelected(){
+        $this->selectAll = false;
+        $this->selectPage = false;
+    }
+
+    public function updatedSelectPage($value){
+        if ($value) return $this->selectPageRows();
+        $this->selectAll = false;
+        $this->selected = [];
+    }
+
+    public function selectPageRows(){$this->selected = $this->filtered->pluck('id')->map(fn($id) => (string) $id);}
+
+    public function importSelected(){
+
+        $importCount = collect($this->selected)->count();
+
+        try {
+            foreach(collect($this->selected) as $row){
+                $subscription = $this->toImport->where('id', $row)->first();
+                if(collect($subscription)->has('productType')){
+                    $product = explode(':', $subscription['offerId']);
+                    $product = Product::where('sku', $product[0].':'.$product[1])->first();
+                }else{
+                    $product = Product::where('sku', $subscription['offerId'])->first();
+                }
+
+                if(!$product){
+                    $this->showImportModal = false;
+                    $this->notify(' ', 'Check Product exists ' . $subscription['offerName'] .'-'. $subscription['offerId']. ' Subscription','error');
+                }else{
+                    $instanceid = $product->instance_id;
+                    if(collect($subscription)->has('productType')){
+                        $product = explode(':', $subscription['offerId']);
+                        $price = Price::where('instance_id', $instanceid)->where('product_sku', $product[0].':'.$product[1])->first();
+                    }else{
+                        $price = Price::where('instance_id', $instanceid)->where('product_sku', $subscription['offerId'])->first();
+                    }
+
+                    $subscriptions                  = new Subscription();
+                    $subscriptions->name            = $subscription['offerName'];
+                    $subscriptions->subscription_id = $subscription['id'];
+                    $subscriptions->customer_id     = $this->customer->id; //Local customer id
+                    $subscriptions->product_id      = $subscription['offerId'];
+                    $subscriptions->catalog_item_id = $subscription['offerId'] ?? [];
+                    $subscriptions->term            = $subscription['termDuration'] ?? 'none';
+                    $subscriptions->billing_type    = $product->billing ?? 'license';
+                    $subscriptions->instance_id     = $instanceid;
+                    $subscriptions->order_id        = $subscription['orderId'];
+                    $subscriptions->amount          = $subscription['quantity'];
+                    $subscriptions->msrpid          = $this->customer->format()['mpnid'];
+                    $subscriptions->expiration_data = $subscription['commitmentEndDate']; //Set subscription expiration date
+                    $subscriptions->billing_period  = $subscription['billingCycle'];
+                    $subscriptions->currency        = $price->currency;
+
+                    $subscriptions->tenant_name     = $this->customer->microsoftTenantInfo->first()->tenant_domain;
+                    $subscriptions->status_id       = 1;
+                    $subscriptions->save();
+                    $this->showImportModal = false;
+
+                }
+            }
+            $this->notify(' ', 'You\'ve Imported '. $importCount .' - '. $subscriptions->id .' / '. $subscriptions->name .'  Subscription','success');
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
+    }
 
     protected $listeners = ['refreshTransactions' => '$refresh'];
 
@@ -66,29 +161,25 @@ class ShowCustomer extends Component
     }
     public function makeBlankTransactionUser(){return User::make(['date' => now(), 'status' => 'success']);}
 
-    public function mount()
-    {
-        $this->creatingUser = $this->makeBlankTransactionUser();
-    }
+    public function mount(){$this->creatingUser = $this->makeBlankTransactionUser();}
+    public function updated($propertyName){$this->validateOnly($propertyName);}
 
     public function checkQualificationStatus(Customer $customer){
 
         $return = $customer->checkCustomerQualification($customer);
 
         if(!$return->isempty()){
-        $this->customer->update([
-            'qualification_status' => $return[0]['vettingStatus'],
-        ]);
-        if($return[0]['vettingStatus'] == 'Denied'){
             $this->customer->update([
-                'qualification' => $return[0]['vettingReason'],
+                'qualification_status' => $return[0]['vettingStatus'],
             ]);
-        }
+            if($return[0]['vettingStatus'] == 'Denied'){
+                $this->customer->update([
+                    'qualification' => $return[0]['vettingReason'],
+                ]);
+            }
         }
         $this->emit('refreshTransactions');
-
     }
-    public function updated($propertyName){$this->validateOnly($propertyName);}
 
     public function edit(Customer $customer){
         $this->editing = $customer;
@@ -118,7 +209,7 @@ class ShowCustomer extends Component
                 $subscriptions->update(['status_id' => 2]);
 
             } catch (Exception $e) {
-                return Redirect::back()->with('danger','Error Placing order to Microsoft: '.$e->getMessage());
+                $this->notify('danger','Error Placing order to Microsoft: '.$e->getMessage());
                 Log::info('Error Placing order to Microsoft: '.$e->getMessage());
             }
         }
@@ -149,7 +240,7 @@ class ShowCustomer extends Component
                 $subscriptions->update(['status_id' => 1]);
 
             } catch (Exception $e) {
-                return Redirect::back()->with('danger','Error Placing order to Microsoft: '.$e->getMessage());
+                $this->notify('danger','Error Placing order to Microsoft: '.$e->getMessage());
                 Log::info('Error Placing order to Microsoft: '.$e->getMessage());
             }
         }
@@ -193,25 +284,29 @@ class ShowCustomer extends Component
                     'lastName' => 'Apellido',
                     'email' => 'bill@tagydes.com',
                 ]);
+
                 $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->CheckCustomerSubscriptions($customer);
+                $this->toImport = collect($resources['items']);
+                $resources = collect($resources['items']);
 
-                foreach ($resources['items'] as $key => $subscription) {
-
-                    $subscriptions->each(function ($item, $key) use($subscription) {
-                        if ($item->where('subscription_id', $subscription['id'])->first()) {
-                            if ($subscription['quantity'] != $item->amount) {
-                                dd($item->amount, $subscription['quantity']);
-                            }
-                        }
-                    });
-                    // dd($customer->subscriptopns->each()where('subscription_id', $subscription->id)->first());
-                    if($subscription->id == $customer->subscriptopns->find($subscription->id)){
-                        dd($subscription);
+                if($resources->count() <> $subscriptions->count()){
+                    $this->filtered = $resources->whereNotIn('id', $subscriptions->pluck('subscription_id'));
+                    if(!$this->filtered->isempty()){
+                        $this->showImportModal = true;
+                    }else{
+                        $this->notify(' ', 'We didn\'t found subscription(s) to import', 'info');
+                        return false;
                     }
+                    return $this->filtered;
+                }else{
+                    $this->notify(' ', 'We didn\'t found subscription(s) to import', 'info');
+                    return false;
                 }
 
-                return $resources;
+
             } catch (\Throwable $th) {
+                $this->notify(' ', 'We found error(s), contact your administrator', 'error');
+                logger($th->getMessage());
 
             }
         }
@@ -264,21 +359,21 @@ class ShowCustomer extends Component
         $this->editing->save();
         if(collect($this->editing->getChanges())->has('qualification')){
             try {
-               $return = $this->editing->updateCustomerQualification($customer, $this->editing->qualification);
+                $return = $this->editing->updateCustomerQualification($customer, $this->editing->qualification);
 
-               if ($return['vettingStatus'] == 'Denied') {
-                $this->notify('', $return['vettingReason'] ,'error' );
-                DB::rollBack();
-                $this->editing->qualification_status = $return['vettingReason']->update();
-                return false;
-            }
+                if ($return['vettingStatus'] == 'Denied') {
+                    $this->notify('', $return['vettingReason'] ,'error' );
+                    DB::rollBack();
+                    $this->editing->qualification_status = $return['vettingReason']->update();
+                    return false;
+                }
 
-            if ($return['vettingStatus'] == 'InReview') {
-                $customer->update([
-                    'qualification_status' => $return['vettingStatus']
-                ]);
-                $this->notify('','Your Qualification is '. $return['vettingStatus'] ,'info' );
-            }
+                if ($return['vettingStatus'] == 'InReview') {
+                    $customer->update([
+                        'qualification_status' => $return['vettingStatus']
+                    ]);
+                    $this->notify('','Your Qualification is '. $return['vettingStatus'] ,'info' );
+                }
 
             } catch (\Throwable $th) {
                 DB::rollBack();

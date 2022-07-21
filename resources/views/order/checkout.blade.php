@@ -24,9 +24,9 @@
                                     <div class="row">
                                         <div class="col">
                                             <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                                <li class="nav-item">
+                                                {{-- <li class="nav-item">
                                                     <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home">{{ ucwords(trans_choice('messages.customer', 1)) }}</a>
-                                                </li>
+                                                </li> --}}
                                                 @if($hasTenant)
                                                 <li class="nav-item">
                                                     <a class="nav-link" id="profile-tab" data-toggle="tab" href="#">{{ ucwords(trans_choice('messages.tenant', 1)) }}</a>
@@ -38,7 +38,7 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    <div class="tab-content pt-4">
+                                    {{-- <div class="pt-4 tab-content">
                                         @if(Auth::user()->userLevel->name !== config('app.customer'))
                                         <div class="row">
                                             <div class="col-sm-6">
@@ -104,7 +104,7 @@
                                                     <br>
                                                     <div class="float-sm-right">
                                                         <div class="col-sm-6">
-                                                            {{-- <button class="btn btn-secondary">{{ ucwords(trans_choice('messages.next', 1)) }} <i class="fe fe-arrow-right"></i></button> --}}
+                                                            <button class="btn btn-secondary">{{ ucwords(trans_choice('messages.next', 1)) }} <i class="fe fe-arrow-right"></i></button>
                                                         </div>
                                                     </div>
                                                 </form>
@@ -126,7 +126,7 @@
                                             </div>
                                         </form>
                                         @endif
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 @include('order.partials.side')
                             </div>

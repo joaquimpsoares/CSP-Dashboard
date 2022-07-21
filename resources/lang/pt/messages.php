@@ -362,4 +362,11 @@ return [
   'abouttoexpire' => 'prestes a expirar',
   'legacy' => 'legado',
   'start_new_term' => 'Iniciar novo período na nova experiência de comércio',
+  'qualification' => 'qualificação|qualificações',
+  'select_one' => 'selecione um',
+  'choose_customer' => 'escolha o cliente',
+  'available_for_purchase' => 'disponível para compra',
+  'import_subscription' => 'importar assinaturas',
+  'checking' => 'verificando...',
+  'new_order' => 'nova ordem',
 ];

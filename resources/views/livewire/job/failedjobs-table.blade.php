@@ -90,10 +90,10 @@
                                 </x-table.row>
                                 @endif
                                 @forelse ($failedjobs as $transaction)
-                                @php
+                                {{-- @php
                                 $jsonpayload = json_decode($transaction->payload);
                                 $data = unserialize($jsonpayload->data->command);
-                                @endphp
+                                @endphp --}}
                                 <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $transaction['id'] }}">
                                     <x-table.cell class="pr-0">
                                         <x-input.checkbox wire:model="selected" value="{{ $transaction['id'] }}" ></x-input.checkbox>
@@ -120,9 +120,7 @@
                                     </x-table.cell>
                                     <x-table.cell>
                                         <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
-                                            <textarea disabled rows="8" name="requestbody" id="requestbody" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                                {{json_encode(json_decode($transaction), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)}}
-                                            </textarea>
+                                            <textarea disabled rows="8" name="requestbody" id="requestbody" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">{{json_encode(json_decode($transaction), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)}}</textarea>
                                             {{-- <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                 </span>

@@ -189,9 +189,9 @@ return [
         App\Providers\SubscriptionRepositoryServiceProvider::class,
         App\Providers\OrderRepositoryServiceProvider::class,
 
-        Spatie\Permission\PermissionServiceProvider::class,
+        // Spatie\Permission\PermissionServiceProvider::class,
         Webpatser\Countries\CountriesServiceProvider::class,
-        Lab404\Impersonate\ImpersonateServiceProvider::class,
+        // Lab404\Impersonate\ImpersonateServiceProvider::class,
         \SocialiteProviders\Manager\ServiceProvider::class,
         NotificationChannels\MicrosoftTeams\MicrosoftTeamsServiceProvider::class,
     ],

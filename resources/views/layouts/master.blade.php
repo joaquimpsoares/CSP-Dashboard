@@ -13,8 +13,11 @@
 
     <!-- Alpine -->
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <link href="{{ asset('bladewind/css/animate.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bladewind/css/bladewind-ui.min.css') }}" rel="stylesheet" />
 
     @livewireStyles
+
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@1.2.3/dist/trix.css">
     <script src="https://unpkg.com/@popperjs/core@2"></script>
@@ -63,10 +66,10 @@
     @yield('footer')
 </body>
 </html>
-<script>
+{{-- <script>
     tippy('#myButton2', {
         animation: 'fade',
         delay: [0,500],
         content: "{{ ucwords(trans_choice('messages.stop_impersonation', 2)) }}",
     });
-</script>
+</script> --}}

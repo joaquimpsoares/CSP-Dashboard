@@ -43,9 +43,13 @@ class OrderController extends Controller
 
         $order = $this->orderRepository->newFromCartToken($validate['token']);
 
-        $order->sendToMicrosoft();
+        $response = $order->sendToMicrosoft();
 
-        return view('store.index')->with(['alert' => 'success', 'message' => trans('messages.order_placed_susscessfully')]);
+        if($response == true){
+            return view('store.index')->with(['alert' => 'success', 'message' => trans('messages.order_placed_susscessfully')]);
+        }
+
+        return view('store.index')->with(['alert' => 'error', 'message' => trans('messages.mpnid')]);
     }
 
     public function syncproducts(Request $request){

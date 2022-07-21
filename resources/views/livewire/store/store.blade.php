@@ -12,13 +12,13 @@
                                 <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                             </svg>
                         </div>
-                        <input wire:model="search" id="search" class="block w-full bg-white py-1.5 pl-10 pr-3 border border-gray-300 rounded-md leading-5 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 focus:placeholder-gray-500 sm:text-sm" placeholder="Search" type="search" name="search">
+                        <input wire:model="search" id="search" class="block w-full bg-white py-1.5 pl-10 pr-3 border-gray-300 rounded-md focus:placeholder-gray-500 sm:text-sm" placeholder="Search" type="search" name="search">
                     </div>
                 </div>
             </div>
             <div class="flex items-center col-span-5 sm:col-span-3">
                 <x-input.group borderless paddingless for="perPage" label="Per Page">
-                    <x-input.select class="block w-full bg-white py-1.5 pl-10 pr-3 border border-gray-300 rounded-md leading-5 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 focus:placeholder-gray-500 sm:text-sm" wire:model="perPage" id="perPage">
+                    <x-input.select class="block w-full bg-white py-1.5 pl-10 pr-3 border-gray-300 rounded-md focus:placeholder-gray-500 sm:text-sm" wire:model="perPage" id="perPage">
                         <option value="12">12</option>
                         <option value="25">25</option>
                         <option value="50">50</option>
@@ -159,7 +159,7 @@
                                             </div>
                                             <p tabindex="{{$index}}" class="mt-2 text-xs text-gray-600 focus:outline-none">
                                                 {{ \Illuminate\Support\Str::limit($price->related_product->description, 90, $end='...') }}
-                                                <p  wire:click="showDetails({{ $price->related_product->id }})" href="">Read More...</p>
+                                                <p class="mt-2 text-xs text-gray-600 cursor-pointer focus:outline-none " wire:click="showDetails({{ $price->related_product->id }})" href="">Read More...</p>
                                             </p>
                                             <div class="flex mt-4">
                                                 @if($price->term_duration)

@@ -1,80 +1,114 @@
-@extends('layouts.master')
-
-@section('content')
-
-<div class=" mx-auto px-4 sm:px-6 lg:max-w-8xl lg:px-6">
-    {{-- <div class="py-14"> --}}
-        <div class="flex flex-col space-y-8 ">
-            <div class="mx-auto lg:w-auto">
-                <div id="carouselExampleCrossfade" class="relative carousel slide carousel-fade" data-bs-ride="carousel">
-                    <div class="absolute bottom-0 left-0 right-0 flex justify-center p-0 mb-4 carousel-indicators">
-                        <button type="button" data-bs-target="#carouselExampleCrossfade" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                        <button type="button" data-bs-target="#carouselExampleCrossfade" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                        <button type="button" data-bs-target="#carouselExampleCrossfade" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                    </div>
-                    <div class="relative w-full overflow-hidden carousel-inner rounded-2xl">
-                        <div class="float-left w-full carousel-item active">
-                            <img src="https://mdbcdn.b-cdn.net/img/new/slides/041.webp" class="block w-full h-96" alt="Wild Landscape"/>
-                        </div>
-                        <div class="float-left w-full carousel-item">
-                            <img src="https://mdbcdn.b-cdn.net/img/new/slides/042.webp" class="block w-full h-96" alt="Camera"/>
-                        </div>
-                        <div class="float-left w-full carousel-item">
-                            <img src="https://mdbcdn.b-cdn.net/img/new/slides/043.webp" class="block w-full h-96" alt="Exotic Fruits"/>
-                        </div>
-                    </div>
-                    <button class="absolute top-0 bottom-0 left-0 flex items-center justify-center p-0 text-center border-0 carousel-control-prev hover:outline-none hover:no-underline focus:outline-none focus:no-underlinen type="buttonn data-bs-target="#carouselExampleCrossfaden data-bs-slide="prev">
-                        <span class="inline-block bg-no-repeat carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="absolute top-0 bottom-0 right-0 flex items-center justify-center p-0 text-center border-0 carousel-control-next hover:outline-none hover:no-underline focus:outline-none focus:no-underline" type="button" data-bs-target="#carouselExampleCrossfade" data-bs-slide="next">
-                        <span class="inline-block bg-no-repeat carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
+<div class="mx-auto md:max-w-5xl pt-14">
+    <div>
+        <dl class="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-3">
+            <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
+                <dt class="text-sm font-medium text-gray-500 truncate">{{ ucwords(trans_choice('messages.subscription', 2)) }}</dt>
+                <dd class="mt-1 text-3xl font-semibold text-gray-900">{{$subscriptions->count()}}</dd>
             </div>
 
-            <section aria-labelledby="products-heading" class="mt-8">
-                <h2 id="products-heading" class="sr-only">Products</h2>
-                <div class="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:gap-x-8  px-12">
-                    @foreach ($subscriptions as $subscription)
-                    <div class="bg-white shadow-xl rounded-lg overflow-hidden">
-                        <div class="bg-cover bg-center h-16 p-4 flex items-center" style="background-image: url(https://mosscm.com/wp-content/uploads/2017/11/news-dallas-skyline.jpg)">
-                            <p class="uppercase tracking-widest text-sm text-white bg-black py-1 px-2 rounded opacity-75 shadow-lg">{{$subscription->product->productType}}</p>
-                        </div>
-                        <div class="p-4 text-gray-700 flex justify-between">
-                            <div>
-                                <p class="text-2xl text-gray-900 font-bold">{{$subscription->name}}
-                                </p>
-                                <p class="text-sm text-gray-900">
-                                    {{$subscription->product_id}}
-                                </p>
+            <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
+                <dt class="text-sm font-medium text-gray-500 truncate">{{ ucwords(trans_choice('messages.licenses', 2)) }}</dt>
+                <dd class="mt-1 text-3xl font-semibold text-gray-900">{{$subscriptions->sum('amount')}}</dd>
+            </div>
 
-                            </div>
-                            <div class="leading-loose text-sm">
-                                <div class="flex items-center">
-                                    <p class="uppercase tracking-widest text-sm text-white bg-black py-1 px-2 rounded opacity-75 shadow-lg">{{ucwords(trans_choice($subscription->status->name, 1))}}</p>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-center p-4 border-t border-gray-300 text-gray-600">
-                            <div class="flex items-center">
-                                <p><span class="text-gray-900 font-bold">Quantity</span> <span class="text-sm">{{$subscription->amount}}</span></p>
-                            </div>
-                            <div class="flex items-center">
-                                <p><span class="text-gray-900 font-bold">term</span> <span class="text-sm">{{$subscription->term}}</span></p>
-                            </div>
-                            <div class="flex items-center">
-                                <p><span class="text-gray-900 font-bold">Billing</span> <span class="text-sm">{{$subscription->billing_period}}</span></p>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </section>
-
+            <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
+                <dt class="text-sm font-medium text-gray-500 truncate">{{ ucwords(trans_choice('messages.subscription', 2)) }}</dt>
+                <dd class="mt-1 text-3xl font-semibold text-gray-900">58.16%</dd>
+            </div>
+        </dl>
+    </div>
+    <div class="mt-4">
+        <div class="sm:hidden" x-description="Dropdown menu on small screens">
+            <label for="current-tab" class="sr-only">Select a tab</label>
+            <select wire:model="filters" id="current-tab" name="current-tab" class="block w-full py-2 pl-3 pr-10 text-base border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <option wire:click="legacy">{{ ucwords(trans_choice('messages.legacy', 1)) }}</option>
+                <option wire:click="perpetual">{{ ucwords(trans_choice('messages.perpetual_software', 1)) }}</option>
+                <option wire:click="expiration" selected="">{{ ucwords(trans_choice('messages.abouttoexpire', 1)) }}</option>
+                <option wire:click="nce" >{{ ucwords(trans_choice('messages.nce', 1)) }}</option>
+            </select>
         </div>
+        <div class="hidden sm:block" x-description="Tabs at small breakpoint and up" >
+            <div class="border-b border-gray-200">
+                <nav class="flex -mb-px space-x-8" x-data="{tab: 1}">
+                    <a wire:click="resetFilters" class="px-1 pb-4 text-sm font-medium text-gray-500 whitespace-nowrap" :class="{'z-20 text-indigo-600 border-b-2 border-indigo-500': tab === 1}" href="#" @click.prevent="tab = 1">
+                        {{ ucwords(trans_choice('messages.all', 1)) }}
+                    </a>
+                    <a href="#" wire:click="legacy" class="px-1 pb-4 text-sm font-medium text-gray-500 whitespace-nowrap" :class="{'z-20 text-indigo-600 border-b-2 border-indigo-500': tab === 2}" href="#" @click.prevent="tab = 2" @click.prevent="tab = 2">
+                        {{ ucwords(trans_choice('messages.legacy', 1)) }}
+                    </a>
+                    <a href="#" wire:click="perpetual" class="px-1 pb-4 text-sm font-medium text-gray-500 whitespace-nowrap" :class="{'z-20 text-indigo-600 border-b-2 border-indigo-500': tab === 3}" href="#" @click.prevent="tab = 3" @click.prevent="tab = 3">
+                        {{ ucwords(trans_choice('messages.perpetual_software', 1)) }}
+                    </a>
+                    <a href="#" wire:click="expiration" class="px-1 pb-4 text-sm font-medium text-gray-500 whitespace-nowrap" :class="{'z-20 text-indigo-600 border-b-2 border-indigo-500': tab === 4}" href="#" @click.prevent="tab = 4" @click.prevent="tab = 4">
+                        {{ ucwords(trans_choice('messages.abouttoexpire', 1)) }}
+                    </a>
+                    <a href="#" wire:click="nce" class="px-1 pb-4 text-sm font-medium text-gray-500 whitespace-nowrap" :class="{'z-20 text-indigo-600 border-b-2 border-indigo-500': tab === 5}" href="#" @click.prevent="tab = 5" @click.prevent="tab = 5">
+                        {{ ucwords(trans_choice('messages.nce', 1)) }}
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <section class="flex flex-col px-6 py-6 mt-8 mb-16 overflow-hidden rounded-md shadow-lg ">
+            <div class="px-4 py-5 bg-white border-b border-gray-200 sm:px-6">
+                <h3 class="text-lg font-medium leading-6 text-gray-900">{{ ucwords(trans_choice('messages.subscription', 2)) }}</h3>
+            </div>
+            <div class="px-4 bg-white border-gray-200 sm:px-6">
+                <x-bladewind.table striped="true" has_shadow="true" divider="thin" class="rounded-md ">
+                    <x-slot name="header">
+                        <th>{{ ucwords(trans_choice('messages.name', 1)) }}</th>
+                        <th>{{ ucwords(trans_choice('messages.product_term', 1)) }}</th>
+                        <th>{{ ucwords(trans_choice('messages.billing', 1)) }}</th>
+                        <th>{{ ucwords(trans_choice('messages.amount', 1)) }}</th>
+                        <th>{{ ucwords(trans_choice('messages.status', 1)) }}</th>
+                    </x-slot>
+                    @foreach ($subscriptions as $subscription)
+                    <tr>
+                        <td class="text-left ">
+                            <a href="{{$subscription->format()['path']}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                {{$subscription->name}}
+                            </a>
+                        </td>
+                        <td class="text-left ">
+                            {{$subscription->term}}
+                        </td>
+                        <td class="text-left ">
+                            {{$subscription->billing_period}}
+                        </td>
+                        <td class="text-left ">
+                            {{$subscription->amount}}
+                        </td>
+                        <td class="text-left ">
+                            @if($subscription->status->name == "messages.canceled")
+                            <p class="text-sm text-red-500 ">
+                                <svg class="inline-block w-5 h-5 mr-1" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span class="text-xs text-gray-500">{{ ucwords(trans_choice($subscription->status->name, 1)) }}</span>
+                            </p>
+                            @endif
+                            @if($subscription->status->name == "messages.inactive")
+                            <p class="text-sm text-gray-500 ">
+                                <svg class="inline-block w-5 h-5 mr-1" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span class="text-xs text-gray-500">{{ ucwords(trans_choice($subscription->status->name, 1)) }}</span>
+                            </p>
+                            @endif
+                            @if($subscription->status->name == "messages.active")
+                            <p class="text-sm text-green-500 ">
+                                <svg class="inline-block w-5 h-5 mr-1" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span class="text-xs text-gray-500">{{ ucwords(trans_choice($subscription->status->name, 1)) }}: Renews on {{$subscription->expiration_data}} </span>
+                            </p>
+                            @endif
+                        </td>
+
+                    </tr>
+                    @endforeach
+                </x-bladewind.table>
+            </div>
+        </section>
     </div>
 </div>
-@endsection

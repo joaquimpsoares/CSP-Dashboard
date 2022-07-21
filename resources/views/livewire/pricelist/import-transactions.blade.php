@@ -8,7 +8,6 @@
             <x-slot name="title">
                 Import Transactions
             </x-slot>
-
             <x-slot name="content">
                 @unless ($upload)
                 <div class="flex flex-col items-center justify-center py-16 ">

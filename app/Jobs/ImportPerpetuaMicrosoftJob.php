@@ -49,16 +49,15 @@ class ImportPerpetuaMicrosoftJob implements ShouldQueue
             ->forCountry($instance->provider->country->iso_3166_2)->softwarePrepetualAll($instance->provider->country->iso_3166_2);
 
             $importCount = 0;
-            $products->each(function ($importedProduct) use ($instance, $importCount) {
+            $products->each(function ($importedProduct) use ($instance, &$importCount) {
                 $importedProduct->each(function ($importedProduct) use ($instance, $importCount) {
-                    // dd($importedProduct->supportedBillingCycles);
                     $product = Product::updateOrCreate([
                         'instance_id'               => $instance->id,
                         'vendor'                    => 'microsoft',
-                        'sku'                       => $importedProduct->productId.':'.$importedProduct->id,
-                        'catalog_item_id'           => $importedProduct->productId.':'.$importedProduct->id,
                         'name'                      => $importedProduct->title,
                     ], [
+                        'catalog_item_id'           => $importedProduct->productId.':'.$importedProduct->id,
+                        'sku'                       => $importedProduct->productId.':'.$importedProduct->id,
                         'description'               => $importedProduct->description,
                         'productType'               => "Perpetual Software",
                         'term'                      => 'one_time',

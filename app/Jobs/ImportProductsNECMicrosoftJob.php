@@ -77,8 +77,9 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
                             'is_addon'                  => $importedProduct->sku->dynamicAttributes->isAddon,
                             'is_perpetual'              => false,
                             'is_available_for_purchase' => true,
-                            'terms'                     => $importedProduct->terms,
                         ], [
+                            'terms'                     => $importedProduct->terms,
+                            'prerequisite_skus'         => $importedProduct->sku->dynamicAttributes->prerequisiteSkus,
                             'has_addons'                => $importedProduct->sku->dynamicAttributes->hasAddOns,
                             'limit'                     => $importedProduct->sku->dynamicAttributes->limit,
                             'minimum_quantity'          => $importedProduct->sku->minimumQuantity,

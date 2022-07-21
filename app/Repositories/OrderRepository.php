@@ -118,6 +118,11 @@ public function newFromCartToken($token)
 
     private function createOrderFromCart($cart)
     {
+
+        if($cart->order){
+            return $cart->order;
+        }
+
         $order = new Order();
         $order->customer_id = $cart->customer_id;
         $order->domain = $cart->domain;
@@ -135,6 +140,7 @@ public function newFromCartToken($token)
     }
 
     public function UpdateMSSubscription($subscription, $request){
+        dd($subscription->verify);
 
         $amount = collect($request->amount)->diff(collect($subscription->amount));
         $billing_period = collect($request->billing_period)->diff(collect($subscription->billing_period));
@@ -145,7 +151,8 @@ public function newFromCartToken($token)
         $order->domain = $subscription->domain;
         $order->token = Str::uuid();
         $order->user_id = Auth::user()->id;
-        $order->verify = $subscription->verify;
+        // $order->verify = $subscription->verify;
+
         if ($status->isempty() &&  $billing_period->isempty() && !$amount->isempty()){
             $order->details = "changing subscription ".$subscription->name ." amount from ". $subscription->amount. " to ". $request->amount;
         }elseif ($status->isempty() &&  !$billing_period->isempty() && !$amount->isempty()){

@@ -127,6 +127,12 @@
                             </div>
                         </div>
                         @can('marketplace.index')
+                        <a href="{{ url('/' . $page='order') }}" class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:bg-gray-50 hover:text-gray-900 group focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
+                            <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-600" x-state-description="undefined: &quot;text-gray-600&quot;, undefined: &quot;text-gray-400 group-hover:text-gray-600&quot;" x-description="Heroicon name: outline/clock" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                            </svg>
+                            {{ ucwords(trans_choice('messages.order', 2)) }}
+                        </a>
                         <div x-data="{ open: false }" class="space-y-2">
                             <button type="button" class="flex items-center w-full py-2 pl-2 pr-1 mb-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:bg-gray-50 hover:text-gray-900 group focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
                                 <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-600" x-state-description="undefined: &quot;text-gray-600&quot;, undefined: &quot;text-gray-400 group-hover:text-gray-600&quot;" x-description="Heroicon name: outline/clock" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -136,7 +142,7 @@
                                 <svg class="w-5 h-5 ml-auto text-gray-400 transition-colors duration-150 ease-in-out transform rotate-90 group-hover:text-gray-400" viewBox="0 0 20 20" x-state:on="Expanded" x-state:off="Collapsed" aria-hidden="true" :class="{ 'text-gray-400 rotate-90': open, 'text-gray-300': !(open) }">
                                     <path d="M6 6L14 10L6 14V6Z" fill="currentColor"></path>
                                 </svg>
-                            </button    >
+                            </button >
                             <div x-description="Expandable link section, show/hide based on state." class="space-y-1" id="sub-menu-1" x-show="open" style="display: none;">
                                 <a href="{{ route('store.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50">
                                     {{ ucwords(trans_choice('messages.store', 2)) }}
@@ -292,27 +298,19 @@
                                 </a>
                                 <hr class="my-2 border-t border-gray-200" aria-hidden="true">
                             </div>
-                            <div x-data="{ open: {{ request()->is('analytics*') ? 'true' : 'false' }} }" class="space-y-1">
-                                <button type="button" class="flex items-center w-full py-2 pl-2 pr-1 mb-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->is('analytics*')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
-                                    <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-600" x-state-description="undefined: &quot;text-gray-600&quot;, undefined: &quot;text-gray-400 group-hover:text-gray-600&quot;" x-description="Heroicon name: outline/clock" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-                                    </svg>
-                                    {{ ucwords(trans_choice('messages.analytics', 2)) }}
-                                    <svg class="w-5 h-5 ml-auto text-gray-400 transition-colors duration-150 ease-in-out transform rotate-90 group-hover:text-gray-400" viewBox="0 0 20 20" x-state:on="Expanded" x-state:off="Collapsed" aria-hidden="true" :class="{ 'text-gray-400 rotate-90': open, 'text-gray-300': !(open) }">
-                                        <path d="M6 6L14 10L6 14V6Z" fill="currentColor"></path>
-                                    </svg>
-                                </button>
-                                <div x-cloak  x-description="Expandable link section, show/hide based on state." class="space-y-1" id="sub-menu-1" x-show="open">
-                                    <a href="{{ url('/' . $page='analytics') }}" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-gray-600 rounded-md group pl-11 hover:text-gray-900 hover:bg-gray-50">
-                                        {{ ucwords(trans_choice('messages.azure_analytic', 1)) }}
-                                    </a>
-                                    <a href="{{ url('/' . $page='analytics/licenses') }}" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-gray-600 rounded-md group pl-11 hover:text-gray-900 hover:bg-gray-50">
-                                        {{ ucwords(trans_choice('messages.license_based', 1)) }}
-                                    </a>
-                                </div>
-                            </div>
                             @can('marketplace.index')
+                            <a href="{{ route('store.index') }}" class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->routeIs('customer.index')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
+                                <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-600" x-state-description="undefined: &quot;text-gray-600&quot;, undefined: &quot;text-gray-400 group-hover:text-gray-600&quot;" x-description="Heroicon name: outline/clock" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                {{ ucwords(trans_choice('messages.store', 2)) }}
+                            </a>
+                            {{-- <a href="{{ route('store.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50">
+                                <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-600" x-state-description="undefined: &quot;text-gray-600&quot;, undefined: &quot;text-gray-400 group-hover:text-gray-600&quot;" x-description="Heroicon name: outline/clock" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                {{ ucwords(trans_choice('messages.store', 2)) }}
+                            </a>
                             <div x-data="{ open: {{ request()->is('cart*') ? 'true' : 'false' }} }" class="space-y-2">
                                 <button type="button" class="flex items-center w-full py-2 pl-2 pr-1 mb-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->routeIs('priceList.index')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
                                     <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-600" x-state-description="undefined: &quot;text-gray-600&quot;, undefined: &quot;text-gray-400 group-hover:text-gray-600&quot;" x-description="Heroicon name: outline/clock" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -331,8 +329,29 @@
                                         Shopping Cart
                                     </a>
                                 </div>
-                            </div>
+                            </div> --}}
                             @endcan
+                            <div x-data="{ open: {{ request()->is('analytics*') ? 'true' : 'false' }} }" class="space-y-1">
+                                <button type="button" class="flex items-center w-full py-2 pl-2 pr-1 mt-1 mb-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->is('analytics*')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
+                                    <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-600" x-state-description="undefined: &quot;text-gray-600&quot;, undefined: &quot;text-gray-400 group-hover:text-gray-600&quot;" x-description="Heroicon name: outline/clock" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                                    </svg>
+                                    {{ ucwords(trans_choice('messages.analytics', 2)) }}
+                                    <svg class="w-5 h-5 ml-auto text-gray-400 transition-colors duration-150 ease-in-out transform rotate-90 group-hover:text-gray-400" viewBox="0 0 20 20" x-state:on="Expanded" x-state:off="Collapsed" aria-hidden="true" :class="{ 'text-gray-400 rotate-90': open, 'text-gray-300': !(open) }">
+                                        <path d="M6 6L14 10L6 14V6Z" fill="currentColor"></path>
+                                    </svg>
+                                </button>
+                                <div x-cloak  x-description="Expandable link section, show/hide based on state." class="space-y-1" id="sub-menu-1" x-show="open">
+                                    <a href="{{ url('/' . $page='analytics') }}" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-gray-600 rounded-md group pl-11 hover:text-gray-900 hover:bg-gray-50">
+                                        {{ ucwords(trans_choice('messages.azure_analytic', 1)) }}
+                                    </a>
+                                    <a href="{{ url('/' . $page='analytics/licenses') }}" class="flex items-center w-full py-2 pr-2 text-sm font-medium text-gray-600 rounded-md group pl-11 hover:text-gray-900 hover:bg-gray-50">
+                                        {{ ucwords(trans_choice('messages.license_based', 1)) }}
+                                    </a>
+                                </div>
+                            </div>
+
                             <div x-data="{ open: false }" class="space-y-1">
                                 <button type="button" class="flex items-center w-full py-2 pl-2 pr-1 mb-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->routeIs('priceList.index')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500 x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
                                     <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-600" x-state-description="undefined: &quot;text-gray-600&quot;, undefined: &quot;text-gray-400 group-hover:text-gray-600&quot;" x-description="Heroicon name: outline/clock" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">

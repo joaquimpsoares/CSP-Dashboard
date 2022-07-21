@@ -3,6 +3,8 @@
 namespace App\Observers;
 
 use App\Subscription;
+use App\Notifications\SubscriptionUpdate;
+use Illuminate\Support\Facades\Notification;
 
 class SubscriptionObserver
 {
@@ -37,7 +39,10 @@ class SubscriptionObserver
      */
     public function updated(Subscription $subscription)
     {
-        //
+        $changes = $subscription->getChanges();
+        foreach ($subscription->customer->users->filter() as $key => $user) {
+            Notification::send($user, new SubscriptionUpdate($subscription, $changes));
+        }
     }
 
     /**

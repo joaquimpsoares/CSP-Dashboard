@@ -23,8 +23,7 @@ class Cart extends Component
 
 
     public function mount() {
-
-        $this->cart = $this->getUserCart();
+        $this->cart = collect($this->getUserCart());
         // $this->update();
     }
 
@@ -49,6 +48,7 @@ class Cart extends Component
             private function getUserCart($id = null, $token = null)
             {
                 $user = Auth::user();
+                ;
 
                 if (empty($token)) {
                     if (empty($id)) {
@@ -59,7 +59,6 @@ class Cart extends Component
                 } else {
                     $cart = StoreCart::where('user_id', $user->id)->where('token', $token)->with(['products', 'customer'])->first();
                 }
-
                 return $cart;
             }
 

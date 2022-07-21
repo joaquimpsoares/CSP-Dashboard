@@ -206,11 +206,9 @@
     <form wire:submit.prevent="deleteSelected">
         <x-modal.confirmation wire:model.defer="showDeleteModal">
             <x-slot name="title">Delete Transaction</x-slot>
-
             <x-slot name="content">
                 <div class="py-8 text-cool-gray-700">Are you sure you? This action is irreversible.</div>
             </x-slot>
-
             <x-slot name="footer">
                 <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false">
                     Delete

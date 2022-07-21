@@ -130,7 +130,7 @@ Route::group(['middleware' => 'auth'], function ()
             Route::post('pricelist/storePriceList', 'PriceListController@storePriceList')->name('priceList.storePriceList');
 
 
-            Route::get('/reseller/{reseller}-{slug}', 'ResellerController@show')->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
+            // Route::get('/reseller/{reseller}-{slug}', 'ResellerController@show')->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
             Route::get('/reseller/{reseller}-{slug}', [\App\Http\Livewire\Reseller\ShowReseller ::class, '__invoke'])->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
             Route::get('/reseller', [\App\Http\Livewire\Reseller\ResellerTable::class, '__invoke'])->middleware('permission:' . config('app.reseller_index'))->name('reseller.index');
 
@@ -211,8 +211,10 @@ Route::group(['middleware' => 'auth'], function ()
             Route::post('/cart/tenant/change', 'CartController@changeTenant')->name('cart.change.tenant');
             Route::get('/cart/tenant', 'CartController@continueCheckout')->name('cart.tenant');
             Route::get('/cart/review', 'CartController@continueCheckout')->name('cart.review');
-            Route::post('/cart/checkout', 'CartController@checkout')->name('cart.checkout');
+            // Route::post('/cart/checkout', 'CartController@checkout')->name('cart.checkout');
             Route::post('/cart/customer', 'CartController@storeCustomerAndBuy')->middleware('permission:' . config('app.customer_create'))->name('cart.customer.store');
+
+            Route::get('/cart/checkout', [\App\Http\Livewire\Shop\Checkout ::class, '__invoke'])->name('cart.checkout');
 
             //Novas rotas carrinho//
             Route::get('cart/pending', 'CartController@getPending')->name('cart.pending');
@@ -274,3 +276,11 @@ Route::group(['middleware' => 'auth'], function ()
         Route::get('/home', 'HomeController@index')->name('home');
         Route::impersonate();
         Auth::routes();
+
+        Route::get('/mailable', function () {
+            $invoice = App\Subscription::first();
+
+            return new App\Mail\SubscriptionAlertRenew($invoice);
+        });
+
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

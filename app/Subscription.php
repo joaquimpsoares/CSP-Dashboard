@@ -161,7 +161,7 @@ class Subscription extends Model
         $order->domain = $this->domain;
         $order->token = Str::uuid();
         $order->user_id = Auth::user()->id;
-        $order->verify = $this->verify;
+        // $order->verify = $this->verify;
 
         $subscription = new TagydesSubscription([
             'id'            => $this->subscription_id,
@@ -200,13 +200,14 @@ class Subscription extends Model
             $autorenew == false;
         }
 
+
         $order = new Order();
         $order->customer_id = $this->customer_id;
         $order->subscription_id = $this->id;
         $order->domain = $this->domain;
         $order->token = Str::uuid();
         $order->user_id = Auth::user()->id;
-        $order->verify = $this->verify;
+        // $order->verify = $this->verify;
 
         $subscription = new TagydesSubscription([
             'id'            => $this->subscription_id,
@@ -249,7 +250,7 @@ class Subscription extends Model
         $order->domain = $this->domain;
         $order->token = Str::uuid();
         $order->user_id = Auth::user()->id;
-        $order->verify = $this->verify;
+        // $order->verify = $this->verify;
 
         $subscription = new TagydesSubscription([
             'id'            => $this->subscription_id,
@@ -264,10 +265,11 @@ class Subscription extends Model
             'created_at'    => $this->created_at->__toString(),
         ]);
         try {
+            // dd($autorenew);
             $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)->
             update($subscription, [
-                'quantity'          => $quantity,
-                'AutoRenewEnabled' => $autorenew,
+                // 'quantity'          => $quantity,
+                'AutoRenewEnabled'  => $autorenew,
             ]);
         } catch (\Exception $th) {
             $order->details = "Error placing order" . $th->getMessage();
@@ -298,7 +300,7 @@ class Subscription extends Model
         $order->domain = $this->domain;
         $order->token = Str::uuid();
         $order->user_id = Auth::user()->id;
-        $order->verify = $this->verify;
+        // $order->verify = $this->verify;
         $subscription = new TagydesSubscription([
             'id'            => $this->subscription_id,
             'orderId'       => $this->order_id,
@@ -346,7 +348,7 @@ class Subscription extends Model
         $order->domain = $this->domain;
         $order->token = Str::uuid();
         $order->user_id = Auth::user()->id;
-        $order->verify = $this->verify;
+        // $order->verify = $this->verify;
         $subscription = new TagydesSubscription([
             'id'            => $this->subscription_id,
             'orderId'       => $this->order_id,
@@ -362,7 +364,7 @@ class Subscription extends Model
 
         try {
             $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token) //change status only
-        ->update($subscription, [
+            ->update($subscription, [
             'status' => 'suspended',
             'AutoRenewEnabled' => true,
         ]);
@@ -372,11 +374,8 @@ class Subscription extends Model
             $order->save();
            return $th->getMessage();
         }
-
-
         $this->markAsDisabled();
         $order->details = "changing subscription ".$this->name . " and changing the status to suspended";
-
         $order->order_status_id = 4;
         $order->save();
         Log::info('Status changed: Suspended'. $subscription->id);
@@ -411,6 +410,10 @@ class Subscription extends Model
         $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token) //change status only
         ->cancelNCE($customer, $subscription);
 
+        if($update->has('code')){
+           return $update;
+        }
+
         $this->markAsCanceled();
         Log::info('Status changed: Canceled');
 
@@ -430,25 +433,25 @@ class Subscription extends Model
     public function markAsDisabled(){
         $this->fill([
             'status_id' => '2',
-            ])->save();
+            ])->saveQuietly();
     }
 
     public function markAsDontrenew(){
         $this->fill([
             'autorenew' => false,
-            ])->save();
+            ])->saveQuietly();
     }
 
     public function markAsrenew(){
         $this->fill([
             'autorenew' => true,
-            ])->save();
+            ])->saveQuietly();
     }
 
     public function markAsCanceled(){
         $this->fill([
             'status_id' => '3',
-            ])->save();
+            ])->saveQuietly();
     }
 
     public function path(){

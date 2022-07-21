@@ -7,6 +7,17 @@ module.exports = {
         './resources/**/*.vue',
         './src/**/*.{html,js}', './node_modules/tw-elements/dist/js/**/*.js',
     ],
+    extend: {
+        keyframes: {
+          'swing': {
+            '0%,100%' : { transform: 'rotate(15deg)' },
+            '50%' : { transform: 'rotate(-15deg)' },
+          }
+        },
+        animation: {
+          'swing': 'swing 1s infinite'
+        }
+      },
     presets: [],
     theme: {
         screens: {

@@ -57,8 +57,7 @@ class ImportTransactionsnce extends Component
         $this->guessWhichColumnsMapToWhichFields();
     }
 
-    public function import()
-    {
+    public function import(){
         $this->validate();
         $importCount = 0;
         Csv::from($this->upload)
@@ -95,8 +94,7 @@ class ImportTransactionsnce extends Component
         $this->notify('Imported '.$importCount.' transactions!');
     }
 
-    public function extractFieldsFromRow($row)
-    {
+    public function extractFieldsFromRow($row){
         $product = Product::where('sku', $row['SkuId'])->where('instance_id', $this->priceList->instance_id)->pluck('id')->first();
         $attributes = collect($this->fieldColumnMap)
         ->filter()
@@ -117,8 +115,7 @@ class ImportTransactionsnce extends Component
         ];
     }
 
-    public function guessWhichColumnsMapToWhichFields()
-    {
+    public function guessWhichColumnsMapToWhichFields(){
         $guesses = [
             'name'          => ['skutitle'],
             'product_sku'   => ['skuid'],
@@ -126,9 +123,7 @@ class ImportTransactionsnce extends Component
             'msrp'          => ['erp price',],
         ];
         foreach ($this->columns as $column) {
-
             $match = collect($guesses)->search(fn($options) => in_array(strtolower($column), $options));
-
             if ($match) $this->fieldColumnMap[$match] = $column;
         }
     }

@@ -3,9 +3,10 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
+use NotificationChannels\MicrosoftTeams\MicrosoftTeamsMessage;
 
 class InstanceAboutToExpire extends Notification
 {
@@ -30,7 +31,19 @@ class InstanceAboutToExpire extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail','database'];
+        return explode(',', $notifiable->notifications_preferences);
+    }
+
+    public function toMicrosoftTeams($notifiable)
+    {
+        return MicrosoftTeamsMessage::create()
+        ->to($notifiable->teams_webhook)
+        ->type('success')
+        ->title('Renew your Microsoft instance to avoid disruption')
+        ->content('You have 1 expired instance that will stop working on **'. date("Y-m-d", strtotime($this->details->external_token_updated_at->modify('+90 days'))) .
+        '** To avoid disruption, renew your instance in **Tagydes Portal** by that date.');
+        // ->button('Check Subscription', $this->details->format()['path']);
+        logger('TeamsWebhook '. $notifiable->teams_webhook);
     }
 
     /**
@@ -41,12 +54,8 @@ class InstanceAboutToExpire extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-            ->line("Your Token is about to Expire:")
-            ->line($this->details->name . " days Left to expire: " . $this->days)
-            ->line('Please contact with support to assist you with renovation.')
-            ->line('If failed to renew, we will be unable to manage your customers subscriptions.')
-            ->line('Thank you');
+        $mail = new \App\Mail\InstanceAlertRenew($this->details);
+        return $mail->to($notifiable->email);
     }
 
     /**

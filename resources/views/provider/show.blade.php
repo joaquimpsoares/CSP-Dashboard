@@ -3,7 +3,9 @@
 
 @section('content')
 
-<div class="grid max-w-3xl grid-cols-1 gap-6 mx-auto mt-6 sm:px-6 lg:max-w-full lg:grid-flow-col-dense lg:grid-cols-3">
+@livewire('provider.show-provider', ['provider' => $provider])
+
+{{-- <div class="grid max-w-3xl grid-cols-1 gap-6 mx-auto mt-6 sm:px-6 lg:max-w-full lg:grid-flow-col-dense lg:grid-cols-3">
     <div class="space-y-6 lg:col-start-1 lg:col-span-2">
         <!-- Description list-->
         <div class="overflow-hidden bg-white shadow sm:rounded-md">
@@ -252,9 +254,9 @@
                         {{ ucwords(trans_choice('messages.edit', 1)) }}
                     </x-a>
                 </div>
-                {{-- <div>
+                <div>
                     <a href="{{$provider->format()['path']}}/edit" class="block px-4 py-4 text-sm font-medium text-center text-gray-500 bg-gray-50 hover:text-gray-700 sm:rounded-b-lg">{{ ucwords(trans_choice('messages.edit', 1)) }}</a>
-                </div> --}}
+                </div>
             </div>
             @if(!@empty($serviceCosts))
             <div class="mt-4 bg-white shadow sm:rounded-lg">
@@ -313,7 +315,7 @@
                 @endif
             </div>
         </section>
-    </div>
+    </div> --}}
 
     @endsection
 

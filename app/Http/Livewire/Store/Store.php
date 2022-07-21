@@ -59,6 +59,8 @@ class Store extends Component
     ];
 
     public function updatingSearch(){$this->resetPage();}
+    public function updatingcategories(){$this->resetPage();}
+    public function updatingselectproducttype(){$this->resetPage();}
     public function updatedQtys($field){$this->recalc($field);}
     public function close(){$this->showModal = false;}
 
@@ -84,9 +86,9 @@ class Store extends Component
     //     $this->prices = $price;
     // }
 
-    public function addToCart(Product $productId, Price $price){
+    public function addToCart(Product $product, Price $price){
 
-        $billing_cycle = [];
+        $billing_cycle = 'monthly';
         $this->showModal = false;
 
         $cart = $this->getUserCart();
@@ -96,26 +98,26 @@ class Store extends Component
             $cart->save();
         }
 
-        if($productId->IsNCE()){
+        if($product->IsNCE()){
             $billing_cycle = $price->billing_plan;
             $term_duration = $price->term_duration;
         }
 
-        if($productId->IsPerpetual()){
-            $billing_cycle = $productId->supported_billing_cycles[0];
+        if($product->IsPerpetual()){
+            $billing_cycle = $product->supported_billing_cycles[0];
         }
 
-        $cart->products()->attach($productId, [
+        $cart->products()->attach($product, [
             'id' => Str::uuid(),
-            'price' => $productId->price->price,
-            'retail_price' => $productId->price->msrp,
-            'quantity' => $productId->minimum_quantity,
+            'price' => $product->price->price,
+            'retail_price' => $product->price->msrp,
+            'quantity' => $product->minimum_quantity,
             'billing_cycle' => $billing_cycle,
             'term_duration' => $term_duration ?? null
             ]);
 
         $this->emit('updateCart');
-        $this->notify('Product added to cart: '. $productId->name );
+        $this->notify('Product added to cart: '. $product->name );
     }
 
     public function showDetails(Product $product){

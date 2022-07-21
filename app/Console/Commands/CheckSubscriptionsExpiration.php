@@ -44,15 +44,19 @@ class CheckSubscriptionsExpiration extends Command
     public function handle()
     {
         $fechahoy = new DateTime();
-        $subscriptions = Subscription::get();
+        $subscriptions = Subscription::where('status_id', 1)->get();
         foreach ($subscriptions as $key => $subscription) {
-            foreach ($subscription->customer->users as $key => $user) {
-                $deate = new DateTime($subscription->expiration_data);
-                $interval = $fechahoy->diff($deate);
-                if ($interval->format('%R%a') <= 90){
-                    Notification::send($user, new SubscriptionAboutToExpire($subscription, $interval->format('%R%a')));
-                    $user->update(['notified' => true]);
-                    Log::debug($user->email.' notified');
+            if($subscription->billing_type == 'license'){
+                foreach ($subscription->customer->users as $user) {
+                    if($user->notified == 1){
+                        $deate = new DateTime($subscription->expiration_data);
+                        $interval = $fechahoy->diff($deate);
+                        if ($interval->format('%R%a') <= 90){
+                            Notification::locale($user->locale)->send($user, new SubscriptionAboutToExpire($subscription, $interval->format('%R%a')));
+                            $user->update(['notified' => true]);
+                            Log::debug($user->email.' notified');
+                        }
+                    }
                 }
             }
         }
@@ -60,7 +64,7 @@ class CheckSubscriptionsExpiration extends Command
             $mail->to('joaquim.soares@tagydes.com')
             ->subject('Monthly notify customers subscription about to expire');
         });
-        $this->info('Successfully sent daily quote to everyone.');
+        $this->info('Successfully sent mail check subscription.');
     }
 }
 

@@ -22,13 +22,13 @@
 									<div class="row">
 										<div class="col">
 											<ul class="nav nav-tabs" id="myTab" role="tablist">
-												<li class="nav-item">
-													<a class="nav-link" href="#home" onclick="event.preventDefault(); document.getElementById('changeCustomer').submit();">{{ ucwords(trans_choice('messages.customer', 1)) }}</a>
-													<form id="changeCustomer" method="post" action="{{ route('cart.change.customer') }}">
-														@csrf
-														<input type="hidden" name="cart" value="{{ $cart->token }}" />
-													</form>
-												</li>
+                                                    {{-- <li class="nav-item">
+                                                        <a class="nav-link" href="#home" onclick="event.preventDefault(); document.getElementById('changeCustomer').submit();">{{ ucwords(trans_choice('messages.customer', 1)) }}</a>
+                                                        <form id="changeCustomer" method="post" action="{{ route('cart.change.customer') }}">
+                                                            @csrf
+                                                            <input type="hidden" name="cart" value="{{ $cart->token }}" />
+                                                        </form>
+                                                    </li> --}}
 												<li class="nav-item">
 													<a class="nav-link active">{{ ucwords(trans_choice('messages.tenant', 1)) }}</a>
 												</li>

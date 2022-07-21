@@ -1,0 +1,22 @@
+<?php 
+return [
+  'JAN' => 'Janeiro',
+  'FEB' => 'Fevereiro',
+  'MAR' => 'Marchar',
+  'APR' => 'abril',
+  'MAY' => 'Poderia',
+  'JUN' => 'Junho',
+  'JUL' => 'Julho',
+  'AUG' => 'Agosto',
+  'SEP' => 'Setembro',
+  'OCT' => 'Outubro',
+  'NOV' => 'novembro',
+  'DEC' => 'dezembro',
+  'SUN' => 'Domingo',
+  'MON' => 'Segunda-feira',
+  'TUE' => 'Terça-feira',
+  'WED' => 'Quarta-feira',
+  'THU' => 'Quinta-feira',
+  'FRI' => 'Sexta-feira',
+  'SAT' => 'Sábado',
+];

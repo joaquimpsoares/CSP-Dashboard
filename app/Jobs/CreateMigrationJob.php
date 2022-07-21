@@ -69,24 +69,25 @@ class CreateMigrationJob implements ShouldQueue
 
 
         $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->
-        CreateMigrationSubscription($subscription->customerId, $subscription, $this->amount, $this->billing_period, $this->term, $this->newterm);
+        CreateMigrationSubscription($subscription->customerId, $subscription, $this->amount, $this->billing_period, $this->term, $this->newterm)->collect();
+
 
         Log::info('Creating Migration JSON: ' . $update);
 
-    // $update =  collect([
-    //     "id" => "f779c1e6-e49f-4819-8aad-a818ced86fba",
-    //     "startedTime" => "2022-02-08T22:44:20.5513905Z",
-    //     "currentSubscriptionId" => "B6465E83-F7C4-41F6-B372-F406DA74F8E8",
-    //     "status" => "Processing",
-    //     "customerTenantId" => "13d77275-dfbb-4e6f-b461-6f4cae706cb0",
-    //     "catalogItemId" => "CFQ7TTC0LH1G:0001:CFQ7TTC0KH04",
-    //     "newCommerceOrderId" => "61ca3ec48c62",
-    //     "subscriptionEndDate" => "2022-02-15T00:00:00Z",
-    //     "quantity" => 1,
-    //     "termDuration" => "P1Y",
-    //     "billingCycle" => "Monthly",
-    //     "purchaseFullTerm" => false,
-    // ]);
+        // $update =  collect([
+        //     "id" => "f779c1e6-e49f-4819-8aad-a818ced86fba",
+        //     "startedTime" => "2022-02-08T22:44:20.5513905Z",
+        //     "currentSubscriptionId" => "B6465E83-F7C4-41F6-B372-F406DA74F8E8",
+        //     "status" => "Processing",
+        //     "customerTenantId" => "13d77275-dfbb-4e6f-b461-6f4cae706cb0",
+        //     "catalogItemId" => "CFQ7TTC0LH1G:0001:CFQ7TTC0KH04",
+        //     "newCommerceOrderId" => "61ca3ec48c62",
+        //     "subscriptionEndDate" => "2022-02-15T00:00:00Z",
+        //     "quantity" => 1,
+        //     "termDuration" => "P1Y",
+        //     "billingCycle" => "Monthly",
+        //     "purchaseFullTerm" => false,
+        // ]);
 
 
         if(Str::contains($update, '900215')){
@@ -102,7 +103,10 @@ class CreateMigrationJob implements ShouldQueue
         $this->order->subscription_id   = $subscription->id;
         $this->order->ext_order_id      = $subscription->orderId;
         $this->order->order_status_id   = 4; //Order Completed state
+        $this->order->request_body      = $update->body();
         $this->order->save();
+
+
 
         $product_id = explode(':', $update['catalogItemId']);
         $product_id = $product_id[0].':'.$product_id[1];

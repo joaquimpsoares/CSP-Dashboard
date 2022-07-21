@@ -362,4 +362,11 @@ return [
   'abouttoexpire' => 'πρόκειται να λήξει',
   'legacy' => 'κληρονομιά',
   'start_new_term' => 'Ξεκινήστε τη νέα θητεία στη νέα εμπορική εμπειρία',
+  'qualification' => 'προσόν|προσόντα',
+  'select_one' => 'επέλεξε ένα',
+  'choose_customer' => 'επιλέξτε πελάτη',
+  'available_for_purchase' => 'διαθέσιμο για αγορά',
+  'import_subscription' => 'εισαγωγή συνδρομών',
+  'checking' => 'έλεγχος...',
+  'new_order' => 'νέα παραγγελία',
 ];

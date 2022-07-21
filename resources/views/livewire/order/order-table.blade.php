@@ -128,6 +128,12 @@
                                                 <x-icon.show></x-icon.show>
                                                 {{ ucwords(trans_choice('messages.show', 1)) }}
                                             </a>
+                                            @if($value->status->id == 3 || $value->status->id == 1)
+                                            <a wire:click="resendtoMicrosoft({{ $value['id'] }})" class="dropdown-item" href="#">
+                                                <x-icon.refresh></x-icon.refresh>
+                                                {{ ucwords(trans_choice('messages.resendtoMicrosoft', 1)) }}
+                                            </a>
+                                            @endif
                                             @if (! $value['verified_at'] && $value['asked_verification_by'] && Auth::user()->can('verify order '.$value['id']))
                                                 <a class="dropdown-item" href="{{ route('order.verify', ['order_id' => $value['id']]) }}">
                                                     <x-icon.play></x-icon.play>
@@ -257,20 +263,20 @@
                                                 {{ ucwords(trans_choice('messages.error', 1)) }}
                                             </dt>
                                             <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{$order->errors}}
+                                                {{json_encode(json_decode($order->errors),JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)}}
                                             </dd>
                                         </div>
                                     </dl>
                                 </div>
+                                @if($order->orderproduct)
                                 <span class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">Total Products {{$order->orderproduct->where('order_id', $order->id)->count()}}</span>
-
+                                @endif
                                 @foreach($order->products as $key => $value)
                                 <div class="px-1 py-1 sm:px-6">
                                     <h3 class="text-lg font-medium leading-6 text-gray-900">
                                         {{ ucwords(trans_choice('messages.order_details', 1)) }}
                                     </h3>
                                 </div>
-
                                 <div class="sm:col-span-12 md:col-span-7">
                                     <dl class="">
                                         <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -286,7 +292,7 @@
                                                 {{ ucwords(trans_choice('messages.product_term', 1)) }}
                                             </dt>
                                             <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{$order->orderproduct->where('product_id', $value->id)->first()->term_duration}}
+                                                {{$order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->term_duration}}
                                             </dd>
                                         </div>
                                         <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -294,16 +300,15 @@
                                                 {{ ucwords(trans_choice('messages.billing_cycle', 2)) }}
                                             </dt>
                                             <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{$order->orderproduct->where('product_id', $value->id)->first()->billing_cycle}}
+                                                {{$order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->billing_cycle}}
                                             </dd>
                                         </div>
                                         <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                             <dt class="text-sm font-medium text-gray-500">
                                                 {{ ucwords(trans_choice('messages.license', 2)) }}
                                             </dt>
-                                            {{-- @dd($order->orderproduct->where('product_id', $value->id)->first()) --}}
                                             <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{ $order->orderproduct->where('product_id', $value->id)->first()->quantity }}
+                                                {{$order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->quantity}}
                                             </dd>
                                         </div>
                                         <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -311,7 +316,7 @@
                                                 {{ ucwords(trans_choice('messages.price', 1)) }}
                                             </dt>
                                             <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{ number_format(($order->orderproduct->where('product_id', $value->id)->first()->quantity*$order->orderproduct['retail_price']) * ($order->orderproduct->where('product_id', $value->id)->first()['billing_cycle'] === 'annual' ? 12 : 1 ),2) }}
+                                                {{ number_format(($order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->quantity*$order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->retail_price) * ($order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()['billing_cycle'] === 'annual' ? 12 : 1 ),2) }}
                                             </dd>
                                         </div>
                                         <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -322,8 +327,6 @@
                                                 {{$order->details}}
                                             </dd>
                                         </div>
-
-
                                     </dl>
                                 </div>
                                 @endforeach

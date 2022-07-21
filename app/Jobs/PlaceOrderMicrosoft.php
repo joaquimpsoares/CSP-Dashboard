@@ -5,10 +5,11 @@ namespace App\Jobs;
 use App\Order;
 use Exception;
 use App\Instance;
-use App\Notifications\OrderStatus;
 use Carbon\Carbon;
 use App\Subscription;
 use Illuminate\Bus\Queueable;
+use App\Notifications\OrderStatus;
+use App\Services\CheckoutServices;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -51,9 +52,10 @@ class PlaceOrderMicrosoft implements ShouldQueue
         $customer = $this->order->customer;
 
         foreach ($products as $product) {
-            $this->order->details = ('Stage 2 - Placing Order for: ' . $product['name'] . ' for Customer: ' . $customer->company_name);
+            $this->order->details = ('Placing Order for');
             $this->order->save();
         }
+
         Log::info('tenant Cart: ' . $this->order->customer->microsoftTenantInfo->first());
 
         $instanceid = $products->first()->instance_id;
@@ -83,6 +85,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
         try {
             $tagydescart = new TagydesCart();
             logger("Tenemos {$products->count()} productos", $products->toArray());
+
             foreach ($products as $product) {
                 $quantity = $product->pivot->quantity;
                 $billing_cycle = strtolower($product->pivot->billing_cycle);
@@ -109,7 +112,6 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 if ($product['is_perpetual']) {
                     Log::info('Catalog Item URL: ' . $product['uri']);
                     $catalogItemId = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)->getPerpetualCatalogItemId($product['uri']);
-                    // Log::info('Catalog Item ID: ' . $catalogItemId);
 
                     $TagydesProduct = new TagydesProduct([
                         'id' => $catalogItemId
@@ -143,41 +145,59 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 }
             }
             try {
+
                 $tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->create($tagydescart);
                 Log::info('Creating Cart: ' . $tagydesorder);
+
 
                 $this->order->request_body = $tagydesorder->requestBody;
                 $this->order->save();
 
-                $orderConfirm = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($tagydesorder);
-
-                $this->order->errors = $orderConfirm->errors();
-                if ($orderConfirm->errors()->count() > 0) {
-                    foreach ($orderConfirm->errors() as $error) {
+                if ($tagydesorder->errors) {
+                    $this->order->errors = $tagydesorder->errors();
+                    foreach ($tagydesorder->errors() as $error) {
+                        $this->order->errors = ('Error Placing order to Microsoft, Error Code: ' . $error['error_code'] . ' Description: ' . $error['description']);
+                        $this->order->order_status_id = 3;
+                        $this->order->save();
                         logger('Error found: ' . $error);
                     }
                 }
 
+                $orderConfirm = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($tagydesorder);
+
+                // $this->order->errors = $orderConfirm->errors();
+
+                if ($orderConfirm->errors) {
+                    $this->order->errors = $orderConfirm->errors();
+                    foreach ($orderConfirm->errors() as $error) {
+                        $this->order->errors = ('Error Placing order to Microsoft, Error Code: ' . $error['error_code'] . ' Description: ' . $error['description']);
+                        $this->order->order_status_id = 3;
+                        $this->order->save();
+                        logger('Error found: ' . $error);
+                    }
+                }
 
             } catch (Exception $th){
-
-                $this->order->errors = ('Error Placing order to Microsoft: ' . $th->getMessage());
+                $this->order->errors = ('Error Placing order to Microsoft, Error Code: ' . $error['error_code'] . ' Description: ' . $error['description']);
                 $this->order->order_status_id = 3;
                 $this->order->save();
-                Log::info('Error Cart.', ['message' => $th->getMessage()]);
+                logger('Error found: ' . $error);
+                Log::info('Error Cart 1', ['message' => $th->getMessage()]);
             }
 
             foreach ($orderConfirm->subscriptions() as $subscription) {
                 logger('this is the subscription '.$subscription);
-                if($product->IsNCE()){
-                    $product_id = explode(':', $subscription->offerId);
-                    $product_id = $product_id[0].':'.$product_id[1];
-                }
+
+                // if($product->IsNCE()){
+                $product_id = explode(':', $subscription->offerId);
+                $product_id = $product_id[0].':'.$product_id[1];
+                // }
+
                 $subscriptions = new Subscription();
-                $subscriptions->name = $subscription->name;
                 $subscriptions->subscription_id = $subscription->id;
+                $subscriptions->name = $subscription->name;
                 $subscriptions->customer_id = $customer->id; //Local customer id
-                $subscriptions->product_id = $product_id ?? $subscription->offerId;
+                $subscriptions->product_id = $product_id;
                 $subscriptions->catalog_item_id = $subscription->offerId ?? [];
                 $subscriptions->term = $subscription->termDuration ?? 'none';
                 $subscriptions->billing_type = $product->billing ?? 'license';
@@ -200,11 +220,18 @@ class PlaceOrderMicrosoft implements ShouldQueue
                 $this->order->save();
 
                 Log::info('Subscription created Successfully: ' . $subscription);
-                Notification::send($subscription->customer->users->first(), new OrderStatus($this->order, 'success'));
+                // Notification::send($subscription->customer->users->first(), new OrderStatus($this->order, 'success'));
 
             }
-        } catch (Exception $e) {
-            Log::info('Error Placing order to Microsoft: ' . $e->getMessage());
+        } catch (Exception $th) {
+            if($th->getMessage() == 'Array to string conversion'){
+                $this->order->errors = ('Error Placing order to Microsoft, Error Code: ' . $error['error_code'] . ' Description: ' . $error['description']);
+            }else{
+                $this->order->errors = ('Error Placing order to Microsoft to checkout: ' . $th->getMessage() );
+            }
+                $this->order->order_status_id = 3;
+                $this->order->save();
+            logger('Error Cart.', ['message' => $th->getMessage()]);
         }
     }
 }

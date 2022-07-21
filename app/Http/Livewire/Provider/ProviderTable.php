@@ -124,7 +124,8 @@ class ProviderTable extends Component
                 'description' => 'Default Provider Price List' . $newProvider->company_name
                 ]);
 
-                $priceList->update(['provider_id' => $newProvider->id]);
+            $priceList->update(['provider_id' => $newProvider->id]);
+
             $user = User::create ([
                 'email'                     => $this->email,
                 'name'                      => $this->creatingUser->name,
@@ -153,7 +154,6 @@ class ProviderTable extends Component
         }
 
         $this->notify('success','Customer ' . $this->editing->company_name . ' created successfully');
-        // return redirect()->to('/provider');
         $this->showEditModal = false;
 
     }

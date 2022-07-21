@@ -324,7 +324,8 @@ class CartController extends Controller
 
         // MICROSOFT
         if($hasTenant){
-            if($customer->subscriptions->where('billing_type', 'license')->whereNotNull('tenant_name')->count() > 0){
+            // if($customer->subscriptions->where('billing_type', 'license')->whereNotNull('tenant_name')->count() > 0){
+            if($customer->subscriptions->whereNotNull('tenant_name')->count() > 0){
                 return view('order.review', compact('cart', 'canChangeTenant', 'hasTenant'));
             }
 
