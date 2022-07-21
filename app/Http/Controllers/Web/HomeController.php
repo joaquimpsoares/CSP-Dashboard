@@ -16,7 +16,7 @@ use App\Models\Status;
 use App\OrderProducts;
 use App\Models\Activities;
 use App\Models\LogActivity;
-use App\Models\MsftInvoices;
+// use App\Models\MsftInvoices;
 use App\Http\Traits\UserTrait;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -209,12 +209,12 @@ class HomeController extends Controller
                 ->orderBy('month')
                 ->get();
 
-                $sales = MsftInvoices::
-                select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
-                ->whereyear('invoiceDate', Carbon::today()->year)
-                ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
-                ->orderBy('invoiceDate', 'asc')
-                ->get();
+                // $sales = MsftInvoices::
+                // select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
+                // ->whereyear('invoiceDate', Carbon::today()->year)
+                // ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
+                // ->orderBy('invoiceDate', 'asc')
+                // ->get();
 
             if($sales->first() != null){
                 foreach($sales as $row) {
@@ -278,12 +278,12 @@ class HomeController extends Controller
                     'created_at', '=', Carbon::now()->subWeekdays('1')
                 )->get();
 
-                $sales = MsftInvoices::
-                select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
-                ->whereyear('invoiceDate', Carbon::today()->year)
-                ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
-                ->orderBy('invoiceDate', 'asc')
-                ->get();
+                // $sales = MsftInvoices::
+                // select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
+                // ->whereyear('invoiceDate', Carbon::today()->year)
+                // ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
+                // ->orderBy('invoiceDate', 'asc')
+                // ->get();
 
                 foreach($sales as $row) {
                     $invoicelabel['label'][] = json_encode($row->date);
