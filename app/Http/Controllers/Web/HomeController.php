@@ -430,7 +430,7 @@ class HomeController extends Controller
 
 
 
-                $chartDataCurrentCustomerByDay = [];
+                $chartDataSubscriptionYear = [];
                 foreach ($subscriptionsperMonth as $data) {
                     $chartDataSubscriptionYear[$data['monthname']] = $data['count'];
                     // $chartDataCurrentCustomerByDay[] = $data['count'];
