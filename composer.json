@@ -10,7 +10,7 @@
     "repositories": [
 {
             "type": "vcs",
-            "url": "https://gitlab.com/tagydes/microsoft-connection"
+            "url": "https://gitlab.com/tagydes/microsoft-connection.git"
         }
     ],
     "require": {
