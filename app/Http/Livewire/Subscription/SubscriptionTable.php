@@ -100,7 +100,6 @@ class SubscriptionTable extends Component
         $this->showEditModal = false;
         DB::beginTransaction();
         // $before = $this->subscription->amount;
-        // dd($this->editing->getOriginal('amount'));
 
         $this->editing->update();
 

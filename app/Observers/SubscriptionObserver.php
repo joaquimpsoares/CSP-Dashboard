@@ -17,7 +17,6 @@ class SubscriptionObserver
      */
     public function creating(Subscription $subscription)
     {
-        // dd($subscription);
     }
 
     /**

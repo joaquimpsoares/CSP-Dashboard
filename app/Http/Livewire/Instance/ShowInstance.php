@@ -15,7 +15,6 @@ class ShowInstance extends Component
         $this->instance->external_token_updated_at = null;
         $this->instance->save();
 
-        // dd($this->instance->id);
     }
 
     public function render()

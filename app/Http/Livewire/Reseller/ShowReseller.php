@@ -151,7 +151,6 @@ class ShowReseller extends Component
         $this->countries = Country::get();
         $this->statuses = Status::get();
         $this->reseller = Reseller::where('id', $this->reseller)->first();
-        // dd($this->reseller);
         $this->editing      = $this->makeBlankTransaction();
         $this->creatingUser = $this->makeBlankTransactionUser();
     }

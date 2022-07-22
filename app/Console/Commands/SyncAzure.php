@@ -98,7 +98,6 @@ class SyncAzure extends Command
                     $resources->each(function($resource) use($subscription){
                         $resource = collect($resource);
                         // $resource = $resource->groupBy(['usageStartTime', 'resource','id']);
-                        // dd($resource);
 
                         // $resource = $resource->groupBy(function ($item, $key) {
                         //     return [
@@ -108,7 +107,6 @@ class SyncAzure extends Command
                         // })->map(function($resource){
                         //     return $resource->sum('quantity');
                         // });
-                        // dd($resource);
 
 
 
@@ -118,11 +116,9 @@ class SyncAzure extends Command
                         // $resource = $resource->map(function($resource){
                         //     $resource = $resource->map(function($resource){
                         //         $resource = collect($resource);
-                        //         dd($resource[0]['quantity']);
                         //         return $resource[0]['quantity']->sum();
                         //     });
                         // });
-                        // dd($resource);
                         $resource->each(function($resource) use($subscription){
                             // $resource->each(function($resource) use($subscription){
                             //     $resource = collect($resource);

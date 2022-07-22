@@ -18,7 +18,6 @@
 @php
 $percentage =($subscription->customer->markup/100)*$subscription->azureresources->sum('cost');
 $markup = $percentage+$subscription->azureresources->sum('cost');
-// dd($subscription->azureresources->paginate(10));
 @endphp
 
 <div class="relative z-0 flex-col flex-1 overflow-y-auto">

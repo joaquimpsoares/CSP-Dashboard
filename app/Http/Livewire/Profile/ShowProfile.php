@@ -97,8 +97,6 @@ class ShowProfile extends Component
         try {
             DB::beginTransaction();
 
-            // dd($this->account);
-
             $this->account->company_name  = $this->company_name;
             $this->account->nif         = $this->nif;
             $this->account->country_id    = $this->country_id;

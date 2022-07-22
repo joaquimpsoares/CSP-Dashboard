@@ -190,8 +190,6 @@ class HomeController extends Controller
                 ->get()
                 ->toArray();
 
-                // dd($top5Products);
-
                 $Top5LicensesSubscriptions = [];
                 foreach ($top5Products as $data) {
                     $Top5LicensesSubscriptions[$data['name']] = $data['total'];
@@ -377,7 +375,6 @@ class HomeController extends Controller
 
                 $chartDataSubscriptionYear = [];
                 foreach ($subscriptionsperMonth as $data) {
-                    dd($data['monthname']);
                     $chartDataSubscriptionYear[$data['monthname']] = $data['count'];
                     // $chartDataCurrentCustomerByDay[] = $data['count'];
                 }
