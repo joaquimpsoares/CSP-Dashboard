@@ -53,7 +53,6 @@
                             <h3 class="w-1/5 text-xs font-semibold text-center text-gray-600 uppercase">{{ ucwords(trans_choice('messages.price', 1)) }}</h3>
                         </div>
                         @forelse ($cart as $key => $item)
-                        @dd($cart)
                         <div class="flex items-center px-6 py-2 -mx-8 hover:bg-gray-100">
                             <div class="flex w-2/5"> <!-- product -->
                                 <div class="flex flex-col justify-between flex-grow ml-4">
