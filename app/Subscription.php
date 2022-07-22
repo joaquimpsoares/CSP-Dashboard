@@ -265,7 +265,6 @@ class Subscription extends Model
             'created_at'    => $this->created_at->__toString(),
         ]);
         try {
-            // dd($autorenew);
             $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)->
             update($subscription, [
                 // 'quantity'          => $quantity,

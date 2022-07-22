@@ -90,7 +90,6 @@
                                 </x-table.row>
                                 @endif
                                 @forelse ($jobs as $transaction)
-                                {{-- @dd($transaction) --}}
                                 <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $transaction['id'] }}">
                                     <x-table.cell class="pr-0">
                                         <x-input.checkbox wire:model="selected" value="{{ $transaction['id'] }}" ></x-input.checkbox>
