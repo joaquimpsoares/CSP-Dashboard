@@ -197,58 +197,7 @@ class HomeController extends Controller
                     $Top5LicensesSubscriptions[$data['name']] = $data['total'];
                 }
 
-                // $orderrecord = Order::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
-                // ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
-                // ->groupBy('day_name','month')
-                // ->orderBy('month')
-                // ->get();
 
-                // $customerrecord = Customer::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
-                // ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
-                // ->groupBy('day_name','month')
-                // ->orderBy('month')
-                // ->get();
-
-                // $sales = MsftInvoices::
-                // select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
-                // ->whereyear('invoiceDate', Carbon::today()->year)
-                // ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
-                // ->orderBy('invoiceDate', 'asc')
-                // ->get();
-
-            // if($sales->first() != null){
-            //     foreach($sales as $row) {
-            //         $invoicelabel['label'][] = json_encode($row->date);
-            //         $invoicedata['data'][] = (int) $row->total;
-            //     }
-
-            //     $invoicelabel = $invoicelabel['label'];
-            //     $invoicedata  = $invoicedata['data'];
-
-            //     foreach($orderrecord as $row) {
-            //         $orderlabel['label'][] = json_encode($row->day_name);
-            //         $orderdata['data'][] = (int) $row->count;
-            //     }
-
-            //     $orderlabel = $orderlabel['label'];
-            //     $orderdata  = $orderdata['data'];
-
-            //     foreach($customerrecord as $row) {
-            //         $customerlabel['label'][] = json_encode($row->day_name);
-            //         $customerdata['data'][] = (int) $row->count;
-            //     }
-
-            //     $customerlabel = $customerlabel['label'];
-            //     $customerdata  = $customerdata['data'];
-            //     return view('home', compact('orders','providers','resellers','customers','subscriptions','news',
-            //     'orderdata','orderlabel','customerlabel','customerdata','invoicelabel','invoicedata'));
-            // }
-            // $orderdata = [];
-            // $orderlabel = [];
-            // $customerlabel = [];
-            // $customerdata = [];
-            // $invoicelabel = [];
-            // $invoicedata = [];
 
             return view('home', compact('Top5LicensesSubscriptions', 'chartDataSubscriptionYear','chartDataCurrentCustomerByDay','chartDataCurrentResellerByDay',
             'ChartRevenew','chartDataTotalOrders','chartDataCurrentByDay', 'chartDataPreviousByDay','orders','providers','resellers','customers','subscriptions','news'));
@@ -284,13 +233,13 @@ class HomeController extends Controller
                 // ->orderBy('invoiceDate', 'asc')
                 // ->get();
 
-                foreach($sales as $row) {
-                    $invoicelabel['label'][] = json_encode($row->date);
-                    $invoicedata['data'][] = (int) $row->total;
-                  }
+                // foreach($sales as $row) {
+                //     $invoicelabel['label'][] = json_encode($row->date);
+                //     $invoicedata['data'][] = (int) $row->total;
+                //   }
 
-                  $invoicelabel = $invoicelabel['label'];
-                  $invoicedata  = $invoicedata['data'];
+                //   $invoicelabel = $invoicelabel['label'];
+                //   $invoicedata  = $invoicedata['data'];
 
                   return view('msft/index', compact('invoices','invoicelabel','invoicedata'));
 
@@ -331,10 +280,6 @@ class HomeController extends Controller
                 $statuses = Status::get();
                 $resellers = $this->resellerRepository->all();
                 $customers = $this->customerRepository->all();
-
-                // $customersweek = Customer::whereMonth(
-                //     'created_at', '=', Carbon::now()->subWeekdays('1')
-                // )->get();
 
                 $subscriptions = $this->subscriptionRepository->all();
                 $news = News::orderBy('created_at', 'desc')->take(4)->get();
@@ -432,9 +377,11 @@ class HomeController extends Controller
 
                 $chartDataSubscriptionYear = [];
                 foreach ($subscriptionsperMonth as $data) {
+                    dd($data['monthname']);
                     $chartDataSubscriptionYear[$data['monthname']] = $data['count'];
                     // $chartDataCurrentCustomerByDay[] = $data['count'];
                 }
+
 
 
             $top5Products = Subscription::select('name')
@@ -451,6 +398,94 @@ class HomeController extends Controller
                 foreach ($top5Products as $data) {
                     $Top5LicensesSubscriptions[$data['name']] = $data['total'];
                 }
+
+
+                return view('home', compact('Top5LicensesSubscriptions', 'chartDataSubscriptionYear','chartDataCurrentCustomerByDay','chartDataCurrentResellerByDay',
+                'ChartRevenew','chartDataTotalOrders','chartDataCurrentByDay', 'chartDataPreviousByDay','resellers','orders',
+                'countOrders','provider','customers', 'subscriptions','news'));
+            break;
+
+            case config('app.reseller'):
+                $countCustomers = $user->reseller->customers->count();
+                $subscriptions = $this->resellerRepository->getSubscriptions($user->reseller);
+                $countSubscriptions = $subscriptions->count();
+                $orders = Order::get();
+
+                $provider = $user->reseller->provider;
+
+                $news = News::orderBy('id', 'DESC')->take(2)->get();
+
+                return view('reseller.partials.home', compact('countCustomers','countSubscriptions','orders','news'));
+
+            break;
+
+            case config('app.subreseller'):
+
+            break;
+
+            case config('app.customer'):
+                $customer = $this->getUser()->customer;
+                $subscriptions = $this->listFromCustomer($customer);
+                $expired = Carbon::now()->addDays(90);
+                $abouttoexpire = $subscriptions->map(function ($name) use($expired) {
+                    if ($name->expiration_data <= $expired){
+                        return $name;
+                    }
+                });
+
+                $abouttoexpire = $abouttoexpire->filter();
+
+                $reseller = $user->customer->resellers->first()->provider;
+                $orders = Order::get();
+
+                $news = News::orderBy('id', 'DESC')->take(2)->get();
+
+
+                return view('customer.home', compact('subscriptions', 'customer','abouttoexpire','news','orders'));
+
+            break;
+
+            default:
+            return abort(403, __('errors.unauthorized_action'));
+
+        break;
+    }
+
+
+
+}
+
+    public function listFromCustomer(Customer $customer)
+    {
+        $subscriptions = $this->customerRepository->getSubscriptions($customer);
+
+        return $subscriptions;
+    }
+
+    public function dashboard()
+    {
+        return view('dashboard');
+    }
+
+
+    /**
+    * Show the application dashboard.
+    *
+    * @return \Illuminate\Http\Response
+    */
+    public function userLogInfo()
+    {
+        $logs = LogActivity::latest()->get();
+        return view('user.loginfo',compact('logs'));
+    }
+
+    public function logActivity()
+    {
+        $logs = Activities::latest()->get();
+        return view('user.logactivity',compact('logs'));
+    }
+}
+
 
                 // $orderrecord = Order::select(DB::raw("COUNT(*) as count"),
                 // \DB::raw("MONTHNAME(created_at) as day_name"),
@@ -513,59 +548,7 @@ class HomeController extends Controller
                 //     $invoicedata  = ['0'];
                 // };
 
-                return view('home', compact('Top5LicensesSubscriptions', 'chartDataSubscriptionYear','chartDataCurrentCustomerByDay','chartDataCurrentResellerByDay',
-                'ChartRevenew','chartDataTotalOrders','chartDataCurrentByDay', 'chartDataPreviousByDay','resellers','orders',
-                'countOrders','provider','customers', 'subscriptions','news'));
-            break;
-
-            case config('app.reseller'):
-                $countCustomers = $user->reseller->customers->count();
-                $subscriptions = $this->resellerRepository->getSubscriptions($user->reseller);
-                $countSubscriptions = $subscriptions->count();
-                $orders = Order::get();
-
-                $provider = $user->reseller->provider;
-
-                $news = News::orderBy('id', 'DESC')->take(2)->get();
-
-                return view('reseller.partials.home', compact('countCustomers','countSubscriptions','orders','news'));
-
-            break;
-
-            case config('app.subreseller'):
-
-            break;
-
-            case config('app.customer'):
-                $customer = $this->getUser()->customer;
-                $subscriptions = $this->listFromCustomer($customer);
-                $expired = Carbon::now()->addDays(90);
-                $abouttoexpire = $subscriptions->map(function ($name) use($expired) {
-                    if ($name->expiration_data <= $expired){
-                        return $name;
-                    }
-                });
-
-                $abouttoexpire = $abouttoexpire->filter();
-
-                $reseller = $user->customer->resellers->first()->provider;
-                $orders = Order::get();
-
-                $news = News::orderBy('id', 'DESC')->take(2)->get();
-
-
-                return view('customer.home', compact('subscriptions', 'customer','abouttoexpire','news','orders'));
-
-            break;
-
-            default:
-            return abort(403, __('errors.unauthorized_action'));
-
-        break;
-    }
-
-
-    // $provider_id = Auth::getUser()->provider_id;
+                // $provider_id = Auth::getUser()->provider_id;
     // $provider = Provider::where('id', $provider_id)->first();
 
 
@@ -600,35 +583,56 @@ class HomeController extends Controller
     // return view('home', compact('provider','resellers','customers','instance','users',
     // 'countries','subscriptions','order','statuses','countResellers',
     // 'countCustomers','countSubscriptions','providers','countries'));
-}
 
-    public function listFromCustomer(Customer $customer)
-    {
-        $subscriptions = $this->customerRepository->getSubscriptions($customer);
+    // $orderrecord = Order::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
+                // ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
+                // ->groupBy('day_name','month')
+                // ->orderBy('month')
+                // ->get();
 
-        return $subscriptions;
-    }
+                // $customerrecord = Customer::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
+                // ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
+                // ->groupBy('day_name','month')
+                // ->orderBy('month')
+                // ->get();
 
-    public function dashboard()
-    {
-        return view('dashboard');
-    }
+                // $sales = MsftInvoices::
+                // select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
+                // ->whereyear('invoiceDate', Carbon::today()->year)
+                // ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
+                // ->orderBy('invoiceDate', 'asc')
+                // ->get();
 
+            // if($sales->first() != null){
+            //     foreach($sales as $row) {
+            //         $invoicelabel['label'][] = json_encode($row->date);
+            //         $invoicedata['data'][] = (int) $row->total;
+            //     }
 
-    /**
-    * Show the application dashboard.
-    *
-    * @return \Illuminate\Http\Response
-    */
-    public function userLogInfo()
-    {
-        $logs = LogActivity::latest()->get();
-        return view('user.loginfo',compact('logs'));
-    }
+            //     $invoicelabel = $invoicelabel['label'];
+            //     $invoicedata  = $invoicedata['data'];
 
-    public function logActivity()
-    {
-        $logs = Activities::latest()->get();
-        return view('user.logactivity',compact('logs'));
-    }
-}
+            //     foreach($orderrecord as $row) {
+            //         $orderlabel['label'][] = json_encode($row->day_name);
+            //         $orderdata['data'][] = (int) $row->count;
+            //     }
+
+            //     $orderlabel = $orderlabel['label'];
+            //     $orderdata  = $orderdata['data'];
+
+            //     foreach($customerrecord as $row) {
+            //         $customerlabel['label'][] = json_encode($row->day_name);
+            //         $customerdata['data'][] = (int) $row->count;
+            //     }
+
+            //     $customerlabel = $customerlabel['label'];
+            //     $customerdata  = $customerdata['data'];
+            //     return view('home', compact('orders','providers','resellers','customers','subscriptions','news',
+            //     'orderdata','orderlabel','customerlabel','customerdata','invoicelabel','invoicedata'));
+            // }
+            // $orderdata = [];
+            // $orderlabel = [];
+            // $customerlabel = [];
+            // $customerdata = [];
+            // $invoicelabel = [];
+            // $invoicedata = [];
