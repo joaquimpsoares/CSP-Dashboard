@@ -29,16 +29,13 @@ class LoginController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    public function redirectToProvider()
-    {
+    public function redirectToProvider(){
         return Socialite::driver('microsoft')->redirect();
     }
 
-    public function handleProviderCallback()
-    {
+    public function handleProviderCallback(){
         return Socialite::driver('microsoft')->user();
     }
-
     /**
      * Create a new controller instance.
      *
