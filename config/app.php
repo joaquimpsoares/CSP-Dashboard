@@ -249,6 +249,9 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'SchedulerKernel' => MatviiB\Scheduler\SchedulerServiceProvider::class,
         'LogActivity' => App\Helpers\LogActivity::class,
+        'aliases' => [
+            'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        ]
     ],
 
     'super_admin' => env('SUPER_ADMIN_LEVEL'),
