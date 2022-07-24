@@ -34,6 +34,11 @@ class LoginController extends Controller
         return Socialite::driver('microsoft')->redirect();
     }
 
+    public function handleProviderCallback()
+    {
+        return Socialite::driver('microsoft')->user();
+    }
+
     /**
      * Create a new controller instance.
      *
