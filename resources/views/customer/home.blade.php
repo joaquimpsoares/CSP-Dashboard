@@ -2,7 +2,7 @@
 
 @section('content')
 
-@livewire('customer.home', ['customer' => $customer], key($customer->id))
+@livewire('subscription.subscription-costumer', ['customer' => $customer], key($customer->id))
 
 @endsection
 
