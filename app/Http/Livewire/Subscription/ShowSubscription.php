@@ -512,7 +512,6 @@ class ShowSubscription extends Component
     public function disable(Subscription $subscription){
         $this->showconfirmationModal = false;
         $subscription->suspend();
-        // Notification::send($subscription->customer->users->first(), new SubscriptionUpdate($subscription));
         Log::info('Status changed: Disabled'. $subscription->id);
         $this->emit('refreshTransactions');
     }
@@ -520,7 +519,6 @@ class ShowSubscription extends Component
     public function enable(Subscription $subscription){
         $subscription->active();
         $this->notify('Subscription ' . $subscription->name . ' is Active, refresh page');
-        // Notification::send($subscription->customer->users->first(), new SubscriptionUpdate($subscription));
         Log::info('Status changed: Enabled'. $subscription->id);
         $this->emit('refreshTransactions');
     }
@@ -536,7 +534,6 @@ class ShowSubscription extends Component
             $this->notify('','Subscription ' . $subscription->name . ' was canceled, refresh page');
             Log::info('Status changed: canceled'. $subscription->id);
         }
-        // Notification::send($subscription->customer->users->first(), new SubscriptionUpdate($subscription));
         $this->emit('refreshTransactions');
 
     }

@@ -92,10 +92,10 @@ class SubscriptionUpdate extends Notification
     public function toArray($notifiable)
     {
         $status = $this->subscription->status_id == 1 ? 'Running' : 'Suspended';
+        return [
+            'data' => 'Subscription ' . $this->subscription->name . ' changed quantity to ' . $this->subscription->amount
+        ];
         if(collect($this->changes)->has('amount')){
-            return [
-                'data' => 'Subscription ' . $this->subscription->name . ' changed quantity from ' . $this->subscription->getOriginal('amount') . ' to ' . $this->changes['amount']
-            ];
         }
 
         if(collect($this->changes)->has('status_id')){

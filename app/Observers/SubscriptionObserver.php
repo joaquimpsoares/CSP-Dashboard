@@ -27,7 +27,6 @@ class SubscriptionObserver
      */
     public function created(Subscription $subscription)
     {
-        //
     }
 
     /**
@@ -52,7 +51,6 @@ class SubscriptionObserver
      */
     public function deleted(Subscription $subscription)
     {
-        //
     }
 
     /**
@@ -63,7 +61,6 @@ class SubscriptionObserver
      */
     public function restored(Subscription $subscription)
     {
-        //
     }
 
     /**
@@ -74,6 +71,5 @@ class SubscriptionObserver
      */
     public function forceDeleted(Subscription $subscription)
     {
-        //
     }
 }

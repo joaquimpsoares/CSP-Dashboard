@@ -216,12 +216,10 @@
                                                     </svg>
                                                 </button>
                                                 <div class="dropdown-menu">
-                                                    {{-- @if($subscription->status->name != 'messages.canceled' && $subscription->status->name != 'messages.inactive') --}}
                                                     <button type="button" wire:click="edit({{ $subscription->id }})" class="dropdown-item" @if($subscription->status->name == 'messages.canceled' || $subscription->status->name == 'messages.inactive') disabled="" @endif   href="#">
                                                         <x-icon.edit></x-icon.edit>
                                                         {{ ucwords(trans_choice('messages.edit', 1)) }}
                                                     </button>
-                                                    {{-- @endif --}}
                                                 </div>
                                             </div>
                                         </x-table.cell>
@@ -249,6 +247,7 @@
         <div>
             @if($showEditModal == true)
             <form wire:submit.prevent="save({{$subscription->id}})" class="flex flex-col h-full bg-white divide-y divide-gray-200 shadow-xl">
+
                 <x-modal.slideout wire:model.defer="showEditModal">
                     <x-slot name="title">{{ ucwords(trans_choice('messages.edit_subscription', 1)) }}
                     </x-slot>
@@ -288,9 +287,9 @@
                                             @endif
                                         </div>
                                     </div>
-                                    @if($subscription->productonce != null)
-                                    @if($subscription->productonce->IsNCE())
-                                    @if($subscription->refundableQuantity)
+                                    @if($editing->productonce != null)
+                                    @if($editing->productonce->IsNCE())
+                                    @if($editing->refundableQuantity)
                                     <div class="row">
                                         <div class="mt-2 mb-2 col-md-12">
                                             <div class="bg-white border border-gray-200 ">
@@ -311,8 +310,8 @@
                                                             </button>
                                                             <div class="relative overflow-hidden transition-all duration-700 max-h-0" style="" x-ref="container1" x-bind:style="selected == 1 ? 'max-height: ' + $refs.container1.scrollHeight + 'px' : ''">
                                                                 <div class="p-6">
-                                                                    @if($subscription->refundableQuantity['0'])
-                                                                    @foreach ($subscription->refundableQuantity as $item)
+                                                                    @if($editing->refundableQuantity['0'])
+                                                                    @foreach ($editing->refundableQuantity as $item)
                                                                     <span class="text-xs text-gray-500">Total Quantity: {{$item['totalQuantity']}}</span>
                                                                     @foreach ($item['details'] as $item)
                                                                     <ul>
@@ -332,11 +331,11 @@
                                         @endif
                                         @endif
 
+                                        @if ($subscription->billing_type != 'software')
                                         <div class="row">
                                             <div class="mt-2 mb-2 col-md-12">
                                                 <x-label for="billing_period">{{ucwords(trans_choice('messages.billing_cycle', 1))}}</x-label>
                                                 <div class="mb-3 input-group">
-                                                    @if ($subscription->billing_type != 'software')
                                                     <select wire:model="editing.billing_period" name="billing_period" class="form-control @error('editing.billing_period') is-invalid @enderror" sf-validate="required">
                                                         <option value="{{$subscription->billing_period}}">{{$subscription->billing_period}}</option>
                                                         @foreach($subscription->product->supported_billing_cycles as $cycle)
@@ -346,10 +345,10 @@
                                                         @endforeach
                                                     </select>
                                                     @error('editing.billing_period')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
+                                        @endif
                                         @if($subscription->productonce != null)
                                         @if($subscription->productonce->IsNCE())
                                         @if($subscription->term == "P1Y")

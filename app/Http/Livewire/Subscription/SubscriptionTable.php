@@ -88,8 +88,8 @@ class SubscriptionTable extends Component
     }
 
     public function edit(Subscription $subscription){
-        $this->subscription     = $subscription;
         $this->showEditModal    = true;
+        $this->subscription     = $subscription;
         $this->min_quantity     = $subscription->productonce->minimum_quantity;
         $this->max_quantity     = $subscription->productonce->maximum_quantity;
         $this->editing          = $subscription;
@@ -98,8 +98,8 @@ class SubscriptionTable extends Component
     public function save(){
 
         $this->showEditModal = false;
+        $before = $this->editing->getOriginal('amount');
         DB::beginTransaction();
-        // $before = $this->subscription->amount;
 
         $this->editing->update();
 
@@ -163,7 +163,7 @@ class SubscriptionTable extends Component
             }
 
             try {
-                $update =$this->editing->changeAmount($this->editing->amount, $this->editing->autorenew, $this->editing->getOriginal('amount'));
+                $update =$this->editing->changeAmount($this->editing->amount, $this->editing->autorenew, $before);
                 if(Str::contains($update, '800082')){
                     throw new UpdateSubscriptionException($update);
                 }
@@ -284,6 +284,7 @@ class SubscriptionTable extends Component
     }
 
     public function render(){
+
         return view('livewire.subscription.subscription-table', [
             'subscriptions' => $this->rows,
         ]);
