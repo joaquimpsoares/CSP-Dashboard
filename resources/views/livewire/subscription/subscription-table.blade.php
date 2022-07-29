@@ -331,7 +331,7 @@
                                         @endif
                                         @endif
 
-                                        @if ($subscription->billing_type != 'software')
+                                        @if(!$subscription->productonce->IsNCE())
                                         <div class="row">
                                             <div class="mt-2 mb-2 col-md-12">
                                                 <x-label for="billing_period">{{ucwords(trans_choice('messages.billing_cycle', 1))}}</x-label>
