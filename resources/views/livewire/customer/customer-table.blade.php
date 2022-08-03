@@ -68,39 +68,12 @@
                                 </a>
                             </x-table.cell>
                             <x-table.cell>
-
-                                <div >
-
-                                </div>
-                                <a href="{{$customer->format()['path']}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
-                                    {{ $customer['company_name'] }}
-                                    {{-- <div class="group" x-cloak x-data="{ open: false }"
-                                    x-on:mouseover="open = true"
-                                    x-on:mouseleave="open = false"
-                                    class="font-medium" aria-haspopup="true" aria-expanded="false">
-                                    <span class="cursor-pointer inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
-                                        <div @click="open = ! open" class='opacity-0 top-1/2 rounded-xl group-hover:opacity-100'>
-                                            <x-icon.external></x-icon.external>
-                                        </div>
-                                    </span>
-                                    <div x-show="open" @click.outside="open = false"  class="relative inline-block text-left">
-                                        <div class="absolute right-0 z-50 w-56 mt-2 origin-top-left bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-                                            <div class="py-1" role="none">
-                                                <div class="px-4 py-3"  role="none">
-                                                    <p class="text-sm" role="none">{{ ucwords(trans_choice('messages.customer', 1)) }}</p>
-                                                    <p class="text-sm font-medium text-gray-900 truncate" role="none">{{$customer->users->first()->email ?? null}}</p>
-                                                </div>
-                                                <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-                                                <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-0">Account settings</a>
-                                                <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-1">Support</a>
-                                                <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-2">License</a>
-                                                <form method="POST" action="#" role="none">
-                                                    <button type="submit" class="block w-full px-4 py-2 text-sm text-left text-gray-700" role="menuitem" tabindex="-1" id="menu-item-3">Sign out</button>
-                                                </form>
-                                            </div>
-                                        </div>
+                                <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                    <a href="{{$customer->format()['path']}}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
+                                            {{ $customer['company_name'] }}
+                                        </span>
                                     </div>
-                                </div> --}}
                                 </a>
                             </x-table.cell>
                             <x-table.cell>
