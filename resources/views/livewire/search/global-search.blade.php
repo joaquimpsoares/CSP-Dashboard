@@ -1,6 +1,6 @@
 @auth
 <div x-data="{ GlobalSearch: false }" x-on:keydown.escape="GlobalSearch = false" class="inline-block">
-    <button @click="GlobalSearch = !GlobalSearch" class="p-2 bg-white rounded-md relativeblock focus:outline-none">
+    <button @click="GlobalSearch = !GlobalSearch; $nextTick(() => $refs.input.focus());""  class="p-2 bg-white rounded-md relativeblock focus:outline-none">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
@@ -18,7 +18,7 @@
                                 <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd">
                                 </path>
                             </svg>
-                            <input wire:model.debounce.300ms="keyword" class="w-full h-12 pr-4 text-gray-800 placeholder-gray-400 bg-transparent border-0 pl-11 focus:ring-0 sm:text-sm" placeholder="Search..." type="text" autofocus aria-expanded="true">
+                            <input x-ref="input" wire:model.debounce.300ms="keyword" class="w-full h-12 pr-4 text-gray-800 placeholder-gray-400 bg-transparent border-0 pl-11 focus:ring-0 sm:text-sm" placeholder="Search..." type="text" autofocus aria-expanded="true">
                         </div>
                         @if(isset($searchproduct))
                         <ul class="pb-2 space-y-2 overflow-y-auto max-h-80 scroll-pt-11 scroll-pb-2" role="listbox" id="headlessui-combobox-options-90" aria-activedescendant="headlessui-combobox-option-91">
@@ -30,7 +30,7 @@
                                 @forelse ($modelSearchResults as $index => $item)
                                 <ul class="mt-2 text-sm text-gray-800" role="none">
                                     <a href="{{ $item->url }}">
-                                        <li class="px-4 py-2 text-gray-800 cursor-default select-none hover:bg-gray-100" id="headlessui-combobox-option-91" role="option" tabindex="-1">
+                                        <li class="px-4 py-2 text-gray-800 cursor-pointer select-none cur hover:bg-gray-100" id="headlessui-combobox-option-91" role="option" tabindex="-1">
                                             {{ $item->title }}
                                         </li>
                                     </a>
