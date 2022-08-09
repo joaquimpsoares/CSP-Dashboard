@@ -218,7 +218,7 @@ class Subscription extends Model
             'status'        => $this->status_id,
             'quantity'      => $this->amount,
             'currency'      => $this->currency,
-            'billingCycle'  => $this->billing_period,
+            'billingCycle'  => strtolower($this->billing_period),
             'created_at'    => $this->created_at->__toString(),
         ]);
         try {
