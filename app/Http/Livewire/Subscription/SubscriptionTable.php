@@ -34,6 +34,7 @@ class SubscriptionTable extends Component
     public $upgradeOfferselected;
     public $showEditModal = false;
     public $showFilters = false;
+
     public $selected = [];
     public $filters = [
         'status' => '',
@@ -88,8 +89,8 @@ class SubscriptionTable extends Component
     }
 
     public function edit(Subscription $subscription){
-        $this->showEditModal    = true;
         $this->subscription     = $subscription;
+        $this->showEditModal    = true;
         $this->min_quantity     = $subscription->productonce->minimum_quantity;
         $this->max_quantity     = $subscription->productonce->maximum_quantity;
         $this->editing          = $subscription;
