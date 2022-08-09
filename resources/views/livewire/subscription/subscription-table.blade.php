@@ -1,4 +1,4 @@
-{{-- <div> --}}
+<div>
     <div class="relative z-0 flex-col flex-1 overflow-y-auto">
         <div class="p-4 overflow-hidden bg-white">
             <div class="relative pb-0 border-b border-gray-200 sm:pb-0">
@@ -333,7 +333,6 @@
                                 @endif
                                 @endif
                                 @endif
-
                                 @if(!$editing->productonce->IsNCE())
                                 <div class="row">
                                     <div class="mt-2 mb-2 col-md-12">
@@ -430,33 +429,32 @@
         </form>
         @endif
     </div>
-    {{-- </div>
-    </div> --}}
-    <x-bladewind.modal
-    name="delete-paymentz"
-    show_action_buttons="false">
+</div>
+<x-bladewind.modal
+name="delete-paymentz"
+show_action_buttons="false">
 
-    // this shows that process is in progress
-    <x-bladewind.processing
-    name="processing-delete"
-    message="Deleting pending payment"
-    hide="false" />
+// this shows that process is in progress
+<x-bladewind.processing
+name="processing-delete"
+message="Deleting pending payment"
+hide="false" />
 
-    // this is shown when process completes with a pass
-    <x-bladewind.process-complete
-    name="delete-payment-yes"
-    process_completed_as="passed"
-    button_label="Done"
-    button_action="alert('i passed... closing modal now'); hideModal('delete-paymentz')"
-    message="Pending payment was deleted successfully" />
+// this is shown when process completes with a pass
+<x-bladewind.process-complete
+name="delete-payment-yes"
+process_completed_as="passed"
+button_label="Done"
+button_action="alert('i passed... closing modal now'); hideModal('delete-paymentz')"
+message="Pending payment was deleted successfully" />
 
-    // this is shown when process completes with a failure
-    <x-bladewind.process-complete
-    name="delete-payment-no"
-    process_completed_as="failed"
-    button_label="Done"
-    button_action="alert('i failed... closing modal now'); hideModal('delete-paymentz')"
-    message="Pending payment could not be deleted" />
+// this is shown when process completes with a failure
+<x-bladewind.process-complete
+name="delete-payment-no"
+process_completed_as="failed"
+button_label="Done"
+button_action="alert('i failed... closing modal now'); hideModal('delete-paymentz')"
+message="Pending payment could not be deleted" />
 
 </x-bladewind.modal>
 
