@@ -20,6 +20,7 @@ class SubscriptionTable extends Component
     use WithPagination;
     use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows;
 
+    public $showEditModal = false;
     public $search = '';
     public $quantity = '';
     public $addons = '';
@@ -32,7 +33,6 @@ class SubscriptionTable extends Component
     public $upgradeOffers;
     public $expirationdate;
     public $upgradeOfferselected;
-    public $showEditModal = false;
     public $showFilters = false;
 
     public $selected = [];
