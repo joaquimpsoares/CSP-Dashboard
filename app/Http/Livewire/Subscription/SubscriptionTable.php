@@ -89,8 +89,8 @@ class SubscriptionTable extends Component
     }
 
     public function edit(Subscription $subscription){
-        $this->subscription     = $subscription;
         $this->showEditModal    = true;
+        $this->subscription     = $subscription;
         $this->min_quantity     = $subscription->productonce->minimum_quantity;
         $this->max_quantity     = $subscription->productonce->maximum_quantity;
         $this->editing          = $subscription;
