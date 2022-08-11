@@ -631,256 +631,230 @@
                                                                     Seats allowed to change
                                                                 </div>
                                                             </div>
-                                                        </button>
-                                                        <div class="relative overflow-hidden transition-all duration-700 max-h-0" style="" x-ref="container1" x-bind:style="selected == 1 ? 'max-height: ' + $refs.container1.scrollHeight + 'px' : ''">
-                                                            <div class="p-6">
-                                                                @if($subscription->refundableQuantity['0'])
-                                                                @foreach ($subscription->refundableQuantity as $item)
-                                                                <span class="text-xs text-gray-500">Total Quantity: {{$item['totalQuantity']}}</span>
-                                                                @foreach ($item['details'] as $item)
-                                                                <ul>
-                                                                    <li>Allowed to change {{$item['quantity']}} seats By {{date('j F, H:m', strtotime($item['allowedUntilDateTime']))}}  GMT+1 </li>
-                                                                </ul>
-                                                                @endforeach
-                                                                @endforeach
-                                                                @endif
-                                                            </div>
                                                         </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                                    </button>
+                                                    <div class="relative overflow-hidden transition-all duration-700 max-h-0" style="" x-ref="container1" x-bind:style="selected == 1 ? 'max-height: ' + $refs.container1.scrollHeight + 'px' : ''">
+                                                        <div class="p-6">
+                                                            @if($subscription->refundableQuantity['0'])
+                                                            @foreach ($subscription->refundableQuantity as $item)
+                                                            <span class="text-xs text-gray-500">Total Quantity: {{$item['totalQuantity']}}</span>
+                                                            @foreach ($item['details'] as $item)
+                                                            <ul>
+                                                                <li>Allowed to change {{$item['quantity']}} seats By {{date('j F, H:m', strtotime($item['allowedUntilDateTime']))}}  GMT+1 </li>
+                                                            </ul>
+                                                            @endforeach
+                                                            @endforeach
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </div>
-                                    @endif
-                                    @endif
-                                    @endif
-                                    @if(!$subscription->productonce->IsNCE())
-                                    <div class="row">
-                                        <div class="mt-2 mb-2 col-md-12">
-                                            <x-label for="billing_period">{{ucwords(trans_choice('messages.billing_cycle', 1))}}</x-label>
-                                            <div class="mb-3 input-group">
-                                                @if ($subscription->billing_type != 'software')
-                                                <select wire:model="editing.billing_period" name="billing_period" class="form-control @error('editing.billing_period') is-invalid @enderror" sf-validate="required">
-                                                    <option value="{{$subscription->billing_period}}">{{$subscription->billing_period}}</option>
-                                                    @foreach($subscription->product->supported_billing_cycles as $cycle)
-                                                    <option value="{{ $cycle }}" @if($cycle == $subscription->billing_period) selected @endif>
-                                                        {{ $cycle }}
-                                                    </option>
-                                                    @endforeach
+                                </div>
+                                @endif
+                                @endif
+                                @endif
+                                @if(!$subscription->productonce->IsNCE())
+                                <div class="row">
+                                    <div class="mt-2 mb-2 col-md-12">
+                                        <x-label for="billing_period">{{ucwords(trans_choice('messages.billing_cycle', 1))}}</x-label>
+                                        <div class="mb-3 input-group">
+                                            @if ($subscription->billing_type != 'software')
+                                            <select wire:model="editing.billing_period" name="billing_period" class="form-control @error('editing.billing_period') is-invalid @enderror" sf-validate="required">
+                                                <option value="{{$subscription->billing_period}}">{{$subscription->billing_period}}</option>
+                                                @foreach($subscription->product->supported_billing_cycles as $cycle)
+                                                <option value="{{ $cycle }}" @if($cycle == $subscription->billing_period) selected @endif>
+                                                    {{ $cycle }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                            @error('editing.billing_period')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                                @if($subscription->productonce != null)
+                                @if($subscription->productonce->IsNCE())
+                                @if($subscription->term == "P1Y")
+                                @foreach($subscription->productonce->terms[0] as $cycle)
+                                @endforeach
+                                <div class="row">
+                                    <div class="mt-2 mb-2 col-md-12">
+                                        <x-label for="billing_period">{{ucwords(trans_choice('messages.product_term', 1))}}</x-label>
+                                        <div class="mb-3 input-group">
+                                            @if ($subscription->billing_type != 'software')
+                                            <select @if($subscription->term == "P1Y") disabled @endif wire:model="editing.billing_period" name="billing_period" class="form-control @error('editing.billing_period') is-invalid @enderror" sf-validate="required">
+                                                <option value="{{$subscription->term}}">{{$subscription->term}}</option>
+                                                @foreach($subscription->productonce->terms as $cycle)
+                                                <option value="{{ $cycle['duration'] }}" @if($cycle == $subscription->term) selected @endif>
+                                                    {{ $cycle['duration'] }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                            @error('editing.billing_period')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                                @endif
+                                @endif
+                                <div class="row">
+                                    <div class="mt-2 mb-2 col-md-12">
+                                        <x-label for="billing_period">{{ucwords(trans_choice('messages.autorenew', 1))}}</x-label>
+                                        <div class="mb-3 input-group">
+                                            <x-input.checkbox wire:model="editing.autorenew" ></x-input.checkbox>
+                                            @error('editing.billing_period')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <x-label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</x-label>
+                                        <div class="form-group">
+                                            @can('subscription_delete')
+                                            <div name="status" class="select is-info">
+                                                <select wire:model="editing.status_id" name="status" class="form-control @error('editing.status') is-invalid @enderror" sf-validate="required">
+                                                    <option  value="1" {{ $subscription->status_id == "1" ? "selected":"" }}> {{ucwords(trans_choice('messages.active', 1))}}</option>
+                                                    <option  value="2" {{ $subscription->status_id == "2" ? "selected":"" }}> {{ucwords(trans_choice('messages.suspend', 1))}}</option>
+                                                    <option  value="3" {{ $subscription->status_id == "3" ? "selected":"" }}> {{ucwords(trans_choice('messages.cancel', 1))}}</option>
                                                 </select>
-                                                @error('editing.billing_period')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                                @endif
+                                                @error('editing.status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                             </div>
-                                        </div>
-                                    </div>
-                                    @endif
-                                    @if($subscription->productonce != null)
-                                    @if($subscription->productonce->IsNCE())
-                                    @if($subscription->term == "P1Y")
-                                    @foreach($subscription->productonce->terms[0] as $cycle)
-                                    @endforeach
-                                    <div class="row">
-                                        <div class="mt-2 mb-2 col-md-12">
-                                            <x-label for="billing_period">{{ucwords(trans_choice('messages.product_term', 1))}}</x-label>
-                                            <div class="mb-3 input-group">
-                                                @if ($subscription->billing_type != 'software')
-                                                <select @if($subscription->term == "P1Y") disabled @endif wire:model="editing.billing_period" name="billing_period" class="form-control @error('editing.billing_period') is-invalid @enderror" sf-validate="required">
-                                                    <option value="{{$subscription->term}}">{{$subscription->term}}</option>
-                                                    @foreach($subscription->productonce->terms as $cycle)
-                                                    <option value="{{ $cycle['duration'] }}" @if($cycle == $subscription->term) selected @endif>
-                                                        {{ $cycle['duration'] }}
-                                                    </option>
-                                                    @endforeach
-                                                </select>
-                                                @error('editing.billing_period')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endif
-                                    @endif
-                                    @endif
-                                    <div class="row">
-                                        <div class="mt-2 mb-2 col-md-12">
-                                            <x-label for="billing_period">{{ucwords(trans_choice('messages.autorenew', 1))}}</x-label>
-                                            <div class="mb-3 input-group">
-                                                <x-input.checkbox wire:model="editing.autorenew" ></x-input.checkbox>
-                                                @error('editing.billing_period')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <x-label for="status">{{ ucwords(trans_choice('messages.status', 1)) }}</x-label>
-                                            <div class="form-group">
-                                                @can('subscription_delete')
-                                                <div name="status" class="select is-info">
-                                                    <select wire:model="editing.status_id" name="status" class="form-control @error('editing.status') is-invalid @enderror" sf-validate="required">
-                                                        <option  value="1" {{ $subscription->status_id == "1" ? "selected":"" }}> {{ucwords(trans_choice('messages.active', 1))}}</option>
-                                                        <option  value="2" {{ $subscription->status_id == "2" ? "selected":"" }}> {{ucwords(trans_choice('messages.suspend', 1))}}</option>
-                                                        <option  value="3" {{ $subscription->status_id == "3" ? "selected":"" }}> {{ucwords(trans_choice('messages.cancel', 1))}}</option>
-                                                    </select>
-                                                    @error('editing.status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                                </div>
-                                                @endcan
-                                            </div>
+                                            @endcan
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </section>
-                    </x-slot>
-                    @else
-                    {{-- This is Schedule --}}
-                    <x-slot name="content">
-                        <section class="dark-grey-text">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="p-6">
-                                        <section class="dark-grey-text">
-                                            <div class="row">
-                                                <div class="mb-2 col-md-6">
-                                                    <x-label for="status">{{ ucwords(trans_choice('messages.upgradeOffers', 1)) }}</x-label>
-                                                    @if($subscription->changes_on_renew != null)
-                                                    <select wire:model="upgradeOfferselected" name="upgradeOfferselected" class="form-control "required>
-                                                        <option value="no change">no change</option>
-                                                        <option value="{{ $upgradeOfferselected }}" >
-                                                            {{ $upgradeOfferselected }}
-                                                        </option>
-                                                    </select>
-                                                    @else
-                                                    <select wire:model="upgradeOfferselected" name="upgradeOfferselected" class="form-control "required>
-                                                        <option value="no change">no change</option>
-                                                        @foreach($upgradeOffers as $key => $value)
-                                                        <option value="{{ $value['sku'] }}" >
-                                                            {{ $value['name'] }}
-                                                        </option>
-                                                        @endforeach
-                                                    </select>
-                                                    @endif
-                                                </div>
-                                                <div class="mb-2 col-md-6">
-                                                    <x-label for="editing.amount">{{ ucwords(trans_choice('messages.amount', 1)) }}
-                                                    </x-label>
-                                                    <x-input wire:model="quantity" type="number" id="quantity" class="@error('quantity') is-invalid @enderror"></x-input>
-                                                    <p class="mt-2 text-xs text-gray-500">
-                                                        <strong>current Seats:</strong>
-                                                        {{$subscription->amount}}
-                                                    </p>
-                                                    <p class="-mt-3 text-xs text-gray-500">
-                                                        <strong>Limits:</strong>
-                                                        @if($showEditModal == true)
-                                                        {{$max_quantity-$quantity}}
-                                                        @endif
-                                                    </p>
-                                                    @error('quantity')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                                </div>
+                        </div>
+                    </section>
+                </x-slot>
+                @else
+                {{-- This is Schedule --}}
+                <x-slot name="content">
+                    <section class="dark-grey-text">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="p-6">
+                                    <section class="dark-grey-text">
+                                        <div class="row">
+                                            <div class="mb-2 col-md-6">
+                                                <x-label for="status">{{ ucwords(trans_choice('messages.upgradeOffers', 1)) }}</x-label>
+                                                @if($subscription->changes_on_renew != null)
+                                                <select wire:model="upgradeOfferselected" name="upgradeOfferselected" class="form-control "required>
+                                                    <option value="no change">no change</option>
+                                                    <option value="{{ $upgradeOfferselected }}" >
+                                                        {{ $upgradeOfferselected }}
+                                                    </option>
+                                                </select>
+                                                @else
+                                                <select wire:model="upgradeOfferselected" name="upgradeOfferselected" class="form-control "required>
+                                                    <option value="no change">no change</option>
+                                                    @foreach($upgradeOffers as $key => $value)
+                                                    <option value="{{ $value['sku'] }}" >
+                                                        {{ $value['name'] }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                @endif
                                             </div>
-                                            <div class="row">
-                                                <div class="mb-2 col-md-6">
-                                                    <x-label for="term">{{ucwords(trans_choice('messages.product_term', 1))}}</x-label>
-                                                    <p class="mt-2 text-xs text-gray-500">
-                                                        <strong>Current Term:</strong>
-                                                        {{$subscription->term}}
-                                                    </p>
-                                                    <select wire:model="term" name="term" class="form-control @error('term') is-invalid @enderror" @if($subscription->term == "P1Y") disabled @endif sf-validate="required">
-                                                        <option value={{$subscription->term}}>No Change</option>
-                                                        @if($subscription->term == "P1M")
-                                                        <option value="p1y">Annual</option>
-                                                        @else
-                                                        <option value="p1m">Monthly</option>
-                                                        @endif
-                                                    </select>
-                                                    @error('term')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                                </div>
-                                                <div class="mb-2 col-md-6">
-                                                    @if($subscription->term == "P1Y" || $subscription->term == "P1M")
-                                                    <x-label for="billing_period">{{ucwords(trans_choice('messages.billing_cycle', 1))}}</x-label>
-                                                    <p class="mt-2 text-xs text-gray-500">
-                                                        <strong>Current Billing Cycle:</strong> {{$subscription->billing_period}}
-                                                    </p>
-                                                    <select wire:model="billing_period" name="billing_period" class="form-control @error('billing_period') is-invalid @enderror" sf-validate="required">
-                                                        <option value={{$subscription->billing_period}}>No Change</option>
-                                                        @if($subscription->term == "P1M")
-                                                        <option value="annual">Annual</option>
-                                                        @else
-                                                        <option value="monthly">Monthly</option>
-                                                        @endif
-                                                    </select>
-                                                    @error('billing_period')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                            <div class="mb-2 col-md-6">
+                                                <x-label for="editing.amount">{{ ucwords(trans_choice('messages.amount', 1)) }}
+                                                </x-label>
+                                                <x-input wire:model="quantity" type="number" id="quantity" class="@error('quantity') is-invalid @enderror"></x-input>
+                                                <p class="mt-2 text-xs text-gray-500">
+                                                    <strong>current Seats:</strong>
+                                                    {{$subscription->amount}}
+                                                </p>
+                                                <p class="-mt-3 text-xs text-gray-500">
+                                                    <strong>Limits:</strong>
+                                                    @if($showEditModal == true)
+                                                    {{$max_quantity-$quantity}}
                                                     @endif
-                                                </div>
-                                                <div class="mt-4 mb-2 col-md-12">
-                                                    <div class="mt-4 bg-white shadow sm:rounded-lg">
-                                                        <div class="px-4 py-4 sm:p-6">
-                                                            <h3 class="text-lg font-medium leading-6 text-gray-900">Remove Schedule</h3>
-                                                            <div class="mt-2 sm:flex sm:items-start sm:justify-between">
-                                                                <div class="max-w-xl text-sm text-gray-500">
-                                                                    <p>This action will remove current schedule settings</p>
-                                                                </div>
-                                                                <div class="sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:flex sm:items-center">
-                                                                    <button wire:click="removeScheduled({{ $subscription->id }})" type="button" class="inline-flex items-center px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">Remove</button>
-                                                                </div>
+                                                </p>
+                                                @error('quantity')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="mb-2 col-md-6">
+                                                <x-label for="term">{{ucwords(trans_choice('messages.product_term', 1))}}</x-label>
+                                                <p class="mt-2 text-xs text-gray-500">
+                                                    <strong>Current Term:</strong>
+                                                    {{$subscription->term}}
+                                                </p>
+                                                <select wire:model="term" name="term" class="form-control @error('term') is-invalid @enderror" @if($subscription->term == "P1Y") disabled @endif sf-validate="required">
+                                                    <option value={{$subscription->term}}>No Change</option>
+                                                    @if($subscription->term == "P1M")
+                                                    <option value="p1y">Annual</option>
+                                                    @else
+                                                    <option value="p1m">Monthly</option>
+                                                    @endif
+                                                </select>
+                                                @error('term')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                            </div>
+                                            <div class="mb-2 col-md-6">
+                                                @if($subscription->term == "P1Y" || $subscription->term == "P1M")
+                                                <x-label for="billing_period">{{ucwords(trans_choice('messages.billing_cycle', 1))}}</x-label>
+                                                <p class="mt-2 text-xs text-gray-500">
+                                                    <strong>Current Billing Cycle:</strong> {{$subscription->billing_period}}
+                                                </p>
+                                                <select wire:model="billing_period" name="billing_period" class="form-control @error('billing_period') is-invalid @enderror" sf-validate="required">
+                                                    <option value={{$subscription->billing_period}}>No Change</option>
+                                                    @if($subscription->term == "P1M")
+                                                    <option value="annual">Annual</option>
+                                                    @else
+                                                    <option value="monthly">Monthly</option>
+                                                    @endif
+                                                </select>
+                                                @error('billing_period')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                                @endif
+                                            </div>
+                                            <div class="mt-4 mb-2 col-md-12">
+                                                <div class="mt-4 bg-white shadow sm:rounded-lg">
+                                                    <div class="px-4 py-4 sm:p-6">
+                                                        <h3 class="text-lg font-medium leading-6 text-gray-900">Remove Schedule</h3>
+                                                        <div class="mt-2 sm:flex sm:items-start sm:justify-between">
+                                                            <div class="max-w-xl text-sm text-gray-500">
+                                                                <p>This action will remove current schedule settings</p>
+                                                            </div>
+                                                            <div class="sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:flex sm:items-center">
+                                                                <button wire:click="removeScheduled({{ $subscription->id }})" type="button" class="inline-flex items-center px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">Remove</button>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </section>
-                                    </div>
+                                        </div>
+                                    </section>
                                 </div>
                             </div>
-                        </section>
-                    </x-slot>
-                    @endif
-                    <x-slot name="footer">
-                        <div wire:loading.remove>
-                            <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                {{ucwords(trans_choice('cancel', 1))}}
-                            </button>
-                            <button type="submit" onclick="deletePayment('pass')" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                {{ucwords(trans_choice('save', 1))}}
-                            </button>
                         </div>
-                    </x-slot>
-                </x-modal.slideout>
-            </form>
-        </div>
-        <div wire:loading>
-            <x-bladewind.modal name="delete-paymentz" show_action_buttons="false">
-                <x-bladewind.processing
-                    name="processing-delete"
-                    message="Updating your subscription"
-                    hide="false" />
-
-                {{-- // this is shown when process completes with a pass --}}
-                <x-bladewind.process-complete
-                    name="delete-payment-yes"
-                    process_completed_as="passed"
-                    button_label="Done"
-                    button_action="hideModal('delete-paymentz')"
-                    message="Pending payment was deleted successfully" />
-
-                {{-- // this is shown when process completes with a failure --}}
-                <x-bladewind.process-complete
-                    name="delete-payment-no"
-                    process_completed_as="failed"
-                    button_label="Done"
-                    button_action="alert('i failed... closing modal now'); hideModal('delete-paymentz')"
-                    message="Pending payment could not be deleted" />
-
-            </x-bladewind.modal>
-            {{-- <button wire:loading type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <svg class="w-5 h-5 text-white motion-reduce:hidden animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-            </button> --}}
-        </div>
+                    </section>
+                </x-slot>
+                @endif
+                <x-slot name="footer">
+                    <div wire:loading.remove>
+                        <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            {{ucwords(trans_choice('cancel', 1))}}
+                        </button>
+                        <button type="submit" onclick="deletePayment('pass')" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            {{ucwords(trans_choice('save', 1))}}
+                        </button>
+                    </div>
+                </x-slot>
+            </x-modal.slideout>
+        </form>
     </div>
-
+    <div wire:loading>
+        <x-bladewind.modal name="delete-paymentz" show_action_buttons="false">
+            <x-bladewind.processing name="processing-delete" message="Updating your subscription" hide="false" />
+        </x-bladewind.modal>
+    </div>
 </div>
+
 
 <script>
     function copyToClipboard(subscription_id) {
@@ -898,36 +872,11 @@
 </script>
 <script>
     deletePayment = (mode) => {
-        // it is preferred to hide all three elements
-        // and show only the element that needs to be shown
-        // hide the processing delete element
         hideHideables();
-
-        // show the modal and the processing delete element
-        // showModal() and unhide() are helper functions
-        // available in BladewindUI
         showModal('delete-paymentz');
         unhide('.processing-delete');
-
-        // this example only shows a specific outcome
-        // after 3 seconds based on which button was clicked.
-        // In your apps you will typically display an outcome
-        // based on some API return value or something similar
-        // setTimeout(function() {
-
-        //     hideHideables();
-
-        //     // determine which process outcome to show
-        //     (mode == 'pass') ?
-        //         unhide('.delete-payment-yes') :
-        //         unhide('.delete-payment-no');
-        // }, 3000);
     }
-
     hideHideables = () => {
-        // hide() is a helper function available in BladewindUI
         hide('.processing-delete');
-        hide('.delete-payment-yes');
-        hide('.delete-payment-no');
     }
 </script>

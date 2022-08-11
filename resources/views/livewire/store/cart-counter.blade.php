@@ -1,4 +1,4 @@
-<div x-data="{ cartOpen: false , isOpen: false }" @keydown.escape.stop="cartOpen = false; focusButton()" class="z-10 flex justify-between flex-1 px-4">    @can('marketplace.index')
+<div x-data="{ cartOpen: false , isOpen: false }" @keydown.escape.stop="cartOpen = false; focusButton()" class="flex justify-between flex-1 px-4 ">    @can('marketplace.index')
     <button @click="cartOpen = !cartOpen" href="#" class="relative p-2 bg-white rounded-md relativeblock focus:outline-none">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
@@ -12,7 +12,7 @@
         @endif
     </button>
     @endcan
-    <div x-cloak :class="cartOpen ? 'translate-x-0 ease-out' : 'translate-x-full ease-in'" class="fixed top-0 right-0 w-screen h-full max-w-2xl px-6 py-4 transition duration-300 transform bg-white border-l-2 border-gray-300">
+    <div x-cloak :class="cartOpen ? 'translate-x-0 ease-out' : 'translate-x-full ease-in'" class="fixed top-0 right-0 z-10 w-screen h-full max-w-2xl px-6 py-4 transition duration-300 transform bg-white border-l-2 border-gray-300">
         <div class="absolute inset-0 overflow-hidden">
             <div x-description="Background overlay, show/hide based on slide-over state." class="absolute inset-0" @click="cartOpen = !cartOpen" aria-hidden="true">
             </div>
@@ -120,7 +120,7 @@
                         <h1 class="pb-8 text-2xl font-semibold border-b"></h1>
                         <div >
                             <label class="inline-block mb-3 text-sm font-medium uppercase">{{ ucwords(trans_choice('messages.choose_customer', 1)) }}</label>
-                            <select wire:model="company_name" class="block w-full p-2 text-sm text-gray-600 form-control @error('billing_cycle') is-invalid @enderror" wire:change="setCustomer($event.target.value, '{{$item->id}}')" required >
+                            <select wire:model="company_name" name="company_name" class="block w-full p-2 text-sm text-gray-600 form-control @error('company_name') is-invalid @enderror" wire:change="setCustomer($event.target.value, '{{$item->id}}')" required >
                                 <option value="" selected hidden>{{ ucwords(trans_choice('messages.select_one', 1)) }}</option>
                                 @foreach($customers as $customer)
                                 <option value="{{ $customer->id }}">{{$customer->company_name}}</option>

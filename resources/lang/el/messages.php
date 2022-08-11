@@ -369,4 +369,12 @@ return [
   'import_subscription' => 'εισαγωγή συνδρομών',
   'checking' => 'έλεγχος...',
   'new_order' => 'νέα παραγγελία',
+  'active_subscriptions' => 'ενεργές συνδρομές',
+  'active_licenses' => 'ενεργές άδειες',
+  'total_subscriptions' => 'συνολικές συνδρομές',
+  'resendtoMicrosoft' => 'επανάληψη παραγγελίας',
+  'hostname' => 'όνομα κεντρικού υπολογιστή',
+  'port' => 'Λιμάνι',
+  'encryption' => 'κρυπτογράφηση',
+  'last_30Days' => 'τις τελευταίες 30 ημέρες',
 ];

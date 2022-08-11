@@ -1,5 +1,5 @@
 <div>
-    <div x-data="{ resellerOpen: false , isOpen: false }" class="relative z-0 flex-col flex-1 overflow-y-auto">
+    <div x-data="{ userOpen: false , isOpen: false }" class="relative z-0 flex-col flex-1 overflow-y-auto">
         <div class="p-4 overflow-hidden bg-white">
             <div class="flex flex-col">
                 <div class="flex flex-col items-center justify-between lg:flex-row">
@@ -43,36 +43,242 @@
                         </div>
                     </div>
                 </div>
-                <x-table :list="$user" :mobileColumns="[
-                    'name',
-                    ]"
-                :columns="[
 
-                    'id' => function($user){
-                        return $customer['path'];
-                    },
-                    'name' => null,
-                    'email' => null,
-                    '' => null,
-                    'created_at' => null
-                ]"
-                :listElementActions="[
-                    [
-                        'icon' => 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJpbmxpbmUgdy01IGgtNSBtci0yIiB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9ImN1cnJlbnRDb2xvciI+CjxwYXRoIGQ9Ik0xMy41ODYgMy41ODZhMiAyIDAgMTEyLjgyOCAyLjgyOGwtLjc5My43OTMtMi44MjgtMi44MjguNzkzLS43OTN6TTExLjM3OSA1Ljc5M0wzIDE0LjE3MlYxN2gyLjgyOGw4LjM4LTguMzc5LTIuODMtMi44Mjh6IiAvPgo8L3N2Zz4=',
-                        'textKey' => 'Edit', // To get the translation on the view
-                        'url' => function($user){
-                            return $user.'/edit';
-                        }
-                    ],
-                    [
-                        'icon' => 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGNsYXNzPSJpbmxpbmUgdy01IGgtNSBtci0yIiB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9ImN1cnJlbnRDb2xvciI+CjxwYXRoIGQ9Ik0xMCAxMmEyIDIgMCAxMDAtNCAyIDIgMCAwMDAgNHoiIC8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTS40NTggMTBDMS43MzIgNS45NDMgNS41MjIgMyAxMCAzczguMjY4IDIuOTQzIDkuNTQyIDdjLTEuMjc0IDQuMDU3LTUuMDY0IDctOS41NDIgN1MxLjczMiAxNC4wNTcuNDU4IDEwek0xNCAxMGE0IDQgMCAxMS04IDAgNCA0IDAgMDE4IDB6IiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIC8+Cjwvc3ZnPg==',
-                        'textKey' => 'Impersonate',
-                        'url' => function($customer){
-                            return route('impersonate', $customer['mainUser']['id'] ?? '');
-                        }
-                    ]
-                ]" />
+                <x-tableazure>
+                    <x-slot name="head">
+                        <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('id')" :direction="$sorts['id'] ?? null">{{ ucwords(trans_choice('messages.id', 2)) }}</x-table.heading>
+                        <x-table.heading sortable multi-column wire:click="sortBy('company_name')"  :direction="$sorts['company_name'] ?? null">{{ ucwords(trans_choice('messages.company_name', 1)) }}</x-table.heading>
+                        <x-table.heading  wire:click="sortBy('subscriptions')"         :direction="$sorts['subscriptions'] ?? null">{{ ucwords(trans_choice('messages.subscriptions', 1)) }}</x-table.heading>
+                        <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('country_id')"       :direction="$sorts['country_id'] ?? null">{{ ucwords(trans_choice('messages.relationship', 1)) }}</x-table.heading>
+                        <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('country_id')"       :direction="$sorts['country_id'] ?? null">{{ ucwords(trans_choice('messages.country', 2)) }}</x-table.heading>
+                    </x-slot>
+                    <x-slot name="body">
+                        @forelse ($users as $user)
+                        <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $user['id'] }}">
+                            <x-table.cell visibility='hidden' tablecell='lg:table-cell'>
+                                <a href="{{$user->format()['path']}}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
+                                            {{ $user['id'] }}
+                                        </span>
+                                    </div>
+                                </a>
+                            </x-table.cell>
+                            <x-table.cell>
+                                <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                    <a href="{{$user->format()['path']}}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
+                                            {{ $user['name'] }}
+                                        </span>
+                                    </div>
+                                </a>
+                            </x-table.cell>
+                            <x-table.cell>
+                                <a href="{{$user->format()['path']}}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
+                                            {{ $user['last_name']}}
+                                        </span>
+                                    </div>
+                                </a>
+                            </x-table.cell>
+                            <x-table.cell>
+                                <a href="{{$user->format()['path']}}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
+                                            {{ $user['email']}}
+                                        </span>
+                                    </div>
+                                </a>
+                            </x-table.cell>
+
+                            <x-table.cell>
+                                <a href="{{$user->format()['path']}}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
+                                            {{ $user->reseller['company_name'] ?? $user->provider['company_name'] ?? $user->customer['company_name'] ?? ''}}
+                                        </span>
+                                    </div>
+                                </a>
+                            </x-table.cell>
+                            <x-table.cell>
+                                <a href="{{$user->format()['path']}}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
+                                            {{ $user['Created_at']}}
+                                        </span>
+                                    </div>
+                                </a>
+                            </x-table.cell>
+                            <x-table.cell>
+                                <div class="z-10">
+                                    <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                                        </svg>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a wire:click="edit({{ $user->id }})" class="dropdown-item" href="#">
+                                            <x-icon.edit></x-icon.edit>
+                                            {{ ucwords(trans_choice('messages.edit', 1)) }}
+                                        </a>
+                                        @if($user->status_id == 1)
+                                        <a class="dropdown-item" href="#" wire:click="disableUser({{ $user->id }})">
+                                            <x-icon.ban class="text-gray-400"/> <span>{{ ucwords(trans_choice('disable', 1)) }}</span>
+                                        </a>
+                                        @else
+                                        <a class="dropdown-item" href="#" wire:click="enableUser({{ $user->id }})">
+                                            <x-icon.play class="text-gray-400"/> <span>{{ ucwords(trans_choice('enable', 1)) }}</span>
+                                        </a>
+                                        @endif
+                                        <a class="dropdown-item" href="#" wire:click="deleteUser({{ $user->id }})">
+                                            <x-icon.trash class="text-gray-400"/> <span>{{ ucwords(trans_choice('delete', 1)) }}</span>
+                                        </a>
+                                        @canImpersonate
+                                        @if(!empty($user->format()['mainUser']))
+                                        <a class="dropdown-item" href="{{ route('impersonate', $user->format()['id'])}}">
+                                            <x-icon.impersonate></x-icon.impersonate>
+                                            {{ ucwords(trans_choice('messages.impersonate', 1)) }}
+                                        </a>
+                                        @endif
+                                        @endCanImpersonate
+                                    </div>
+                                </div>
+                            </x-table.cell>
+                        </x-table.row>
+                        @empty
+                        <x-table.row>
+                            <x-table.cell colspan="9">
+                                <div class="flex items-center justify-center space-x-2">
+                                    <x-icon.inbox class="w-8 h-8 text-cool-gray-400" />
+                                    <span class="py-8 text-xl font-medium text-cool-gray-400">No user found...</span>
+                                </div>
+                            </x-table.cell>
+                        </x-table.row>
+                        @endforelse
+                    </x-slot>
+                </x-tableazure>
+                <div>
+                    {{ $users->links() }}
+                </div>
             </div>
         </div>
-    </div>
-</div>
+        <div>
+            <form @if($showuserCreateModal == false) wire:submit.prevent="save({{$user->id}})" @endif>
+                <x-modal.slideout wire:model.defer="showEditModal">
+                    <x-slot name="title">@if($showuserCreateModal == false){{ ucwords(trans_choice('messages.edit_reseller', 1)) }}
+                        {{-- <p class="text-sm text-gray-500">
+                            Changes take effect upon subscription renewal date:
+                            <strong>{{date('M d, Y', strtotime($subscription->expiration_data))}}.</strong>
+                            <br>
+                            For SKU upgrades, if the quantity doesn't change, licenses will be assigned automatically.
+                            <br>
+                            Otherwise, you will need to manually assign licenses. --}}
+                            @else{{ ucwords(trans_choice('messages.new_user', 1)) }}@endif
+                        </x-slot>
+                        <x-slot name="content">
+                            <div class="flex-1 xl:overflow-y-auto">
+                                <form wire:submit.prevent="save({{$user->id}})"class="mt-6 space-y-8 divide-y divide-y-blue-gray-200">
+                                    <div class="grid grid-cols-1 gap-y-6 sm:grid-cols-6 sm:gap-x-6">
+                                        <div class="sm:col-span-6">
+                                            <h2 class="text-xl font-medium text-blue-gray-900">Profile</h2>
+                                            <p class="mt-1 text-sm text-blue-gray-500">This information will be displayed publicly so be careful what you share.</p>
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label for="first-name" class="block text-sm font-medium text-blue-gray-900"> First name </label>
+                                            <input wire:model.debounce.500ms="editing.name" type="text" name="first-name" id="first-name" autocomplete="given-name" class="block w-full mt-1 rounded-md shadow-sm border-blue-gray-300 text-blue-gray-900 sm:text-sm focus:ring-blue-500 focus:border-blue-500">
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label for="last-name" class="block text-sm font-medium text-blue-gray-900"> Last name </label>
+                                            <input wire:model.debounce.500ms="editing.last_name" type="text" name="last-name" id="last-name" autocomplete="family-name" class="block w-full mt-1 rounded-md shadow-sm border-blue-gray-300 text-blue-gray-900 sm:text-sm focus:ring-blue-500 focus:border-blue-500">
+                                        </div>
+
+                                        <div class="sm:col-span-6">
+                                            <label for="username" class="block text-sm font-medium text-blue-gray-900"> Username </label>
+                                            <input wire:model.debounce.500ms="editing.username" type="text" name="username" id="username" autocomplete="username" class="block w-full mt-1 rounded-md shadow-sm border-blue-gray-300 text-blue-gray-900 sm:text-sm focus:ring-blue-500 focus:border-blue-500">
+                                            {{-- <input wire:model.debounce.500ms="editing.username" type="text" name="username" id="username" autocomplete="username" value="lisamarie" class="flex-1 block w-full min-w-0 rounded-none border-blue-gray-300 rounded-r-md text-blue-gray-900 sm:text-sm focus:ring-blue-500 focus:border-blue-500"> --}}
+
+                                        </div>
+                                        @if($editing)
+                                        <div class="sm:col-span-6">
+                                            <label for="photo" class="block text-sm font-medium text-blue-gray-900"> Photo </label>
+                                            <div class="flex items-center mt-1">
+                                                <img class="inline-block w-12 h-12 rounded-full" src="{{$editing['avatar']}}" alt="">
+                                                <div class="flex ml-4">
+                                                    <div class="relative flex items-center px-3 py-2 bg-white border rounded-md shadow-sm cursor-pointer border-blue-gray-300 hover:bg-blue-gray-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-blue-gray-50 focus-within:ring-blue-500">
+                                                        <label for="user-photo" class="relative text-sm font-medium pointer-events-none text-blue-gray-900">
+                                                            <span>Change</span>
+                                                            <span class="sr-only"> user photo</span>
+                                                        </label>
+                                                        <input id="user-photo" name="user-photo" type="file" class="absolute inset-0 w-full h-full border-gray-300 rounded-md opacity-0 cursor-pointer">
+                                                    </div>
+                                                    <button type="button" class="px-3 py-2 ml-3 text-sm font-medium bg-transparent border border-transparent rounded-md text-blue-gray-900 hover:text-blue-gray-700 focus:outline-none focus:border-blue-gray-300 focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-gray-50 focus:ring-blue-500">Remove</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
+                                    </div>
+
+                                    <div class="grid grid-cols-1 pt-8 gap-y-6 sm:grid-cols-6 sm:gap-x-6">
+                                        <div class="sm:col-span-6">
+                                            <h2 class="text-xl font-medium text-blue-gray-900">Personal Information</h2>
+                                            <p class="mt-1 text-sm text-blue-gray-500">This information will be displayed publicly so be careful what you share.</p>
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label for="email-address" class="block text-sm font-medium text-blue-gray-900"> Email address </label>
+                                            <input wire:model.debounce.500ms="editing.email" type="text" name="email-address" id="email-address" autocomplete="email" class="block w-full mt-1 rounded-md shadow-sm border-blue-gray-300 text-blue-gray-900 sm:text-sm focus:ring-blue-500 focus:border-blue-500">
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label for="phone-number" class="block text-sm font-medium text-blue-gray-900"> Phone number </label>
+                                            <input wire:model.debounce.500ms="editing.phone" type="text" name="phone-number" id="phone-number" autocomplete="tel" class="block w-full mt-1 rounded-md shadow-sm border-blue-gray-300 text-blue-gray-900 sm:text-sm focus:ring-blue-500 focus:border-blue-500">
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            @if($editing)
+                                            <label for="country" class="block text-sm font-medium text-blue-gray-900"> Country </label>
+                                            <select wire:model="editing.country_id" name="country_id" class="form-control @error('editing.country_id') is-invalid @enderror" sf-validate="required">
+                                                <option value="{{$editing->country->name}}">{{$editing->country->name}}</option>
+                                                @foreach ($countries as $key => $country)
+                                                <option value="{{$country->id}}">{{$country->name}}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('editing.country_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                            {{-- <select id="country" name="country" autocomplete="country-name" class="block w-full mt-1 rounded-md shadow-sm border-blue-gray-300 text-blue-gray-900 sm:text-sm focus:ring-blue-500 focus:border-blue-500">
+                                                <option></option>
+                                                <option>United States</option>
+                                                <option>Canada</option>
+                                                <option>Mexico</option>
+                                            </select> --}}
+                                            @endif
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label for="language" class="block text-sm font-medium text-blue-gray-900"> Language </label>
+                                            <input wire:model.debounce.500ms="editing.locale" type="text" name="language" id="language" class="block w-full mt-1 rounded-md shadow-sm border-blue-gray-300 text-blue-gray-900 sm:text-sm focus:ring-blue-500 focus:border-blue-500">
+                                        </div>
+                                        @if($editing)
+                                        <p class="text-sm text-blue-gray-500 sm:col-span-6">This account was created on <time datetime="2017-01-05T20:35:40">{{$editing['created_at']}}</time>.</p>
+                                        @endif
+                                    </div>
+                                </form>
+
+                            </x-slot>
+
+                            <x-slot name="footer">
+                                <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    {{ucwords(trans_choice('cancel', 1))}}
+                                </button>
+                                <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    {{ucwords(trans_choice('save', 1))}}
+                                </button>
+                            </x-slot>
+                        </x-modal.slideout>
+                    </form>
+                </div>
+            </div>
+        </div>
+

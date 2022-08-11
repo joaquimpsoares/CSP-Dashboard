@@ -369,4 +369,12 @@ return [
   'import_subscription' => 'importar suscripciones',
   'checking' => 'comprobación...',
   'new_order' => 'Nuevo orden',
+  'active_subscriptions' => 'suscripciones activas',
+  'active_licenses' => 'licencias activas',
+  'total_subscriptions' => 'suscripciones totales',
+  'resendtoMicrosoft' => 'reintentar pedido',
+  'hostname' => 'nombre de host',
+  'port' => 'Puerto',
+  'encryption' => 'cifrado',
+  'last_30Days' => 'últimos 30 días',
 ];

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Str;
 use Soved\Laravel\Gdpr\Portable;
 use Laravel\Sanctum\HasApiTokens;
 use Webpatser\Countries\Countries;
@@ -36,11 +37,17 @@ class User extends Authenticatable implements PortableContract
             'phone' => $this->phone,
             'email' => $this->email,
             'country' => $this->country,
+            'path' => $this->path(),
             'provider' => $this->provider,
             'reseller' => $this->reseller,
             'customer' => $this->customer,
         ];
     }
+
+    public function path(){
+        return url("/user/{$this->id}-" . Str::slug($this->name, '-'));
+    }
+
 
     public function country()
     {

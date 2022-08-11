@@ -28,46 +28,43 @@ class Cart extends Component
     }
 
 
-        public function remove()
-        {
+    public function remove()
+    {
 
-        }
-
-
-        public function add($iff)
-        {
-            $this->qty++;
-        }
-
-        public function checkdomainavailability()
-        {
-
-        }
+    }
 
 
-            private function getUserCart($id = null, $token = null)
-            {
-                $user = Auth::user();
-                ;
+    public function add($iff)
+    {
+        $this->qty++;
+    }
 
-                if (empty($token)) {
-                    if (empty($id)) {
-                        $cart = StoreCart::where('user_id', $user->id)->whereNull('customer_id')->with(['products', 'customer'])->first();
-                    } else {
-                        $cart = StoreCart::where('user_id', $user->id)->where('id', $id)->with(['products', 'customer'])->first();
-                    }
-                } else {
-                    $cart = StoreCart::where('user_id', $user->id)->where('token', $token)->with(['products', 'customer'])->first();
-                }
-                return $cart;
+    public function checkdomainavailability()
+    {
+
+    }
+
+
+    private function getUserCart($id = null, $token = null)
+    {
+        $user = Auth::user();
+        ;
+
+        if (empty($token)) {
+            if (empty($id)) {
+                $cart = StoreCart::where('user_id', $user->id)->whereNull('customer_id')->with(['products', 'customer'])->first();
+            } else {
+                $cart = StoreCart::where('user_id', $user->id)->where('id', $id)->with(['products', 'customer'])->first();
             }
-
-
-            public function render()
-            {
-
-
-
-                return view('livewire.store.cart');
-            }
+        } else {
+            $cart = StoreCart::where('user_id', $user->id)->where('token', $token)->with(['products', 'customer'])->first();
         }
+        return $cart;
+    }
+
+
+    public function render()
+    {
+        return view('livewire.store.cart');
+    }
+}

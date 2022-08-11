@@ -9,19 +9,15 @@ use App\Country;
 use App\Product;
 use App\Customer;
 use App\Instance;
-use App\PriceList;
 use App\Subscription;
 use App\Models\Status;
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Http\Traits\UserTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Livewire\DataTable\WithSorting;
 use App\Http\Livewire\DataTable\WithCachedRows;
-use App\Http\Livewire\DataTable\WithBulkActions;
 use App\Http\Livewire\DataTable\WithPerPagePagination;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
@@ -94,16 +90,18 @@ class ShowCustomer extends Component
                     $instanceid = $product->instance_id;
                     if(collect($subscription)->has('productType')){
                         $product = explode(':', $subscription['offerId']);
+                        $offerId = $product['0'].":".$product['1'];
                         $price = Price::where('instance_id', $instanceid)->where('product_sku', $product[0].':'.$product[1])->first();
                     }else{
                         $price = Price::where('instance_id', $instanceid)->where('product_sku', $subscription['offerId'])->first();
+                        $offerId =$subscription['offerId'];
                     }
 
                     $subscriptions                  = new Subscription();
                     $subscriptions->name            = $subscription['offerName'];
                     $subscriptions->subscription_id = $subscription['id'];
                     $subscriptions->customer_id     = $this->customer->id; //Local customer id
-                    $subscriptions->product_id      = $subscription['offerId'];
+                    $subscriptions->product_id      = $offerId;
                     $subscriptions->catalog_item_id = $subscription['offerId'] ?? [];
                     $subscriptions->term            = $subscription['termDuration'] ?? 'none';
                     $subscriptions->billing_type    = $product->billing ?? 'license';

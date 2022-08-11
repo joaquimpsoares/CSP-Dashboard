@@ -24,6 +24,7 @@
                         <ul class="pb-2 space-y-2 overflow-y-auto max-h-80 scroll-pt-11 scroll-pb-2" role="listbox" id="headlessui-combobox-options-90" aria-activedescendant="headlessui-combobox-option-91">
                             <li role="none">
                                 @forelse($searchproduct->groupByType() as $type => $modelSearchResults)
+
                                 <h2 class="bg-gray-100 py-2.5 px-4 text-xs font-semibold text-gray-900" role="none">
                                     {{$type}} ({{$modelSearchResults->count()}})
                                 </h2>

@@ -87,8 +87,8 @@ Route::group(['middleware' => 'auth'], function ()
 
             Route::get('/instances/getMasterToken/{provider_id}', 'InstanceController@getMasterToken')->name('instances.getMasterToken');
 
-            Route::get('/reseller/create', 'ResellerController@create')
-            ->middleware('permission:' . config('app.reseller_create'))->name('reseller.create');
+            // Route::get('/reseller/create', 'ResellerController@create')
+            // ->middleware('permission:' . config('app.reseller_create'))->name('reseller.create');
 
             Route::post('/reseller', 'ResellerController@store')->middleware('permission:' . config('app.reseller_create'))->name('reseller.store');
             Route::resource('product', 'ProductController');
@@ -160,6 +160,8 @@ Route::group(['middleware' => 'auth'], function ()
         // Routes that platform managers, providers, resellers and customers can access
         Route::group(['middleware' => ['role:Super Admin|Admin|Provider|Reseller|Sub Reseller|Customer']], function () {
             //User Routes
+            Route::get('/settings/{user}', [\App\Http\Livewire\User\GeneralSettings ::class, '__invoke'])->name('settings');
+
             Route::get('/user/{user}/security', 'UsersController@security')->name('user.security');
             Route::post('/user/generateToken', 'UsersController@generateToken')->name('user.generateToken');
             Route::resource('/user', 'UsersController');
@@ -172,11 +174,7 @@ Route::group(['middleware' => 'auth'], function ()
             Route::get('/customer/serviceCostsLineitems/{id}', 'CustomerController@serviceCostsLineitems')->name('customer.serviceCostsLineitems');
             Route::group(['middleware' => ['check_customer']], function ()
             {
-                Route::get('/customer/{customer}-{slug}', 'CustomerController@show') ->middleware('permission:' . config('app.customer_show'), 'check_customer') ->name('customer.show');
-                // Route::get('/customer/{customer}-{slug}/edit', 'CustomerController@edit')->middleware('permission:' . config('app.customer_show'), 'check_customer')->name('customer.edit');
-
-                //need to check permissions has a reseller to be able tp edit.... customer_update
-                // Route::post('customer/update/{customer}', 'CustomerController@update')->middleware('permission:' . config('app.customer_show'))->name('customer.update');
+                Route::get('/customer/{customer}-{slug}', 'CustomerController@show')->middleware('permission:' . config('app.customer_show'), 'check_customer') ->name('customer.show');
 
                 /*
                 Inicio Confirmar nivel de acesso reseller->provider

@@ -46,13 +46,13 @@ class CartCounter extends Component
             if($this->product->max_quantity){
                 return [
                     'company_name'              => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-                    // 'qty'                       => ['required', 'numeric','max:'.$this->product->max_quantity, 'min:'.$this->product->min_quantity],
+                    'qty'                       => ['required', 'numeric','max:'.$this->product->max_quantity, 'min:'.$this->product->min_quantity],
                 ];
             }
             }else{
             return [
                 'company_name'              => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-                // 'qty'                       => ['required', 'numeric','max:99999999', 'min:1'],
+                'qty'                       => ['required', 'numeric','max:99999999', 'min:1'],
             ];
         }
     }
@@ -216,7 +216,7 @@ class CartCounter extends Component
     }
 
     public function checkout(){
-        // $this->validate();
+        $this->validate();
         $customerTenant = null;
 
 
