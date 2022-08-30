@@ -119,6 +119,7 @@
                                 <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.tenant', 1)) }}</dt>
                                 <dd class="mt-1 text-sm text-gray-900">
                                     <div class="flex items-center text-sm text-gray-500">
+                                        @if($customer->microsoftTenantInfo->first())
                                         <input id="copy_{{ $customer->microsoftTenantInfo->first()->tenant_domain }}" value="{{$customer->microsoftTenantInfo->first()->tenant_domain}}" aria-invalid="false" readonly="" placeholder="" type="text"
                                         class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto"/>
                                         <span class="text-sm font-medium text-gray-500">
@@ -131,6 +132,7 @@
                                                 </svg>
                                             </button>
                                         </span>
+                                        @endif
                                     </div>
                                 </dd>
                             </div>
@@ -144,6 +146,7 @@
                                 <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.tenant_id', 1)) }}</dt>
                                 <dd class="mt-1 text-sm text-gray-900">
                                     <div class="flex items-center text-sm text-gray-500">
+                                        @if($customer->microsoftTenantInfo->first())
                                         <input id="copy_{{ $customer->microsoftTenantInfo->first()->tenant_id }}" value="{{$customer->microsoftTenantInfo->first()->tenant_id}}" aria-invalid="false" readonly="" placeholder="" type="text"
                                         class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto"/>
                                         <span class="text-sm font-medium text-gray-500">
@@ -156,6 +159,7 @@
                                                 </svg>
                                             </button>
                                         </span>
+                                        @endif
                                     </div>
                                 </dd>
                             </div>
