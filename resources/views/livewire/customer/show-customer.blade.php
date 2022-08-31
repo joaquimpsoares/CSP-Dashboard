@@ -299,6 +299,7 @@
                                         </td>
                                         @if($subscription->billing_period === "one_time")
                                         <td class="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
+
                                             <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
                                             </a>
                                         </td>
@@ -321,19 +322,22 @@
                                         </td>
                                         @endif
                                         <td class="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
-                                            {{$subscription->amount}}
+                                            <div class="flex items-center mt-2 text-sm text-gray-500">
+                                                {{$subscription->amount}}
+                                            </div>
                                         </td>
                                         <td class="px-3 py-4 text-sm text-gray-500">
-                                            @if($subscription->orders->first())
-                                            @if($subscription->orders->first()->orderproduct != null)
-                                            <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
-                                                <span class="inline text-sm font-normal leading-5">
-                                                    {{number_format(($subscription->orders->first()->orderproduct->retail_price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
-                                                </span>
-                                            </a>
-                                            @endif
-                                            @endif
-
+                                            <div class="flex items-center mt-2 text-sm text-gray-500">
+                                                @if($subscription->orders->first())
+                                                @if($subscription->orders->first()->orderproduct != null)
+                                                <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
+                                                    <span class="inline text-sm font-normal leading-5">
+                                                        {{number_format(($subscription->orders->first()->orderproduct->retail_price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                    </span>
+                                                </a>
+                                                @endif
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -424,7 +428,6 @@
                                                     </a>
                                                 </div>
                                             </div>
-
                                         </td>
                                     </tr>
                                     @endforeach
@@ -704,7 +707,6 @@
                         </section>
                     </x-slot>
                     @endif
-
                     <x-slot name="footer">
                         <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             {{ucwords(trans_choice('cancel', 1))}}
