@@ -122,6 +122,7 @@
                                         @if($customer->microsoftTenantInfo->first())
                                         <input id="copy_{{ $customer->microsoftTenantInfo->first()->tenant_domain }}" value="{{$customer->microsoftTenantInfo->first()->tenant_domain}}" aria-invalid="false" readonly="" placeholder="" type="text"
                                         class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto"/>
+                                        @endif
                                         <span class="text-sm font-medium text-gray-500">
                                             <button id="myButton" value="copy" onclick="copyToClipboard('copy_{{ $customer->microsoftTenantInfo->first()->tenant_domain }}')" class="inline-flex items-center px-2 overflow-visible font-sans text-sm font-medium text-gray-400 no-underline normal-case bg-transparent border border-0 border-gray-200 rounded-lg cursor-pointer -py-4 focus:shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
                                                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="transition transform stroke-current" >
@@ -132,7 +133,6 @@
                                                 </svg>
                                             </button>
                                         </span>
-                                        @endif
                                     </div>
                                 </dd>
                             </div>
@@ -149,6 +149,7 @@
                                         @if($customer->microsoftTenantInfo->first())
                                         <input id="copy_{{ $customer->microsoftTenantInfo->first()->tenant_id }}" value="{{$customer->microsoftTenantInfo->first()->tenant_id}}" aria-invalid="false" readonly="" placeholder="" type="text"
                                         class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto"/>
+                                        @endif
                                         <span class="text-sm font-medium text-gray-500">
                                             <button id="myButton" value="copy" onclick="copyToClipboard('copy_{{ $customer->microsoftTenantInfo->first()->tenant_id }}')" class="inline-flex items-center px-2 overflow-visible font-sans text-sm font-medium text-gray-400 no-underline normal-case bg-transparent border border-0 border-gray-200 rounded-lg cursor-pointer -py-4 focus:shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
                                                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="transition transform stroke-current" >
@@ -159,7 +160,6 @@
                                                 </svg>
                                             </button>
                                         </span>
-                                        @endif
                                     </div>
                                 </dd>
                             </div>
