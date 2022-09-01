@@ -420,7 +420,7 @@ class HomeController extends Controller
                 }
 
 
-                return view('home', compact('subscriptionsperMonthCurrent', 'Top5LicensesSubscriptions', 'chartDataSubscriptionYear','chartDataCurrentCustomerByDay','chartDataCurrentResellerByDay',
+                return view('home', compact('chartDataSubscriptionYearCurrent', 'Top5LicensesSubscriptions', 'chartDataSubscriptionYear','chartDataCurrentCustomerByDay','chartDataCurrentResellerByDay',
                 'ChartRevenew','chartDataTotalOrders','chartDataCurrentByDay', 'chartDataPreviousByDay','resellers','orders',
                 'countOrders','provider','customers', 'subscriptions','news'));
             break;
