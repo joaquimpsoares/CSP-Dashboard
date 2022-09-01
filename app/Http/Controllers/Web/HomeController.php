@@ -143,7 +143,6 @@ class HomeController extends Controller
 
                 $chartDataCurrentResellerByDay = [];
                 foreach ($resellercurrentMonth as $data) {
-                    // $chartDataCurrentByDay[$data['date']] = $data['count'];
                     $chartDataCurrentResellerByDay[] = $data['count'];
                 }
 
@@ -159,7 +158,6 @@ class HomeController extends Controller
 
                 $chartDataCurrentCustomerByDay = [];
                 foreach ($customercurrentMonth as $data) {
-                    // $chartDataCurrentByDay[$data['date']] = $data['count'];
                     $chartDataCurrentCustomerByDay[] = $data['count'];
                 }
 

@@ -138,176 +138,13 @@
     </x-bladewind.alert>
     @endif
     @endif
-    {{-- <dl class="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-2 @if(Auth::user()->userLevel->name == "Super Admin") lg:grid-cols-5 @endif ?? lg:grid-cols-4 "> --}}
-        {{-- <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-            <div class="flex-grow px-4 py-5 sm:p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 p-3 bg-indigo-500 rounded-md">
-                        <!-- Heroicon name: outline/users -->
-                        <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                        </svg>
-                    </div>
-                    <div class="flex-1 w-0 ml-5">
-                        <dt class="text-sm font-medium text-gray-500 truncate">
-                            {{ucwords(trans_choice('messages.order', 2))}}
-                        </dt>
-                        <dd class="flex items-baseline">
-                            <div class="text-2xl font-semibold text-gray-900">
-                                @if($orders)
-                                {{$orders->count()}}
-                                @else
-                                0
-                                @endif
-                            </div>
-                        </dd>
-                    </div>
-                </div>
-            </div>
-            <div class="px-4 py-4 bg-gray-50 sm:px-6">
-                <div class="text-sm">
-                    <a href="/order" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Total Subscribers stats</span></a>
-                </div>
-            </div>
-        </div> --}}
 
-        {{-- @if(Auth::user()->userLevel->name == "Super Admin")
-        <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-            <div class="flex-grow px-4 py-5 sm:p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 p-3 bg-indigo-500 rounded-md">
-                        <!-- Heroicon name: outline/mail-open -->
-                        <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
-                    </div>
-                    <div class="flex-1 w-0 ml-5">
-                        <dt class="text-sm font-medium text-gray-500 truncate">
-                            {{ucwords(trans_choice('messages.provider', 2))}}
-                        </dt>
-                        <dd class="flex items-baseline">
-                            <div class="text-2xl font-semibold text-gray-900">
-                                {{$providers->count()}}
-                            </div>
-                        </dd>
-                    </div>
-                </div>
-            </div>
-            <div class="px-4 py-4 bg-gray-50 sm:px-6">
-                <div class="text-sm">
-                    <a href=" {{route('provider.index')}} " class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Avg. Open Rate stats</span></a>
-                </div>
-            </div>
-        </div>
-        @endif
-        <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-            <div class="flex-grow px-4 py-5 sm:p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 p-3 bg-indigo-500 rounded-md">
-                        <!-- Heroicon name: outline/mail-open -->
-                        <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex-1 w-0 ml-5">
-                        <dt class="text-sm font-medium text-gray-500 truncate">
-                            {{ucwords(trans_choice('messages.reseller', 2))}}
-                        </dt>
-                        <dd class="flex items-baseline">
-                            <div class="text-2xl font-semibold text-gray-900">
-                                {{$resellers->count()}}
-                            </div>
-                        </dd>
-                    </div>
-                </div>
-            </div>
-            <div class="px-4 py-4 bg-gray-50 sm:px-6">
-                <div class="text-sm">
-                    <a href=" {{route('reseller.index')}} " class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Avg. Open Rate stats</span></a>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-            <div class="flex-grow px-4 py-5 sm:p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 p-3 bg-indigo-500 rounded-md">
-                        <!-- Heroicon name: outline/mail-open -->
-                        <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                    </div>
-                    <div class="flex-1 w-0 ml-5">
-                        <dt class="text-sm font-medium text-gray-500 truncate">
-                            {{ucwords(trans_choice('messages.customer', 2))}}
-                        </dt>
-                        <dd class="flex items-baseline">
-                            <div class="text-2xl font-semibold text-gray-900">
-                                {{$customers->count()}}
-                            </div>
-                        </dd>
-                    </div>
-                </div>
-            </div>
-            <div class="px-4 py-4 bg-gray-50 sm:px-6">
-                <div class="text-sm">
-                    <a href="/customer" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Avg. Open Rate stats</span></a>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-            <div class="flex-grow px-4 py-5 sm:p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 p-3 bg-indigo-500 rounded-md">
-                        <!-- Heroicon name: outline/cursor-click -->
-                        <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex-1 w-0 ml-5">
-                        <dt class="text-sm font-medium text-gray-500 truncate">
-                            {{ucwords(trans_choice('messages.subscription', 2))}}
-                        </dt>
-                        <dd class="flex items-baseline">
-                            <div class="text-2xl font-semibold text-gray-900">
-                                {{$subscriptions->count()}}
-                            </div>
-                        </dd>
-                    </div>
-                </div>
-            </div>
-            <div class="px-4 py-4 bg-gray-50 sm:px-6">
-                <div class="text-sm">
-                    <a href="/subscription" class="font-medium text-indigo-600 hover:text-indigo-500"> View all<span class="sr-only"> Avg. Click Rate stats</span></a>
-                </div>
-            </div>
-        </div>
-    </dl> --}}
-    {{-- <dl class="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-2 lg:grid-cols-3 ">
-        <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-            <x-graph legendName="Total paid" headerTitle="Invoices Evolution" :labels="$invoicelabel" :data="$invoicedata" />
-        </div>
-        <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-            <div class="flex-grow px-4 sm:p-6">
-                <x-graph legendName="Orders" headerTitle="Orders Evolution [Year]" :labels="$orderlabel" :data="$orderdata" />
-            </div>
-        </div>
-        <div class="flex flex-col overflow-hidden bg-white rounded-lg shadow">
-            <div class="flex-grow px-4 sm:p-6">
-                <x-graph legendName="Customers" headerTitle="Customers Evolution [Year]" :labels="$customerlabel" :data="$customerdata" />
-            </div>
-        </div>
-    </dl> --}}
     <div class="mb-4 overflow-hidden bg-gray-200 rounded-lg shadow sm:grid sm:grid-cols-2 sm:gap-px">
         <div class="relative p-6 bg-white group focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
             <div class="p-4">
                 <div class="flex items-center">
-                    <div class="text-xs font-medium text-gray-500 uppercase">Evolution licenses last year</div>
+                    <div class="text-xs font-medium text-gray-500 uppercase">Evolution licenses comparison</div>
                 </div>
-                {{-- <div class="flex items-center">
-                    <div class="text-2xl font-semibold">${{array_sum($ChartRevenew)}}</div>
-                </div> --}}
             </div>
             <div id="chart"></div>
         </div>
@@ -315,11 +152,7 @@
             <div class="p-4">
                 <div class="flex items-center">
                     <div class="text-xs font-medium text-gray-500 uppercase">Top 5 products by licenses count</div>
-                    {{-- <div class="ml-auto text-gray-500">{{ucwords(trans_choice('messages.last_30Days', 2))}}</div> --}}
                 </div>
-                {{-- <div class="flex items-center">
-                    <div class="text-2xl font-semibold">${{array_sum($ChartRevenew)}}</div>
-                </div> --}}
             </div>
             <div id="chart2"></div>
         </div>
