@@ -154,7 +154,7 @@
                     <div class="text-xs font-medium text-gray-500 uppercase">Top 5 products by licenses count</div>
                 </div>
             </div>
-            <div id="chart2"></div>
+            <div class="flex items-center" id="chart2"></div>
         </div>
     </div>
 
@@ -187,9 +187,9 @@
             },
             legend: {
                 position: 'bottom',
-                formatter: function(val, opts) {
-                    return {!! json_encode(array_keys($Top5LicensesSubscriptions    ))!!} + " - " + opts.w.globals.series[opts.seriesIndex]
-                }
+                // formatter: function(val, opts) {
+                //     return {!! json_encode(array_keys($Top5LicensesSubscriptions    ))!!} + " - " + opts.w.globals.series[opts.seriesIndex]
+                // }
             },
 
             responsive: [{
