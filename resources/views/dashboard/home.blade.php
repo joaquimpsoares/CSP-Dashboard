@@ -304,7 +304,6 @@
             <div class="p-4">
                 <div class="flex items-center">
                     <div class="text-xs font-medium text-gray-500 uppercase">Evolution licenses last year</div>
-                    {{-- <div class="ml-auto text-gray-500">{{ucwords(trans_choice('messages.last_30Days', 2))}}</div> --}}
                 </div>
                 {{-- <div class="flex items-center">
                     <div class="text-2xl font-semibold">${{array_sum($ChartRevenew)}}</div>
@@ -378,12 +377,18 @@
     </script>
     <script>
         var options = {
+
             series: [
             {
-                name: "Licenses",
-                data: {!! json_encode(array_values($chartDataSubscriptionYear))!!},
+                name: "Last year",
+                data: {!! json_encode(array_values($chartDataSubscriptionYear))!!}
+            },
+            {
+                name: "Current Year",
+                data: {!! json_encode(array_values($chartDataSubscriptionYearCurrent))!!}
             }
             ],
+
             chart: {
                 height: 350,
                 type: "area",
