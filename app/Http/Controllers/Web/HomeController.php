@@ -389,6 +389,19 @@ class HomeController extends Controller
                     // $chartDataCurrentCustomerByDay[] = $data['count'];
                 }
 
+                $subscriptionsperMonthCurrent = Subscription::select(
+                    DB::raw('SUM(amount) AS count'),
+                    DB::raw("MONTHNAME(created_at) as monthname"))
+                    ->whereYear('created_at', date('Y'))
+                    ->where('billing_type', 'license')
+                    ->groupBy('monthname')
+                    ->get()
+                    ->toArray();
+
+                $chartDataSubscriptionYearCurrent = [];
+                foreach ($subscriptionsperMonthCurrent as $data) {
+                    $chartDataSubscriptionYearCurrent[$data['monthname']] = $data['count'];
+                }
 
 
             $top5Products = Subscription::select('name')
@@ -407,7 +420,7 @@ class HomeController extends Controller
                 }
 
 
-                return view('home', compact('Top5LicensesSubscriptions', 'chartDataSubscriptionYear','chartDataCurrentCustomerByDay','chartDataCurrentResellerByDay',
+                return view('home', compact('subscriptionsperMonthCurrent', 'Top5LicensesSubscriptions', 'chartDataSubscriptionYear','chartDataCurrentCustomerByDay','chartDataCurrentResellerByDay',
                 'ChartRevenew','chartDataTotalOrders','chartDataCurrentByDay', 'chartDataPreviousByDay','resellers','orders',
                 'countOrders','provider','customers', 'subscriptions','news'));
             break;
