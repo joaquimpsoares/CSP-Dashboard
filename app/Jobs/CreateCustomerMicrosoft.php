@@ -67,6 +67,8 @@ class CreateCustomerMicrosoft implements ShouldQueue
                 //mca agreement
             ]);
 
+            logger('this is the variable'. $newCustomer);
+
 
         } catch (Exception $e) {
 

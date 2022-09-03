@@ -391,4 +391,13 @@ return [
     'port' => 'port',
     'encryption' => 'encryption',
     'last_30Days' => 'last 30 days',
+    'change_status_complete' => 'change status to complete',
+    'change_status_failed' => 'change status to failed',
+    'no_orders' => 'No Order found...',
+    'order_placed' => 'order placed',
+    'running' => 'running',
+    'complete' => 'complete',
+    '' => '',
+    '' => '',
+
 ];

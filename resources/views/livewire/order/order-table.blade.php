@@ -1,6 +1,4 @@
 <div>
-
-    {{-- @dd(session()->get('impersonated_by')) --}}
     <div>
         <div class="relative z-0 flex-col flex-1 overflow-y-auto">
             <div class="p-4 overflow-hidden bg-white">
@@ -95,252 +93,264 @@
                                     </a>
                                 </x-table.cell>
                                 <x-table.cell>
-                                    <a href="#" wire:click="show({{ $value['id'] }})" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
-                                        <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
-                                            @if (! $value['verified_at'] && $value['asked_verification_by'])
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 bg-green-100 text-green-800 capitalize">Pending verification</span>
-                                            @else
-                                                @if ($value['status']['id']==4)
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 bg-green-100 text-green-800 capitalize">{{ $value['status']['name'] }}</span>
+                                    <div class="z-10">
+                                        <div class="inline-flex rounded-md shadow-sm">
+                                            <button type="button" class="w-24 relative inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                                {{ $value['status']['name'] }}
+                                            </button>
+                                            @if(Auth::user()->userlevel->name == "Super Admin" || Auth::user()->userlevel->name == "Provider")
+                                            <div class="relative block -ml-px">
+                                                <button type="button" class="relative inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <span class="sr-only">Open options</span>
+                                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </button>
+                                                @if ($value['status']['id']==3 || $value['status']['id']==2|| $value['status']['id']==1)
+                                                <div class="absolute right-0 z-10 w-56 mt-2 -mr-1 origin-top-right bg-white rounded-md shadow-lg dropdown-menu ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="option-menu-button" tabindex="-1">
+                                                    <div class="py-1" role="none">
+                                                        @if ($value['status']['id']==3)
+                                                        <a wire:click="markCompleted({{ $value['id'] }})" href="#" class="block px-4 py-2 text-xs text-gray-700" role="menuitem" tabindex="-1" id="option-menu-item-0">{{ ucwords(trans_choice('messages.change_status_complete', 1)) }}</a>
+                                                        @endif
+                                                        @if ($value['status']['id']==1)
+                                                        <a wire:click="markCompleted({{ $value['id'] }})" href="#" class="block px-4 py-2 text-xs text-gray-700" role="menuitem" tabindex="-1" id="option-menu-item-0">{{ ucwords(trans_choice('messages.change_status_complete', 1)) }}</a>
+                                                        <a wire:click="markFailed({{ $value['id'] }})" href="#" class="block px-4 py-2 text-xs text-gray-700" role="menuitem" tabindex="-1" id="option-menu-item-0">{{ ucwords(trans_choice('messages.change_status_failed', 1)) }}</a>
+                                                        @endif
+                                                        @if ($value['status']['id']==2)
+                                                        <a wire:click="markCompleted({{ $value['id'] }})" href="#" class="block px-4 py-2 text-xs text-gray-700" role="menuitem" tabindex="-1" id="option-menu-item-0">{{ ucwords(trans_choice('messages.change_status_complete', 1)) }}</a>
+                                                        <a wire:click="markFailed({{ $value['id'] }})" href="#" class="block px-4 py-2 text-xs text-gray-700" role="menuitem" tabindex="-1" id="option-menu-item-0">{{ ucwords(trans_choice('messages.change_status_failed', 1)) }}</a>
+                                                        @endif
+                                                    </div>
+                                                </div>
                                                 @endif
-                                                @if ($value['status']['id']==1)
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 bg-green-100 text-green-800 capitalize">{{ $value['status']['name'] }}</span>
-                                                @endif
-                                                @if ($value['status']['id']==3)
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 bg-gray-100 text-gray-800 capitalize">{{ $value['status']['name'] }}</span>
-                                                @endif
-                                                @if ($value['status']['id']==2)
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 bg-yellow-100 text-yellow-800 capitalize">{{ $value['status']['name'] }}</span>
-                                                @endif
+                                            </div>
                                             @endif
                                         </div>
-                                    </a>
-                                </x-table.cell>
-                                <x-table.cell>
-                                    <div class="z-10">
-                                        <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                                                <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                                            </svg>
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a wire:click="show({{ $value['id'] }})" class="dropdown-item" href="#">
-                                                <x-icon.show></x-icon.show>
-                                                {{ ucwords(trans_choice('messages.show', 1)) }}
-                                            </a>
-                                            @if($value->status->id == 3 || $value->status->id == 1)
-                                            <a wire:click="resendtoMicrosoft({{ $value['id'] }})" class="dropdown-item" href="#">
-                                                <x-icon.refresh></x-icon.refresh>
-                                                {{ ucwords(trans_choice('messages.resendtoMicrosoft', 1)) }}
-                                            </a>
-                                            @endif
-                                            @if (! $value['verified_at'] && $value['asked_verification_by'] && Auth::user()->can('verify order '.$value['id']))
+                                    </x-table.cell>
+                                    <x-table.cell>
+                                        <div class="z-10">
+                                            <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                                                </svg>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a wire:click="show({{ $value['id'] }})" class="dropdown-item" href="#">
+                                                    <x-icon.show></x-icon.show>
+                                                    {{ ucwords(trans_choice('messages.show', 1)) }}
+                                                </a>
+                                                @if($value->status->id == 3 || $value->status->id == 1)
+                                                <a wire:click="resendtoMicrosoft({{ $value['id'] }})" class="dropdown-item" href="#">
+                                                    <x-icon.refresh></x-icon.refresh>
+                                                    {{ ucwords(trans_choice('messages.resendtoMicrosoft', 1)) }}
+                                                </a>
+                                                @endif
+                                                @if (! $value['verified_at'] && $value['asked_verification_by'] && Auth::user()->can('verify order '.$value['id']))
                                                 <a class="dropdown-item" href="{{ route('order.verify', ['order_id' => $value['id']]) }}">
                                                     <x-icon.play></x-icon.play>
                                                     {{ ucwords(__('Verify order')) }}
                                                 </a>
-                                            @endif
+                                                @endif
+                                            </div>
                                         </div>
-                                    </div>
-                                </x-table.cell>
-                            </x-table.row>
-                            @empty
-                            <x-table.row>
-                                <x-table.cell colspan="9">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <x-icon.inbox class="w-8 h-8 text-cool-gray-400" />
-                                        <span class="py-8 text-xl font-medium text-cool-gray-400">No Order found...</span>
-                                    </div>
-                                </x-table.cell>
-                            </x-table.row>
-                            @endforelse
-                        </x-slot>
-                    </x-tableazure>
-                    <div>
-                        {{ $orders->links() }}
+                                    </x-table.cell>
+                                </x-table.row>
+                                @empty
+                                <x-table.row>
+                                    <x-table.cell colspan="9">
+                                        <div class="flex items-center justify-center space-x-2">
+                                            <x-icon.inbox class="w-8 h-8 text-cool-gray-400" />
+                                            <span class="py-8 text-xl font-medium text-cool-gray-400">{{ ucwords(trans_choice('messages.no_orders', 2)) }}</span>
+                                        </div>
+                                    </x-table.cell>
+                                </x-table.row>
+                                @endforelse
+                            </x-slot>
+                        </x-tableazure>
+                        <div>
+                            {{ $orders->links() }}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        @if($order)
-        <x-modal.slideout wire:model.defer="showEditModal">
-            <x-slot name="title">{{ ucwords(trans_choice('messages.order', 1)) }} ID {{$order->id}}</x-slot>
-            <x-slot name="content">
-                <div class="mt-6" aria-hidden="true">
-                    <label for="comment" class="block mb-3 text-sm font-medium text-gray-700">{{ ucwords(trans_choice('messages.status', 2)) }}</label>
-                    <div class="overflow-hidden bg-gray-200 rounded-full">
-                        @if ($order['status']['id']==1)
-                        <div class="h-2 bg-indigo-600 rounded-full" style="width: calc((5 * 2 + 1) / 8 * 10%);"></div>
-                        @endif
-                        @if ($order['status']['id']==2)
-                        <div class="h-2 bg-indigo-600 rounded-full" style="width: calc((20 * 2 + 1) / 8 * 10%);"></div>
-                        @endif
-                        @if ($order['status']['id']==4) {{-- completed --}}
-                        <div class="h-2 bg-indigo-600 rounded-full" style="width: calc((40 * 2 + 1) / 8 * 10%););"></div>
-                        @endif
-                    </div>
-                    <div class="hidden grid-cols-3 mt-6 text-sm font-medium text-gray-600 sm:grid">
-                        <div @if ($order['status']['id']==1) class="text-indigo-600" @endif >Order placed</div>
-                        <div @if ($order['status']['id']==2) class="text-center text-indigo-600" @endif class="text-center" >Running</div>
-                        <div @if ($order['status']['id']==4) class="text-right text-indigo-600" @endif class="text-right" >Completed</div>
-                    </div>
-                </div>
-                <hr>
-                <section class="dark-grey-text">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="space-y-2">
-                                <div class="sm:col-span-12 md:col-span-7">
-                                    <div class="px-0 py-1 sm:px-6">
-                                        <h3 class="text-lg font-medium leading-6 text-gray-900">
-                                            {{ ucwords(trans_choice('messages.customer', 1)) }}
-                                        </h3>
-                                    </div>
-                                    <dl class="">
-                                        <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt class="text-sm font-medium text-gray-500">
-                                                {{ ucwords(trans_choice('messages.company_name', 2)) }}
-                                            </dt>
-                                            <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline"href="{{$order->customer->format()['path']}}">
-                                                    {{$order->customer['company_name']}}
-                                                </a>
-
-                                            </dd>
-                                        </div>
-                                        <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt class="text-sm font-medium text-gray-500">
-                                                {{ ucwords(trans_choice('messages.address', 2)) }}
-                                            </dt>
-                                            <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{$order->customer['address_1']}}
-                                            </dd>
-                                        </div>
-                                        <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt class="text-sm font-medium text-gray-500">
-                                                {{ ucwords(trans_choice('messages.postal_code', 2)) }}
-                                            </dt>
-                                            <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{$order->customer['postal_code']}}
-                                            </dd>
-                                        </div>
-                                        <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt class="text-sm font-medium text-gray-500">
-                                                {{ ucwords(trans_choice('messages.country', 2)) }}
-                                            </dt>
-                                            <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{$order->customer['country']['name']}}
-                                            </dd>
-                                        </div>
-                                    </dl>
-                                </div>
-                                <hr>
-
-                                @if(Auth::user()->userlevel->name == "Super Admin")
-                                <div class="sm:col-span-12 md:col-span-7">
-                                    <div>
-                                        <div class="px-1 py-1 sm:px-6">
-                                            <h3 class="text-lg font-medium leading-6 text-gray-900">
-                                                {{ ucwords(trans_choice('messages.requestbody', 1)) }}
-                                            </h3>
-                                        </div>
-                                        <div class="py-0 sm:py-5 sm:grid sm:px-6">
-                                            <textarea disabled rows="8" name="requestbody" id="requestbody" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">{{json_encode(json_decode($order->request_body),JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)}}</textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endif
-
-                                <div class="sm:col-span-12 md:col-span-7">
-                                    <div class="px-0 py-1 sm:px-6">
-                                        <h3 class="text-lg font-medium leading-6 text-gray-900">
-                                            {{ ucwords(trans_choice('messages.error', 2)) }}
-                                        </h3>
-                                    </div>
-                                    <dl class="">
-                                        <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt class="text-sm font-medium text-gray-500">
-                                                {{ ucwords(trans_choice('messages.error', 1)) }}
-                                            </dt>
-                                            <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{json_encode(json_decode($order->errors),JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)}}
-                                            </dd>
-                                        </div>
-                                    </dl>
-                                </div>
-                                @if($order->orderproduct)
-                                <span class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">Total Products {{$order->orderproduct->where('order_id', $order->id)->count()}}</span>
-                                @endif
-                                @foreach($order->products as $key => $value)
-                                <div class="px-1 py-1 sm:px-6">
-                                    <h3 class="text-lg font-medium leading-6 text-gray-900">
-                                        {{ ucwords(trans_choice('messages.order_details', 1)) }}
-                                    </h3>
-                                </div>
-                                <div class="sm:col-span-12 md:col-span-7">
-                                    <dl class="">
-                                        <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt class="text-sm font-medium text-gray-500">
-                                                {{ ucwords(trans_choice('messages.product', 1)) }}
-                                            </dt>
-                                            <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{ $value->name }}
-                                            </dd>
-                                        </div>
-                                        <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt class="text-sm font-medium text-gray-500">
-                                                {{ ucwords(trans_choice('messages.product_term', 1)) }}
-                                            </dt>
-                                            <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{$order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->term_duration}}
-                                            </dd>
-                                        </div>
-                                        <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt class="text-sm font-medium text-gray-500">
-                                                {{ ucwords(trans_choice('messages.billing_cycle', 2)) }}
-                                            </dt>
-                                            <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{$order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->billing_cycle}}
-                                            </dd>
-                                        </div>
-                                        <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt class="text-sm font-medium text-gray-500">
-                                                {{ ucwords(trans_choice('messages.license', 2)) }}
-                                            </dt>
-                                            <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{$order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->quantity}}
-                                            </dd>
-                                        </div>
-                                        <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt class="text-sm font-medium text-gray-500">
-                                                {{ ucwords(trans_choice('messages.price', 1)) }}
-                                            </dt>
-                                            <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{ number_format(($order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->quantity*$order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->retail_price) * ($order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()['billing_cycle'] === 'annual' ? 12 : 1 ),2) }}
-                                            </dd>
-                                        </div>
-                                        <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt class="text-sm font-medium text-gray-500">
-                                                {{ ucwords(trans_choice('messages.details', 2)) }}
-                                            </dt>
-                                            <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                {{$order->details}}
-                                            </dd>
-                                        </div>
-                                    </dl>
-                                </div>
-                                @endforeach
-                            </div>
+            @if($order)
+            <x-modal.slideout wire:model.defer="showEditModal">
+                <x-slot name="title">{{ ucwords(trans_choice('messages.order', 1)) }} ID {{$order->id}}</x-slot>
+                <x-slot name="content">
+                    <div class="mt-6" aria-hidden="true">
+                        <label for="comment" class="block mb-3 text-sm font-medium text-gray-700">{{ ucwords(trans_choice('messages.status', 2)) }}</label>
+                        <div class="overflow-hidden bg-gray-200 rounded-full">
+                            @if ($order['status']['id']==1)
+                            <div class="h-2 bg-indigo-600 rounded-full" style="width: calc((5 * 2 + 1) / 8 * 10%);"></div>
+                            @endif
+                            @if ($order['status']['id']==2)
+                            <div class="h-2 bg-indigo-600 rounded-full" style="width: calc((20 * 2 + 1) / 8 * 10%);"></div>
+                            @endif
+                            @if ($order['status']['id']==4) {{-- completed --}}
+                            <div class="h-2 bg-indigo-600 rounded-full" style="width: calc((40 * 2 + 1) / 8 * 10%););"></div>
+                            @endif
+                        </div>
+                        <div class="hidden grid-cols-3 mt-6 text-sm font-medium text-gray-600 sm:grid">
+                            <div @if ($order['status']['id']==1) class="text-indigo-600" @endif>{{ ucwords(trans_choice('messages.order_placed', 2)) }}</div>
+                            <div @if ($order['status']['id']==2) class="text-center text-indigo-600" @endif class="text-center" >{{ ucwords(trans_choice('messages.running', 2)) }}</div>
+                            <div @if ($order['status']['id']==4) class="text-right text-indigo-600" @endif class="text-right" >{{ ucwords(trans_choice('messages.complete', 2)) }}</div>
                         </div>
                     </div>
-                </section>
-            </x-slot>
-            <x-slot name="footer">
-                <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    {{ucwords(trans_choice('close', 1))}}
-                </button>
-            </x-slot>
-        </x-modal.slideout>
-        @endif
+                    <hr>
+                    <section class="dark-grey-text">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="space-y-2">
+                                    <div class="sm:col-span-12 md:col-span-7">
+                                        <div class="px-0 py-1 sm:px-6">
+                                            <h3 class="text-lg font-medium leading-6 text-gray-900">
+                                                {{ ucwords(trans_choice('messages.customer', 1)) }}
+                                            </h3>
+                                        </div>
+                                        <dl class="">
+                                            <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                <dt class="text-sm font-medium text-gray-500">
+                                                    {{ ucwords(trans_choice('messages.company_name', 2)) }}
+                                                </dt>
+                                                <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                                    <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline"href="{{$order->customer->format()['path']}}">
+                                                        {{$order->customer['company_name']}}
+                                                    </a>
+
+                                                </dd>
+                                            </div>
+                                            <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                <dt class="text-sm font-medium text-gray-500">
+                                                    {{ ucwords(trans_choice('messages.address', 2)) }}
+                                                </dt>
+                                                <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                                    {{$order->customer['address_1']}}
+                                                </dd>
+                                            </div>
+                                            <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                <dt class="text-sm font-medium text-gray-500">
+                                                    {{ ucwords(trans_choice('messages.postal_code', 2)) }}
+                                                </dt>
+                                                <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                                    {{$order->customer['postal_code']}}
+                                                </dd>
+                                            </div>
+                                            <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                <dt class="text-sm font-medium text-gray-500">
+                                                    {{ ucwords(trans_choice('messages.country', 2)) }}
+                                                </dt>
+                                                <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                                    {{$order->customer['country']['name']}}
+                                                </dd>
+                                            </div>
+                                        </dl>
+                                    </div>
+                                    <hr>
+
+                                    @if(Auth::user()->userlevel->name == "Super Admin")
+                                    <div class="sm:col-span-12 md:col-span-7">
+                                        <div>
+                                            <div class="px-1 py-1 sm:px-6">
+                                                <h3 class="text-lg font-medium leading-6 text-gray-900">
+                                                    {{ ucwords(trans_choice('messages.requestbody', 1)) }}
+                                                </h3>
+                                            </div>
+                                            <div class="py-0 sm:py-5 sm:grid sm:px-6">
+                                                <textarea disabled rows="8" name="requestbody" id="requestbody" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">{{json_encode(json_decode($order->request_body),JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)}}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endif
+                                    <div class="sm:col-span-12 md:col-span-7">
+                                        <div class="px-0 py-1 sm:px-6">
+                                            <h3 class="text-lg font-medium leading-6 text-gray-900">
+                                                {{ ucwords(trans_choice('messages.error', 2)) }}
+                                            </h3>
+                                        </div>
+                                        <dl class="">
+                                            <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                <dt class="text-sm font-medium text-gray-500">
+                                                    {{ ucwords(trans_choice('messages.error', 1)) }}
+                                                </dt>
+                                                <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                                    {{json_encode(json_decode($order->errors),JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)}}
+                                                </dd>
+                                            </div>
+                                        </dl>
+                                    </div>
+                                    @if($order->orderproduct)
+                                    <span class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">Total Products {{$order->orderproduct->where('order_id', $order->id)->count()}}</span>
+                                    @endif
+                                    @foreach($order->products as $key => $value)
+                                    <div class="px-1 py-1 sm:px-6">
+                                        <h3 class="text-lg font-medium leading-6 text-gray-900">
+                                            {{ ucwords(trans_choice('messages.order_details', 1)) }}
+                                        </h3>
+                                    </div>
+                                    <div class="sm:col-span-12 md:col-span-7">
+                                        <dl class="">
+                                            <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                <dt class="text-sm font-medium text-gray-500">
+                                                    {{ ucwords(trans_choice('messages.product', 1)) }}
+                                                </dt>
+                                                <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                                    {{ $value->name }}
+                                                </dd>
+                                            </div>
+                                            <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                <dt class="text-sm font-medium text-gray-500">
+                                                    {{ ucwords(trans_choice('messages.product_term', 1)) }}
+                                                </dt>
+                                                <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                                    {{$order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->term_duration}}
+                                                </dd>
+                                            </div>
+                                            <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                <dt class="text-sm font-medium text-gray-500">
+                                                    {{ ucwords(trans_choice('messages.billing_cycle', 2)) }}
+                                                </dt>
+                                                <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                                    {{$order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->billing_cycle}}
+                                                </dd>
+                                            </div>
+                                            <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                <dt class="text-sm font-medium text-gray-500">
+                                                    {{ ucwords(trans_choice('messages.license', 2)) }}
+                                                </dt>
+                                                <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                                    {{$order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->quantity}}
+                                                </dd>
+                                            </div>
+                                            <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                <dt class="text-sm font-medium text-gray-500">
+                                                    {{ ucwords(trans_choice('messages.price', 1)) }}
+                                                </dt>
+                                                <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                                    {{ number_format(($order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->quantity*$order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->retail_price) * ($order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()['billing_cycle'] === 'annual' ? 12 : 1 ),2) }}
+                                                </dd>
+                                            </div>
+                                            <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                <dt class="text-sm font-medium text-gray-500">
+                                                    {{ ucwords(trans_choice('messages.details', 2)) }}
+                                                </dt>
+                                                <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                                    {{$order->details}}
+                                                </dd>
+                                            </div>
+                                        </dl>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </x-slot>
+                <x-slot name="footer">
+                    <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        {{ucwords(trans_choice('close', 1))}}
+                    </button>
+                </x-slot>
+            </x-modal.slideout>
+            @endif
+        </div>
     </div>
-</div>

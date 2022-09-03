@@ -377,4 +377,10 @@ return [
   'port' => 'Port',
   'encryption' => 'chiffrement',
   'last_30Days' => 'les 30 derniers jours',
+  'change_status_complete' => 'changer le statut pour terminer',
+  'change_status_failed' => 'changer le statut en échec',
+  'no_orders' => 'Aucune commande trouvée...',
+  'order_placed' => 'commande passée',
+  'running' => 'fonctionnement',
+  'complete' => 'Achevée',
 ];

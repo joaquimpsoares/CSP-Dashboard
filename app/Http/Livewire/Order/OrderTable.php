@@ -37,18 +37,27 @@ class OrderTable extends Component
 
     public function resendtoMicrosoft(Order $order){
         if($order->status->id == 3 || $order->status->id == 1){
-
             $order->markAsRunning();
             $order->sendToMicrosoft();
             $this->notify('','Order Resent to Microsoft Successfully','success');
         }
-
     }
+
+    public function markCompleted(Order $order){
+        $order->markAsCompleted();
+        $this->notify('','Order changed status to Completed','success');
+    }
+
+    public function markFailed(Order $order){
+        $order->markAsFailed();
+        $this->notify('','Order changed status to Failed','success');
+    }
+
+
 
     public function getRowsQueryProperty()
     {
         $query = Order::query();
-
         $orders = $query
         ->where(function ($q)  {
             $q->where('details', "like", "%{$this->search}%");
@@ -61,6 +70,8 @@ class OrderTable extends Component
 
         return $this->applySorting($orders);
     }
+
+
 
     public function getRowsProperty(){
         return $this->cache(function () {
