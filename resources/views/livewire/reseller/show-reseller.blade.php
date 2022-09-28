@@ -121,15 +121,15 @@
                 <!-- End Reseller Details -->
 
                 <!-- Start relationship -->
-                <x-bladewind.card  title="{{ ucwords(trans_choice('messages.provider_relationship', 1)) }}" subtitle="{{$reseller->provider->first()->company_name}}" url="{{$reseller->provider->first()->format()['path']}}">
+                <x-bladewind.card  title="{{ ucwords(trans_choice('messages.provider_relationship', 1)) }}" subtitle="{{$reseller->provider->company_name}}" url="{{$reseller->provider->format()['path']}}">
                     <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
                         <div class="sm:col-span-1">
                             <dd class="mt-1 text-sm text-gray-900">
                                 <x-bladewind.contact-card
-                                name="{{$reseller->provider->first()->users->first()->name}}"
-                                mobile="{{$reseller->provider->first()->users->first()->phone}}"
-                                image="{{$reseller->provider->first()->users->first()->avatar}}"
-                                email="{{$reseller->provider->first()->users->first()->email}}">
+                                name="{{$reseller->provider->users->first()->name}}"
+                                mobile="{{$reseller->provider->users->first()->phone}}"
+                                image="{{$reseller->provider->users->first()->avatar}}"
+                                email="{{$reseller->provider->users->first()->email}}">
                             </x-bladewind.contact-card>
                         </dd>
                     </div>
