@@ -182,11 +182,13 @@
                         <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
                             <div class="sm:col-span-1">
                                 <dt class="text-sm font-medium text-gray-500">{{strtoupper($customer->qualification)}}</dt>
+                                @if($customer->qualification_status)
                                 <dd class="mt-1 text-sm text-gray-900">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $customer->qualification_status == 'Approved' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'  }}  capitalize">
                                         {{$customer->qualification_status}}
                                     </span>
                                 </dd>
+                                @endif
                             </div>
                         </dl>
                     </div>
