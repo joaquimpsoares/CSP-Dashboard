@@ -1,4 +1,3 @@
-
 <div @if($customer->microsoftTenantInfo->first())  wire:init="checkQualificationStatus({{ $customer->id }}) @endif">
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
@@ -505,7 +504,7 @@
         </x-modal.dialog>
     </form>
     <!-- End - Customer Users -->
-    <form wire:submit.prevent="disable({{$customer->id}})" wire:loading.class.delay="opacity-50">
+    {{-- <form wire:submit.prevent="disable({{$customer->id}})" wire:loading.class.delay="opacity-50">
         <x-modal.confirmation wire:model.defer="showconfirmationModal">
             <x-slot name="title">Disabling Customer</x-slot>
             <x-slot name="content">
@@ -528,7 +527,7 @@
                 </a>
             </x-slot>
         </x-modal.confirmation>
-    </form>
+    </form> --}}
     <!-- Save Transaction Modal -->
     <div>
         <form @if($showuserCreateModal == false) wire:submit.prevent="save({{$customer->id}})" @else wire:submit.prevent="saveuser({{$customer->id}})" @endif>
