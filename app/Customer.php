@@ -83,7 +83,7 @@ class Customer extends Model implements Searchable
     }
 
     public function azure(){
-        return Subscription::where('billing_type', 'usage')->paginate('10');
+        return Subscription::where('billing_type', 'usage')->get();
     }
 
     public function path(){
