@@ -435,10 +435,12 @@ class ShowSubscription extends Component
             return false;
         }
         if(!is_null($return->first())){
-            $subscription->updateQuietly([
+
+            $subscription->saveQuietly([
                 'expiration_data' => date('Y-m-d', strtotime($return['commitmentEndDate'])) ?? null,
             ]);
         }
+        $subscription;
         $this->emit('refreshTransactions');
     }
 
