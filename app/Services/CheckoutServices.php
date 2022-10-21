@@ -16,10 +16,11 @@ class CheckoutServices{
     }
 
     public function scan($mpnid){
-        $instance = $this->reseller->provider->first()->instances->first();
 
-            $tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->checkMPNID($mpnid);
+        $instance = $this->reseller->provider->instances[0];
 
-           return ($tagydesorder);
+        $tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->checkMPNID($mpnid);
+
+        return ($tagydesorder);
     }
 }
