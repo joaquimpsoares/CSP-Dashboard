@@ -18,6 +18,7 @@ trait CronTasksList
     {
         // $schedule->command('SyncAzure:daily')->dailyAt('20:00');
         // $schedule->command('SyncAzure:daily')->dailyAt('20:00');
+        $schedule->command('command:SyncBullet')->dailyAt('20:00');
         $schedule->command('Scommand:checkSubscriptionExpiration')->dailyAt('20:00');
         $schedule->command('SyncAzureBudget:daily')->dailyAt('20:00');
         $schedule->command('command:checkSubscriptionExpiration')->monthly();
