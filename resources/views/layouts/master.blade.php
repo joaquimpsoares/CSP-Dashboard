@@ -34,6 +34,20 @@
             <main class="relative flex-1 overflow-y-auto bg-white focus:outline-none">
                 <div class="py-0 xl:py-0">
                     <div class="md:max-w-8xl md:mx-auto">
+
+                        @if(Auth::user()->provider)
+                        @if(Auth::user()->provider->instances()->withExpired()->first()->isExpired())
+                        <x-bladewind.alert>
+                            Your instance has expired on the {{date('d-m-Y', strtotime(Auth::user()->provider->instances()->withExpired()->first()->getExpirationDate()))}}
+                            <a href="/instances/{{Auth::user()->provider->instances()->withExpired()->first()->id}}/edit">Renew now</a>
+                        </x-bladewind.alert>
+                        @elseif (Carbon\Carbon::now()->diffInDays(Auth::user()->provider->instances()->withExpired()->first()->getExpirationDate()) <= 30)
+                        <x-bladewind.alert>
+                            Your instance is about to expired in  {{Carbon\Carbon::now()->diffInDays(Auth::user()->provider->instances()->withExpired()->first()->getExpirationDate())}} days, please renew now!!
+                            <a href="/instances/{{Auth::user()->provider->instances()->withExpired()->first()->id}}/edit">Renew now</a>
+                        </x-bladewind.alert>
+                        @endif
+                        @endif
                         @if (app('impersonate')->isImpersonating())
                         <nav class="flex" aria-label="Breadcrumb">
                             <ol role="list" class="flex px-6 space-x-4 bg-white rounded-md shadow">

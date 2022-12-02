@@ -41,6 +41,7 @@ class User extends Authenticatable implements PortableContract
             'provider' => $this->provider,
             'reseller' => $this->reseller,
             'customer' => $this->customer,
+            'instance' => $this->provider->instances,
         ];
     }
 

@@ -397,7 +397,8 @@ return [
     'order_placed' => 'order placed',
     'running' => 'running',
     'complete' => 'complete',
-    '' => '',
-    '' => '',
+    'payment' => 'payment'|'payments',
+    'business_account' => 'business account',
+    'password_confirmation' => 'password confirmation',
 
 ];

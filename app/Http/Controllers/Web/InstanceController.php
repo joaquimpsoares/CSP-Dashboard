@@ -6,6 +6,7 @@ use App\Instance;
 use App\Provider;
 use App\PriceList;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -34,7 +35,8 @@ class InstanceController extends Controller
 
     public function index()
     {
-        $instances = Instance::all();
+        $instances = Instance::withExpired()->get();
+        // $instances = Instance::all();
 
         return view('packages.cards', compact('instances'));
     }
@@ -106,37 +108,38 @@ class InstanceController extends Controller
                 return view('packages.microsoft', compact('instances'));
             }
 
-            /**
-            * Show the form for editing the specified resource.
-            *
-            * @param  int  $id
-            * @return \Illuminate\Http\Response
-            */
-            public function edit(Instance $instance)
-            {
+    /**
+    * Show the form for editing the specified resource.
+    *
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
+    public function edit(Instance $instance)
+    {
 
-                switch ($instance->type) {
-                    case 'kaspersky':
+        switch ($instance->type) {
+            case 'kaspersky':
 
-                        try {
-                            $certificate = Crypt::decryptString($instance->certificate);
-                        } catch (DecryptException $e) {
-                            //
-                        }
-                        return view('packages.kaspersky.kaspersky', compact('instance','certificate'));
-                        break;
-
-                    default:
-                    if ($instance->external_token_updated_at == null)
-
-                    $expiration = $instance->external_token_updated_at;
-
-                    else
-
-                    $expiration = $instance->external_token_updated_at->addDays(90);
-                    return view('packages.microsoft.microsoft', compact('instance', 'expiration'));
-                        break;
+                try {
+                    $certificate = Crypt::decryptString($instance->certificate);
+                } catch (DecryptException $e) {
+                    //
                 }
+                return view('packages.kaspersky.kaspersky', compact('instance','certificate'));
+                break;
+
+                default:
+                if ($instance->external_token_updated_at == null)
+
+                $expiration = $instance->external_token_updated_at;
+
+                else
+
+                $expiration = $instance->external_token_updated_at->addDays(90);
+
+                return view('packages.microsoft.microsoft', compact('instance', 'expiration'));
+                break;
+            }
 
 
 
@@ -185,14 +188,15 @@ class InstanceController extends Controller
                 if( !$instance){
                     return redirect()->back()->with('warning', 'The account has no assigned tenant');
                 }
-                // dd(! $instance->external_token);
 
                     $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
-                    $expire = date("Y-m-d h:i:s", $externalToken['expiration']);
+                    // dd(date("Y-m-d h:i:s", $externalToken['expiration']));
+                    // $expire = date("Y-m-d h:i:s", $externalToken['expiration']);
                     $external_token = $externalToken['token'];
                     $update = $instance->update([
                         'external_token' => $external_token,
-                        'external_token_updated_at' => $expire
+                        'external_token_updated_at' => date("Y-m-d h:i:s", $externalToken['expiration']),
+                        'expires_at' => Carbon::now()->addMonth(3),
                     ]);
 
 

@@ -20,7 +20,7 @@ class InstanceAboutToExpire extends Notification
     public function  __construct($details, $days)
     {
         $this->days = $days;
-         $this->details = $details;
+        $this->details = $details;
     }
 
     /**
