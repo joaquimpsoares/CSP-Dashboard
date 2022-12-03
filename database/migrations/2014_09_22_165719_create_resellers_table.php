@@ -15,7 +15,7 @@ class CreateResellersTable extends Migration
     {
 
         Schema::create('resellers', function (Blueprint $table) {
-                        
+
             $table->bigIncrements('id');
             $table->string('company_name', 100);
             $table->string('address_1', 100)->nullable();
@@ -38,7 +38,7 @@ class CreateResellersTable extends Migration
             $table->foreign('country_id')->references('id')->on('countries');
             $table->foreign('main_office')->references('id')->on('resellers');
             $table->foreign('price_list_id')->references('id')->on('price_lists');
-            $table->foreign('status_id')->references('id')->on('statuses'); 
+            $table->foreign('status_id')->references('id')->on('statuses');
 
         });
 
@@ -50,8 +50,7 @@ class CreateResellersTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down(){
         Schema::dropIfExists('resellers');
     }
 }

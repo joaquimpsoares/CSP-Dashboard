@@ -14,7 +14,7 @@ class CreateProvidersTable extends Migration
     public function up()
     {
 
-        
+
 
         Schema::create('providers', function (Blueprint $table) {
 

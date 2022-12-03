@@ -11,8 +11,7 @@ class CreateStatusesTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
+    public function up(){
         Schema::create('statuses', function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->string('name');
@@ -26,8 +25,7 @@ class CreateStatusesTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down(){
         Schema::dropIfExists('statuses');
     }
 }
