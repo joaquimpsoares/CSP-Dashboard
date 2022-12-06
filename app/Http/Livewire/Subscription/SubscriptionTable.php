@@ -288,6 +288,6 @@ class SubscriptionTable extends Component
 
         return view('livewire.subscription.subscription-table', [
             'subscriptions' => $this->rows,
-        ]);
+        ])->extends('layouts.master');
     }
 }

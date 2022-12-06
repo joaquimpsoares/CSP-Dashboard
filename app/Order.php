@@ -10,11 +10,14 @@ use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Jobs\CreateCustomerMicrosoft;
+use Approval\Traits\RequiresApproval;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
 class Order extends Model
 {
+    use RequiresApproval;
+
     protected $dates = ['verified_at'];
 
     protected $casts = [

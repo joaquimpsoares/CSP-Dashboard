@@ -18,7 +18,10 @@ Route::group(['middleware' => ['role:Super Admin|Admin|Provider|Reseller|Sub Res
     // Route::prefix('azureanalytics')->group(function() {
     //     Route::get('/', 'AzureAnalyticsController@index');
     // });
-
+//Analytics Module Routes Begin
+Route::get('/analytics',                                    [\Modules\AzureAnalytics\Http\Livewire\Azure\AzureTable::class, '__invoke'])->name('analytics');
+Route::get('/analytics/reports/{subscription}',             [\Modules\AzureAnalytics\Http\Livewire\Azure\AzureReport::class, '__invoke'])->name('analytics.reports');
+//Analytics Module Routes finish
     // Route::get('/analytics/reports/{subscription}', [\Modules\AzureAnalytics\Http\Livewire\Azure\AzureReport::class, '__invoke'])->name('analytics.reports');
 });
 

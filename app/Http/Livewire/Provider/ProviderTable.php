@@ -56,6 +56,7 @@ class ProviderTable extends Component
             'editing.city'                  => 'required|string|max:255|min:3',
             'editing.state'                 => 'required|string|max:255|min:3',
             'editing.postal_code'           => 'required|string|max:255|min:3',
+            'editing.bullethq_id'           => 'required|string|max:255|min:3',
             // 'editing.status_id'             => 'required|integer|exists:statuses,id',
             // 'editing.markup'                => 'nullable|integer|min:3',
             // 'editing.price_list_id'         => 'required|integer|exists:price_list,id',

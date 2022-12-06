@@ -14,7 +14,7 @@ class RouteServiceProvider extends ServiceProvider
 	 *
 	 * @var string
 	 */
-	protected $namespace = 'App\Http\Controllers';
+	protected $namespace = 'App\Http\Controllers\Web';
 	protected $webNamespace = 'App\Http\Controllers\Web';
 	protected $apiNamespace = 'App\Http\Controllers\Api';
 
@@ -32,7 +32,13 @@ class RouteServiceProvider extends ServiceProvider
 	 */
 	public function boot()
 	{
-		parent::boot();
+        // $this->configureRateLimiting();
+
+        $this->routes(function () {
+        $this->mapApiRoutes();
+        $this->mapWebRoutes();
+    });
+		// parent::boot();
 	}
 
 	/**
@@ -46,6 +52,32 @@ class RouteServiceProvider extends ServiceProvider
 		$this->mapWebRoutes();
 	}
 
+    protected function mapWebRoutes()
+    {
+        foreach ($this->centralDomains() as $domain) {
+            Route::middleware('web')
+                ->domain($domain)
+                ->namespace($this->namespace)
+                ->group(base_path('routes/web.php'));
+        }
+    }
+
+    protected function mapApiRoutes()
+    {
+        foreach ($this->centralDomains() as $domain) {
+            Route::prefix('api')
+                ->domain($domain)
+                ->middleware('api')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/api.php'));
+        }
+    }
+
+    protected function centralDomains(): array
+    {
+        return config('tenancy.central_domains');
+    }
+
 	/**
 	 * Define the "web" routes for the application.
 	 *
@@ -53,15 +85,15 @@ class RouteServiceProvider extends ServiceProvider
 	 *
 	 * @return void
 	 */
-	protected function mapWebRoutes()
-	{
-		Route::group([
-			'namespace' => $this->webNamespace,
-			'middleware' => 'web',
-		], function ($router) {
-			require base_path('routes/web.php');
-		});
-	}
+	// protected function mapWebRoutes()
+	// {
+	// 	Route::group([
+	// 		'namespace' => $this->webNamespace,
+	// 		'middleware' => 'web',
+	// 	], function ($router) {
+	// 		require base_path('routes/web.php');
+	// 	});
+	// }
 
 	/**
 	 * Define the "api" routes for the application.
@@ -70,14 +102,14 @@ class RouteServiceProvider extends ServiceProvider
 	 *
 	 * @return void
 	 */
-	protected function mapApiRoutes()
-	{
-		Route::group([
-            'middleware' => 'api',
-            'namespace' => $this->apiNamespace,
-            'prefix' => 'api',
-        ], function () {
-            require base_path('routes/api.php');
-        });
-	}
+	// protected function mapApiRoutes()
+	// {
+	// 	Route::group([
+    //         'middleware' => 'api',
+    //         'namespace' => $this->apiNamespace,
+    //         'prefix' => 'api',
+    //     ], function () {
+    //         require base_path('routes/api.php');
+    //     });
+	// }
 }

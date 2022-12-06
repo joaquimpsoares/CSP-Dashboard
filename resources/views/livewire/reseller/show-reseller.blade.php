@@ -138,24 +138,32 @@
             <!-- End relationship -->
 
 
-            {{-- <!-- Start statistics -->
+            <!-- Start statistics -->
+            @if($reseller->customers)
                 <div>
                     <dl class="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-3">
                         <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
                             <dt class="text-sm font-medium text-gray-500 truncate">{{ ucwords(trans_choice('messages.active_subscriptions', 1)) }}</dt>
-                            <dd class="mt-1 text-3xl font-semibold text-gray-900">{{$reseller->customers->subscriptions->where('status_id', 1)->count()}}</dd>
+                            <dd class="mt-1 text-3xl font-semibold text-gray-900">
+                                @foreach($reseller->customers as $key => $customer)
+                                @foreach($customer->subscriptions->groupby('customer_id') as $subscription)
+                                {{ $customer->subscriptions->where('status_id', 1)->count()}}
+                                @endforeach
+                                @endforeach
+                            </dd>
                         </div>
                         <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
                             <dt class="text-sm font-medium text-gray-500 truncate">{{ ucwords(trans_choice('messages.total_subscriptions', 1)) }}</dt>
-                            <dd class="mt-1 text-3xl font-semibold text-gray-900">{{$reseller->customer->subscriptions->count()}}</dd>
+                            <dd class="mt-1 text-3xl font-semibold text-gray-900">{{$subscription->count()}}</dd>
                         </div>
                         <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
                             <dt class="text-sm font-medium text-gray-500 truncate">{{ ucwords(trans_choice('messages.active_licenses', 1)) }}</dt>
-                            <dd class="mt-1 text-3xl font-semibold text-gray-900">{{$reseller->customer->subscriptions->where('status_id', 1)->sum('amount')}}</dd>
+                            <dd class="mt-1 text-3xl font-semibold text-gray-900">{{$subscription->sum('amount')}}</dd>
                         </div>
                     </dl>
                 </div>
-                <!-- End statistics --> --}}
+                @endif
+                <!-- End statistics -->
 
                 <!-- Start customer table -->
                 <x-bladewind.card  title="{{ ucwords(trans_choice('messages.customer', 1)) }}">

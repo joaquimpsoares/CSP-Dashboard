@@ -6,15 +6,19 @@ use Illuminate\Support\Str;
 use Soved\Laravel\Gdpr\Portable;
 use Laravel\Sanctum\HasApiTokens;
 use Webpatser\Countries\Countries;
+use Approval\Traits\ApprovesChanges;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Soved\Laravel\Gdpr\Contracts\Portable as PortableContract;
 
 class User extends Authenticatable implements PortableContract
 {
+    use HasFactory;
+    use ApprovesChanges;
     use HasApiTokens, SoftDeletes, Notifiable, HasRoles, Impersonate, Portable;
 
     protected $gdprWith = ['orders', 'customer', 'reseller', 'provider'];
@@ -41,7 +45,6 @@ class User extends Authenticatable implements PortableContract
             'provider' => $this->provider,
             'reseller' => $this->reseller,
             'customer' => $this->customer,
-            'instance' => $this->provider->instances,
         ];
     }
 

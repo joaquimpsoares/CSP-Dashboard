@@ -85,19 +85,19 @@ class OrderTable extends Component
 //             'sk_test_UOBjZFg9i8X3VZ5BsSKV6z1R00Gv19nybH'
 //           );
 //         $tt =  $stripe->accounts->create([
-//             'type' => 'custom',
-//             'country' => 'US',
-//             'email' => 'jenny.rosen@example.com',
+//             'type' => 'express',
+//             'country' => 'PT',
+//             'email' => 'jenny.rosen2@example.com',
 //             'capabilities' => [
 //               'card_payments' => ['requested' => true],
 //               'transfers' => ['requested' => true],
 //             ],
 //             'business_type' => 'company',
 //           ]);
-
+// dd($tt->id);
 
         return view('livewire.order.order-table', [
             'orders' => $this->rows,
-        ]);
+        ])->extends('layouts.master');
     }
 }

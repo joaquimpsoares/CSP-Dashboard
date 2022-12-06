@@ -15,14 +15,8 @@ class BullethqInvoices extends Model
         'invoiceLines' => 'collection'
     ];
 
-    protected static function booted(){
-        static::addGlobalScope('access_level', function(Builder $query){
-            $user = Auth::user()->provider;
-            if(!empty($user->bullethq_id)){
-            $query->where('clientId', $user->bullethq_id);
-        }
-        });
-    }
+    // protected static function booted(){
+    //     static::addGlobalScope('access_level', function(Builder $query){
 
-
+    // }
 }

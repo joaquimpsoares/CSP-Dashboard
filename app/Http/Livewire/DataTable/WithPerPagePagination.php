@@ -27,7 +27,8 @@ trait WithPerPagePagination
 
     public function applyPagination($query)
     {
-        if($query->count() > 0){
+        if($query->count() > 3){
+            // dd($query->count() > 3);
             return $query->orderBy('id' ?? null, 'desc')->paginate($this->perPage);
         }
         return $query->paginate($this->perPage);

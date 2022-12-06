@@ -162,6 +162,6 @@ class ProductTable extends Component
     {
         return view('livewire.product.product-table', [
             'products' => $this->rows,
-        ]);
+        ])->extends('layouts.master');
     }
 }

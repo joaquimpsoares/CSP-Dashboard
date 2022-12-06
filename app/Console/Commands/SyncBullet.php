@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Provider;
 use Illuminate\Console\Command;
 use App\Models\BullethqInvoices;
 use App\Models\BullethqPayments;
@@ -37,8 +38,19 @@ class SyncBullet extends Command
         $invoices = Http::withBasicAuth('joaquim.soares@tagydes.com', '25a142a35cccedbb8465cf148790eefe')
         ->get('https://accounts-app.bullethq.com/api/v1/invoices')->collect();
 
+        // dd($invoices->first());
+
+        // $provider =Provider::eachById(function (Provider $provider) {
+        //     if(!empty($provider->bullethq_id)){
+        //         $provider = BullethqInvoices::where('clientId', $provider->bullethq_id)->get();
+        //         dd($provider);
+        //     }
+        // });
+
+        // dd($provider);
+
         foreach($invoices as $invoice){
-            BullethqInvoices::updateorcreate([
+            $tt = BullethqInvoices::updateorcreate([
                 "bullethq_id"   => $invoice['id']
             ],[
                 "outstandingAmount" => $invoice['outstandingAmount'],
@@ -50,6 +62,7 @@ class SyncBullet extends Command
                 "invoiceLines"      => $invoice['invoiceLines'],
 
             ]);
+            // dd($tt);
 
 
             foreach($payments as $payment){

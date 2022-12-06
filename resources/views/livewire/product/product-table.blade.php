@@ -48,7 +48,7 @@
                             </x-dropdown>
                         </div>
                         <div class="ml-3 lg:max-w-xs">
-                            <x-button.primary wire:click="create"><x-icon.plus/> New</x-button.primary>
+                            <x-button.primary {{route('product.create')}}><x-icon.plus/> {{ ucwords(trans_choice('messages.create', 1)) }}</x-button.primary>
                         </div>
                     </div>
                 </div>

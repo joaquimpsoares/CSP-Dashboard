@@ -41,7 +41,7 @@
                             <div class="flex-1 min-w-0">
                                 <label for="search" class="sr-only">Search</label>
                                 <div>
-                                    <x-input wire:model='name' type="text" name="name" id="name" class="@error('password') is-invalid @enderror  block w-full px-3 py-2 placeholder-gray-400" placeholder="Token Name"></x-input>
+                                    <x-input wire:model='token_name' type="text" name="name" id="name" class="@error('password') is-invalid @enderror  block w-full px-3 py-2 placeholder-gray-400" placeholder="Token Name"></x-input>
                                     @error('name') <span class="invalid-feedback" role="alert"> <strong>{{ $message }}</strong> </span> @enderror
                                 </div>
                             </div>
@@ -50,7 +50,7 @@
                                 <span class="sr-only">Search</span>
                             </button>
                         </div>
-                        
+
                         @if($token)
                         <div class="flex-1 min-w-0 mt-3">
                             <h2 id="payment_details_heading" class="text-lg font-medium leading-6 text-gray-900">Token Created</h2>
@@ -74,7 +74,7 @@
                                             <a href="#" wire:click="deleteToken({{ $token->id }})" class="inline-flex px-2 text-xs font-semibold leading-5 text-red-800 ">Delete</a>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                             </li>
                             @endforeach

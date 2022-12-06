@@ -167,21 +167,24 @@ class ShowCustomer extends Component
         $return = $customer->checkCustomerQualification($customer);
 
         if(!$return->isempty()){
-            $this->customer->update([
-                'qualification_status' => $return[0]['vettingStatus'],
-            ]);
-            if($return[0]['vettingStatus'] == 'Denied'){
+            if(array_key_exists('qualification', $return[0])){
                 $this->customer->update([
-                    'qualification' => $return[0]['vettingReason'],
+                    'qualification' => $return[0]['qualification'],
                 ]);
+            }else{
+                if($return[0]['vettingStatus'] == 'Denied'){
+                    $this->customer->update([
+                        'qualification' => $return[0]['vettingReason'],
+                    ]);
+                }
             }
         }
         $this->emit('refreshTransactions');
     }
 
     public function edit(Customer $customer){
-        $this->editing = $customer;
         $this->showEditModal = true;
+        $this->editing = $customer;
     }
 
     public function disable(Customer $customer){

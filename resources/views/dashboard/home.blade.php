@@ -3,6 +3,7 @@
 @section('content')
 
 @include('layouts.messages')
+
 <div class="grid grid-cols-1 gap-2 p-10 lg:grid-cols-4 h-100 w-100">
     <div class="bg-white border border-gray-200 rounded shadow">
         <div class="p-4">

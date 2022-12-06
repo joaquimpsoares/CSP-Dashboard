@@ -8,21 +8,21 @@ use Illuminate\Queue\InteractsWithQueue;
 class SetLeveIdInSession
 {
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
+    * Create the event listener.
+    *
+    * @return void
+    */
     public function __construct()
     {
         //
     }
 
     /**
-     * Handle the event.
-     *
-     * @param  object  $event
-     * @return void
-     */
+    * Handle the event.
+    *
+    * @param  object  $event
+    * @return void
+    */
     public function handle($event)
     {
         if($event->user->roles->first()->name == 'Provider'){
@@ -30,23 +30,26 @@ class SetLeveIdInSession
             foreach($event->user->provider->instances as $instance){
                 session()->put([
                     'instance_id' =>$instance->id,
-                    'instance_type' => $instance->type]);
+                    'instance_type' => $instance->type
+                ]);
             }
-            }elseif($event->user->roles->first()->name == 'Reseller'){
-                session()->put('reseller_id', $event->user->reseller_id);
-                foreach($event->user->reseller->provider->instances as $instance){
-                    session()->put([
-                        'instance_id' => $instance->id,
-                        'instance_type' => $instance->type]);
+        }elseif($event->user->roles->first()->name == 'Reseller'){
+            session()->put('reseller_id', $event->user->reseller_id);
+            foreach($event->user->reseller->provider->instances as $instance){
+                session()->put([
+                    'instance_id' => $instance->id,
+                    'instance_type' => $instance->type
+                ]);
             }
-            }elseif($event->user->roles->first()->name == 'Customer'){
-                session()->put('customer_id', $event->user->customer_id);
-                foreach($event->user->customer->resellers->first()->provider->instances as $instance){
-                    session()->put([
-                        'instance_id' => $instance->id,
-                        'instance_type' => $instance->type]);
+        }elseif($event->user->roles->first()->name == 'Customer'){
+            session()->put('customer_id', $event->user->customer_id);
+            foreach($event->user->customer->resellers->first()->provider->instances as $instance){
+                session()->put([
+                    'instance_id' => $instance->id,
+                    'instance_type' => $instance->type
+                ]);
             }
         }
-    session()->put('role', $event->user->roles->first()->name);
+        session()->put('role', $event->user->roles->first()->name);
     }
 }

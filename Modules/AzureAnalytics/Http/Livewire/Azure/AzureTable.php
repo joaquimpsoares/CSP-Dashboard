@@ -2,15 +2,12 @@
 
 namespace Modules\AzureAnalytics\Http\Livewire\Azure;
 
-use App\Instance;
 use App\Subscription;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Illuminate\Database\Eloquent\Builder;
 use App\Http\Livewire\DataTable\WithSorting;
 use App\Http\Livewire\DataTable\WithCachedRows;
 use App\Http\Livewire\DataTable\WithBulkActions;
-use App\Repositories\AnalyticRepositoryInterface;
 use App\Http\Livewire\DataTable\WithPerPagePagination;
 use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
 use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
@@ -95,6 +92,7 @@ class AzureTable extends Component
                     }
                 }
             });
+            // dd($resourceName);
             return $this->applySorting($resourceName);
         }
 

@@ -43,13 +43,14 @@ class CartCounter extends Component
 
     public function rules(){
         if($this->product != null){
-            if($this->product->max_quantity){
+            if($this->product->maximum_quantity){
                 return [
                     'company_name'              => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
-                    'qty'                       => ['required', 'numeric','max:'.$this->product->max_quantity, 'min:'.$this->product->min_quantity],
+                    'qty'                       => ['required', 'numeric','max:'.$this->product->maximum_quantity, 'min:'.$this->product->minimum_quantity],
                 ];
             }
             }else{
+
             return [
                 'company_name'              => ['required', 'string', 'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/', 'max:255'],
                 'qty'                       => ['required', 'numeric','max:99999999', 'min:1'],
@@ -64,10 +65,10 @@ class CartCounter extends Component
     //     'qty' => 'required|integer|max:'.$this->max_quantity.'|'.'min':.$this->min_quantity,
     // ];
 
-    // public function updated($propertyName)
-    // {
-    //     $this->validateOnly($propertyName);
-    // }
+    public function updated($propertyName)
+    {
+        $this->validateOnly($propertyName);
+    }
 
     public static  function getUserCart($id = null, $token = null){
         $user = Auth::user();

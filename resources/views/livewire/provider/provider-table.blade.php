@@ -150,6 +150,13 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="mb-4 col-md-6">
+                                        <x-label for="bullethq_id" class="">{{ ucwords(trans_choice('messages.external_id', 1)) }}</x-label>
+                                        <x-input  wire:model="editing.bullethq_id" type="text" id="bullethq_id" name="bullethq_id" class="@error('editing.bullethq_id') is-invalid @enderror"></x-input>
+                                        @error('editing.bullethq_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="mb-4 col-md-6">
                                         <x-label for="company_name" class="">{{ ucwords(trans_choice('messages.company_name', 1)) }}</x-label>
                                         <x-input  wire:model="editing.company_name" type="text" id="company_name" name="company_name" class="@error('editing.company_name') is-invalid @enderror"></x-input>
                                         @error('editing.company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror

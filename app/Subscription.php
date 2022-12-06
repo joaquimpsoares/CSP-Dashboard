@@ -346,7 +346,7 @@ class Subscription extends Model
         $order->customer_id = $this->customer_id;
         $order->domain = $this->domain;
         $order->token = Str::uuid();
-        $order->user_id = Auth::user()->id;
+        $order->user_id = Auth::user()->id ?? '10001';
         // $order->verify = $this->verify;
         $subscription = new TagydesSubscription([
             'id'            => $this->subscription_id,

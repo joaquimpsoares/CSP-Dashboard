@@ -17,11 +17,8 @@
                 @livewire('search.global-search')
                 <x-database-notifications/>
                 <span class="hidden w-px h-6 mx-4 bg-gray-200 lg:flex" aria-hidden="true"></span>
-                {{-- <x-cart/> --}}
-                {{-- @livewire('store.cart') --}}
                 @livewire('store.cart-counter')
             </div>
         </div>
     </nav>
 </header>
-

@@ -195,6 +195,6 @@ class CustomerTable extends Component
             'countries' => $countries,
             'statuses'  => $statuses,
             'roles'     => $roles
-        ]);
+        ])->extends('layouts.master');
     }
 }

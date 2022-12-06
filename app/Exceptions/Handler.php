@@ -3,9 +3,12 @@
 namespace App\Exceptions;
 
 use Throwable;
+use Illuminate\View\ViewException;
+use Illuminate\Database\QueryException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Stancl\Tenancy\Exceptions\TenantDatabaseDoesNotExistException;
 
 class Handler extends ExceptionHandler
 {
@@ -51,23 +54,33 @@ class Handler extends ExceptionHandler
      * @throws \Throwable
      */
     public function render($request, $exception)
-{
-    // This will replace our 404 response with
-    // a JSON response.
-    if ($exception instanceof ModelNotFoundException &&
-        $request->wantsJson())
     {
-        return response()->json([
-            'data' => 'Resource not found'
-        ], 404);
-    }
+        if (
+            ($exception instanceof TenantDatabaseDoesNotExistException) ||
+            (tenant() && (! tenant('ready')) && $exception instanceof QueryException) ||
+            (tenant() && (! tenant('ready')) && $exception instanceof ViewException && $exception->getPrevious() instanceof QueryException)
+        ) {
+            return response()->view('errors.building');
+        }
+
+        // This will replace our 404 response with
+        // a JSON response.
+        if ($exception instanceof ModelNotFoundException &&
+        $request->wantsJson())
+        {
+            return response()->json([
+                'data' => 'Resource not found'
+            ], 404);
+        }
 
     return parent::render($request, $exception);
-}
+
+    }
     // public function render($request, Throwable $exception)
     // {
     //     return parent::render($request, $exception);
     // }
+
 
     protected function unauthenticated($request, AuthenticationException $exception)
     {

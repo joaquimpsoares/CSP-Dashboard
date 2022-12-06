@@ -71,7 +71,7 @@
                                                 <div class="mb-3 input-group">
                                                     <div class="input-group-prepend">
                                                     </div>
-                                                    @if($instance->external_token_updated_at == null)
+                                                    @if($instance->expires_at == null)
                                                     <a href=" {{('/instances/getMasterToken/'. $instance->id )}} " class="text-danger">Please update token</a>
                                                     @else
                                                     <input disabled type="text" name="external_url" class="form-control" id="basic-url" aria-describedby="basic-addon3" value="{{ $expiration }} ">

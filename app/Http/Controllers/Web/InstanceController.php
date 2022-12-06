@@ -14,10 +14,6 @@ use App\Repositories\ProviderRepositoryInterface;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
 
-
-
-
-
 class InstanceController extends Controller
 {
 

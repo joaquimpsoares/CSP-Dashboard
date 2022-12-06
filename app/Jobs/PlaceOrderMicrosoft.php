@@ -50,9 +50,14 @@ class PlaceOrderMicrosoft implements ShouldQueue
     {
         $products = $this->order->products;
         $customer = $this->order->customer;
+        foreach ($products as $key => $value) {
+            dd($value->name);
+        }
+
+        dd($products);
 
         foreach ($products as $product) {
-            $this->order->details = ('Placing Order for');
+            $this->order->details = ('Placing Order for: ' . $product['name'] . ' for Customer: ' . $customer->company_name);
             $this->order->save();
         }
 

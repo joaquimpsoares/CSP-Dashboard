@@ -101,9 +101,7 @@ class Product extends Model
         return $this->billing === 'usage';
     }
 
-    public function IsLegacy(){
-        return $this->productType === 'legacy';
-    }
+
 
     public function hasPrice(){
         if($this->price){

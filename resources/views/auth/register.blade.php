@@ -1,112 +1,75 @@
-@extends('layouts.app')
+@extends('layouts.master2')
 
 @section('content')
 
-{{-- <div class="container">  --}}
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <section>
-                <div class="card-body">
-                    <div class="card">
-                        <div class="">
-                            <i class="fas fa-unlock fa-lg blue-gradient  p-4 ml-2 mt-n3 py-2 mx-4 d-flex justify-content-between align-items-center rounded text-white">{{ __(' Register') }}</i>
-                            <div class="card-body">
-                                <form method="POST" action="{{ route('provider.register') }}">
-                                    @csrf
-                                    {{-- <div class="row">
-                                        <div class="md-form col-md-6">
-                                            <label for="company_name" class="col-md-4">{{ __('Company Name') }}</label>
-                                            <input id="company_name" type="text" class="form-control @error('name') is-invalid @enderror" name="company_name" value="{{ old('company_name') }}" required autocomplete="company_name">
-                                            @error('name')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-                                        <div class="md-form col-md-6">
-                                            <label for="nif" class="col-md-4">{{ __('NIF') }}</label>
-                                            <input id="nif" type="text" class="form-control @error('name') is-invalid @enderror" name="nif" value="{{ old('nif') }}" required autocomplete="nif">
-                                            @error('name')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-                                    </div> --}}
-                                    <div class="row">
-                                        <div class="md-form col-md-6">
-                                            <label for="name" class="col-md-4">{{ __('First Name') }}</label>
-                                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name">
-                                            @error('name')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-                                        <div class="md-form col-md-6">
-                                            <label for="last_name" class="col-md-4">{{ __('Last Name') }}</label>
-                                            <input id="last_name" type="text" class="form-control @error('last_name') is-invalid @enderror" name="last_name" value="{{ old('last_name') }}" required autocomplete="last_name">
-                                            @error('name')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-                                        {{-- <div class="md-form col-md-4">
-                                            <label for="email" class="col-md-4">{{ __('E-Mail Address') }}</label>
-                                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
-                                            @error('email')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div> --}}
-                                    </div>
-                                    <div class="row">
-                                        <div class="md-form col-md-6">
-                                            <label for="email" class="col-md-4">{{ __('E-Mail Address') }}</label>
-                                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
-                                            @error('email')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                        <div class="row">
-                                            <div class="md-form col-md-6">
-                                                <label for="password" class="col-md-4">{{ __('Password') }}</label>
-                                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-                                                @error('password')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                                @enderror
-                                            </div>
+<section class="bg-gray-50 dark:bg-gray-900">
+    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+        <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
+            <img class="w-8 h-8 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo">
+            Flowbite
+        </a>
+        <form class="space-y-6"action="{{ route('register') }}" action="#" method="POST">
+            @csrf
+            <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                    <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                        Create and account
+                    </h1>
+                    <form class="space-y-4 md:space-y-6" action="#">
+                        <div>
+                            <label for="company" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your company</label>
+                            <input type="company" name="company" id="company" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Company Name" required="">
+                        </div>
+                        <div>
+                            <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
+                            <input type="first_name" name="first_name" id="first_name" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Richard" required="">
+                        </div>
+                        <div>
+                            <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last Name</label>
+                            <input type="last_name" name="last_name" id="last_name" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Albert" required="">
+                        </div>
+                        <div>
+                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
+                            <input type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" required="">
+                        </div>
+                        <div>
+                            <div>
+                                <label for="tenant" class="block text-sm font-medium text-gray-700">Tenant</label>
+                                <div class="flex mt-1 rounded-md shadow-sm">
+                                    <div class="relative flex items-stretch flex-grow focus-within:z-10">
 
-                                            <div class="md-form col-md-6">
-                                                <label for="password-confirm" class="col-md-4">{{ __('Confirm Password') }}</label>
-                                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                                            </div>
-                                        </div>
+                                        <input type="tenant" name="tenant" id="tenant" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="some tenant" required="">
                                     </div>
-                                    <div class="form-group row mb-0">
-                                        <div class="col-md-6 offset-md-4">
-                                            <button type="submit" class="btn btn-success">
-                                                {{ __('Register') }}
-                                            </button>
-                                            <a href="https://login.microsoftonline.com/common/oauth2/authorize?client_id=66127fdf-8259-429c-9899-6ec066ff8915&response_mode=form_post&response_type=code%20id_token&scope=openid%20profile&state=OpenIdConnect.AuthenticationProperties%3DI1GSEMQ5vkDi3jW3ICsu3q3Gu2YZ2EaVSDg_6LSze9jkkzOWMNk6_dt7foli3-P_5-y0R9niZdkTqAaH-fCRC9deVyckpElYkGBBFSlj1owO9thmnqCUkejka2wceAbreckdP4bye-Axg0OZQ0BF6w&nonce=636981181817049026.NzVmYTczYzMtNjUwZS00NmUwLWEyZmMtMWVjMmJjN2VlY2U3Njg3NzA3Y2YtOTZlNi00ODk3LThiYjktYjMwYzc3ZDhhYTNk&x-client-SKU=ID_NET461&x-client-ver=5.3.0.0" class="btn btn-primary">Consent</a>
-                                        </div>
-                                    </div>
-                                </form>
+                                    <button type="button" class="relative inline-flex items-center px-4 py-2 -ml-px space-x-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-r-md bg-gray-50 hover:bg-gray-100 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                        <span>ontagydes.com</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        <div>
+                            <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                            <input type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
+                        </div>
+                        <div>
+                            <label for="confirm-password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm password</label>
+                            <input type="confirm-password" name="confirm-password" id="confirm-password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="terms" aria-describedby="terms" type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" required="">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="terms" class="font-light text-gray-500 dark:text-gray-300">I accept the <a class="font-medium text-primary-600 hover:underline dark:text-primary-500" href="#">Terms and Conditions</a></label>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">Create an account</button>
+                        <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+                            Already have an account? <a href="#" class="font-medium text-gray-600 hover:underline dark:text-gray-500">Login here</a>
+                        </p>
+                    </form>
                 </div>
-            </section>
-        </div>
+            </div>
+        </form>
     </div>
-
-
-
-    @endsection
+</section>
+@endsection

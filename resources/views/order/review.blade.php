@@ -134,7 +134,7 @@ $totalPrice = null;
                                                                         </tr>
                                                                         <tr>
                                                                             <td colspan="5" class="text-right">
-                                                                                @if(!app('impersonate')->isImpersonating() && Auth::user()->customer && !Auth::user()->customer->direct_buy)
+                                                                                @if(!app('impersonate')->isImpersonating() && Auth::user()->reseller && !Auth::user()->reseller->direct_buy)
                                                                                     <a class="btn btn-primary" href="{{ route('order.save_order_for_verification', ['token' => $cart->token]) }}" > {{ ucwords(trans_choice('messages.place_order', 1)) }} <i class="si si-paper-plane"> </i></a>
                                                                                 @else
                                                                                     <a class="btn btn-primary" href="{{ route('order.place_order', ['token' => $cart->token]) }}" > {{ ucwords(trans_choice('messages.place_order', 1)) }} <i class="si si-paper-plane"> </i></a>

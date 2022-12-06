@@ -29,26 +29,30 @@ class SetImpersonationLeveIdInSession
 
         if($event->impersonated->roles->first()->name == 'Provider'){
             session()->put('provider_id', $event->impersonated->provider_id);
-            foreach($event->impersonated->provider->instances as $instance){
+            foreach($event->impersonated->provider->instances as $instance)
+            {
                 session()->put([
                     'instance_id' => $instance->id,
-                    'instance_type' => $instance->type]);
-                }
-            }elseif($event->impersonated->roles->first()->name == 'Reseller'){
-                session()->put('reseller_id', $event->impersonated->reseller_id);
-                foreach($event->impersonated->reseller->provider->instances as $instance){
-                    session()->put([
-                        'instance_id' => $instance->id,
-                        'instance_type' => $instance->type]);
-                    }
-                }elseif($event->impersonated->roles->first()->name == 'Customer'){
-                    session()->put('customer_id', $event->impersonated->customer_id);
-                    foreach($event->impersonated->customer->resellers->first()->provider->instances as $instance){
-                        session()->put([
-                            'instance_id' => $instance->id,
-                            'instance_type' => $instance->type]);
-                        }
-                }
-                session()->put('role', $event->impersonated->roles->first()->name);
+                    'instance_type' => $instance->type
+                ]);
+            }
+        }elseif($event->impersonated->roles->first()->name == 'Reseller'){
+            session()->put('reseller_id', $event->impersonated->reseller_id);
+            foreach($event->impersonated->reseller->provider->instances as $instance){
+                session()->put([
+                    'instance_id' => $instance->id,
+                    'instance_type' => $instance->type
+                ]);
+            }
+        }elseif($event->impersonated->roles->first()->name == 'Customer'){
+            session()->put('customer_id', $event->impersonated->customer_id);
+            foreach($event->impersonated->customer->resellers->first()->provider->instances as $instance){
+                session()->put([
+                    'instance_id' => $instance->id,
+                    'instance_type' => $instance->type
+                ]);
             }
         }
+        session()->put('role', $event->impersonated->roles->first()->name);
+    }
+}
