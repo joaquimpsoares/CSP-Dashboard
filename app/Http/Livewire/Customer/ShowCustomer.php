@@ -70,12 +70,20 @@ class ShowCustomer extends Component
     public function selectPageRows(){$this->selected = $this->filtered->pluck('id')->map(fn($id) => (string) $id);}
 
     public function importSelected(){
-
         $importCount = collect($this->selected)->count();
+        dd($importCount);
+
 
         try {
             foreach(collect($this->selected) as $row){
                 $subscription = $this->toImport->where('id', $row)->first();
+
+                if($subscription['billingCycle'] == 'one_time'){
+                    dd($subscription);
+                    $product = explode(':', $subscription['offerId']);
+                    $product = Product::where('sku', $product[0].':'.$product[1])->first();
+                }
+
                 if(collect($subscription)->has('productType')){
                     $product = explode(':', $subscription['offerId']);
                     $product = Product::where('sku', $product[0].':'.$product[1])->first();
@@ -88,6 +96,7 @@ class ShowCustomer extends Component
                     $this->notify(' ', 'Check Product exists ' . $subscription['offerName'] .'-'. $subscription['offerId']. ' Subscription','error');
                 }else{
                     $instanceid = $product->instance_id;
+
                     if(collect($subscription)->has('productType')){
                         $product = explode(':', $subscription['offerId']);
                         $offerId = $product['0'].":".$product['1'];
@@ -96,6 +105,8 @@ class ShowCustomer extends Component
                         $price = Price::where('instance_id', $instanceid)->where('product_sku', $subscription['offerId'])->first();
                         $offerId =$subscription['offerId'];
                     }
+
+                    // dd($price, $offerId, $subscription['offerId']);
 
                     $subscriptions                  = new Subscription();
                     $subscriptions->name            = $subscription['offerName'];
@@ -275,7 +286,9 @@ class ShowCustomer extends Component
         if (!$customer->subscriptions->isEmpty()){
             $instance = $customer->subscriptions->first()->instance_id;
             $instance = Instance::find($instance);
-            $subscriptions = $customer->subscriptions;
+            $subscriptionsc = $customer->subscriptions;
+            dd($subscriptionsc->count());
+
             try {
                 $customer = new TagydesCustomer([
                     'id' => $customer->microsoftTenantInfo->first()->tenant_id,
@@ -286,21 +299,31 @@ class ShowCustomer extends Component
                     'email' => 'bill@tagydes.com',
                 ]);
 
-                $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->CheckCustomerSubscriptions($customer);
-                $this->toImport = collect($resources['items']);
-                $resources = collect($resources['items']);
+                $subscriptions = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)
+                ->CheckCustomerSubscriptions($customer);
+                $subscriptions = collect($subscriptions['items']);
 
-                if($resources->count() <> $subscriptions->count()){
-                    $this->filtered = $resources->whereNotIn('id', $subscriptions->pluck('subscription_id'));
-                    if(!$this->filtered->isempty()){
+                $orders = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)
+                ->CheckCustomerOrders($customer);
+                $orders = collect($orders['items']);
+
+                $this->toImport = $subscriptions->concat($orders); // Combine subscriptions and orders
+
+                $resources = $subscriptions->concat($orders); // Combine subscriptions and orders into resources
+
+                if($resources->count() <> $subscriptionsc->count()){
+
+                    $this->filtered = $resources->whereNotIn('id', $this->toImport->pluck('subscription_id')->concat($this->toImport->pluck('order_id')));
+
+                    if (!$this->filtered->isEmpty()) {
                         $this->showImportModal = true;
-                    }else{
-                        $this->notify(' ', 'We didn\'t found subscription(s) to import', 'info');
+                    } else {
+                        $this->notify(' ', 'We didn\'t found subscription(s) or order(s) to import', 'info');
                         return false;
                     }
                     return $this->filtered;
-                }else{
-                    $this->notify(' ', 'We didn\'t found subscription(s) to import', 'info');
+                } else {
+                    $this->notify(' ', 'We didn\'t found subscription(s) or order(s) to import', 'info');
                     return false;
                 }
 

@@ -10,6 +10,7 @@
     <!-- Tailwind UI -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tailwindcss/ui@latest/dist/tailwind-ui.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Baloo+Paaji+2&display=swap" rel="stylesheet">
+    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
 
     <!-- Alpine -->
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
@@ -25,7 +26,9 @@
 
     @include('layouts.head')
 </head>
-
+<style>
+    [x-cloak] { display: none }
+</style>
 <body  class="antialiased bg-gray-200">
     <div class="page">
         <div class="page-main">

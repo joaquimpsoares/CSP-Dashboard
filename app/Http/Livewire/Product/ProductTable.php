@@ -107,6 +107,10 @@ class ProductTable extends Component
 
     public function importproducts(){
 
+        if (!Auth::user()->provider) {
+            abort(403, 'You do not have permission to perform this action.');
+        }
+
         if($this->license == true){
 
             Log::info('Started importing NCE');

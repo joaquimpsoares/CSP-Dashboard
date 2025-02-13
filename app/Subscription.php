@@ -91,7 +91,7 @@ class Subscription extends Model
             'email' => 'bill@tagydes.com',
         ]);
 
-        $billingCycle =strtolower($this->billing_period);
+        $billingCycle = strtolower($this->billing_period);
 
         $subscription = new TagydesSubscription([
             'id'            => $this->subscription_id,

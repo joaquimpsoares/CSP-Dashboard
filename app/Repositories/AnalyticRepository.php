@@ -38,12 +38,15 @@ class AnalyticRepository implements AnalyticRepositoryInterface
 
                 $resellers = Reseller::where('provider_id', $user->provider->id)->pluck('id')->toArray();
 
-                // $customer = Customer::whereHas('resellers', function($query) use  ($resellers) {
-                //     $query->whereIn('id', $resellers);
-                // })->with(['country'])
-                // ->orderBy('company_name')->get()->map->format();
-                // $azure = Subscription::with(['customer','products','status'])->where('billing_type', 'usage')->whereIn('customer_id', $customer)
-                // ->orderBy('id')->paginate(10);
+                $customer = Customer::whereHas('resellers', function($query) use ($resellers) {
+                    $query->whereIn('id', $resellers);
+                })->pluck('id')->toArray();
+
+                $azure = Subscription::with(['customer', 'products', 'status'])
+                    ->where('billing_type', 'usage')
+                    ->whereIn('customer_id', $customer)
+                    ->orderBy('id')
+                    ->paginate(10);
 
             break;
 

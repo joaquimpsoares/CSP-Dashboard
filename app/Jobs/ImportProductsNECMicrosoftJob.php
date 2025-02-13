@@ -7,6 +7,7 @@ use App\Product;
 use App\Instance;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
+use App\Events\JobProgressUpdated;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -32,6 +33,13 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
         $this->country = $country;
     }
 
+    public function queueProgress($percentage)
+    {
+        event(new JobProgressUpdated($percentage));
+    }
+
+
+
     /**
     * Execute the job.
     *
@@ -40,70 +48,70 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
     public function handle()
     {
         $instance = $this->instance;
+        $country = $instance->provider->country->iso_3166_2;
 
-        Log::info('instance: '.$instance);
-        Log::info('Country: '.$this->country);
+        Log::info('Instance: ' . $instance);
+        Log::info('Country: ' . $country);
 
         try {
             $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)
-            ->forCountry($instance->provider->country->iso_3166_2)->softwareNCEAll($instance->provider->country->iso_3166_2);
+            ->forCountry($country)->softwareNCEAll($country);
 
-            $products->filter()->each(function ($importedProduct) use ($instance) {
+            $products->filter()->take(500)->each(function ($importedProduct) use ($instance) {
                 $importedProduct->each(function ($importedProduct) use ($instance) {
                     $importedProduct->each(function ($importedProduct) use ($instance) {
-                        Log::info('this is NCE: '.$importedProduct->product->productType->displayName);
-                        Log::info('this is Microsoft Product True or False: '.$importedProduct->isMicrosoftProduct);
+                        $productType = $importedProduct->product->productType->displayName;
+                        $isMicrosoftProduct = $importedProduct->isMicrosoftProduct;
+                        Log::info('This is NCE: ' . $productType);
+                        Log::info('This is Microsoft Product (True or False): ' . $isMicrosoftProduct);
 
-                        if($importedProduct->product->productType->displayName=='OnlineServicesNCE'){
-                            $sku = $importedProduct->sku->productId.':'.$importedProduct->sku->id;
-                        }else{
-                            $sku =$importedProduct->sku->productId;
-                        }
-                        Log::info('catalogItemId: '.$importedProduct->catalogItemId);
-                        Log::info('Product description: '.$importedProduct->sku->description);
+                        $sku = ($productType === 'OnlineServicesNCE') ? $importedProduct->sku->productId . ':' . $importedProduct->sku->id : $importedProduct->sku->productId;
 
-                        $product = Product::updateOrCreate([
-                            'name'                      => $importedProduct->sku->title,
-                            'instance_id'               => $instance->id,
-                            'sku'                       => $sku,
-                            'uri'                       => $importedProduct->links->self->uri,
-                            'catalog_item_id'           => $importedProduct->catalogItemId,
-                            'billing'                   => $importedProduct->sku->dynamicAttributes->billingType,
-                            'productType'               => $importedProduct->product->productType->displayName,
-                            'country'                   => $importedProduct->country,
-                            'vendor'                    => $importedProduct->product->publisherName,
-                            'description'               => $importedProduct->sku->description,
-                            'is_trial'                  => $importedProduct->sku->isTrial,
-                            'is_addon'                  => $importedProduct->sku->dynamicAttributes->isAddon,
-                            'is_perpetual'              => false,
+                        Log::info('CatalogItemId: ' . $importedProduct->catalogItemId);
+                        Log::info('Product description: ' . $importedProduct->sku->description);
+
+                        $productData = [
+                            'name' => $importedProduct->sku->title,
+                            'instance_id' => $instance->id,
+                            'sku' => $sku,
+                            'uri' => $importedProduct->links->self->uri,
+                            'catalog_item_id' => $importedProduct->catalogItemId,
+                            'billing' => $importedProduct->sku->dynamicAttributes->billingType,
+                            'productType' => $productType,
+                            'country' => $importedProduct->country,
+                            'vendor' => $importedProduct->product->publisherName,
+                            'description' => $importedProduct->sku->description,
+                            'is_trial' => $importedProduct->sku->isTrial,
+                            'is_addon' => $importedProduct->sku->dynamicAttributes->isAddon,
+                            'is_perpetual' => false,
                             'is_available_for_purchase' => true,
-                        ], [
-                            'terms'                     => $importedProduct->terms,
-                            'prerequisite_skus'         => $importedProduct->sku->dynamicAttributes->prerequisiteSkus,
-                            'has_addons'                => $importedProduct->sku->dynamicAttributes->hasAddOns,
-                            'limit'                     => $importedProduct->sku->dynamicAttributes->limit,
-                            'minimum_quantity'          => $importedProduct->sku->minimumQuantity,
-                            'maximum_quantity'          => $importedProduct->sku->maximumQuantity,
+                            'terms' => $importedProduct->terms,
+                            'prerequisite_skus' => $importedProduct->sku->dynamicAttributes->prerequisiteSkus,
+                            'has_addons' => $importedProduct->sku->dynamicAttributes->hasAddOns,
+                            'limit' => $importedProduct->sku->dynamicAttributes->limit,
+                            'minimum_quantity' => $importedProduct->sku->minimumQuantity,
+                            'maximum_quantity' => $importedProduct->sku->maximumQuantity,
+                            'is_autorenewable' => $importedProduct->sku->dynamicAttributes->isAutoRenewable,
+                            'supported_billing_cycles' => $importedProduct->sku->supportedBillingCycles,
+                            'unitType' => $importedProduct->sku->dynamicAttributes->unitType,
+                            'upgrade_target_offers' => $importedProduct->sku->dynamicAttributes->upgradeTargetOffers,
+                            'conversion_target_offers' => $importedProduct->sku->dynamicAttributes->conversionTargetOffers,
+                            'resellee_qualifications' => $importedProduct->sku->dynamicAttributes->reselleeQualifications,
+                            'reseller_qualifications' => $importedProduct->sku->dynamicAttributes->resellerQualifications,
+                        ];
 
-                            'is_autorenewable'          => $importedProduct->sku->dynamicAttributes->isAutoRenewable,
-                            'supported_billing_cycles'  => $importedProduct->sku->supportedBillingCycles,
-                            'unitType'                  => $importedProduct->sku->dynamicAttributes->unitType,
 
-                            'upgrade_target_offers'     => $importedProduct->sku->dynamicAttributes->upgradeTargetOffers,
-                            'conversion_target_offers'  => $importedProduct->sku->dynamicAttributes->conversionTargetOffers,
-                            'resellee_qualifications'   => $importedProduct->sku->dynamicAttributes->reselleeQualifications,
-                            'reseller_qualifications'   => $importedProduct->sku->dynamicAttributes->resellerQualifications,
-                        ]);
-                        Log::info('Imported: '.$product->name.' transactions!');
+                        $product = Product::updateOrCreate(['sku' => $sku], $productData);
+                        Log::info('Imported: ' . $product->name . ' transactions!');
                     });
                 });
             });
-
+            Log::info('Product import Finished');
         } catch (Exception $e) {
-            Log::info('Error importing products: '.$e->getMessage());
+            Log::info('Error importing products: ' . $e->getMessage());
         }
 
         $this->queueProgress(100);
-
     }
+
 }

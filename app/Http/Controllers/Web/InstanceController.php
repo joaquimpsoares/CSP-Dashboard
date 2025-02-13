@@ -151,8 +151,6 @@ class InstanceController extends Controller
             */
             public function update(Request $request, $id)
             {
-
-
                 $user = Auth::user();
 
                 $this->validate($request, [
@@ -161,7 +159,6 @@ class InstanceController extends Controller
                     'external_type' => 'String|in:direct,indirect',
                     'external_url' => 'String'
                 ]);
-
 
                 $instance = Instance::findOrFail($id);
 
@@ -186,8 +183,6 @@ class InstanceController extends Controller
                 }
 
                     $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
-                    // dd(date("Y-m-d h:i:s", $externalToken['expiration']));
-                    // $expire = date("Y-m-d h:i:s", $externalToken['expiration']);
                     $external_token = $externalToken['token'];
                     $update = $instance->update([
                         'external_token' => $external_token,

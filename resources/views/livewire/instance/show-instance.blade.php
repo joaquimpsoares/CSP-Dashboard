@@ -65,7 +65,6 @@
                                             </div>
                                         </div>
                                         <div class="row">
-
                                             <div class="input-field col s4">
                                                 <label for="basic-url">{{ ucwords(trans_choice('messages.token_expiration', 1)) }}</label>
                                                 <div class="mb-3 input-group">

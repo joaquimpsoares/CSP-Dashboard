@@ -8,7 +8,7 @@
     ],
     "license": "MIT",
     "repositories": [
-{
+        {
             "type": "git",
             "url": "git@gitlab.com:tagydes/microsoft-connection.git"
         }
@@ -67,7 +67,8 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
-            "treeware/plant": false
+            "treeware/plant": false,
+            "php-http/discovery": true
         }
     },
     "extra": {

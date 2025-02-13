@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Web;
 
 use App\News;
-use App\User;
 use App\Order;
-use App\Country;
 use App\Customer;
-use App\Instance;
 use App\Provider;
 use App\Reseller;
 use Carbon\Carbon;
@@ -16,10 +13,10 @@ use App\Models\Status;
 use App\OrderProducts;
 use App\Models\Activities;
 use App\Models\LogActivity;
-// use App\Models\MsftInvoices;
 use App\Http\Traits\UserTrait;
-use Illuminate\Support\Collection;
+use App\Services\ChatGptService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
@@ -30,6 +27,7 @@ use App\Repositories\SubscriptionRepositoryInterface;
 
 class HomeController extends Controller
 {
+    protected $chatGptService;
 
     use UserTrait;
 
@@ -46,7 +44,7 @@ class HomeController extends Controller
     */
     public function __construct(ProviderRepositoryInterface $providerRepository, SubscriptionRepositoryInterface $subscriptionRepository,
     ResellerRepositoryInterface $resellerRepository, CustomerRepositoryInterface $customerRepository,
-    ProductRepositoryInterface $productRepository, OrderRepositoryInterface $orderRepository)
+    ProductRepositoryInterface $productRepository, OrderRepositoryInterface $orderRepository,ChatGptService $chatGptService)
     {
         $this->subscriptionRepository = $subscriptionRepository;
         $this->providerRepository = $providerRepository;
@@ -54,8 +52,19 @@ class HomeController extends Controller
         $this->customerRepository = $customerRepository;
         $this->productRepository = $productRepository;
         $this->orderRepository = $orderRepository;
+        $this->chatGptService = $chatGptService;
+        $this->middleware('auth');
 
         $this->middleware('auth');
+    }
+
+
+    public function getSubscriptionInfo(Request $request)
+    {
+        dd('0s');
+        $chatResponse = $request->input('chat_response');
+        $result = $this->chatGptService->handleChatGptResponse($chatResponse);
+        return response()->json(['result' => $result]);
     }
 
     /**
@@ -234,20 +243,7 @@ class HomeController extends Controller
                     'created_at', '=', Carbon::now()->subWeekdays('1')
                 )->get();
 
-                // $sales = MsftInvoices::
-                // select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
-                // ->whereyear('invoiceDate', Carbon::today()->year)
-                // ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
-                // ->orderBy('invoiceDate', 'asc')
-                // ->get();
 
-                // foreach($sales as $row) {
-                //     $invoicelabel['label'][] = json_encode($row->date);
-                //     $invoicedata['data'][] = (int) $row->total;
-                //   }
-
-                //   $invoicelabel = $invoicelabel['label'];
-                //   $invoicedata  = $invoicedata['data'];
 
                   return view('msft/index', compact('invoices','invoicelabel','invoicedata'));
 
@@ -426,6 +422,8 @@ class HomeController extends Controller
             break;
 
             case config('app.reseller'):
+
+
                 $countCustomers = $user->reseller->customers->count();
                 $subscriptions = $this->resellerRepository->getSubscriptions($user->reseller);
                 $countSubscriptions = $subscriptions->count();
@@ -505,154 +503,3 @@ class HomeController extends Controller
         return view('user.logactivity',compact('logs'));
     }
 }
-
-
-                // $orderrecord = Order::select(DB::raw("COUNT(*) as count"),
-                // \DB::raw("MONTHNAME(created_at) as day_name"),
-                // \DB::raw("MONTH(created_at) as month"))
-                // ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
-                // ->groupBy('day_name','month')
-                // ->orderBy('month')
-                // ->get();
-
-
-                // foreach($orderrecord as $row) {
-                //     $orderlabel['label'][] = json_encode($row->day_name);
-                //     $orderdata['data'][] = (int) $row->count;
-                // }
-
-                // if(!$orderrecord->isEmpty()){
-                //     $orderlabel = $orderlabel['label'];
-                //     $orderdata  = $orderdata['data'];
-                // }else{
-                //     $orderlabel = ['0'];
-                //     $orderdata  = ['0'];
-                // };
-
-
-                //   $customerrecord = Customer::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
-                // ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
-                // ->groupBy('day_name','month')
-                // ->orderBy('month')
-                // ->get();
-
-                //  foreach($customerrecord as $row) {
-                //     $customerlabel['label'][] = json_encode($row->day_name);
-                //     $customerdata['data'][] = (int) $row->count;
-                //   }
-                //   if(!$customerrecord->isEmpty()){
-                //   $customerlabel = $customerlabel['label'];
-                //   $customerdata  = $customerdata['data'];
-                // }else{
-                //     $customerlabel = ['0'];
-                //     $customerdata  = ['0'];
-                // };
-
-                //   $sales = MsftInvoices::
-                // select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
-                // ->whereyear('invoiceDate', Carbon::today()->year)
-                // ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
-                // ->orderBy('invoiceDate', 'asc')
-                // ->get();
-
-
-                // foreach($sales as $row) {
-                //     $invoicelabel['label'][] = json_encode($row->date);
-                //     $invoicedata['data'][] = (int) $row->total;
-                //   }
-                //   if(!$sales->isEmpty()){
-                //   $invoicelabel = $invoicelabel['label'];
-                //   $invoicedata  = $invoicedata['data'];
-                // }else{
-                //     $invoicelabel = ['0'];
-                //     $invoicedata  = ['0'];
-                // };
-
-                // $provider_id = Auth::getUser()->provider_id;
-    // $provider = Provider::where('id', $provider_id)->first();
-
-
-
-    // $statuses = Status::get();
-
-
-    // $countries = Country::all();
-    // $resellers = $this->resellerRepository->resellersOfProvider($provider);
-    // $customers = new Collection();
-
-    // foreach ($resellers as $reseller){
-    //     $reseller = Reseller::find($reseller['id']);
-    //     $customers = $customers->merge($this->customerRepository->customersOfReseller($reseller));
-    // }
-
-    // $reseller = Reseller::get();
-    // $countResellers = $reseller->count();
-
-    // $instance = Instance::first();
-
-    // $order = OrderProducts::get();
-
-    // $users = User::where('provider_id', $provider->id)->first();
-
-    // $subscriptions = $this->providerRepository->getSubscriptions($provider);
-    // $countCustomers =  $customers->count();
-    // $countSubscriptions = $subscriptions->count();
-
-    // $countries = Country::all();
-    // $providers = $this->providerRepository->all();
-    // return view('home', compact('provider','resellers','customers','instance','users',
-    // 'countries','subscriptions','order','statuses','countResellers',
-    // 'countCustomers','countSubscriptions','providers','countries'));
-
-    // $orderrecord = Order::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
-                // ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
-                // ->groupBy('day_name','month')
-                // ->orderBy('month')
-                // ->get();
-
-                // $customerrecord = Customer::select(DB::raw("COUNT(*) as count"), \DB::raw("MONTHNAME(created_at) as day_name"), \DB::raw("MONTH(created_at) as month"))
-                // ->where('created_at', '>', Carbon::today()->subMonth(Carbon::today()->month))
-                // ->groupBy('day_name','month')
-                // ->orderBy('month')
-                // ->get();
-
-                // $sales = MsftInvoices::
-                // select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
-                // ->whereyear('invoiceDate', Carbon::today()->year)
-                // ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
-                // ->orderBy('invoiceDate', 'asc')
-                // ->get();
-
-            // if($sales->first() != null){
-            //     foreach($sales as $row) {
-            //         $invoicelabel['label'][] = json_encode($row->date);
-            //         $invoicedata['data'][] = (int) $row->total;
-            //     }
-
-            //     $invoicelabel = $invoicelabel['label'];
-            //     $invoicedata  = $invoicedata['data'];
-
-            //     foreach($orderrecord as $row) {
-            //         $orderlabel['label'][] = json_encode($row->day_name);
-            //         $orderdata['data'][] = (int) $row->count;
-            //     }
-
-            //     $orderlabel = $orderlabel['label'];
-            //     $orderdata  = $orderdata['data'];
-
-            //     foreach($customerrecord as $row) {
-            //         $customerlabel['label'][] = json_encode($row->day_name);
-            //         $customerdata['data'][] = (int) $row->count;
-            //     }
-
-            //     $customerlabel = $customerlabel['label'];
-            //     $customerdata  = $customerdata['data'];
-            //     return view('home', compact('orders','providers','resellers','customers','subscriptions','news',
-            //     'orderdata','orderlabel','customerlabel','customerdata','invoicelabel','invoicedata'));
-            // }
-            // $orderdata = [];
-            // $orderlabel = [];
-            // $customerlabel = [];
-            // $customerdata = [];
-            // $invoicelabel = [];
-            // $invoicedata = [];

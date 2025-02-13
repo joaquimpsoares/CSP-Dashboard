@@ -468,10 +468,15 @@
                                 <x-table.cell visibility='hidden' tablecell='lg:table-cell'>
                                     <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
-                                            {{ $filter['offerName'] }}
+                                            @if(isset($filter['lineItems']) && is_array($filter['lineItems']))
+                                            @foreach($filter['lineItems'] as $lineItem)
+                                            @if(isset($lineItem['friendlyName']))
+                                            {{ $lineItem['friendlyName'] }}
+                                            @endif
+                                            @endforeach
+                                            @endif
                                         </span>
                                     </div>
-                                    {{-- </a> --}}
                                 </x-table.cell>
                                 <x-table.cell visibility='hidden' tablecell='lg:table-cell'>
                                     <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
