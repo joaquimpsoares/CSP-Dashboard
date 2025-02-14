@@ -30,7 +30,7 @@
 
 ```bash
 # Clone the Repository
-git clone https://github.com/yourusername/tagydes.git
+git clone https://github.com/joaquimpsoares/CSP-Dashboard.git
 cd tagydes
 
 # Install Dependencies
