@@ -31,7 +31,7 @@
 ```bash
 # Clone the Repository
 git clone https://github.com/joaquimpsoares/CSP-Dashboard.git
-cd tagydes
+cd CSP-Dashboard
 
 # Install Dependencies
 npm install  # or yarn install
