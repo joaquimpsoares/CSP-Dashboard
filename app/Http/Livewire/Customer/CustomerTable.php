@@ -187,7 +187,7 @@ class CustomerTable extends Component
         }
 
         $this->notify('success','Customer ' . $this->editing->company_name . ' created successfully');
-        return redirect()->to('/customer');
+        return redirect()->route('customer.index');
         $this->showEditModal = false;
 
     }

@@ -1,6 +1,6 @@
 <div>
     <section>
-        <form  wire:submit="getGDPR"  id="gdpr-form" action="/gdpr/download" method="POST">
+        <form wire:submit="getGDPR" id="gdpr-form" method="POST">
             <div class="flex flex-wrap">
                 <section>
                     <h2 class="mb-1 text-xl font-bold text-gray-800">{{ucwords(trans_choice('messages.gdpr', 1))}}</h2>

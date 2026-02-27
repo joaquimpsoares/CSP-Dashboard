@@ -12,7 +12,7 @@
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
-            <form class="space-y-6"action="{{ route('password.email') }}"  action="#" method="POST">
+            <form class="space-y-6" action="{{ route('password.email') }}" method="POST">
                 @csrf
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700">
