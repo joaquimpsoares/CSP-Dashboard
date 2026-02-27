@@ -170,10 +170,10 @@
                     <table class="min-w-full divide-y divide-gray-300">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">{{ ucwords(trans_choice('messages.name', 2)) }}</th>
-                                <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 lg:table-cell">{{ ucwords(trans_choice('messages.subscription', 2)) }}</th>
-                                <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 sm:table-cell">{{ ucwords(trans_choice('messages.license', 1)) }}</th>
-                                <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">{{ ucwords(trans_choice('messages.tenant', 2)) }}</th>
+                                <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase">{{ ucwords(trans_choice('messages.name', 2)) }}</th>
+                                <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.subscription', 2)) }}</th>
+                                <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase sm:table-cell">{{ ucwords(trans_choice('messages.license', 1)) }}</th>
+                                <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase">{{ ucwords(trans_choice('messages.tenant', 2)) }}</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -242,9 +242,9 @@
                     <table class="min-w-full divide-y divide-gray-300">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">{{ ucwords(trans_choice('messages.name', 2)) }}</th>
-                                <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 lg:table-cell">{{ ucwords(trans_choice('messages.email', 2)) }}</th>
-                                <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 sm:table-cell">{{ ucwords(trans_choice('messages.status', 1)) }}</th>
+                                <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase">{{ ucwords(trans_choice('messages.name', 2)) }}</th>
+                                <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase lg:table-cell">{{ ucwords(trans_choice('messages.email', 2)) }}</th>
+                                <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase sm:table-cell">{{ ucwords(trans_choice('messages.status', 1)) }}</th>
                             </tr>
                         </thead>
                         <tbody>

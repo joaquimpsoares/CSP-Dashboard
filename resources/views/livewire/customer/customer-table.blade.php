@@ -1,12 +1,12 @@
 <div>
-    <div class="relative z-0 flex-col flex-1 overflow-y-auto">
-        <div class="p-4 overflow-hidden bg-white">
+    <div class="relative z-0 flex-col flex-1 overflow-visible">
+        <div class="p-6 bg-transparent">
             <div class="flex flex-col">
                 <div class="flex flex-col items-center justify-between lg:flex-row">
                     <div class="flex items-center">
-                        <h4>{{ ucwords(trans_choice('messages.customer_table', 2)) }}</h4>
+                        <h4 class="text-base font-semibold text-slate-900">{{ ucwords(trans_choice('messages.customer_table', 2)) }}</h4>
                     </div>
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-between gap-3">
                         <div>
                             <div class="flex justify-center flex-1 lg:justify-end">
                                 <!-- Search section -->
@@ -19,14 +19,14 @@
                                                 <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                                             </svg>
                                         </div>
-                                        <input wire:model="search" id="search" class="block w-full bg-white py-1.5 pl-10 pr-3 border border-gray-300 rounded-md leading-5 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 focus:placeholder-gray-500 sm:text-sm" placeholder="Search" type="search" name="search">
+                                        <input wire:model="search" id="search" class="block w-full bg-white py-2 pl-10 pr-3 border border-slate-300 rounded-lg leading-5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 sm:text-sm" placeholder="Search customers" type="search" name="search">
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div>
-                            <a onclick="confirm('Are you sure you want to export these Records?') || event.stopImmediatePropagation()"wire:click="exportSelected()" href="#" class="px-2 py-2 ml-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
+                            <a onclick="confirm('Are you sure you want to export these Records?') || event.stopImmediatePropagation()" wire:click="exportSelected()" href="#" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-primary-500/20">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd" />
                                 </svg>
@@ -36,7 +36,7 @@
 
                         @if(Auth::user()->userLevel->name == 'Reseller')
                         <div>
-                            <a href="#" wire:click="create"class="px-2 py-2 ml-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <a href="#" wire:click="create" class="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-500/30">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
                                 </svg>
@@ -60,7 +60,7 @@
                         <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $customer['id'] }}">
                             <x-table.cell visibility='hidden' tablecell='lg:table-cell'>
                                 <a href="{{$customer->format()['path']}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
-                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-visible">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
                                             {{ $customer['id'] }}
                                         </span>
@@ -68,7 +68,7 @@
                                 </a>
                             </x-table.cell>
                             <x-table.cell>
-                                <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                <div class="h-full py-2 pl-1 pr-2 m-0 overflow-visible">
                                     <a href="{{$customer->format()['path']}}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
                                             {{ $customer['company_name'] }}
@@ -78,7 +78,7 @@
                             </x-table.cell>
                             <x-table.cell>
                                 <a href="{{$customer->format()['path']}}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
-                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-visible">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
                                             {{ $customer->subscriptions->count() ?? ''}}
                                         </span>
@@ -87,7 +87,7 @@
                             </x-table.cell>
                             <x-table.cell>
                                 <a href="{{$customer->format()['path']}}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
-                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-visible">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
                                             {{ $customer->resellers->first()->company_name ?? ''}}
                                         </span>
@@ -97,34 +97,78 @@
 
                             <x-table.cell>
                                 <a href="{{$customer->format()['path']}}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
-                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
+                                    <div class="h-full py-2 pl-1 pr-2 m-0 overflow-visible">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
                                             {{ $customer->country->name ?? ''}}
                                         </span>
                                     </div>
                                 </a>
                             </x-table.cell>
-                            <x-table.cell>
-                                <div class="z-10">
-                                    <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                            <x-table.cell class="text-right">
+                                <!-- Use a fixed-position dropdown to avoid clipping inside overflow scroll containers -->
+                                <div x-data="{
+                                        componentId: @js($this->getId()),
+                                        open: false,
+                                        top: 0,
+                                        left: 0,
+                                        width: 0,
+                                        place() {
+                                            const r = this.$refs.btn.getBoundingClientRect();
+                                            this.width = 192; // w-48
+                                            this.top = r.bottom + 8;
+                                            this.left = Math.max(8, r.right - this.width);
+                                        },
+                                        toggle() {
+                                            this.open = !this.open;
+                                            if (this.open) this.$nextTick(() => this.place());
+                                        },
+                                        callEdit(id) {
+                                            // Teleported DOM isn't reliably wired for `wire:click`, so call by component id.
+                                            const lw = window.Livewire;
+                                            if (lw && lw.find) {
+                                                const c = lw.find(this.componentId);
+                                                if (!c) return;
+                                                // Force a state change so repeated opens work reliably.
+                                                c.set('showEditModal', false);
+                                                // Give Livewire a beat to tear down the old modal DOM before reopening.
+                                                setTimeout(() => c.call('edit', id), 50);
+                                            }
+                                        }
+                                    }"
+                                    @keydown.escape.window="open = false"
+                                    class="inline-block">
+
+                                    <button type="button" x-ref="btn" @click="toggle()"
+                                        class="inline-flex items-center justify-center rounded-lg px-2 py-2 text-slate-600 hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus:ring-4 focus:ring-primary-500/20"
+                                        aria-haspopup="true">
+                                        <span class="sr-only">Open actions</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                             <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
                                         </svg>
                                     </button>
-                                    <div class="dropdown-menu">
-                                        <a wire:click="edit({{ $customer->id }})" class="dropdown-item" href="#">
-                                            <x-icon.edit></x-icon.edit>
-                                            {{ ucwords(trans_choice('messages.edit', 1)) }}
-                                        </a>
-                                        @canImpersonate
-                                        @if(!empty($customer->format()['mainUser']))
-                                        <a class="dropdown-item" href="{{ route('impersonate', $customer->format()['mainUser']['id'])}}">
-                                            <x-icon.impersonate></x-icon.impersonate>
-                                            {{ ucwords(trans_choice('messages.impersonate', 1)) }}
-                                        </a>
-                                        @endif
-                                        @endCanImpersonate
-                                    </div>
+
+                                    <template x-teleport="body">
+                                        <div x-cloak x-show="open" @click.away="open = false" @scroll.window="open = false" @resize.window="open = false"
+                                            class="fixed z-[9999] w-48 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg"
+                                            :style="`top:${top}px; left:${left}px;`">
+
+                                            <button type="button" @click="callEdit({{ $customer->id }}); open = false"
+                                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+                                                <x-icon.edit></x-icon.edit>
+                                                <span>{{ ucwords(trans_choice('messages.edit', 1)) }}</span>
+                                            </button>
+
+                                            @canImpersonate
+                                                @if(!empty($customer->format()['mainUser']))
+                                                    <a class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                                                       href="{{ route('impersonate', $customer->format()['mainUser']['id'])}}">
+                                                        <x-icon.impersonate></x-icon.impersonate>
+                                                        <span>{{ ucwords(trans_choice('messages.impersonate', 1)) }}</span>
+                                                    </a>
+                                                @endif
+                                            @endCanImpersonate
+                                        </div>
+                                    </template>
                                 </div>
                             </x-table.cell>
                         </x-table.row>
@@ -149,83 +193,194 @@
     <!-- Save Transaction Modal -->
     <div>
         @if($showEditModal == true)
-        <form @if($showCreateUser === false) { wire:submit.prevent="save({{$customer->id}})" } @else { wire:submit.prevent="savecreate" } @endif>
-            <x-modal.slideout wire:model.defer="showEditModal">
+        <form wire:submit.prevent="submit">
+            <x-modal.slideout wire:model="showEditModal">
                 @if ($showCreateUser == false)
                 <x-slot name="title">{{ ucwords(trans_choice('messages.edit_customer', 1)) }}</x-slot>
                 @elseif($showCreateUser == true)
                 <x-slot name="title">{{ ucwords(trans_choice('messages.create_customer', 1)) }}</x-slot>
                 @endif
                 <x-slot name="content">
+                    <div class="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600">
+                        Editing: <span class="font-semibold text-slate-900">{{ $editing->company_name ?? '—' }}</span> (ID: {{ $editing->id ?? '—' }})
+                    </div>
+
+                    @if ($errors->any())
+                        <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+                            <div class="font-semibold">Missing required fields / validation errors:</div>
+                            <ul class="mt-1 list-disc pl-5">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <section class="dark-grey-text">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="mb-4 col-md-6">
                                         <x-label for="company_name" class="">{{ ucwords(trans_choice('messages.company_name', 1)) }}</x-label>
-                                        <x-input  wire:model.debounce.500ms="editing.company_name" type="text" id="company_name" name="company_name" class="@error('editing.company_name') is-invalid @enderror"></x-input>
-                                        @error('editing.company_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        <input class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20" value="{{ $editing->company_name ?? '' }}" type="text" id="company_name" name="company_name">
+                                        @error('editing.company_name')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                     </div>
                                     <div class="mb-2 col-md-6">
                                         <x-label for="nif">{{ ucwords(trans_choice('messages.nif', 1)) }}</x-label>
-                                        <x-input wire:model.debounce.500ms="editing.nif" type="text" id="nif" name="nif" class="@error('editing.nif') is-invalid @enderror"></x-input>
-                                        @error('editing.nif')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        <input class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20" value="{{ $editing->nif ?? '' }}" type="text" id="nif" name="nif">
+                                        @error('editing.nif')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="mb-2 col-md-12">
-                                        <x-label for="country_id">{{ucwords(trans_choice('messages.country', 1))}}</x-label>
+                                        <label class="block text-sm font-medium text-slate-700" for="country_id">
+                                            {{ ucwords(trans_choice('messages.country', 1)) }} <span class="text-red-600">*</span>
+                                        </label>
                                         <div class="mb-3 input-group">
-                                            <select wire:model.debounce.500ms="editing.country_id" name="country_id" class="form-control @error('editing.country_id') is-invalid @enderror" sf-validate="required" >
-                                                <option value="{{ old('country_id')}}" selected></option>
+                                            <select
+                                                wire:model.debounce.500ms="editing.country_id"
+                                                name="country_id"
+                                                id="country_id"
+                                                @class([
+                                                    'block w-full rounded-lg bg-white px-3 py-2 text-sm text-slate-900 shadow-sm border focus:ring-4',
+                                                    'border-slate-300 focus:border-primary-500 focus:ring-primary-500/20' => !$errors->has('editing.country_id'),
+                                                    'border-red-400 focus:border-red-500 focus:ring-red-500/20' => $errors->has('editing.country_id'),
+                                                ])
+                                                required
+                                            >
+                                                <option value="" disabled>—</option>
                                                 @foreach ($countries as $key => $country)
-                                                <option value="{{$key}}">{{$country}}</option>
+                                                <option value="{{$key}}" @selected((int)$editing->country_id === (int)$key)>{{$country}}</option>
                                                 @endforeach
                                             </select>
-                                            @error('editing.country_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                            @error('editing.country_id')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                         </div>
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <x-label for="address_1" class="">{{ucwords(trans_choice('messages.address_1', 1))}}</x-label>
-                                    <x-input wire:model.debounce.500ms="editing.address_1" type="text" id="address_1" name="address_1" class="@error('editing.address_1') is-invalid @enderror" placeholder="1234 Main St"></x-input>
-                                    @error('editing.address_1')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    <label class="block text-sm font-medium text-slate-700" for="address_1">
+                                        {{ ucwords(trans_choice('messages.address_1', 1)) }} <span class="text-red-600">*</span>
+                                    </label>
+                                    <input
+                                        @class([
+                                            'w-full rounded-lg bg-white px-3 py-2 text-sm text-slate-900 shadow-sm border focus:ring-4',
+                                            'border-slate-300 focus:border-primary-500 focus:ring-primary-500/20' => !$errors->has('editing.address_1'),
+                                            'border-red-400 focus:border-red-500 focus:ring-red-500/20' => $errors->has('editing.address_1'),
+                                        ])
+                                        value="{{ $editing->address_1 ?? '' }}"
+                                        type="text"
+                                        id="address_1"
+                                        name="address_1"
+                                        placeholder="1234 Main St"
+                                        wire:model.debounce.500ms="editing.address_1"
+                                        required
+                                    >
+                                    @error('editing.address_1')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                 </div>
+
                                 <div class="mb-3">
-                                    <x-label for="address_2" class="">{{ucwords(trans_choice('messages.address_2', 1))}} (optional)</x-label>
-                                    <x-input wire:model.debounce.500ms="editing.address_2" type="text" id="address_2" name="address_2" class="@error('editing.address_2') is-invalid @enderror" placeholder="Appartment or numer"></x-input>
-                                    @error('editing.address_2')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    <label class="block text-sm font-medium text-slate-700" for="address_2">
+                                        {{ ucwords(trans_choice('messages.address_2', 1)) }}
+                                    </label>
+                                    <input
+                                        class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20"
+                                        value="{{ $editing->address_2 ?? '' }}"
+                                        type="text"
+                                        id="address_2"
+                                        name="address_2"
+                                        placeholder="Apartment or number"
+                                        wire:model.debounce.500ms="editing.address_2"
+                                    >
+                                    @error('editing.address_2')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                 </div>
+
                                 <div class="row">
                                     <div class="mb-3 col-lg-4 col-md-6">
-                                        <x-label for="city" class="">{{ucwords(trans_choice('messages.city', 1))}}</x-label>
-                                        <x-input wire:model.debounce.500ms="editing.city" type="text" id="city" name="city" class=" mb-4 @error('editing.city') is-invalid @enderror"></x-input>
-                                        @error('editing.city')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        <label class="block text-sm font-medium text-slate-700" for="city">
+                                            {{ ucwords(trans_choice('messages.city', 1)) }} <span class="text-red-600">*</span>
+                                        </label>
+                                        <input
+                                            @class([
+                                                'w-full rounded-lg bg-white px-3 py-2 text-sm text-slate-900 shadow-sm border focus:ring-4',
+                                                'border-slate-300 focus:border-primary-500 focus:ring-primary-500/20' => !$errors->has('editing.city'),
+                                                'border-red-400 focus:border-red-500 focus:ring-red-500/20' => $errors->has('editing.city'),
+                                            ])
+                                            value="{{ $editing->city ?? '' }}"
+                                            type="text"
+                                            id="city"
+                                            name="city"
+                                            wire:model.debounce.500ms="editing.city"
+                                            required
+                                        >
+                                        @error('editing.city')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                     </div>
+
                                     <div class="mb-3 col-lg-4 col-md-6">
-                                        <x-label for="state">{{ucwords(trans_choice('messages.state', 1))}}</x-label>
-                                        <x-input wire:model.debounce.500ms="editing.state" name="state" type="text" class="@error('editing.state') is-invalid @enderror" id="state" placeholder=""></x-input>
-                                        @error('editing.state')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        <label class="block text-sm font-medium text-slate-700" for="state">
+                                            {{ ucwords(trans_choice('messages.state', 1)) }} <span class="text-red-600">*</span>
+                                        </label>
+                                        <input
+                                            @class([
+                                                'w-full rounded-lg bg-white px-3 py-2 text-sm text-slate-900 shadow-sm border focus:ring-4',
+                                                'border-slate-300 focus:border-primary-500 focus:ring-primary-500/20' => !$errors->has('editing.state'),
+                                                'border-red-400 focus:border-red-500 focus:ring-red-500/20' => $errors->has('editing.state'),
+                                            ])
+                                            value="{{ $editing->state ?? '' }}"
+                                            name="state"
+                                            type="text"
+                                            id="state"
+                                            placeholder=""
+                                            wire:model.debounce.500ms="editing.state"
+                                            required
+                                        >
+                                        @error('editing.state')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                     </div>
+
                                     <div class="mb-3 col-lg-4 col-md-6">
-                                        <x-label for="zip">{{ucwords(trans_choice('messages.postal_code', 1))}}</x-label>
-                                        <x-input wire:model.debounce.500ms="editing.postal_code" name="postal_code" type="text" class="@error('editing.postal_code') is-invalid @enderror" id="postal_code" placeholder="" ></x-input>
-                                        @error('editing.postal_code')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        <label class="block text-sm font-medium text-slate-700" for="postal_code">
+                                            {{ ucwords(trans_choice('messages.postal_code', 1)) }} <span class="text-red-600">*</span>
+                                        </label>
+                                        <input
+                                            @class([
+                                                'w-full rounded-lg bg-white px-3 py-2 text-sm text-slate-900 shadow-sm border focus:ring-4',
+                                                'border-slate-300 focus:border-primary-500 focus:ring-primary-500/20' => !$errors->has('editing.postal_code'),
+                                                'border-red-400 focus:border-red-500 focus:ring-red-500/20' => $errors->has('editing.postal_code'),
+                                            ])
+                                            value="{{ $editing->postal_code ?? '' }}"
+                                            name="postal_code"
+                                            type="text"
+                                            id="postal_code"
+                                            placeholder=""
+                                            wire:model.debounce.500ms="editing.postal_code"
+                                            required
+                                        >
+                                        @error('editing.postal_code')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                     </div>
                                 </div>
                                 <div class="mb-3">
                                     <x-label for="markup" class="">{{ucwords(trans_choice('messages.markup', 1))}} (optional)</x-label>
-                                    <x-input wire:model.debounce.500ms="editing.markup" type="text" id="markup" name="markup" class="@error('editing.markup') is-invalid @enderror" placeholder="Markup % for Azure Subscription"></x-input>
-                                    @error('editing.markup')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                    <input class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20" value="{{ $editing->markup ?? '' }}" type="text" id="markup" name="markup" placeholder="Markup % for Azure Subscription">
+                                    @error('editing.markup')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                 </div>
                                 <div class="mb-3">
-                                    <x-label for="direct_buy">Direct buy</x-label>
+                                    <label class="block text-sm font-medium text-slate-700" for="direct_buy">
+                                        Direct buy <span class="text-red-600">*</span>
+                                    </label>
                                     <div class="mb-3 input-group">
-                                        <select wire:model.debounce.500ms="editing.direct_buy" name="direct_buy" class="form-control @error('editing.direct_buy') is-invalid @enderror" sf-validate="required" >
+                                        <select
+                                            wire:model.debounce.500ms="editing.direct_buy"
+                                            name="direct_buy"
+                                            id="direct_buy"
+                                            @class([
+                                                'block w-full rounded-lg bg-white px-3 py-2 text-sm text-slate-900 shadow-sm border focus:ring-4',
+                                                'border-slate-300 focus:border-primary-500 focus:ring-primary-500/20' => !$errors->has('editing.direct_buy'),
+                                                'border-red-400 focus:border-red-500 focus:ring-red-500/20' => $errors->has('editing.direct_buy'),
+                                            ])
+                                            required
+                                        >
                                             <option value="1" {{ $editing->direct_buy ? 'selected' : '' }}>The customer can buy directly</option>
                                             <option value="0" {{ $editing->direct_buy ? '' : 'selected' }}>Customer buys need to be verified</option>
                                         </select>
-                                        @error('editing.direct_buy')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                        @error('editing.direct_buy')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                     </div>
                                 </div>
                                 <div class="row">
@@ -261,12 +416,12 @@
                                 </div>
                                 <div class="form-group">
                                     <x-label for="name">@lang('First Name')</x-label>
-                                    <x-input wire:model.debounce.500ms="creatingUser.name" type="text" class="@error('creatingUser.name') is-invalid @enderror" id="name" name="name" placeholder="First Name" value="{{ old('name') }}"></x-input>
+                                    <x-input wire:model.debounce.500ms="creatingUser.name" type="text" class="@error('creatingUser.name') is-invalid @enderror" id="name" name="name" placeholder="First Name" value="{{ old('name') }}" />
                                     @error('creatingUser.name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                                 <div class="form-group">
                                     <x-label for="last_name">@lang('Last Name')</x-label>
-                                    <x-input wire:model.debounce.500ms="creatingUser.last_name" type="text" class="@error('creatingUser.last_name') is-invalid @enderror" id="last_name" name="last_name" placeholder="Last Name" value="{{ old('last_name')  }}"></x-input>
+                                    <x-input wire:model.debounce.500ms="creatingUser.last_name" type="text" class="@error('creatingUser.last_name') is-invalid @enderror" id="last_name" name="last_name" placeholder="Last Name" value="{{ old('last_name')  }}" />
                                     @error('creatingUser.last_name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                             </div>
@@ -274,19 +429,19 @@
                                 <div class="form-group">
                                     <x-label for="socialite_id">@lang('socialite_id')</x-label>
                                     <div class="form-group">
-                                        <x-input wire:model.debounce.500ms="creatingUser.socialite_id" class="@error('creatingUser.socialite_id') is-invalid @enderror" type="text" name="socialite_id" id='socialite_id' value="{{ old('socialite_id') }}"></x-input>
+                                        <x-input wire:model.debounce.500ms="creatingUser.socialite_id" class="@error('creatingUser.socialite_id') is-invalid @enderror" type="text" name="socialite_id" id='socialite_id' value="{{ old('socialite_id') }}" />
                                         @error('creatingUser.socialite_id')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <x-label for="phone">@lang('Phone')</x-label>
-                                    <x-input wire:model.debounce.500ms="creatingUser.phone" type="text" class="@error('creatingUser.phone') is-invalid @enderror" id="phone_number" name="phone" placeholder="Phone" value="{{ old('phone') }}"></x-input>
+                                    <x-input wire:model.debounce.500ms="creatingUser.phone" type="text" class="@error('creatingUser.phone') is-invalid @enderror" id="phone_number" name="phone" placeholder="Phone" value="{{ old('phone') }}" />
                                     @error('creatingUser.phone')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                                 <div class="form-group">
                                     <x-label for="address">@lang('Address')</x-label>
                                     <x-input wire:model.debounce.500ms="creatingUser.address" type="text" class="@error('creatingUser.address') is-invalid @enderror" id="address"
-                                    name="address" placeholder="Address" value="{{ old('address') }}"></x-input>
+                                    name="address" placeholder="Address" value="{{ old('address') }}" />
                                     @error('creatingUser.address')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                             </div>
@@ -295,18 +450,18 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <x-label for="email">@lang('Email')</x-label>
-                                    <x-input wire:model.debounce.500ms="email" type="email" class="@error('email') is-invalid @enderror" id="email" name="email" placeholder="Email" value="{{ old('email') }}"></x-input>
+                                    <x-input wire:model.debounce.500ms="email" type="email" class="@error('email') is-invalid @enderror" id="email" name="email" placeholder="Email" value="{{ old('email') }}" />
                                     @error('email')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
 
                                 </div>
                                 <div class="form-group">
                                     <x-label for="password">{{ __('Password') }}</x-label>
-                                    <x-input wire:model.debounce.500ms="password" type="password" class="@error('password') is-invalid @enderror" id="password" name="password"  value="{{ old('password') }}"></x-input>
+                                    <x-input wire:model.debounce.500ms="password" type="password" class="@error('password') is-invalid @enderror" id="password" name="password"  value="{{ old('password') }}" />
                                     @error('creatingUser.password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                                 <div class="form-group">
                                     <x-label for="password_confirmation">{{ __('Confirm Password') }}</x-label>
-                                    <x-input wire:model.debounce.500ms="password_confirmation" type="password" class="@error('password_confirmation') is-invalid @enderror" id="password_confirmation" name="password_confirmation"  value="{{ old('password_confirmation') }}"></x-input>
+                                    <x-input wire:model.debounce.500ms="password_confirmation" type="password" class="@error('password_confirmation') is-invalid @enderror" id="password_confirmation" name="password_confirmation"  value="{{ old('password_confirmation') }}" />
                                     @error('password_confirmation')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
                             </div>

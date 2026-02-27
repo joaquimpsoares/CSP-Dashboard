@@ -14,7 +14,7 @@ class RouteServiceProvider extends ServiceProvider
 	 *
 	 * @var string
 	 */
-	protected $namespace = 'App\Http\Controllers\Web';
+	// Laravel 12: avoid a global controller namespace; use explicit namespaces per route group.
 	protected $webNamespace = 'App\Http\Controllers\Web';
 	protected $apiNamespace = 'App\Http\Controllers\Api';
 
@@ -54,28 +54,17 @@ class RouteServiceProvider extends ServiceProvider
 
     protected function mapWebRoutes()
     {
-        foreach ($this->centralDomains() as $domain) {
-            Route::middleware('web')
-                ->domain($domain)
-                ->namespace($this->namespace)
-                ->group(base_path('routes/web.php'));
-        }
+        Route::middleware('web')
+            ->namespace($this->webNamespace)
+            ->group(base_path('routes/web.php'));
     }
 
     protected function mapApiRoutes()
     {
-        foreach ($this->centralDomains() as $domain) {
-            Route::prefix('api')
-                ->domain($domain)
-                ->middleware('api')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/api.php'));
-        }
-    }
-
-    protected function centralDomains(): array
-    {
-        return config('tenancy.central_domains');
+        Route::prefix('api')
+            ->middleware('api')
+            ->namespace($this->apiNamespace)
+            ->group(base_path('routes/api.php'));
     }
 
 	/**

@@ -185,16 +185,16 @@
                                 <table class="min-w-full divide-y divide-gray-300">
                                     <thead class="bg-gray-50">
                                         <tr>
-                                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase">
                                                 {{ ucwords(trans_choice('messages.name', 2)) }}
                                             </th>
-                                            <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 lg:table-cell">
+                                            <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase lg:table-cell">
                                                 {{ ucwords(trans_choice('messages.subscription_id', 1)) }}
                                             </th>
-                                            <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 sm:table-cell">
+                                            <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase sm:table-cell">
                                                 {{ ucwords(trans_choice('messages.amount', 2)) }}
                                             </th>
-                                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase">
                                                 {{ ucwords(trans_choice('messages.total', 1)) }}
                                             </th>
                                         </tr>
@@ -230,7 +230,7 @@
                                                 </a>
                                             </td>
                                             @if($subscription->billing_period === "one_time")
-                                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
+                                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                                                 <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
                                                 </a>
                                             </td>
@@ -297,16 +297,16 @@
                                 {{-- <table class="min-w-full divide-y divide-gray-300">
                                     <thead class="bg-gray-50">
                                         <tr>
-                                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase">
                                                 {{ ucwords(trans_choice('messages.name', 2)) }}
                                             </th>
-                                            <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 lg:table-cell">
+                                            <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase lg:table-cell">
                                                 {{ ucwords(trans_choice('messages.email', 1)) }}
                                             </th>
-                                            <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 sm:table-cell">
+                                            <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase sm:table-cell">
                                                 {{ ucwords(trans_choice('messages.status', 2)) }}
                                             </th>
-                                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                                            <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase">
 
                                             </th>
                                         </tr>

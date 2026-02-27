@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\ProfileController;
 
 // use App\Http\Controllers\TestController;
 
@@ -16,11 +17,23 @@ Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlew
 
 **********************************************************************************/
 
+// Stripe Webhook (no auth; excluded from CSRF in VerifyCsrfToken)
+Route::post('stripe/webhook', [StripeWebhookController::class, 'handle'])->name('stripe.webhook');
+
 // Route::post('registerInvitation', 'UsersController@registerInvitation')->name('registerInvitation');
 
-Route::prefix('jobis')->group(function () {
-    Route::queueMonitor();
+// Laravel Breeze auth routes
+require __DIR__.'/auth.php';
+
+// Breeze profile routes (navigation expects profile.edit)
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// Queue monitor routes were provided by romanzipp/laravel-queue-monitor (removed during Laravel 12 upgrade).
+// Re-add via a compatible package or implement custom monitoring if needed.
 
 Route::get('accept/{token}', 'InviteController@accept')->name('accept');
 Route::post('resetinvitationpassword', 'InviteController@resetPassword')->name('resetinvitationpassword');
@@ -31,9 +44,8 @@ Fim Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares
 
 **********************************************************************************/
 
-Route::get('login/microsoft', [LoginController::class, 'redirectToProvider']);
-Route::get('login/microsoft/callback', [LoginController::class, 'handleProviderCallback']);
-Route::get('login/graph/callback', [LoginController::class, 'handleProviderCallback']);
+// Microsoft/Social login routes were previously handled by legacy LoginController (laravel/ui era).
+// Re-implement with Laravel 12 + Breeze + Socialite later.
 
 Route::group(['middleware' => 'auth'], function ()
 {
@@ -199,6 +211,7 @@ Route::group(['middleware' => 'auth'], function ()
             Route::get('/order/placeOrderForVerification', 'OrderController@saveOrderForVerification')->name('order.save_order_for_verification');
             Route::get('/order/verifyOrder', 'OrderController@verifyOrder')->name('order.verify');
             Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
+            Route::get('/legacy/home', 'HomeController@legacyHome')->name('legacy.home');
             Route::resource('/subscription', 'SubscriptionController');
             Route::get('/subscription.card', 'SubscriptionController@card')->middleware('permission:' . config('app.subscription_edit'))->name('subscription.card');
 
@@ -265,11 +278,10 @@ Route::group(['middleware' => 'auth'], function ()
         });
 
 
-        Auth::routes(['register' => true]);
-        Route::redirect('/', '/home', 301);
-        Route::get('/home', 'HomeController@index')->name('home');
+        // NOTE (Laravel 12 upgrade): Auth::routes() requires laravel/ui (removed). We use Laravel Breeze routes in routes/auth.php.
+        Route::redirect('/', '/dashboard', 301);
+        Route::get('/home', function () { return redirect()->route('dashboard'); })->name('home.redirect');
         Route::impersonate();
-        Auth::routes();
 
         Route::get('/mailable', function () {
             $invoice = App\Subscription::first();

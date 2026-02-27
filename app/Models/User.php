@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Soved\Laravel\Gdpr\Portable;
 use Laravel\Sanctum\HasApiTokens;
 use Webpatser\Countries\Countries;
 use Spatie\Permission\Traits\HasRoles;
@@ -10,14 +9,10 @@ use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Soved\Laravel\Gdpr\Contracts\Portable as PortableContract;
 
-class User extends Authenticatable implements PortableContract
+class User extends Authenticatable
 {
-    use HasApiTokens, SoftDeletes, Notifiable, HasRoles, Impersonate, Portable;
-
-    protected $gdprWith = ['orders', 'customer', 'reseller', 'provider'];
-    protected $gdprHidden = ['password', 'markup'];
+    use HasApiTokens, SoftDeletes, Notifiable, HasRoles, Impersonate;
 
     protected $hidden = [
         'password', 'remember_token',

@@ -1,18 +1,15 @@
-window._ = require('lodash');
+import _ from 'lodash'
+import axios from 'axios'
 
-try {
-    require('bootstrap');
-} catch (e) {}
+// Expose common libs globally (legacy code expects these)
+window._ = _
 
-/**
- * We'll load the axios HTTP library which allows us to easily issue requests
- * to our Laravel back-end. This library automatically handles sending the
- * CSRF token as a header based on the value of the "XSRF" token cookie.
- */
+// Bootstrap JS (tooltips, dropdowns, etc.). Safe if unused.
+import 'bootstrap'
 
-window.axios = require('axios');
-
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+// Axios for HTTP requests
+window.axios = axios
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

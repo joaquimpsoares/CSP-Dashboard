@@ -58,8 +58,10 @@ class AppServiceProvider extends ServiceProvider
             return $values->implode("\n");
         });
 
-        Component::macro('notify', function ($message, $title = '', $type = 'success') {
-            $this->dispatchBrowserEvent('notify', ['message' => $message, 'title' => $title, 'type' => $type]);
+        Component::macro('notify', function ($type = 'success', $message = '', $title = '') {
+            // Livewire v3: dispatch browser events via `dispatch()`.
+            // Keep signature flexible because legacy code calls notify() with varying arg order.
+            $this->dispatch('notify', message: $message, title: $title, type: $type);
         });
 
         Model::unguard();

@@ -50,6 +50,7 @@ class CreateProductsTable extends Migration
             $table->text('reseller_qualifications')->nullable();
             $table->timestamps();
 
+            $table->unique('sku');
             $table->index(['sku', 'instance_id']);
 
             $table->foreign('instance_id')->references('id')->on('instances');

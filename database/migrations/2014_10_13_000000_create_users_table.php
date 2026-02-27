@@ -58,7 +58,13 @@ class CreateUsersTable extends Migration
 
         });
 
-        DB::statement("ALTER TABLE users AUTO_INCREMENT = 110000;");
+        // Start IDs at 110000 (legacy requirement). Handle MySQL vs PostgreSQL.
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE users AUTO_INCREMENT = 110000;");
+        } elseif (DB::getDriverName() === 'pgsql') {
+            DB::statement("SELECT setval(pg_get_serial_sequence('users','id'), 109999, true);");
+        }
+
     }
 
     /**

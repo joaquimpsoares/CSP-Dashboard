@@ -24,10 +24,18 @@ class MsftInvoicesController extends Controller
 
         $invoices = MsftInvoices::paginate(10);
 
-        $sales = MsftInvoices::
-        select(DB::raw("MONTHNAME(invoiceDate) as date"), DB::raw('totalCharges as total'))
-        ->whereyear('invoiceDate', Carbon::today()->year)
-        ->groupBy(DB::raw("MONTHNAME(invoiceDate)"))
+        $driver = DB::getDriverName();
+
+        $monthExpr = $driver === 'pgsql'
+            ? "TO_CHAR(\"invoiceDate\", 'Mon')"
+            : "MONTHNAME(invoiceDate)";
+
+        $sales = MsftInvoices::select(
+            DB::raw($monthExpr . " as date"),
+            DB::raw('totalCharges as total')
+        )
+        ->whereYear('invoiceDate', Carbon::today()->year)
+        ->groupBy(DB::raw($monthExpr))
         ->orderBy('invoiceDate', 'asc')
         ->get();
 

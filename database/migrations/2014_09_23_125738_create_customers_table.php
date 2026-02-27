@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class CreateCustomersTable extends Migration
 {
@@ -38,7 +39,13 @@ class CreateCustomersTable extends Migration
 
         });
 
-        DB::statement("ALTER TABLE customers AUTO_INCREMENT = 310000;");
+        // Start IDs at 310000 (legacy requirement). Handle MySQL vs PostgreSQL.
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE customers AUTO_INCREMENT = 310000;");
+        } elseif (DB::getDriverName() === 'pgsql') {
+            DB::statement("SELECT setval(pg_get_serial_sequence('customers','id'), 309999, true);");
+        }
+
     }
 
     /**

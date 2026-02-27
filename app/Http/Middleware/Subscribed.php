@@ -23,19 +23,22 @@ class Subscribed
     */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::check()){
+        // IMPORTANT: Always continue the request for guests.
+        if (Auth::check()) {
             $user = Auth::user();
             $fechahoy = new DateTime();
 
             switch ($this->getUserLevel()) {
                 case config('app.customer'):
-                    $updated_at =new DateTime($user->updated_at);
+                    $updated_at = new DateTime($user->updated_at);
                     $date = $fechahoy->diff($updated_at);
-                    if($date->format('%R%a') >= 30 ){
+
+                    if ($date->format('%R%a') >= 30) {
                         foreach ($user->customer->subscriptions as $subscription) {
                             $deate = new DateTime($subscription->expiration_data);
                             $interval = $fechahoy->diff($deate);
-                            if ($interval->format('%R%a') <= 90){
+
+                            if ($interval->format('%R%a') <= 90) {
                                 Notification::send($user, new SubscriptionAboutToExpire($subscription, $interval->format('%R%a')));
                                 $user->update(['notified' => true]);
                             }
@@ -43,9 +46,12 @@ class Subscribed
                     }
                     break;
 
-                    default:
-                }
+                default:
+                    break;
             }
-            return $next($request);
         }
+
+        return $next($request);
     }
+}
+
