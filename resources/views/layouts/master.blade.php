@@ -39,17 +39,24 @@
                     <div class="md:max-w-8xl md:mx-auto">
 
                         @if(Auth::user()->provider)
-                        @if(Auth::user()->provider->instances()->withExpired()->first()->isExpired())
-                        <x-bladewind.alert>
-                            Your instance has expired on the {{date('d-m-Y', strtotime(Auth::user()->provider->instances()->withExpired()->first()->getExpirationDate()))}}
-                            <a href="/instances/{{Auth::user()->provider->instances()->withExpired()->first()->id}}/edit">Renew now</a>
-                        </x-bladewind.alert>
-                        @elseif (Carbon\Carbon::now()->diffInDays(Auth::user()->provider->instances()->withExpired()->first()->getExpirationDate()) <= 30)
-                        <x-bladewind.alert>
-                            Your instance is about to expired in  {{Carbon\Carbon::now()->diffInDays(Auth::user()->provider->instances()->withExpired()->first()->getExpirationDate())}} days, please renew now!!
-                            <a href="/instances/{{Auth::user()->provider->instances()->withExpired()->first()->id}}/edit">Renew now</a>
-                        </x-bladewind.alert>
-                        @endif
+                            @php
+                                $instance = Auth::user()->provider
+                                    ->instances()
+                                    ->withoutGlobalScope(\App\Scopes\ExpirationScope::class)
+                                    ->first();
+                            @endphp
+
+                            @if($instance && $instance->isExpired())
+                                <x-bladewind.alert>
+                                    Your instance has expired on the {{ date('d-m-Y', strtotime($instance->expires_at)) }}
+                                    <a href="/instances/{{ $instance->id }}/edit">Renew now</a>
+                                </x-bladewind.alert>
+                            @elseif($instance && $instance->expires_at && Carbon\Carbon::now()->diffInDays($instance->expires_at) <= 30)
+                                <x-bladewind.alert>
+                                    Your instance is about to expire in {{ Carbon\Carbon::now()->diffInDays($instance->expires_at) }} days, please renew now!
+                                    <a href="/instances/{{ $instance->id }}/edit">Renew now</a>
+                                </x-bladewind.alert>
+                            @endif
                         @endif
                         @if (app('impersonate')->isImpersonating())
                         <nav class="flex" aria-label="Breadcrumb">

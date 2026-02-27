@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class CreateResellersTable extends Migration
 {
@@ -42,7 +43,14 @@ class CreateResellersTable extends Migration
 
         });
 
-        DB::statement("ALTER TABLE resellers AUTO_INCREMENT = 210000;");
+        // Start IDs at 210000 (legacy requirement). Handle MySQL vs PostgreSQL.
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE resellers AUTO_INCREMENT = 210000;");
+        } elseif (DB::getDriverName() === 'pgsql') {
+            // Ensure nextval() returns 210000 on the next insert.
+            DB::statement("SELECT setval(pg_get_serial_sequence('resellers','id'), 209999, true);");
+        }
+
     }
 
     /**

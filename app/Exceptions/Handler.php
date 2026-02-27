@@ -8,7 +8,6 @@ use Illuminate\Database\QueryException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Stancl\Tenancy\Exceptions\TenantDatabaseDoesNotExistException;
 
 class Handler extends ExceptionHandler
 {
@@ -55,13 +54,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, $exception)
     {
-        if (
-            ($exception instanceof TenantDatabaseDoesNotExistException) ||
-            (tenant() && (! tenant('ready')) && $exception instanceof QueryException) ||
-            (tenant() && (! tenant('ready')) && $exception instanceof ViewException && $exception->getPrevious() instanceof QueryException)
-        ) {
-            return response()->view('errors.building');
-        }
 
         // This will replace our 404 response with
         // a JSON response.

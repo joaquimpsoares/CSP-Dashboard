@@ -170,14 +170,34 @@ class HomeController extends Controller
                     $chartDataCurrentCustomerByDay[] = $data['count'];
                 }
 
+                $driver = DB::getDriverName();
+
+                $sumAmountExpr = $driver === 'pgsql'
+                    ? "SUM(CAST(NULLIF(amount, '') AS numeric)) AS count"
+                    : "SUM(amount) AS count";
+
+                $monthNameExpr = $driver === 'pgsql'
+                    ? "TO_CHAR(created_at, 'Mon') as monthname"
+                    : "MONTHNAME(created_at) as monthname";
+
                 $subscriptionsperMonth = Subscription::select(
-                    DB::raw('SUM(amount) AS count'),
-                    DB::raw("MONTHNAME(created_at) as monthname"))
+                    DB::raw($sumAmountExpr),
+                    DB::raw($monthNameExpr)
+                )
                     ->whereYear('created_at', date('Y', strtotime('-1 year')))
-                    ->where('billing_type', 'license')
-                    ->groupBy('monthname')
-                    ->get()
-                    ->toArray();
+                    ->where('billing_type', 'license');
+
+                if ($driver === 'pgsql') {
+                    $subscriptionsperMonth = $subscriptionsperMonth
+                        ->groupByRaw("TO_CHAR(created_at, 'Mon'), EXTRACT(MONTH FROM created_at)")
+                        ->orderByRaw('EXTRACT(MONTH FROM created_at) ASC');
+                } else {
+                    $subscriptionsperMonth = $subscriptionsperMonth
+                        ->groupBy('monthname')
+                        ->orderBy('monthname');
+                }
+
+                $subscriptionsperMonth = $subscriptionsperMonth->get()->toArray();
 
                 $chartDataSubscriptionYear = [];
                 foreach ($subscriptionsperMonth as $data) {
@@ -185,13 +205,23 @@ class HomeController extends Controller
                 }
 
                 $subscriptionsperMonthCurrent = Subscription::select(
-                    DB::raw('SUM(amount) AS count'),
-                    DB::raw("MONTHNAME(created_at) as monthname"))
+                    DB::raw($sumAmountExpr),
+                    DB::raw($monthNameExpr)
+                )
                     ->whereYear('created_at', date('Y'))
-                    ->where('billing_type', 'license')
-                    ->groupBy('monthname')
-                    ->get()
-                    ->toArray();
+                    ->where('billing_type', 'license');
+
+                if ($driver === 'pgsql') {
+                    $subscriptionsperMonthCurrent = $subscriptionsperMonthCurrent
+                        ->groupByRaw("TO_CHAR(created_at, 'Mon'), EXTRACT(MONTH FROM created_at)")
+                        ->orderByRaw('EXTRACT(MONTH FROM created_at) ASC');
+                } else {
+                    $subscriptionsperMonthCurrent = $subscriptionsperMonthCurrent
+                        ->groupBy('monthname')
+                        ->orderBy('monthname');
+                }
+
+                $subscriptionsperMonthCurrent = $subscriptionsperMonthCurrent->get()->toArray();
 
                 $chartDataSubscriptionYearCurrent = [];
                 foreach ($subscriptionsperMonthCurrent as $data) {
@@ -202,7 +232,11 @@ class HomeController extends Controller
 
             $top5Products = Subscription::select('name')
                 ->where('status_id', '1')
-                ->selectRaw('COALESCE(sum(amount),0) total')
+                ->selectRaw(
+                    DB::getDriverName() === 'pgsql'
+                        ? "COALESCE(sum(CAST(NULLIF(amount, '') AS numeric)),0) total"
+                        : 'COALESCE(sum(amount),0) total'
+                )
                 ->groupBy('id')
                 ->orderBy('total','desc')
                 ->take(5)
@@ -368,16 +402,34 @@ class HomeController extends Controller
                     $chartDataCurrentCustomerByDay[] = $data['count'];
                 }
 
+                $driver = DB::getDriverName();
+
+                $sumAmountExpr = $driver === 'pgsql'
+                    ? "SUM(CAST(NULLIF(amount, '') AS numeric)) AS count"
+                    : "SUM(amount) AS count";
+
+                $monthNameExpr = $driver === 'pgsql'
+                    ? "TO_CHAR(created_at, 'Mon') as monthname"
+                    : "MONTHNAME(created_at) as monthname";
+
                 $subscriptionsperMonth = Subscription::select(
-                    DB::raw('SUM(amount) AS count'),
-                    DB::raw("MONTHNAME(created_at) as monthname"))
+                    DB::raw($sumAmountExpr),
+                    DB::raw($monthNameExpr)
+                )
                     ->whereYear('created_at', date('Y', strtotime('-1 year')))
-                    ->where('billing_type', 'license')
-                    ->groupBy('monthname')
-                    ->get()
-                    ->toArray();
+                    ->where('billing_type', 'license');
 
+                if ($driver === 'pgsql') {
+                    $subscriptionsperMonth = $subscriptionsperMonth
+                        ->groupByRaw("TO_CHAR(created_at, 'Mon'), EXTRACT(MONTH FROM created_at)")
+                        ->orderByRaw('EXTRACT(MONTH FROM created_at) ASC');
+                } else {
+                    $subscriptionsperMonth = $subscriptionsperMonth
+                        ->groupBy('monthname')
+                        ->orderBy('monthname');
+                }
 
+                $subscriptionsperMonth = $subscriptionsperMonth->get()->toArray();
 
                 $chartDataSubscriptionYear = [];
                 foreach ($subscriptionsperMonth as $data) {
@@ -386,13 +438,23 @@ class HomeController extends Controller
                 }
 
                 $subscriptionsperMonthCurrent = Subscription::select(
-                    DB::raw('SUM(amount) AS count'),
-                    DB::raw("MONTHNAME(created_at) as monthname"))
+                    DB::raw($sumAmountExpr),
+                    DB::raw($monthNameExpr)
+                )
                     ->whereYear('created_at', date('Y'))
-                    ->where('billing_type', 'license')
-                    ->groupBy('monthname')
-                    ->get()
-                    ->toArray();
+                    ->where('billing_type', 'license');
+
+                if ($driver === 'pgsql') {
+                    $subscriptionsperMonthCurrent = $subscriptionsperMonthCurrent
+                        ->groupByRaw("TO_CHAR(created_at, 'Mon'), EXTRACT(MONTH FROM created_at)")
+                        ->orderByRaw('EXTRACT(MONTH FROM created_at) ASC');
+                } else {
+                    $subscriptionsperMonthCurrent = $subscriptionsperMonthCurrent
+                        ->groupBy('monthname')
+                        ->orderBy('monthname');
+                }
+
+                $subscriptionsperMonthCurrent = $subscriptionsperMonthCurrent->get()->toArray();
 
                 $chartDataSubscriptionYearCurrent = [];
                 foreach ($subscriptionsperMonthCurrent as $data) {
@@ -402,7 +464,11 @@ class HomeController extends Controller
 
             $top5Products = Subscription::select('name')
                 ->where('status_id', '1')
-                ->selectRaw('COALESCE(sum(amount),0) total')
+                ->selectRaw(
+                    DB::getDriverName() === 'pgsql'
+                        ? "COALESCE(sum(CAST(NULLIF(amount, '') AS numeric)),0) total"
+                        : 'COALESCE(sum(amount),0) total'
+                )
                 ->groupBy('id')
                 ->orderBy('total','desc')
                 ->take(5)
@@ -482,7 +548,50 @@ class HomeController extends Controller
 
     public function dashboard()
     {
-        return view('dashboard');
+        // New portal entrypoint (Breeze stack). Keep it role-aware.
+        // Operational dashboard: a few lightweight metrics + recent activity.
+
+        $user = \Illuminate\Support\Facades\Auth::user();
+        $userLevel = $user?->userLevel?->name;
+
+        // Customer dashboard should only show their own data.
+        if ($userLevel === config('app.customer')) {
+            $customerId = $user?->customer_id;
+
+            $metrics = [
+                'subscriptions' => \App\Subscription::query()->where('customer_id', $customerId)->count(),
+                'orders' => \App\Order::query()->where('customer_id', $customerId)->count(),
+            ];
+
+            $recentOrders = \App\Order::query()
+                ->where('customer_id', $customerId)
+                ->latest()
+                ->limit(10)
+                ->get();
+
+            return view('dashboard', compact('metrics', 'recentOrders', 'userLevel'));
+        }
+
+        $metrics = [
+            'customers' => \App\Customer::query()->count(),
+            'subscriptions' => \App\Subscription::query()->count(),
+            'orders' => \App\Order::query()->count(),
+        ];
+
+        $recentOrders = \App\Order::query()
+            ->latest()
+            ->limit(10)
+            ->get();
+
+        return view('dashboard', compact('metrics', 'recentOrders', 'userLevel'));
+    }
+
+    /**
+     * Legacy dashboard entrypoint preserved for reference during migration.
+     */
+    public function legacyHome()
+    {
+        return $this->index();
     }
 
 

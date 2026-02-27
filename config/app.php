@@ -177,7 +177,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\HorizonServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\TenancyServiceProvider::class,
         App\Providers\MailServiceProvider::class,
 
         App\Providers\ProviderRepositoryServiceProvider::class,

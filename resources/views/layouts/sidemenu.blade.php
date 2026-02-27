@@ -171,7 +171,7 @@
                                 <a href="{{ route('priceList.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.price_list', 2)) }}</a>
                                 @endcan
                                 @can(config('app.reseller_index'))
-                                <a href="{{ route('product') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.product', 2)) }}</a>
+                                <a href="{{ route('product.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.product', 2)) }}</a>
                                 <a href="{{ route('instances.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.instance', 2)) }}</a>
                                 @endcan
                                 @can(config('app.provider_index'))
@@ -371,7 +371,7 @@
                                     <a href="{{ route('priceList.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.price_list', 2)) }}</a>
                                     @endcan
                                     @can(config('app.reseller_index'))
-                                    <a href="{{ route('product') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.product', 2)) }}</a>
+                                    <a href="{{ route('product.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.product', 2)) }}</a>
                                     <a href="{{ route('instances.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.instance', 2)) }}</a>
                                     @endcan
                                     @can(config('app.provider_index'))

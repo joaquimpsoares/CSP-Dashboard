@@ -19,11 +19,19 @@ class CheckBlocked
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->status->id >= 2 && Auth::user()->status->id) {
-            $status = Status::where('id', Auth::user()->status->id)->first();
-            $message = 'Your account is '. ucwords(trans_choice($status->name, 1)) . ' . Please contact your system administrator.';
-            Auth::logout();
-			return redirect()->route('login')->withMessage($message);
+        if (Auth::check()) {
+            $statusId = (int) (Auth::user()->status_id ?? (Auth::user()->status->id ?? 0));
+
+            // Allowed statuses (legacy app uses 5 = Enabled).
+            $allowed = [1, 5];
+
+            if (! in_array($statusId, $allowed, true)) {
+                $status = Status::where('id', $statusId)->first();
+                $name = $status?->name ?? 'blocked';
+                $message = 'Your account is ' . ucwords(trans_choice($name, 1)) . '. Please contact your system administrator.';
+                Auth::logout();
+                return redirect()->route('login')->with('message', $message);
+            }
         }
         return $next($request);
     }

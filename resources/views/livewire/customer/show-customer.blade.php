@@ -1,28 +1,26 @@
 <div @if($customer->microsoftTenantInfo->first())  wire:init="checkQualificationStatus({{ $customer->id }}) @endif">
-    <script src="https://unpkg.com/@popperjs/core@2"></script>
-    <script src="https://unpkg.com/tippy.js@6"></script>
-    <div class="mx-auto md:max-w-5xl pt-14">
-        <div class="relative z-0 flex-col flex-1 overflow-y-auto">
-            <div class="p-4 overflow-hidden bg-white">
-                <div class="lg:flex lg:items-center lg:justify-between">
+<div class="mx-auto max-w-7xl py-8 px-4 sm:px-6 lg:px-8">
+        <div class="relative z-0 flex-col flex-1 overflow-visible">
+            <div class="p-6 bg-transparent">
+                <div class="lg:flex lg:items-start lg:justify-between">
                     <div class="flex-1 min-w-0">
-                        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                        <h2 class="text-2xl font-bold leading-7 text-slate-900 sm:text-3xl sm:truncate">
                             {{$customer->company_name}}
                             <span wire:loading>
                                 <x-bladewind.spinner size="small"/>
                             </span>
                         </h2>
                         <div class="flex flex-col mt-1 mb-5 sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
-                            <div class="flex items-center mt-2 text-sm text-gray-500">
-                                <div class="flex items-center mt-2 text-sm text-gray-500">
+                            <div class="flex items-center mt-2 text-sm text-slate-600">
+                                <div class="flex items-center mt-2 text-sm text-slate-600">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $customer->status->name == 'messages.active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'  }}  capitalize">
                                         {{ ucwords(trans_choice($customer->status->name, 1)) }}
                                     </span>
                                 </div>
                             </div>
 
-                            <div class="flex items-center mt-2 text-sm text-gray-500">
-                                <div class="flex items-center mt-2 text-sm text-gray-500">
+                            <div class="flex items-center mt-2 text-sm text-slate-600">
+                                <div class="flex items-center mt-2 text-sm text-slate-600">
                                     <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" x-description="Heroicon name: solid/calendar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                         <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
                                     </svg>
@@ -34,7 +32,7 @@
                     <div class="flex justify-between mt-5 lg:mt-0 lg:ml-4">
                         <span class="sm:ml-15">
                             <div x-data="{ open: false }" @keydown.escape.stop="open = false; focusButton()" class="relative inline-block px-3 mt-6 text-left">
-                                <button type="button" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none"  x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-2" @click="open = !open" aria-expanded="false" x-bind:aria-expanded="open.toString()" x-state-description="Current:"bg-gray-100 text-gray-900", Default:"bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900"">
+                                <button type="button" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none"  x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-2" @click="open = !open" aria-expanded="false" x-bind:aria-expanded="open.toString()" x-state-description="Current:"bg-gray-100 text-slate-900", Default:"bg-white text-gray-600 hover:bg-slate-50 hover:text-slate-900"">
                                     <span class="block -mt-px normal-case whitespace-no-wrap" style='margin-top: -1px; font-feature-settings: "pnum"; font-variant: proportional-nums; transition: color 0.24s ease 0s; overflow-wrap: break-word;'>
                                         <span class="box-border">
                                             {{ ucwords(trans_choice('messages.action', 2)) }}
@@ -87,13 +85,13 @@
                 </div>
 
                 <!-- start Customer details card -->
-                <div class="mb-4 overflow-hidden bg-white shadow sm:rounded-lg">
+                <div class="mb-4 rounded-2xl border border-slate-200 bg-white/80 shadow-sm">
                     <div class="px-4 py-3 sm:px-6">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900">{{ ucwords(trans_choice('messages.customer_details', 1)) }}</h3>
+                        <h3 class="text-lg font-medium leading-6 text-slate-900">{{ ucwords(trans_choice('messages.customer_details', 1)) }}</h3>
                         @if(Auth::user()->userlevel->name == "Super Admin" || Auth::user()->userlevel->name == "Provider")
-                        <div class="flex items-center mb-4 mr-2 text-gray-500">
+                        <div class="flex items-center mb-4 mr-2 text-slate-600">
                             @if($customer->microsoftTenantInfo->first())
-                            <a href="https://partner.microsoft.com/commerce/customers/{{$customer->microsoftTenantInfo->first()->tenant_id}}/subscriptions" target="_blank" class="flex items-center text-sm text-gray-500">
+                            <a href="https://partner.microsoft.com/commerce/customers/{{$customer->microsoftTenantInfo->first()->tenant_id}}/subscriptions" target="_blank" class="flex items-center text-sm text-slate-600">
                                 to partner center <x-icon.external class="ml-1"></x-icon.external>
                             </a>
                             @endif
@@ -103,25 +101,25 @@
                     <div class="px-4 py-3 border-t border-gray-200 sm:px-6">
                         <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
                             <div class="sm:col-span-1">
-                                <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.company_name', 1)) }}</dt>
-                                <dd class="mt-1 text-sm text-gray-900">
+                                <dt class="text-sm font-medium text-slate-600">{{ ucwords(trans_choice('messages.company_name', 1)) }}</dt>
+                                <dd class="mt-1 text-sm text-slate-900">
                                     {{$customer->company_name}}
                                 </dd>
                             </div>
                             <div class="sm:col-span-1">
-                                <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.address', 1)) }}</dt>
-                                <dd class="mt-1 text-sm text-gray-900">
+                                <dt class="text-sm font-medium text-slate-600">{{ ucwords(trans_choice('messages.address', 1)) }}</dt>
+                                <dd class="mt-1 text-sm text-slate-900">
                                     {{strtoupper($customer->address_1)}}
                                 </dd>
                             </div>
                             <div class="sm:col-span-1">
-                                <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.tenant', 1)) }}</dt>
-                                <dd class="mt-1 text-sm text-gray-900">
-                                    <div class="flex items-center text-sm text-gray-500">
+                                <dt class="text-sm font-medium text-slate-600">{{ ucwords(trans_choice('messages.tenant', 1)) }}</dt>
+                                <dd class="mt-1 text-sm text-slate-900">
+                                    <div class="flex items-center text-sm text-slate-600">
                                         @if($customer->microsoftTenantInfo->first())
                                         <input id="copy_{{ $customer->microsoftTenantInfo->first()->tenant_domain }}" value="{{$customer->microsoftTenantInfo->first()->tenant_domain}}" aria-invalid="false" readonly="" placeholder="" type="text"
                                         class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto"/>
-                                        <span class="text-sm font-medium text-gray-500">
+                                        <span class="text-sm font-medium text-slate-600">
                                             <button id="myButton" value="copy" onclick="copyToClipboard('copy_{{ $customer->microsoftTenantInfo->first()->tenant_domain }}')" class="inline-flex items-center px-2 overflow-visible font-sans text-sm font-medium text-gray-400 no-underline normal-case bg-transparent border border-0 border-gray-200 rounded-lg cursor-pointer -py-4 focus:shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
                                                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="transition transform stroke-current" >
                                                     <path d="M12.9975 10.7499L11.7475 10.7499C10.6429 10.7499 9.74747 11.6453 9.74747 12.7499L9.74747 21.2499C9.74747 22.3544 10.6429 23.2499 11.7475 23.2499L20.2475 23.2499C21.352 23.2499 22.2475 22.3544 22.2475 21.2499L22.2475 12.7499C22.2475 11.6453 21.352 10.7499 20.2475 10.7499L18.9975 10.7499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -136,19 +134,19 @@
                                 </dd>
                             </div>
                             <div class="sm:col-span-1">
-                                <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.city', 1)) }}</dt>
-                                <dd class="mt-1 text-sm text-gray-900">
+                                <dt class="text-sm font-medium text-slate-600">{{ ucwords(trans_choice('messages.city', 1)) }}</dt>
+                                <dd class="mt-1 text-sm text-slate-900">
                                     {{$customer->city}}
                                 </dd>
                             </div>
                             <div class="sm:col-span-1">
-                                <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.tenant_id', 1)) }}</dt>
-                                <dd class="mt-1 text-sm text-gray-900">
-                                    <div class="flex items-center text-sm text-gray-500">
+                                <dt class="text-sm font-medium text-slate-600">{{ ucwords(trans_choice('messages.tenant_id', 1)) }}</dt>
+                                <dd class="mt-1 text-sm text-slate-900">
+                                    <div class="flex items-center text-sm text-slate-600">
                                         @if($customer->microsoftTenantInfo->first())
                                         <input id="copy_{{ $customer->microsoftTenantInfo->first()->tenant_id }}" value="{{$customer->microsoftTenantInfo->first()->tenant_id}}" aria-invalid="false" readonly="" placeholder="" type="text"
                                         class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto"/>
-                                        <span class="text-sm font-medium text-gray-500">
+                                        <span class="text-sm font-medium text-slate-600">
                                             <button id="myButton" value="copy" onclick="copyToClipboard('copy_{{ $customer->microsoftTenantInfo->first()->tenant_id }}')" class="inline-flex items-center px-2 overflow-visible font-sans text-sm font-medium text-gray-400 no-underline normal-case bg-transparent border border-0 border-gray-200 rounded-lg cursor-pointer -py-4 focus:shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
                                                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="transition transform stroke-current" >
                                                     <path d="M12.9975 10.7499L11.7475 10.7499C10.6429 10.7499 9.74747 11.6453 9.74747 12.7499L9.74747 21.2499C9.74747 22.3544 10.6429 23.2499 11.7475 23.2499L20.2475 23.2499C21.352 23.2499 22.2475 22.3544 22.2475 21.2499L22.2475 12.7499C22.2475 11.6453 21.352 10.7499 20.2475 10.7499L18.9975 10.7499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -163,8 +161,8 @@
                                 </dd>
                             </div>
                             <div class="sm:col-span-1">
-                                <dt class="text-sm font-medium text-gray-500">{{ ucwords(trans_choice('messages.country', 1)) }}</dt>
-                                <dd class="mt-1 text-sm text-gray-900">
+                                <dt class="text-sm font-medium text-slate-600">{{ ucwords(trans_choice('messages.country', 1)) }}</dt>
+                                <dd class="mt-1 text-sm text-slate-900">
                                     {{$customer->country->name}}
                                 </dd>
                             </div>
@@ -174,16 +172,16 @@
                 <!-- Ends Customer details card -->
 
                 <!-- start qualification details card -->
-                <div class="mb-4 overflow-hidden bg-white shadow sm:rounded-lg">
+                <div class="mb-4 rounded-2xl border border-slate-200 bg-white/80 shadow-sm">
                     <div class="px-4 py-3 sm:px-6">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900">{{ ucwords(trans_choice('messages.qualification', 1)) }}</h3>
+                        <h3 class="text-lg font-medium leading-6 text-slate-900">{{ ucwords(trans_choice('messages.qualification', 1)) }}</h3>
                     </div>
                     <div class="px-4 py-3 border-t border-gray-200 sm:px-6">
                         <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
                             <div class="sm:col-span-1">
-                                <dt class="text-sm font-medium text-gray-500">{{strtoupper($customer->qualification)}}</dt>
+                                <dt class="text-sm font-medium text-slate-600">{{strtoupper($customer->qualification)}}</dt>
                                 @if($customer->qualification_status)
-                                <dd class="mt-1 text-sm text-gray-900">
+                                <dd class="mt-1 text-sm text-slate-900">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $customer->qualification_status == 'Approved' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'  }}  capitalize">
                                         {{$customer->qualification_status}}
                                     </span>
@@ -196,12 +194,12 @@
                 <!-- Ends qualification details card -->
 
                 <!-- start contact card -->
-                <div class="mb-4 overflow-hidden bg-white shadow sm:rounded-lg">
+                <div class="mb-4 rounded-2xl border border-slate-200 bg-white/80 shadow-sm">
                     <div class="px-4 py-3 sm:px-6">
-                        <h3 class="text-lg font-medium leading-6 text-gray-900">{{ ucwords(trans_choice('messages.customer_relationship', 1)) }}</h3>
-                        <span class="flex items-center text-sm font-medium text-gray-500 capitalize sm:mr-6 sm:mt-0">
+                        <h3 class="text-lg font-medium leading-6 text-slate-900">{{ ucwords(trans_choice('messages.customer_relationship', 1)) }}</h3>
+                        <span class="flex items-center text-sm font-medium text-slate-600 capitalize sm:mr-6 sm:mt-0">
                             {{$customer->resellers->first()->company_name}}
-                            <a  class="text-sm text-gray-500 " href="{{$customer->resellers->first()->format()['path']}}}}">
+                            <a  class="text-sm text-slate-600 " href="{{$customer->resellers->first()->format()['path']}}}}">
                                 <x-icon.external class="flex-shrink-0 w-5 h-5 text-gray-400"></x-icon.external>
                             </a>
                         </span>
@@ -209,7 +207,7 @@
                     <div class="px-4 py-3 border-t border-gray-200 sm:px-6">
                         <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
                             <div class="sm:col-span-1">
-                                <dd class="mt-1 text-sm text-gray-900">
+                                <dd class="mt-1 text-sm text-slate-900">
                                     <x-bladewind.contact-card
                                     name="{{$customer->resellers->first()->users->first()->name}}"
                                     mobile="{{$customer->resellers->first()->users->first()->phone}}"
@@ -227,16 +225,16 @@
             <div>
                 <dl class="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-3">
                     <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
-                        <dt class="text-sm font-medium text-gray-500 truncate">{{ ucwords(trans_choice('messages.active_subscriptions', 1)) }}</dt>
-                        <dd class="mt-1 text-3xl font-semibold text-gray-900">{{$customer->subscriptions->where('status_id', 1)->count()}}</dd>
+                        <dt class="text-sm font-medium text-slate-600 truncate">{{ ucwords(trans_choice('messages.active_subscriptions', 1)) }}</dt>
+                        <dd class="mt-1 text-3xl font-semibold text-slate-900">{{$customer->subscriptions->where('status_id', 1)->count()}}</dd>
                     </div>
                     <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
-                        <dt class="text-sm font-medium text-gray-500 truncate">{{ ucwords(trans_choice('messages.total_subscriptions', 1)) }}</dt>
-                        <dd class="mt-1 text-3xl font-semibold text-gray-900">{{$customer->subscriptions->count()}}</dd>
+                        <dt class="text-sm font-medium text-slate-600 truncate">{{ ucwords(trans_choice('messages.total_subscriptions', 1)) }}</dt>
+                        <dd class="mt-1 text-3xl font-semibold text-slate-900">{{$customer->subscriptions->count()}}</dd>
                     </div>
                     <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
-                        <dt class="text-sm font-medium text-gray-500 truncate">{{ ucwords(trans_choice('messages.active_licenses', 1)) }}</dt>
-                        <dd class="mt-1 text-3xl font-semibold text-gray-900">{{$customer->subscriptions->where('status_id', 1)->sum('amount')}}</dd>
+                        <dt class="text-sm font-medium text-slate-600 truncate">{{ ucwords(trans_choice('messages.active_licenses', 1)) }}</dt>
+                        <dd class="mt-1 text-3xl font-semibold text-slate-900">{{$customer->subscriptions->where('status_id', 1)->sum('amount')}}</dd>
                     </div>
                 </dl>
             </div>
@@ -244,26 +242,26 @@
 
 
             <!-- start subscription table card -->
-            <div class="mb-4 overflow-hidden bg-white shadow sm:rounded-lg">
+            <div class="mb-4 rounded-2xl border border-slate-200 bg-white/80 shadow-sm">
                 <div class="px-4 py-3 sm:px-6">
-                    <h3 class="text-lg font-medium leading-6 text-gray-900">{{ ucwords(trans_choice('messages.subscription', 1)) }}</h3>
+                    <h3 class="text-base font-semibold text-slate-900">{{ ucwords(trans_choice('messages.subscription', 1)) }}</h3>
                 </div>
-                <div class="px-4 py-3 border-t border-gray-200 sm:px-6">
+                <div class="px-4 py-3 border-t border-slate-200 sm:px-6">
                     <div class="px-4 sm:px-6 lg:px-8">
-                        <div class="mt-8 -mx-4 overflow-hidden ring-1 ring-black ring-opacity-5 sm:-mx-6 md:mx-0 ">
+                        <div class="mt-6 -mx-4 overflow-visible ring-1 ring-black/5 sm:-mx-6 md:mx-0 ">
                             <table class="min-w-full divide-y divide-gray-300">
-                                <thead class="bg-gray-50">
+                                <thead class="bg-slate-50">
                                     <tr>
-                                        <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase">
                                             {{ ucwords(trans_choice('messages.name', 2)) }}
                                         </th>
-                                        <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 lg:table-cell">
+                                        <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase lg:table-cell">
                                             {{ ucwords(trans_choice('messages.subscription_id', 1)) }}
                                         </th>
-                                        <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 sm:table-cell">
+                                        <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase sm:table-cell">
                                             {{ ucwords(trans_choice('messages.amount', 2)) }}
                                         </th>
-                                        <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase">
                                             {{ ucwords(trans_choice('messages.total', 1)) }}
                                         </th>
                                     </tr>
@@ -271,10 +269,10 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     @foreach($subscriptions->where('status_id', 1) as $key => $subscription)
                                     <tr>
-                                        <td class="w-full py-4 pl-4 pr-3 text-sm font-medium text-gray-900 max-w-0 sm:w-auto sm:max-w-none sm:pl-6">
-                                            <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
+                                        <td class="w-full py-4 pl-4 pr-3 text-sm font-medium text-slate-900 max-w-0 sm:w-auto sm:max-w-none sm:pl-6">
+                                            <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-slate-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
                                                 <div class="p-0 mt-px mb-0 ml-px mr-0 pointer-events-auto">
-                                                    <span class="inline font-medium text-gray-900">
+                                                    <span class="inline font-medium text-slate-900">
                                                         {{$subscription->name ?? ''}}
                                                         @if($subscription->productonce)
                                                         @if($subscription->productonce->isNCE())
@@ -299,17 +297,17 @@
                                             </a>
                                         </td>
                                         @if($subscription->billing_period === "one_time")
-                                        <td class="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
+                                        <td class="hidden px-3 py-4 text-sm text-slate-600 lg:table-cell">
 
-                                            <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
+                                            <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-slate-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
                                             </a>
                                         </td>
                                         @else
-                                        <td class="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
-                                            <div class="flex items-center mt-2 text-sm text-gray-500">
+                                        <td class="hidden px-3 py-4 text-sm text-slate-600 lg:table-cell">
+                                            <div class="flex items-center mt-2 text-sm text-slate-600">
                                                 <input id="copy_{{ $subscription->subscription_id }}" value="{{$subscription->subscription_id}}" aria-invalid="false" readonly="" placeholder="" type="text"
                                                 class="relative inline-flex flex-auto px-2 py-1 m-0 font-mono text-xs leading-4 text-left no-underline whitespace-no-wrap align-middle bg-gray-100 border-0 rounded appearance-none select-auto"/>
-                                                <span class="text-sm font-medium text-gray-500">
+                                                <span class="text-sm font-medium text-slate-600">
                                                     <button id="myButton" value="copy" onclick="copyToClipboard('copy_{{ $subscription->subscription_id }}')" class="inline-flex items-center px-2 overflow-visible font-sans text-sm font-medium text-gray-400 no-underline normal-case bg-transparent border border-0 border-gray-200 rounded-lg cursor-pointer -py-4 focus:shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 hover:text-gray-600 group">
                                                         <svg width="32" height="32" viewBox="0 0 32 32" fill="none" class="transition transform stroke-current" >
                                                             <path d="M12.9975 10.7499L11.7475 10.7499C10.6429 10.7499 9.74747 11.6453 9.74747 12.7499L9.74747 21.2499C9.74747 22.3544 10.6429 23.2499 11.7475 23.2499L20.2475 23.2499C21.352 23.2499 22.2475 22.3544 22.2475 21.2499L22.2475 12.7499C22.2475 11.6453 21.352 10.7499 20.2475 10.7499L18.9975 10.7499" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -322,16 +320,16 @@
                                             </div>
                                         </td>
                                         @endif
-                                        <td class="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
-                                            <div class="flex items-center mt-2 text-sm text-gray-500">
+                                        <td class="hidden px-3 py-4 text-sm text-slate-600 sm:table-cell">
+                                            <div class="flex items-center mt-2 text-sm text-slate-600">
                                                 {{$subscription->amount}}
                                             </div>
                                         </td>
-                                        <td class="px-3 py-4 text-sm text-gray-500">
-                                            <div class="flex items-center mt-2 text-sm text-gray-500">
+                                        <td class="px-3 py-4 text-sm text-slate-600">
+                                            <div class="flex items-center mt-2 text-sm text-slate-600">
                                                 @if($subscription->orders->first())
                                                 @if($subscription->orders->first()->orderproduct != null)
-                                                <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
+                                                <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-slate-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
                                                     <span class="inline text-sm font-normal leading-5">
                                                         {{number_format(($subscription->orders->first()->orderproduct->retail_price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
                                                     </span>
@@ -351,35 +349,37 @@
             <!-- Ends subscription table card  -->
 
             <!-- start users table card -->
-            <div class="mb-4 overflow-hidden bg-white shadow sm:rounded-lg">
+            <div class="mb-4 rounded-2xl border border-slate-200 bg-white/80 shadow-sm">
                 <div class="px-4 py-3 bg-white border-b border-gray-200 sm:px-6">
                     <div class="flex flex-wrap items-center justify-between -mt-2 -ml-4 sm:flex-nowrap">
                         <div class="mt-2 ml-4">
-                            <h3 class="text-lg font-medium leading-6 text-gray-900">{{ ucwords(trans_choice('messages.user', 2)) }}</h3>
+                            <h3 class="text-lg font-medium leading-6 text-slate-900">{{ ucwords(trans_choice('messages.user', 2)) }}</h3>
                         </div>
                         <div class="flex-shrink-0 mt-2 ml-4">
-                            <button wire:click="addUser({{ $customer->id }})" type="button" class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                {{ ucwords(trans_choice('messages.create', 1)) }}
-                            </button>
+                            @if(Auth::user()->userLevel?->name !== config('app.customer'))
+                                <button wire:click="addUser" type="button" class="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-500/30">
+                                    {{ ucwords(trans_choice('messages.create', 1)) }}
+                                </button>
+                            @endif
                         </div>
                     </div>
                 </div>
-                <div class="px-4 py-3 border-t border-gray-200 sm:px-6">
+                <div class="px-4 py-3 border-t border-slate-200 sm:px-6">
                     <div class="px-4 sm:px-6 lg:px-8">
-                        <div class="mt-8 -mx-4 overflow-hidden ring-1 ring-black ring-opacity-5 sm:-mx-6 md:mx-0 ">
+                        <div class="mt-6 -mx-4 overflow-visible ring-1 ring-black/5 sm:-mx-6 md:mx-0 ">
                             <table class="min-w-full divide-y divide-gray-300">
-                                <thead class="bg-gray-50">
+                                <thead class="bg-slate-50">
                                     <tr>
-                                        <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase">
                                             {{ ucwords(trans_choice('messages.name', 2)) }}
                                         </th>
-                                        <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 lg:table-cell">
+                                        <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase lg:table-cell">
                                             {{ ucwords(trans_choice('messages.email', 1)) }}
                                         </th>
-                                        <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 sm:table-cell">
+                                        <th scope="col" class="hidden px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase sm:table-cell">
                                             {{ ucwords(trans_choice('messages.status', 2)) }}
                                         </th>
-                                        <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                                        <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase">
 
                                         </th>
                                     </tr>
@@ -387,29 +387,29 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     @foreach($customer->users as $key => $user)
                                     <tr>
-                                        <td class="w-full py-4 pl-4 pr-3 text-sm font-medium text-gray-900 max-w-0 sm:w-auto sm:max-w-none sm:pl-6">
-                                            <a href="{{ route('user.edit', $user) }}" class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" >
+                                        <td class="w-full py-4 pl-4 pr-3 text-sm font-medium text-slate-900 max-w-0 sm:w-auto sm:max-w-none sm:pl-6">
+                                            <a href="{{ route('user.edit', $user) }}" class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-slate-900 hover:no-underline" >
                                                 <div class="p-0 mt-px mb-0 ml-px mr-0 pointer-events-auto">
-                                                    <span class="inline font-medium text-gray-900">
+                                                    <span class="inline font-medium text-slate-900">
                                                         {{$user->name}}
                                                         {{$user->last_name}}
                                                     </span>
                                                 </div>
                                             </a>
                                         </td>
-                                        <td class="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
-                                            <a href="{{ route('user.edit', $user) }}" class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" >
+                                        <td class="hidden px-3 py-4 text-sm text-slate-600 lg:table-cell">
+                                            <a href="{{ route('user.edit', $user) }}" class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-slate-900 hover:no-underline" >
                                                 {{$user->email}}
                                             </a>
                                         </td>
-                                        <td class="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
+                                        <td class="hidden px-3 py-4 text-sm text-slate-600 sm:table-cell">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 capitalize">
                                                 {{ ucwords(trans_choice($user->status->name, 1)) }}
                                             </span>
                                         </td>
-                                        <td class="px-3 py-4 text-sm text-gray-500">
+                                        <td class="px-3 py-4 text-sm text-slate-600">
                                             <div class="z-10">
-                                                <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
                                                         <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
                                                     </svg>
@@ -503,7 +503,7 @@
                 @endif
             </x-slot>
             <x-slot name="footer">
-                <a type="button" wire:click="$set('showImportModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
+                <a type="button" wire:click="$set('showImportModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
                     {{ ucwords(trans_choice('messages.cancel', 1)) }}
                 </a>
                 <x-button.primary type="submit">{{ ucwords(trans_choice('messages.import', 1)) }}</x-button.primary>
@@ -529,7 +529,7 @@
                 <button type="submit" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false">
                     {{ucwords(trans_choice('suspend', 1))}}
                 </button>
-                <a type="button" wire:click="$set('showconfirmationModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
+                <a type="button" wire:click="$set('showconfirmationModal', false)" class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm" @click="open = false">
                     {{ucwords(trans_choice('cancel', 1))}}
                 </a>
             </x-slot>
@@ -538,7 +538,7 @@
     <!-- Save Transaction Modal -->
     <div>
         <form @if($showuserCreateModal == false) wire:submit.prevent="save({{$customer->id}})" @else wire:submit.prevent="saveuser({{$customer->id}})" @endif>
-            <x-modal.slideout wire:model.defer="showEditModal">
+            <x-modal.slideout wire:model="showEditModal">
                 <x-slot name="title">@if($showuserCreateModal == false){{ ucwords(trans_choice('messages.edit_customer', 1)) }}
                     @else{{ ucwords(trans_choice('messages.new_user', 1)) }}@endif
                 </x-slot>
@@ -628,7 +628,7 @@
                                         <x-label for="markup">{{ ucwords(trans_choice('messages.markup', 1)) }}</x-label>
                                         <div class="relative mt-1 rounded-md shadow-sm">
                                             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                <span class="text-gray-500 sm:text-sm">
+                                                <span class="text-slate-600 sm:text-sm">
                                                     %
                                                 </span>
                                             </div>
@@ -714,7 +714,7 @@
                     </x-slot>
                     @endif
                     <x-slot name="footer">
-                        <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <button wire:click="$set('showEditModal', false)" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             {{ucwords(trans_choice('cancel', 1))}}
                         </button>
                         <button type="submit" class="inline-flex justify-center px-4 py-2 ml-4 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">

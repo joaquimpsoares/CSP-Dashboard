@@ -4,7 +4,7 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use ALajusticia\Expirable\Traits\Expirable;
+use App\Http\Traits\Expirable;
 
 class Instance extends Model
 {
@@ -21,6 +21,14 @@ class Instance extends Model
     public static function defaultExpiresAt()
     {
         return Carbon::now()->addMonths(3);
+    }
+
+    /**
+     * Column used for expiration checks (used by App\Scopes\ExpirationScope).
+     */
+    public static function getExpirationAttribute(): string
+    {
+        return 'expires_at';
     }
 
     public function provider(){

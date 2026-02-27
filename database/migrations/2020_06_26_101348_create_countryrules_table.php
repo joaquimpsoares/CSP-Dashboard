@@ -40,7 +40,13 @@ class CreateCountryrulesTable extends Migration
             
         });
 
-        DB::statement("ALTER TABLE countryrules AUTO_INCREMENT = 910000;");
+        // Start IDs at 910000 (legacy requirement). Handle MySQL vs PostgreSQL.
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE countryrules AUTO_INCREMENT = 910000;");
+        } elseif (DB::getDriverName() === 'pgsql') {
+            DB::statement("SELECT setval(pg_get_serial_sequence('countryrules','id'), 909999, true);");
+        }
+
     }
 
     /**

@@ -86,14 +86,17 @@ class CustomerTable extends Component
     public function makeBlankTransactionUser(){return User::make(['date' => now(), 'status' => 'success']);}
     public function exportSelected(){return Excel::download(new CustomersExport, 'Customers.xlsx');}
 
-    public function edit(Customer $customer)
+    public function edit($customerId)
     {
-        $this->showCreateUser = false;
-        $this->showEditModal = true;
-        $this->useCachedRows();
+        $this->resetErrorBag();
+        $this->resetValidation();
 
-        if ($this->editing->isNot($customer)) $this->editing = $customer;
-        $this->editing = $customer;
+        $this->showCreateUser = false;
+
+        $customer = Customer::query()->findOrFail($customerId);
+        $this->editing = $customer->fresh();
+
+        $this->showEditModal = true;
     }
 
 
@@ -106,10 +109,39 @@ class CustomerTable extends Component
         $this->showCreateUser = true;
     }
 
+    public function submit()
+    {
+        return $this->showCreateUser ? $this->savecreate() : $this->save();
+    }
+
     public function save()
     {
+        // Validate only customer fields when editing.
+        // Required fields during edit.
+        $editRules = [
+            'editing.company_name' => $this->rules['editing.company_name'],
+            'editing.nif' => $this->rules['editing.nif'],
+            'editing.country_id' => $this->rules['editing.country_id'],
+            'editing.address_1' => $this->rules['editing.address_1'],
+            'editing.address_2' => $this->rules['editing.address_2'],
+            'editing.city' => $this->rules['editing.city'],
+            'editing.state' => $this->rules['editing.state'],
+            'editing.postal_code' => $this->rules['editing.postal_code'],
+            'editing.markup' => $this->rules['editing.markup'],
+            'editing.direct_buy' => $this->rules['editing.direct_buy'],
+        ];
+        $this->validate($editRules);
+
+        // Normalize booleans coming from selects.
+        $this->editing->direct_buy = (bool) $this->editing->direct_buy;
+
         $this->editing->save();
         $this->showEditModal = false;
+
+        // Ensure table refreshes with updated values.
+        $this->resetPage();
+
+        $this->notify('success', 'Customer updated successfully');
     }
 
     public function savecreate()
@@ -194,7 +226,7 @@ class CustomerTable extends Component
             'customers' => $this->rows,
             'countries' => $countries,
             'statuses'  => $statuses,
-            'roles'     => $roles
-        ])->extends('layouts.master');
+            'roles'     => $roles,
+        ]);
     }
 }

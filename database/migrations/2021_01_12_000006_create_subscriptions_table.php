@@ -40,7 +40,13 @@ class CreateSubscriptionsTable extends Migration
         });
 
 
-        DB::statement("ALTER TABLE subscriptions AUTO_INCREMENT = 610000;");
+        // Start IDs at 610000 (legacy requirement). Handle MySQL vs PostgreSQL.
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE subscriptions AUTO_INCREMENT = 610000;");
+        } elseif (DB::getDriverName() === 'pgsql') {
+            DB::statement("SELECT setval(pg_get_serial_sequence('subscriptions','id'), 609999, true);");
+        }
+
     }
 
     /**
