@@ -151,7 +151,7 @@
                                                 <table cellpadding="0" cellspacing="0" role="presentation">
                                                     <tr>
                                                         <th class="hover-bg-dealshop-blue-dark" style="mso-padding-alt: 16px 40px; border-radius: 9999px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);" bgcolor="#4285f4">
-                                                            <a href="/store" class="all-font-montserrat" style="display: block; font-weight: 600; line-height: 100%; padding-top: 16px; padding-bottom: 16px; padding-left: 40px; padding-right: 40px; color: #ffffff; font-size: 14px; text-decoration: none;">Return to Shop</a>
+                                                            <a href="{{ route('store.index') }}" class="all-font-montserrat" style="display: block; font-weight: 600; line-height: 100%; padding-top: 16px; padding-bottom: 16px; padding-left: 40px; padding-right: 40px; color: #ffffff; font-size: 14px; text-decoration: none;">Return to Shop</a>
                                                         </th>
                                                     </tr>
                                                 </table>

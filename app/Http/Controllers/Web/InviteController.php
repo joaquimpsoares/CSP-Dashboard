@@ -156,7 +156,7 @@ class InviteController extends Controller
             $invite->delete();
 
             $this->guard()->login($user,true);
-            return redirect('/home')
+            return redirect()->route('dashboard')
             ->with('status', trans('changed password'));
 
         }

@@ -154,7 +154,7 @@ class ResellerTable extends Component
         }
 
         $this->notify('success','Reseller ' . $this->editing->company_name . ' created successfully');
-        return redirect()->to('/reseller');
+        return redirect()->route('reseller.index');
         $this->showEditModal = false;
 
     }

@@ -56,7 +56,7 @@
                         @forelse ($resourceName as $index => $item)
                         <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $item['id'] }}">
                             <x-table.cell visibility='hidden' tablecell='lg:table-cell'>
-                                <a href="/analytics/details/{{$item->customer_id}}/{{$item->id}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                <a href="{{ route('analytics.details', [$item->customer_id, $item->id]) }}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                     <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
                                             {{ $item->customer['company_name'] }}
@@ -65,7 +65,7 @@
                                 </a>
                             </x-table.cell>
                             <x-table.cell>
-                                <a href="/analytics/details/{{$item->customer_id}}/{{$item->id}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                <a href="{{ route('analytics.details', [$item->customer_id, $item->id]) }}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                     <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
                                             {{ $item['name'] }}
@@ -78,7 +78,7 @@
                             $markup = $percentage+$item->azureresources->sum('cost');
                             @endphp
                             <x-table.cell>
-                                <a href="/analytics/details/{{$item->customer_id}}/{{$item->id}}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                <a href="{{ route('analytics.details', [$item->customer_id, $item->id]) }}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                     <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
                                             {{$item->customer->country->currency_symbol}}@money($markup)
@@ -87,7 +87,7 @@
                                 </a>
                             </x-table.cell>
                             <x-table.cell>
-                                <a href="/analytics/details/{{$item->customer_id}}/{{$item->id}}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                <a href="{{ route('analytics.details', [$item->customer_id, $item->id]) }}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                     @if ($editedProductIndex === $index || $editedProductField === $index . '.name')
                                     <div>
                                         <input type="text"
@@ -110,7 +110,7 @@
                                 </a>
                             </x-table.cell>
                             <x-table.cell>
-                                <a href="/analytics/details/{{$item->customer_id}}/{{$item->id}}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                <a href="{{ route('analytics.details', [$item->customer_id, $item->id]) }}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                     @if (($item->calculated/100) < '0.50')
                                     <div class="mx-auto mb-0 chart-circle chart-circle-xs chart-circle-primary mt-sm-0 icon-dropshadow-primary" data-value="{{($item->calculated/100)}}" data-thickness="5" data-color="#4454c3">
                                         @else
@@ -130,7 +130,7 @@
                                             </svg>
                                         </button>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="analytics/reports/{{$item->id}}">
+                                            <a class="dropdown-item" href="{{ route('analytics.reports', $item->id) }}">
                                                 <x-icon.recipe></x-icon.recipe>
                                                 {{ ucwords(trans_choice('messages.report', 1)) }}
                                             </a>
@@ -138,7 +138,7 @@
                                                 <x-icon.edit></x-icon.edit>
                                                 {{ ucwords(trans_choice('messages.edit_budget', 1)) }}
                                             </a>
-                                            <a class="dropdown-item" href="analytics/update/{{$item->customer_id}}/{{$item->id}}">
+                                            <a class="dropdown-item" href="{{ route('analytics.update', [$item->customer_id, $item->id]) }}">
                                                 <x-icon.refresh></x-icon.refresh>
                                                 {{ ucwords(trans_choice('messages.update', 1)) }}
                                             </a>
@@ -299,7 +299,7 @@
                                             </div>
                                         </td>
                                         <td class="px-2 py-2 text-sm text-gray-500 whitespace-nowrap lg:table-cell">
-                                            <a href="/analytics/details/{{$item->customer_id}}/{{$item->id}}" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none">
+                                            <a href="{{ route('analytics.details', [$item->customer_id, $item->id]) }}" class="px-4 py-2 mb-1 mr-1 text-xs font-bold text-white uppercase transition-all duration-150 ease-linear bg-indigo-500 rounded shadow outline-none active:bg-indigo-600 hover:shadow-md focus:outline-none">
                                                 View Details
                                             </a>
                                             @if($editedProductIndex === $index || (isset($editedProductField) && (int)(explode('.',$editedProductField)[0])===$index))

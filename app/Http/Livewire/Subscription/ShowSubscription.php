@@ -407,7 +407,7 @@ class ShowSubscription extends Component
         $subscription->markAsDisabled();
         $this->emit('refreshTransactions');
         $this->notify('','Order Placed', 'info');
-        return redirect('/order');
+        return redirect()->route('order.index');
     }
 
     public function validateisEligible(Subscription $subscription){
