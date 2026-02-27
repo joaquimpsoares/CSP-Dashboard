@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Web\BillingController;
 
 // use App\Http\Controllers\TestController;
 
@@ -19,6 +20,14 @@ Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlew
 
 // Stripe Webhook (no auth; excluded from CSRF in VerifyCsrfToken)
 Route::post('stripe/webhook', [StripeWebhookController::class, 'handle'])->name('stripe.webhook');
+
+// Stripe Billing — Checkout, Customer Portal, and landing pages (auth required)
+Route::middleware('auth')->prefix('billing')->name('billing.')->group(function () {
+    Route::post('checkout', [BillingController::class, 'checkout'])->name('checkout');
+    Route::get('portal',   [BillingController::class, 'portal'])->name('portal');
+    Route::get('success',  [BillingController::class, 'success'])->name('success');
+    Route::get('cancel',   [BillingController::class, 'cancel'])->name('cancel');
+});
 
 // Route::post('registerInvitation', 'UsersController@registerInvitation')->name('registerInvitation');
 

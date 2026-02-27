@@ -36,6 +36,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('command:billed')->dailyAt('20:00');
         $schedule->command('command:CheckInstanceExpiration')->dailyAt('20:00');
         $schedule->command('command:SyncMSFTInvoices')->monthlyOn('4', '20:00');
+        // Report active CSP subscription counts to Stripe metered billing (daily at midnight UTC).
+        $schedule->command('stripe:report-usage')->dailyAt('00:00');
     }
 
     /**

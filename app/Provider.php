@@ -17,6 +17,14 @@ class Provider extends Model implements Searchable
 {
     use ActivityTrait;
 
+    protected $fillable = [
+        'company_name', 'address_1', 'address_2', 'country_id', 'state', 'city',
+        'nif', 'postal_code', 'main_office', 'status_id', 'price_list_id',
+        // Stripe billing fields
+        'stripe_customer_id', 'stripe_subscription_id', 'stripe_subscription_item_id',
+        'stripe_plan', 'stripe_status', 'stripe_currency', 'stripe_interval',
+    ];
+
     protected $searchable = [
         'company_name',
     ];
