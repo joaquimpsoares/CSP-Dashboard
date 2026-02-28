@@ -17,24 +17,20 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Notification;
 use romanzipp\QueueMonitor\Traits\IsMonitored;
-use Tagydes\MicrosoftConnection\Models\Cart as TagydesCart;
-use Tagydes\MicrosoftConnection\Facades\Order as TagydesOrder;
-use Tagydes\MicrosoftConnection\Models\Product as TagydesProduct;
-use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
-use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
-
+use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
+use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
+use Modules\MicrosoftCspConnection\Services\CustomerService;
+use Modules\MicrosoftCspConnection\Services\OfferService;
+use Modules\MicrosoftCspConnection\Services\OrderService;
 
 class PlaceOrderMicrosoft implements ShouldQueue
 {
-
     private $order;
 
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IsMonitored;
 
     /**
      * Create a new job instance.
-     *
-     * @return void
      */
     public function __construct(Order $order)
     {
@@ -43,16 +39,11 @@ class PlaceOrderMicrosoft implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle()
     {
         $products = $this->order->products;
         $customer = $this->order->customer;
-        foreach ($products as $key => $value) {
-            dd($value->name);
-        }
 
         foreach ($products as $product) {
             $this->order->details = ('Placing Order for: ' . $product['name'] . ' for Customer: ' . $customer->company_name);
@@ -61,180 +52,152 @@ class PlaceOrderMicrosoft implements ShouldQueue
 
         Log::info('tenant Cart: ' . $this->order->customer->microsoftTenantInfo->first());
 
-        $instanceid = $products->first()->instance_id;
-        Log::info('Instance ID: ' . $instanceid);
+        $instanceId = $products->first()->instance_id;
+        Log::info('Instance ID: ' . $instanceId);
 
-        $instance = Instance::where('id', $instanceid)->first();
+        $instance = Instance::where('id', $instanceId)->first();
         Log::info('Instance: ' . $instance);
 
-        $quantity = 0;
-        $billing_cycle = null;
+        $customerId = $this->order->customer->microsoftTenantInfo->first()->tenant_id;
+        Log::info('Customer tenant ID: ' . $customerId);
 
-        Log::info('ext_company_id: ' . $this->order->customer->microsoftTenantInfo->first()->tenant_id);
+        // Resolve CSP connection for this provider
+        $connection    = MicrosoftCspConnection::where('provider_id', $instance->provider_id)->firstOrFail();
+        $client        = new MicrosoftCspClient($connection, config('microsoftcspconnection'));
+        $customerSvc   = new CustomerService($client);
+        $offerService  = new OfferService($client);
+        $orderService  = new OrderService($client);
 
-        $existingCustomer = new TagydesCustomer([
-            'id' => $this->order->customer->microsoftTenantInfo->first()->tenant_id,
-            'username' => 'name@email.com',
-            'password' => 'ljhbpirtf',
-            'firstName' => 'name',
-            'lastName' => 'name',
-            'PartnerIdOnRecord' => $this->order->customer->format()['mpnid'] ?? null,
-            'email' => 'name@email.com',
-        ]);
+        // Verify the customer exists in Partner Center
+        try {
+            $customerSvc->get($customerId);
+            Log::info('Customer verified in Partner Center: ' . $customerId);
+        } catch (Exception $e) {
+            Log::error('Customer not found in Partner Center: ' . $e->getMessage());
+            $this->order->errors = 'Customer not found in Partner Center: ' . $e->getMessage();
+            $this->order->order_status_id = 3;
+            $this->order->save();
+            return;
+        }
 
-        Log::info('Adding existing Customer: ' . $this->order->customer->microsoftTenantInfo->first()->tenant_id);
-        Log::info('Adding existing Customer: ' . $existingCustomer);
+        // Build cart line items from order products
+        $lineItems = [];
 
         try {
-            $tagydescart = new TagydesCart();
-            logger("Tenemos {$products->count()} productos", $products->toArray());
-
             foreach ($products as $product) {
-                $quantity = $product->pivot->quantity;
-                $billing_cycle = strtolower($product->pivot->billing_cycle);
-                $term_duration = strtolower($product->pivot->term_duration);
-                Log::info('Billing cycle!: ' . $billing_cycle);
-                Log::info('Term Duration!: ' . $term_duration);
+                $quantity      = $product->pivot->quantity;
+                $billingCycle  = strtolower($product->pivot->billing_cycle);
+                $termDuration  = strtolower($product->pivot->term_duration);
+                $mpnId         = $this->order->customer->format()['mpnid'] ?? null;
 
-                $tagydescart->setCustomer($existingCustomer);
-                Log::info('Setting Customer to Cart: ' . $tagydescart);
-
-                $productData = [
-                    'name' => $product['name'],
-                    'description' => $product['description'],
-                    'minimumQuantity' => $product['minimum_quantity'],
-                    'maximumQuantity' => $product['maximum_quantity'],
-                    'term' => $term_duration,
-                    'limit' => $product['limit'] ?? 0,
-                    'PartnerIdOnRecord' => $this->order->customer->format()['mpnid']  ?? null,
-                    'isTrial' => $product['is_trial'],
-                    'uri' => $product['uri'],
-                    'supportedBillingCycles' => ['annual', 'monthly', 'one_time', 'none'],
-                ];
+                Log::info('Billing cycle: ' . $billingCycle);
+                Log::info('Term Duration: ' . $termDuration);
 
                 if ($product['is_perpetual']) {
+                    // Perpetual product: resolve catalog item ID from the product URI
                     Log::info('Catalog Item URL: ' . $product['uri']);
-                    $catalogItemId = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)->getPerpetualCatalogItemId($product['uri']);
+                    $catalogItemId = $offerService->getCatalogItemId($product['uri']);
 
-                    $TagydesProduct = new TagydesProduct([
-                        'id' => $catalogItemId
-                    ] + $productData);
-
-                    $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
-                    Log::info('Adding Perpetual Product to Cart: ' . $tagydescart);
-                }
-
-                elseif($product->IsNCE()){
-
+                } elseif ($product->IsNCE()) {
+                    // NCE product: build the URI from the SKU and resolve catalog item ID
                     $country = $customer->country->iso_3166_2;
-                    $sku = strtok($product->sku, ':');
-                    $id = substr($product->sku, strpos($product->sku, ":") + 1);
+                    $sku     = strtok($product->sku, ':');
+                    $id      = substr($product->sku, strpos($product->sku, ':') + 1);
 
-                    $catalogItemId = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)->getPerpetualCatalogItemIdNCE($country,$sku,$id);
-                    Log::info('catalogItemId1: ' . $catalogItemId);
-                    $TagydesProduct = new TagydesProduct([
-                        'id' => $catalogItemId
-                        ] + $productData);
+                    // NCE products use the product/sku/availabilities endpoint
+                    $nceUri        = "products/{$sku}/skus/{$id}/availabilities?country={$country}";
+                    $catalogItemId = $offerService->getCatalogItemId($nceUri);
+                    Log::info('NCE catalogItemId: ' . $catalogItemId);
 
-                    $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
-
-                    Log::info('Adding NCE Product to Cart: ' . $tagydescart);
-                }else{
-                    $TagydesProduct = new TagydesProduct([
-                        'id' => $product['sku'],
-                    ] + $productData);
-                    $tagydescart->addProduct($TagydesProduct, $quantity, $billing_cycle);
-                    Log::info('Adding Product to Cart: ' . $tagydescart);
-                }
-            }
-            try {
-
-                $tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->create($tagydescart);
-                Log::info('Creating Cart: ' . $tagydesorder);
-
-
-                $this->order->request_body = $tagydesorder->requestBody;
-                $this->order->save();
-
-                if ($tagydesorder->errors) {
-                    $this->order->errors = $tagydesorder->errors();
-                    foreach ($tagydesorder->errors() as $error) {
-                        $this->order->errors = ('Error Placing order to Microsoft, Error Code: ' . $error['error_code'] . ' Description: ' . $error['description']);
-                        $this->order->order_status_id = 3;
-                        $this->order->save();
-                        logger('Error found: ' . $error);
-                    }
+                } else {
+                    // Legacy / license-based product: SKU is the catalog item ID
+                    $catalogItemId = $product['sku'];
                 }
 
-                $orderConfirm = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->confirm($tagydesorder);
+                $lineItem = [
+                    'catalogItemId' => $catalogItemId,
+                    'quantity'      => $quantity,
+                    'billingCycle'  => $billingCycle,
+                    'termDuration'  => $termDuration,
+                ];
 
-                // $this->order->errors = $orderConfirm->errors();
-
-                if ($orderConfirm->errors) {
-                    $this->order->errors = $orderConfirm->errors();
-                    foreach ($orderConfirm->errors() as $error) {
-                        $this->order->errors = ('Error Placing order to Microsoft, Error Code: ' . $error['error_code'] . ' Description: ' . $error['description']);
-                        $this->order->order_status_id = 3;
-                        $this->order->save();
-                        logger('Error found: ' . $error);
-                    }
+                if ($mpnId) {
+                    $lineItem['partnerId'] = $mpnId;
                 }
 
-            } catch (Exception $th){
-                $this->order->errors = ('Error Placing order to Microsoft, Error Code: ' . $error['error_code'] . ' Description: ' . $error['description']);
-                $this->order->order_status_id = 3;
-                $this->order->save();
-                logger('Error found: ' . $error);
-                Log::info('Error Cart 1', ['message' => $th->getMessage()]);
+                $lineItems[] = $lineItem;
             }
 
-            foreach ($orderConfirm->subscriptions() as $subscription) {
-                logger('this is the subscription '.$subscription);
+        } catch (Exception $e) {
+            Log::error('Error building cart line items: ' . $e->getMessage());
+            $this->order->errors = 'Error building cart: ' . $e->getMessage();
+            $this->order->order_status_id = 3;
+            $this->order->save();
+            return;
+        }
 
-                // if($product->IsNCE()){
-                $product_id = explode(':', $subscription->offerId);
-                $product_id = $product_id[0].':'.$product_id[1];
-                // }
+        // Create and checkout the cart
+        try {
+            $cart = $orderService->createCart($customerId, $lineItems);
+            Log::info('Cart created: ' . json_encode($cart));
 
-                $subscriptions = new Subscription();
-                $subscriptions->subscription_id = $subscription->id;
-                $subscriptions->name = $subscription->name;
-                $subscriptions->customer_id = $customer->id; //Local customer id
-                $subscriptions->product_id = $product_id;
-                $subscriptions->catalog_item_id = $subscription->offerId ?? [];
-                $subscriptions->term = $subscription->termDuration ?? 'none';
-                $subscriptions->billing_type = $product->billing ?? 'license';
-                $subscriptions->instance_id = $instanceid;
-                $subscriptions->order_id = $subscription->orderId;
-                $subscriptions->amount = $subscription->quantity;
-                $subscriptions->msrpid = $this->order->customer->format()['mpnid'];
-                $subscriptions->expiration_data = Carbon::now()->addYear()->toDateTimeString(); //Set subscription expiration date
-                $subscriptions->billing_period = $subscription->billingCycle;
-                $subscriptions->currency = $subscription->currency;
-                $subscriptions->tenant_name = $this->order->domain ?? $this->order->customer->microsoftTenantInfo->first()->tenant_domain;
-                $subscriptions->status_id = 1;
-                $subscriptions->save();
+            $this->order->request_body = json_encode($cart);
+            $this->order->save();
 
-                Log::info('Subscription created Successfully: before writing to order table' . $subscription);
-
-                $this->order->subscription_id   = $subscriptions->id;
-                $this->order->ext_order_id      = $subscription->orderId;
-                $this->order->order_status_id   = 4; //Order Completed state
-                $this->order->save();
-
-                Log::info('Subscription created Successfully: ' . $subscription);
-                // Notification::send($subscription->customer->users->first(), new OrderStatus($this->order, 'success'));
-
+            $cartId   = $cart['id'] ?? null;
+            if (! $cartId) {
+                throw new Exception('Partner Center did not return a cart ID.');
             }
+
+            $checkout = $orderService->checkoutCart($customerId, $cartId);
+            Log::info('Cart checked out: ' . json_encode($checkout));
+
         } catch (Exception $th) {
-            if($th->getMessage() == 'Array to string conversion'){
-                $this->order->errors = ('Error Placing order to Microsoft, Error Code: ' . $error['error_code'] . ' Description: ' . $error['description']);
-            }else{
-                $this->order->errors = ('Error Placing order to Microsoft to checkout: ' . $th->getMessage() );
-            }
-                $this->order->order_status_id = 3;
+            Log::error('Error placing order via Partner Center', ['message' => $th->getMessage()]);
+            $this->order->errors = 'Error placing order to Partner Center: ' . $th->getMessage();
+            $this->order->order_status_id = 3;
+            $this->order->save();
+            return;
+        }
+
+        // Persist resulting subscriptions into the local Subscription table
+        $orders = $checkout['orders'] ?? [];
+
+        foreach ($orders as $pcOrder) {
+            $pcSubscriptions = $pcOrder['lineItems'] ?? [];
+
+            foreach ($pcSubscriptions as $lineItem) {
+                $offerId  = $lineItem['offerId'] ?? '';
+                $parts    = explode(':', $offerId);
+                $productId = isset($parts[1]) ? ($parts[0].':'.$parts[1]) : $offerId;
+
+                $sub = new Subscription();
+                $sub->subscription_id  = $lineItem['subscriptionId']  ?? null;
+                $sub->name             = $products->first()->name ?? '';
+                $sub->customer_id      = $customer->id;
+                $sub->product_id       = $productId;
+                $sub->catalog_item_id  = $offerId;
+                $sub->term             = $lineItem['termDuration']     ?? 'none';
+                $sub->billing_type     = $products->first()->billing   ?? 'license';
+                $sub->instance_id      = $instanceId;
+                $sub->order_id         = $pcOrder['id']                ?? null;
+                $sub->amount           = $lineItem['quantity']         ?? 1;
+                $sub->msrpid           = $this->order->customer->format()['mpnid'] ?? null;
+                $sub->expiration_data  = Carbon::now()->addYear()->toDateTimeString();
+                $sub->billing_period   = strtolower($lineItem['billingCycle'] ?? 'none');
+                $sub->currency         = $pcOrder['currencyCode']      ?? null;
+                $sub->tenant_name      = $this->order->domain
+                    ?? $this->order->customer->microsoftTenantInfo->first()->tenant_domain;
+                $sub->status_id        = 1; // Active
+                $sub->save();
+
+                Log::info('Subscription created successfully: ' . $sub->id);
+
+                $this->order->subscription_id = $sub->id;
+                $this->order->ext_order_id    = $pcOrder['id'] ?? null;
+                $this->order->order_status_id = 4; //Order Completed state
                 $this->order->save();
-            logger('Error Cart.', ['message' => $th->getMessage()]);
+            }
         }
     }
 }

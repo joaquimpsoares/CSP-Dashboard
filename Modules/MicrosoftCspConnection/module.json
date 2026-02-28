@@ -1,0 +1,13 @@
+{
+    "name": "MicrosoftCspConnection",
+    "alias": "microsoftcspconnection",
+    "description": "Microsoft CSP Partner Center integration via Microsoft Graph PHP SDK",
+    "keywords": ["microsoft", "csp", "partner-center"],
+    "priority": 0,
+    "providers": [
+        "Modules\\MicrosoftCspConnection\\Providers\\MicrosoftCspConnectionServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

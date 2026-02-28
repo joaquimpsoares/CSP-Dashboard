@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use App\Repositories\ProviderRepositoryInterface;
 use Illuminate\Contracts\Encryption\DecryptException;
-use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
+use Illuminate\Support\Facades\Log;
 
 class InstanceController extends Controller
 {
@@ -177,21 +177,9 @@ class InstanceController extends Controller
 
             public function getMasterToken($id)
             {
-                $instance = Instance::findorFail($id);
-                if( !$instance){
-                    return redirect()->back()->with('warning', 'The account has no assigned tenant');
-                }
-
-                    $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
-                    $external_token = $externalToken['token'];
-                    $update = $instance->update([
-                        'external_token' => $external_token,
-                        'external_token_updated_at' => date("Y-m-d h:i:s", $externalToken['expiration']),
-                        'expires_at' => Carbon::now()->addMonth(3),
-                    ]);
-
-
-                return redirect()->back()->with('success', 'Instance updated succesfully');
+                // external token refresh is no longer available — credentials are DB-per-provider via MicrosoftCspConnection.
+                Log::warning('InstanceController::getMasterToken() — external token refresh not available; credentials are now DB-per-provider via MicrosoftCspConnection.');
+                return redirect()->back()->with('warning', 'Token refresh is not available in this version. Configure credentials in the Microsoft CSP Connection settings.');
             }
 
                     /**

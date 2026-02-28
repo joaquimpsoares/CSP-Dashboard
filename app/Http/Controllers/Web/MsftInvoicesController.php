@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\MsftInvoices;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Tagydes\MicrosoftConnection\Facades\MSFTInvoice as MicrosoftInvoice;
+use Illuminate\Support\Facades\Log;
 
 class MsftInvoicesController extends Controller
 {
@@ -53,10 +53,9 @@ class MsftInvoicesController extends Controller
 
     public function downloadInvoice($invoice)
     {
-        $invoice = MsftInvoices::find($invoice);
-        $instance = Instance::find($invoice->instance_id);
-
-        return MicrosoftInvoice::withCredentials($instance->external_id, $instance->external_token)->downloadInvoice($invoice->pdfDownloadLink);
+        // MSFTInvoice download API not yet implemented in MicrosoftCspConnection module.
+        Log::warning('MsftInvoicesController::downloadInvoice() — MSFTInvoice API not yet implemented.', ['invoice' => $invoice]);
+        return redirect()->back()->with('danger', 'Invoice download is not available in this version.');
     }
 
 

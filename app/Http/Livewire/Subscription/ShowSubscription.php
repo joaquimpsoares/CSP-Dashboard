@@ -19,10 +19,10 @@ use Illuminate\Support\Collection;
 use App\Notifications\SubscriptionUpdate;
 use Illuminate\Support\Facades\Notification;
 use App\Exceptions\UpdateSubscriptionException;
-use Tagydes\MicrosoftConnection\Models\Product as TagydesProduct;
-use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
-use Tagydes\MicrosoftConnection\Facades\Subscription as SubscriptionFacade;
-use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
+use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
+use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
+use Modules\MicrosoftCspConnection\Services\SubscriptionService;
+use Modules\MicrosoftCspConnection\Services\OfferService;
 
 class ShowSubscription extends Component
 {
@@ -213,22 +213,7 @@ class ShowSubscription extends Component
         DB::commit();
 
         if($this->ScheduleEdit == true){
-             // TODO: Pending to adapt on Livewire usage
-            $instance = Instance::where('id', $this->editing->instance_id)->first();
-
-            $subscription = new TagydesSubscription([
-                'id'            => $this->editing->subscription_id,
-                'orderId'       => $this->editing->order_id,
-                'offerId'       => $this->editing->upgradeToOffer ?? $this->editing->product_id,
-                'customerId'    => $this->editing->customer->microsoftTenantInfo->first()->tenant_id,
-                'name'          => $this->editing->name,
-                'status'        => $this->editing->status_id,
-                'quantity'      => $this->editing->amount,
-                'currency'      => $this->editing->currency,
-                'billingCycle'  => $this->editing->billing_period,
-                'created_at'    => $this->editing->created_at->__toString(),
-            ]);
-
+            // Scheduled change on save() — handled via saveScheduled(); no inline action needed here.
         }
 
         $fields = collect($this->editing->getChanges())->except(['updated_at','refundableQuantity','expiration_data','CancellationAllowedUntil']);
@@ -261,54 +246,43 @@ class ShowSubscription extends Component
     }
 
     public function saveScheduled(){
-        $instance = Instance::where('id', $this->editing->instance_id)->first();
+        $instance   = Instance::where('id', $this->editing->instance_id)->first();
+        $connection = MicrosoftCspConnection::where('provider_id', $instance->provider_id)->firstOrFail();
+        $client     = new MicrosoftCspClient($connection, config('microsoftcspconnection'));
+        $subscriptionService = new SubscriptionService($client);
+        $offerService        = new OfferService($client);
 
-        $subscription = new TagydesSubscription([
-            'id'            => $this->editing->subscription_id,
-            'orderId'       => $this->editing->order_id,
-            'offerId'       => $this->editing->upgradeToOffer ?? $this->editing->product_id,
-            'customerId'    => $this->editing->customer->microsoftTenantInfo->first()->tenant_id,
-            'name'          => $this->editing->name,
-            'status'        => $this->editing->status_id,
-            'quantity'      => $this->editing->amount,
-            'currency'      => $this->editing->currency,
-            'billingCycle'  => $this->editing->billing_period,
-            'created_at'    => $this->editing->created_at->__toString(),
-        ]);
-
-        $country = $this->subscription->customer->country->iso_3166_2;
-
+        $customerId     = $this->editing->customer->microsoftTenantInfo->first()->tenant_id;
+        $subscriptionId = $this->editing->subscription_id;
 
         try {
+            $catalogitemid = $this->editing->catalog_item_id;
             if($this->upgradeOfferselected != 'no change'){
-
-                $sku = strtok($this->upgradeOfferselected, ':');
-                $id = substr($this->upgradeOfferselected, strpos($this->upgradeOfferselected, ":") + 1);
-
-                $catalogItemId = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)->getPerpetualCatalogItemIdNCE($country,$sku,$id);
-                Log::info('catalogItemId: ' . $catalogItemId);
-                $catalogitemid = $catalogItemId;
+                $sku           = strtok($this->upgradeOfferselected, ':');
+                $id            = substr($this->upgradeOfferselected, strpos($this->upgradeOfferselected, ':') + 1);
+                $catalogitemid = $offerService->getCatalogItemId("{$sku}:{$id}");
+                Log::info('catalogItemId: ' . $catalogitemid);
             }
-            $tt =  SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->updateOnRenew($subscription, [
-                'product' => $catalogitemid ?? $this->editing->catalog_item_id,
+            $tt = collect($subscriptionService->scheduleChange($customerId, $subscriptionId, [
+                'product'      => $catalogitemid,
                 'billingCycle' => $this->billing_period,
-                'quantity' => $this->quantity,
+                'quantity'     => $this->quantity,
                 'termDuration' => $this->term ?? $this->editing->term,
-            ]);
+            ]));
 
             if ($tt->has('code') && $tt['code'] == 900212){
                 $this->notify('',$tt['description'], 'error');
             }
 
-            if($tt->contains('scheduledNextTermInstructions') ){
+            if($tt->has('scheduledNextTermInstructions')){
                 $this->notify('',"Scheduled successfully", 'success');
                 $this->editing->updateQuietly(['changes_on_renew' => [
-                    'amount' => $this->quantity,
-                    'billing_period' => $this->billing_period,
-                    'term' => $this->term,
-                    'product_id' => $catalogitemid ?? $this->editing->catalog_item_id,
-                    'catalog_item_id' => $catalogitemid ?? $this->editing->catalog_item_id,
-                    ]]);
+                    'amount'          => $this->quantity,
+                    'billing_period'  => $this->billing_period,
+                    'term'            => $this->term,
+                    'product_id'      => $catalogitemid,
+                    'catalog_item_id' => $catalogitemid,
+                ]]);
             }
         } catch (\PDOException $e) {
             $this->notify('',$e->getMessage(), 'error');
@@ -445,32 +419,22 @@ class ShowSubscription extends Component
     }
 
     public function removeScheduled(){
-        $instance = Instance::where('id', $this->editing->instance_id)->first();
+        $instance   = Instance::where('id', $this->editing->instance_id)->first();
+        $connection = MicrosoftCspConnection::where('provider_id', $instance->provider_id)->firstOrFail();
+        $client     = new MicrosoftCspClient($connection, config('microsoftcspconnection'));
+        $subscriptionService = new SubscriptionService($client);
 
-        $subscription = new TagydesSubscription([
-            'id'            => $this->editing->subscription_id,
-            'orderId'       => $this->editing->order_id,
-            'offerId'       => $this->editing->upgradeToOffer ?? $this->editing->product_id,
-            'customerId'    => $this->editing->customer->microsoftTenantInfo->first()->tenant_id,
-            'name'          => $this->editing->name,
-            'status'        => $this->editing->status_id,
-            'quantity'      => $this->editing->amount,
-            'currency'      => $this->editing->currency,
-            'billingCycle'  => $this->editing->billing_period,
-            'created_at'    => $this->editing->created_at->__toString(),
-        ]);
-
-        $country = $this->subscription->customer->country->iso_3166_2;
+        $customerId     = $this->editing->customer->microsoftTenantInfo->first()->tenant_id;
+        $subscriptionId = $this->editing->subscription_id;
 
         try {
-
-            $tt =  SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->RemoveSchedule($subscription);
+            $tt = collect($subscriptionService->removeScheduledChange($customerId, $subscriptionId));
 
             if ($tt->has('code') && $tt['code'] == 900212){
                 $this->notify('',$tt['description'], 'error');
             }
 
-            if(!$tt->contains('scheduledNextTermInstructions') ){
+            if(!$tt->has('scheduledNextTermInstructions')){
                 $this->notify('',"Scheduled removed successfully", 'success');
                 $this->editing->updateQuietly(['changes_on_renew' => null]);
             }

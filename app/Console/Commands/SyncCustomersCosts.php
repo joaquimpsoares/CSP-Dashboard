@@ -7,8 +7,7 @@ use App\Customer;
 use App\Instance;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
-use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
-use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
+// Customer service-costs API removed — Tagydes\MicrosoftConnection no longer available.
 
 class SyncCustomersCosts extends Command
 {
@@ -33,31 +32,9 @@ class SyncCustomersCosts extends Command
     */
     public function handle()
     {
-        try {
-           $resources = Customer::eachById(function (Customer $customer)  {
-                $instance = $customer->resellers->first()->provider->instances->first();
-                $customer = new TagydesCustomer([
-                    'id' => $customer->microsoftTenantInfo->first()->tenant_id,
-                    'username' => 'bill@tagydes.com',
-                    'password' => 'blabla',
-                    'firstName' => 'Nombre',
-                    'lastName' => 'Apellido',
-                    'email' => 'bill@tagydes.com',
-                ]);
-                $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCosts($customer);
-                dd($resources);
-                return $resources;
-
-            });
-
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
-
-        // Mail::raw("Just finished msft invoices Syncronization", function ($mail)  {
-            //     $mail->to('joaquim.soares@tagydes.com')
-            //     ->subject('Monthly import MSFT Invoices');
-            // });
-            $this->info('Successfully sent daily quote to everyone.');
-        }
+        // Service costs API not yet implemented in MicrosoftCspConnection module.
+        \Illuminate\Support\Facades\Log::warning('SyncCustomersCosts::handle() — service costs API not yet implemented. Command is a no-op.');
+        $this->warn('Customer service costs sync is not available in this version. Skipping.');
+        return 0;
+    }
 }

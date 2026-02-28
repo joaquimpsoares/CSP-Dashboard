@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
-use Tagydes\MicrosoftConnection\Facades\Subscription as SubscriptionFacade;
-use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
+use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
+use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
+use Modules\MicrosoftCspConnection\Services\SubscriptionService;
 
 class Subscription extends Model
 {
@@ -39,422 +39,38 @@ class Subscription extends Model
         '5' => 'pending',
     ];
 
+    // -------------------------------------------------------------------------
+    // Internal helpers
+    // -------------------------------------------------------------------------
+
+    /**
+     * Resolve a SubscriptionService scoped to this subscription's provider connection.
+     */
+    private function getSubscriptionService(): SubscriptionService
+    {
+        $connection = MicrosoftCspConnection::where('provider_id', $this->instance->provider_id)->firstOrFail();
+        $client     = new MicrosoftCspClient($connection, config('microsoftcspconnection'));
+        return new SubscriptionService($client);
+    }
+
+    /**
+     * Return the Microsoft tenant ID for this subscription's customer.
+     */
+    private function getCustomerTenantId(): string
+    {
+        return $this->customer->microsoftTenantInfo->first()->tenant_id;
+    }
+
+    // -------------------------------------------------------------------------
+    // Relationships
+    // -------------------------------------------------------------------------
+
     public function status(){
         return $this->belongsTo(Status::class);
     }
 
     public function instance(){
         return $this->belongsTo(Instance::class);
-    }
-
-    public function markAsActive(){
-        $this->fill([
-            'status_id' => '1',
-        ])->save();
-    }
-
-    public function validatemigration($customer,$subscription){
-        $customer = new TagydesCustomer([
-            'id' => $customer->microsoftTenantInfo->first()->tenant_id,
-            'username' => 'bill@tagydes.com',
-            'password' => 'blabla',
-            'firstName' => 'Nombre',
-            'lastName' => 'Apellido',
-            'email' => 'bill@tagydes.com',
-        ]);
-
-        $billingCycle =strtolower($this->billing_period);
-
-        $subscription = new TagydesSubscription([
-            'id'            => $this->subscription_id,
-            'orderId'       => $this->order_id,
-            'offerId'       => $this->product_id,
-            'customerId'    => $this->customer->microsoftTenantInfo->first()->tenant_id,
-            'name'          => $this->name,
-            'status'        => $this->status_id,
-            'quantity'      => $this->amount,
-            'currency'      => $this->currency,
-            'billingCycle'  => $billingCycle,
-            'created_at'    => $this->created_at->__toString(),
-        ]);
-        return SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)
-        ->ValidateMigratioSubscription($customer, $subscription);
-    }
-
-    public function getSubscription($customer,$subscription){
-        $customer = new TagydesCustomer([
-            'id' => $customer->microsoftTenantInfo->first()->tenant_id,
-            'username' => 'bill@tagydes.com',
-            'password' => 'blabla',
-            'firstName' => 'Nombre',
-            'lastName' => 'Apellido',
-            'email' => 'bill@tagydes.com',
-        ]);
-
-        $billingCycle = strtolower($this->billing_period);
-
-        $subscription = new TagydesSubscription([
-            'id'            => $this->subscription_id,
-            'orderId'       => $this->order_id,
-            'offerId'       => $this->product_id,
-            'customerId'    => $this->customer->microsoftTenantInfo->first()->tenant_id,
-            'name'          => $this->name,
-            'status'        => $this->status_id,
-            'quantity'      => $this->amount,
-            'currency'      => $this->currency,
-            'billingCycle'  => $billingCycle,
-            'created_at'    => $this->created_at->__toString(),
-        ]);
-
-        return SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)
-        ->getSubscriptionforCustomer($customer, $subscription);
-
-    }
-
-    public function migrateSubscriptionMCE ($customer, $subscription, $amount, $billing_period, $term, $newterm){
-
-        $customer = new TagydesCustomer([
-            'id' => $customer->microsoftTenantInfo->first()->tenant_id,
-            'username' => 'bill@tagydes.com',
-            'password' => 'blabla',
-            'firstName' => 'Nombre',
-            'lastName' => 'Apellido',
-            'email' => 'bill@tagydes.com',
-        ]);
-
-        $subscription = new TagydesSubscription([
-            'id'            => $this->subscription_id,
-            'orderId'       => $this->order_id,
-            'offerId'       => $this->product_id,
-            'customerId'    => $this->customer->microsoftTenantInfo->first()->tenant_id,
-            'name'          => $this->name,
-            'status'        => $this->status_id,
-            'quantity'      => $this->amount,
-            'currency'      => $this->currency,
-            'billingCycle'  => $this->billing_period,
-            'created_at'    => $this->created_at->__toString(),
-        ]);
-
-        return SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)
-        ->CreateMigrationSubscription($customer, $subscription, $amount, $billing_period, $term, $newterm);
-    }
-
-    public function CheckMigrationSubscription ($customer, $migration_id){
-        $customer = new TagydesCustomer([
-            'id' => $customer->microsoftTenantInfo->first()->tenant_id,
-            'username' => 'bill@tagydes.com',
-            'password' => 'blabla',
-            'firstName' => 'Nombre',
-            'lastName' => 'Apellido',
-            'email' => 'bill@tagydes.com',
-        ]);
-
-        return SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)
-        ->CheckMigrationSubscription($customer, $migration_id);
-    }
-
-    public function changeBillingCycle($cycle){
-
-        $order = new Order();
-        $order->customer_id = $this->customer_id;
-        $order->subscription_id = $this->id;
-        $order->domain = $this->domain;
-        $order->token = Str::uuid();
-        $order->user_id = Auth::user()->id;
-        // $order->verify = $this->verify;
-
-        $subscription = new TagydesSubscription([
-            'id'            => $this->subscription_id,
-            'orderId'       => $this->order_id,
-            'offerId'       => $this->product_id,
-            'customerId'    => $this->customer->microsoftTenantInfo->first()->tenant_id,
-            'name'          => $this->name,
-            'status'        => $this->status_id,
-            'quantity'      => $this->amount,
-            'currency'      => $this->currency,
-            'billingCycle'  => $this->billing_period,
-            'created_at'    => $this->created_at->__toString(),
-        ]);
-
-
-        try {
-            $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)->changeBillingCycle($subscription, $cycle);
-        } catch (\Exception $th) {
-            $order->details = "Error placing order" . $th->getMessage();
-            $order->order_status_id = 3;
-            $order->save();
-
-            return $th->getMessage();
-        }
-
-        $order->details = "changing subscription ".$this->name ." Billing Period from ". $this->billing_period. " to ". $cycle;
-        $order->order_status_id = 4;
-        $order->save();
-        return $this;
-    }
-
-    public function changeAmount($quantity, $autorenew, $before){
-        if($autorenew == 1){
-            $autorenew == true;
-        }else{
-            $autorenew == false;
-        }
-
-
-        $order = new Order();
-        $order->customer_id = $this->customer_id;
-        $order->subscription_id = $this->id;
-        $order->domain = $this->domain;
-        $order->token = Str::uuid();
-        $order->user_id = Auth::user()->id;
-        // $order->verify = $this->verify;
-
-        $subscription = new TagydesSubscription([
-            'id'            => $this->subscription_id,
-            'orderId'       => $this->order_id,
-            'offerId'       => $this->product_id,
-            'customerId'    => $this->customer->microsoftTenantInfo->first()->tenant_id,
-            'name'          => $this->name,
-            'status'        => $this->status_id,
-            'quantity'      => $this->amount,
-            'currency'      => $this->currency,
-            'billingCycle'  => strtolower($this->billing_period),
-            'created_at'    => $this->created_at->__toString(),
-        ]);
-        try {
-            $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)->
-            update($subscription, [
-                'quantity'          => $quantity,
-                'AutoRenewEnabled'  => $autorenew,
-            ]);
-
-        } catch (\Exception $th) {
-            $order->details = "Error placing order" . $th->getMessage();
-            $order->order_status_id = 3;
-            $order->save();
-
-            return $th->getMessage();
-        }
-
-        $order->details = "changing subscription ".$this->name ." amount from ". $before. " to ". $quantity;
-        $order->order_status_id = 4;
-        $order->save();
-
-        return $update;
-    }
-
-    public function changeAutorenew($quantity,$autorenew){
-        $order = new Order();
-        $order->customer_id = $this->customer_id;
-        $order->subscription_id = $this->id;
-        $order->domain = $this->domain;
-        $order->token = Str::uuid();
-        $order->user_id = Auth::user()->id;
-        // $order->verify = $this->verify;
-
-        $subscription = new TagydesSubscription([
-            'id'            => $this->subscription_id,
-            'orderId'       => $this->order_id,
-            'offerId'       => $this->product_id,
-            'customerId'    => $this->customer->microsoftTenantInfo->first()->tenant_id,
-            'name'          => $this->name,
-            'status'        => $this->status_id,
-            'quantity'      => $this->amount,
-            'currency'      => $this->currency,
-            'billingCycle'  => $this->billing_period,
-            'created_at'    => $this->created_at->__toString(),
-        ]);
-        try {
-            $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token)->
-            update($subscription, [
-                // 'quantity'          => $quantity,
-                'AutoRenewEnabled'  => $autorenew,
-            ]);
-        } catch (\Exception $th) {
-            $order->details = "Error placing order" . $th->getMessage();
-            $order->order_status_id = 3;
-            $order->save();
-           return $th->getMessage();
-        }
-        $order->details = "changing subscription ".$this->name ." autorenew ". $this->autorenew . " to ". $autorenew;
-        $order->order_status_id = 4;
-        $order->save();
-        return $update;
-    }
-
-    public function IsMigrated(){
-
-        if(Ncemigration::where('new_subscription_id', $this->id)->first()){
-            return true;
-        }
-        return false;
-    }
-
-    public function active(){
-        $this->billing_period = strtolower($this->billing_period);
-
-        $order = new Order();
-        $order->subscription_id = $this->id;
-        $order->customer_id = $this->customer_id;
-        $order->domain = $this->domain;
-        $order->token = Str::uuid();
-        $order->user_id = Auth::user()->id;
-        // $order->verify = $this->verify;
-        $subscription = new TagydesSubscription([
-            'id'            => $this->subscription_id,
-            'orderId'       => $this->order_id,
-            'offerId'       => $this->product_id,
-            'customerId'    => $this->customer->microsoftTenantInfo->first()->tenant_id,
-            'name'          => $this->name,
-            'status'        => $this->status_id,
-            'quantity'      => $this->amount,
-            'currency'      => $this->currency,
-            'billingCycle'  => $this->billing_period,
-            'created_at'    => $this->created_at->__toString(),
-        ]);
-
-        try {
-            $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token) //change status only
-            ->update($subscription, [
-                'status' => 'active',
-                'AutoRenewEnabled' => false,
-            ]);
-
-        } catch (\Exception $th) {
-            $order->details = "Error placing order" . $th->getMessage();
-            $order->order_status_id = 3;
-            $order->save();
-           return $th->getMessage();
-        }
-
-        $this->markAsActive();
-        $this->markAsDontrenew();
-
-        $order->details = "changing subscription ".$this->name . " and changing the status to active";
-        $order->order_status_id = 4;
-        $order->save();
-        Log::info('Status changed: Active'. $subscription->id);
-        return $this;
-
-    }
-
-    public function suspend(){
-        $this->billing_period = strtolower($this->billing_period);
-
-        $order = new Order();
-        $order->subscription_id = $this->id;
-        $order->customer_id = $this->customer_id;
-        $order->domain = $this->domain;
-        $order->token = Str::uuid();
-        $order->user_id = Auth::user()->id ?? '10001';
-        // $order->verify = $this->verify;
-        $subscription = new TagydesSubscription([
-            'id'            => $this->subscription_id,
-            'orderId'       => $this->order_id,
-            'offerId'       => $this->product_id,
-            'customerId'    => $this->customer->microsoftTenantInfo->first()->tenant_id,
-            'name'          => $this->name,
-            'status'        => $this->status_id,
-            'quantity'      => $this->amount,
-            'currency'      => $this->currency,
-            'billingCycle'  => $this->billing_period,
-            'created_at'    => $this->created_at->__toString(),
-        ]);
-
-        try {
-            $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token) //change status only
-            ->update($subscription, [
-            'status' => 'suspended',
-            'AutoRenewEnabled' => true,
-        ]);
-        } catch (\Exception $th) {
-            $order->details = "Error placing order" . $th->getMessage();
-            $order->order_status_id = 3;
-            $order->save();
-           return $th->getMessage();
-        }
-        $this->markAsDisabled();
-        $order->details = "changing subscription ".$this->name . " and changing the status to suspended";
-        $order->order_status_id = 4;
-        $order->save();
-        Log::info('Status changed: Suspended'. $subscription->id);
-
-        return $this;
-    }
-
-    public function cancel(Customer $customer, Subscription $subscription){
-
-        $customer = new TagydesCustomer([
-            'id' => $customer->microsoftTenantInfo->first()->tenant_id,
-            'username' => 'bill@tagydes.com',
-            'password' => 'blabla',
-            'firstName' => 'Nombre',
-            'lastName' => 'Apellido',
-            'email' => 'bill@tagydes.com',
-        ]);
-
-        $subscription = new TagydesSubscription([
-            'id'            => $subscription->subscription_id,
-            'orderId'       => $subscription->order_id,
-            'offerId'       => $subscription->product_id,
-            'customerId'    => $subscription->customer->microsoftTenantInfo->first()->tenant_id,
-            'name'          => $subscription->name,
-            'status'        => $subscription->status_id,
-            'quantity'      => $subscription->amount,
-            'currency'      => $subscription->currency,
-            'billingCycle'  => $subscription->billing_period,
-            'created_at'    => $subscription->created_at->__toString(),
-        ]);
-
-        $update = SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token) //change status only
-        ->cancelNCE($customer, $subscription);
-
-        if($update->has('code')){
-           return $update;
-        }
-
-        $this->markAsCanceled();
-        Log::info('Status changed: Canceled');
-
-        return $update;
-    }
-
-    public function setbudget($value){
-
-        SubscriptionFacade::withCredentials($this->instance->external_id, $this->instance->external_token) //change status only
-        ->update($value, ['status' => 'suspended']);
-
-        $this->markAsDisabled();
-
-        return $this;
-    }
-
-    public function markAsDisabled(){
-        $this->fill([
-            'status_id' => '2',
-            ])->saveQuietly();
-    }
-
-    public function markAsDontrenew(){
-        $this->fill([
-            'autorenew' => false,
-            ])->saveQuietly();
-    }
-
-    public function markAsrenew(){
-        $this->fill([
-            'autorenew' => true,
-            ])->saveQuietly();
-    }
-
-    public function markAsCanceled(){
-        $this->fill([
-            'status_id' => '3',
-            ])->saveQuietly();
-    }
-
-    public function path(){
-        return url("/subscription/{$this->id}-" . Str::slug($this->name, '-'));
     }
 
     public function addons(){
@@ -493,9 +109,332 @@ class Subscription extends Model
         return $this->belongsToMany(AzureResource::class);
     }
 
+    // -------------------------------------------------------------------------
+    // Status helpers
+    // -------------------------------------------------------------------------
+
+    public function markAsActive(){
+        $this->fill(['status_id' => '1'])->save();
+    }
+
+    public function markAsDisabled(){
+        $this->fill(['status_id' => '2'])->saveQuietly();
+    }
+
+    public function markAsDontrenew(){
+        $this->fill(['autorenew' => false])->saveQuietly();
+    }
+
+    public function markAsrenew(){
+        $this->fill(['autorenew' => true])->saveQuietly();
+    }
+
+    public function markAsCanceled(){
+        $this->fill(['status_id' => '3'])->saveQuietly();
+    }
+
+    public function IsMigrated(){
+        if(Ncemigration::where('new_subscription_id', $this->id)->first()){
+            return true;
+        }
+        return false;
+    }
+
+    // -------------------------------------------------------------------------
+    // Partner Center operations
+    // -------------------------------------------------------------------------
+
+    /**
+     * Suspend (disable) this subscription in Partner Center.
+     */
+    public function suspend(){
+        $this->billing_period = strtolower($this->billing_period);
+
+        $order = new Order();
+        $order->subscription_id = $this->id;
+        $order->customer_id     = $this->customer_id;
+        $order->domain          = $this->domain;
+        $order->token           = Str::uuid();
+        $order->user_id         = Auth::user()->id ?? '10001';
+
+        try {
+            $subscriptionService = $this->getSubscriptionService();
+            $subscriptionService->update(
+                $this->getCustomerTenantId(),
+                $this->subscription_id,
+                ['status' => 'suspended', 'autoRenewEnabled' => true]
+            );
+        } catch (\Exception $th) {
+            $order->details         = 'Error placing order: ' . $th->getMessage();
+            $order->order_status_id = 3;
+            $order->save();
+            return $th->getMessage();
+        }
+
+        $this->markAsDisabled();
+        $order->details         = 'changing subscription ' . $this->name . ' status to suspended';
+        $order->order_status_id = 4;
+        $order->save();
+        Log::info('Status changed: Suspended ' . $this->subscription_id);
+
+        return $this;
+    }
+
+    /**
+     * Activate (resume) this subscription in Partner Center.
+     */
+    public function active(){
+        $this->billing_period = strtolower($this->billing_period);
+
+        $order = new Order();
+        $order->subscription_id = $this->id;
+        $order->customer_id     = $this->customer_id;
+        $order->domain          = $this->domain;
+        $order->token           = Str::uuid();
+        $order->user_id         = Auth::user()->id;
+
+        try {
+            $subscriptionService = $this->getSubscriptionService();
+            $subscriptionService->update(
+                $this->getCustomerTenantId(),
+                $this->subscription_id,
+                ['status' => 'active', 'autoRenewEnabled' => false]
+            );
+        } catch (\Exception $th) {
+            $order->details         = 'Error placing order: ' . $th->getMessage();
+            $order->order_status_id = 3;
+            $order->save();
+            return $th->getMessage();
+        }
+
+        $this->markAsActive();
+        $this->markAsDontrenew();
+        $order->details         = 'changing subscription ' . $this->name . ' status to active';
+        $order->order_status_id = 4;
+        $order->save();
+        Log::info('Status changed: Active ' . $this->subscription_id);
+
+        return $this;
+    }
+
+    /**
+     * Change the billing cycle of this subscription in Partner Center.
+     */
+    public function changeBillingCycle($cycle){
+        $order = new Order();
+        $order->customer_id     = $this->customer_id;
+        $order->subscription_id = $this->id;
+        $order->domain          = $this->domain;
+        $order->token           = Str::uuid();
+        $order->user_id         = Auth::user()->id;
+
+        try {
+            $subscriptionService = $this->getSubscriptionService();
+            $subscriptionService->updateBillingCycle(
+                $this->getCustomerTenantId(),
+                $this->subscription_id,
+                $cycle
+            );
+        } catch (\Exception $th) {
+            $order->details         = 'Error placing order: ' . $th->getMessage();
+            $order->order_status_id = 3;
+            $order->save();
+            return $th->getMessage();
+        }
+
+        $order->details         = 'changing subscription ' . $this->name . ' billing period from ' . $this->billing_period . ' to ' . $cycle;
+        $order->order_status_id = 4;
+        $order->save();
+
+        return $this;
+    }
+
+    /**
+     * Change the seat quantity of this subscription in Partner Center.
+     */
+    public function changeAmount($quantity, $autorenew, $before){
+        $autorenew = (bool) $autorenew;
+
+        $order = new Order();
+        $order->customer_id     = $this->customer_id;
+        $order->subscription_id = $this->id;
+        $order->domain          = $this->domain;
+        $order->token           = Str::uuid();
+        $order->user_id         = Auth::user()->id;
+
+        try {
+            $subscriptionService = $this->getSubscriptionService();
+            $update = $subscriptionService->update(
+                $this->getCustomerTenantId(),
+                $this->subscription_id,
+                ['quantity' => (int) $quantity, 'autoRenewEnabled' => $autorenew]
+            );
+        } catch (\Exception $th) {
+            $order->details         = 'Error placing order: ' . $th->getMessage();
+            $order->order_status_id = 3;
+            $order->save();
+            return $th->getMessage();
+        }
+
+        $order->details         = 'changing subscription ' . $this->name . ' amount from ' . $before . ' to ' . $quantity;
+        $order->order_status_id = 4;
+        $order->save();
+
+        return $update;
+    }
+
+    /**
+     * Toggle the auto-renew setting of this subscription in Partner Center.
+     */
+    public function changeAutorenew($quantity, $autorenew){
+        $autorenew = (bool) $autorenew;
+
+        $order = new Order();
+        $order->customer_id     = $this->customer_id;
+        $order->subscription_id = $this->id;
+        $order->domain          = $this->domain;
+        $order->token           = Str::uuid();
+        $order->user_id         = Auth::user()->id;
+
+        try {
+            $subscriptionService = $this->getSubscriptionService();
+            $update = $subscriptionService->update(
+                $this->getCustomerTenantId(),
+                $this->subscription_id,
+                ['autoRenewEnabled' => $autorenew]
+            );
+        } catch (\Exception $th) {
+            $order->details         = 'Error placing order: ' . $th->getMessage();
+            $order->order_status_id = 3;
+            $order->save();
+            return $th->getMessage();
+        }
+
+        $order->details         = 'changing subscription ' . $this->name . ' autorenew to ' . ($autorenew ? 'true' : 'false');
+        $order->order_status_id = 4;
+        $order->save();
+
+        return $update;
+    }
+
+    /**
+     * Cancel an NCE subscription in Partner Center.
+     */
+    public function cancel(Customer $customer, Subscription $subscription){
+        try {
+            $subscriptionService = $this->getSubscriptionService();
+            $update = $subscriptionService->cancelSubscription(
+                $customer->microsoftTenantInfo->first()->tenant_id,
+                $subscription->subscription_id
+            );
+        } catch (\Exception $th) {
+            Log::error('Error canceling subscription: ' . $th->getMessage());
+            return collect(['code' => 1, 'description' => $th->getMessage()]);
+        }
+
+        $this->markAsCanceled();
+        Log::info('Status changed: Canceled ' . $subscription->subscription_id);
+
+        return collect($update);
+    }
+
+    /**
+     * Get the full subscription record from Partner Center.
+     *
+     * @return \Illuminate\Support\Collection  Subscription resource as a Collection
+     */
+    public function getSubscription($customer, $subscription){
+        try {
+            $subscriptionService = $this->getSubscriptionService();
+            $result = $subscriptionService->get(
+                $customer->microsoftTenantInfo->first()->tenant_id,
+                $this->subscription_id
+            );
+            return collect($result);
+        } catch (\Exception $th) {
+            Log::error('Error fetching subscription from Partner Center: ' . $th->getMessage());
+            return collect([]);
+        }
+    }
+
+    /**
+     * Validate whether a legacy subscription can be migrated to NCE.
+     *
+     * @return \Illuminate\Support\Collection  Validation result
+     */
+    public function validatemigration($customer, $subscription){
+        try {
+            $subscriptionService = $this->getSubscriptionService();
+            $result = $subscriptionService->validateMigration(
+                $customer->microsoftTenantInfo->first()->tenant_id,
+                $this->subscription_id
+            );
+            return collect($result);
+        } catch (\Exception $th) {
+            Log::error('Error validating migration: ' . $th->getMessage());
+            return collect([]);
+        }
+    }
+
+    /**
+     * Create an NCE migration for this subscription.
+     */
+    public function migrateSubscriptionMCE($customer, $subscription, $amount, $billing_period, $term, $newterm){
+        try {
+            $subscriptionService = $this->getSubscriptionService();
+            $result = $subscriptionService->createMigration(
+                $customer->microsoftTenantInfo->first()->tenant_id,
+                $this->subscription_id,
+                [
+                    'quantity'      => (int) $amount,
+                    'billingCycle'  => $billing_period,
+                    'termDuration'  => $term,
+                    'purchaseFullTerm' => ($newterm !== $term),
+                ]
+            );
+            return collect($result);
+        } catch (\Exception $th) {
+            Log::error('Error creating migration: ' . $th->getMessage());
+            return collect([]);
+        }
+    }
+
+    /**
+     * Check the status of an NCE migration.
+     */
+    public function CheckMigrationSubscription($customer, $migration_id){
+        try {
+            $subscriptionService = $this->getSubscriptionService();
+            $migrationId = is_object($migration_id) ? ($migration_id->newCommerceSubscriptionId ?? $migration_id->id) : $migration_id;
+            $result = $subscriptionService->getMigration(
+                $customer->microsoftTenantInfo->first()->tenant_id,
+                $this->subscription_id,
+                $migrationId
+            );
+            return $result;
+        } catch (\Exception $th) {
+            Log::error('Error checking migration: ' . $th->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Set a spending budget (Azure plan only — not applicable to license subscriptions).
+     * Retained as a no-op stub; Azure budget management requires a separate module.
+     */
+    public function setbudget($value){
+        Log::warning('Subscription::setbudget() called but Azure budget API is not yet implemented in MicrosoftCspConnection module.');
+        $this->markAsDisabled();
+        return $this;
+    }
+
+    public function path(){
+        return url("/subscription/{$this->id}-" . Str::slug($this->name, '-'));
+    }
+
     protected static function booted(){
         static::addGlobalScope('access_level', function(Builder $query){
-            $user = Auth::user();
+            $user = \Illuminate\Support\Facades\Auth::user();
             if($user && $user->userLevel->name === config('app.provider')){
                 $query->whereHas('customer', function(Builder $query) use($user){
                     $query->whereHas('resellers', function(Builder $query) use($user){

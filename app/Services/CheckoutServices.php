@@ -3,7 +3,8 @@
 namespace App\Services;
 
 use Exception;
-use Tagydes\MicrosoftConnection\Facades\Order as TagydesOrder;
+use Illuminate\Support\Facades\Log;
+// TagydesOrder removed — Tagydes\MicrosoftConnection no longer available.
 
 class CheckoutServices{
 
@@ -15,12 +16,10 @@ class CheckoutServices{
         $this->reseller = $reseller;
     }
 
-    public function scan($mpnid){
-
-        $instance = $this->reseller->provider->instances[0];
-
-        $tagydesorder = TagydesOrder::withCredentials($instance->external_id, $instance->external_token)->checkMPNID($mpnid);
-
-        return ($tagydesorder);
+    public function scan($mpnid)
+    {
+        // checkMPNID not yet implemented in MicrosoftCspConnection module.
+        Log::warning('CheckoutServices::scan() — checkMPNID not yet implemented.', ['mpnid' => $mpnid]);
+        return null;
     }
 }

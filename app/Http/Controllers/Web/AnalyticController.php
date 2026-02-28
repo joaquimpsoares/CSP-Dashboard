@@ -25,10 +25,6 @@ use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProviderRepositoryInterface;
 use App\Repositories\ResellerRepositoryInterface;
 use App\Repositories\SubscriptionRepositoryInterface;
-use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
-use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
-use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
-use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
 
 class AnalyticController extends Controller
 {
@@ -123,23 +119,9 @@ class AnalyticController extends Controller
      */
     public function edit(Request $request)
     {
-        $subscriptions = Subscription::select('instance_id')->first();
-        $instance = Instance::where('id', 1)->first();
-        $value = $request->budget;
-        $customer = new TagydesCustomer([
-            'id' => '4e03835b-242f-441c-9958-ad3e5e05f55d',
-            'username' => 'bill@tagydes.com',
-            'password' => 'blabla',
-            'firstName' => 'Nombre',
-            'lastName' => 'Apellido',
-            'email' => 'bill@tagydes.com',
-        ]);
-        $result = FacadesAzureResource::withCredentials(
-            $instance->external_id,
-            $instance->external_token
-        )->changeBudget($customer, $value);
-        $budget = $result;
-        return back()->with(compact('budget'));
+        // Azure Resource API not yet implemented in MicrosoftCspConnection module.
+        Log::warning('AnalyticController::edit() — AzureResource API not yet implemented.');
+        return back()->with('danger', 'Azure budget management is not available.');
     }
 
 
@@ -151,45 +133,8 @@ class AnalyticController extends Controller
      */
     public function show()
     {
-        $subscriptions = Subscription::select('instance_id')->first();
-        $budget = cache()->remember('azure.budget', 0, function () {
-            $customer = new TagydesCustomer([
-                'id' => '4e03835b-242f-441c-9958-ad3e5e05f55d',
-                'username' => 'bill@tagydes.com',
-                'password' => 'blabla',
-                'firstName' => 'Nombre',
-                'lastName' => 'Apellido',
-                'email' => 'bill@tagydes.com',
-            ]);
-            $subscription = new TagydesSubscription([
-                'id'            => 'C01AD64D-6D65-45C4-B755-C11BD4F0DA0E',
-                'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-                'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-                'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
-                'name'          => "5trvfvczdfv",
-                'status'        => "5trvfvczdfv",
-                'quantity'      => "1",
-                'currency'      => "EUR",
-                'billingCycle'  => "monthly",
-                'created_at'    => "5trvfvczdfv",
-            ]);
-            $instance = Instance::where('id', 4)->first();
-            return (int) FacadesAzureResource::withCredentials(
-                $instance->external_id,
-                $instance->external_token
-            )->budget($customer, $subscription);
-        });
-        $costSum = AzureResource::sum('cost');
-        $increase = ($budget - $costSum);
-        $average1 = ($increase / $budget) * 100;
-        $average = 100 - $average1;
-        $customer = Customer::first();
-        $data = ([
-            'customer' => $customer,
-            'average' => (int) $average,
-            'costSum' => $costSum,
-            'budget'  => $budget
-        ]);
+        // Azure Resource API not yet implemented in MicrosoftCspConnection module.
+        Log::warning('AnalyticController::show() — AzureResource API not yet implemented.');
     }
 
 
@@ -284,113 +229,32 @@ class AnalyticController extends Controller
      * @param [type] $customer
      * @return void
      */
+    /**
+     * Service costs API not yet implemented in MicrosoftCspConnection module.
+     * Returns null — views must handle null gracefully.
+     */
     public function CustomerServiceCosts($customer)
     {
-        $instance = session()->get('instance_id');
-        $instance = Instance::where('id', '3')->first();
-
-        try {
-            $customer = new TagydesCustomer([
-                'id' => $customer,
-                'username' => 'bill@tagydes.com',
-                'password' => 'blabla',
-                'firstName' => 'Nombre',
-                'lastName' => 'Apellido',
-                'email' => 'bill@tagydes.com',
-            ]);
-            $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCosts($customer);
-
-            return $resources;
-        } catch (\Throwable $th) {
-        }
+        Log::warning('AnalyticController::CustomerServiceCosts() — service costs API not yet implemented.', [
+            'customer' => is_string($customer) ? $customer : (is_object($customer) ? $customer->id : null),
+        ]);
+        return null;
     }
 
-
+    /**
+     * Azure price list API not yet implemented in MicrosoftCspConnection module.
+     */
     public function azurepricelist()
     {
-        $instance = Instance::where('id', 1)->first();
-        $resources = FacadesAzureResource::withCredentials(
-            $instance->external_id,
-            $instance->external_token
-        )->azurepricelist();
-        $resources->meters->each(function ($resource) {
-            $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
-            $resource = AzurePriceList::updateOrCreate([
-                'resource_id'           => $resource->id,
-            ], [
-                'rates'                  => $resource->rates,
-                'effectiveDate'          => $resource->effectiveDate,
-                'name'                   => $resource->name,
-                'tags'                   => $resource->tags,
-                'category'               => $resource->category,
-                'subcategory'            => $resource->subcategory,
-                'region'                 => $resource->region,
-                'unit'                   => $resource->unit,
-                'includedQuantity'       => $resource->includedQuantity,
-            ]);
-        });
+        Log::warning('AnalyticController::azurepricelist() — AzureResource API not yet implemented.');
     }
 
+    /**
+     * Azure utilization export not yet implemented in MicrosoftCspConnection module.
+     */
     public function export(Customer $customer, Subscription $subscription)
     {
-        $msId = $customer->microsoftTenantInfo->first()->tenant_id;
-        $instance = Instance::where('id', $subscription->instance_id)->first();
-        $customer = new TagydesCustomer([
-            'id' => $msId,
-            'username' => 'bill@tagydes.com',
-            'password' => 'blabla',
-            'firstName' => 'Nombre',
-            'lastName' => 'Apellido',
-            'email' => 'bill@tagydes.com',
-        ]);
-
-        $subscriptions = new TagydesSubscription([
-            'id'            => $subscription->subscription_id,
-            'orderId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-            'offerId'       => "C01AD64D-6D65-45C4-B755-C11BD4F0DA0E",
-            'customerId'    => "4e03835b-242f-441c-9958-ad3e5e05f55d",
-            'name'          => "5trvfvczdfv",
-            'status'        => "5trvfvczdfv",
-            'quantity'      => "1",
-            'currency'      => "EUR",
-            'billingCycle'  => "monthly",
-            'created_at'    => "5trvfvczdfv",
-        ]);
-
-        $pages = FacadesAzureResource::withCredentials($instance->external_id, $instance->external_token)->utilizations($customer, $subscriptions);
-
-        $pages->each(function ($page) use ($subscription) {
-            $page->items->each(function ($resource) use ($subscription) {
-                $resourceGroup = Str::of($resource->instanceData->resourceUri)->explode('/');
-                $resource = AzureUsageReport::updateOrCreate([
-                    'subscription_id'       => $subscription->id,
-                    'resource_name'         => $resource->resource->name,
-                    'name'                  => $resourceGroup[8] ?? null,
-                    'resource_id'           => $resource->resource->id,
-                    'resource_group'        => $resourceGroup[4],
-                ], [
-                    'usageStartTime'        => $resource->usageStartTime,
-                    'usageEndTime'          => $resource->usageEndTime,
-                    'resource_location'     => $resource->instanceData->location,
-                    'resource_category'     => $resource->resource->category,
-                    'resource_subcategory'  => $resource->resource->subcategory,
-                    'resource_region'       => $resource->resource->region,
-                    'unit'                  => $resource->unit,
-                    "resourceType"          => $resource->instanceData->additionalInfo->toArray()['resourceType'] ?? null,
-                    "usageResourceKind"     => $resource->instanceData->additionalInfo->toArray()['usageResourceKind'] ?? null,
-                    "dataCenter"            => $resource->instanceData->additionalInfo->toArray()['dataCenter'] ?? null,
-                    "networkBucket"         => $resource->instanceData->additionalInfo->toArray()['networkBucket'] ?? null,
-                    "pipelineType"          => $resource->instanceData->additionalInfo->toArray()['pipelineType'] ?? null,
-                    'quantity'              => $resource->quantity,
-                ]);
-
-                $price1 = AzurePriceList::where('resource_id', $resource->resource_id)->first();
-                $price = $resource->quantity*$price1->rates[0];
-                $resource->update(['cost' => $price]);
-
-                Log::channel('azure')->info('price '.$price1->rates[0]. ' This quantity '. $resource->quantity . ' total ->  ' . $price );
-                Log::channel('azure')->info('updated '.$resource->resource_name. ' With price '. $price);
-            });
-        });
+        Log::warning('AnalyticController::export() — AzureResource API not yet implemented.');
+        return redirect()->back()->with('danger', 'Azure usage export is not available.');
     }
 }

@@ -15,9 +15,9 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
-use Tagydes\MicrosoftConnection\Facades\Subscription as SubscriptionFacade;
-use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
 use App\Exceptions\UpdateSubscriptionException;
+use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
+use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
 
 class CreateMigrationJob implements ShouldQueue
 {
@@ -31,132 +31,116 @@ class CreateMigrationJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-    * Create a new job instance.
-    *
-    * @return void
-    */
+     * Create a new job instance.
+     */
     public function __construct(Subscription $subscription, $amount, $billing_period, $term, $newterm, $order)
     {
-        $this->subscription     = $subscription;
-        $this->amount           = $amount;
-        $this->billing_period   = $billing_period;
-        $this->term             = $term;
-        $this->newterm          = $newterm;
-        $this->order            = $order;
+        $this->subscription   = $subscription;
+        $this->amount         = $amount;
+        $this->billing_period = $billing_period;
+        $this->term           = $term;
+        $this->newterm        = $newterm;
+        $this->order          = $order;
     }
 
     /**
-    * Execute the job.
-    *
-    * @return void
-    */
+     * Execute the job.
+     *
+     * Creates an NCE migration for a legacy subscription via the Partner Center
+     * subscription migrations endpoint: POST /v1/customers/{id}/subscriptions/{id}/migrations
+     */
     public function handle()
     {
-        $instance = Instance::where('id', $this->subscription->instance_id)->first();
+        $localSub  = $this->subscription;
+        $instance  = Instance::where('id', $localSub->instance_id)->first();
+        $customerId    = $localSub->customer->microsoftTenantInfo->first()->tenant_id;
+        $subscriptionId = $localSub->subscription_id;
 
-        $subscription = new TagydesSubscription([
-            'id'            => $this->subscription->subscription_id,
-            'orderId'       => $this->subscription->order_id,
-            'offerId'       => $this->subscription->product_id,
-            'customerId'    => $this->subscription->customer->microsoftTenantInfo->first()->tenant_id,
-            'name'          => $this->subscription->name,
-            'status'        => $this->subscription->status_id,
-            'quantity'      => $this->subscription->amount,
-            'currency'      => $this->subscription->currency,
-            'billingCycle'  => $this->subscription->billing_period,
-            'created_at'    => $this->subscription->created_at->__toString(),
-        ]);
+        // Resolve CSP connection for this provider
+        $connection = MicrosoftCspConnection::where('provider_id', $instance->provider_id)->firstOrFail();
+        $client     = new MicrosoftCspClient($connection, config('microsoftcspconnection'));
 
+        $migrationPayload = [
+            'currentSubscriptionId' => $subscriptionId,
+            'quantity'              => $this->amount,
+            'billingCycle'          => $this->billing_period,
+            'termDuration'          => $this->newterm,
+            'purchaseFullTerm'      => false,
+        ];
 
-        $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->
-        CreateMigrationSubscription($subscription->customerId, $subscription, $this->amount, $this->billing_period, $this->term, $this->newterm)->collect();
+        $update = $client->request(
+            'POST',
+            "customers/{$customerId}/subscriptions/{$subscriptionId}/migrations",
+            $migrationPayload
+        );
 
+        Log::info('Creating Migration JSON: ' . json_encode($update));
 
-        Log::info('Creating Migration JSON: ' . $update);
-
-        // $update =  collect([
-        //     "id" => "f779c1e6-e49f-4819-8aad-a818ced86fba",
-        //     "startedTime" => "2022-02-08T22:44:20.5513905Z",
-        //     "currentSubscriptionId" => "B6465E83-F7C4-41F6-B372-F406DA74F8E8",
-        //     "status" => "Processing",
-        //     "customerTenantId" => "13d77275-dfbb-4e6f-b461-6f4cae706cb0",
-        //     "catalogItemId" => "CFQ7TTC0LH1G:0001:CFQ7TTC0KH04",
-        //     "newCommerceOrderId" => "61ca3ec48c62",
-        //     "subscriptionEndDate" => "2022-02-15T00:00:00Z",
-        //     "quantity" => 1,
-        //     "termDuration" => "P1Y",
-        //     "billingCycle" => "Monthly",
-        //     "purchaseFullTerm" => false,
-        // ]);
-
-
-        if(Str::contains($update, '900215')){
-            $this->order->errors = ('Error Migrating Subscription: ' . substr($update, strrpos($update, '"description":"' )));
-            $this->order->details = ('Error Migrating Subscription: ' . substr($update, strrpos($update, '"description":"' )));
+        // Check for Partner Center error codes in the response
+        if (isset($update['code']) && Str::contains((string) ($update['code'] ?? ''), '900215')) {
+            $this->order->errors        = 'Error Migrating Subscription: ' . ($update['description'] ?? json_encode($update));
+            $this->order->details       = 'Error Migrating Subscription: ' . ($update['description'] ?? json_encode($update));
             $this->order->order_status_id = 3;
             $this->order->save();
             return false;
         }
 
-        Log::info('Creating This is from updating: ' . $update);
+        Log::info('Creating This is from updating: ' . json_encode($update));
         $this->order->markAsOrderPlaced();
-        $this->order->subscription_id   = $subscription->id;
-        $this->order->ext_order_id      = $subscription->orderId;
+        $this->order->subscription_id   = $localSub->id;
+        $this->order->ext_order_id      = $update['newCommerceOrderId'] ?? null;
         $this->order->order_status_id   = 4; //Order Completed state
-        $this->order->request_body      = $update->body();
+        $this->order->request_body      = json_encode($update);
         $this->order->save();
 
-
-
-        $product_id = explode(':', $update['catalogItemId']);
-        $product_id = $product_id[0].':'.$product_id[1];
+        $catalogItemId = $update['catalogItemId'] ?? '';
+        $parts         = explode(':', $catalogItemId);
+        $productId     = isset($parts[1]) ? $parts[0].':'.$parts[1] : $catalogItemId;
 
         $subscription                  = new Subscription();
-        $subscription->name            = $this->subscription->name;
-        $subscription->subscription_id = $this->subscription->id;
-        $subscription->customer_id     = $this->subscription->customer->id; //Local customer id
-        $subscription->product_id      = $product_id;
-        $subscription->catalog_item_id = $update['catalogItemId'];
-        $subscription->instance_id     = $this->subscription->instance_id;
+        $subscription->name            = $localSub->name;
+        $subscription->subscription_id = $localSub->id;
+        $subscription->customer_id     = $localSub->customer->id;
+        $subscription->product_id      = $productId;
+        $subscription->catalog_item_id = $catalogItemId;
+        $subscription->instance_id     = $localSub->instance_id;
         $subscription->billing_type    = 'license';
-        $subscription->term            = $update['termDuration'];
+        $subscription->term            = $update['termDuration']   ?? null;
         $subscription->order_id        = 123;
-        $subscription->amount          = $update['quantity'];
-        $subscription->msrpid          = $this->subscription->msrpid;
-        $subscription->expiration_data = $this->subscription->expiration_data;
-        $subscription->billing_period  = $update['billingCycle'];
-        $subscription->currency        = $this->subscription->currency;
-        $subscription->tenant_name     = $this->subscription->tenant_name;
+        $subscription->amount          = $update['quantity']        ?? $this->amount;
+        $subscription->msrpid          = $localSub->msrpid;
+        $subscription->expiration_data = $localSub->expiration_data;
+        $subscription->billing_period  = $update['billingCycle']   ?? $this->billing_period;
+        $subscription->currency        = $localSub->currency;
+        $subscription->tenant_name     = $localSub->tenant_name;
         $subscription->status_id       = 1;
         $subscription->save();
 
         $newmigration = Ncemigration::create([
-            'migration_id'              => $update['id'],
-            'subscription_id'           => $this->subscription->id,
-            'new_subscription_id'       => $subscription->id,
-            'startedTime'               => $update['startedTime'],
-            'currentSubscriptionId'     => $update['currentSubscriptionId'],
-            'status'                    => $update['status'],
-            'customerTenantId'          => $update['customerTenantId'],
-            'catalogItemId'             => $update['catalogItemId'],
-            'newCommerceOrderId'        => 123,
-            'quantity'                  => $update['quantity'],
-            'termDuration'              => $update['termDuration'],
-            'billingCycle'              => $update['billingCycle'],
-            'purchaseFullTerm'          => $update['purchaseFullTerm'],
+            'migration_id'          => $update['id']                    ?? null,
+            'subscription_id'       => $localSub->id,
+            'new_subscription_id'   => $subscription->id,
+            'startedTime'           => $update['startedTime']           ?? null,
+            'currentSubscriptionId' => $update['currentSubscriptionId'] ?? $subscriptionId,
+            'status'                => $update['status']                ?? null,
+            'customerTenantId'      => $update['customerTenantId']      ?? $customerId,
+            'catalogItemId'         => $catalogItemId,
+            'newCommerceOrderId'    => $update['newCommerceOrderId']    ?? 123,
+            'quantity'              => $update['quantity']              ?? $this->amount,
+            'termDuration'          => $update['termDuration']          ?? null,
+            'billingCycle'          => $update['billingCycle']          ?? null,
+            'purchaseFullTerm'      => $update['purchaseFullTerm']      ?? false,
         ]);
-        Log::info('migration created Successfully: ' . $newmigration);
 
-        return $subscription;
+        Log::info('Migration created Successfully: ' . $newmigration);
         Log::info('Subscription created Successfully: ' . $subscription);
 
+        return $subscription;
     }
 
     public function failed($exception)
     {
-        $message = substr($exception, strrpos($exception, '"description":"' ));
+        $message = substr($exception, strrpos($exception, '"description":"'));
         logger($message);
-
-
     }
 }

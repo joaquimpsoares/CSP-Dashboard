@@ -19,10 +19,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Livewire\DataTable\WithCachedRows;
 use App\Http\Livewire\DataTable\WithPerPagePagination;
-use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
-use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
-use Tagydes\MicrosoftConnection\Facades\Subscription as SubscriptionFacade;
-use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
+use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
+use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
+use Modules\MicrosoftCspConnection\Services\SubscriptionService;
 
 class ShowCustomer extends Component
 {
@@ -200,29 +199,18 @@ class ShowCustomer extends Component
 
     public function disable(Customer $customer){
         $this->showconfirmationModal = false;
-        foreach ($customer->subscriptions as $key => $subscriptions) {
-            $subscription = new TagydesSubscription([
-                'id'            => $subscriptions->subscription_id,
-                'orderId'       => $subscriptions->order_id,
-                'offerId'       => $subscriptions->product_id,
-                'customerId'    => $subscriptions->customer->microsoftTenantInfo->first()->tenant_id,
-                'name'          => $subscriptions->name,
-                'status'        => $subscriptions->status_id,
-                'quantity'      => $subscriptions->amount,
-                'currency'      => $subscriptions->currency,
-                'billingCycle'  => $subscriptions->billing_period,
-                'created_at'    => $subscriptions->created_at->__toString(),
-            ]);
-
-
+        foreach ($customer->subscriptions as $subscriptions) {
             try {
-                SubscriptionFacade::withCredentials($subscriptions->instance->external_id, $subscriptions->instance->external_token)->update($subscription, ['status' => 'suspended']);
-                Log::info(Auth::user()->name. 'MS subscriptions: '.$subscription .'suspended');
+                $connection = MicrosoftCspConnection::where('provider_id', $subscriptions->instance->provider_id)->firstOrFail();
+                $client     = new MicrosoftCspClient($connection, config('microsoftcspconnection'));
+                $service    = new SubscriptionService($client);
+                $tenantId   = $subscriptions->customer->microsoftTenantInfo->first()->tenant_id;
+                $service->updateStatus($tenantId, $subscriptions->subscription_id, 'suspended');
+                Log::info(Auth::user()->name . ' MS subscription ' . $subscriptions->subscription_id . ' suspended');
                 $subscriptions->update(['status_id' => 2]);
-
             } catch (Exception $e) {
-                $this->notify('danger','Error Placing order to Microsoft: '.$e->getMessage());
-                Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+                $this->notify('danger', 'Error Placing order to Microsoft: ' . $e->getMessage());
+                Log::info('Error Placing order to Microsoft: ' . $e->getMessage());
             }
         }
         $customer->update(['status_id' => 2]);
@@ -230,132 +218,43 @@ class ShowCustomer extends Component
     }
 
     public function enable(Customer $customer){
-
-        foreach ($customer->subscriptions as $key => $subscriptions) {
-            $subscription = new TagydesSubscription([
-                'id'            => $subscriptions->subscription_id,
-                'orderId'       => $subscriptions->order_id,
-                'offerId'       => $subscriptions->product_id,
-                'customerId'    => $subscriptions->customer->microsoftTenantInfo->first()->tenant_id,
-                'name'          => $subscriptions->name,
-                'status'        => $subscriptions->status_id,
-                'quantity'      => $subscriptions->amount,
-                'currency'      => $subscriptions->currency,
-                'billingCycle'  => $subscriptions->billing_period,
-                'created_at'    => $subscriptions->created_at->__toString(),
-            ]);
-
-
+        foreach ($customer->subscriptions as $subscriptions) {
             try {
-                SubscriptionFacade::withCredentials($subscriptions->instance->external_id, $subscriptions->instance->external_token)->update($subscription, ['status' => 'active']);
-                Log::info(Auth::user()->name. 'MS subscriptions: '.$subscription .'active');
+                $connection = MicrosoftCspConnection::where('provider_id', $subscriptions->instance->provider_id)->firstOrFail();
+                $client     = new MicrosoftCspClient($connection, config('microsoftcspconnection'));
+                $service    = new SubscriptionService($client);
+                $tenantId   = $subscriptions->customer->microsoftTenantInfo->first()->tenant_id;
+                $service->updateStatus($tenantId, $subscriptions->subscription_id, 'active');
+                Log::info(Auth::user()->name . ' MS subscription ' . $subscriptions->subscription_id . ' active');
                 $subscriptions->update(['status_id' => 1]);
-
             } catch (Exception $e) {
-                $this->notify('danger','Error Placing order to Microsoft: '.$e->getMessage());
-                Log::info('Error Placing order to Microsoft: '.$e->getMessage());
+                $this->notify('danger', 'Error Placing order to Microsoft: ' . $e->getMessage());
+                Log::info('Error Placing order to Microsoft: ' . $e->getMessage());
             }
         }
         $customer->update(['status_id' => 1]);
         $this->notify('Customer ' . $customer->company_name . ' is enabled, refresh page');
     }
 
-    Public function CustomerServiceCosts($customer){
-        if (!$customer->subscriptions->isEmpty()){
-            $instance = $customer->subscriptions->first()->instance_id;
-            $instance = Instance::find($instance);
-            try {
-                $customer = new TagydesCustomer([
-                    'id' => $customer->microsoftTenantInfo->first()->tenant_id,
-                    'username' => 'bill@tagydes.com',
-                    'password' => 'blabla',
-                    'firstName' => 'Nombre',
-                    'lastName' => 'Apellido',
-                    'email' => 'bill@tagydes.com',
-                ]);
-                $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCosts($customer);
-
-                return $resources;
-            } catch (\Throwable $th) {
-
-            }
-        }
+    public function CustomerServiceCosts($customer)
+    {
+        // Service costs API not yet implemented in MicrosoftCspConnection module.
+        Log::warning('ShowCustomer::CustomerServiceCosts() — service costs API not yet implemented.');
+        return null;
     }
 
-    Public function ImportSubscriptions(Customer $customer){
-        if (!$customer->subscriptions->isEmpty()){
-            $instance = $customer->subscriptions->first()->instance_id;
-            $instance = Instance::find($instance);
-            $subscriptionsc = $customer->subscriptions;
-            dd($subscriptionsc->count());
-
-            try {
-                $customer = new TagydesCustomer([
-                    'id' => $customer->microsoftTenantInfo->first()->tenant_id,
-                    'username' => 'bill@tagydes.com',
-                    'password' => 'blabla',
-                    'firstName' => 'Nombre',
-                    'lastName' => 'Apellido',
-                    'email' => 'bill@tagydes.com',
-                ]);
-
-                $subscriptions = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)
-                ->CheckCustomerSubscriptions($customer);
-                $subscriptions = collect($subscriptions['items']);
-
-                $orders = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)
-                ->CheckCustomerOrders($customer);
-                $orders = collect($orders['items']);
-
-                $this->toImport = $subscriptions->concat($orders); // Combine subscriptions and orders
-
-                $resources = $subscriptions->concat($orders); // Combine subscriptions and orders into resources
-
-                if($resources->count() <> $subscriptionsc->count()){
-
-                    $this->filtered = $resources->whereNotIn('id', $this->toImport->pluck('subscription_id')->concat($this->toImport->pluck('order_id')));
-
-                    if (!$this->filtered->isEmpty()) {
-                        $this->showImportModal = true;
-                    } else {
-                        $this->notify(' ', 'We didn\'t found subscription(s) or order(s) to import', 'info');
-                        return false;
-                    }
-                    return $this->filtered;
-                } else {
-                    $this->notify(' ', 'We didn\'t found subscription(s) or order(s) to import', 'info');
-                    return false;
-                }
-
-
-            } catch (\Throwable $th) {
-                $this->notify(' ', 'We found error(s), contact your administrator', 'error');
-                logger($th->getMessage());
-
-            }
-        }
+    public function ImportSubscriptions(Customer $customer)
+    {
+        // Subscription import from Partner Center not yet implemented in MicrosoftCspConnection module.
+        Log::warning('ShowCustomer::ImportSubscriptions() — subscription import API not yet implemented.');
+        $this->notify(' ', 'Subscription import is not available in this version.', 'info');
     }
 
-    Public function CustomerLicenseUsage($customer){
-        if (!$customer->subscriptions->isEmpty()){
-            $instance = $customer->subscriptions->first()->instance_id;
-            $instance = Instance::find($instance);
-            try {
-                $customer = new TagydesCustomer([
-                    'id' => $customer->microsoftTenantInfo->first()->tenant_id,
-                    'username' => 'bill@tagydes.com',
-                    'password' => 'blabla',
-                    'firstName' => 'Nombre',
-                    'lastName' => 'Apellido',
-                    'email' => 'bill@tagydes.com',
-                ]);
-                $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceUsage($customer);
-                return $resources;
-
-            } catch (\Throwable $th) {
-
-            }
-        }
+    public function CustomerLicenseUsage($customer)
+    {
+        // License usage API not yet implemented in MicrosoftCspConnection module.
+        Log::warning('ShowCustomer::CustomerLicenseUsage() — license usage API not yet implemented.');
+        return null;
     }
 
     public function enableUser(User $user){

@@ -15,8 +15,9 @@ use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProviderRepositoryInterface;
 use App\Repositories\ResellerRepositoryInterface;
 use App\Repositories\SubscriptionRepositoryInterface;
-use Tagydes\MicrosoftConnection\Facades\Subscription as SubscriptionFacade;
-use Tagydes\MicrosoftConnection\Models\Subscription as TagydesSubscription;
+use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
+use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
+use Modules\MicrosoftCspConnection\Services\SubscriptionService;
 
 
 
@@ -93,41 +94,38 @@ class SubscriptionController extends Controller
         Log::info('Subscription: ' . $subscriptions);
         Log::info('Instance: ' . $instance);
 
-
         $this->validate($request, [
             'amount' => 'required|integer',
         ]);
 
+        // Resolve CSP connection for this provider
+        $connection          = MicrosoftCspConnection::where('provider_id', $instance->provider_id)->firstOrFail();
+        $client              = new MicrosoftCspClient($connection, config('microsoftcspconnection'));
+        $subscriptionService = new SubscriptionService($client);
 
-        $subscription = new TagydesSubscription([
-            'id'            => $subscriptions->subscription_id,
-            'orderId'       => $subscriptions->order_id,
-            'offerId'       => $subscriptions->product_id,
-            'customerId'    => $subscriptions->customer->microsoftTenantInfo->first()->tenant_id,
-            'name'          => $subscriptions->name,
-            'status'        => $subscriptions->status_id,
-            'quantity'      => $subscriptions->amount,
-            'currency'      => $subscriptions->currency,
-            'billingCycle'  => $subscriptions->billing_period,
-            'created_at'    => $subscriptions->created_at->__toString(),
-        ]);
+        $customerId     = $subscriptions->customer->microsoftTenantInfo->first()->tenant_id;
+        $subscriptionId = $subscriptions->subscription_id;
 
-        Log::info('MS subscriptions: ' . $subscription);
+        Log::info('MS subscription ID: ' . $subscriptionId);
 
-        // This is for reference as we plan to use only Livewire and it's not calling here
+        // Note: primary subscription management uses Livewire (ShowSubscription).
+        // This controller method is retained as a non-Livewire fallback.
         if ($subscriptions->product->IsNCE() && $request->scheduled === 'true') {
-            $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->updateOnRenew($subscription, [
-                'billingCycle' => $request->get('billingCycle', $subscriptions->billing_period),
-                'quantity' => $request->get('amount', $subscriptions->amount),
-            ]);
-            $subscriptions->update(['changes_on_renew' => ['amount' => $request->amount]]);
+            try {
+                $subscriptionService->scheduleChange($customerId, $subscriptionId, [
+                    'billingCycle' => $request->get('billingCycle', $subscriptions->billing_period),
+                    'quantity'     => (int) $request->get('amount', $subscriptions->amount),
+                ]);
+                $subscriptions->update(['changes_on_renew' => ['amount' => $request->amount]]);
+            } catch (Exception $e) {
+                $order->update(['order_status_id' => 3]);
+                return Redirect::back()->with('danger', 'Error scheduling change: ' . $e->getMessage());
+            }
         } elseif ($status->isempty() &&  $billing_period->isempty() && !$amount->isempty()) { //change only amount
             try {
-                $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->update($subscription, ['quantity' => $request->amount]);
+                $subscriptionService->updateQuantity($customerId, $subscriptionId, (int) $request->amount);
                 $subscriptions->update(['changes_on_renew' => null, 'amount' => $request->amount]);
-                Log::info('License changed: ' . $update);
                 Log::info('License changed: ' . $request->amount);
-                // $order->update(['order_status_id'=> 4]);
             } catch (Exception $e) {
                 Log::info('Error Placing order to Microsoft: ' . $e->getMessage());
                 $order->update(['order_status_id' => 3]);
@@ -135,11 +133,9 @@ class SubscriptionController extends Controller
             }
         } elseif ($status->isempty() &&  !$billing_period->isempty() && $amount->isempty()) { //Change billing period
             try {
-                $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->changeBillingCycle($subscription, $request->billing_period);
+                $subscriptionService->updateBillingCycle($customerId, $subscriptionId, $request->billing_period);
                 $subscriptions->update(['changes_on_renew' => null, 'billing_period' => $request->billing_period]);
                 Log::info('Billing Cycle changed: ' . $request->billing_period);
-                // $order->update(['order_status_id'=> 4]);
-
             } catch (Exception $e) {
                 Log::info('Error Placing order to Microsoft: ' . $e->getMessage());
                 $order->update(['order_status_id' => 3]);
@@ -147,16 +143,16 @@ class SubscriptionController extends Controller
             }
         } elseif ($status->isempty() &&  !$billing_period->isempty() && !$amount->isempty()) { //Change billing period AND AMOUNT
             try {
-                $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->changeBillingCycle($subscription, $request->billing_period);
-                $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token)->update($subscription, ['quantity' => $request->amount]);
+                $subscriptionService->updateBillingCycle($customerId, $subscriptionId, $request->billing_period);
+                $subscriptionService->updateQuantity($customerId, $subscriptionId, (int) $request->amount);
                 $subscriptions->update([
                     'changes_on_renew' => null,
-                    'billing_period' => $request->billing_period,
-                    'amount' => $request->amount
+                    'billing_period'   => $request->billing_period,
+                    'amount'           => $request->amount
                 ]);
 
                 $order->update(['order_status_id' => 4]);
-                Log::info('Billing Cycle changed To: ' . $request->billing_period . "and amount changed to " . $request->amount);
+                Log::info('Billing Cycle changed To: ' . $request->billing_period . ' and amount changed to ' . $request->amount);
             } catch (Exception $e) {
                 $order->update(['order_status_id' => 3]);
                 Log::info('Error Placing order to Microsoft: ' . $e->getMessage());
@@ -164,24 +160,14 @@ class SubscriptionController extends Controller
             }
         } elseif (!$status->isempty()) {
             try {
-                if ($subscription->billingCycle == "one_time") {
-                    $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token) //change status only
-                        ->cancelSoftware($subscription);
-                    if ($request->status == 'active') {
-                        $request->merge(['status' => 1]);
-                    } else {
-                        $request->merge(['status' => 3]);
-                    }
-                    $subscriptions->update(['status_id' => $request->status]);
+                if ($subscriptions->billing_period === 'one_time') {
+                    $subscriptionService->cancelSubscription($customerId, $subscriptionId);
+                    $statusId = ($request->status == 'active') ? 1 : 3;
+                    $subscriptions->update(['status_id' => $statusId]);
                 } else {
-                    $update = SubscriptionFacade::withCredentials($instance->external_id, $instance->external_token) //change status only
-                        ->update($subscription, ['status' => $request->status]);
-                    if ($request->status == 'active') {
-                        $request->merge(['status' => 1]);
-                    } else {
-                        $request->merge(['status' => 2]);
-                    }
-                    $subscriptions->update(['status_id' => $request->status]);
+                    $subscriptionService->updateStatus($customerId, $subscriptionId, $request->status);
+                    $statusId = ($request->status == 'active') ? 1 : 2;
+                    $subscriptions->update(['status_id' => $statusId]);
                 }
 
                 Log::info('Status changed: ' . $request->status);

@@ -21,8 +21,9 @@ use Illuminate\Support\Facades\Http;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
-use Tagydes\MicrosoftConnection\Models\Customer as ModelsCustomer;
-use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
+use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
+use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
+use Modules\MicrosoftCspConnection\Services\CustomerService;
 
 class CartController extends Controller
 {
@@ -354,31 +355,34 @@ class CartController extends Controller
             $cart->save();
 
             if ($tenantCheckRequest->failed()){
+                // Domain not found in Azure AD — it's a new domain, available for provisioning
                 $cart->domain = $domain;
                 $cart->save();
                 return true;
             } else {
                 $token = Str::of($tenantCheckRequest['token_endpoint'])->explode('/')[3];
-                $customer = new ModelsCustomer([
-                    'id' => $token,
-                    'username' => 's@s.com',
-                    'password' => 's',
-                    'firstName' => 's',
-                    'lastName' => 's',
-                    'email' => 's@s.com',
-                ]);
 
-                $agreed = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->CheckCommerceRelationship($customer);
+                // Check if this tenant already has a commerce relationship with the CSP partner
+                try {
+                    $connection     = MicrosoftCspConnection::where('provider_id', $instance->provider_id)->firstOrFail();
+                    $client         = new MicrosoftCspClient($connection, config('microsoftcspconnection'));
+                    $customerService = new CustomerService($client);
+                    $agreed = $customerService->checkRelationship($token);
+                } catch (\Throwable $th) {
+                    Log::warning('CartController::checkDomainAvailability — could not check commerce relationship: ' . $th->getMessage());
+                    $agreed = false;
+                }
+
                 if($agreed){
                     $cart->domain = $domain;
                     $cart->save();
-                if(MicrosoftTenantInfo::where('tenant_id',$token)->first() == null){
-                MicrosoftTenantInfo::create([
-                    'customer_id'   => $cart->customer_id,
-                    'tenant_id'     => $token,
-                    'tenant_domain' => $domain,
-                    ]);
-                }
+                    if(MicrosoftTenantInfo::where('tenant_id', $token)->first() == null){
+                        MicrosoftTenantInfo::create([
+                            'customer_id'   => $cart->customer_id,
+                            'tenant_id'     => $token,
+                            'tenant_domain' => $domain,
+                        ]);
+                    }
                     return true;
                 } else {
                     return response($token, 401);

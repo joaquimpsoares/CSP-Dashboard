@@ -1,5 +1,6 @@
 {
     "AzureAnalytics": true,
     "UpdateAzurePricesinResources": true,
-    "KasperskyConnection": true
+    "KasperskyConnection": true,
+    "MicrosoftCspConnection": true
 }

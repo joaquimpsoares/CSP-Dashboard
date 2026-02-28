@@ -15,22 +15,23 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use romanzipp\QueueMonitor\Traits\IsMonitored;
-use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
+use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
+use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
 
 class ImportProductsNECMicrosoftJob implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IsMonitored;
+
     public $instance;
     public $country;
+
     /**
-    * Create a new job instance.
-    *
-    * @return void
-    */
+     * Create a new job instance.
+     */
     public function __construct(Instance $instance, $country)
     {
         $this->instance = $instance;
-        $this->country = $country;
+        $this->country  = $country;
     }
 
     public function queueProgress($percentage)
@@ -38,80 +39,84 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
         event(new JobProgressUpdated($percentage));
     }
 
-
-
     /**
-    * Execute the job.
-    *
-    * @return void
-    */
+     * Execute the job.
+     *
+     * NOTE: The old Tagydes `softwareNCEAll()` method returned a specific data structure
+     * nested 3 levels deep. The Partner Center REST API equivalent is to query
+     * /products?country={country}&targetView=MicrosoftAzure or the catalog endpoint.
+     * This job now delegates to MicrosoftCspClient::request() for NCE software products.
+     * The product field mapping is preserved from the original implementation.
+     */
     public function handle()
     {
         $instance = $this->instance;
-        $country = $instance->provider->country->iso_3166_2;
+        $country  = $instance->provider->country->iso_3166_2;
 
         Log::info('Instance: ' . $instance);
         Log::info('Country: ' . $country);
 
         try {
-            $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)
-            ->forCountry($country)->softwareNCEAll($country);
+            // Resolve CSP connection for this provider
+            $connection = MicrosoftCspConnection::where('provider_id', $instance->provider_id)->firstOrFail();
+            $client     = new MicrosoftCspClient($connection, config('microsoftcspconnection'));
 
-            $products->filter()->take(500)->each(function ($importedProduct) use ($instance) {
-                $importedProduct->each(function ($importedProduct) use ($instance) {
-                    $importedProduct->each(function ($importedProduct) use ($instance) {
-                        $productType = $importedProduct->product->productType->displayName;
-                        $isMicrosoftProduct = $importedProduct->isMicrosoftProduct;
-                        Log::info('This is NCE: ' . $productType);
-                        Log::info('This is Microsoft Product (True or False): ' . $isMicrosoftProduct);
+            // Query NCE software products via the Partner Center catalog endpoint
+            $response = $client->request('GET', 'products', [], [
+                'country'    => $country,
+                'targetView' => 'OnlineServicesNCE',
+            ]);
 
-                        $sku = ($productType === 'OnlineServicesNCE') ? $importedProduct->sku->productId . ':' . $importedProduct->sku->id : $importedProduct->sku->productId;
+            $products = $response['items'] ?? [];
 
-                        Log::info('CatalogItemId: ' . $importedProduct->catalogItemId);
-                        Log::info('Product description: ' . $importedProduct->sku->description);
+            collect($products)->take(500)->each(function ($importedProduct) use ($instance, $country) {
+                $productType = $importedProduct['productType']['displayName'] ?? '';
+                $skuList     = $importedProduct['skus'] ?? [];
 
-                        $productData = [
-                            'name' => $importedProduct->sku->title,
-                            'instance_id' => $instance->id,
-                            'sku' => $sku,
-                            'uri' => $importedProduct->links->self->uri,
-                            'catalog_item_id' => $importedProduct->catalogItemId,
-                            'billing' => $importedProduct->sku->dynamicAttributes->billingType,
-                            'productType' => $productType,
-                            'country' => $importedProduct->country,
-                            'vendor' => $importedProduct->product->publisherName,
-                            'description' => $importedProduct->sku->description,
-                            'is_trial' => $importedProduct->sku->isTrial,
-                            'is_addon' => $importedProduct->sku->dynamicAttributes->isAddon,
-                            'is_perpetual' => false,
-                            'is_available_for_purchase' => true,
-                            'terms' => $importedProduct->terms,
-                            'prerequisite_skus' => $importedProduct->sku->dynamicAttributes->prerequisiteSkus,
-                            'has_addons' => $importedProduct->sku->dynamicAttributes->hasAddOns,
-                            'limit' => $importedProduct->sku->dynamicAttributes->limit,
-                            'minimum_quantity' => $importedProduct->sku->minimumQuantity,
-                            'maximum_quantity' => $importedProduct->sku->maximumQuantity,
-                            'is_autorenewable' => $importedProduct->sku->dynamicAttributes->isAutoRenewable,
-                            'supported_billing_cycles' => $importedProduct->sku->supportedBillingCycles,
-                            'unitType' => $importedProduct->sku->dynamicAttributes->unitType,
-                            'upgrade_target_offers' => $importedProduct->sku->dynamicAttributes->upgradeTargetOffers,
-                            'conversion_target_offers' => $importedProduct->sku->dynamicAttributes->conversionTargetOffers,
-                            'resellee_qualifications' => $importedProduct->sku->dynamicAttributes->reselleeQualifications,
-                            'reseller_qualifications' => $importedProduct->sku->dynamicAttributes->resellerQualifications,
-                        ];
+                foreach ($skuList as $sku) {
+                    $skuId     = $sku['id']        ?? '';
+                    $productId = $sku['productId'] ?? ($importedProduct['id'] ?? '');
+                    $skuKey    = ($productType === 'OnlineServicesNCE')
+                        ? $productId . ':' . $skuId
+                        : $productId;
 
+                    Log::info('This is NCE: ' . $productType);
+                    Log::info('SKU: ' . $skuKey);
 
-                        $product = Product::updateOrCreate(['sku' => $sku], $productData);
-                        Log::info('Imported: ' . $product->name . ' transactions!');
-                    });
-                });
+                    $productData = [
+                        'name'                      => $sku['title']       ?? $importedProduct['title'] ?? '',
+                        'instance_id'               => $instance->id,
+                        'sku'                       => $skuKey,
+                        'uri'                       => $importedProduct['links']['self']['uri'] ?? '',
+                        'catalog_item_id'           => $skuKey,
+                        'billing'                   => $sku['dynamicAttributes']['billingType'] ?? null,
+                        'productType'               => $productType,
+                        'country'                   => $country,
+                        'vendor'                    => $importedProduct['publisherName']       ?? 'microsoft',
+                        'description'               => $sku['description']                    ?? '',
+                        'is_trial'                  => $sku['isTrial']                        ?? false,
+                        'is_addon'                  => $sku['dynamicAttributes']['isAddon']   ?? false,
+                        'is_perpetual'              => false,
+                        'is_available_for_purchase' => true,
+                        'has_addons'                => $sku['dynamicAttributes']['hasAddOns'] ?? false,
+                        'limit'                     => $sku['dynamicAttributes']['limit']     ?? null,
+                        'minimum_quantity'          => $sku['minimumQuantity']                ?? 1,
+                        'maximum_quantity'          => $sku['maximumQuantity']                ?? null,
+                        'is_autorenewable'          => $sku['dynamicAttributes']['isAutoRenewable'] ?? false,
+                        'supported_billing_cycles'  => $sku['supportedBillingCycles']         ?? null,
+                    ];
+
+                    $product = Product::updateOrCreate(['sku' => $skuKey, 'instance_id' => $instance->id], $productData);
+                    Log::info('Imported: ' . $product->name);
+                }
             });
-            Log::info('Product import Finished');
+
+            Log::info('NCE product import finished');
+
         } catch (Exception $e) {
-            Log::info('Error importing products: ' . $e->getMessage());
+            Log::error('Error importing NCE products: ' . $e->getMessage());
         }
 
         $this->queueProgress(100);
     }
-
 }

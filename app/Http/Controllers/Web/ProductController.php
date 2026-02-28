@@ -13,7 +13,7 @@ use App\Jobs\ImportProductsMicrosoftJob;
 use App\Price;
 use App\Repositories\OrderRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
-use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
+use Illuminate\Support\Facades\Log;
 
 
 class ProductController extends Controller
@@ -155,20 +155,9 @@ class ProductController extends Controller
 
     public function getMasterToken($id)
     {
-        $instance = Instance::findorFail($id);
-
-        if( !$instance){
-            return redirect()->back()->with('warning', 'The account has no assigned tenant');
-        }
-
-        if( ! $instance->external_token){
-            $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
-            $instance->update([
-                'external_token' => $externalToken,
-                'external_token_updated_at' => now()
-            ]);
-        }
-        return redirect()->back()->with('success', 'Instance updated succesfully');
+        // external token refresh is no longer available — credentials are DB-per-provider via MicrosoftCspConnection.
+        Log::warning('ProductController::getMasterToken() — external token refresh not available; credentials are now DB-per-provider via MicrosoftCspConnection.');
+        return redirect()->back()->with('warning', 'Token refresh is not available in this version. Configure credentials in the Microsoft CSP Connection settings.');
     }
 
 
@@ -195,13 +184,7 @@ class ProductController extends Controller
                 return redirect()->route('products.index')->with('success', 'There is no client_id set up on the Microsoft instance');
             }
 
-            if( !$instance->external_token){
-                $externalToken = MicrosoftProduct::getMasterTokenFromAuthorizedClientId($instance->tenant_id);
-                $instance->update([
-                    'external_token' => $externalToken,
-                    'external_token_updated_at' => now()
-                ]);
-            }
+            // external_token refresh removed — credentials are DB-per-provider via MicrosoftCspConnection.
 
             dd('l');
             ImportProductsMicrosoftJob::dispatch($instance, $order, $country->iso_3166_2)->onQueue('SyncProducts')

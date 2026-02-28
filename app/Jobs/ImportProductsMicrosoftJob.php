@@ -12,7 +12,9 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use romanzipp\QueueMonitor\Traits\IsMonitored;
-use Tagydes\MicrosoftConnection\Facades\Product as MicrosoftProduct;
+use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
+use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
+use Modules\MicrosoftCspConnection\Services\OfferService;
 
 class ImportProductsMicrosoftJob implements ShouldQueue
 {
@@ -22,24 +24,19 @@ class ImportProductsMicrosoftJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IsMonitored;
 
     /**
-    * Create a new job instance.
-    *
-    * @return void
-    */
+     * Create a new job instance.
+     */
     public function __construct(Instance $instance, $country)
     {
         $this->instance = $instance;
-        $this->country = $country;
+        $this->country  = $country;
     }
 
     /**
-    * Execute the job.
-    *
-    * @return void
-    */
+     * Execute the job.
+     */
     public function handle()
     {
-
         $instance = $this->instance;
         Log::info('instance: '.$instance);
         Log::info('Country: '.$this->country);
@@ -47,63 +44,50 @@ class ImportProductsMicrosoftJob implements ShouldQueue
         try {
             $this->queueProgress(0);
 
-            $products = MicrosoftProduct::withCredentials($instance->external_id, $instance->external_token)
-            ->forCountry($this->country)->all($this->country);
-            $importCount = 0;
+            // Resolve CSP connection for this provider
+            $connection   = MicrosoftCspConnection::where('provider_id', $instance->provider_id)->firstOrFail();
+            $client       = new MicrosoftCspClient($connection, config('microsoftcspconnection'));
+            $offerService = new OfferService($client);
 
-            $products->each(function($importedProduct)use($instance){
-                Log::info('CREATE products: '.$importedProduct);
+            // Retrieve all available offers for the country (replaces old MicrosoftProduct::forCountry()->all())
+            $offers = $offerService->listForCountry($this->country);
 
-                $updated = Product::updateOrCreate([
-                    'sku' => $importedProduct->id,
-                    'instance_id' => $instance->id,
-                    'name' => $importedProduct->name,
-                    'description' => $importedProduct->description,
-                    'uri' => $importedProduct->uri,
-                    'productType' => $importedProduct,
-                ],[
-                    'minimum_quantity' => $importedProduct->minimumQuantity,
-                    'maximum_quantity' => $importedProduct->maximumQuantity,
-                    'limit' => $importedProduct->limit,
-                    'term' => $importedProduct->term,
-                    'category' => $importedProduct->category,
+            foreach ($offers as $offer) {
+                Log::info('Importing offer: '.($offer['id'] ?? 'unknown'));
 
-                    'locale' => $importedProduct->locale,
-                    'country' => $importedProduct->country,
+                // Map Partner Center offer fields to the local Product schema
+                Product::updateOrCreate(
+                    [
+                        'sku'         => $offer['id'] ?? '',
+                        'instance_id' => $instance->id,
+                    ],
+                    [
+                        'name'             => $offer['name']             ?? '',
+                        'description'      => $offer['description']      ?? '',
+                        'uri'              => $offer['links']['self']['uri'] ?? ($offer['uri'] ?? ''),
+                        'minimum_quantity' => $offer['minimumQuantity']  ?? 1,
+                        'maximum_quantity' => $offer['maximumQuantity']  ?? null,
+                        'limit'            => $offer['limit']            ?? null,
+                        'term'             => $offer['term']             ?? null,
+                        'category'         => $offer['category']         ?? null,
+                        'locale'           => $offer['locale']           ?? null,
+                        'country'          => $this->country,
+                        'is_trial'         => $offer['isTrial']          ?? false,
+                        'has_addons'       => $offer['hasAddOns']        ?? false,
+                        'is_autorenewable' => $offer['isAutoRenewable']  ?? false,
+                        'billing'          => $offer['billing']          ?? null,
+                        'acquisition_type' => $offer['acquisitionType']  ?? null,
+                        'supported_billing_cycles' => $offer['supportedBillingCycles'] ?? null,
+                    ]
+                );
+            }
 
-                    'is_trial' => $importedProduct->isTrial,
-                    'has_addons' => $importedProduct->hasAddOns,
-                    'is_autorenewable' => $importedProduct->isAutoRenewable,
-
-                    'billing' => $importedProduct->billing,
-                    'acquisition_type' => $importedProduct->acquisitionType,
-
-                    'addons' => $importedProduct->addons->map(function($item){
-                        return serialize($item);
-                    }),
-                    'upgrade_target_offers'     => $importedProduct->upgradeTargetOffers->map(function($item){
-                        return serialize($item);
-                    }),
-                    'supported_billing_cycles'  => $importedProduct->supportedBillingCycles,
-                    'conversion_target_offers'  => $importedProduct->conversionTargetOffers,
-                    'resellee_qualifications'   => $importedProduct->reselleeQualifications,
-                    'reseller_qualifications'   => $importedProduct->resellerQualifications,
-                ]);
-
-                // $importCount++;
-            });
-            // Log::info('Imported '.$importCount.' transactions!');
             $this->queueProgress(90);
 
         } catch (Exception $e) {
-            Log::info('Error importing products: '.$e->getMessage());
-
-
-            Log::info('Error: '.$e->getMessage());
+            Log::error('Error importing products: '.$e->getMessage());
         }
-        // Log::info('Imported '.$importCount.' transactions!');
 
         $this->queueProgress(100);
-
     }
 }

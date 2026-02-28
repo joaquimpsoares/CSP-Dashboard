@@ -7,7 +7,7 @@ use App\Instance;
 use App\Models\MsftInvoices;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
-use Tagydes\MicrosoftConnection\Facades\MSFTInvoice as MicrosoftInvoice;
+// MSFTInvoice API removed — Tagydes\MicrosoftConnection no longer available.
 
 
 class SyncMSFTInvoices extends Command
@@ -43,39 +43,9 @@ class SyncMSFTInvoices extends Command
     */
     public function handle()
     {
-        try{
-            Instance::eachById(function (Instance $instance) {
-                $invoices = MicrosoftInvoice::withCredentials($instance->external_id, $instance->external_token)->all();
-                $invoices->each(function ($invoices) use ($instance) {
-                    $product = MsftInvoices::updateOrCreate([
-                        'instance_id'               => $instance->id,
-                        'invoice_id'                => $invoices->invoice_id,
-                        'provider_id'               => $instance->provider_id,
-                    ], [
-                        'invoiceDate'               => $invoices->invoiceDate,
-                        'billingPeriodStartDate'    => $invoices->billingPeriodStartDate,
-                        'billingPeriodEndDate'      => $invoices->billingPeriodEndDate,
-                        'totalCharges'              => $invoices->totalCharges,
-                        'paidAmount'                => $invoices->paidAmount,
-                        'currencyCode'              => $invoices->currencyCode,
-                        'currencySymbol'            => $invoices->currencySymbol,
-                        'pdfDownloadLink'           => $invoices->pdfDownloadLink,
-                        'invoiceDetails'            => $invoices->invoiceLineItemType,
-                    ]);
-
-
-                });
-            });
-
-        }
-        catch (Exception $e) {
-            echo ('Error importing products: ' . $e->getMessage());
-
-        }
-        Mail::raw("Just finished msft invoices Syncronization", function ($mail)  {
-            $mail->to('joaquim.soares@tagydes.com')
-            ->subject('Monthly import MSFT Invoices');
-        });
-        $this->info('Successfully sent daily quote to everyone.');
+        // MSFTInvoice API not yet implemented in MicrosoftCspConnection module.
+        \Illuminate\Support\Facades\Log::warning('SyncMSFTInvoices::handle() — MSFTInvoice API not yet implemented. Command is a no-op.');
+        $this->warn('MSFT invoice sync is not available in this version. Skipping.');
+        return 0;
     }
 }

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Tagydes\MicrosoftConnection\Facades\AzureResource as FacadesAzureResource;
+// AzureResource API removed — Tagydes\MicrosoftConnection no longer available.
 
 class AzureBilledCommand extends Command
 {
@@ -48,83 +48,11 @@ class AzureBilledCommand extends Command
     */
     public function handle()
     {
-        // Mail::raw("Starting Azure Syncronization", function ($mail)  {
-        //     $mail->to('joaquim.soares@tagydes.com')
-        //     ->subject('Daily importing Started Azure reports');
-        // });
-
-        MsftInvoices::eachById(function (MsftInvoices $invoice) {
-            if(substr($invoice->invoice_id,0,3) === "D05"){
-                    try {
-                        $resources = FacadesAzureResource::withCredentials($invoice->instance->external_id,$invoice->instance->external_token)
-                        ->invoicerecon($invoice->provider->country->currency_code,$invoice->invoice_id);
-                        Log::channel('azure')->info($invoice->invoice_id);
-                    $this->info('Updating Invoice ID '.$invoice->invoice_id);
-                    } catch (\Throwable $th) {
-                        $this->info('error updating Invoice ID '.$th->getMessage());
-                        // Mail::raw($th->getMessage(), function ($mail) use($th) {
-                        //     $mail->to('joaquim.soares@tagydes.com')
-                        //     ->subject('Failed importing');
-                        // });
-                    }
-                    $Count = 0;
-
-                    if($resources){
-                        foreach ($resources as $key => $value) {
-                            foreach ($value as $key => $value) {
-                                $tenant = MicrosoftTenantInfo::where('tenant_id', $value['customerId'])->first();
-                                if(isset($tenant->customer)){
-                                    $tenant->customer->subscriptions->where('billing_type', 'usage')->each(function ($subscription) use($value,$Count) {
-                                        try{
-                                            $Count++;
-                                            $resource = AzureUsageReport::updateOrCreate([
-                                                'subscription_id'       => $subscription->id,
-                                                'unitPrice'             => $value['listPrice'],
-                                                'resource_id'           => $value['resourceGuid'],
-                                                'name'                  => $value['serviceName'],
-                                                'resource_name'         => $value['resourceName'],
-                                                // 'resource_group'        => $value['resourceGroup'],
-                                                // 'resource_location'     => $value['region'],
-                                                'resource_region'       => $value['region'],
-                                                // 'resource_category'     => $value['meterCategory'],
-                                                'usageStartTime'        => $value['chargeStartDate'],
-                                                'usageEndTime'          => $value['chargeEndDate'],
-                                                // 'resource_subcategory'  => $value['meterSubCategory'],
-                                            ], [
-                                                'usagedate'             => $value['chargeStartDate'],
-                                                'quantity'              => $value['consumedQuantity'],
-                                                'unit'                  => $value['unit'],
-                                                'cost'                  => $value['postTaxTotal'],
-                                                // 'resourceType'          => $value['meterType'],
-                                                // 'tags'                  => $value['tags'],
-                                                // 'additionalinfo'        => $value['additionalInfo'],
-                                            ]);
-                                            $this->info('updating '.$resource->resource_name . ''. $resource->usagedate );
-                                            Log::channel('azure')->info('updated '.$resource->resource_name);
-                                        }
-                                        catch (\Exception $e) {
-                                            Log::channel('azure')->info($e->getMessage());
-                                            // Mail::raw($e->getMessage(), function ($mail) use($e) {
-                                            //     $mail->to('joaquim.soares@tagydes.com')
-                                            //     ->subject('Azure Sync Failed');
-                                            // });
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Mail::raw("Just finished Azure Syncronization", function ($mail)  {
-            //     $mail->to('joaquim.soares@tagydes.com')
-            //     ->subject('Daily imported Azure reports');
-            // });
-
-            $this->info('Successfully sent daily quote to everyone.');
-
-        }
+        // AzureResource billed reconciliation API not yet implemented in MicrosoftCspConnection module.
+        Log::warning('AzureBilledCommand::handle() — AzureResource invoicerecon API not yet implemented. Command is a no-op.');
+        $this->warn('Azure billed reconciliation sync is not available in this version. Skipping.');
+        return 0;
+    }
 
         /**
         * Get the console command arguments.

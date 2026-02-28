@@ -11,8 +11,9 @@ use Spatie\Searchable\SearchResult;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
-use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
+use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
+use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
+use Modules\MicrosoftCspConnection\Services\CustomerService;
 
 class Customer extends Model implements Searchable
 {
@@ -61,6 +62,26 @@ class Customer extends Model implements Searchable
     const QUALIFICATIONS = [
         '1' => 'Education',
     ];
+
+    // -------------------------------------------------------------------------
+    // Internal helpers
+    // -------------------------------------------------------------------------
+
+    /**
+     * Resolve a CustomerService scoped to this customer's provider connection.
+     * Uses the first instance/provider of the customer's reseller.
+     */
+    private function getCustomerService(): CustomerService
+    {
+        $instance   = $this->resellers->first()->provider->instances->first();
+        $connection = MicrosoftCspConnection::where('provider_id', $instance->provider_id)->firstOrFail();
+        $client     = new MicrosoftCspClient($connection, config('microsoftcspconnection'));
+        return new CustomerService($client);
+    }
+
+    // -------------------------------------------------------------------------
+    // Relationships
+    // -------------------------------------------------------------------------
 
     public function resellers(){
         return $this->belongsToMany(Reseller::class);
@@ -122,37 +143,43 @@ class Customer extends Model implements Searchable
         return $this->hasMany(microsoftLincenseInfo::class);
     }
 
+    // -------------------------------------------------------------------------
+    // Partner Center operations
+    // -------------------------------------------------------------------------
+
+    /**
+     * Update the customer's qualification (e.g. Education) via Partner Center.
+     *
+     * @param  Customer $customer
+     * @param  string   $data  Qualification type
+     * @return array           Partner Center response
+     */
     public function updateCustomerQualification($customer, $data){
-        $this->instance = $customer->resellers->first()->provider->instances->first();
-        $customer = new TagydesCustomer([
-            'id' => $customer->microsoftTenantInfo->first()->tenant_id,
-            'username' => 'bill@tagydes.com',
-            'password' => 'blabla',
-            'firstName' => 'Nombre',
-            'lastName' => 'Apellido',
-            'email' => 'bill@tagydes.com',
-        ]);
-
-        $resources = MicrosoftCustomer::withCredentials($this->instance->external_id, $this->instance->external_token)->UpdateCustomerQualification($customer, $data);
-        // Log::info('Status changed: Suspended');
-
-        return $resources;
+        try {
+            $customerService = $this->getCustomerService();
+            $tenantId = $customer->microsoftTenantInfo->first()->tenant_id;
+            return $customerService->updateQualification($tenantId, $data);
+        } catch (\Throwable $th) {
+            Log::error('updateCustomerQualification error: ' . $th->getMessage());
+            return [];
+        }
     }
 
+    /**
+     * Check the customer's current qualification status via Partner Center.
+     *
+     * @param  Customer $customer
+     * @return \Illuminate\Support\Collection  Partner Center qualifications as a collection
+     */
     public function checkCustomerQualification($customer){
-        $this->instance = $customer->resellers->first()->provider->instances->first();
-        $customer = new TagydesCustomer([
-            'id' => $customer->microsoftTenantInfo->first()->tenant_id,
-            'username' => 'bill@tagydes.com',
-            'password' => 'blabla',
-            'firstName' => 'Nombre',
-            'lastName' => 'Apellido',
-            'email' => 'bill@tagydes.com',
-        ]);
-
-        $resources = MicrosoftCustomer::withCredentials($this->instance->external_id, $this->instance->external_token)->CheckCustomerQualification($customer);
-
-        return $resources;
+        try {
+            $customerService = $this->getCustomerService();
+            $tenantId = $customer->microsoftTenantInfo->first()->tenant_id;
+            return collect($customerService->getQualifications($tenantId));
+        } catch (\Throwable $th) {
+            Log::error('checkCustomerQualification error: ' . $th->getMessage());
+            return collect([]);
+        }
     }
 
     protected static function booted(){
@@ -172,9 +199,6 @@ class Customer extends Model implements Searchable
             }
             if ($user && $user->userLevel->name === config('app.customer')) {
                 return false;
-                // $query->whereHas('resellers', function (Builder $query) use ($user) {
-                //     $query->where('id', $user->reseller->id);
-                // });
             }
         });
     }

@@ -15,8 +15,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\SubscriptionRepositoryInterface;
-use Tagydes\MicrosoftConnection\Models\Customer as TagydesCustomer;
-use Tagydes\MicrosoftConnection\Facades\Customer as MicrosoftCustomer;
+use Illuminate\Support\Facades\Log;
 
 
 
@@ -121,45 +120,30 @@ class CustomerController extends Controller
 
     }
 
-    Public function CustomerServiceCosts($customer)
+    /**
+     * Return service costs for a customer.
+     * Service costs API is not yet available in the MicrosoftCspConnection module.
+     * Returns null — views must handle null gracefully.
+     */
+    public function CustomerServiceCosts($customer)
     {
-
-        $instance =session()->get('instance_id');
-        $instance = Instance::where('id', $instance)->first();
-        try {
-            $customer = new TagydesCustomer([
-                'id' => $customer->microsoftTenantInfo->first()->tenant_id,
-                'username' => 'bill@tagydes.com',
-                'password' => 'blabla',
-                'firstName' => 'Nombre',
-                'lastName' => 'Apellido',
-                'email' => 'bill@tagydes.com',
-                ]);
-        $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCosts($customer);
-        return $resources;
-
-        } catch (\Throwable $th) {
-
-        }
+        Log::warning('CustomerController::CustomerServiceCosts() — service costs API not yet implemented in MicrosoftCspConnection module.', [
+            'customer_id' => is_object($customer) ? $customer->id : $customer,
+        ]);
+        return null;
     }
 
-    Public function serviceCostsLineitems($id)
+    /**
+     * Return service costs line items for a customer.
+     * Service costs API is not yet available in the MicrosoftCspConnection module.
+     * Returns null — views must handle null gracefully.
+     */
+    public function serviceCostsLineitems($id)
     {
-        $instance = session()->get('instance_id');
-        $instance = Instance::where('id', $instance)->first();
-
-            $customer = new TagydesCustomer([
-                'id' => $id,
-                'username' => 'bill@tagydes.com',
-                'password' => 'blabla',
-                'firstName' => 'Nombre',
-                'lastName' => 'Apellido',
-                'email' => 'bill@tagydes.com',
-                ]);
-
-        $resources = MicrosoftCustomer::withCredentials($instance->external_id, $instance->external_token)->serviceCostsLineitems($customer);
-
-        return $resources;
+        Log::warning('CustomerController::serviceCostsLineitems() — service costs API not yet implemented in MicrosoftCspConnection module.', [
+            'customer_id' => $id,
+        ]);
+        return null;
     }
 
     public function edit(Customer $customer) {
