@@ -14,6 +14,11 @@ class ResellerPricingSection extends Component
 {
     public int $resellerId;
 
+    public function mount(int $resellerId): void
+    {
+        $this->resellerId = $resellerId;
+    }
+
     public function getAssignmentsProperty()
     {
         return ResellerPriceListAssignment::with('priceList')

@@ -14,6 +14,11 @@ class CustomerPricingSection extends Component
 {
     public int $customerId;
 
+    public function mount(int $customerId): void
+    {
+        $this->customerId = $customerId;
+    }
+
     public function getAssignmentsProperty()
     {
         return CustomerPriceListAssignment::with(['priceList', 'reseller'])
