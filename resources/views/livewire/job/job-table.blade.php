@@ -95,7 +95,7 @@
                                         <x-input.checkbox wire:model="selected" value="{{ $transaction['id'] }}" ></x-input.checkbox>
                                     </x-table.cell>
                                     <x-table.cell>
-                                        <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                        <a href="{{route('pricing.price_lists.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                             <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                     {{ $transaction['queue'] }}
@@ -104,7 +104,7 @@
                                         </a>
                                     </x-table.cell>
                                     <x-table.cell>
-                                        <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                        <a href="{{route('pricing.price_lists.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                             <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                                 @if(!$transaction->isFinished())
                                                 <div class="">
@@ -126,7 +126,7 @@
                                     </span>
                                 </x-table.cell>
                                 <x-table.cell>
-                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <a href="{{route('pricing.price_lists.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                 {{ $transaction['exception_message'] }}
@@ -135,7 +135,7 @@
                                     </a>
                                 </x-table.cell>
                                 <x-table.cell>
-                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <a href="{{route('pricing.price_lists.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                 {{ $transaction['exception_class'] }}
@@ -144,7 +144,7 @@
                                     </a>
                                 </x-table.cell>
                                 <x-table.cell>
-                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <a href="{{route('pricing.price_lists.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                 {{ $transaction['started_at'] }}
@@ -153,7 +153,7 @@
                                     </a>
                                 </x-table.cell>
                                 <x-table.cell>
-                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <a href="{{route('pricing.price_lists.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                 {{ sprintf('%02.2f', (float) $transaction->time_elapsed) }}

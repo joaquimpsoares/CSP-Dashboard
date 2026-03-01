@@ -200,7 +200,6 @@
 
                                 @can(config('app.customer_index'))
                                 <a href="{{ route('pricing.price_lists.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.price_list', 2)) }}</a>
-                                <a href="{{ route('priceList.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-400 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> Price Lists (legacy)</a>
                                 @endcan
                                 @can(config('app.reseller_index'))
                                 <a href="{{ route('product.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.product', 2)) }}</a>
@@ -351,7 +350,7 @@
                                 {{ ucwords(trans_choice('messages.store', 2)) }}
                             </a>
                             <div x-data="{ open: {{ request()->is('cart*') ? 'true' : 'false' }} }" class="space-y-2">
-                                <button type="button" class="flex items-center w-full py-2 pl-2 pr-1 mb-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->routeIs('priceList.index')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
+                                <button type="button" class="flex items-center w-full py-2 pl-2 pr-1 mb-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->is('pricing/price-lists*')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
                                     <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-600" x-state-description="undefined: &quot;text-gray-600&quot;, undefined: &quot;text-gray-400 group-hover:text-gray-600&quot;" x-description="Heroicon name: outline/clock" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                                     </svg>
@@ -391,7 +390,7 @@
                             </div>
 
                             <div x-data="{ open: false }" class="space-y-1">
-                                <button type="button" class="flex items-center w-full py-2 pl-2 pr-1 mb-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->routeIs('priceList.index')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500 x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
+                                <button type="button" class="flex items-center w-full py-2 pl-2 pr-1 mb-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->is('pricing/price-lists*')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500 x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
                                     <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-600" x-state-description="undefined: &quot;text-gray-600&quot;, undefined: &quot;text-gray-400 group-hover:text-gray-600&quot;" x-description="Heroicon name: outline/clock" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -425,7 +424,6 @@
 
                                     @can(config('app.customer_index'))
                                     <a href="{{ route('pricing.price_lists.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.price_list', 2)) }}</a>
-                                    <a href="{{ route('priceList.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-400 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> Price Lists (legacy)</a>
                                     @endcan
                                     @can(config('app.reseller_index'))
                                     <a href="{{ route('product.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.product', 2)) }}</a>

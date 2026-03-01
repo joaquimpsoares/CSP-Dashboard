@@ -81,7 +81,7 @@
                                 @forelse ($logs as $transaction)
                                 <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-{{ $transaction['id'] }}">
                                     <x-table.cell>
-                                        <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                        <a href="{{route('pricing.price_lists.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                             <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                     {{ $transaction->id }}
@@ -90,7 +90,7 @@
                                         </a>
                                     </x-table.cell>
                                     <x-table.cell>
-                                        <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                        <a href="{{route('pricing.price_lists.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                             <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                     {{ $transaction->subject }}
@@ -100,7 +100,7 @@
                                     </span>
                                 </x-table.cell>
                                 <x-table.cell>
-                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <a href="{{route('pricing.price_lists.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex text-wrap items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                 {{ $transaction->url }}
@@ -109,7 +109,7 @@
                                     </a>
                                 </x-table.cell>
                                 <x-table.cell>
-                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <a href="{{route('pricing.price_lists.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                 {{ $transaction->method }}
@@ -118,7 +118,7 @@
                                     </a>
                                 </x-table.cell>
                                 <x-table.cell>
-                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <a href="{{route('pricing.price_lists.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                 {{ $transaction->ip }}
@@ -127,7 +127,7 @@
                                     </a>
                                 </x-table.cell>
                                 <x-table.cell>
-                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <a href="{{route('pricing.price_lists.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                 {!! geoip()->getLocation($transaction->ip)->country !!}
@@ -139,7 +139,7 @@
                                     @php
                                     $user_name = App\User::where('id', $transaction->user_id)->first();
                                     @endphp
-                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <a href="{{route('pricing.price_lists.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                 @if($user_name)
@@ -150,7 +150,7 @@
                                     </a>
                                 </x-table.cell>
                                 <x-table.cell>
-                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <a href="{{route('pricing.price_lists.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                 {{ $transaction->created_at }}
@@ -159,7 +159,7 @@
                                     </a>
                                 </x-table.cell>
                                 <x-table.cell>
-                                    <a href="{{route('priceList.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
+                                    <a href="{{route('pricing.price_lists.show',$transaction['id'])}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-auto">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 capitalize">
                                                 {{ $transaction->agent }}

@@ -87,7 +87,7 @@
                                 <x-input.checkbox wire:model="selected" value="{{ $pl->id }}" />
                             </td>
                             <td class="px-3 py-2">
-                                <a href="{{ route('priceList.show', $pl->id) }}" class="font-semibold text-slate-900 hover:text-primary-700">
+                                <a href="{{ route('pricing.price_lists.show', $pl->id) }}" class="font-semibold text-slate-900 hover:text-primary-700">
                                     {{ $pl->name }}
                                 </a>
                                 <div class="text-xs text-slate-500">ID: {{ $pl->id }}</div>
@@ -104,7 +104,7 @@
                             </td>
                             <td class="px-3 py-2 text-xs text-slate-600">{{ optional($pl->updated_at)->format('Y-m-d') }}</td>
                             <td class="px-3 py-2 text-right">
-                                <a href="{{ route('priceList.show', $pl->id) }}" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50">Open</a>
+                                <a href="{{ route('pricing.price_lists.show', $pl->id) }}" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50">Open</a>
                                 <button type="button" wire:click="edit({{ $pl->id }})" class="ml-2 inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50">Edit</button>
                             </td>
                         </tr>

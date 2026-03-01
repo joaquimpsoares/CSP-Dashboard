@@ -5,8 +5,7 @@
                 <h2 class="text-xl font-semibold tracking-tight text-slate-900">Price List</h2>
             </div>
             <div class="flex items-center gap-2">
-                <a href="{{ url('/pricing/price-lists') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-primary-500/20">Back</a>
-                <a href="{{ route('priceList.show', $priceList->id) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-primary-500/20">Legacy view</a>
+                <a href="{{ route('pricing.price_lists.index') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-primary-500/20">← Price Lists</a>
             </div>
         </div>
     </x-slot>

@@ -78,9 +78,6 @@
                             <x-dropdown-link :href="route('pricing.price_lists.index')">
                                 {{ __('Price Lists') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('priceList.index')">
-                                {{ __('Price Lists (legacy)') }}
-                            </x-dropdown-link>
                             <x-dropdown-link :href="route('pricing.index')">
                                 {{ __('Pricing') }}
                             </x-dropdown-link>
