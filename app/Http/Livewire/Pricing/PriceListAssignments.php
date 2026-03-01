@@ -21,19 +21,19 @@ class PriceListAssignments extends Component
 
     // ── Assign-reseller drawer ───────────────────────────────────────────────
 
-    public bool   $showResellerDrawer   = false;
-    public ?int   $assignResellerId     = null;
-    public string $assignResellerMarket = '';
-    public string $assignResellerCurrency = '';
-    public string $assignResellerListType = '';
+    public bool    $showResellerDrawer     = false;
+    public ?int    $assignResellerId       = null;
+    public ?string $assignResellerMarket   = null;
+    public ?string $assignResellerCurrency = null;
+    public ?string $assignResellerListType = null;
 
     // ── Assign-customer drawer ───────────────────────────────────────────────
 
-    public bool   $showCustomerDrawer   = false;
-    public ?int   $assignCustomerId     = null;
-    public string $assignCustomerMarket = '';
-    public string $assignCustomerCurrency = '';
-    public string $assignCustomerListType = '';
+    public bool    $showCustomerDrawer     = false;
+    public ?int    $assignCustomerId       = null;
+    public ?string $assignCustomerMarket   = null;
+    public ?string $assignCustomerCurrency = null;
+    public ?string $assignCustomerListType = null;
 
     // ── Lifecycle ────────────────────────────────────────────────────────────
 
@@ -43,12 +43,12 @@ class PriceListAssignments extends Component
 
         // Seed defaults from the price list so users don't have to retype.
         $pl = PriceList::withoutGlobalScopes()->findOrFail($priceListId);
-        $this->assignResellerMarket   = $pl->market   ?? '';
-        $this->assignResellerCurrency = $pl->currency ?? '';
-        $this->assignResellerListType = $pl->list_type ?? '';
-        $this->assignCustomerMarket   = $pl->market   ?? '';
-        $this->assignCustomerCurrency = $pl->currency ?? '';
-        $this->assignCustomerListType = $pl->list_type ?? '';
+        $this->assignResellerMarket   = $pl->market    ?: null;
+        $this->assignResellerCurrency = $pl->currency  ?: null;
+        $this->assignResellerListType = $pl->list_type ?: null;
+        $this->assignCustomerMarket   = $pl->market    ?: null;
+        $this->assignCustomerCurrency = $pl->currency  ?: null;
+        $this->assignCustomerListType = $pl->list_type ?: null;
     }
 
     // ── Computed properties ──────────────────────────────────────────────────
@@ -78,7 +78,7 @@ class PriceListAssignments extends Component
             ->where('is_default', true)
             ->pluck('reseller_id');
 
-        return Reseller::whereNotIn('id', $assigned)
+        return Reseller::withoutGlobalScopes()->whereNotIn('id', $assigned)
             ->orderBy('company_name')
             ->get(['id', 'company_name']);
     }
@@ -90,7 +90,7 @@ class PriceListAssignments extends Component
             ->where('is_default', true)
             ->pluck('customer_id');
 
-        return Customer::whereNotIn('id', $assigned)
+        return Customer::withoutGlobalScopes()->whereNotIn('id', $assigned)
             ->orderBy('company_name')
             ->get(['id', 'company_name']);
     }
@@ -113,9 +113,9 @@ class PriceListAssignments extends Component
         $this->reset(['assignResellerId']);
         // Re-seed from price list
         $pl = PriceList::withoutGlobalScopes()->find($this->priceListId);
-        $this->assignResellerMarket   = $pl?->market   ?? '';
-        $this->assignResellerCurrency = $pl?->currency ?? '';
-        $this->assignResellerListType = $pl?->list_type ?? '';
+        $this->assignResellerMarket   = $pl?->market    ?: null;
+        $this->assignResellerCurrency = $pl?->currency  ?: null;
+        $this->assignResellerListType = $pl?->list_type ?: null;
     }
 
     public function assignReseller(): void
@@ -165,9 +165,9 @@ class PriceListAssignments extends Component
         $this->showCustomerDrawer = false;
         $this->reset(['assignCustomerId']);
         $pl = PriceList::withoutGlobalScopes()->find($this->priceListId);
-        $this->assignCustomerMarket   = $pl?->market   ?? '';
-        $this->assignCustomerCurrency = $pl?->currency ?? '';
-        $this->assignCustomerListType = $pl?->list_type ?? '';
+        $this->assignCustomerMarket   = $pl?->market    ?: null;
+        $this->assignCustomerCurrency = $pl?->currency  ?: null;
+        $this->assignCustomerListType = $pl?->list_type ?: null;
     }
 
     public function assignCustomer(): void
@@ -183,9 +183,10 @@ class PriceListAssignments extends Component
         $customer = Customer::findOrFail($this->assignCustomerId);
 
         // Try to find the customer's primary reseller for this provider.
+        // Qualify the column to avoid ambiguity with the pivot table.
         $resellerId = $customer->resellers()
-            ->where('provider_id', $pl->provider_id)
-            ->value('id');
+            ->where('resellers.provider_id', $pl->provider_id)
+            ->value('resellers.id');
 
         $record = CustomerPriceListAssignment::firstOrCreate(
             [

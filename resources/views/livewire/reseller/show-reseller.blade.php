@@ -154,11 +154,17 @@
                         </div>
                         <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
                             <dt class="text-sm font-medium text-gray-500 truncate">{{ ucwords(trans_choice('messages.total_subscriptions', 1)) }}</dt>
-                            <dd class="mt-1 text-3xl font-semibold text-gray-900">{{$subscription->count()}}</dd>
+                            <dd class="mt-1 text-3xl font-semibold text-gray-900">
+                                @php $totalSubscriptions = $reseller->customers->sum(fn($c) => $c->subscriptions->count()); @endphp
+                                {{ $totalSubscriptions }}
+                            </dd>
                         </div>
                         <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
                             <dt class="text-sm font-medium text-gray-500 truncate">{{ ucwords(trans_choice('messages.active_licenses', 1)) }}</dt>
-                            <dd class="mt-1 text-3xl font-semibold text-gray-900">{{$subscription->sum('amount')}}</dd>
+                            <dd class="mt-1 text-3xl font-semibold text-gray-900">
+                                @php $totalLicenses = $reseller->customers->sum(fn($c) => $c->subscriptions->sum('amount')); @endphp
+                                {{ $totalLicenses }}
+                            </dd>
                         </div>
                     </dl>
                 </div>

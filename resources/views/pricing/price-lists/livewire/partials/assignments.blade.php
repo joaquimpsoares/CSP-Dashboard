@@ -152,7 +152,7 @@
         x-cloak x-show="open"
         @keydown.escape.window="$wire.closeResellerDrawer()"
         class="fixed inset-0 z-50" role="dialog" aria-modal="true">
-        <div class="absolute inset-0 bg-slate-900/30" @click="$wire.closeResellerDrawer()"></div>
+        <div class="absolute inset-0 bg-slate-900/30" wire:click="closeResellerDrawer" @click="$wire.closeResellerDrawer()"></div>
         <div class="absolute inset-y-0 right-0 flex w-full sm:max-w-md">
             <div class="flex h-full w-full flex-col bg-white shadow-xl">
                 <!-- Header -->
@@ -161,7 +161,7 @@
                         <div class="text-base font-semibold text-slate-900">Assign reseller default</div>
                         <div class="mt-0.5 text-sm text-slate-600">Make this price list the default for a reseller.</div>
                     </div>
-                    <button type="button" @click="$wire.closeResellerDrawer()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-50">
+                    <button type="button" wire:click="closeResellerDrawer" @click="$wire.closeResellerDrawer()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-50">
                         <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                     </button>
                 </div>
@@ -209,7 +209,7 @@
                     </div>
                     <!-- Footer -->
                     <div class="sticky bottom-0 border-t border-slate-200 bg-white/90 backdrop-blur px-6 py-4 flex justify-end gap-2">
-                        <button type="button" @click="$wire.closeResellerDrawer()" class="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Cancel</button>
+                        <button type="button" wire:click="closeResellerDrawer" class="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Cancel</button>
                         <button type="submit" class="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-500/30">
                             <span wire:loading.remove wire:target="assignReseller">Save assignment</span>
                             <span wire:loading wire:target="assignReseller">Saving…</span>
@@ -226,7 +226,7 @@
         x-cloak x-show="open"
         @keydown.escape.window="$wire.closeCustomerDrawer()"
         class="fixed inset-0 z-50" role="dialog" aria-modal="true">
-        <div class="absolute inset-0 bg-slate-900/30" @click="$wire.closeCustomerDrawer()"></div>
+        <div class="absolute inset-0 bg-slate-900/30" wire:click="closeCustomerDrawer" @click="$wire.closeCustomerDrawer()"></div>
         <div class="absolute inset-y-0 right-0 flex w-full sm:max-w-md">
             <div class="flex h-full w-full flex-col bg-white shadow-xl">
                 <!-- Header -->
@@ -235,7 +235,7 @@
                         <div class="text-base font-semibold text-slate-900">Assign customer default</div>
                         <div class="mt-0.5 text-sm text-slate-600">Give a specific customer this price list as their override.</div>
                     </div>
-                    <button type="button" @click="$wire.closeCustomerDrawer()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-50">
+                    <button type="button" wire:click="closeCustomerDrawer" @click="$wire.closeCustomerDrawer()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-50">
                         <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                     </button>
                 </div>
@@ -283,7 +283,7 @@
                     </div>
                     <!-- Footer -->
                     <div class="sticky bottom-0 border-t border-slate-200 bg-white/90 backdrop-blur px-6 py-4 flex justify-end gap-2">
-                        <button type="button" @click="$wire.closeCustomerDrawer()" class="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Cancel</button>
+                        <button type="button" wire:click="closeCustomerDrawer" class="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Cancel</button>
                         <button type="submit" class="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-500/30">
                             <span wire:loading.remove wire:target="assignCustomer">Save assignment</span>
                             <span wire:loading wire:target="assignCustomer">Saving…</span>
