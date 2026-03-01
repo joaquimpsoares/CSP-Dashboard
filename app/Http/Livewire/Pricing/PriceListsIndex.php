@@ -4,14 +4,27 @@ namespace App\Http\Livewire\Pricing;
 
 use App\Price;
 use App\PriceList;
+use App\Provider;
+use App\Models\Pricing\ProviderPriceListDefault;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class PriceListsIndex extends Component
 {
     use WithPagination;
+
+    public function mount(): void
+    {
+        // Defensive reset: Livewire navigate can preserve component state.
+        // Index page must never auto-open drawers.
+        $this->showCreateDrawer  = false;
+
+        // Pre-populate provider for the create drawer.
+        $this->newProviderId = Auth::user()->provider?->id ?? null;
+    }
 
     public string $search = '';
     public string $status = 'all'; // all|active|archived (archived = deleted_at not null)
@@ -19,12 +32,15 @@ class PriceListsIndex extends Component
     public int $perPage = 20;
 
     // ── Create price list drawer ─────────────────────────────────────────────
-    public bool $showCreateDrawer = false;
-    public string $newName = '';
-    public string $newDescription = '';
-    public string $newCurrency = '';
-    public string $newMarket = '';
-    public string $newMargin = '';
+    public bool    $showCreateDrawer        = false;
+    public ?int    $newProviderId           = null;
+    public string  $newName                 = '';
+    public string  $newDescription          = '';
+    public string  $newListType             = '';
+    public string  $newCurrency             = '';
+    public string  $newMarket               = '';
+    public string  $newMargin               = '';
+    public bool    $newSetAsProviderDefault = false;
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -49,11 +65,28 @@ class PriceListsIndex extends Component
         $this->resetPage();
     }
 
+    // ── Computed: available providers for the create drawer ──────────────────
+
+    public function getProvidersProperty()
+    {
+        $user = Auth::user();
+
+        if ($user->userLevel->name === config('app.provider')) {
+            // Provider users can only assign to their own provider.
+            return Provider::where('id', $user->provider->id)->get();
+        }
+
+        // Super-admin (or any other elevated level) sees all providers.
+        return Provider::orderBy('company_name')->get();
+    }
+
+    // ── Computed: paginated rows ─────────────────────────────────────────────
+
     public function getCountsProperty(): array
     {
         return [
-            'all' => PriceList::withTrashed()->count(),
-            'active' => PriceList::count(),
+            'all'      => PriceList::withTrashed()->count(),
+            'active'   => PriceList::count(),
             'archived' => PriceList::onlyTrashed()->count(),
         ];
     }
@@ -97,26 +130,48 @@ class PriceListsIndex extends Component
     public function closeCreateDrawer(): void
     {
         $this->showCreateDrawer = false;
-        $this->reset(['newName', 'newDescription', 'newCurrency', 'newMarket', 'newMargin']);
+        $this->reset([
+            'newName', 'newDescription', 'newListType',
+            'newCurrency', 'newMarket', 'newMargin',
+            'newSetAsProviderDefault',
+        ]);
+        // Re-seed provider after reset so it's always pre-populated.
+        $this->newProviderId = Auth::user()->provider?->id ?? null;
     }
 
     public function createPriceList(): void
     {
         $this->validate([
-            'newName'        => 'required|string|min:3',
-            'newDescription' => 'nullable|string',
-            'newCurrency'    => 'nullable|string|min:2|max:3',
-            'newMarket'      => 'nullable|string|min:2',
-            'newMargin'      => 'nullable|numeric|min:0|max:100',
+            'newProviderId'           => 'required|integer|exists:providers,id',
+            'newName'                 => 'required|string|min:3',
+            'newDescription'          => 'nullable|string',
+            'newListType'             => ['nullable', 'string', 'in:' . implode(',', array_keys(PriceList::listTypes()))],
+            'newCurrency'             => 'nullable|string|min:2|max:3',
+            'newMarket'               => 'nullable|string|min:2',
+            'newMargin'               => 'nullable|numeric|min:0|max:100',
+            'newSetAsProviderDefault' => 'boolean',
         ]);
 
         $priceList = PriceList::create([
+            'provider_id' => $this->newProviderId,
             'name'        => trim($this->newName),
             'description' => trim($this->newDescription) ?: null,
+            'list_type'   => $this->newListType ?: null,
             'currency'    => trim($this->newCurrency) ?: null,
             'market'      => trim($this->newMarket) ?: null,
             'margin'      => $this->newMargin !== '' ? (float) $this->newMargin : null,
         ]);
+
+        if ($this->newSetAsProviderDefault) {
+            ProviderPriceListDefault::create([
+                'provider_id'   => $priceList->provider_id,
+                'price_list_id' => $priceList->id,
+                'market'        => $priceList->market,
+                'currency'      => $priceList->currency,
+                'list_type'     => $priceList->list_type,
+                'is_default'    => false,
+            ])->setAsDefault();
+        }
 
         $this->closeCreateDrawer();
 
@@ -127,7 +182,9 @@ class PriceListsIndex extends Component
     {
         return view('pricing.price-lists.livewire.index', [
             'priceLists' => $this->rows,
-            'counts' => $this->counts,
+            'counts'     => $this->counts,
+            'providers'  => $this->providers,
+            'listTypes'  => PriceList::listTypes(),
         ]);
     }
 }

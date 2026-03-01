@@ -15,6 +15,7 @@ use App\Http\Livewire\DataTable\WithSorting;
 use App\Http\Livewire\DataTable\WithCachedRows;
 use App\Http\Livewire\DataTable\WithBulkActions;
 use App\Http\Livewire\DataTable\WithPerPagePagination;
+use App\Services\Pricing\PriceListResolver;
 
 class Store extends Component
 {
@@ -162,17 +163,7 @@ class Store extends Component
 
     public function getRowsQueryProperty(){
         $this->useCachedRows();
-        $user = Auth::user();
-        switch ($user->userLevel->name) {
-            case 'Reseller':
-                $this->priceList = $user->reseller->price_list_id;
-            break;
-            case 'Customer':
-                $this->priceList = $user->customer->price_list_id;
-                break;
-                default:
-            return abort(403, __('errors.access_with_resellers_credentials'));
-        }
+        $this->priceList = $this->resolveUserPriceListId();
 
         $query = Price::query()->with('related_product')->where('price_list_id', $this->priceList)
         ->whereRelation('related_product', 'is_available_for_purchase', 1)
@@ -203,28 +194,7 @@ class Store extends Component
     public function mount(){
         $this->useCachedRows();
 
-        $user = Auth::user();
-        switch ($user->userLevel->name) {
-            case 'Reseller':
-                $this->priceList = $user->reseller->price_list_id;
-            break;
-            case 'Customer':
-                $this->priceList = $user->customer->price_list_id;
-                break;
-                default:
-            return abort(403, __('errors.access_with_resellers_credentials'));
-        }
-
-        switch ($user->userLevel->name) {
-            case 'Reseller':
-                $this->priceList = $user->reseller->price_list_id;
-                break;
-                case 'Customer':
-                    $this->priceList = $user->customer->price_list_id;
-                break;
-                default:
-                return abort(403, __('errors.access_with_resellers_credentials'));
-            }
+        $this->priceList = $this->resolveUserPriceListId();
 
         $priceList = $this->priceList;
 
@@ -241,6 +211,36 @@ class Store extends Component
         $this->productType = product::select(['productType'])->whereHas('price', function($query) use  ($priceList) {
             $query->where('price_list_id', $priceList);
         })->pluck('productType')->unique()->filter();
+    }
+
+    // ── Price-list resolution ────────────────────────────────────────────────
+
+    /**
+     * Resolve the active price list ID for the authenticated user via the
+     * PriceListResolver hierarchy (customer → reseller → provider default).
+     * Returns null if no active price list can be found (store will show empty).
+     * Aborts 403 for users that are neither Reseller nor Customer.
+     */
+    private function resolveUserPriceListId(): ?int
+    {
+        $user  = Auth::user();
+        $level = $user->userLevel->name ?? null;
+
+        if (! in_array($level, ['Reseller', 'Customer'], true)) {
+            abort(403, __('errors.access_with_resellers_credentials'));
+        }
+
+        try {
+            $resolver = app(PriceListResolver::class);
+            $pl = ($level === 'Customer')
+                ? $resolver->resolveForPurchase($user, $user->customer)
+                : $resolver->resolveForReseller($user);
+
+            return $pl->id;
+        } catch (\RuntimeException $e) {
+            // No active price list assigned — store will render empty.
+            return null;
+        }
     }
 
     public function getRowsProperty(){

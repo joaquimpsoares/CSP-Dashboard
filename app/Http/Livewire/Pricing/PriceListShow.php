@@ -45,6 +45,12 @@ class PriceListShow extends Component
     {
         $this->priceList = PriceList::withTrashed()->findOrFail($id);
 
+        // Defensive reset: Livewire navigate can preserve component state across navigations.
+        // Show page must never auto-open drawers.
+        $this->showPriceModal = false;
+        $this->editingPriceId = null;
+        $this->showEditPriceListModal = false;
+
         $this->priceListStatus = $this->priceList->deleted_at
             ? 'archived'
             : ((empty($this->priceList->effective_from) && empty($this->priceList->effective_to)) ? 'draft' : 'active');

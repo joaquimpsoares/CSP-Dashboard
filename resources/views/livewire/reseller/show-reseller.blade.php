@@ -304,6 +304,9 @@
                 </x-bladewind.card>
                 <!-- End user table -->
 
+                <!-- Pricing section -->
+                @livewire('pricing.reseller-pricing-section', ['resellerId' => $reseller->id], key('reseller-pricing-'.$reseller->id))
+
             </div>
             <form wire:submit.prevent="disable({{$reseller->id}})">
                 <x-modal.confirmation wire:model.defer="showconfirmationModal">

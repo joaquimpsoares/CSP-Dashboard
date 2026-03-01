@@ -10,8 +10,8 @@
     >
         <div class="absolute inset-0 bg-slate-900/30" @click="$wire.closeCreateDrawer()" aria-hidden="true"></div>
 
-        <!-- Right drawer (520 px) -->
-        <div class="absolute inset-y-0 right-0 flex w-full max-w-[520px]">
+        <!-- Right drawer -->
+        <div class="absolute inset-y-0 right-0 flex w-full sm:max-w-lg">
             <div class="flex h-full w-full flex-col bg-white shadow-xl">
 
                 <!-- Sticky header -->
@@ -31,21 +31,60 @@
                 <form wire:submit.prevent="createPriceList" class="flex h-full flex-col">
                     <!-- Scrollable body -->
                     <div class="flex-1 overflow-y-auto px-6 py-6">
-                        <div class="space-y-4">
+                        <div class="space-y-5">
 
+                            {{-- Provider (required) --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700">
+                                    Provider <span class="text-rose-500">*</span>
+                                </label>
+                                @if($providers->count() === 1)
+                                    {{-- Single provider: show as read-only badge + hidden input --}}
+                                    <input type="hidden" wire:model="newProviderId">
+                                    <div class="mt-1 flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+                                        <span class="text-sm text-slate-900">{{ $providers->first()->company_name }}</span>
+                                        <span class="ml-auto inline-flex items-center rounded-full bg-primary-50 px-2 py-0.5 text-xs font-medium text-primary-700">Your provider</span>
+                                    </div>
+                                @else
+                                    <select wire:model="newProviderId" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20">
+                                        <option value="">Select a provider…</option>
+                                        @foreach($providers as $provider)
+                                            <option value="{{ $provider->id }}">{{ $provider->company_name }}</option>
+                                        @endforeach
+                                    </select>
+                                @endif
+                                @error('newProviderId')<p class="mt-1 text-xs font-semibold text-rose-700">{{ $message }}</p>@enderror
+                            </div>
+
+                            {{-- Name --}}
                             <div>
                                 <label class="block text-sm font-semibold text-slate-700">Name <span class="text-rose-500">*</span></label>
                                 <input wire:model.defer="newName" type="text" placeholder="e.g. Standard EUR 2025" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
                                 @error('newName')<p class="mt-1 text-xs font-semibold text-rose-700">{{ $message }}</p>@enderror
                             </div>
 
+                            {{-- Description --}}
                             <div>
                                 <label class="block text-sm font-semibold text-slate-700">Description</label>
                                 <input wire:model.defer="newDescription" type="text" placeholder="Optional description" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
                                 @error('newDescription')<p class="mt-1 text-xs font-semibold text-rose-700">{{ $message }}</p>@enderror
                             </div>
 
-                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            {{-- List type --}}
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700">List type</label>
+                                <select wire:model.defer="newListType" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20">
+                                    <option value="">Any / not specified</option>
+                                    @foreach($listTypes as $value => $label)
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                                <p class="mt-1 text-xs text-slate-500">Used by the resolver to match the right list per product type.</p>
+                                @error('newListType')<p class="mt-1 text-xs font-semibold text-rose-700">{{ $message }}</p>@enderror
+                            </div>
+
+                            {{-- Currency + Market + Margin --}}
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-700">Currency</label>
                                     <input wire:model.defer="newCurrency" type="text" placeholder="EUR" maxlength="3" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
@@ -61,6 +100,22 @@
                                     <input wire:model.defer="newMargin" type="text" placeholder="0" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
                                     @error('newMargin')<p class="mt-1 text-xs font-semibold text-rose-700">{{ $message }}</p>@enderror
                                 </div>
+                            </div>
+
+                            {{-- Set as provider default --}}
+                            <div class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
+                                <label class="flex cursor-pointer items-start gap-3">
+                                    <input wire:model.defer="newSetAsProviderDefault" type="checkbox" class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500" />
+                                    <div>
+                                        <span class="block text-sm font-semibold text-slate-800">Set as provider default</span>
+                                        <span class="block text-xs text-slate-500 mt-0.5">
+                                            Immediately mark this list as the default for the selected
+                                            provider / market / currency / type combination.
+                                            Resellers and customers without an explicit assignment will
+                                            fall back to this list.
+                                        </span>
+                                    </div>
+                                </label>
                             </div>
 
                         </div>

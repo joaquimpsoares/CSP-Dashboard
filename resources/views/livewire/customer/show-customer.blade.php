@@ -457,6 +457,12 @@
                 </div>
             </div>
             <!-- Ends users table card  -->
+
+            <!-- Pricing section -->
+            <div class="mt-4">
+                @livewire('pricing.customer-pricing-section', ['customerId' => $customer->id], key('customer-pricing-'.$customer->id))
+            </div>
+
         </div>
     </div>
 

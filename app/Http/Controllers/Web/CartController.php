@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Http;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
+use App\Services\Pricing\PriceListResolver;
 use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
 use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
 use Modules\MicrosoftCspConnection\Services\CustomerService;
@@ -79,12 +80,21 @@ class CartController extends Controller
 
             $cart->save();
 
-            $matcher = app(\App\Services\Pricing\PriceListItemMatcher::class);
-            $priceListId = auth()->user()?->provider?->price_list_id
-                ?? auth()->user()?->reseller?->price_list_id
-                ?? auth()->user()?->customer?->price_list_id;
+            $matcher  = app(\App\Services\Pricing\PriceListItemMatcher::class);
+            $resolver = app(PriceListResolver::class);
+            $user     = auth()->user();
+            $context  = [
+                'list_type' => PriceListResolver::listTypeForProduct($product->productType ?? ''),
+            ];
 
-            $pli = $priceListId ? $matcher->match((int)$priceListId, $product) : null;
+            try {
+                $resolvedPl = ($user->userLevel->name === config('app.customer'))
+                    ? $resolver->resolveForPurchase($user, $user->customer, $context)
+                    : $resolver->resolveForReseller($user, $context);
+                $pli = $matcher->match($resolvedPl->id, $product);
+            } catch (\RuntimeException $e) {
+                $pli = null;
+            }
 
             $cart->products()->attach($validate['product_id'], [
                 'price' => $prices->price,

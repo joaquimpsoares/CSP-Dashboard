@@ -140,8 +140,24 @@
         </div>
     </div>
 
-    <!-- Edit price list modal -->
-    @include('pricing.price-lists.partials.edit-price-list-modal')
+    <!-- Assignments section -->
+    <div class="mt-6 rounded-2xl border border-slate-200 bg-white">
+        <div class="border-b border-slate-200 px-6 py-4">
+            <h4 class="text-base font-semibold text-slate-900">Assignments</h4>
+            <p class="mt-1 text-sm text-slate-600">
+                Resellers and customers that use this price list by default.
+                The resolver falls back to this list when no more-specific assignment exists.
+            </p>
+        </div>
+        <div class="p-6">
+            @livewire('pricing.price-list-assignments', ['priceListId' => $priceList->id], key('assignments-'.$priceList->id))
+        </div>
+    </div>
+
+    @if($showEditPriceListModal)
+        <!-- Edit price list drawer -->
+        @include('pricing.price-lists.partials.edit-price-list-modal')
+    @endif
 
     @if($showPriceModal)
         @livewire('pricing.price-editor-modal', ['priceListId' => $priceList->id, 'priceId' => $editingPriceId], key('price-editor-'.$priceList->id.'-'.$editingPriceId))
