@@ -100,6 +100,18 @@ class Order extends Model
     }
 
     public function markAsCompleted(){
+        // Enforce snapshots for finalized orders (legacy orders are allowed but will warn in UI).
+        if (config('pricing.require_snapshot_on_completed_orders', true)) {
+            $missing = $this->products()
+                ->wherePivotNull('sell_unit_snapshot')
+                ->orWherePivotNull('sell_total_snapshot')
+                ->count();
+
+            if ($missing > 0) {
+                throw new \RuntimeException('Order cannot be completed: one or more lines are missing pricing snapshots.');
+            }
+        }
+
         $this->fill([
             'order_status_id' => '4',
         ])->save();
@@ -118,7 +130,33 @@ class Order extends Model
     }
 
     public function products(){
-        return $this->belongsToMany(Product::class)->withPivot('id', 'quantity', 'price', 'retail_price', 'billing_cycle', 'term_duration');
+        return $this->belongsToMany(Product::class)
+            ->using(OrderProducts::class)
+            ->withPivot(
+                'id',
+                'quantity',
+                'price',
+                'retail_price',
+                'billing_cycle',
+                'term_duration',
+
+                // pricing snapshot fields
+                'price_list_id',
+                'price_list_item_id',
+                'pricing_rule_set_id',
+                'pricing_rule_id',
+                'market',
+                'currency',
+                'fx_rate_to_currency',
+                'cost_unit_snapshot',
+                'erp_unit_snapshot',
+                'promo_adjustment_snapshot',
+                'sell_unit_snapshot',
+                'sell_total_snapshot',
+                'pricing_trace',
+                'pricing_selected_reason',
+                'pricing_calculated_at',
+            );
     }
 
     public function customer(){

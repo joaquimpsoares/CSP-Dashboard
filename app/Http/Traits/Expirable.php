@@ -10,17 +10,13 @@ use Illuminate\Support\Collection as BaseCollection;
 trait Expirable
 {
     /**
-     * The "booting" method of the model.
-     *
-     * @return void
+     * Laravel will automatically call boot{TraitName}() for traits used on models.
      */
-    protected static function boot()
+    protected static function bootExpirable(): void
     {
-        parent::boot();
-
         static::addGlobalScope(new ExpirationScope);
 
-        static::creating(function($model) {
+        static::creating(function ($model) {
             // Set the default expiration date if needed
             if (! array_key_exists($model::getExpirationAttribute(), $model->attributes)) {
                 $model->attributes[$model::getExpirationAttribute()] = $model::defaultExpiresAt();
@@ -167,12 +163,9 @@ trait Expirable
 
     /**
      * Create a new Eloquent query builder for the model.
-     *
-     * @param  \Illuminate\Database\Query\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder|static
      */
-    // public function newEloquentBuilder($query)
-    // {
-    //     return new ExpirableEloquentQueryBuilder($query);
-    // }
+    public function newEloquentBuilder($query)
+    {
+        return new ExpirableEloquentQueryBuilder($query);
+    }
 }

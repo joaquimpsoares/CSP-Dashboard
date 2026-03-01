@@ -45,7 +45,8 @@
                                                 <div class="row">
                                                     <div class="col">
                                                         <div class="mb-3 input-group">
-                                                            <input type="text" id="tenant" class="form-control" placeholder="tenant" name="tenant" value="{{ $cart->domain ?? null }}">
+                                                            @php($tenantPrefix = $cart->domain ? explode('.onmicrosoft.com', $cart->domain)[0] : null)
+                                                            <input type="text" id="tenant" class="form-control" placeholder="tenant" name="tenant" value="{{ $tenantPrefix }}">
                                                             <div class="input-group-append">
                                                                 <span class="input-group-text" id="basic-addon2">{{ ucwords(trans_choice('messages.onmicrosoft', 1)) }}</span>
                                                             </div>
@@ -58,7 +59,7 @@
                                                             <button type="button" id="validateButton" class="btn btn-primary" onclick="checkDomainAvailability()">{{ ucwords(trans_choice('messages.validate', 1)) }}</button>
                                                         </div>
                                                         <div id="tenantAlreadyExists" style="visibility: hidden;">
-                                                            Specified tenant already exists at Microsoft
+                                                            Tenant validation status
                                                             <div id="tenantAlreadyExistsButton"></div>
                                                         </div>
                                                     </div>
@@ -101,7 +102,8 @@
                                                 <div class="row">
                                                     <div class="col">
                                                         <div class="mb-3 input-group">
-                                                            <input type="text" id="tenant" class="form-control" placeholder="tenant" name="tenant" value="{{ $cart->domain ?? null }}" disabled="disabled">
+                                                            @php($tenantPrefix = $cart->domain ? explode('.onmicrosoft.com', $cart->domain)[0] : null)
+                                                            <input type="text" id="tenant" class="form-control" placeholder="tenant" name="tenant" value="{{ $tenantPrefix }}" disabled="disabled">
                                                             <div class="input-group-append">
                                                                 <span class="input-group-text" id="basic-addon2">{{ ucwords(trans_choice('messages.onmicrosoft', 1)) }}</span>
                                                             </div>
@@ -165,23 +167,73 @@
 <script type="text/javascript">
 
     function checkDomainAvailability() {
-        var domain = $("#tenant").val();
+        const prefix = ($("#tenant").val() || "").trim();
+
+        $("#tenantAlreadyExists").css('visibility', 'hidden');
+        $("#tenantAlreadyExistsButton").html('');
 
         $("#validateButton").prop('disabled', true);
 
-        $.get( "/cart/checkDomainAvailability/?token={{ urlencode($cart->token) }}&domain=" + domain, function() {
-
+        $.get("/cart/checkDomainAvailability", {
+            token: "{{ urlencode($cart->token) }}",
+            domain: prefix
         })
-        .done(function(data) {
-            getMainUserFromCustomer();
-            $("#validateButton").hide();
-            $("#agreement").show();
-
+        .done(function(resp) {
+            // resp: { ok:true, tenantId, tenantDomain }
+            if (resp && resp.ok) {
+                $("#tenant").prop('disabled', true);
+                $("#validateButton").hide();
+                $("#agreement").show();
+                getMainUserFromCustomer();
+            }
         })
-        .fail(function(data) {
+        .fail(function(xhr) {
             $("#validateButton").prop('disabled', false);
+
+            let resp = null;
+            try { resp = xhr.responseJSON; } catch(e) {}
+
+            // Backward compatibility if server returns plain text
+            if (!resp || typeof resp !== 'object') {
+                $("#tenantAlreadyExists").css('visibility', 'visible');
+                $("#tenantAlreadyExistsButton").text("Validation failed. Please try again.");
+                return;
+            }
+
+            const code = resp.error || resp.code || "UNKNOWN_ERROR";
             $("#tenantAlreadyExists").css('visibility', 'visible');
-            $("#tenantAlreadyExistsButton").html('Please accept the delegate administration before continue. Once accepted try again later.  <a class="btn btn-success btn-small" target="_blank" href="https://login.microsoftonline.com/common/oauth2/authorize?client_id='+data.responseText+'&response_type=code&redirect_uri=https://partnerconsent.tagydes.com/&prompt=admin_consent">Consent here</a>');
+
+            if (code === "TENANT_NOT_FOUND") {
+                $("#tenantAlreadyExistsButton").html("Tenant not found. Please check the tenant prefix and try again.");
+                return;
+            }
+
+            if (code === "TENANT_ALREADY_LINKED") {
+                $("#tenantAlreadyExistsButton").html("This tenant is already linked to another customer. Please contact support.");
+                return;
+            }
+
+            if (code === "MCA_NOT_ACCEPTED") {
+                const tenantId = resp.tenantId || resp.tenant_id;
+                if (!tenantId) {
+                    $("#tenantAlreadyExistsButton").html("Microsoft Customer Agreement is not accepted. Please ask an admin to grant consent.");
+                    return;
+                }
+
+                const consentUrl = "https://login.microsoftonline.com/common/oauth2/authorize"
+                    + "?client_id=" + encodeURIComponent(tenantId)
+                    + "&response_type=code"
+                    + "&redirect_uri=" + encodeURIComponent("https://partnerconsent.tagydes.com/")
+                    + "&prompt=admin_consent";
+
+                $("#tenantAlreadyExistsButton").html(
+                    'Please accept delegated admin consent before continuing. '
+                    + '<a class="btn btn-success btn-small" target="_blank" href="' + consentUrl + '">Consent here</a>'
+                );
+                return;
+            }
+
+            $("#tenantAlreadyExistsButton").html("Validation failed: " + code);
         });
     }
 

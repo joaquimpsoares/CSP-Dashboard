@@ -34,7 +34,9 @@ class ResellerTable extends Component
     public $showEditModal = false;
     public $showCreateUser = false;
 
-    public Reseller $editing;
+    public array $editing = [];
+    public ?int $editingId = null;
+
     public User $creatingUser;
     public $filters = [
         'search' => '',
@@ -43,9 +45,29 @@ class ResellerTable extends Component
     ];
 
 
+    public function blankEditing(): array
+    {
+        return [
+            'company_name' => '',
+            'nif' => '',
+            'country_id' => null,
+            'address_1' => '',
+            'address_2' => '',
+            'city' => '',
+            'state' => '',
+            'postal_code' => '',
+            'status_id' => null,
+            'markup' => null,
+            'mpnid' => null,
+            'price_list_id' => null,
+        ];
+    }
+
     public function mount()
     {
-        $this->editing      = $this->makeBlankTransaction();
+        $this->editing = $this->blankEditing();
+        $this->editingId = null;
+
         $this->creatingUser = $this->makeBlankTransactionUser();
     }
 
@@ -82,31 +104,68 @@ class ResellerTable extends Component
         $this->validateOnly($propertyName);
     }
 
-    public function makeBlankTransaction(){return Reseller::make(['date' => now(), 'status' => 'success']);}
     public function makeBlankTransactionUser(){return User::make(['date' => now(), 'status' => 'success']);}
 
-    public function edit(Reseller $reseller)
+    public function edit($resellerId)
     {
-        $this->showCreateUser = false;
-        $this->showEditModal = true;
+        $this->resetErrorBag();
+        $this->resetValidation();
 
-        if ($this->editing->isNot($reseller)) $this->editing = $reseller;
-        $this->editing = $reseller;
+        $this->showCreateUser = false;
+
+        $reseller = Reseller::query()->findOrFail($resellerId)->fresh();
+
+        $this->editingId = (int) $reseller->id;
+        $this->editing = array_merge($this->blankEditing(), [
+            'company_name' => $reseller->company_name,
+            'nif' => $reseller->nif,
+            'country_id' => $reseller->country_id,
+            'address_1' => $reseller->address_1,
+            'address_2' => $reseller->address_2,
+            'city' => $reseller->city,
+            'state' => $reseller->state,
+            'postal_code' => $reseller->postal_code,
+            'status_id' => $reseller->status_id,
+            'markup' => $reseller->markup,
+            'mpnid' => $reseller->mpnid,
+            'price_list_id' => $reseller->price_list_id,
+        ]);
+
+        $this->showEditModal = true;
     }
 
     public function create()
     {
-        if ($this->editing->getKey()) $this->editing = $this->makeBlankTransaction();
+        $this->editing = $this->blankEditing();
+        $this->editingId = null;
+
         $this->creatingUser = $this->makeBlankTransactionUser();
 
         $this->showEditModal = true;
         $this->showCreateUser = true;
     }
 
+    public function submit()
+    {
+        return $this->showCreateUser ? $this->savecreate() : $this->save();
+    }
+
     public function save()
     {
-        $this->editing->save();
+        if (!$this->editingId) {
+            $this->notify('error', 'No reseller selected for edit');
+            return;
+        }
+
+        $this->validate();
+
+        $reseller = Reseller::query()->findOrFail($this->editingId);
+        $reseller->update($this->editing);
+
         $this->showEditModal = false;
+        $this->resetPage();
+
+        $this->notify('success', 'Reseller updated successfully');
     }
 
     public function savecreate()
@@ -115,16 +174,16 @@ class ResellerTable extends Component
         try {
 
             $newReseller =  Reseller::create([
-                'company_name'  => $this->editing->company_name,
-                'nif'           => $this->editing->nif,
-                'country_id'    => $this->editing->country_id,
-                'address_1'     => $this->editing->address_1,
-                'address_2'     => $this->editing->address_2,
-                'city'          => $this->editing->city,
-                'state'         => $this->editing->state,
-                'postal_code'   => $this->editing->postal_code,
+                'company_name'  => $this->editing['company_name'],
+                'nif'           => $this->editing['nif'],
+                'country_id'    => $this->editing['country_id'],
+                'address_1'     => $this->editing['address_1'],
+                'address_2'     => $this->editing['address_2'],
+                'city'          => $this->editing['city'],
+                'state'         => $this->editing['state'],
+                'postal_code'   => $this->editing['postal_code'],
                 'status_id'     => 1,
-                'mpnid'         => $this->editing->mpnid,
+                'mpnid'         => $this->editing['mpnid'],
                 'provider_id'   => $user->provider->id,
                 'price_list_id' => $user->provider->availablePriceLists->first()->id,
             ]);
@@ -135,7 +194,7 @@ class ResellerTable extends Component
                 'last_name'                 => $this->creatingUser->last_name,
                 'address'                   => $this->creatingUser->address,
                 'phone'                     => $this->creatingUser->phone,
-                'country_id'                => $this->editing->country_id,
+                'country_id'                => $this->editing['country_id'],
                 'notifications_preferences' => 'database',
                 'password'                  => Hash::make($this->password),
                 'user_level_id'             => 4, //reseller role id = 4
@@ -153,7 +212,7 @@ class ResellerTable extends Component
             Log::info('Error saving reseller: '.$e->getMessage());
         }
 
-        $this->notify('success','Reseller ' . $this->editing->company_name . ' created successfully');
+        $this->notify('success','Reseller ' . ($this->editing['company_name'] ?? '') . ' created successfully');
         return redirect()->route('reseller.index');
         $this->showEditModal = false;
 

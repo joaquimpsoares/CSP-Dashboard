@@ -1,4 +1,4 @@
-@props(['id', 'maxWidth'])
+@props(['id', 'maxWidth', 'closeOnBackdrop' => true])
 
 @php
 $id = $id ?? md5($attributes->wire('model'));
@@ -25,6 +25,7 @@ switch ($maxWidth ?? '2xl') {
 <div
     x-data="{
         show: @entangle($attributes->wire('model')),
+        closeOnBackdrop: @js($closeOnBackdrop),
         focusables() {
             let selector = 'a, button, input:not([type=\'hidden\']), textarea, select, details, [tabindex]:not([tabindex=\'-1\'])'
             return [...$el.querySelectorAll(selector)].filter(el => !el.hasAttribute('disabled'))
@@ -58,7 +59,7 @@ switch ($maxWidth ?? '2xl') {
     class="fixed inset-0 z-50"
 >
     <!-- Backdrop -->
-    <div x-cloak x-show="show" class="fixed inset-0 bg-black/20" @click="show = false"
+    <div x-cloak x-show="show" class="fixed inset-0 bg-black/20" @click="if (closeOnBackdrop) show = false"
         x-transition:enter="transition-opacity ease-out duration-200"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"

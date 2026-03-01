@@ -39,6 +39,7 @@ class ShowPricelist extends Component
     public $showImportModal = false;
     public $showDeleteModal = false;
     public $showEditModal = false;
+    public $showEditPricelistModal = false;
     public $showFilters = false;
     public $showCreate = false;
 
@@ -53,6 +54,7 @@ class ShowPricelist extends Component
     ];
 
     public Price $editing;
+    public PriceList $editingPricelist;
 
     public function updatedKeyword(){
         $this->searchproduct = Product::query()->where('instance_id', $this->priceList->instance_id)
@@ -70,8 +72,10 @@ class ShowPricelist extends Component
     }
     public function resetDate() { $this->reset(['taskduedate']); }
     public function toggleShowFilters() { $this->showFilters = ! $this->showFilters; }
-    public function mount() {
+    public function mount()
+    {
         $this->editing = $this->makeBlankTransaction();
+        $this->editingPricelist = $this->priceList ?? new PriceList();
     }
 
     public function rules() {
@@ -215,10 +219,29 @@ class ShowPricelist extends Component
         $this->editing = $price;
     }
 
-    public function editList(PriceList $pricelist){
-        $this->showEditModalpricelist = true;
+    public function editList(PriceList $pricelist)
+    {
         $this->useCachedRows();
-        $this->editingpricelist = $pricelist;
+        $this->editingPricelist = $pricelist;
+        $this->showEditPricelistModal = true;
+    }
+
+    public function savePricelist(): void
+    {
+        $this->validate([
+            'editingPricelist.name' => 'required|string|min:3',
+            'editingPricelist.description' => 'nullable|string',
+            'editingPricelist.margin' => 'nullable|numeric|min:0',
+            'editingPricelist.market' => 'nullable|string|min:2',
+            'editingPricelist.currency' => 'nullable|string|min:2',
+            'editingPricelist.effective_from' => 'nullable|date',
+            'editingPricelist.effective_to' => 'nullable|date|after_or_equal:editingPricelist.effective_from',
+        ]);
+
+        $this->editingPricelist->save();
+        $this->priceList->refresh();
+        $this->showEditPricelistModal = false;
+        $this->notify('Price list updated');
     }
 
     public function save(){
@@ -320,26 +343,28 @@ class ShowPricelist extends Component
 
     public function getRowsQueryProperty(){
         $prices = Price::query()
-        ->when($this->filters['perpetual'], fn($query) => $query->whereHas('related_product', function(Builder $query){
-            $query->where('is_perpetual', true);
-        }))
-        ->when($this->filters['nce'], fn($query) => $query->whereHas('related_product', function(Builder $query){
-            $query->where('productType', 'OnlineServicesNCE');
-        }))
-        ->when($this->filters['legacy'], fn($query) => $query->whereHas('related_product', function(Builder $query){
-            $query->where('productType', 'Legacy');
-        }))
-        ->where(function ($q)  {
-            $q->orwhere('price_list_id', $this->priceList);
-            $q->orwhere('name', "like", "%{$this->search}%");
-            $q->orwhere('product_sku', "like", "%{$this->search}%");
-            $q->orWhere('price', 'like', "%{$this->search}%");
-            $q->orWhere('msrp', 'like', "%{$this->search}%");
-
-            $q->orwhereHas('product', function(Builder $q){
-                $q->where('category', 'like', "%{$this->search}%");
+            // Always scope to current price list first.
+            ->where('price_list_id', $this->priceList->id)
+            ->when($this->filters['perpetual'], fn($query) => $query->whereHas('related_product', function (Builder $query) {
+                $query->where('is_perpetual', true);
+            }))
+            ->when($this->filters['nce'], fn($query) => $query->whereHas('related_product', function (Builder $query) {
+                $query->where('productType', 'OnlineServicesNCE');
+            }))
+            ->when($this->filters['legacy'], fn($query) => $query->whereHas('related_product', function (Builder $query) {
+                $query->where('productType', 'Legacy');
+            }))
+            ->when($this->search !== '', function ($query) {
+                $query->where(function ($q) {
+                    $q->where('name', 'like', "%{$this->search}%")
+                        ->orWhere('product_sku', 'like', "%{$this->search}%")
+                        ->orWhere('price', 'like', "%{$this->search}%")
+                        ->orWhere('msrp', 'like', "%{$this->search}%")
+                        ->orWhereHas('product', function (Builder $q) {
+                            $q->where('category', 'like', "%{$this->search}%");
+                        });
+                });
             });
-        });
 
         return $this->applySorting($prices);
     }

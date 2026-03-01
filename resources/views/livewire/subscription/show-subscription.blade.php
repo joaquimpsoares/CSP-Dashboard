@@ -409,10 +409,20 @@
                                         <tr>
                                             <td class="w-full py-4 pl-4 pr-3 text-sm font-medium text-gray-900 max-w-0 sm:w-auto sm:max-w-none sm:pl-6">
                                                 {{$subscription->products->first()->name ?? ''}}
-                                                @if($subscription->orders->first() != null)
-                                                @if($subscription->orders->first()->orderproduct != null)
+                                                @php($o = $subscription->orders->first())
+                                                @php($line = $o?->products?->first()?->pivot)
+                                                @if($line)
                                                 <span class="inline text-xs text-gray-600">
-                                                    {{$subscription->orders->first()->orderproduct->retail_price}} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                    @php($o = $subscription->orders->first())
+                                                    @php($line = $o?->products?->first()?->pivot)
+                                                    @if($line)
+                                                        {{ number_format((float)($line->getUnitSellPrice() ?? 0), 2) }} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                        @if($line->sell_unit_snapshot === null)
+                                                            <span class="ml-2 inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-200">Legacy pricing</span>
+                                                        @endif
+                                                    @else
+                                                        —
+                                                    @endif
                                                 </span>
                                                 @endif
                                                 @endif
@@ -439,23 +449,53 @@
                                             <td class="px-3 py-4 text-sm text-gray-500">
                                                 @if($subscription->IsMigrated())
                                                 @if($subscription->migratedTo->orders->first() != null)
-                                                @if($subscription->migratedTo->orders->first()->orderproduct != null)
+                                                @php($o = $subscription->migratedTo?->orders?->first())
+                                                @php($line = $o?->products?->first()?->pivot)
+                                                @if($line)
                                                 <span class="inline text-sm font-normal leading-5">
-                                                    {{number_format(($subscription->migratedTo->orders->first()->orderproduct->retail_price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                    @php($o = $subscription->migratedTo?->orders?->first())
+                                                    @php($line = $o?->products?->first()?->pivot)
+                                                    @if($line)
+                                                        {{ number_format((float)($line->getTotalSellPrice() ?? 0), 2) }} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                        @if($line->sell_unit_snapshot === null)
+                                                            <span class="ml-2 inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-200">Legacy pricing</span>
+                                                        @endif
+                                                    @else
+                                                        —
+                                                    @endif
                                                 </span>
                                                 @endif
                                                 @endif
                                                 @endif
 
-                                                @if($subscription->orders->first() != null)
-                                                @if($subscription->orders->first()->orderproduct != null)
+                                                @php($o = $subscription->orders->first())
+                                                @php($line = $o?->products?->first()?->pivot)
+                                                @if($line)
                                                 @if($subscription->product->IsPerpetual())
                                                 <span class="inline text-sm font-normal leading-5">
-                                                    {{number_format(($subscription->orders->first()->orderproduct->retail_price*$subscription->amount))}} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                    @php($o = $subscription->orders->first())
+                                                    @php($line = $o?->products?->first()?->pivot)
+                                                    @if($line)
+                                                        {{ number_format((float)($line->getTotalSellPrice() ?? 0), 2) }} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                        @if($line->sell_unit_snapshot === null)
+                                                            <span class="ml-2 inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-200">Legacy pricing</span>
+                                                        @endif
+                                                    @else
+                                                        —
+                                                    @endif
                                                 </span>
                                                 @else
                                                 <span class="inline text-sm font-normal leading-5">
-                                                    {{number_format(($subscription->orders->first()->orderproduct->retail_price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                    @php($o = $subscription->orders->first())
+                                                    @php($line = $o?->products?->first()?->pivot)
+                                                    @if($line)
+                                                        {{ number_format((float)($line->getTotalSellPrice() ?? 0), 2) }} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                        @if($line->sell_unit_snapshot === null)
+                                                            <span class="ml-2 inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-200">Legacy pricing</span>
+                                                        @endif
+                                                    @else
+                                                        —
+                                                    @endif
                                                 </span>
                                                 @endif
                                                 @endif

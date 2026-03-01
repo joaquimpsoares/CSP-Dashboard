@@ -221,9 +221,20 @@
                                                         </span>
                                                     </div>
                                                     @if($subscription->orders->first())
-                                                    @if($subscription->orders->first()->orderproduct != null)
+                                                    @php($o = $subscription->orders->first())
+                                                    @php($line = $o?->products?->first()?->pivot)
+                                                    @if($line)
                                                     <span class="inline text-xs text-gray-600">
-                                                        {{$subscription->orders->first()->orderproduct->retail_price}} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                        @php($o = $subscription->orders->first())
+                                                        @php($line = $o?->products?->first()?->pivot)
+                                                        @if($line)
+                                                            {{ number_format((float)($line->getUnitSellPrice() ?? 0), 2) }} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                            @if($line->sell_unit_snapshot === null)
+                                                                <span class="ml-2 inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-200">Legacy pricing</span>
+                                                            @endif
+                                                        @else
+                                                            —
+                                                        @endif
                                                     </span>
                                                     @endif
                                                     @endif
@@ -257,10 +268,21 @@
                                             </td>
                                             <td class="px-3 py-4 text-sm text-gray-500">
                                                 @if($subscription->orders->first())
-                                                @if($subscription->orders->first()->orderproduct != null)
+                                                @php($o = $subscription->orders->first())
+                                                @php($line = $o?->products?->first()?->pivot)
+                                                @if($line)
                                                 <a class="block w-full h-full p-0 m-0 text-indigo-600 no-underline bg-transparent border-0 hover:text-gray-900 hover:no-underline" href="/subscription/{{$subscription->id}}">
                                                     <span class="inline text-sm font-normal leading-5">
-                                                        {{number_format(($subscription->orders->first()->orderproduct->retail_price*$subscription->amount)*($subscription->billing_period === 'annual' ? 12 : 1 ),2)}} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                        @php($o = $subscription->orders->first())
+                                                        @php($line = $o?->products?->first()?->pivot)
+                                                        @if($line)
+                                                            {{ number_format((float)($line->getTotalSellPrice() ?? 0), 2) }} {{$subscription->currency}} / {{$subscription->billing_period}}
+                                                            @if($line->sell_unit_snapshot === null)
+                                                                <span class="ml-2 inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-200">Legacy pricing</span>
+                                                            @endif
+                                                        @else
+                                                            —
+                                                        @endif
                                                     </span>
                                                 </a>
                                                 @endif

@@ -31,10 +31,7 @@ class InstanceController extends Controller
 
     public function index()
     {
-        $instances = Instance::withExpired()->get();
-        // $instances = Instance::all();
-
-        return view('packages.cards', compact('instances'));
+        return view('instance.index');
     }
 
     public function create(Request $request)
@@ -66,9 +63,25 @@ class InstanceController extends Controller
 
         $this->validate($request, [
             'name' => 'required|String',
+            'provider_id' => 'required|integer|exists:providers,id',
             'tenant_id' => 'required|String',
-            'external_url' => 'String'
+            'external_url' => 'nullable|String'
         ]);
+
+        // CSP mode lock is enforced at provider level, but only for Microsoft instances.
+        // If a provider already has a Microsoft instance with external_type set, you cannot create a new Microsoft instance with a different mode.
+        $existingMode = Instance::query()
+            ->where('provider_id', $request->provider_id)
+            ->where('type', 'Microsoft')
+            ->whereNotNull('external_type')
+            ->orderByDesc('id')
+            ->value('external_type');
+
+        if (!empty($existingMode) && $external_type !== $existingMode) {
+            return redirect()->back()->withErrors([
+                'external_type' => 'This provider is locked to CSP mode "' . $existingMode . '". You cannot create a Microsoft instance in mode "' . $external_type . '".',
+            ])->withInput();
+        }
 
         $instance = Instance::create([
             'name' => $request->name,
@@ -112,35 +125,27 @@ class InstanceController extends Controller
     */
     public function edit(Instance $instance)
     {
+        // Ensure provider relation is available for the sidebar.
+        $instance->loadMissing('provider');
 
-        switch ($instance->type) {
-            case 'kaspersky':
+        $certificate = null;
+        $expiration = null;
 
-                try {
-                    $certificate = Crypt::decryptString($instance->certificate);
-                } catch (DecryptException $e) {
-                    //
-                }
-                return view('packages.kaspersky.kaspersky', compact('instance','certificate'));
-                break;
-
-                default:
-                if ($instance->external_token_updated_at == null)
-
-                $expiration = $instance->external_token_updated_at;
-
-                else
-
-                $expiration = $instance->external_token_updated_at->addDays(90);
-
-                return view('packages.microsoft.microsoft', compact('instance', 'expiration'));
-                break;
+        if (($instance->type ?? '') === 'kaspersky') {
+            try {
+                $certificate = $instance->certificate ? Crypt::decryptString($instance->certificate) : null;
+            } catch (DecryptException $e) {
+                $certificate = null;
             }
+        }
 
+        // Historical logic: Microsoft token validity ~90 days from updated_at.
+        if (($instance->type ?? '') === 'Microsoft' && $instance->external_token_updated_at) {
+            $expiration = $instance->external_token_updated_at->copy()->addDays(90);
+        }
 
-
-                return view('packages.microsoft.microsoft', compact('instance', 'expiration'));
-            }
+        return view('instance.edit', compact('instance', 'certificate', 'expiration'));
+    }
 
             /**
             * Update the specified resource in storage.
@@ -151,27 +156,49 @@ class InstanceController extends Controller
             */
             public function update(Request $request, $id)
             {
-                $user = Auth::user();
-
                 $this->validate($request, [
-                    'name' => 'String',
-                    'tenant_id' => 'String',
-                    'external_type' => 'String|in:direct,indirect',
-                    'external_url' => 'String'
+                    'name' => 'nullable|string',
+                    'tenant_id' => 'nullable|string',
+                    'external_type' => 'nullable|string|in:direct,indirect',
+                    'external_url' => 'nullable|string',
+                    'certificate' => 'nullable|string',
                 ]);
 
                 $instance = Instance::findOrFail($id);
 
-                $instance->name             = $request->input('name');
-                $instance->tenant_id        = $request->input('tenant_id');
-                $instance->external_type    = $request->external_type;
-                $instance->external_url     = $request->input('external_url');
+                if ($request->has('name')) {
+                    $instance->name = $request->input('name');
+                }
+                if ($request->has('tenant_id')) {
+                    $instance->tenant_id = $request->input('tenant_id');
+                }
+                if ($request->has('external_type')) {
+                    $newType = $request->input('external_type');
 
-                $instance->certificate      = Crypt::encryptString($request->input('certificate'));
+                        // Only Microsoft instances have CSP mode and the lock rules.
+                    if (($instance->type ?? '') === 'Microsoft') {
+                        // Once CSP mode is defined, it must not change (direct <-> indirect).
+                        if (!empty($instance->external_type) && $newType !== $instance->external_type) {
+                            return redirect()->back()->withErrors([
+                                'external_type' => 'CSP mode is locked once defined. You cannot change this instance from ' . $instance->external_type . ' to ' . $newType . '.',
+                            ])->withInput();
+                        }
+
+                        $instance->external_type = $newType;
+                    }
+                }
+                if ($request->has('external_url')) {
+                    $instance->external_url = $request->input('external_url');
+                }
+
+                // Only update certificate for kaspersky instances and when provided.
+                if (($instance->type ?? '') === 'kaspersky' && $request->filled('certificate')) {
+                    $instance->certificate = Crypt::encryptString($request->input('certificate'));
+                }
 
                 $instance->save();
 
-                return redirect()->back()->with('success', 'Instance updated succesfully')->withInput(['tab'=>'tabPageID']);;
+                return redirect()->back()->with('success', 'Instance updated successfully');
             }
 
 

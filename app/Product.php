@@ -9,6 +9,7 @@ use GPBMetadata\Google\Api\Log;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Jobs\ImportPerpetuaMicrosoftJob;
 use App\Jobs\ImportProductsMicrosoftJob;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,6 +19,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 class Product extends Model
 {
     use Dispatchable;
+    use SoftDeletes;
 
     protected $casts = [
         'has_addons'                => 'boolean',

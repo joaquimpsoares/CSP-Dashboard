@@ -278,9 +278,7 @@
                                             </div>
                                         </dl>
                                     </div>
-                                    @if($order->orderproduct)
-                                    <span class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">Total Products {{$order->orderproduct->where('order_id', $order->id)->count()}}</span>
-                                    @endif
+                                    <span class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">Total Products {{ $order->products->count() }}</span>
                                     @foreach($order->products as $key => $value)
                                     <div class="px-1 py-1 sm:px-6">
                                         <h3 class="text-lg font-medium leading-6 text-gray-900">
@@ -302,7 +300,7 @@
                                                     {{ ucwords(trans_choice('messages.product_term', 1)) }}
                                                 </dt>
                                                 <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                    {{$order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->term_duration}}
+                                                    {{ $value->pivot->term_duration }}
                                                 </dd>
                                             </div>
                                             <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -310,7 +308,7 @@
                                                     {{ ucwords(trans_choice('messages.billing_cycle', 2)) }}
                                                 </dt>
                                                 <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                    {{$order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->billing_cycle}}
+                                                    {{ $value->pivot->billing_cycle }}
                                                 </dd>
                                             </div>
                                             <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -318,7 +316,7 @@
                                                     {{ ucwords(trans_choice('messages.license', 2)) }}
                                                 </dt>
                                                 <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                    {{$order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->quantity}}
+                                                    {{ $value->pivot->quantity }}
                                                 </dd>
                                             </div>
                                             <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -326,7 +324,11 @@
                                                     {{ ucwords(trans_choice('messages.price', 1)) }}
                                                 </dt>
                                                 <dd class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                                    {{ number_format(($order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->quantity*$order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()->retail_price) * ($order->orderproduct->where('order_id', $order->id)->where('product_id', $value->id)->first()['billing_cycle'] === 'annual' ? 12 : 1 ),2) }}
+                                                    @php($line = $value->pivot)
+                                                    {{ number_format((float)($line->getTotalSellPrice() ?? 0), 2) }}
+                                                    @if($line->sell_unit_snapshot === null)
+                                                        <span class="ml-2 inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-200">Legacy pricing</span>
+                                                    @endif
                                                 </dd>
                                             </div>
                                             <div class="py-0 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

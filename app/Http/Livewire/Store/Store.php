@@ -107,14 +107,19 @@ class Store extends Component
             $billing_cycle = $product->supported_billing_cycles[0];
         }
 
+        $matcher = app(\App\Services\Pricing\PriceListItemMatcher::class);
+        $pli = $this->priceList ? $matcher->match((int)$this->priceList, $product, $billing_cycle, $term_duration ?? null) : null;
+
         $cart->products()->attach($product, [
             'id' => Str::uuid(),
             'price' => $product->price->price,
             'retail_price' => $product->price->msrp,
             'quantity' => $product->minimum_quantity,
             'billing_cycle' => $billing_cycle,
-            'term_duration' => $term_duration ?? null
-            ]);
+            'term_duration' => $term_duration ?? null,
+            'price_list_item_id' => $pli?->id,
+            'currency' => $pli?->currency,
+        ]);
 
         $this->emit('updateCart');
         $this->notify('Product added to cart: '. $product->name );

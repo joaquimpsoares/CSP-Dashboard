@@ -15,6 +15,8 @@ use App\Repositories\CustomerRepositoryInterface;
 use App\Repositories\ProviderRepositoryInterface;
 use App\Repositories\ResellerRepositoryInterface;
 use App\Repositories\SubscriptionRepositoryInterface;
+use App\Services\MicrosoftCsp\Policies\NceSubscriptionPolicy;
+use App\Services\MicrosoftCsp\ScheduledChangesService;
 use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
 use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
 use Modules\MicrosoftCspConnection\Services\SubscriptionService;
@@ -110,6 +112,73 @@ class SubscriptionController extends Controller
 
         // Note: primary subscription management uses Livewire (ShowSubscription).
         // This controller method is retained as a non-Livewire fallback.
+
+        // ── NCE guardrail check ───────────────────────────────────────────────
+        // For NCE subscriptions, evaluate all immediate change requests against
+        // the Partner Center policy before sending anything to the API.
+        // Quantity decreases outside the 7-day window must go through scheduling;
+        // billing/term changes always schedule at renewal.
+        if ($subscriptions->product?->IsNCE()) {
+            /** @var NceSubscriptionPolicy $policy */
+            $policy = app(NceSubscriptionPolicy::class);
+
+            // Build the smallest valid PC-data stub from what we know locally.
+            // A real fetch could be added here, but we keep it lightweight and
+            // rely on local data; the conservative policy default handles unknown windows.
+            $pcStub = [
+                'quantity'             => $subscriptions->amount,
+                'billingCycle'         => $subscriptions->billing_period,
+                'termDuration'         => $subscriptions->term,
+                'CancellationAllowedUntil' => $subscriptions->CancellationAllowedUntil,
+                'commitmentEndDate'    => $subscriptions->expiration_data,
+            ];
+
+            $changeType = 'quantity';
+            $changeReq  = [
+                'type'         => 'quantity',
+                'new_quantity' => (int) $request->amount,
+            ];
+
+            if (!$amount->isEmpty() && !$billing_period->isEmpty()) {
+                // Both changed — evaluate the more restrictive: billing (always schedules).
+                $changeType = 'billing';
+                $changeReq  = ['type' => 'billing', 'new_billing_cycle' => $request->billing_period];
+            } elseif (!$billing_period->isEmpty()) {
+                $changeType = 'billing';
+                $changeReq  = ['type' => 'billing', 'new_billing_cycle' => $request->billing_period];
+            }
+
+            if ($request->scheduled !== 'true') {
+                // Only block/redirect if the caller is NOT already requesting scheduling.
+                $decision = $policy->evaluate($subscriptions, $pcStub, $changeReq);
+
+                if ($decision['mode'] === NceSubscriptionPolicy::MODE_SCHEDULE) {
+                    // Auto-schedule on the caller's behalf and redirect back with a message.
+                    try {
+                        $scheduler = app(ScheduledChangesService::class);
+                        $pcPayload = $decision['suggested_action']['payload'] ?? [];
+                        $scheduler->schedule($subscriptions, $pcPayload);
+                        $subscriptions->update(['changes_on_renew' => $pcPayload]);
+                        $order->update(['order_status_id' => 4]);
+                        return redirect()->back()->with(
+                            'warning',
+                            $decision['reason_message']
+                            . ' The change has been scheduled for renewal automatically.'
+                        );
+                    } catch (Exception $e) {
+                        $order->update(['order_status_id' => 3]);
+                        return Redirect::back()->with('danger', 'Error scheduling change: ' . $e->getMessage());
+                    }
+                }
+
+                if ($decision['mode'] === NceSubscriptionPolicy::MODE_BLOCKED) {
+                    $order->update(['order_status_id' => 3]);
+                    return Redirect::back()->with('danger', $decision['reason_message']);
+                }
+            }
+        }
+        // ── end NCE guardrail ─────────────────────────────────────────────────
+
         if ($subscriptions->product->IsNCE() && $request->scheduled === 'true') {
             try {
                 $subscriptionService->scheduleChange($customerId, $subscriptionId, [

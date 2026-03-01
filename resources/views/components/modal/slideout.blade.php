@@ -1,6 +1,6 @@
 
-@props(['id' => null, 'maxWidth' => null])
-<x-slideout :id="$id" :maxWidth="$maxWidth" {{ $attributes }}>
+@props(['id' => null, 'maxWidth' => null, 'closeOnBackdrop' => true])
+<x-slideout :id="$id" :maxWidth="$maxWidth" :closeOnBackdrop="$closeOnBackdrop" {{ $attributes }}>
     <div class="flex h-full flex-col">
         <!-- Header -->
         <div class="flex items-center justify-between border-b border-slate-200 px-6 py-4">

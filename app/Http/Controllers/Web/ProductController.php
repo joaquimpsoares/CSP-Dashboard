@@ -85,13 +85,20 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        // foreach ($product as $key => $product) {
-            $addons = $product->getaddons()->all();
-        // }
+        $addons = $product->getaddons()->all();
 
+        // Normalize supported billing cycles to array for the new UI.
+        $supportedBillingCycles = null;
+        if (is_string($product->supported_billing_cycles)) {
+            $decoded = json_decode($product->supported_billing_cycles, true);
+            if (is_array($decoded)) {
+                $supportedBillingCycles = $decoded;
+            }
+        } elseif (is_array($product->supported_billing_cycles)) {
+            $supportedBillingCycles = $product->supported_billing_cycles;
+        }
 
-
-        return view('product.edit', compact('product','addons'));
+        return view('product.edit-v2', compact('product', 'addons', 'supportedBillingCycles'));
     }
 
 
@@ -131,8 +138,18 @@ class ProductController extends Controller
             $product->maximum_quantity          = $request->maximum_quantity;
             $product->limit                     = $request->limit;
             $product->billing                   = $request->billing;
-            $product->supported_billing_cycles  = $request->supported_billing_cycles;
-           $product->save();
+            // Store supported billing cycles as JSON array.
+            $cycles = $request->supported_billing_cycles;
+            if (is_string($cycles)) {
+                $cycles = array_values(array_filter(array_map('trim', explode(',', $cycles))));
+            }
+            if (is_array($cycles)) {
+                $product->supported_billing_cycles = json_encode($cycles);
+            } else {
+                $product->supported_billing_cycles = json_encode([]);
+            }
+
+            $product->save();
 
             // $product->uri                       = $request->uri;
             // $product->term                      = $request->term;

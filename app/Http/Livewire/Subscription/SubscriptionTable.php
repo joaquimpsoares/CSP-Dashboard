@@ -20,12 +20,18 @@ class SubscriptionTable extends Component
     use WithPagination;
     use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows;
 
-    public $showEditModal = false;
+    public $showEditModal = false; // legacy (modal)
     public $search = '';
     public $quantity = '';
     public $addons = '';
     public $tt;
     public $subscription;
+
+    // New UI: inline collapsible edit per subscription
+    public ?int $openRowId = null;
+
+    // Policy decision shown in UI when editing a row
+    public ?array $policyDecision = null;
 
     public $autorenew;
     public $max_quantity = '999999999';
@@ -88,15 +94,167 @@ class SubscriptionTable extends Component
         ];
     }
 
-    public function edit(Subscription $subscription){
-        $this->showEditModal    = true;
-        $this->subscription     = $subscription;
-        $this->min_quantity     = $subscription->productonce->minimum_quantity;
-        $this->max_quantity     = $subscription->productonce->maximum_quantity;
-        $this->editing          = $subscription;
+    public function edit(Subscription $subscription)
+    {
+        // Inline edit (collapsible): keep one active editing model.
+        $this->subscription = $subscription;
+        $this->editing = $subscription;
+        $this->policyDecision = null;
+
+        $this->min_quantity = $subscription->productonce?->minimum_quantity ?? 1;
+        $this->max_quantity = $subscription->productonce?->maximum_quantity ?? 1;
+
+        $this->openRowId = (int) $subscription->id;
+        $this->showEditModal = false;
+
+        $this->evaluatePolicy();
+    }
+
+    public function closeEdit(): void
+    {
+        $this->openRowId = null;
+        $this->showEditModal = false;
+        $this->policyDecision = null;
+    }
+
+    public function updatedEditingAmount(): void
+    {
+        $this->evaluatePolicy();
+    }
+
+    public function updatedEditingBillingPeriod(): void
+    {
+        $this->evaluatePolicy();
+    }
+
+    public function updatedEditingTerm(): void
+    {
+        $this->evaluatePolicy();
+    }
+
+    private function evaluatePolicy(): void
+    {
+        if (!$this->editing?->id) {
+            $this->policyDecision = null;
+            return;
+        }
+
+        // Only enforce NCE guardrails when the product is NCE.
+        if (!$this->editing->productonce || !$this->editing->productonce->IsNCE()) {
+            $this->policyDecision = ['allowed' => true, 'mode' => 'immediate', 'reason_message' => null];
+            return;
+        }
+
+        // Determine which field(s) changed and choose the most restrictive type.
+        // billing/term always schedule; quantity may be immediate or scheduled.
+        $original = $this->editing->getOriginal();
+        $billingChanged = ($this->editing->billing_period ?? null) !== ($original['billing_period'] ?? null);
+        $termChanged    = ($this->editing->term ?? null) !== ($original['term'] ?? null);
+        $quantityChanged = (int) ($this->editing->amount ?? 0) !== (int) ($original['amount'] ?? 0);
+
+        // Decide change type: billing > term > quantity (most to least restrictive)
+        if ($billingChanged) {
+            $changeRequest = [
+                'type'              => 'billing',
+                'new_billing_cycle' => (string) $this->editing->billing_period,
+            ];
+        } elseif ($termChanged) {
+            $changeRequest = [
+                'type'              => 'term',
+                'new_term_duration' => (string) $this->editing->term,
+            ];
+        } else {
+            $changeRequest = [
+                'type'         => 'quantity',
+                'new_quantity' => (int) $this->editing->amount,
+            ];
+        }
+
+        try {
+            $pc = $this->editing->getSubscription($this->editing->customer, $this->editing);
+            $pcArr = $pc instanceof \Illuminate\Support\Collection ? $pc->toArray() : (is_array($pc) ? $pc : []);
+
+            /** @var \App\Services\MicrosoftCsp\Policies\NceSubscriptionPolicy $policy */
+            $policy = app(\App\Services\MicrosoftCsp\Policies\NceSubscriptionPolicy::class);
+
+            $this->policyDecision = $policy->evaluate($this->editing, $pcArr, $changeRequest);
+        } catch (\Throwable $e) {
+            // Conservative default: schedule.
+            $this->policyDecision = [
+                'allowed'       => true,
+                'mode'          => 'schedule',
+                'reason_code'   => 'PC_FETCH_FAILED',
+                'reason_message'=> 'Unable to confirm change window. Schedule for renewal instead.',
+            ];
+        }
+    }
+
+    public function scheduleForRenewal(): void
+    {
+        if (!$this->editing?->id) {
+            return;
+        }
+
+        // Use the payload recommended by the policy decision when available;
+        // fall back to deriving it from the editing model's current state.
+        $payload     = $this->policyDecision['suggested_action']['payload'] ?? [];
+        $changeType  = $this->policyDecision['suggested_action']['type'] ?? 'quantity';
+
+        if (empty($payload)) {
+            // Derive payload from what the user changed.
+            $original        = $this->editing->getOriginal();
+            $billingChanged  = ($this->editing->billing_period ?? null) !== ($original['billing_period'] ?? null);
+            $termChanged     = ($this->editing->term ?? null) !== ($original['term'] ?? null);
+
+            if ($billingChanged) {
+                $changeType = 'billing';
+                $payload    = ['billingCycle' => (string) $this->editing->billing_period];
+            } elseif ($termChanged) {
+                $changeType = 'term';
+                $payload    = ['termDuration' => (string) $this->editing->term];
+            } else {
+                $changeType = 'quantity';
+                $payload    = ['quantity' => (int) $this->editing->amount];
+            }
+        }
+
+        try {
+            $scheduler   = app(\App\Services\MicrosoftCsp\ScheduledChangesService::class);
+            $apiResponse = $scheduler->schedule($this->editing, $payload);
+
+            \App\Models\SubscriptionScheduledChange::create([
+                'subscription_id'      => $this->editing->id,
+                'provider_id'          => $this->editing->provider_id ?? null,
+                'customer_id'          => $this->editing->customer_id ?? null,
+                'pc_subscription_id'   => $this->editing->subscription_id,
+                'type'                 => $changeType,
+                'payload'              => $payload,
+                'status'               => 'pending',
+                'effective_date'       => $this->editing->expiration_data ?? null,
+                'requested_by_user_id' => auth()->id(),
+                'requested_by_email'   => auth()->user()?->email,
+                'policy_decision'      => $this->policyDecision,
+                'api_response'         => $apiResponse,
+            ]);
+
+            $this->notify('', 'Scheduled for renewal', 'success');
+            $this->closeEdit();
+        } catch (\Throwable $e) {
+            $this->notify('', 'Scheduling failed: ' . $e->getMessage(), 'error');
+        }
     }
 
     public function save(){
+
+        // Enforce NCE quantity guardrails before applying changes.
+        if (($this->policyDecision['mode'] ?? null) === 'schedule') {
+            $this->notify('', $this->policyDecision['reason_message'] ?? 'This change must be scheduled for renewal.', 'error');
+            return;
+        }
+        if (($this->policyDecision['mode'] ?? null) === 'blocked') {
+            $this->notify('', $this->policyDecision['reason_message'] ?? 'This change is blocked.', 'error');
+            return;
+        }
 
         $this->showEditModal = false;
         $before = $this->editing->getOriginal('amount');
@@ -214,6 +372,7 @@ class SubscriptionTable extends Component
         $fields = collect($this->editing->getChanges())->except(['updated_at','refundableQuantity','expiration_data','CancellationAllowedUntil']);
         $this->notify('You\'ve updated '.  $fields .' Subscription');
         $this->emit('refreshTransactions');
+        $this->closeEdit();
     }
 
     public function exportSelected(){
@@ -288,6 +447,6 @@ class SubscriptionTable extends Component
 
         return view('livewire.subscription.subscription-table', [
             'subscriptions' => $this->rows,
-        ])->extends('layouts.master');
+        ]);
     }
 }

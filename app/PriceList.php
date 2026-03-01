@@ -5,9 +5,12 @@ namespace App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PriceList extends Model
 {
+    use SoftDeletes;
+
     public $dates = ['confirmed_changes_at'];
 
     public function format()

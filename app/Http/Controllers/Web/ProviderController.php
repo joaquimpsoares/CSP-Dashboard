@@ -144,11 +144,10 @@ class ProviderController extends Controller
 
     public function edit(Provider $provider)
     {
-
         // provider/{provider}/edit
+        $countries = Country::pluck('name', 'id');
 
-        $countries = Country::all();
-        return view('provider.edit', compact('countries'));
+        return view('provider.edit-v2', compact('provider', 'countries'));
     }
 
 

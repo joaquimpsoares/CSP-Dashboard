@@ -16,19 +16,29 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    @if(Auth::user()->userLevel?->name !== config('app.customer'))
+                    @role('Super Admin|Admin')
                         <x-nav-link :href="route('provider.index')" :active="request()->routeIs('provider.*')">
                             {{ __('Providers') }}
                         </x-nav-link>
+                    @endrole
 
+                    @can(config('app.reseller_index'))
                         <x-nav-link :href="route('reseller.index')" :active="request()->routeIs('reseller.*')">
                             {{ __('Resellers') }}
                         </x-nav-link>
+                    @endcan
 
+                    @can(config('app.customer_index'))
                         <x-nav-link :href="route('customer.index')" :active="request()->routeIs('customer.*')">
                             {{ __('Customers') }}
                         </x-nav-link>
-                    @endif
+                    @endcan
+
+                    @hasanyrole('Super Admin|Admin|Provider')
+                        <x-nav-link :href="route('instances.index')" :active="request()->routeIs('instances.*')">
+                            {{ __('Instances') }}
+                        </x-nav-link>
+                    @endhasanyrole
 
                     <x-nav-link :href="route('subscription.index')" :active="request()->routeIs('subscription.*')">
                         {{ __('Subscriptions') }}
@@ -38,7 +48,15 @@
                         {{ __('Orders') }}
                     </x-nav-link>
 
-                    @if(Auth::user()->userLevel?->name !== config('app.customer'))
+                    @php($cartCount = Auth::user()->cart?->products?->count() ?? 0)
+                    <a href="{{ route('cart.index') }}" class="relative inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-slate-600 hover:text-slate-900">
+                        <span>Cart</span>
+                        @if($cartCount > 0)
+                            <span class="inline-flex items-center rounded-full bg-rose-600 px-2 py-0.5 text-xs font-semibold text-white">{{ $cartCount }}</span>
+                        @endif
+                    </a>
+
+                    @hasanyrole('Super Admin|Admin|Provider')
                     <!-- Configuration dropdown (less frequent tasks) -->
                     <x-dropdown align="right" width="56">
                         <x-slot name="trigger">
@@ -57,12 +75,18 @@
                             <x-dropdown-link :href="route('product.index')">
                                 {{ __('Products') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('priceList.index')">
+                            <x-dropdown-link :href="route('pricing.price_lists.index')">
                                 {{ __('Price Lists') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('priceList.index')">
+                                {{ __('Price Lists (legacy)') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('pricing.index')">
+                                {{ __('Pricing') }}
                             </x-dropdown-link>
                         </x-slot>
                     </x-dropdown>
-                    @endif
+                    @endhasanyrole
                 </div>
 
                 <!-- Global search (icon) -->
@@ -123,6 +147,12 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            @hasanyrole('Super Admin|Admin|Provider')
+                <x-responsive-nav-link :href="route('instances.index')" :active="request()->routeIs('instances.*')">
+                    {{ __('Instances') }}
+                </x-responsive-nav-link>
+            @endhasanyrole
         </div>
 
         <!-- Responsive Settings Options -->

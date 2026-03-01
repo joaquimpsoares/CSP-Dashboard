@@ -113,6 +113,21 @@ Route::group(['middleware' => 'auth'], function ()
             Route::post('/reseller', 'ResellerController@store')->middleware('permission:' . config('app.reseller_create'))->name('reseller.store');
             Route::resource('product', 'ProductController');
 
+            // Pricing Engine (provider dashboard)
+            Route::prefix('pricing')->middleware(['auth'])->group(function () {
+                Route::get('/', [App\Http\Controllers\Web\PricingController::class, 'index'])->name('pricing.index');
+                Route::get('/rules', [App\Http\Controllers\Web\PricingController::class, 'rules'])->name('pricing.rules');
+                Route::get('/rules/create', [App\Http\Controllers\Web\PricingController::class, 'rulesCreate'])->name('pricing.rules.create');
+                Route::post('/rules/create', [App\Http\Controllers\Web\PricingController::class, 'rulesStore'])->name('pricing.rules.store');
+                Route::get('/rules/{id}/edit', [App\Http\Controllers\Web\PricingController::class, 'rulesEdit'])->name('pricing.rules.edit');
+                Route::post('/rules/{id}/edit', [App\Http\Controllers\Web\PricingController::class, 'rulesUpdate'])->name('pricing.rules.update');
+                Route::post('/rules/{id}/delete', [App\Http\Controllers\Web\PricingController::class, 'rulesDelete'])->name('pricing.rules.delete');
+                Route::get('/simulator', [App\Http\Controllers\Web\PricingController::class, 'simulator'])->name('pricing.simulator');
+                Route::post('/simulate', [App\Http\Controllers\Web\PricingController::class, 'simulate'])->name('pricing.simulate');
+                Route::post('/normalize', [App\Http\Controllers\Web\PricingController::class, 'normalize'])->name('pricing.normalize');
+                Route::post('/import/microsoft', [App\Http\Controllers\Web\PricingController::class, 'importMicrosoft'])->name('pricing.import.microsoft');
+            });
+
             Route::group(['middleware' => ['check_provider']], function ()
             {
                 /*
@@ -142,6 +157,15 @@ Route::group(['middleware' => 'auth'], function ()
             Route::post('/customer', 'CustomerController@store')->middleware('permission:' . config('app.customer_create'))->name('customer.store');
             Route::get('/customer', 'CustomerController@index')->middleware('permission:' . config('app.customer_index'))->name('customer.index');
 
+            // Subscription guardrail endpoints (NCE policy + scheduling)
+            Route::post('/subscriptions/{subscription}/validate-change', [\App\Http\Controllers\Web\SubscriptionChangeController::class, 'validateChange'])
+                ->middleware(['auth'])
+                ->name('subscriptions.validate_change');
+
+            Route::post('/subscriptions/{subscription}/schedule-change', [\App\Http\Controllers\Web\SubscriptionChangeController::class, 'scheduleChange'])
+                ->middleware(['auth'])
+                ->name('subscriptions.schedule_change');
+
             Route::get('priceList/{priceList}/prices', 'PriceListController@getPrices')->name('priceList.prices');
             Route::get('priceList/clone/{id}', 'PriceListController@clone')->name('priceList.clone');
             Route::post('priceList/update/{id}', 'PriceListController@update')->name('priceList.update');
@@ -156,7 +180,9 @@ Route::group(['middleware' => 'auth'], function ()
             /*
             Inicio Confirmar nivel de acesso reseller->provider
             */
-            Route::get('reseller/{reseller}/priceList', 'ResellerController@getPriceList')->name('reseller.price_lists');
+            Route::get('reseller/{reseller}/priceList', 'ResellerController@getPriceList')
+                ->middleware('permission:' . config('app.reseller_show'))
+                ->name('reseller.price_lists');
             Route::get('/jobs', 'JobsController@index')->name('jobs');
             Route::get('jobs/retry/{id}', 'JobsController@retryJob')->name('jobs.retry');
             Route::get('jobs/destroy/{id}', 'JobsController@destroy')->name('jobs.destroy');
@@ -214,6 +240,7 @@ Route::group(['middleware' => 'auth'], function ()
         // Every authenticated user can access routes here
             Route::get('DatabaseNotificationsMarkasRead', function () { auth()->user()->unreadNotifications->markAsRead(); return redirect()->back(); })->name('databasenotifications.markasread');
             //PriceList Routes
+            // Note: PriceListController::create() redirects to the new pricing UI (/pricing/price-lists).
             Route::resource('/priceList', 'PriceListController');
             // Route::resource('/price', 'PriceController');
             Route::get('/order/placeOrder', 'OrderController@placeOrder')->name('order.place_order');
@@ -223,6 +250,20 @@ Route::group(['middleware' => 'auth'], function ()
             Route::get('/legacy/home', 'HomeController@legacyHome')->name('legacy.home');
             Route::resource('/subscription', 'SubscriptionController');
             Route::get('/subscription.card', 'SubscriptionController@card')->middleware('permission:' . config('app.subscription_edit'))->name('subscription.card');
+
+            // New invoices (snapshotted). Legacy MSFT/Bullet invoices remain available.
+            Route::get('/invoices-new', [\App\Http\Controllers\Web\InvoiceController::class, 'index'])->name('invoices_new.index');
+            Route::get('/invoices-new/{invoice}', [\App\Http\Controllers\Web\InvoiceController::class, 'show'])->name('invoices_new.show');
+
+            // Stripe-like pricing catalogue (new UI, keeps legacy routes intact)
+            Route::get('/pricing/price-lists', function () {
+                return view('pricing.price-lists.index');
+            })->name('pricing.price_lists.index');
+
+            Route::get('/pricing/price-lists/{id}', function ($id) {
+                $priceList = \App\PriceList::withTrashed()->findOrFail($id);
+                return view('pricing.price-lists.show', compact('priceList'));
+            })->name('pricing.price_lists.show');
 
             //Novas rotas carrinho//
             Route::post('/cart/customer/add', 'CartController@addCustomer')->name('cart.add_customer');
@@ -289,7 +330,10 @@ Route::group(['middleware' => 'auth'], function ()
 
         // NOTE (Laravel 12 upgrade): Auth::routes() requires laravel/ui (removed). We use Laravel Breeze routes in routes/auth.php.
         Route::redirect('/', '/dashboard', 301);
-        Route::get('/home', function () { return redirect()->route('dashboard'); })->name('home.redirect');
+        // Keep legacy route name 'home' used by old layouts/links.
+        Route::get('/home', function () { return redirect()->route('dashboard'); })->name('home');
+        // Backwards-compatible alias
+        Route::get('/legacy/home', function () { return redirect()->route('dashboard'); })->name('home.redirect');
         Route::impersonate();
 
         Route::get('/mailable', function () {

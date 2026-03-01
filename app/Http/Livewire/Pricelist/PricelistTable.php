@@ -152,14 +152,21 @@ class PricelistTable extends Component
     }
 
 
-    public function render(PriceList $priceLists)
+    public function render()
     {
-        $priceLists = PriceList::get();
-        $this->instances = $this->getUser()->provider->instances;
+        $user = $this->getUser();
+        // Instances come from either provider user or reseller user (via provider)
+        $provider = $user?->provider ?? $user?->reseller?->provider;
+        $this->instances = $provider?->instances ?? collect();
 
         return view('livewire.pricelist.pricelist-table', [
             'priceLists' => $this->rows,
-            'instances'  => $this->instances
-         ]);
+            'instances'  => $this->instances,
+            'counts'     => [
+                'all' => PriceList::query()->count(),
+                'provider' => PriceList::query()->whereNotNull('provider_id')->count(),
+                'reseller' => PriceList::query()->whereNotNull('reseller_id')->count(),
+            ],
+        ]);
     }
 }

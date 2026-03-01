@@ -85,33 +85,34 @@ class PlaceOrderMicrosoft implements ShouldQueue
 
         try {
             foreach ($products as $product) {
-                $quantity      = $product->pivot->quantity;
-                $billingCycle  = strtolower($product->pivot->billing_cycle);
-                $termDuration  = strtolower($product->pivot->term_duration);
-                $mpnId         = $this->order->customer->format()['mpnid'] ?? null;
+                $quantity = $product->pivot->quantity;
 
-                Log::info('Billing cycle: ' . $billingCycle);
-                Log::info('Term Duration: ' . $termDuration);
+                $pli = null;
+                if (!empty($product->pivot->price_list_item_id)) {
+                    $pli = \App\Models\Pricing\PriceListItem::query()->find($product->pivot->price_list_item_id);
+                }
 
-                if ($product['is_perpetual']) {
-                    // Perpetual product: resolve catalog item ID from the product URI
-                    Log::info('Catalog Item URL: ' . $product['uri']);
-                    $catalogItemId = $offerService->getCatalogItemId($product['uri']);
+                $billingCycle = strtolower((string)($pli?->billing_cycle ?? $product->pivot->billing_cycle ?? 'none'));
+                $termDuration = strtolower((string)($pli?->term_duration ?? $product->pivot->term_duration ?? 'none'));
+                $mpnId = $this->order->customer->format()['mpnid'] ?? null;
 
-                } elseif ($product->IsNCE()) {
-                    // NCE product: build the URI from the SKU and resolve catalog item ID
-                    $country = $customer->country->iso_3166_2;
-                    $sku     = strtok($product->sku, ':');
-                    $id      = substr($product->sku, strpos($product->sku, ':') + 1);
+                // Resolve catalog item from the *price list item mapping*, not from Product.
+                $catalogItemId = $pli?->offer_id ?: ($pli?->sku_id ?: ($pli?->meter_id ?: $product['sku']));
 
-                    // NCE products use the product/sku/availabilities endpoint
-                    $nceUri        = "products/{$sku}/skus/{$id}/availabilities?country={$country}";
-                    $catalogItemId = $offerService->getCatalogItemId($nceUri);
-                    Log::info('NCE catalogItemId: ' . $catalogItemId);
-
-                } else {
-                    // Legacy / license-based product: SKU is the catalog item ID
-                    $catalogItemId = $product['sku'];
+                // Fallback for legacy logic when mapping isn't present (kept for backwards compat)
+                if (empty($catalogItemId)) {
+                    if ($product['is_perpetual']) {
+                        Log::info('Catalog Item URL: ' . $product['uri']);
+                        $catalogItemId = $offerService->getCatalogItemId($product['uri']);
+                    } elseif ($product->IsNCE()) {
+                        $country = $customer->country->iso_3166_2;
+                        $sku     = strtok($product->sku, ':');
+                        $id      = substr($product->sku, strpos($product->sku, ':') + 1);
+                        $nceUri  = "products/{$sku}/skus/{$id}/availabilities?country={$country}";
+                        $catalogItemId = $offerService->getCatalogItemId($nceUri);
+                    } else {
+                        $catalogItemId = $product['sku'];
+                    }
                 }
 
                 $lineItem = [

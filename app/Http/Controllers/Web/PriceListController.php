@@ -21,5 +21,12 @@ class PriceListController extends Controller
         return view('priceList.show', compact('priceList'));
     }
 
-
+    /**
+     * The new pricing UI handles price list creation via a Livewire drawer.
+     * Redirect any request for the legacy create page to the new UI.
+     */
+    public function create(): \Illuminate\Http\RedirectResponse
+    {
+        return redirect(route('pricing.price_lists.index'));
+    }
 }

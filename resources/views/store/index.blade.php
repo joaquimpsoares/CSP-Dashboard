@@ -1,20 +1,19 @@
-@extends('layouts.master')
-@section('css')
-<link href="{{ asset('css/app.css') }}" rel="stylesheet">
-<!-- Data table css -->
-<link href="{{URL::asset('assets/plugins/datatable/css/dataTables.bootstrap4.min.css')}}" rel="stylesheet" />
-<link href="{{URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css')}}"  rel="stylesheet">
-<link href="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.css')}}" rel="stylesheet" />
-<!-- Slect2 css -->
-<link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
-@endsection
+<x-app-layout>
+    <x-slot name="header">
+        <div class="flex items-start justify-between gap-4">
+            <div>
+                <h2 class="text-xl font-semibold tracking-tight text-slate-900">Store</h2>
+                <p class="mt-1 text-sm text-slate-600">Browse products and add them to your cart.</p>
+            </div>
+        </div>
+    </x-slot>
 
-@section('content')
-<livewire:store.store/>
-@endsection
-
-@section('scripts')
-
-
-@endsection
+    <div class="py-10">
+        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="rounded-2xl border border-slate-200 bg-white/80 shadow-sm">
+                <livewire:store.store/>
+            </div>
+        </div>
+    </div>
+</x-app-layout>
 

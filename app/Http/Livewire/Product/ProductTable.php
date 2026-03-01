@@ -2,22 +2,25 @@
 
 namespace App\Http\Livewire\Product;
 
-use App\Order;
 use App\Country;
-use App\Product;
 use App\Instance;
+use App\PriceList;
+use App\Product;
 use App\Provider;
+use App\Exports\ProductsExport;
+use App\Http\Livewire\DataTable\WithBulkActions;
+use App\Http\Livewire\DataTable\WithCachedRows;
+use App\Http\Livewire\DataTable\WithPerPagePagination;
+use App\Http\Livewire\DataTable\WithSorting;
+use App\Http\Traits\UserTrait;
+use App\Services\Pricing\PriceContext;
+use App\Services\Pricing\PricingEngine;
+use App\Jobs\BulkAddProductsToPriceListJob;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Http\Traits\UserTrait;
-use App\Exports\ProductsExport;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Http\Livewire\DataTable\WithSorting;
-use App\Http\Livewire\DataTable\WithCachedRows;
-use App\Http\Livewire\DataTable\WithBulkActions;
-use App\Http\Livewire\DataTable\WithPerPagePagination;
 
 class ProductTable extends Component
 {
@@ -25,94 +28,195 @@ class ProductTable extends Component
     use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows;
     use UserTrait;
 
-    public $password;
     public $license = false;
-    public $isAvailable = true;
     public $perpetual = false;
     public $showDeleteModal = false;
-    public $password_confirmation;
     public $showImportModal = false;
-    public $showEditModal = false;
 
-    public Product $editing;
+    public string $statusFilter = 'all'; // all|active|archived
+
     public $filters = [
         'search' => '',
         'name' => null,
         'description' => null,
     ];
-    public $search = '';
-    public $selectedProducts = [];
+
     public bool $bulkDisabled = true;
 
-    public function mount(){$this->editing = $this->makeBlankTransaction();}
-    public function updatingSearch(){$this->resetPage();}
-    public function import(){$this->showImportModal = true;}
+    // Bulk add to price list (Stripe drawer)
+    public bool $showBulkAddToPriceList = false;
+    public ?int $targetPriceListId = null;
+    public string $bulkPricingRule = 'copy_msrp'; // copy_msrp|margin_percent|fixed
+    public ?float $bulkMarginPercent = null;
+    public ?string $bulkFixedPrice = null;
+    public bool $bulkAvailability = true;
+    public array $bulkResult = [];
 
+    // pricing preview context
+    public ?int $providerId = null;
+    public ?int $resellerId = null;
+    public ?string $market = null;
+    public ?string $currency = null;
+    protected ?int $priceListId = null;
 
-    public function rules()
+    /** @var array<int, array<string,mixed>> keyed by product id */
+    public array $pricePreview = [];
+
+    public function mount(): void
     {
-        return [
-            'editing.name'                      => 'required'|'string'|'regex:/^[.@&]?[a-zA-Z0-9 ]+[ !.@&()]?[ a-zA-Z0-9!()]+/'|'max:255',
-            'editing.description'               => 'required'|'min:3',
-            'editing.vendor'                    => 'required'|'integer'|'min:1',
-            'editing.sku'                       => 'required'|'string'|'max:255'|'min:3',
-            'editing.catalog_item_id'           => 'nullable'|'string'|'max:255'|'min:3',
-            'editing.vendor'                    => 'required'|'string'|'max:255'|'min:3',
-            'editing.productType'               => 'required'|'string'|'max:255'|'min:3',
-            'editing.minimum_quantity'          => 'required'|'string'|'max:255'|'min:3',
-            'editing.maximum_quantity'          => 'required'|'integer'|'exists:statuses,id',
-            'editing.limit'                     => 'nullable'|'integer'|'min:3',
-            'editing.term'                      => 'required'|'integer'|'exists:price_list,id',
-            'editing.supported_billing_cycles'  => 'required'|'integer'|'exists:price_list,id',
-            'editing.terms'                     => 'required'|'integer'|'exists:price_list,id',
-            'editing.resellee_qualifications'   => 'required'|'integer'|'exists:price_list,id',
-            'is_available_for_purchase'         => 'required',
-        ];
-    }
+        $user = $this->getUser();
+        $provider = $user?->provider ?? $user?->reseller?->provider;
 
-    public function edit(Product $product)
-    {
-        $this->showEditModal = true;
-        $this->useCachedRows();
+        $this->providerId = $provider?->id;
+        $this->resellerId = $user?->reseller?->id;
 
-        if ($this->editing->isNot($product)) $this->editing = $product;
-        $this->editing = $product;
-    }
-
-    public function save(){
-
-        $this->editing->is_available_for_purchase = $this->isAvailable;
-        $this->editing->save();
-        $this->showEditModal = false;
-    }
-
-    public function makeBlankTransaction(){return Product::make(['date' => now(), 'status' => 'success']);}
-
-    public function deleteSelected(){
-        $deleteCount = $this->selectedRowsQuery->count();
-        foreach($this->selectedRowsQuery->get() as $row){
-            if($row->hasPrice() != null) {
-                $product = $row->name;
-                $this->notify('','This Product '. $product . ' has a price associated, cannot be deleted','error');
-                $this->showDeleteModal = false;
-                return false;
-            }elseif($row->hasPrice() == null){
-                $this->selectedRowsQuery->delete();
-                $this->showDeleteModal = false;
-            }
+        $pl = null;
+        if ($this->providerId) {
+            $pl = PriceList::query()
+                ->where('provider_id', $this->providerId)
+                ->where('source', 'microsoft_partnercenter')
+                ->orderByDesc('effective_from')
+                ->orderByDesc('id')
+                ->first();
         }
-        $this->notify('You\'ve deleted '.$deleteCount.' Product');
+
+        $this->priceListId = $pl?->id;
+        $this->market = $pl?->market ?? 'ES';
+        $this->currency = $pl?->currency ?? 'EUR';
     }
 
+    public function updatingFilters(): void
+    {
+        $this->resetPage();
+    }
 
-    public function importproducts(){
+    public function setStatusFilter(string $filter): void
+    {
+        if (!in_array($filter, ['all', 'active', 'archived'], true)) {
+            return;
+        }
+        $this->statusFilter = $filter;
+        $this->resetPage();
+    }
 
+    public function import(): void
+    {
+        $this->showImportModal = true;
+    }
+
+    public function deleteSelected(): void
+    {
+        $deleteCount = $this->selectedRowsQuery->count();
+        foreach ($this->selectedRowsQuery->get() as $row) {
+            if ($row->hasPrice() != null) {
+                $product = $row->name;
+                $this->notify('', 'This Product ' . $product . ' has a price associated, cannot be deleted', 'error');
+                $this->showDeleteModal = false;
+                return;
+            }
+
+            $this->selectedRowsQuery->delete();
+            $this->showDeleteModal = false;
+        }
+        $this->notify("You've deleted {$deleteCount} Product");
+    }
+
+    public function archive(int $id): void
+    {
+        Product::query()->findOrFail($id)->delete();
+        $this->notify('', 'Product archived', 'success');
+    }
+
+    public function restore(int $id): void
+    {
+        Product::withTrashed()->findOrFail($id)->restore();
+        $this->notify('', 'Product restored', 'success');
+    }
+
+    public function forceDelete(int $id): void
+    {
+        Product::withTrashed()->findOrFail($id)->forceDelete();
+        $this->notify('', 'Product deleted', 'success');
+    }
+
+    public function openBulkAddToPriceList(): void
+    {
+        $this->bulkResult = [];
+        $this->showBulkAddToPriceList = true;
+
+        // Default: provider's latest manual price list (fallback to any)
+        if (!$this->targetPriceListId && $this->providerId) {
+            $pl = PriceList::query()
+                ->where('provider_id', $this->providerId)
+                ->orderByDesc('effective_from')
+                ->orderByDesc('id')
+                ->first();
+            $this->targetPriceListId = $pl?->id;
+        }
+    }
+
+    public function closeBulkAddToPriceList(): void
+    {
+        $this->showBulkAddToPriceList = false;
+    }
+
+    public function executeBulkAddToPriceList(): void
+    {
+        if (empty($this->selected)) {
+            $this->bulkResult = ['error' => 'No products selected'];
+            return;
+        }
+
+        $this->validate([
+            'targetPriceListId' => 'required|integer|exists:price_lists,id',
+            'bulkPricingRule' => 'required|in:copy_msrp,margin_percent,fixed',
+            'bulkMarginPercent' => 'nullable|numeric|min:0',
+            'bulkFixedPrice' => 'nullable|numeric|min:0',
+            'bulkAvailability' => 'boolean',
+        ]);
+
+        $ids = array_map('intval', $this->selected);
+
+        if (count($ids) > 200) {
+            BulkAddProductsToPriceListJob::dispatch(
+                (int) $this->targetPriceListId,
+                $ids,
+                $this->bulkPricingRule,
+                $this->bulkMarginPercent,
+                $this->bulkFixedPrice,
+                (bool) $this->bulkAvailability,
+            );
+
+            $this->bulkResult = ['queued' => true, 'count' => count($ids)];
+            $this->showBulkAddToPriceList = false;
+            $this->selected = [];
+            $this->selectPage = false;
+            return;
+        }
+
+        $job = new BulkAddProductsToPriceListJob(
+            (int) $this->targetPriceListId,
+            $ids,
+            $this->bulkPricingRule,
+            $this->bulkMarginPercent,
+            $this->bulkFixedPrice,
+            (bool) $this->bulkAvailability,
+        );
+        $res = $job->handle();
+
+        $this->bulkResult = $res;
+        $this->showBulkAddToPriceList = false;
+        $this->selected = [];
+        $this->selectPage = false;
+    }
+
+    public function importproducts(): void
+    {
         if (!Auth::user()->provider) {
             abort(403, 'You do not have permission to perform this action.');
         }
 
-        if($this->license == true){
-
+        if ($this->license === true) {
             Log::info('Started importing NCE');
 
             $id = Auth::user()->provider->id;
@@ -124,9 +228,9 @@ class ProductTable extends Component
             $product->importNCELicenses($instance, $country);
         }
 
-        if($this->perpetual == true){
-
+        if ($this->perpetual === true) {
             Log::info('Started importing Perpetual');
+
             $id = Auth::user()->provider->id;
             $product = new Product();
             $provider = Provider::where('id', $id)->select('country_id')->first();
@@ -137,35 +241,117 @@ class ProductTable extends Component
 
             $this->notify('Perpetual Software has been scheduled for import');
         }
+
         $this->showImportModal = false;
     }
 
-    public function getRowsQueryProperty(){
-        $products = Product::query()
-        ->where(function ($query)  {
-            $query->where('id', "like", "%{$this->filters['search']}%");
-            $query->orWhere('sku', 'like', "%{$this->filters['search']}%");
-            $query->orWhere('name', 'like', "%{$this->filters['search']}%");
-            $query->orWhere('productType', 'like', "%{$this->filters['search']}%");
-            $query->orWhere('category', 'like', "%{$this->filters['search']}%");
-        })->
-        with(['instance']);
+    public function getRowsQueryProperty()
+    {
+        $q = Product::query();
 
-        return $this->applySorting($products);
+        if ($this->statusFilter === 'archived') {
+            $q->onlyTrashed();
+        } elseif ($this->statusFilter === 'all') {
+            $q->withTrashed();
+        }
+
+        $search = (string)($this->filters['search'] ?? '');
+        if ($search !== '') {
+            $q->where(function ($query) use ($search) {
+                $query->where('id', 'like', "%{$search}%")
+                    ->orWhere('sku', 'like', "%{$search}%")
+                    ->orWhere('name', 'like', "%{$search}%")
+                    ->orWhere('billing', 'like', "%{$search}%")
+                    ->orWhere('category', 'like', "%{$search}%");
+            });
+        }
+
+        $q->with(['instance']);
+
+        return $this->applySorting($q);
     }
-    public function getRowsProperty(){
+
+    public function getRowsProperty()
+    {
         return $this->cache(function () {
             return $this->applyPagination($this->rowsQuery);
         });
     }
 
-    public function exportSelected(){
+    public function exportSelected()
+    {
         return Excel::download(new ProductsExport, 'products.xlsx');
     }
-    public function render()
+
+    /**
+     * Compute sell_unit preview for a product SKU (reseller context if available).
+     */
+    protected function computePreview(PricingEngine $engine, Product $product): ?array
     {
+        if (!$this->providerId) {
+            return null;
+        }
+        if (!$product->sku) {
+            return null;
+        }
+
+        // Guess product type
+        $pt = 'license';
+        if (!empty($product->category) && str_contains(strtolower($product->category), 'azure')) {
+            $pt = 'azure';
+        }
+
+        $ctx = new PriceContext(
+            providerId: (int) $this->providerId,
+            resellerId: $this->resellerId,
+            customerId: null,
+            subscriptionId: null,
+            market: $this->market ?? 'ES',
+            currency: $this->currency ?? 'EUR',
+            productType: $pt,
+            offerId: null,
+            skuId: (string) $product->sku,
+            meterId: null,
+            productFamily: null,
+            category: null,
+            tags: [],
+            billingCycle: null,
+            term: $product->term ? (string) $product->term : null,
+            quantity: 1,
+        );
+
+        $res = $engine->quoteLine($ctx);
+        if (!$res->ok) {
+            return ['ok' => false, 'reason' => $res->reason];
+        }
+
+        return [
+            'ok' => true,
+            'sell_unit' => $res->outputs['sell_unit'] ?? null,
+            'reason' => $res->selectionReason,
+        ];
+    }
+
+    public function render(PricingEngine $engine)
+    {
+        // Compute previews for current page rows (cached per request)
+        foreach ($this->rows as $p) {
+            if (!isset($this->pricePreview[$p->id])) {
+                $this->pricePreview[$p->id] = $this->computePreview($engine, $p) ?? ['ok' => false, 'reason' => 'NO_CONTEXT'];
+            }
+        }
+
+        $allCount = Product::withTrashed()->count();
+        $activeCount = Product::count();
+        $archivedCount = Product::onlyTrashed()->count();
+
         return view('livewire.product.product-table', [
             'products' => $this->rows,
-        ])->extends('layouts.master');
+            'counts' => [
+                'all' => $allCount,
+                'active' => $activeCount,
+                'archived' => $archivedCount,
+            ],
+        ]);
     }
 }

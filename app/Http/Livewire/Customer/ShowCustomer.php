@@ -169,7 +169,16 @@ class ShowCustomer extends Component
     }
     public function makeBlankTransactionUser(){return User::make(['date' => now(), 'status' => 'success']);}
 
-    public function mount(){$this->creatingUser = $this->makeBlankTransactionUser();}
+    public function mount()
+    {
+        $this->creatingUser = $this->makeBlankTransactionUser();
+
+        // Ensure the edit form is always bound to a real model instance
+        // (avoids validating/saving against an empty model state)
+        if ($this->customer instanceof Customer) {
+            $this->editing = $this->customer;
+        }
+    }
     public function updated($propertyName){$this->validateOnly($propertyName);}
 
     public function checkQualificationStatus(Customer $customer){
@@ -192,9 +201,14 @@ class ShowCustomer extends Component
         $this->emit('refreshTransactions');
     }
 
-    public function edit(Customer $customer){
+    public function edit(Customer $customer)
+    {
+        $this->resetErrorBag();
+        $this->resetValidation();
+
+        // Always edit the freshest version from DB
+        $this->editing = $customer->fresh();
         $this->showEditModal = true;
-        $this->editing = $customer;
     }
 
     public function disable(Customer $customer){
@@ -276,41 +290,65 @@ class ShowCustomer extends Component
         $this->showuserCreateModal = true;
     }
 
-    public function save(Customer $customer){
-        // $this->validate();
+    public function save(Customer $customer)
+    {
+        // Validate the edit form before persisting
+        $this->validate();
+
         DB::beginTransaction();
-        $this->editing->save();
-        if(collect($this->editing->getChanges())->has('qualification')){
-            try {
+
+        try {
+            // Persist local changes
+            $this->editing->save();
+
+            // If qualification changed, sync it with Microsoft and store status locally
+            if (collect($this->editing->getChanges())->has('qualification')) {
                 $return = $this->editing->updateCustomerQualification($customer, $this->editing->qualification);
 
-                if ($return['vettingStatus'] == 'Denied') {
-                    $this->notify('', $return['vettingReason'] ,'error' );
-                    DB::rollBack();
-                    $this->editing->qualification_status = $return['vettingReason']->update();
-                    return false;
-                }
+                $vettingStatus = $return['vettingStatus'] ?? null;
+                $vettingReason = $return['vettingReason'] ?? null;
 
-                if ($return['vettingStatus'] == 'InReview') {
+                if ($vettingStatus === 'Denied') {
                     $customer->update([
-                        'qualification_status' => $return['vettingStatus']
+                        'qualification_status' => $vettingReason ?: 'Denied',
                     ]);
-                    $this->notify('','Your Qualification is '. $return['vettingStatus'] ,'info' );
+
+                    DB::rollBack();
+                    $this->notify('', $vettingReason ?: 'Qualification denied', 'error');
+                    return;
                 }
 
-            } catch (\Throwable $th) {
-                DB::rollBack();
-                $this->showEditModal = false;
-                $this->notify('error','updating ' . $th->getMessage());
+                if ($vettingStatus === 'InReview') {
+                    $customer->update([
+                        'qualification_status' => 'InReview',
+                    ]);
+                    $this->notify('', 'Your qualification is InReview', 'info');
+                }
+
+                if ($vettingStatus === 'Approved') {
+                    $customer->update([
+                        'qualification_status' => 'Approved',
+                    ]);
+                    $this->notify('', 'Your qualification is Approved', 'success');
+                }
             }
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            logger()->error('Customer save failed', [
+                'customer_id' => $customer->id ?? null,
+                'error' => $th->getMessage(),
+            ]);
+            $this->notify('', 'Save failed: ' . $th->getMessage(), 'error');
+            return;
         }
 
-        DB::commit();
-
         $this->showEditModal = false;
-        $this->notify('Customer ' . $customer->company_name . ' saved successfully, refresh page');
-        $this->emit('refreshTransactions');
+        $this->customer->refresh();
 
+        $this->notify('Customer ' . $customer->company_name . ' saved successfully', 'success');
+        $this->emit('refreshTransactions');
     }
 
     public function saveuser(Customer $customer){

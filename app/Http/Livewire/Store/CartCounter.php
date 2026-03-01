@@ -256,6 +256,7 @@ class CartCounter extends Component
                     'terms' => $this->terms ?? null,
                     'id' => $product->pivot->id,
                     'product_name' => $product->name,
+                    'vendor' => $product->vendor,
                     'minimum_quantity' => $product->minimum_quantity,
                     'maximum_quantity' => $product->maximum_quantity,
                     'addon' => $product->is_addon,

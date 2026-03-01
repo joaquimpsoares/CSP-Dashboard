@@ -193,8 +193,8 @@
     <!-- Save Transaction Modal -->
     <div>
         @if($showEditModal == true)
-        <form wire:submit.prevent="submit">
-            <x-modal.slideout wire:model="showEditModal">
+        <form wire:submit.prevent="submit" wire:key="customer-edit-form-{{ $editingId ?? 'new' }}">
+            <x-modal.slideout wire:model="showEditModal" :closeOnBackdrop="false">
                 @if ($showCreateUser == false)
                 <x-slot name="title">{{ ucwords(trans_choice('messages.edit_customer', 1)) }}</x-slot>
                 @elseif($showCreateUser == true)
@@ -202,7 +202,7 @@
                 @endif
                 <x-slot name="content">
                     <div class="mb-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600">
-                        Editing: <span class="font-semibold text-slate-900">{{ $editing->company_name ?? '—' }}</span> (ID: {{ $editing->id ?? '—' }})
+                        Editing: <span class="font-semibold text-slate-900">{{ $editing['company_name'] ?? '—' }}</span> (ID: {{ $editingId ?? '—' }})
                     </div>
 
                     @if ($errors->any())
@@ -221,12 +221,26 @@
                                 <div class="row">
                                     <div class="mb-4 col-md-6">
                                         <x-label for="company_name" class="">{{ ucwords(trans_choice('messages.company_name', 1)) }}</x-label>
-                                        <input class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20" value="{{ $editing->company_name ?? '' }}" type="text" id="company_name" name="company_name">
+                                        <input
+                                            wire:model.defer="editing.company_name"
+                                            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20"
+                                            type="text"
+                                            id="company_name"
+                                            name="company_name"
+                                            value="{{ $editing['company_name'] ?? '' }}"
+                                        >
                                         @error('editing.company_name')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                     </div>
                                     <div class="mb-2 col-md-6">
                                         <x-label for="nif">{{ ucwords(trans_choice('messages.nif', 1)) }}</x-label>
-                                        <input class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20" value="{{ $editing->nif ?? '' }}" type="text" id="nif" name="nif">
+                                        <input
+                                            wire:model.defer="editing.nif"
+                                            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20"
+                                            type="text"
+                                            id="nif"
+                                            name="nif"
+                                            value="{{ $editing['nif'] ?? '' }}"
+                                        >
                                         @error('editing.nif')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                     </div>
                                 </div>
@@ -237,7 +251,7 @@
                                         </label>
                                         <div class="mb-3 input-group">
                                             <select
-                                                wire:model.debounce.500ms="editing.country_id"
+                                                wire:model.defer="editing.country_id"
                                                 name="country_id"
                                                 id="country_id"
                                                 @class([
@@ -249,7 +263,7 @@
                                             >
                                                 <option value="" disabled>—</option>
                                                 @foreach ($countries as $key => $country)
-                                                <option value="{{$key}}" @selected((int)$editing->country_id === (int)$key)>{{$country}}</option>
+                                                <option value="{{$key}}" @selected((int)($editing['country_id'] ?? 0) === (int)$key)>{{$country}}</option>
                                                 @endforeach
                                             </select>
                                             @error('editing.country_id')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
@@ -266,12 +280,12 @@
                                             'border-slate-300 focus:border-primary-500 focus:ring-primary-500/20' => !$errors->has('editing.address_1'),
                                             'border-red-400 focus:border-red-500 focus:ring-red-500/20' => $errors->has('editing.address_1'),
                                         ])
-                                        value="{{ $editing->address_1 ?? '' }}"
                                         type="text"
                                         id="address_1"
                                         name="address_1"
                                         placeholder="1234 Main St"
-                                        wire:model.debounce.500ms="editing.address_1"
+                                        wire:model.defer="editing.address_1"
+                                        value="{{ $editing['address_1'] ?? '' }}"
                                         required
                                     >
                                     @error('editing.address_1')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
@@ -283,12 +297,12 @@
                                     </label>
                                     <input
                                         class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20"
-                                        value="{{ $editing->address_2 ?? '' }}"
                                         type="text"
                                         id="address_2"
                                         name="address_2"
                                         placeholder="Apartment or number"
-                                        wire:model.debounce.500ms="editing.address_2"
+                                        wire:model.defer="editing.address_2"
+                                        value="{{ $editing['address_2'] ?? '' }}"
                                     >
                                     @error('editing.address_2')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                 </div>
@@ -304,11 +318,11 @@
                                                 'border-slate-300 focus:border-primary-500 focus:ring-primary-500/20' => !$errors->has('editing.city'),
                                                 'border-red-400 focus:border-red-500 focus:ring-red-500/20' => $errors->has('editing.city'),
                                             ])
-                                            value="{{ $editing->city ?? '' }}"
                                             type="text"
                                             id="city"
                                             name="city"
-                                            wire:model.debounce.500ms="editing.city"
+                                            wire:model.defer="editing.city"
+                                            value="{{ $editing['city'] ?? '' }}"
                                             required
                                         >
                                         @error('editing.city')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
@@ -324,12 +338,12 @@
                                                 'border-slate-300 focus:border-primary-500 focus:ring-primary-500/20' => !$errors->has('editing.state'),
                                                 'border-red-400 focus:border-red-500 focus:ring-red-500/20' => $errors->has('editing.state'),
                                             ])
-                                            value="{{ $editing->state ?? '' }}"
                                             name="state"
                                             type="text"
                                             id="state"
                                             placeholder=""
-                                            wire:model.debounce.500ms="editing.state"
+                                            wire:model.defer="editing.state"
+                                            value="{{ $editing['state'] ?? '' }}"
                                             required
                                         >
                                         @error('editing.state')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
@@ -345,12 +359,12 @@
                                                 'border-slate-300 focus:border-primary-500 focus:ring-primary-500/20' => !$errors->has('editing.postal_code'),
                                                 'border-red-400 focus:border-red-500 focus:ring-red-500/20' => $errors->has('editing.postal_code'),
                                             ])
-                                            value="{{ $editing->postal_code ?? '' }}"
                                             name="postal_code"
                                             type="text"
                                             id="postal_code"
                                             placeholder=""
-                                            wire:model.debounce.500ms="editing.postal_code"
+                                            wire:model.defer="editing.postal_code"
+                                            value="{{ $editing['postal_code'] ?? '' }}"
                                             required
                                         >
                                         @error('editing.postal_code')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
@@ -358,7 +372,15 @@
                                 </div>
                                 <div class="mb-3">
                                     <x-label for="markup" class="">{{ucwords(trans_choice('messages.markup', 1))}} (optional)</x-label>
-                                    <input class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20" value="{{ $editing->markup ?? '' }}" type="text" id="markup" name="markup" placeholder="Markup % for Azure Subscription">
+                                    <input
+                                        wire:model.defer="editing.markup"
+                                        class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20"
+                                        type="text"
+                                        id="markup"
+                                        name="markup"
+                                        placeholder="Markup % for Azure Subscription"
+                                        value="{{ $editing['markup'] ?? '' }}"
+                                    >
                                     @error('editing.markup')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                 </div>
                                 <div class="mb-3">
@@ -367,7 +389,7 @@
                                     </label>
                                     <div class="mb-3 input-group">
                                         <select
-                                            wire:model.debounce.500ms="editing.direct_buy"
+                                            wire:model.defer="editing.direct_buy"
                                             name="direct_buy"
                                             id="direct_buy"
                                             @class([
@@ -377,8 +399,8 @@
                                             ])
                                             required
                                         >
-                                            <option value="1" {{ $editing->direct_buy ? 'selected' : '' }}>The customer can buy directly</option>
-                                            <option value="0" {{ $editing->direct_buy ? '' : 'selected' }}>Customer buys need to be verified</option>
+                                            <option value="1" {{ !empty($editing['direct_buy']) ? 'selected' : '' }}>The customer can buy directly</option>
+                                            <option value="0" {{ empty($editing['direct_buy']) ? 'selected' : '' }}>Customer buys need to be verified</option>
                                         </select>
                                         @error('editing.direct_buy')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
                                     </div>
@@ -400,20 +422,13 @@
                             </div>
                         </div>
                         @if ($showCreateUser == true)
-                        <h3>{{ucwords(trans_choice('user_information', 1))}}</h3>
-                        <hr>
+                        <div class="mt-8 rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+                            <h3 class="text-sm font-semibold text-slate-900">{{ucwords(trans_choice('user_information', 1))}}</h3>
+                            <p class="mt-0.5 text-xs text-slate-600">Create the primary user for this customer. (Default status: Active)</p>
+                        </div>
+                        <hr class="my-4">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <x-label for="status">@lang('Status')</x-label>
-                                    <select wire:model.debounce.500ms="creatingUser.status_id" name="status" class="form-control @error('creatingUser.status') is-invalid @enderror" sf-validate="required" >
-                                        <option value="{{ old('status')}}" selected></option>
-                                        @foreach ($statuses as $key => $status)
-                                        <option value="{{$key}}">{{ucwords(trans_choice($status, 1))}}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('creatingUser.status')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
-                                </div>
                                 <div class="form-group">
                                     <x-label for="name">@lang('First Name')</x-label>
                                     <x-input wire:model.debounce.500ms="creatingUser.name" type="text" class="@error('creatingUser.name') is-invalid @enderror" id="name" name="name" placeholder="First Name" value="{{ old('name') }}" />

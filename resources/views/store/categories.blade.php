@@ -1,48 +1,30 @@
-@extends('layouts.master')
-@section('css')
-<!-- Data table css -->
-<link href="{{URL::asset('assets/plugins/datatable/css/dataTables.bootstrap4.min.css')}}" rel="stylesheet" />
-<link href="{{URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css')}}"  rel="stylesheet">
-<link href="{{URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.css')}}" rel="stylesheet" />
-<!-- Slect2 css -->
-<link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
-@endsection
+<x-app-layout>
+    <x-slot name="header">
+        <div>
+            <h2 class="text-xl font-semibold tracking-tight text-slate-900">Categories</h2>
+            <p class="mt-1 text-sm text-slate-600">Pick a category for {{ ucfirst($vendor) }}.</p>
+        </div>
+    </x-slot>
 
-@section('content')
-<div class="container">
-    <h1>Select</h1>
-    <div class="row">
-        <div class="card-columns">
-            @foreach ($categories as $category)
-            <a href="{{'/store/searchstore/'.$vendor .'/'. $category->category }}">
-                @if ($vendor == 'microsoft')
-                <div class="card bd-callout-info">
-                    {{-- <img  class="card-img-top" src="{{ asset('images/vendors/' . $vendor . '.png') }}" height="170" alt="Card image cap"> --}}
-
-                    <img class="card-img-top" src="https://img.pngio.com/microsoft-corporate-logo-guidelines-trademarks-microsoft-logo-png-2008_900.jpg" height="170" alt="Card image cap">
-                    @endif
-                    @if ($vendor == 'kaspersky')
-                    <div class="card bd-callout-info">
-                        <img  class="card-img-top" src="https://media.kasperskydaily.com/wp-content/uploads/sites/88/2019/07/19124650/kaspersky-rebranding-in-details-featured.jpg" height="170" alt="Card image cap">
-                        @endif
-                        <div class="card-body">
-                            <h5 class="card-title">{{ucfirst($category->category)}}</h5>
+    <div class="py-10">
+        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                @foreach ($categories as $category)
+                    <a href="{{ '/store/searchstore/'.$vendor .'/'. $category->category }}"
+                       class="group rounded-2xl border border-slate-200 bg-white/80 p-6 shadow-sm hover:bg-white hover:shadow">
+                        <div class="flex items-center gap-4">
+                            <div class="h-12 w-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 font-bold">
+                                {{ strtoupper(substr($vendor,0,1)) }}
+                            </div>
+                            <div>
+                                <div class="text-base font-semibold text-slate-900 group-hover:text-primary-700">{{ ucfirst($category->category) }}</div>
+                                <div class="mt-1 text-sm text-slate-600">Browse products</div>
+                            </div>
                         </div>
-                        <div class="p-3 text-right">
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </a>
+                    </a>
+                @endforeach
+            </div>
         </div>
     </div>
-</div>
-
-
-@endsection
-
-@section('scripts')
-
-
-@endsection
+</x-app-layout>
 

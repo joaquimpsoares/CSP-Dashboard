@@ -10,6 +10,6 @@ class ShowProvider extends Component
 
     public function render()
     {
-        return view('livewire.provider.show-provider');
+        return view('livewire.provider.show-provider-v2');
     }
 }

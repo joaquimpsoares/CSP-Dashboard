@@ -7,9 +7,15 @@
                 </div>
             </div>
             <div class="px-0 pt-0 mt-5 break-words border-b">
-                <div class="flex flex-col lg:flex-row">
+                <div class="flex flex-col lg:flex-row items-center justify-between gap-3">
                     <div class="flex items-center">
                         <h4>{{ ucwords(trans_choice('messages.price_list_details', 1)) }}</h4>
+                    </div>
+                    <div>
+                        <button type="button" wire:click="editList({{ $priceList->id }})" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-primary-500/20">
+                            <x-icon.edit />
+                            Edit price list
+                        </button>
                     </div>
                 </div>
             </div>
@@ -364,18 +370,13 @@
             </form>
         </div>
 
+    @include('livewire.pricelist.partials.edit-pricelist-modal')
+
+    <script>
+        function copyToClipboard(subscription_id) {
+            document.getElementById(subscription_id).select();
+            document.execCommand('copy');
+        }
+    </script>
     </div>
 </div>
-
-
-
-</div>
-</div>
-
-
-<script>
-    function copyToClipboard(subscription_id) {
-        document.getElementById(subscription_id).select();
-        document.execCommand('copy');
-    }
-</script>

@@ -1,7 +1,25 @@
 <div>
-    <main class="px-4 mx-auto sm:px-6 lg:px-8"  x-data="{'layout': 'grid'}">
+    @php
+        $needsTenant = false;
+        $cm = auth()->user()?->cart;
+        if ($cm && $cm->products) {
+            foreach ($cm->products as $p) {
+                $v = strtolower($p->vendor ?? '');
+                if ($v === 'microsoft' || $v === 'microsoft corporation') { $needsTenant = true; break; }
+            }
+        }
+    @endphp
 
-        <div class="relative flex items-baseline justify-between pt-8 pb-6 border-b border-gray-200">
+    <main class="p-6" x-data="{'layout': 'grid'}">
+
+        @if($needsTenant)
+            <div class="mb-6 rounded-2xl border border-primary-200 bg-primary-50 px-4 py-3 text-sm text-primary-800">
+                <span class="font-semibold">Microsoft products require tenant verification during checkout.</span>
+                <span class="ml-1 text-primary-700">You’ll be prompted to verify your tenant before completing the purchase.</span>
+            </div>
+        @endif
+
+        <div class="relative flex items-baseline justify-between pt-8 pb-6 border-b border-slate-200">
 
             <div class="text-sm font-extrabold tracking-tight text-gray-900 sm:text-4xl">
                 <div class="w-full max-w-lg ml-3 lg:max-w-xs">
@@ -12,7 +30,7 @@
                                 <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                             </svg>
                         </div>
-                        <input wire:model="search" id="search" class="block w-full bg-white py-1.5 pl-10 pr-3 border-gray-300 rounded-md focus:placeholder-gray-500 sm:text-sm" placeholder="Search" type="search" name="search">
+                        <input wire:model.live="search" id="search" class="block w-full rounded-lg border border-slate-300 bg-white py-2 pl-10 pr-3 text-sm text-slate-900 placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" placeholder="Search products" type="search" name="search">
                     </div>
                 </div>
             </div>
@@ -77,7 +95,7 @@
                         <label class="text-base font-medium text-gray-900">Plugins</label>
                         <div class="space-y-4">
                             <div class="flex items-center">
-                                <input id="filter-Plugins-0" wire:model="filters.plugins" name="color[]"  type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                <input id="filter-Plugins-0" wire:model="filters.plugins" name="color[]"  type="checkbox" class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500">
                                 <label for="filter-Plugins-0" class="ml-3 text-sm text-gray-600">
                                     Plugins
                                 </label>
@@ -86,7 +104,7 @@
                         <label class="text-base font-medium text-gray-900">Trial</label>
                         <div class="space-y-4">
                             <div class="flex items-center">
-                                <input id="filter-Trial-0" wire:model="filters.trial" name="color[]"  type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                <input id="filter-Trial-0" wire:model="filters.trial" name="color[]"  type="checkbox" class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500">
                                 <label for="filter-Trial-0" class="ml-3 text-sm text-gray-600">
                                     Trial
                                 </label>
@@ -96,7 +114,7 @@
                         @foreach ($terms as $index => $item)
                         <div class="space-y-4">
                             <div class="flex items-center">
-                                <input id="{{$index}}" wire:model="filters.terms" name="color[]" value="{{$item}}" type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                <input id="{{$index}}" wire:model="filters.terms" name="color[]" value="{{$item}}" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500">
                                 <label for="{{$index}}" class="ml-3 text-sm text-gray-600">
                                     {{$item}}
                                 </label>
@@ -106,7 +124,7 @@
                         <label class="mt-3 text-base font-medium text-gray-900">Select Billing Cycle</label>
                         <div class="space-y-4">
                             <div class="flex items-center">
-                                <input id="filter-Annual-0" wire:model="filters.billing" name="color[]" value="annual" type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                <input id="filter-Annual-0" wire:model="filters.billing" name="color[]" value="annual" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500">
                                 <label for="filter-Annual-0" class="ml-3 text-sm text-gray-600">
                                     {{ ucwords(trans_choice('messages.annual', 1)) }}
                                 </label>
@@ -114,7 +132,7 @@
                         </div>
                         <div class="space-y-4">
                             <div class="flex items-center">
-                                <input id="filter-Monthly-0" wire:model="filters.billing" name="color[]" value="monthly" type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                <input id="filter-Monthly-0" wire:model="filters.billing" name="color[]" value="monthly" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500">
                                 <label for="filter-Monthly-0" class="ml-3 text-sm text-gray-600">
                                     {{ ucwords(trans_choice('messages.monthly', 1)) }}
                                 </label>
@@ -144,7 +162,7 @@
                                                 </svg>
                                                 @endif
                                             </div>
-                                            <div class="bg-indigo-500 py-1.5 px-6 rounded">
+                                            <div class="bg-primary-600 py-1.5 px-6 rounded-lg">
                                                 @if($price->related_product->category)
                                                 <p tabindex="{{$index}}" class="text-xs text-white focus:outline-none">#{{ $price->related_product->category }}</p>
                                                 @endif
@@ -192,7 +210,7 @@
                                                         {{$price->currency}} @money($price->price)
                                                     </p>
                                                 </div>
-                                                <button tabindex="{{$index}}" wire:click="addToCart({{ $price->related_product->id }}, '{{ $price->id}})')"  class="p-2 text-white bg-blue-600 rounded-full hover:bg-blue-500 focus:outline-none focus:bg-blue-500">
+                                                <button tabindex="{{$index}}" wire:click="addToCart({{ $price->related_product->id }}, '{{ $price->id}})')"  class="inline-flex items-center justify-center rounded-full bg-primary-600 p-2 text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-500/30">
                                                     <svg class="w-5 h-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                                                 </button>
                                             </div>
@@ -218,18 +236,18 @@
                                 <li>
                                     <div class="px-4 py-4 sm:px-6">
                                         <div class="flex items-center justify-between">
-                                            <p class="text-sm font-medium text-indigo-600 truncate">
+                                            <p class="text-sm font-semibold text-primary-700 truncate">
                                                 {{ $price->related_product->name }}
                                             </p>
                                             <div class="flex flex-shrink-0 ml-2 text-white">
                                                 @if($price->related_product->category)
-                                                <span class="px-2 py-1 m-1 bg-indigo-500 rounded">
+                                                <span class="px-2 py-1 m-1 bg-primary-600 rounded-lg">
                                                     #{{ $price->related_product->category }}
                                                 </span>
                                                 @endif
 
                                                 @if($price->product->productType == 'OnlineServicesNCE')
-                                                <span class="px-2 py-1 m-1 bg-indigo-500 rounded">
+                                                <span class="px-2 py-1 m-1 bg-primary-600 rounded-lg">
                                                     #{{$price->product->productType}}
                                                 </span>
 
@@ -270,7 +288,7 @@
                                                 </div>
                                                 <div class="pl-3">
                                                     <div class="text-sm text-gray-600">
-                                                        <button  wire:click="addToCart({{ $price->related_product->id }}, '{{ $price->id}})')"  class="p-2 text-white bg-blue-600 rounded-full hover:bg-blue-500 focus:outline-none focus:bg-blue-500">
+                                                        <button  wire:click="addToCart({{ $price->related_product->id }}, '{{ $price->id}})')"  class="inline-flex items-center justify-center rounded-full bg-primary-600 p-2 text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-500/30">
                                                             <svg class="w-5 h-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                                                         </button>
                                                     </div>
@@ -342,7 +360,7 @@
                                 <label class="text-base font-medium text-gray-900">Plugins</label>
                                 <div class="space-y-4">
                                     <div class="flex items-center">
-                                        <input id="filter-Plugins-0" wire:model="filters.plugins" name="color[]"  type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                        <input id="filter-Plugins-0" wire:model="filters.plugins" name="color[]"  type="checkbox" class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500">
                                         <label for="filter-Plugins-0" class="ml-3 text-sm text-gray-600">
                                             Plugins
                                         </label>
@@ -351,7 +369,7 @@
                                 <label class="text-base font-medium text-gray-900">Trial</label>
                                 <div class="space-y-4">
                                     <div class="flex items-center">
-                                        <input id="filter-Trial-0" wire:model="filters.trial" name="color[]"  type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                        <input id="filter-Trial-0" wire:model="filters.trial" name="color[]"  type="checkbox" class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500">
                                         <label for="filter-Trial-0" class="ml-3 text-sm text-gray-600">
                                             Trial
                                         </label>
@@ -361,7 +379,7 @@
                                 @foreach ($terms as $index => $item)
                                 <div class="space-y-4">
                                     <div class="flex items-center">
-                                        <input id="{{$index}}" wire:model="filters.terms" name="color[]" value="{{$item}}" type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                        <input id="{{$index}}" wire:model="filters.terms" name="color[]" value="{{$item}}" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500">
                                         <label for="{{$index}}" class="ml-3 text-sm text-gray-600">
                                             {{$item}}
                                         </label>
@@ -371,7 +389,7 @@
                                 <label class="mt-3 text-base font-medium text-gray-900">Select Billing Cycle</label>
                                 <div class="space-y-4">
                                     <div class="flex items-center">
-                                        <input id="filter-Annual-0" wire:model="filters.billing" name="color[]" value="annual" type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                        <input id="filter-Annual-0" wire:model="filters.billing" name="color[]" value="annual" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500">
                                         <label for="filter-Annual-0" class="ml-3 text-sm text-gray-600">
                                             {{ ucwords(trans_choice('messages.annual', 1)) }}
                                         </label>
@@ -379,7 +397,7 @@
                                 </div>
                                 <div class="space-y-4">
                                     <div class="flex items-center">
-                                        <input id="filter-Monthly-0" wire:model="filters.billing" name="color[]" value="monthly" type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                        <input id="filter-Monthly-0" wire:model="filters.billing" name="color[]" value="monthly" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500">
                                         <label for="filter-Monthly-0" class="ml-3 text-sm text-gray-600">
                                             {{ ucwords(trans_choice('messages.monthly', 1)) }}
                                         </label>
@@ -433,7 +451,7 @@
                                             <section aria-labelledby="options-heading" class="mt-6">
                                                 <h3 id="options-heading" class="sr-only">Product options</h3>
                                                 <div class="mt-6">
-                                                    <button wire:click="addToCart({{ $price->related_product->id }}, '{{ $price->id}})')" class="flex items-center justify-center w-full px-8 py-3 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500">Add to cart</button>
+                                                    <button wire:click="addToCart({{ $price->related_product->id }}, '{{ $price->id}})')" class="flex items-center justify-center w-full rounded-lg bg-primary-600 px-8 py-3 text-base font-semibold text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-500/30">Add to cart</button>
                                                 </div>
                                             </section>
                                         </div>

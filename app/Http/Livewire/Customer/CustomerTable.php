@@ -36,7 +36,15 @@ class CustomerTable extends Component
     public $showEditModal = false;
     public $showCreateUser = false;
 
-    public Customer $editing;
+    /**
+     * Customer edit form state.
+     *
+     * Note: using an array (instead of an Eloquent model) ensures Livewire hydrates
+     * input values correctly when the modal opens.
+     */
+    public array $editing = [];
+    public ?int $editingId = null;
+
     public User $creatingUser;
 
     public $filters = [
@@ -47,7 +55,9 @@ class CustomerTable extends Component
 
     public function mount()
     {
-        $this->editing      = $this->makeBlankTransaction();
+        $this->editing = $this->blankEditing();
+        $this->editingId = null;
+
         $this->creatingUser = $this->makeBlankTransactionUser();
     }
 
@@ -62,7 +72,8 @@ class CustomerTable extends Component
         'editing.postal_code'           => 'required|string|max:255|min:3',
         'editing.status_id'             => 'required|integer|exists:statuses,id',
         'editing.markup'                => 'nullable|integer|min:1',
-        'editing.price_list_id'         => 'required|integer|exists:price_lists,id',
+        // price list can be null in DB; if missing, customer can be created but won't have store pricing until set
+        'editing.price_list_id'         => 'nullable|integer|exists:price_lists,id',
         'editing.direct_buy'         => 'required|boolean',
 
         'creatingUser.name'             => 'sometimes|string|max:255|min:3',
@@ -71,7 +82,7 @@ class CustomerTable extends Component
         'creatingUser.phone'            => 'sometimes|string|max:20|min:3',
         'creatingUser.address'          => 'sometimes|string|max:255|min:3',
         'email'                         => 'required|email|unique:users|max:255|min:3',
-        'creatingUser.status_id'        => 'required|integer|exists:statuses,id',
+        'creatingUser.status_id'        => 'nullable|integer|exists:statuses,id',
         'password'                      => 'same:password_confirmation|required|min:6',
         'password_confirmation'         => 'same:password|required|min:6',
     ];
@@ -82,8 +93,27 @@ class CustomerTable extends Component
     }
 
     public function updatingSearch(){$this->resetPage();}
-    public function makeBlankTransaction(){return Customer::make(['date' => now(), 'status' => 'success']);}
-    public function makeBlankTransactionUser(){return User::make(['date' => now(), 'status' => 'success']);}
+
+    public function blankEditing(): array
+    {
+        return [
+            'company_name' => '',
+            'nif' => '',
+            'country_id' => null,
+            'address_1' => '',
+            'address_2' => '',
+            'city' => '',
+            'state' => '',
+            'postal_code' => '',
+            'markup' => null,
+            'direct_buy' => 0,
+            // Defaults for create flows
+            'status_id' => 1,
+            'price_list_id' => null,
+        ];
+    }
+
+    public function makeBlankTransactionUser(){return User::make(['date' => now(), 'status' => 'success', 'status_id' => 1]);}
     public function exportSelected(){return Excel::download(new CustomersExport, 'Customers.xlsx');}
 
     public function edit($customerId)
@@ -94,7 +124,22 @@ class CustomerTable extends Component
         $this->showCreateUser = false;
 
         $customer = Customer::query()->findOrFail($customerId);
-        $this->editing = $customer->fresh();
+        $customer = $customer->fresh();
+
+        $this->editingId = (int) $customer->id;
+        $this->editing = array_merge($this->blankEditing(), [
+            'company_name' => $customer->company_name,
+            'nif' => $customer->nif,
+            'country_id' => $customer->country_id,
+            'address_1' => $customer->address_1,
+            'address_2' => $customer->address_2,
+            'city' => $customer->city,
+            'state' => $customer->state,
+            'postal_code' => $customer->postal_code,
+            'markup' => $customer->markup,
+            'direct_buy' => (int) ($customer->direct_buy ?? 0),
+            'price_list_id' => $customer->price_list_id,
+        ]);
 
         $this->showEditModal = true;
     }
@@ -102,7 +147,22 @@ class CustomerTable extends Component
 
     public function create()
     {
-        if ($this->editing->getKey()) $this->editing = $this->makeBlankTransaction();
+        $this->editing = $this->blankEditing();
+        $this->editingId = null;
+
+        // Default customer status
+        $this->editing['status_id'] = 1;
+
+        // Default price list based on current actor
+        $actor = Auth::user();
+        $defaultPriceListId = null;
+        if ($actor?->reseller?->price_list_id) {
+            $defaultPriceListId = $actor->reseller->price_list_id;
+        } elseif ($actor?->provider?->availablePriceLists()?->exists()) {
+            $defaultPriceListId = $actor->provider->availablePriceLists()->first()?->id;
+        }
+        $this->editing['price_list_id'] = $defaultPriceListId;
+
         $this->creatingUser = $this->makeBlankTransactionUser();
 
         $this->showEditModal = true;
@@ -116,8 +176,12 @@ class CustomerTable extends Component
 
     public function save()
     {
+        if (!$this->editingId) {
+            $this->notify('error', 'No customer selected for edit');
+            return;
+        }
+
         // Validate only customer fields when editing.
-        // Required fields during edit.
         $editRules = [
             'editing.company_name' => $this->rules['editing.company_name'],
             'editing.nif' => $this->rules['editing.nif'],
@@ -132,13 +196,15 @@ class CustomerTable extends Component
         ];
         $this->validate($editRules);
 
-        // Normalize booleans coming from selects.
-        $this->editing->direct_buy = (bool) $this->editing->direct_buy;
+        $customer = Customer::query()->findOrFail($this->editingId);
 
-        $this->editing->save();
+        // Normalize values
+        $payload = $this->editing;
+        $payload['direct_buy'] = (bool) ($payload['direct_buy'] ?? false);
+
+        $customer->update($payload);
+
         $this->showEditModal = false;
-
-        // Ensure table refreshes with updated values.
         $this->resetPage();
 
         $this->notify('success', 'Customer updated successfully');
@@ -146,19 +212,25 @@ class CustomerTable extends Component
 
     public function savecreate()
     {
-        $user = $this->getUser();
+        // Ensure defaults
+        $this->editing['status_id'] = $this->editing['status_id'] ?? 1;
+
+        // validate full create rules
+        $this->validate();
+
         try {
             $newCustomer =  Customer::create([
-                'company_name'  => $this->editing->company_name,
-                'nif'           => $this->editing->nif,
-                'country_id'    => $this->editing->country_id,
-                'address_1'     => $this->editing->address_1,
-                'address_2'     => $this->editing->address_2,
-                'city'          => $this->editing->city,
-                'state'         => $this->editing->state,
-                'postal_code'   => $this->editing->postal_code,
-                'status_id'     => 1,
-                'price_list_id' => $this->editing->price_list_id,
+                'company_name'  => $this->editing['company_name'],
+                'nif'           => $this->editing['nif'],
+                'country_id'    => $this->editing['country_id'],
+                'address_1'     => $this->editing['address_1'],
+                'address_2'     => $this->editing['address_2'],
+                'city'          => $this->editing['city'],
+                'state'         => $this->editing['state'],
+                'postal_code'   => $this->editing['postal_code'],
+                'direct_buy'    => (bool) ($this->editing['direct_buy'] ?? false),
+                'status_id'     => $this->editing['status_id'] ?? 1,
+                'price_list_id' => $this->editing['price_list_id'] ?? null,
             ]);
             $user = User::create ([
                 'email'                     => $this->email,
@@ -166,11 +238,11 @@ class CustomerTable extends Component
                 'last_name'                 => $this->creatingUser->last_name,
                 'address'                   => $this->creatingUser->address,
                 'phone'                     => $this->creatingUser->phone,
-                'country_id'                => $this->editing->country_id,
+                'country_id'                => $this->editing['country_id'],
                 'notifications_preferences' => 'database',
                 'password'                  => Hash::make($this->password),
                 'user_level_id'             => 6, //Customer role id = 6
-                'status_id'                 => $this->creatingUser->status_id,
+                'status_id'                 => $this->creatingUser->status_id ?? 1,
                 'customer_id'               => $newCustomer->id,
                 // 'notify'            => $this->sendInvitation ?? false,
             ]);
@@ -178,17 +250,15 @@ class CustomerTable extends Component
             $newCustomer->resellers()->attach(Auth::user()->reseller->id);
             $user->assignRole(config('app.customer'));
 
-        } catch (ClientException $e) {
-
-            $this->showEditModal = false;
-
-            $this->notify('Customer ' . $e->getMessage() . ' created successfully');
-            Log::info('Error saving Customer: '.$e->getMessage());
+        } catch (\Throwable $e) {
+            Log::error('Error saving Customer: ' . $e->getMessage());
+            $this->notify('error', 'Customer create failed: ' . $e->getMessage());
+            return;
         }
 
-        $this->notify('success','Customer ' . $this->editing->company_name . ' created successfully');
-        return redirect()->route('customer.index');
+        $this->notify('success','Customer ' . ($this->editing['company_name'] ?? '') . ' created successfully');
         $this->showEditModal = false;
+        $this->resetPage();
 
     }
 

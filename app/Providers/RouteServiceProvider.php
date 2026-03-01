@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Provider;
+use Illuminate\Support\Str;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -32,12 +34,20 @@ class RouteServiceProvider extends ServiceProvider
 	 */
 	public function boot()
 	{
+        // Support legacy "{id}-{slug}" URLs while still using resource routes
+        // that expect {provider} to be the primary key.
+        Route::bind('provider', function ($value) {
+            // Accept either "123" or "123-any-slug".
+            $id = (int) Str::before((string) $value, '-');
+            return Provider::query()->findOrFail($id);
+        });
+
         // $this->configureRateLimiting();
 
         $this->routes(function () {
-        $this->mapApiRoutes();
-        $this->mapWebRoutes();
-    });
+            $this->mapApiRoutes();
+            $this->mapWebRoutes();
+        });
 		// parent::boot();
 	}
 

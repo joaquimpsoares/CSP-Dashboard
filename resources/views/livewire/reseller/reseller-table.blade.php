@@ -150,8 +150,8 @@
     <!-- Save Transaction Modal -->
     <div>
         @if($showEditModal == true)
-        <form @if($showCreateUser === false) { wire:submit.prevent="save({{$reseller->id}})" } @else { wire:submit.prevent="savecreate" } @endif>
-            <x-modal.slideout wire:model.defer="showEditModal">
+        <form wire:submit.prevent="submit" wire:key="reseller-edit-form-{{ $editingId ?? 'new' }}">
+            <x-modal.slideout wire:model="showEditModal" :closeOnBackdrop="false">
                 @if ($showCreateUser == false)
                 <x-slot name="title">{{ ucwords(trans_choice('messages.edit_reseller', 1)) }}</x-slot>
                 @elseif($showCreateUser == true)
