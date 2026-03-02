@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Http;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\ProductRepositoryInterface;
 use App\Repositories\CustomerRepositoryInterface;
+use App\Models\Pricing\PriceListItem;
 use App\Services\Pricing\PriceListResolver;
 use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
 use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
@@ -89,7 +90,7 @@ class CartController extends Controller
 
             try {
                 $resolvedPl = ($user->userLevel->name === config('app.customer'))
-                    ? $resolver->resolveForPurchase($user, $user->customer, $context)
+                    ? $resolver->resolveForPurchaseByUser($user, $user->customer, $context)
                     : $resolver->resolveForReseller($user, $context);
                 $pli = $matcher->match($resolvedPl->id, $product);
             } catch (\RuntimeException $e) {
@@ -464,6 +465,49 @@ class CartController extends Controller
             $cartItem->pivot->quantity = $request->get($key);
             $cartItem->pivot->save();
         }
+
+        // ── Price-list item enforcement ──────────────────────────────────────
+        // Validate every cart item has a valid price_list_item_id that is still
+        // available for purchase in the user's currently resolved price list.
+        $user     = auth()->user();
+        $resolver = app(PriceListResolver::class);
+
+        // Resolve the user's current active price list (best-effort; skip if unresolvable).
+        $resolvedPlId = null;
+        try {
+            $context    = [];
+            $resolvedPl = ($user->userLevel->name === config('app.customer'))
+                ? $resolver->resolveForPurchaseByUser($user, $user->customer, $context)
+                : $resolver->resolveForReseller($user, $context);
+            $resolvedPlId = $resolvedPl->id;
+        } catch (\RuntimeException) {
+            return redirect()->route('cart.index')
+                ->with('danger', 'No active price list found for your account. Please contact your provider.');
+        }
+
+        // Refresh products with pivot data.
+        $cart->load('products');
+        foreach ($cart->products as $cartProduct) {
+            $pliId = $cartProduct->pivot->price_list_item_id ?? null;
+
+            if (! $pliId) {
+                return redirect()->route('cart.index')
+                    ->with('danger', "Product \"{$cartProduct->name}\" is not linked to your current price list. Please remove it and add it again.");
+            }
+
+            $pli = \App\Models\Pricing\PriceListItem::find($pliId);
+
+            if (! $pli || ! $pli->available_for_purchase) {
+                return redirect()->route('cart.index')
+                    ->with('danger', "Product \"{$cartProduct->name}\" is no longer available for purchase.");
+            }
+
+            if ((int) $pli->price_list_id !== (int) $resolvedPlId) {
+                return redirect()->route('cart.index')
+                    ->with('danger', "Product \"{$cartProduct->name}\" is not in your current active price list. Please remove it and add it again.");
+            }
+        }
+        // ── End enforcement ──────────────────────────────────────────────────
 
         $status = "customer";
 

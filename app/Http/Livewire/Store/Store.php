@@ -5,7 +5,9 @@ namespace App\Http\Livewire\Store;
 use App\Cart;
 use App\Customer;
 use App\Http\Traits\UserTrait;
-use App\Price;
+use App\Models\Pricing\PriceListItem;
+use App\Models\ProductRequest;
+use App\PriceList;
 use App\Product;
 use Livewire\Component;
 use Illuminate\Support\Str;
@@ -22,23 +24,29 @@ class Store extends Component
     use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows;
     protected $paginationTheme = 'bootstrap';
 
+    // ── Core state ────────────────────────────────────────────────────────────
     public $showModal = false;
     public $keyword;
     public $searchproduct = null;
 
     public $details;
     public $search;
-    public $vendor =[];
+    public $vendor = [];
     public $price;
     public $cartProducts = [];
     public $selectproducttype;
     public $priceList;
 
+    /** @var string|null  Name of the resolved price list (for the store banner). */
+    public ?string $resolvedPriceListName = null;
+
+    // ── Filter options ────────────────────────────────────────────────────────
     public $vendors;
     public $categories;
     public $terms;
     public $productType;
 
+    // ── Product detail panel ──────────────────────────────────────────────────
     public $productName;
     public $productCategory;
     public $productSku;
@@ -48,97 +56,166 @@ class Store extends Component
     public $showmobilefilter = false;
     public $showproductdetails = false;
 
+    // ── Filters ───────────────────────────────────────────────────────────────
     public $filters = [
-        'search' => '',
-        'category' => '',
-        'vendors' => '',
+        'search'      => '',
+        'category'    => '',
+        'vendors'     => '',
         'producttype' => '',
-        'plugins' => false,
-        'billing' => [],
-        'terms' => [],
-        'trial' => '',
+        'plugins'     => false,
+        'billing'     => [],
+        'terms'       => [],
+        'trial'       => '',
     ];
 
-    public function updatingSearch(){$this->resetPage();}
-    public function updatingcategories(){$this->resetPage();}
-    public function updatingselectproducttype(){$this->resetPage();}
-    public function updatedQtys($field){$this->recalc($field);}
-    public function close(){$this->showModal = false;}
+    // ── Product request modal ─────────────────────────────────────────────────
+    public bool    $showRequestModal    = false;
+    public ?string $requestProductName  = null;
+    public ?string $requestProductSku   = null;
+    public ?string $requestNotes        = null;
+    public ?string $requestUrgency      = 'normal';
 
-//     public function updatedKeyword(){
-//         if(!$this->keyword){
-//             return $this->searchproduct = null;
-//         }
+    // ── Lifecycle hooks ───────────────────────────────────────────────────────
+    public function updatingSearch()  { $this->resetPage(); }
+    public function updatingcategories()  { $this->resetPage(); }
+    public function updatingselectproducttype() { $this->resetPage(); }
+    public function updatedQtys($field) { $this->recalc($field); }
+    public function close() { $this->showModal = false; }
 
-//         $this->searchproduct =  Price::query()->where('instance_id', $this->priceList)
-//         ->where(function ($q) {
-//             $q->orwhere('product_sku', 'like', '%'.$this->keyword.'%');
-//             $q->orwhere('name', 'like', '%'.$this->keyword.'%');
-//         })->orderBy('name')->get()->filter();
+    // ── Add to cart ───────────────────────────────────────────────────────────
 
-//         $this->searchproduct->groupBy('productType');
-
-
-//    }
-
-    // public function selectedProduct(Price $price){
-    //     $this->searchproduct = null;
-    //     $this->keyword = $price->name;
-    //     $this->prices = $price;
-    // }
-
-    public function addToCart(Product $product, Price $price){
-
-        $billing_cycle = 'monthly';
+    /**
+     * Add a PriceListItem to the cart.
+     *
+     * Server-side enforced: the item must belong to the currently resolved
+     * price list AND have available_for_purchase = true.
+     */
+    public function addToCart(int $priceListItemId): void
+    {
         $this->showModal = false;
 
-        $cart = $this->getUserCart();
+        // Re-resolve to prevent tampering between page load and click.
+        $currentPriceListId = $this->resolveUserPriceListId();
 
-        if (!$cart) {
+        if ($currentPriceListId === null) {
+            $this->notify('No active price list is assigned to your account.');
+            return;
+        }
+
+        $item = PriceListItem::query()
+            ->where('id', $priceListItemId)
+            ->where('price_list_id', $currentPriceListId)
+            ->where('available_for_purchase', true)
+            ->with('product')
+            ->first();
+
+        if (! $item) {
+            $this->notify('This product is not available for purchase in your current price list.');
+            return;
+        }
+
+        $product = $item->product;
+        if (! $product) {
+            $this->notify('Product data is missing. Please contact your provider.');
+            return;
+        }
+
+        $cart = $this->getUserCart();
+        if (! $cart) {
             $cart = new Cart();
             $cart->save();
         }
 
-        if($product->IsNCE()){
-            $billing_cycle = $price->billing_plan;
-            $term_duration = $price->term_duration;
-        }
+        $billingCycle  = $item->billing_cycle ?? 'monthly';
+        $termDuration  = $item->term_duration;
 
-        if($product->IsPerpetual()){
-            $billing_cycle = $product->supported_billing_cycles[0];
-        }
-
-        $matcher = app(\App\Services\Pricing\PriceListItemMatcher::class);
-        $pli = $this->priceList ? $matcher->match((int)$this->priceList, $product, $billing_cycle, $term_duration ?? null) : null;
-
-        $cart->products()->attach($product, [
-            'id' => Str::uuid(),
-            'price' => $product->price->price,
-            'retail_price' => $product->price->msrp,
-            'quantity' => $product->minimum_quantity,
-            'billing_cycle' => $billing_cycle,
-            'term_duration' => $term_duration ?? null,
-            'price_list_item_id' => $pli?->id,
-            'currency' => $pli?->currency,
+        $cart->products()->attach($product->id, [
+            'id'                => Str::uuid(),
+            'price'             => $item->price,
+            'retail_price'      => $item->msrp,
+            'quantity'          => $product->minimum_quantity ?? 1,
+            'billing_cycle'     => $billingCycle,
+            'term_duration'     => $termDuration,
+            'price_list_item_id'=> $item->id,
+            'currency'          => $item->currency,
         ]);
 
         $this->emit('updateCart');
-        $this->notify('Product added to cart: '. $product->name );
+        $this->notify('Product added to cart: ' . $product->name);
     }
 
-    public function showDetails(Product $product){
-        $this->showproductdetails   = true;
-        $this->price                = Price::where('product_id', $product->id)->first();
-        $this->retail               = $product->price->price;
-        $this->msrp                 = $product->price->msrp;
-        $this->productName          = $product->name;
-        $this->productCategory      = $product->category;
-        $this->productSku           = $product->sku;
-        $this->productDescription   = $product->description;
-        $this->productMSRP          = $product->price->msrp;
+    // ── Product detail panel ──────────────────────────────────────────────────
+
+    public function showDetails(int $priceListItemId): void
+    {
+        $item = PriceListItem::with('product')->find($priceListItemId);
+        if (! $item) {
+            return;
+        }
+
+        $this->showproductdetails = true;
+        $this->price              = $item;   // used in the detail modal
+        $this->retail             = $item->price;
+        $this->msrp               = $item->msrp;
+        $this->productName        = $item->product?->name ?? $item->title;
+        $this->productCategory    = $item->category ?? $item->product?->category;
+        $this->productSku         = $item->sku ?? $item->product?->sku;
+        $this->productDescription = $item->product?->description;
+        $this->productMSRP        = $item->msrp;
     }
 
-    public static  function getUserCart($id = null, $token = null){
+    // ── Product request modal ─────────────────────────────────────────────────
+
+    public function openRequestModal(): void
+    {
+        $this->requestProductName  = null;
+        $this->requestProductSku   = null;
+        $this->requestNotes        = null;
+        $this->requestUrgency      = 'normal';
+        $this->showRequestModal    = true;
+    }
+
+    public function closeRequestModal(): void
+    {
+        $this->showRequestModal = false;
+    }
+
+    public function submitProductRequest(): void
+    {
+        $this->validate([
+            'requestProductName' => 'required|string|max:255',
+            'requestProductSku'  => 'nullable|string|max:200',
+            'requestNotes'       => 'nullable|string|max:2000',
+            'requestUrgency'     => 'nullable|in:low,normal,high',
+        ]);
+
+        $user = Auth::user();
+
+        ProductRequest::create([
+            'provider_id'   => $user->reseller?->provider_id
+                             ?? $user->provider?->id
+                             ?? null,
+            'reseller_id'   => $user->reseller?->id ?? null,
+            'customer_id'   => $user->customer?->id ?? null,
+            'user_id'       => $user->id,
+            'product_name'  => $this->requestProductName,
+            'sku'           => $this->requestProductSku,
+            'notes'         => $this->requestNotes,
+            'urgency'       => $this->requestUrgency ?? 'normal',
+        ]);
+
+        $this->showRequestModal   = false;
+        $this->requestProductName = null;
+        $this->requestProductSku  = null;
+        $this->requestNotes       = null;
+
+        $this->notify('Your product request has been submitted.');
+    }
+
+    // ── Cart helpers ──────────────────────────────────────────────────────────
+
+    public static function getUserCart($id = null, $token = null)
+    {
         $user = Auth::user();
         if (empty($token)) {
             if (empty($id)) {
@@ -152,76 +229,130 @@ class Store extends Component
         return $cart;
     }
 
-    public function updatedVendor(){
-        $this->useCachedRows();
-      if (!is_array($this->vendor)) return;
+    // ── Filter helpers ────────────────────────────────────────────────────────
 
-      $this->vendor = array_filter($this->vendor, function ($vendors) {
-        return $vendors != false;
-      });
+    public function updatedVendor()
+    {
+        $this->useCachedRows();
+        if (! is_array($this->vendor)) {
+            return;
+        }
+        $this->vendor = array_filter($this->vendor, fn ($v) => $v != false);
     }
 
-    public function getRowsQueryProperty(){
+    // ── Data query ────────────────────────────────────────────────────────────
+
+    public function getRowsQueryProperty(): Builder
+    {
         $this->useCachedRows();
         $this->priceList = $this->resolveUserPriceListId();
 
-        $query = Price::query()->with('related_product')->where('price_list_id', $this->priceList)
-        ->whereRelation('related_product', 'is_available_for_purchase', 1)
-        ->when($this->filters['category'], fn($query, $category) => $query->whereHas('related_product', function(Builder $q) use($category){
-                $q->where('category',$category);
-            }))
-            ->when($this->filters['vendors'], fn($query, $vendors) => $query->whereHas('related_product', function(Builder $q) use($vendors){
-                $q->where('vendors', $vendors);
-            }))
-            ->when($this->filters['producttype'], fn($query, $producttype) => $query->whereHas('related_product', function(Builder $q) use($producttype){
-                $q->where('productType', $producttype);
-            }))
-            ->when($this->filters['plugins'], fn($query, $plugins) => $query->whereHas('related_product', function(Builder $q) use($plugins){
-                $q->where('is_addon', $plugins);
-            }))
-            ->when($this->filters['trial'], fn($query, $trial) => $query->whereHas('related_product', function(Builder $q) use($trial){
-                $q->where('is_trial', $trial);
-            }))
-            ->when($this->filters['billing'], fn($query, $billing) => $query->where('billing_plan', $billing))
-            ->when($this->filters['terms'], fn($query, $terms) => $query->where('term_duration', $terms))
-            ->when($this->search, fn($query, $search) => $query->where('name', 'like', '%'.$search.'%')
-            ->orwhere('product_sku', 'like', '%'.$search.'%'))
-            ->with('related_product');
+        $query = PriceListItem::query()
+            ->with('product')
+            ->where('price_list_id', $this->priceList)
+            ->where('available_for_purchase', true)
+            ->when($this->filters['category'], fn ($q, $category) =>
+                $q->where(fn ($inner) =>
+                    $inner->where('category', $category)
+                          ->orWhereHas('product', fn ($p) => $p->where('category', $category))
+                )
+            )
+            ->when($this->filters['vendors'], fn ($q, $vendor) =>
+                $q->where(fn ($inner) =>
+                    $inner->where('vendor', $vendor)
+                          ->orWhereHas('product', fn ($p) => $p->where('vendor', $vendor))
+                )
+            )
+            ->when($this->filters['producttype'], fn ($q, $producttype) =>
+                $q->where(fn ($inner) =>
+                    $inner->where('product_type', $producttype)
+                          ->orWhereHas('product', fn ($p) => $p->where('productType', $producttype))
+                )
+            )
+            ->when($this->filters['plugins'], fn ($q) =>
+                $q->whereHas('product', fn ($p) => $p->where('is_addon', true))
+            )
+            ->when($this->filters['trial'], fn ($q) =>
+                $q->whereHas('product', fn ($p) => $p->where('is_trial', true))
+            )
+            ->when($this->filters['billing'], fn ($q, $billing) =>
+                $q->where('billing_cycle', $billing)
+            )
+            ->when($this->filters['terms'], fn ($q, $terms) =>
+                $q->where('term_duration', $terms)
+            )
+            ->when($this->search, fn ($q, $search) =>
+                $q->where(fn ($inner) =>
+                    $inner->where('title', 'like', '%' . $search . '%')
+                          ->orWhere('sku', 'like', '%' . $search . '%')
+                          ->orWhereHas('product', fn ($p) =>
+                              $p->where('name', 'like', '%' . $search . '%')
+                               ->orWhere('sku', 'like', '%' . $search . '%')
+                          )
+                )
+            );
 
         return $this->applySorting($query);
     }
 
-    public function mount(){
+    public function mount(): void
+    {
         $this->useCachedRows();
 
-        $this->priceList = $this->resolveUserPriceListId();
+        $resolvedPl       = $this->resolveUserPriceList();
+        $this->priceList  = $resolvedPl?->id;
+        $this->resolvedPriceListName = $resolvedPl?->name;
 
-        $priceList = $this->priceList;
+        $plId = $this->priceList;
 
-        $this->terms = Price::pluck('term_duration')->unique()->filter();
+        $this->terms = PriceListItem::where('price_list_id', $plId)
+            ->where('available_for_purchase', true)
+            ->pluck('term_duration')
+            ->unique()
+            ->filter()
+            ->values();
 
-        $this->categories = product::select(['category'])->whereHas('price', function($query) use  ($priceList) {
-            $query->where('price_list_id', $priceList);
-        })->pluck('category')->unique()->filter();
+        $this->categories = PriceListItem::where('price_list_id', $plId)
+            ->where('available_for_purchase', true)
+            ->pluck('category')
+            ->push(
+                // Also pull from linked products for richer category list.
+                ...PriceListItem::where('price_list_id', $plId)
+                    ->where('available_for_purchase', true)
+                    ->whereNotNull('product_id')
+                    ->with('product:id,category')
+                    ->get()
+                    ->pluck('product.category')
+                    ->filter()
+                    ->toArray()
+            )
+            ->unique()
+            ->filter()
+            ->values();
 
-        $this->vendors = product::select(['vendor'])->whereHas('price', function($query) use  ($priceList) {
-            $query->where('price_list_id', $priceList);
-        })->pluck('vendor')->unique()->filter();
+        $this->vendors = PriceListItem::where('price_list_id', $plId)
+            ->where('available_for_purchase', true)
+            ->pluck('vendor')
+            ->unique()
+            ->filter()
+            ->values();
 
-        $this->productType = product::select(['productType'])->whereHas('price', function($query) use  ($priceList) {
-            $query->where('price_list_id', $priceList);
-        })->pluck('productType')->unique()->filter();
+        $this->productType = PriceListItem::where('price_list_id', $plId)
+            ->where('available_for_purchase', true)
+            ->pluck('product_type')
+            ->unique()
+            ->filter()
+            ->values();
     }
 
-    // ── Price-list resolution ────────────────────────────────────────────────
+    // ── Price-list resolution ─────────────────────────────────────────────────
 
     /**
-     * Resolve the active price list ID for the authenticated user via the
-     * PriceListResolver hierarchy (customer → reseller → provider default).
-     * Returns null if no active price list can be found (store will show empty).
+     * Resolve and return the full PriceList object for the authenticated user.
+     * Returns null when no active price list is configured.
      * Aborts 403 for users that are neither Reseller nor Customer.
      */
-    private function resolveUserPriceListId(): ?int
+    private function resolveUserPriceList(): ?PriceList
     {
         $user  = Auth::user();
         $level = $user->userLevel->name ?? null;
@@ -232,36 +363,41 @@ class Store extends Component
 
         try {
             $resolver = app(PriceListResolver::class);
-            $pl = ($level === 'Customer')
-                ? $resolver->resolveForPurchase($user, $user->customer)
+            return ($level === 'Customer')
+                ? $resolver->resolveForPurchaseByUser($user, $user->customer)
                 : $resolver->resolveForReseller($user);
-
-            return $pl->id;
-        } catch (\RuntimeException $e) {
-            // No active price list assigned — store will render empty.
+        } catch (\RuntimeException) {
             return null;
         }
     }
 
-    public function getRowsProperty(){
+    /**
+     * Resolve and return only the price list ID (null-safe).
+     */
+    private function resolveUserPriceListId(): ?int
+    {
+        return $this->resolveUserPriceList()?->id;
+    }
+
+    // ── Render ────────────────────────────────────────────────────────────────
+
+    public function getRowsProperty()
+    {
         $this->useCachedRows();
-        return $this->cache(function () {
-            return $this->applyPagination($this->rowsQuery);
-        });
+        return $this->cache(fn () => $this->applyPagination($this->rowsQuery));
     }
 
     public function render()
     {
         $this->useCachedRows();
 
-        $user = Auth::user();
-
         return view('livewire.store.store', [
-            'prices'        => $this->rows,
-            'vendors'       => $this->vendors,
-            'category'      => $this->categories,
-            'terms'         => $this->terms,
-            'producttype'   => $this->productType,
+            'prices'               => $this->rows,
+            'vendors'              => $this->vendors,
+            'category'             => $this->categories,
+            'terms'                => $this->terms,
+            'producttype'          => $this->productType,
+            'resolvedPriceListName'=> $this->resolvedPriceListName,
         ]);
     }
 }

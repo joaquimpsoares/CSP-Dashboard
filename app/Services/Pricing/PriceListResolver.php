@@ -23,47 +23,53 @@ use RuntimeException;
  *
  * If no active price list is found at any level an exception is thrown with a
  * human-readable message so the caller can surface it to the user.
- *
- * Context array keys (all optional — null means "match any"):
- *   provider_id  (int)    – resolved from the user/instance if omitted
- *   market       (string) – e.g. "ES"
- *   currency     (string) – e.g. "EUR"
- *   list_type    (string) – "license_based" | "azure_consumption" | "one_time" | null
- *   date         (Carbon) – defaults to now()
  */
 class PriceListResolver
 {
-    // ── Public API ───────────────────────────────────────────────────────────
+    // ── Primary explicit API ─────────────────────────────────────────────────
 
     /**
-     * Resolve the best matching price list for a given customer and purchase context.
+     * Resolve the best matching price list given explicit IDs and context.
      *
-     * @param  array{
-     *   provider_id?: int|null,
-     *   market?: string|null,
-     *   currency?: string|null,
-     *   list_type?: string|null,
-     *   date?: Carbon|null
-     * } $context
-     * @throws RuntimeException when no usable price list exists
+     * This is the canonical resolution method. All other public resolution
+     * methods delegate to this one.
+     *
+     * Resolution order:
+     *   1. Customer override  (if $customerId provided)
+     *   2. Reseller default   (if $resellerId provided)
+     *   3. Provider default   (always attempted as final fallback)
+     *
+     * @param  int          $providerId   Provider (MSP) that owns the price lists.
+     * @param  int|null     $resellerId   Reseller in the hierarchy, or null for direct model.
+     * @param  int|null     $customerId   Customer purchasing, or null for reseller-level view.
+     * @param  string|null  $market       e.g. "ES" — null means "match any".
+     * @param  string|null  $currency     e.g. "EUR" — null means "match any".
+     * @param  string|null  $listType     "license_based" | "azure_consumption" | "one_time" | null.
+     * @param  Carbon|null  $date         Effective date window check; defaults to now().
+     *
+     * @throws RuntimeException when no active provider default exists.
      */
-    public function resolveForPurchase(User $user, Customer $customer, array $context = []): PriceList
-    {
-        $providerId = $context['provider_id'] ?? $this->inferProviderId($user);
-        $market     = $context['market']     ?? null;
-        $currency   = $context['currency']   ?? null;
-        $listType   = $context['list_type']  ?? null;
-        $date       = $context['date']       ?? now();
+    public function resolveForPurchase(
+        int     $providerId,
+        ?int    $resellerId,
+        ?int    $customerId,
+        ?string $market    = null,
+        ?string $currency  = null,
+        ?string $listType  = null,
+        ?Carbon $date      = null,
+    ): PriceList {
+        $date ??= now();
 
         // 1) Customer override
-        $pl = $this->resolveCustomerDefault($customer->id, $providerId, $market, $currency, $listType, $date);
-        if ($pl) {
-            return $pl;
+        if ($customerId !== null) {
+            $pl = $this->resolveCustomerDefault($customerId, $providerId, $market, $currency, $listType, $date);
+            if ($pl) {
+                return $pl;
+            }
         }
 
         // 2) Reseller default
-        $resellerId = $customer->resellers()->first()?->id;
-        if ($resellerId) {
+        if ($resellerId !== null) {
             $pl = $this->resolveResellerDefault($resellerId, $providerId, $market, $currency, $listType, $date);
             if ($pl) {
                 return $pl;
@@ -78,13 +84,44 @@ class PriceListResolver
 
         $label = implode('/', array_filter([$market, $currency, $listType])) ?: '(any)';
         throw new RuntimeException(
-            "No active price list assigned for {$label}. " .
-            "Assign a provider default or a reseller/customer price list."
+            "No active provider default price list assigned for {$label}."
+        );
+    }
+
+    // ── User-aware convenience wrappers ──────────────────────────────────────
+
+    /**
+     * Resolve for a customer purchase using User + Customer Eloquent objects.
+     *
+     * Kept for backward compatibility; delegates to resolveForPurchase().
+     *
+     * @param  array{
+     *   provider_id?: int|null,
+     *   market?: string|null,
+     *   currency?: string|null,
+     *   list_type?: string|null,
+     *   date?: Carbon|null
+     * } $context
+     * @throws RuntimeException
+     */
+    public function resolveForPurchaseByUser(User $user, Customer $customer, array $context = []): PriceList
+    {
+        $providerId = $context['provider_id'] ?? $this->inferProviderId($user);
+        $resellerId = $customer->resellers()->first()?->id;
+
+        return $this->resolveForPurchase(
+            providerId:  $providerId,
+            resellerId:  $resellerId ? (int) $resellerId : null,
+            customerId:  (int) $customer->id,
+            market:      $context['market']    ?? null,
+            currency:    $context['currency']  ?? null,
+            listType:    $context['list_type'] ?? null,
+            date:        $context['date']      ?? null,
         );
     }
 
     /**
-     * Resolve the price list for a reseller's storefront (used by Store.php).
+     * Resolve the price list for a reseller's storefront.
      * Falls back: reseller default → provider default.
      *
      * @throws RuntimeException
@@ -98,8 +135,9 @@ class PriceListResolver
         $listType   = $context['list_type']  ?? null;
         $date       = $context['date']       ?? now();
 
-        $resellerId = $reseller?->id;
-        if ($resellerId) {
+        $resellerId = $reseller?->id ? (int) $reseller->id : null;
+
+        if ($resellerId !== null) {
             $pl = $this->resolveResellerDefault($resellerId, $providerId, $market, $currency, $listType, $date);
             if ($pl) {
                 return $pl;
