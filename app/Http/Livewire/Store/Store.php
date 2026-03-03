@@ -363,9 +363,22 @@ class Store extends Component
 
         try {
             $resolver = app(PriceListResolver::class);
-            return ($level === 'Customer')
-                ? $resolver->resolveForPurchaseByUser($user, $user->customer)
-                : $resolver->resolveForReseller($user);
+
+            if ($level === 'Customer') {
+                // The relationship may not be loaded / may be null even when customer_id is set.
+                $customer = $user->customer;
+                if (! $customer && $user->customer_id) {
+                    $customer = \App\Customer::query()->with('resellers')->find($user->customer_id);
+                }
+
+                if (! $customer) {
+                    throw new \RuntimeException('Customer not found for store price-list resolution');
+                }
+
+                return $resolver->resolveForPurchaseByUser($user, $customer);
+            }
+
+            return $resolver->resolveForReseller($user);
         } catch (\RuntimeException) {
             return null;
         }
