@@ -177,8 +177,7 @@ Route::group(['middleware' => 'auth'], function ()
             Route::post('pricelist/storePriceList', 'PriceListController@storePriceList')->name('priceList.storePriceList');
 
 
-            // Route::get('/reseller/{reseller}-{slug}', 'ResellerController@show')->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
-            Route::get('/reseller/{reseller}-{slug}', [\App\Http\Livewire\Reseller\ShowReseller ::class, '__invoke'])->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
+            Route::get('/reseller/{reseller}-{slug}', 'ResellerController@show')->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
             Route::get('/reseller', 'ResellerController@index')->middleware('permission:' . config('app.reseller_index'))->name('reseller.index');
 
             /*

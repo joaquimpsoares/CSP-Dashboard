@@ -150,7 +150,12 @@ class ShowReseller extends Component
     {
         $this->countries = Country::get();
         $this->statuses = Status::get();
-        $this->reseller = Reseller::where('id', $this->reseller)->first();
+
+        $this->reseller = Reseller::query()
+            ->with(['country', 'status', 'provider', 'customers', 'users'])
+            ->where('id', $this->reseller)
+            ->first();
+
         $this->editing      = $this->makeBlankTransaction();
         $this->creatingUser = $this->makeBlankTransactionUser();
     }
@@ -169,8 +174,10 @@ class ShowReseller extends Component
 
     }
 
-    public function render(Reseller $reseller, Status $statuses, Country $countries)
+    public function render()
     {
-        return view('livewire.reseller.show-reseller', compact('statuses','countries', 'reseller'))->extends('layouts.master');
+        return view('livewire.reseller.show-reseller-v2', [
+            'reseller' => $this->reseller,
+        ]);
     }
 }
