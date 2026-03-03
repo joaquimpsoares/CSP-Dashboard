@@ -15,10 +15,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
 use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
 use Modules\MicrosoftCspConnection\Services\SubscriptionService;
+use App\Models\Traits\HasInstanceEnvironment;
 
 class Subscription extends Model
 {
     use ActivityTrait;
+    use HasInstanceEnvironment;
 
     public function format(){
         return [

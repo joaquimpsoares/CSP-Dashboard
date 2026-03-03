@@ -11,10 +11,12 @@ use Spatie\Searchable\SearchResult;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\Traits\HasInstanceEnvironment;
 
 class Reseller extends Model implements Searchable
 {
     use ActivityTrait;
+    use HasInstanceEnvironment;
 
     public function format()
     {

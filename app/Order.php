@@ -13,10 +13,12 @@ use App\Jobs\CreateCustomerMicrosoft;
 use Approval\Traits\RequiresApproval;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\Traits\HasInstanceEnvironment;
 
 class Order extends Model
 {
     use RequiresApproval;
+    use HasInstanceEnvironment;
 
     protected $dates = ['verified_at'];
 

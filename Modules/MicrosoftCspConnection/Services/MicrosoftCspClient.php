@@ -17,12 +17,14 @@ class MicrosoftCspClient
     private MicrosoftCspConnection $connection;
     private array $config;
     private GuzzleClient $http;
+    private string $environment;
 
-    public function __construct(MicrosoftCspConnection $connection, array $config)
+    public function __construct(MicrosoftCspConnection $connection, array $config, ?string $environment = null)
     {
-        $this->connection = $connection;
-        $this->config     = $config;
-        $this->http       = new GuzzleClient(['timeout' => 30]);
+        $this->connection  = $connection;
+        $this->config      = $config;
+        $this->http        = new GuzzleClient(['timeout' => 30]);
+        $this->environment = $environment ?? session('environment', 'live');
     }
 
     // -------------------------------------------------------------------------
@@ -41,10 +43,11 @@ class MicrosoftCspClient
     {
         // Cache key includes resource discriminator so PC and Graph tokens never collide
         $cacheKey = sprintf(
-            'microsoft_csp_token:%s:%s:%s:pc',
+            'microsoft_csp_token:%s:%s:%s:%s:pc',
             $this->connection->provider_id,
-            $this->connection->tenant_id,
-            $this->connection->token_mode
+            $this->effectiveTenantId(),
+            $this->connection->token_mode,
+            $this->environment
         );
 
         return Cache::remember($cacheKey, $this->tokenTtl(), function () {
@@ -66,10 +69,11 @@ class MicrosoftCspClient
     {
         // Separate cache key entry for Graph resource (different audience from PC)
         $cacheKey = sprintf(
-            'microsoft_csp_token:%s:%s:%s:graph',
+            'microsoft_csp_token:%s:%s:%s:%s:graph',
             $this->connection->provider_id,
-            $this->connection->tenant_id,
-            $this->connection->token_mode
+            $this->effectiveTenantId(),
+            $this->connection->token_mode,
+            $this->environment
         );
 
         $token = Cache::remember($cacheKey, $this->tokenTtl(), function () {
@@ -100,7 +104,7 @@ class MicrosoftCspClient
     public function request(string $method, string $path, array $data = [], array $query = []): array
     {
         $token   = $this->getPartnerCenterAccessToken();
-        $apiUrl  = rtrim($this->connection->api_url ?? $this->config['api_url'], '/');
+        $apiUrl  = rtrim($this->getPartnerCenterBaseUrl(), '/');
         $url     = "{$apiUrl}/v1/{$path}";
 
         $correlationId = Uuid::uuid4()->toString();
@@ -170,6 +174,82 @@ class MicrosoftCspClient
     }
 
     // -------------------------------------------------------------------------
+    // Environment + credentials
+    // -------------------------------------------------------------------------
+
+    public function environment(): string
+    {
+        return $this->environment;
+    }
+
+    private function getPartnerCenterBaseUrl(): string
+    {
+        if (! empty($this->connection->api_url)) {
+            return $this->connection->api_url;
+        }
+
+        return $this->environment === 'sandbox'
+            ? 'https://api.sandbox.partnercenter.microsoft.com'
+            : 'https://api.partnercenter.microsoft.com';
+    }
+
+    private function effectiveTenantId(): string
+    {
+        $tenant = $this->environment === 'sandbox'
+            ? ($this->connection->sandbox_tenant_id ?? null)
+            : ($this->connection->tenant_id ?? null);
+
+        if (empty($tenant)) {
+            throw new RuntimeException("Microsoft CSP connection missing tenant_id for environment '{$this->environment}'.");
+        }
+
+        return $tenant;
+    }
+
+    private function effectiveClientId(): string
+    {
+        $id = $this->environment === 'sandbox'
+            ? ($this->connection->sandbox_client_id ?? null)
+            : ($this->connection->client_id ?? null);
+
+        if (empty($id)) {
+            throw new RuntimeException("Microsoft CSP connection missing client_id for environment '{$this->environment}'.");
+        }
+
+        return $id;
+    }
+
+    private function effectiveClientSecret(): string
+    {
+        $secret = $this->environment === 'sandbox'
+            ? ($this->connection->sandbox_client_secret ?? null)
+            : ($this->connection->client_secret ?? null);
+
+        if (empty($secret)) {
+            throw new RuntimeException("Microsoft CSP connection missing client_secret for environment '{$this->environment}'.");
+        }
+
+        return $secret;
+    }
+
+    private function effectiveRefreshToken(): ?string
+    {
+        if ($this->connection->token_mode !== 'sam') {
+            return null;
+        }
+
+        $token = $this->environment === 'sandbox'
+            ? ($this->connection->sandbox_refresh_token ?? null)
+            : ($this->connection->refresh_token ?? null);
+
+        if (empty($token)) {
+            throw new RuntimeException("Microsoft CSP connection missing refresh_token for environment '{$this->environment}'.");
+        }
+
+        return $token;
+    }
+
+    // -------------------------------------------------------------------------
     // Internal helpers
     // -------------------------------------------------------------------------
 
@@ -193,18 +273,18 @@ class MicrosoftCspClient
         $tokenUrl = sprintf(
             '%s/%s/oauth2/token',
             rtrim($this->config['auth_url'], '/'),
-            $this->connection->tenant_id
+            $this->effectiveTenantId()
         );
 
         $params = [
-            'client_id'     => $this->connection->client_id,
-            'client_secret' => $this->connection->client_secret,
+            'client_id'     => $this->effectiveClientId(),
+            'client_secret' => $this->effectiveClientSecret(),
             'resource'      => $resource,
         ];
 
         if ($this->connection->token_mode === 'sam') {
             $params['grant_type']    = 'refresh_token';
-            $params['refresh_token'] = $this->connection->refresh_token;
+            $params['refresh_token'] = $this->effectiveRefreshToken();
         } else {
             $params['grant_type'] = 'client_credentials';
         }

@@ -92,6 +92,41 @@
                 </div>
             </div>
 
+            @php
+                $env = session('environment', 'live');
+                $instanceId = session('instance_id');
+                $instance = $instanceId ? \App\Instance::find($instanceId) : null;
+                $isTrial = $instance && (($instance->subscription_status ?? 'active') === 'trial');
+                $hasSandboxCreds = false;
+                if ($instance && ($instance->type ?? '') === 'Microsoft') {
+                    $conn = \Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection::where('provider_id', $instance->provider_id)
+                        ->where('tenant_id', $instance->tenant_id)
+                        ->first();
+                    $hasSandboxCreds = $conn && !empty($conn->sandbox_tenant_id);
+                }
+            @endphp
+
+            @if($hasSandboxCreds && !$isTrial)
+                <div class="hidden sm:flex sm:items-center sm:ms-4">
+                    <form method="POST" action="{{ route('environment.switch') }}">
+                        @csrf
+                        <input type="hidden" name="environment" value="{{ $env === 'live' ? 'sandbox' : 'live' }}">
+                        <button type="submit" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold shadow-sm hover:bg-slate-50">
+                            <span class="rounded-md px-2 py-0.5 text-xs font-bold {{ $env === 'sandbox' ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-900' }}">
+                                {{ strtoupper($env) }}
+                            </span>
+                            <span class="text-slate-600">Switch</span>
+                        </button>
+                    </form>
+                </div>
+            @else
+                <div class="hidden sm:flex sm:items-center sm:ms-4">
+                    <span class="rounded-md px-2 py-1 text-xs font-bold {{ $env === 'sandbox' ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-900' }}">
+                        {{ strtoupper($env) }}
+                    </span>
+                </div>
+            @endif
+
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">

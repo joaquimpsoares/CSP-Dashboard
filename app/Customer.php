@@ -15,10 +15,13 @@ use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
 use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
 use Modules\MicrosoftCspConnection\Services\CustomerService;
 
+use App\Models\Traits\HasInstanceEnvironment;
+
 class Customer extends Model implements Searchable
 {
 
     use ActivityTrait;
+    use HasInstanceEnvironment;
 
     public function format(){
         return [
