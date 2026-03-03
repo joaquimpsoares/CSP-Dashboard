@@ -74,17 +74,35 @@
                         </x-slot>
 
                         <x-slot name="content">
-                            <x-dropdown-link :href="route('instances.index')">
-                                {{ __('Instances') }}
+                            <x-dropdown-link :href="route('settings', Auth::id())">
+                                {{ __('Settings') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('store.index')">
+                                {{ __('Store') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('priceList.index')">
+                                {{ __('Price Lists') }}
                             </x-dropdown-link>
                             <x-dropdown-link :href="route('product.index')">
                                 {{ __('Products') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('pricing.price_lists.index')">
-                                {{ __('Price Lists') }}
+                            <x-dropdown-link :href="route('instances.index')">
+                                {{ __('Instances') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('pricing.index')">
-                                {{ __('Pricing') }}
+                            <x-dropdown-link :href="route('jobs.pending')">
+                                {{ __('Jobs') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('jobsfailed')">
+                                {{ __('Failed Jobs') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('user.index')">
+                                {{ __('Users') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('userloginfo')">
+                                {{ __('User Log Information') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('logactivity')">
+                                {{ __('Log Activity') }}
                             </x-dropdown-link>
                         </x-slot>
                     </x-dropdown>
@@ -154,19 +172,21 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
+                        <x-dropdown-link :href="route('profile.showprofile', Auth::id())">
                             {{ __('Profile') }}
                         </x-dropdown-link>
+                        <x-dropdown-link :href="route('user.notifications', Auth::id())">
+                            {{ __('Notifications settings') }}
+                        </x-dropdown-link>
+
+                        <div class="my-1 h-px bg-slate-200"></div>
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
+                            <button type="submit" class="flex w-full items-center px-4 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
                                 {{ __('Log Out') }}
-                            </x-dropdown-link>
+                            </button>
                         </form>
                     </x-slot>
                 </x-dropdown>

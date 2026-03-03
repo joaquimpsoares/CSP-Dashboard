@@ -50,28 +50,32 @@ class ShowProfile extends Component
         'city'          => ['required', 'string', 'max:255', 'min:3'],
         'state'         => ['required', 'string', 'max:255', 'min:3'],
         'postal_code'   => ['required', 'string', 'regex:/^[0-9A-Za-z.\-]+$/', 'max:255', 'min:3'],
-        'mpnid'         => ['sometimes', 'min:5'],
+        // Only required/visible for reseller-level users (UI hides for super admin).
+        'mpnid'         => ['nullable', 'string', 'min:5'],
     ];
 
-    public function mount()
+    public function mount($user = null)
     {
+        // Ensure we always load existing data for the authenticated user.
+        $this->user = $user ?? Auth::user();
+
         switch ($this->getUserLevel()) {
             case config('app.super_admin'):
             break;
 
             case config('app.provider'):
-                $this->account = Auth::user()->provider;
-                $this->logo = Auth::user()->provider->logo;
+                $this->account = $this->user->provider;
+                $this->logo = $this->user->provider->logo;
             break;
 
             case config('app.reseller'):
-                $this->account = Auth::user()->reseller;
-                $this->logo = Auth::user()->reseller->provider->logo;
-                $this->mpnid = Auth::user()->reseller->mpnid;
+                $this->account = $this->user->reseller;
+                $this->logo = $this->user->reseller->provider->logo;
+                $this->mpnid = $this->user->reseller->mpnid;
             break;
 
             case config('app.customer'):
-                $this->account = Auth::user()->customer;
+                $this->account = $this->user->customer;
             break;
             default:
             return abort(403, __('errors.unauthorized_action'));
@@ -84,9 +88,11 @@ class ShowProfile extends Component
         $this->nif              = $this->account->nif ?? '';
         $this->city             = $this->account->city ?? '';
         $this->state            = $this->account->state ?? '';
-        $this->country_id       = $this->account->country_id ?? '';
+        $this->country_id       = $this->account->country_id ? (int) $this->account->country_id : null;
         $this->postal_code      = $this->account->postal_code ?? '';
-        $this->country_id       = $this->account->country_id ?? '';
+
+        // Only meaningful for resellers.
+        $this->mpnid            = $this->account->mpnid ?? $this->mpnid ?? '';
 
     }
 
