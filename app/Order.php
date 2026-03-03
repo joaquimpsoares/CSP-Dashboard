@@ -182,25 +182,50 @@ class Order extends Model
     protected static function booted(){
         static::addGlobalScope('access_level', function (Builder $query) {
             $user = Auth::user();
-            if ($user && $user->userLevel->name === config('app.provider')) {
-                $query->whereHas('customer', function (Builder $query) use ($user) {
-                    $query->whereHas('resellers', function (Builder $query) use ($user) {
-                        $query->whereHas('provider', function (Builder $query) use ($user) {
-                            $query->where('id', $user->provider->id);
+
+            if (! $user || ! $user->userLevel) {
+                return;
+            }
+
+            if ($user->userLevel->name === config('app.provider')) {
+                if (! $user->provider) {
+                    return;
+                }
+
+                $providerId = $user->provider->id;
+
+                $query->whereHas('customer', function (Builder $query) use ($providerId) {
+                    $query->whereHas('resellers', function (Builder $query) use ($providerId) {
+                        $query->whereHas('provider', function (Builder $query) use ($providerId) {
+                            $query->where('id', $providerId);
                         });
                     });
                 });
             }
-            if ($user && $user->userLevel->name === config('app.reseller')) {
-                $query->whereHas('customer', function (Builder $query) use ($user) {
-                    $query->whereHas('resellers', function (Builder $query) use ($user) {
+
+            if ($user->userLevel->name === config('app.reseller')) {
+                if (! $user->reseller_id) {
+                    return;
+                }
+
+                $resellerId = $user->reseller_id;
+
+                $query->whereHas('customer', function (Builder $query) use ($resellerId) {
+                    $query->whereHas('resellers', function (Builder $query) use ($resellerId) {
+                        $query->where('id', $resellerId);
                     });
                 });
             }
-            if ($user && $user->userLevel->name === config('app.customer')) {
-                $query->whereHas('customer', function (Builder $query) use ($user) {
-                    $query->where('customer_id', $user->customer->id);
-                });
+
+            if ($user->userLevel->name === config('app.customer')) {
+                if (! $user->customer_id) {
+                    return;
+                }
+
+                $customerId = $user->customer_id;
+
+                // Orders table has customer_id, so filter directly.
+                $query->where('customer_id', $customerId);
             }
         });
     }
