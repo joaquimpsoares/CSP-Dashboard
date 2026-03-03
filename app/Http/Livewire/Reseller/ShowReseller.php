@@ -152,7 +152,7 @@ class ShowReseller extends Component
         $this->statuses = Status::get();
 
         $this->reseller = Reseller::query()
-            ->with(['country', 'status', 'provider', 'customers', 'users'])
+            ->with(['country', 'status', 'provider', 'customers', 'users', 'priceList'])
             ->where('id', $this->reseller)
             ->first();
 

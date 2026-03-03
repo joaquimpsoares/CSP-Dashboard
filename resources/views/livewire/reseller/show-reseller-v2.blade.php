@@ -6,6 +6,7 @@
         $customers = $reseller?->customers ?? collect();
         $users = $reseller?->users ?? collect();
         $instances = $provider ? \App\Instance::query()->where('provider_id', $provider->id)->get() : collect();
+        $isResellerUser = (\Illuminate\Support\Facades\Auth::user()->userLevel->name ?? null) === config('app.reseller');
 
         $customersCount = $customers->count();
         $usersCount = $users->count();
@@ -39,7 +40,9 @@
                 <button type="button" @click="tab='details'" class="border-b-2 px-1 pb-3 text-sm font-semibold" :class="tab==='details' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">Details</button>
                 <button type="button" @click="tab='customers'" class="border-b-2 px-1 pb-3 text-sm font-semibold" :class="tab==='customers' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">Customers</button>
                 <button type="button" @click="tab='users'" class="border-b-2 px-1 pb-3 text-sm font-semibold" :class="tab==='users' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">Users</button>
-                <button type="button" @click="tab='instances'" class="border-b-2 px-1 pb-3 text-sm font-semibold" :class="tab==='instances' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">Instances</button>
+                @if(! $isResellerUser)
+                    <button type="button" @click="tab='instances'" class="border-b-2 px-1 pb-3 text-sm font-semibold" :class="tab==='instances' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">Instances</button>
+                @endif
                 <button type="button" @click="tab='billing'" class="border-b-2 px-1 pb-3 text-sm font-semibold" :class="tab==='billing' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">Billing</button>
             </nav>
         </div>
@@ -60,6 +63,10 @@
                             <div>
                                 <dt class="text-sm font-medium text-slate-500">MPN ID</dt>
                                 <dd class="mt-1 text-sm font-semibold text-slate-900">{{ $reseller?->mpnid ?? '—' }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-slate-500">Price List</dt>
+                                <dd class="mt-1 text-sm font-semibold text-slate-900">{{ $reseller?->priceList?->name ?? '—' }}</dd>
                             </div>
                             <div>
                                 <dt class="text-sm font-medium text-slate-500">Country</dt>
@@ -182,6 +189,7 @@
         </div>
 
         <!-- Instances -->
+        @if(! $isResellerUser)
         <div x-show="tab==='instances'" x-cloak class="mt-6">
             <div class="rounded-2xl border border-slate-200 bg-white">
                 <div class="border-b border-slate-200 px-6 py-4">
@@ -216,6 +224,7 @@
                 </div>
             </div>
         </div>
+        @endif
 
         <!-- Billing -->
         <div x-show="tab==='billing'" x-cloak class="mt-6">

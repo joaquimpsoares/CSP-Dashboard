@@ -166,6 +166,12 @@
                                     {{$customer->country->name}}
                                 </dd>
                             </div>
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-slate-600">{{ ucwords(trans_choice('messages.price_lists', 2)) }}</dt>
+                                <dd class="mt-1 text-sm text-slate-900">
+                                    {{ $customer->priceList->name ?? '—' }}
+                                </dd>
+                            </div>
                         </dl>
                     </div>
                 </div>
