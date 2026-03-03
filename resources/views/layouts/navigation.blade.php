@@ -106,7 +106,7 @@
                 }
             @endphp
 
-            @if($hasSandboxCreds && !$isTrial)
+            @if(($hasSandboxCreds ?? false) && !($isTrial ?? false))
                 <div class="hidden sm:flex sm:items-center sm:ms-4">
                     <form method="POST" action="{{ route('environment.switch') }}">
                         @csrf
