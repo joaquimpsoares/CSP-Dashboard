@@ -63,19 +63,58 @@
 
                     @hasanyrole('Super Admin|Admin|Provider')
                     <!-- Configuration mega menu -->
-                    <div class="relative" x-data="{ openConfig: false }" @click.outside="openConfig = false" @keydown.escape.window="openConfig = false">
-                        <button type="button" @click="openConfig = !openConfig" class="inline-flex items-center gap-2 rounded-lg border border-transparent bg-transparent px-1 pt-1 text-sm font-medium leading-5 text-slate-600 hover:text-slate-900 focus:outline-none transition">
+                    <div
+                        x-data="{
+                            openConfig: false,
+                            top: 0,
+                            left: 0,
+                            width: 0,
+                            place() {
+                                const r = this.$refs.btn.getBoundingClientRect();
+                                this.width = 720;
+                                this.top = r.bottom + 8;
+                                // Right-align to the button but keep inside viewport.
+                                const desiredLeft = r.right - this.width;
+                                this.left = Math.max(8, Math.min(desiredLeft, window.innerWidth - this.width - 8));
+                            },
+                            toggle() {
+                                this.openConfig = !this.openConfig;
+                                if (this.openConfig) this.$nextTick(() => this.place());
+                            }
+                        }"
+                        @keydown.escape.window="openConfig = false"
+                        class="relative"
+                    >
+                        <button
+                            type="button"
+                            x-ref="btn"
+                            @click="toggle()"
+                            class="inline-flex items-center gap-2 rounded-lg border border-transparent bg-transparent px-1 pt-1 text-sm font-medium leading-5 text-slate-600 hover:text-slate-900 focus:outline-none transition"
+                        >
                             <span>{{ __('Configuration') }}</span>
                             <svg class="h-4 w-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                             </svg>
                         </button>
 
-                        <div x-cloak x-show="openConfig" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-1"
-                             class="absolute top-full right-0 z-[9999] mt-2 min-w-[600px] max-w-[720px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
-
-                            <div class="p-4">
-                                <div class="grid grid-cols-3 gap-4">
+                        <template x-teleport="body">
+                            <div
+                                x-cloak
+                                x-show="openConfig"
+                                @click.away="openConfig = false"
+                                @scroll.window="openConfig = false"
+                                @resize.window="openConfig = false"
+                                x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="opacity-0 translate-y-1"
+                                x-transition:enter-end="opacity-100 translate-y-0"
+                                x-transition:leave="transition ease-in duration-100"
+                                x-transition:leave-start="opacity-100 translate-y-0"
+                                x-transition:leave-end="opacity-0 translate-y-1"
+                                class="fixed z-[99999] min-w-[600px] max-w-[720px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl"
+                                :style="`top:${top}px; left:${left}px;`"
+                            >
+                                <div class="p-4">
+                                    <div class="grid grid-cols-3 gap-4">
                                 <!-- Column 1: Manage -->
                                 <div>
                                     <div class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Manage</div>
@@ -248,10 +287,12 @@
                                         </a>
                                     </div>
                                 </div>
-                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </template>
+        </div>
                     @endhasanyrole
                 </div>
 
