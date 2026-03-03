@@ -48,12 +48,72 @@
             </div>
         </div>
 
-        <!-- Content -->
-        <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-            <!-- Main -->
-            <div class="lg:col-span-2 space-y-6">
-                <!-- Instances -->
-                <div class="rounded-2xl border border-slate-200 bg-white">
+        @php
+            // Relationships
+            $provider->loadMissing(['resellers', 'resellers.customers', 'resellers.status']);
+            $rootResellers = $provider->resellers->whereNull('main_office');
+            $isDirect = $rootResellers->count() === 0;
+
+            // Customers for direct providers (sold directly without resellers)
+            $directCustomers = collect();
+            if ($isDirect) {
+                try {
+                    $customerIds = method_exists($provider, 'getMyCustomersId') ? $provider->getMyCustomersId() : [];
+                    $directCustomers = \App\Customer::query()->whereIn('id', $customerIds)->limit(50)->get();
+                } catch (\Throwable $e) {
+                    $directCustomers = collect();
+                }
+            }
+
+            $usersCount = $provider->users->count();
+            $instancesCount = $instances->count();
+            $resellersCount = $rootResellers->count();
+            $customersCount = $isDirect ? $directCustomers->count() : $provider->getMyCustomersId() ? count($provider->getMyCustomersId()) : 0;
+        @endphp
+
+        <!-- Summary cards -->
+        <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="rounded-2xl border border-slate-200 bg-white/80 px-6 py-5 shadow-sm">
+                <div class="text-sm font-medium text-slate-600">Instances</div>
+                <div class="mt-2 text-3xl font-semibold tracking-tight text-slate-900">{{ $instancesCount }}</div>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white/80 px-6 py-5 shadow-sm">
+                <div class="text-sm font-medium text-slate-600">{{ $isDirect ? 'Customers' : 'Resellers' }}</div>
+                <div class="mt-2 text-3xl font-semibold tracking-tight text-slate-900">{{ $isDirect ? $customersCount : $resellersCount }}</div>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white/80 px-6 py-5 shadow-sm">
+                <div class="text-sm font-medium text-slate-600">Users</div>
+                <div class="mt-2 text-3xl font-semibold tracking-tight text-slate-900">{{ $usersCount }}</div>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white/80 px-6 py-5 shadow-sm">
+                <div class="text-sm font-medium text-slate-600">Billing</div>
+                <div class="mt-2 text-sm font-semibold text-slate-900">Coming soon</div>
+                <div class="mt-1 text-xs text-slate-500">Stripe-like billing view</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="mt-6" x-data="{ tab: 'details' }">
+            <div class="border-b border-slate-200">
+                <nav class="-mb-px flex flex-wrap gap-6">
+                    <button type="button" @click="tab='details'" class="border-b-2 px-1 pb-3 text-sm font-semibold" :class="tab==='details' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">Details</button>
+                    <button type="button" @click="tab='instances'" class="border-b-2 px-1 pb-3 text-sm font-semibold" :class="tab==='instances' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">Instances</button>
+                    @if(! $isDirect)
+                        <button type="button" @click="tab='resellers'" class="border-b-2 px-1 pb-3 text-sm font-semibold" :class="tab==='resellers' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">Resellers</button>
+                    @else
+                        <button type="button" @click="tab='customers'" class="border-b-2 px-1 pb-3 text-sm font-semibold" :class="tab==='customers' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">Customers</button>
+                    @endif
+                    <button type="button" @click="tab='users'" class="border-b-2 px-1 pb-3 text-sm font-semibold" :class="tab==='users' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">Users</button>
+                    <button type="button" @click="tab='billing'" class="border-b-2 px-1 pb-3 text-sm font-semibold" :class="tab==='billing' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">Billing</button>
+                </nav>
+            </div>
+
+            <!-- Tab: Details -->
+            <div x-show="tab==='details'" class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+                <!-- Main -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Instances (preview) -->
+                    <div class="rounded-2xl border border-slate-200 bg-white">
                     <div class="flex items-start justify-between gap-4 border-b border-slate-200 px-6 py-4">
                         <div>
                             <h4 class="text-base font-semibold text-slate-900">Instances</h4>
@@ -197,9 +257,197 @@
                     </div>
                 </div>
 
-                <div class="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 text-xs text-slate-600">
-                    <div class="font-semibold text-slate-900">Note</div>
-                    <div class="mt-1">This screen was simplified to match the new UI. If you want, we can add tabs (Instances / Users / Billing) next.</div>
+            </div>
+        </div>
+
+        <!-- Tab: Instances -->
+        <div x-show="tab==='instances'" x-cloak class="mt-6">
+            <div class="rounded-2xl border border-slate-200 bg-white">
+                <div class="flex items-start justify-between gap-4 border-b border-slate-200 px-6 py-4">
+                    <div>
+                        <h4 class="text-base font-semibold text-slate-900">Instances</h4>
+                        <p class="mt-1 text-sm text-slate-600">All instances for this provider.</p>
+                    </div>
+                    <button type="button" @click="addInstanceOpen = true" class="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
+                        <x-icon.plus /> Add instance
+                    </button>
+                </div>
+                <div class="px-6 py-4">
+                    @if($instances->count() === 0)
+                        <div class="flex items-center justify-center gap-2 py-10 text-slate-500">
+                            <x-icon.inbox class="h-6 w-6" />
+                            <span class="text-sm font-medium">No instances yet.</span>
+                        </div>
+                    @else
+                        <div class="overflow-hidden rounded-xl border border-slate-200">
+                            <table class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Name</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Type</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">CSP mode</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Expires</th>
+                                        <th class="px-4 py-3"></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 bg-white">
+                                    @foreach($instances as $instance)
+                                        <tr class="hover:bg-slate-50/60">
+                                            <td class="px-4 py-3 text-sm font-semibold text-slate-900">
+                                                <a class="hover:text-primary-700" href="{{ route('instances.edit', $instance->id) }}">{{ $instance->name }}</a>
+                                            </td>
+                                            <td class="px-4 py-3 text-sm text-slate-700">{{ $instance->type ?? '—' }}</td>
+                                            <td class="px-4 py-3 text-sm text-slate-700">
+                                                @if(($instance->type ?? '') === 'Microsoft')
+                                                    <span class="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700 ring-1 ring-inset ring-slate-200">
+                                                        {{ $instance->external_type ?? '—' }}
+                                                    </span>
+                                                @else
+                                                    <span class="text-slate-400">—</span>
+                                                @endif
+                                            </td>
+                                            <td class="px-4 py-3 text-sm text-slate-700">{{ optional($instance->expires_at)->format('Y-m-d') ?? '—' }}</td>
+                                            <td class="px-4 py-3 text-right">
+                                                <a href="{{ route('instances.edit', $instance->id) }}" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50">
+                                                    <x-icon.edit /> Edit
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Resellers or Customers (conditional) -->
+        @if(! $isDirect)
+            <div x-show="tab==='resellers'" x-cloak class="mt-6">
+                <div class="rounded-2xl border border-slate-200 bg-white">
+                    <div class="border-b border-slate-200 px-6 py-4">
+                        <h4 class="text-base font-semibold text-slate-900">Resellers</h4>
+                        <p class="mt-1 text-sm text-slate-600">Resellers belonging to this provider.</p>
+                    </div>
+                    <div class="px-6 py-4">
+                        @if($rootResellers->count() === 0)
+                            <div class="py-10 text-center text-sm text-slate-600">No resellers found.</div>
+                        @else
+                            <div class="overflow-hidden rounded-xl border border-slate-200">
+                                <table class="min-w-full divide-y divide-slate-200">
+                                    <thead class="bg-slate-50">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Company</th>
+                                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Country</th>
+                                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-200 bg-white">
+                                        @foreach($rootResellers as $r)
+                                            <tr class="hover:bg-slate-50/60">
+                                                <td class="px-4 py-3 text-sm font-semibold text-slate-900">
+                                                    <a class="hover:text-primary-700" href="{{ $r->format()['path'] ?? '#' }}">{{ $r->company_name }}</a>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm text-slate-700">{{ $r->country->name ?? '—' }}</td>
+                                                <td class="px-4 py-3 text-sm text-slate-700">{{ ucwords(trans_choice($r->status->name ?? 'messages.active', 1)) }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @else
+            <div x-show="tab==='customers'" x-cloak class="mt-6">
+                <div class="rounded-2xl border border-slate-200 bg-white">
+                    <div class="border-b border-slate-200 px-6 py-4">
+                        <h4 class="text-base font-semibold text-slate-900">Customers</h4>
+                        <p class="mt-1 text-sm text-slate-600">Customers buying directly from this provider.</p>
+                    </div>
+                    <div class="px-6 py-4">
+                        @if($directCustomers->count() === 0)
+                            <div class="py-10 text-center text-sm text-slate-600">No customers found.</div>
+                        @else
+                            <div class="overflow-hidden rounded-xl border border-slate-200">
+                                <table class="min-w-full divide-y divide-slate-200">
+                                    <thead class="bg-slate-50">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Company</th>
+                                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Country</th>
+                                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-200 bg-white">
+                                        @foreach($directCustomers as $c)
+                                            <tr class="hover:bg-slate-50/60">
+                                                <td class="px-4 py-3 text-sm font-semibold text-slate-900">
+                                                    <a class="hover:text-primary-700" href="{{ $c->format()['path'] ?? '#' }}">{{ $c->company_name }}</a>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm text-slate-700">{{ $c->country->name ?? '—' }}</td>
+                                                <td class="px-4 py-3 text-sm text-slate-700">{{ ucwords(trans_choice($c->status->name ?? 'messages.active', 1)) }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        <!-- Tab: Users -->
+        <div x-show="tab==='users'" x-cloak class="mt-6">
+            <div class="rounded-2xl border border-slate-200 bg-white">
+                <div class="border-b border-slate-200 px-6 py-4">
+                    <h4 class="text-base font-semibold text-slate-900">Users</h4>
+                    <p class="mt-1 text-sm text-slate-600">Users assigned to this provider.</p>
+                </div>
+                <div class="px-6 py-4">
+                    @php($users = $provider->users)
+                    @if($users->count() === 0)
+                        <div class="flex items-center justify-center gap-2 py-10 text-slate-500">
+                            <x-icon.inbox class="h-6 w-6" />
+                            <span class="text-sm font-medium">No users assigned.</span>
+                        </div>
+                    @else
+                        <div class="overflow-hidden rounded-xl border border-slate-200">
+                            <table class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Name</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Email</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 bg-white">
+                                    @foreach($users as $u)
+                                        <tr class="hover:bg-slate-50/60">
+                                            <td class="px-4 py-3 text-sm font-semibold text-slate-900">{{ trim(($u->name ?? '') . ' ' . ($u->last_name ?? '')) ?: '—' }}</td>
+                                            <td class="px-4 py-3 text-sm text-slate-700">{{ $u->email }}</td>
+                                            <td class="px-4 py-3 text-sm text-slate-700">{{ ucwords(trans_choice($u->status->name ?? 'messages.active', 1)) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Billing placeholder -->
+        <div x-show="tab==='billing'" x-cloak class="mt-6">
+            <div class="rounded-2xl border border-slate-200 bg-white">
+                <div class="border-b border-slate-200 px-6 py-4">
+                    <h4 class="text-base font-semibold text-slate-900">Billing</h4>
+                    <p class="mt-1 text-sm text-slate-600">Stripe-like billing view (coming soon).</p>
+                </div>
+                <div class="px-6 py-10 text-center text-sm text-slate-600">
+                    Billing will appear here.
                 </div>
             </div>
         </div>
