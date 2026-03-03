@@ -48,7 +48,9 @@
                         {{ __('Orders') }}
                     </x-nav-link>
 
-                    @php($cartCount = Auth::user()->cart?->products?->count() ?? 0)
+                    @php
+                        $cartCount = Auth::user()->cart?->products?->count() ?? 0;
+                    @endphp
                     <a href="{{ route('cart.index') }}" class="relative inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-slate-600 hover:text-slate-900">
                         <span>Cart</span>
                         @if($cartCount > 0)
@@ -110,7 +112,9 @@
                 <div class="hidden sm:flex sm:items-center sm:ms-4">
                     <form method="POST" action="{{ route('environment.switch') }}">
                         @csrf
-                        @php($envValue = $env ?? session('environment', 'live'))
+                        @php
+                            $envValue = $env ?? session('environment', 'live');
+                        @endphp
                         <input type="hidden" name="environment" value="{{ $envValue === 'live' ? 'sandbox' : 'live' }}">
                         <button type="submit" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold shadow-sm hover:bg-slate-50">
                             <span class="rounded-md px-2 py-0.5 text-xs font-bold {{ $envValue === 'sandbox' ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-900' }}">
@@ -122,7 +126,9 @@
                 </div>
             @else
                 <div class="hidden sm:flex sm:items-center sm:ms-4">
-                    @php($envValue = $env ?? session('environment', 'live'))
+                    @php
+                        $envValue = $env ?? session('environment', 'live');
+                    @endphp
                     <span class="rounded-md px-2 py-1 text-xs font-bold {{ $envValue === 'sandbox' ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-900' }}">
                         {{ strtoupper($envValue) }}
                     </span>
