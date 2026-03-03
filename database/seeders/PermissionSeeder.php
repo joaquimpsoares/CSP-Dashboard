@@ -5,26 +5,40 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\PermissionRegistrar;
 
 class PermissionSeeder extends Seeder
 {
-    /**
-     * Idempotent seeder: safe to run multiple times.
-     */
     public function run(): void
     {
-        // Ensure roles exist
-        $superAdminRole  = Role::firstOrCreate(['name' => config('app.super_admin')]);
-        $adminRole       = Role::firstOrCreate(['name' => config('app.admin')]);
-        $providerRole    = Role::firstOrCreate(['name' => config('app.provider')]);
-        $resellerRole    = Role::firstOrCreate(['name' => config('app.reseller')]);
-        $subResellerRole = Role::firstOrCreate(['name' => config('app.subreseller')]);
-        $customerRole    = Role::firstOrCreate(['name' => config('app.customer')]);
+        $guard = 'web';
 
-        // Helper to create-or-return permissions
-        $perm = function (string $name): Permission {
-            return Permission::firstOrCreate(['name' => $name]);
+        $superAdminRole   = Role::where('name', config('app.super_admin'))->where('guard_name', $guard)->first();
+        $adminRole        = Role::where('name', config('app.admin'))->where('guard_name', $guard)->first();
+        $providerRole     = Role::where('name', config('app.provider'))->where('guard_name', $guard)->first();
+        $resellerRole     = Role::where('name', config('app.reseller'))->where('guard_name', $guard)->first();
+        $subResellerRole  = Role::where('name', config('app.subreseller'))->where('guard_name', $guard)->first();
+        $customerRole     = Role::where('name', config('app.customer'))->where('guard_name', $guard)->first();
+
+        // If roles aren't present for some reason, fail loudly with a clear message.
+        foreach ([
+            'superAdminRole'  => $superAdminRole,
+            'adminRole'       => $adminRole,
+            'providerRole'    => $providerRole,
+            'resellerRole'    => $resellerRole,
+            'subResellerRole' => $subResellerRole,
+            'customerRole'    => $customerRole,
+        ] as $name => $role) {
+            if (! $role) {
+                throw new \RuntimeException("Missing role for PermissionSeeder: {$name}. Run RoleSeeder first and ensure guard_name='{$guard}'.");
+            }
+        }
+
+        // Helper that safely creates (or finds) permissions and returns the model.
+        $p = function (?string $permName) use ($guard): ?Permission {
+            if (! $permName) {
+                return null;
+            }
+            return Permission::findOrCreate($permName, $guard);
         };
 
         $superPermissions = [];
@@ -35,66 +49,73 @@ class PermissionSeeder extends Seeder
         $priceListPermissions = [];
         $subscriptionPermissions = [];
 
-        // Super-admin only
-        $superPermissions[] = $perm(config('app.manage_roles'));
+        // Super-only permission(s)
+        $superPermissions[] = $p(config('app.manage_roles'));
 
-        // Generic permissions
-        $permissions[] = $perm('users.manage');
-        $permissions[] = $perm('users.activity');
-        $permissions[] = $perm('permissions.manage');
-        $permissions[] = $perm('settings.general');
-        $permissions[] = $perm('settings.auth');
-        $permissions[] = $perm('settings.notifications');
+        // General permissions
+        $permissions[] = $p('users.manage');
+        $permissions[] = $p('users.activity');
+        $permissions[] = $p('permissions.manage');
+        $permissions[] = $p('settings.general');
+        $permissions[] = $p('settings.auth');
+        $permissions[] = $p('settings.notifications');
 
         // Customer permissions
-        $customerPermissions[] = $perm(config('app.customer_show'));
-        $customerPermissions[] = $perm(config('app.customer_create'));
-        $customerPermissions[] = $perm(config('app.customer_edit'));
-        $customerPermissions[] = $perm(config('app.customer_delete'));
+        $customerPermissions[] = $p(config('app.customer_show'));
+        $customerPermissions[] = $p(config('app.customer_create'));
+        $customerPermissions[] = $p(config('app.customer_edit'));
+        $customerPermissions[] = $p(config('app.customer_delete'));
 
         // Reseller permissions
-        $resellerPermissions[] = $perm(config('app.customer_index'));
-        $resellerPermissions[] = $perm(config('app.reseller_show'));
-        $resellerPermissions[] = $perm(config('app.reseller_create'));
-        $resellerPermissions[] = $perm(config('app.reseller_edit'));
-        $resellerPermissions[] = $perm(config('app.reseller_delete'));
+        $resellerPermissions[] = $p(config('app.customer_index'));
+        $resellerPermissions[] = $p(config('app.reseller_show'));
+        $resellerPermissions[] = $p(config('app.reseller_create'));
+        $resellerPermissions[] = $p(config('app.reseller_edit'));
+        $resellerPermissions[] = $p(config('app.reseller_delete'));
 
         // Provider permissions
-        $providerPermissions[] = $perm(config('app.reseller_index'));
+        $providerPermissions[] = $p(config('app.reseller_index'));
 
-        // Provider CRUD (platform level)
-        $permissions[] = $perm(config('app.provider_index'));
-        $permissions[] = $perm(config('app.provider_show'));
-        $permissions[] = $perm(config('app.provider_create'));
-        $permissions[] = $perm(config('app.provider_edit'));
-        $permissions[] = $perm(config('app.provider_delete'));
+        $providerPermissions[] = $p(config('app.provider_index'));
+        $providerPermissions[] = $p(config('app.provider_show'));
+        $providerPermissions[] = $p(config('app.provider_create'));
+        $providerPermissions[] = $p(config('app.provider_edit'));
+        $providerPermissions[] = $p(config('app.provider_delete'));
 
         // PriceList permissions
-        $priceListPermissions[] = $perm(config('app.price_list_index'));
-        $priceListPermissions[] = $perm(config('app.price_list_show'));
-        $priceListPermissions[] = $perm(config('app.price_list_create'));
-        $priceListPermissions[] = $perm(config('app.price_list_edit'));
-        $priceListPermissions[] = $perm(config('app.price_list_delete'));
+        $priceListPermissions[] = $p(config('app.price_list_index'));
+        $priceListPermissions[] = $p(config('app.price_list_show'));
+        $priceListPermissions[] = $p(config('app.price_list_create'));
+        $priceListPermissions[] = $p(config('app.price_list_edit'));
+        $priceListPermissions[] = $p(config('app.price_list_delete'));
 
         // Subscription permissions
-        $subscriptionPermissions[] = $perm(config('app.subscription_index'));
-        $subscriptionPermissions[] = $perm(config('app.subscription_show'));
-        $subscriptionPermissions[] = $perm(config('app.subscription_create'));
-        $subscriptionPermissions[] = $perm(config('app.subscription_edit'));
-        $subscriptionPermissions[] = $perm(config('app.subscription_delete'));
+        $subscriptionPermissions[] = $p(config('app.subscription_index'));
+        $subscriptionPermissions[] = $p(config('app.subscription_show'));
+        $subscriptionPermissions[] = $p(config('app.subscription_create'));
+        $subscriptionPermissions[] = $p(config('app.subscription_edit'));
+        $subscriptionPermissions[] = $p(config('app.subscription_delete'));
 
-        // Assign permissions (use syncPermissions so re-run keeps it consistent)
-        $superAdminRole->syncPermissions(array_merge(
+        // Remove nulls in case some config keys are missing
+        $superPermissions        = array_values(array_filter($superPermissions));
+        $permissions             = array_values(array_filter($permissions));
+        $customerPermissions     = array_values(array_filter($customerPermissions));
+        $resellerPermissions     = array_values(array_filter($resellerPermissions));
+        $providerPermissions     = array_values(array_filter($providerPermissions));
+        $priceListPermissions    = array_values(array_filter($priceListPermissions));
+        $subscriptionPermissions = array_values(array_filter($subscriptionPermissions));
+
+        // Assign permissions to roles
+        $superAdminRole->givePermissionTo(array_merge(
             $superPermissions,
             $permissions,
             $customerPermissions,
             $resellerPermissions,
             $providerPermissions,
-            $priceListPermissions,
-            $subscriptionPermissions
+            $priceListPermissions
         ));
 
-        $adminRole->syncPermissions(array_merge(
+        $adminRole->givePermissionTo(array_merge(
             $permissions,
             $customerPermissions,
             $resellerPermissions,
@@ -103,7 +124,7 @@ class PermissionSeeder extends Seeder
             $subscriptionPermissions
         ));
 
-        $providerRole->syncPermissions(array_merge(
+        $providerRole->givePermissionTo(array_merge(
             $customerPermissions,
             $resellerPermissions,
             $providerPermissions,
@@ -111,27 +132,25 @@ class PermissionSeeder extends Seeder
             $subscriptionPermissions
         ));
 
-        $resellerRole->syncPermissions(array_merge(
+        $resellerRole->givePermissionTo(array_merge(
             $customerPermissions,
             $resellerPermissions,
             $priceListPermissions,
             $subscriptionPermissions
         ));
 
-        $subResellerRole->syncPermissions(array_merge(
+        $subResellerRole->givePermissionTo(array_merge(
             $customerPermissions,
             $resellerPermissions,
             $subscriptionPermissions
         ));
 
-        $customerRole->syncPermissions(array_merge(
+        $customerRole->givePermissionTo(array_merge(
             $customerPermissions,
             $subscriptionPermissions
         ));
 
-        // Fallback permission used by some code paths
-        $perm('Disabled');
-
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        // Optional “Disabled” permission (kept idempotent too)
+        $p('Disabled');
     }
 }
