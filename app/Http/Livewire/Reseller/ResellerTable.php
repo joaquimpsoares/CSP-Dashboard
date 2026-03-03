@@ -233,7 +233,9 @@ class ResellerTable extends Component
             });
         })->
         with(['country', 'customers', 'status']);
-        $this->useCachedRows();
+
+        // NOTE: cached rows break live search because the cache key does not include
+        // the search term. Keep uncached to preserve pre-stash behavior.
         return $this->applySorting($resellers);
     }
 
