@@ -50,9 +50,14 @@
 
         @php
             // Relationships
-            $provider->loadMissing(['resellers', 'resellers.customers', 'resellers.status']);
-            $rootResellers = $provider->resellers->whereNull('main_office');
-            $isDirect = $rootResellers->count() === 0;
+            $provider->loadMissing(['resellers', 'resellers.customers', 'resellers.status', 'users']);
+
+            // Determine DIRECT vs INDIRECT from provider instances (external_type).
+            // Direct resellers sell to customers directly; indirect resellers have child resellers.
+            $isDirect = $instances->contains(fn($i) => ($i->external_type ?? null) === 'direct_reseller');
+
+            // Resellers list is only meaningful for indirect providers.
+            $resellersAll = $provider->resellers;
 
             // Customers for direct providers (sold directly without resellers)
             $directCustomers = collect();
@@ -67,7 +72,8 @@
 
             $usersCount = $provider->users->count();
             $instancesCount = $instances->count();
-            $resellersCount = $rootResellers->count();
+            $resellersCount = $isDirect ? 0 : $resellersAll->count();
+
             $customersCount = 0;
             if ($isDirect) {
                 $customersCount = $directCustomers->count();
@@ -298,7 +304,7 @@
                         <p class="mt-1 text-sm text-slate-600">Resellers belonging to this provider.</p>
                     </div>
                     <div class="px-6 py-4">
-                        @if($rootResellers->count() === 0)
+                        @if($resellersAll->count() === 0)
                             <div class="py-10 text-center text-sm text-slate-600">No resellers found.</div>
                         @else
                             <div class="overflow-hidden rounded-xl border border-slate-200">
@@ -311,7 +317,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-slate-200 bg-white">
-                                        @foreach($rootResellers as $r)
+                                        @foreach($resellersAll as $r)
                                             <tr class="hover:bg-slate-50/60">
                                                 <td class="px-4 py-3 text-sm font-semibold text-slate-900">
                                                     <a class="hover:text-primary-700" href="{{ $r->format()['path'] ?? '#' }}">{{ $r->company_name }}</a>
