@@ -47,21 +47,27 @@
         <!-- Bulk actions -->
         <div class="flex items-center justify-between gap-3">
             <div class="flex items-center gap-2">
-                <input type="checkbox" wire:model="selectPage" class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500" />
+                <input type="checkbox" wire:model.live="selectPage" class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500" />
                 <div class="text-sm text-slate-600">
                     @if(!empty($selected))
                         <span class="font-semibold text-slate-900">{{ count($selected) }}</span> selected
+                        <button type="button" wire:click="clearSelected" class="ml-2 inline-flex items-center rounded-md px-2 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900">Clear</button>
                     @else
                         Select products to run bulk actions
                     @endif
                 </div>
             </div>
 
-            <div class="relative" x-data="{ open:false }">
-                <button type="button" @click="open=!open" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50" :disabled="{{ empty($selected) ? 'true' : 'false' }}">Bulk actions</button>
-                <div x-cloak x-show="open" @click.away="open=false" class="absolute right-0 z-10 mt-2 w-60 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-                    <button type="button" wire:click="openBulkAddToPriceList" @click="open=false" class="flex w-full items-center px-4 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">Add to price list</button>
-                </div>
+            <div class="flex items-center gap-2">
+                <button
+                    type="button"
+                    class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                    @disabled(empty($selected))
+                    wire:click="openBulkAddToPriceList"
+                    wire:loading.attr="disabled"
+                >
+                    Add to price list
+                </button>
             </div>
         </div>
 
@@ -83,7 +89,7 @@
                     @forelse($products as $p)
                         <tr class="text-sm text-slate-800 @if($p->deleted_at) bg-slate-50/50 @endif">
                             <td class="px-3 py-2">
-                                <input type="checkbox" wire:model="selected" value="{{ $p->id }}" class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500" />
+                                <input type="checkbox" wire:model.live="selected" value="{{ $p->id }}" class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500" />
                             </td>
                             <td class="px-3 py-2 font-mono text-xs text-slate-600">{{ $p->sku }}</td>
                             <td class="px-3 py-2">
@@ -174,5 +180,7 @@
         </div>
     </div>
 
-    @include('livewire.product.partials.bulk-add-to-price-list-drawer')
+    @if($showBulkAddToPriceList)
+        @include('livewire.product.partials.bulk-add-to-price-list-drawer')
+    @endif
 </div>

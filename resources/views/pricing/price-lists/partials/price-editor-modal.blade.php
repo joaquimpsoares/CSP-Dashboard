@@ -8,10 +8,10 @@
         role="dialog"
         aria-modal="true"
     >
-        <div class="absolute inset-0 bg-slate-900/30" @click="$wire.close()" aria-hidden="true"></div>
+        <div class="absolute inset-0 bg-slate-900/30" wire:click="close" @click="$wire.close()" aria-hidden="true"></div>
 
         <!-- Right drawer -->
-        <div class="absolute inset-y-0 right-0 flex w-full max-w-5xl">
+        <div class="absolute inset-y-0 right-0 flex w-full sm:max-w-4xl">
             <div class="flex h-full w-full flex-col bg-white shadow-xl">
                 <!-- Sticky header -->
                 <div class="sticky top-0 z-10 border-b border-slate-200 bg-white/90 backdrop-blur px-6 py-4">
@@ -20,7 +20,7 @@
                             <div class="text-base font-semibold text-slate-900">{{ $priceId ? 'Edit price' : 'Add price' }}</div>
                             <div class="mt-1 text-sm text-slate-600">Select a product and confirm mapping + sell price.</div>
                         </div>
-                        <button type="button" @click="$wire.close()" class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 hover:bg-slate-50 hover:text-slate-700 focus:outline-none focus:ring-4 focus:ring-primary-500/20">
+                        <button type="button" wire:click="close" @click="$wire.close()" class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 hover:bg-slate-50 hover:text-slate-700 focus:outline-none focus:ring-4 focus:ring-primary-500/20">
                             <span class="sr-only">Close</span>
                             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                         </button>
@@ -34,15 +34,22 @@
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-semibold text-slate-700">Product</label>
-                                <input wire:model.live="productQuery" type="text" placeholder="Search products by name or SKU" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
+                                <input wire:model.live.debounce.250ms="productQuery" type="text" placeholder="Search products by name or SKU" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
                                 @error('productId')<p class="mt-1 text-xs font-semibold text-rose-700">{{ $message }}</p>@enderror
 
                                 @if(!empty($productResults))
-                                    <div class="mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                                    <div class="relative z-50 mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
                                         @foreach($productResults as $r)
-                                            <button type="button" wire:click="selectProduct({{ $r['id'] }})" class="flex w-full items-center justify-between gap-3 px-4 py-2 text-left text-sm hover:bg-slate-50">
+                                            <button
+                                                type="button"
+                                                wire:key="product-result-{{ $r['id'] }}"
+                                                wire:click="selectProduct({{ $r['id'] }})"
+                                                wire:loading.attr="disabled"
+                                                wire:target="selectProduct"
+                                                class="flex w-full items-center justify-between gap-3 px-4 py-2 text-left text-sm hover:bg-slate-50 disabled:opacity-50"
+                                            >
                                                 <div class="min-w-0">
-                                                    <div class="truncate font-semibold text-slate-900">{{ $r['name'] }}</div>
+                                                    <div class="truncate font-medium text-slate-900">{{ $r['name'] }}</div>
                                                     <div class="mt-0.5 truncate text-xs text-slate-600">{{ $r['vendor'] }} · {{ $r['sku'] }}</div>
                                                 </div>
                                                 <span class="text-xs font-semibold text-slate-500">Select</span>
@@ -55,24 +62,24 @@
                             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <div class="sm:col-span-2">
                                     <label class="block text-sm font-semibold text-slate-700">Name</label>
-                                    <input wire:model.defer="name" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
+                                    <input wire:key="pli-name-{{ $productId ?? 'none' }}" wire:model.defer="name" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
                                     @error('name')<p class="mt-1 text-xs font-semibold text-rose-700">{{ $message }}</p>@enderror
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-700">Currency</label>
-                                    <input wire:model.defer="currency" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
+                                    <input wire:key="pli-currency-{{ $productId ?? 'none' }}" wire:model.defer="currency" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-700">Sell price</label>
-                                    <input wire:model.defer="amount" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
+                                    <input wire:key="pli-amount-{{ $productId ?? 'none' }}" wire:model.defer="amount" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
                                     @error('amount')<p class="mt-1 text-xs font-semibold text-rose-700">{{ $message }}</p>@enderror
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-700">MSRP</label>
-                                    <input wire:model.defer="msrp" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
+                                    <input wire:key="pli-msrp-{{ $productId ?? 'none' }}" wire:model.defer="msrp" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
                                 </div>
 
                                 <div>
@@ -139,20 +146,40 @@
                             </div>
                         </div>
 
-                        <!-- Right: preview -->
+                        <!-- Right: preview (simulation) -->
                         <div class="lg:pl-2">
-                            <div class="lg:sticky lg:top-24 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                            <div class="lg:sticky lg:top-24 rounded-xl border border-slate-200 bg-slate-50 p-5">
                                 <div class="text-sm font-semibold text-slate-900">Preview</div>
                                 <div class="mt-1 text-sm text-slate-600">Quick estimate (tax calculated later).</div>
+
+                                @if(!empty($previewNotice))
+                                    <div class="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+                                        {{ $previewNotice }}
+                                    </div>
+                                @endif
+
+                                @if(!$this->previewIsPurchasable)
+                                    <div class="mt-3 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-900">
+                                        Not purchasable with billing cycle "none".
+                                    </div>
+                                @endif
 
                                 <div class="mt-4">
                                     <label class="block text-sm font-semibold text-slate-700">Quantity</label>
                                     <input wire:model.live="previewQty" type="number" min="1" class="mt-1 block w-20 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
                                 </div>
 
+                                <div class="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                    {{ $this->billingCycleLabel }} • {{ $termDuration ?: '—' }}
+                                </div>
+
+                                @if($this->previewHelperLine)
+                                    <div class="mt-1 text-xs text-slate-500">{{ $this->previewHelperLine }}</div>
+                                @endif
+
                                 <div class="mt-6 space-y-2 text-sm">
                                     <div class="flex items-center justify-between">
-                                        <span class="text-slate-600">Subtotal</span>
+                                        <span class="text-slate-600">Subtotal ({{ $this->previewUnitLabel }})</span>
                                         <span class="font-semibold text-slate-900">{{ number_format((float)$this->previewSubtotal, 2) }} {{ $currency }}</span>
                                     </div>
                                     <div class="flex items-center justify-between">
@@ -164,10 +191,6 @@
                                         <span class="font-semibold text-slate-900">{{ number_format((float)$this->previewSubtotal, 2) }} {{ $currency }}</span>
                                     </div>
                                 </div>
-
-                                <div class="mt-4 text-xs text-slate-500">
-                                    {{ $billingCycle ?: '—' }} · {{ $termDuration ?: '—' }}
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -176,7 +199,7 @@
                 <!-- Sticky footer -->
                 <div class="sticky bottom-0 border-t border-slate-200 bg-white/90 backdrop-blur px-6 py-4">
                     <div class="flex items-center justify-end gap-2">
-                        <button type="button" @click="$wire.close()" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50">Cancel</button>
+                        <button type="button" wire:click="close" @click="$wire.close()" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50">Cancel</button>
                         <button type="button" wire:click="save" class="inline-flex items-center justify-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-500/30">Save</button>
                     </div>
                 </div>

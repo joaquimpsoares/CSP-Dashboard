@@ -58,7 +58,7 @@
                                 </div>
                                 <div class="mt-0.5 text-xs text-slate-500">#{{ $pl->id }} · {{ $pl->currency ?? '—' }} {{ $pl->market ? '· '.$pl->market : '' }}</div>
                             </td>
-                            <td class="px-4 py-3 text-sm text-slate-700">{{ \App\Price::query()->where('price_list_id', $pl->id)->count() }} prices</td>
+                            <td class="px-4 py-3 text-sm text-slate-700">{{ $this->pricingCount($pl->id) }} prices</td>
                             <td class="px-4 py-3 text-sm text-slate-700">{{ optional($pl->created_at)->format('Y-m-d') }}</td>
                             <td class="px-4 py-3 text-sm text-slate-700">{{ optional($pl->updated_at)->format('Y-m-d') }}</td>
                             <td class="px-4 py-3 text-right">
@@ -88,5 +88,7 @@
         </div>
     </div>
 
-    @include('pricing.price-lists.partials.create-price-list-drawer')
+    @if($showCreateDrawer)
+        @include('pricing.price-lists.partials.create-price-list-drawer')
+    @endif
 </div>

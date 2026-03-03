@@ -2,7 +2,7 @@
 
     {{-- Tab bar --}}
     <div class="flex items-center gap-1 border-b border-slate-200">
-        <button wire:click="$set('tab','resellers')"
+        <button wire:click="setTab('resellers')"
             class="px-4 py-2.5 text-sm font-semibold rounded-t-lg border-b-2 transition-colors
                 {{ $tab === 'resellers'
                     ? 'border-primary-600 text-primary-700 bg-primary-50'
@@ -13,7 +13,7 @@
                 {{ count($resellerAssignments) }}
             </span>
         </button>
-        <button wire:click="$set('tab','customers')"
+        <button wire:click="setTab('customers')"
             class="px-4 py-2.5 text-sm font-semibold rounded-t-lg border-b-2 transition-colors
                 {{ $tab === 'customers'
                     ? 'border-primary-600 text-primary-700 bg-primary-50'

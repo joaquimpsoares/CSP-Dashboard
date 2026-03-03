@@ -11,7 +11,7 @@
         <div class="absolute inset-0 bg-slate-900/30" @click="$wire.closeEditPriceListModal()" aria-hidden="true"></div>
 
         <!-- Right drawer -->
-        <div class="absolute inset-y-0 right-0 flex w-full max-w-[520px]">
+        <div class="absolute inset-y-0 right-0 flex w-full sm:max-w-lg">
             <div class="flex h-full w-full flex-col bg-white shadow-xl">
                 <!-- Sticky header -->
                 <div class="sticky top-0 z-10 border-b border-slate-200 bg-white/90 backdrop-blur px-6 py-4">
@@ -32,14 +32,14 @@
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-semibold text-slate-700">Name</label>
-                                <input wire:model.defer="priceList.name" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
-                                @error('priceList.name')<p class="mt-1 text-xs font-semibold text-rose-700">{{ $message }}</p>@enderror
+                                <input wire:model.defer="editing.name" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
+                                @error('editing.name')<p class="mt-1 text-xs font-semibold text-rose-700">{{ $message }}</p>@enderror
                             </div>
 
                             <div>
                                 <label class="block text-sm font-semibold text-slate-700">Description</label>
-                                <input wire:model.defer="priceList.description" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
-                                @error('priceList.description')<p class="mt-1 text-xs font-semibold text-rose-700">{{ $message }}</p>@enderror
+                                <input wire:model.defer="editing.description" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
+                                @error('editing.description')<p class="mt-1 text-xs font-semibold text-rose-700">{{ $message }}</p>@enderror
                             </div>
 
                             <div>
@@ -60,23 +60,23 @@
                             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-700">Market</label>
-                                    <input wire:model.defer="priceList.market" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
+                                    <input wire:model.defer="editing.market" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
                                 </div>
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-700">Currency</label>
-                                    <input wire:model.defer="priceList.currency" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
+                                    <input wire:model.defer="editing.currency" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
                                 </div>
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-700">Effective from</label>
-                                    <input wire:model.defer="priceList.effective_from" type="datetime-local" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
+                                    <input wire:model.defer="editing.effective_from" type="datetime-local" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
                                 </div>
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-700">Effective to</label>
-                                    <input wire:model.defer="priceList.effective_to" type="datetime-local" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
+                                    <input wire:model.defer="editing.effective_to" type="datetime-local" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
                                 </div>
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-700">Margin %</label>
-                                    <input wire:model.defer="priceList.margin" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
+                                    <input wire:model.defer="editing.margin" type="text" class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" />
                                 </div>
                             </div>
                         </div>
