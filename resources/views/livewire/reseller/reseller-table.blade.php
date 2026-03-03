@@ -104,27 +104,68 @@
                                     </div>
                                 </a>
                             </x-table.cell>
-                            <x-table.cell>
-                                <div class="z-10">
-                                    <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                            <x-table.cell class="text-right">
+                                <!-- Match Customers table: fixed-position Alpine dropdown (no Bootstrap dropdowns) -->
+                                <div x-data="{
+                                        componentId: @js($this->getId()),
+                                        open: false,
+                                        top: 0,
+                                        left: 0,
+                                        width: 0,
+                                        place() {
+                                            const r = this.$refs.btn.getBoundingClientRect();
+                                            this.width = 192;
+                                            this.top = r.bottom + 8;
+                                            this.left = Math.max(8, r.right - this.width);
+                                        },
+                                        toggle() {
+                                            this.open = !this.open;
+                                            if (this.open) this.$nextTick(() => this.place());
+                                        },
+                                        callEdit(id) {
+                                            const lw = window.Livewire;
+                                            if (lw && lw.find) {
+                                                const c = lw.find(this.componentId);
+                                                if (!c) return;
+                                                c.set('showEditModal', false);
+                                                setTimeout(() => c.call('edit', id), 50);
+                                            }
+                                        }
+                                    }"
+                                    @keydown.escape.window="open = false"
+                                    class="inline-block">
+
+                                    <button type="button" x-ref="btn" @click="toggle()"
+                                        class="inline-flex items-center justify-center rounded-lg px-2 py-2 text-slate-600 hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus:ring-4 focus:ring-primary-500/20"
+                                        aria-haspopup="true">
+                                        <span class="sr-only">Open actions</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                             <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
                                         </svg>
                                     </button>
-                                    <div class="dropdown-menu">
-                                        <a wire:click="edit({{ $reseller->id }})" class="dropdown-item" href="#">
-                                            <x-icon.edit></x-icon.edit>
-                                            {{ ucwords(trans_choice('messages.edit', 1)) }}
-                                        </a>
-                                        @canImpersonate
-                                        @if(!empty($reseller->format()['mainUser']))
-                                        <a class="dropdown-item" href="{{ route('impersonate', $reseller->format()['mainUser']['id'])}}">
-                                            <x-icon.impersonate></x-icon.impersonate>
-                                            {{ ucwords(trans_choice('messages.impersonate', 1)) }}
-                                        </a>
-                                        @endif
-                                        @endCanImpersonate
-                                    </div>
+
+                                    <template x-teleport="body">
+                                        <div x-cloak x-show="open" @click.away="open = false" @scroll.window="open = false" @resize.window="open = false"
+                                            class="fixed z-[9999] w-48 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg"
+                                            :style="`top:${top}px; left:${left}px;`">
+
+                                            <button type="button" @click="callEdit({{ $reseller->id }}); open = false"
+                                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+                                                <x-icon.edit></x-icon.edit>
+                                                <span>{{ ucwords(trans_choice('messages.edit', 1)) }}</span>
+                                            </button>
+
+                                            @canImpersonate
+                                                @if(!empty($reseller->format()['mainUser']))
+                                                    <a class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                                                       href="{{ route('impersonate', $reseller->format()['mainUser']['id'])}}">
+                                                        <x-icon.impersonate></x-icon.impersonate>
+                                                        <span>{{ ucwords(trans_choice('messages.impersonate', 1)) }}</span>
+                                                    </a>
+                                                @endif
+                                            @endCanImpersonate
+                                        </div>
+                                    </template>
                                 </div>
                             </x-table.cell>
                         </x-table.row>
