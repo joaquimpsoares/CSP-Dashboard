@@ -183,45 +183,6 @@
                     </div>
                 </div>
 
-                <!-- Users (simple, no legacy datatables) -->
-                <div class="rounded-2xl border border-slate-200 bg-white">
-                    <div class="border-b border-slate-200 px-6 py-4">
-                        <h4 class="text-base font-semibold text-slate-900">Users</h4>
-                        <p class="mt-1 text-sm text-slate-600">Users assigned to this provider.</p>
-                    </div>
-                    <div class="px-6 py-4">
-                        @php($users = $provider->users)
-                        @if($users->count() === 0)
-                            <div class="flex items-center justify-center gap-2 py-10 text-slate-500">
-                                <x-icon.inbox class="h-6 w-6" />
-                                <span class="text-sm font-medium">No users assigned.</span>
-                            </div>
-                        @else
-                            <div class="overflow-hidden rounded-xl border border-slate-200">
-                                <table class="min-w-full divide-y divide-slate-200">
-                                    <thead class="bg-slate-50">
-                                        <tr>
-                                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Name</th>
-                                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Email</th>
-                                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-200 bg-white">
-                                        @foreach($users as $u)
-                                            <tr class="hover:bg-slate-50/60">
-                                                <td class="px-4 py-3 text-sm font-semibold text-slate-900">{{ trim(($u->name ?? '') . ' ' . ($u->last_name ?? '')) ?: '—' }}</td>
-                                                <td class="px-4 py-3 text-sm text-slate-700">{{ $u->email }}</td>
-                                                <td class="px-4 py-3 text-sm text-slate-700">{{ ucwords(trans_choice($u->status->name ?? 'messages.active', 1)) }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-
             <!-- Sidebar -->
             <div class="lg:col-span-1 space-y-6">
                 <div class="rounded-2xl border border-slate-200 bg-white">
@@ -419,6 +380,43 @@
                             <x-icon.inbox class="h-6 w-6" />
                             <span class="text-sm font-medium">No users assigned.</span>
                         </div>
+                    @else
+                        <div class="overflow-hidden rounded-xl border border-slate-200">
+                            <table class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Name</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Email</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 bg-white">
+                                    @foreach($users as $u)
+                                        <tr class="hover:bg-slate-50/60">
+                                            <td class="px-4 py-3 text-sm font-semibold text-slate-900">{{ trim(($u->name ?? '') . ' ' . ($u->last_name ?? '')) ?: '—' }}</td>
+                                            <td class="px-4 py-3 text-sm text-slate-700">{{ $u->email }}</td>
+                                            <td class="px-4 py-3 text-sm text-slate-700">{{ ucwords(trans_choice($u->status->name ?? 'messages.active', 1)) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Users -->
+        <div x-show="tab==='users'" x-cloak class="mt-6">
+            <div class="rounded-2xl border border-slate-200 bg-white">
+                <div class="border-b border-slate-200 px-6 py-4">
+                    <h4 class="text-base font-semibold text-slate-900">Users</h4>
+                    <p class="mt-1 text-sm text-slate-600">Users assigned to this provider.</p>
+                </div>
+                <div class="px-6 py-4">
+                    @php($users = $provider->users)
+                    @if($users->count() === 0)
+                        <div class="py-10 text-center text-sm text-slate-600">No users found.</div>
                     @else
                         <div class="overflow-hidden rounded-xl border border-slate-200">
                             <table class="min-w-full divide-y divide-slate-200">

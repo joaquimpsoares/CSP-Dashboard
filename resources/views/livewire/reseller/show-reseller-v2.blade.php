@@ -7,7 +7,8 @@
         $users = $reseller?->users ?? collect();
         $instances = $provider ? \App\Instance::query()->where('provider_id', $provider->id)->get() : collect();
         $levelName = \Illuminate\Support\Facades\Auth::user()->userLevel->name ?? (\Illuminate\Support\Facades\Auth::user()->userlevel->name ?? null);
-        $isResellerUser = $levelName === config('app.reseller');
+        // config('app.reseller') might be a permission string; rely on actual level name too.
+        $isResellerUser = $levelName === 'Reseller' || $levelName === config('app.reseller');
 
         $customersCount = $customers->count();
         $usersCount = $users->count();
@@ -48,17 +49,6 @@
             </div>
         </div>
 
-        <!-- Recommendation (Stripe-like) -->
-        <div class="border-t border-slate-200 px-6 py-4">
-            <div class="rounded-2xl border border-slate-200 bg-slate-50/60 p-4">
-                <div class="inline-flex items-center gap-2 rounded-lg bg-white px-2 py-1 text-xs font-semibold text-slate-700 ring-1 ring-slate-200">
-                    <span class="inline-flex h-4 w-4 items-center justify-center rounded bg-slate-200"></span>
-                    Recommendation
-                </div>
-                <div class="mt-3 text-lg font-semibold text-slate-900">Keep customer pricing consistent</div>
-                <div class="mt-1 text-sm text-slate-600">Assign a default Price List for this reseller to avoid unexpected price changes.</div>
-            </div>
-        </div>
     </div>
 
     <!-- Summary cards -->
@@ -146,19 +136,27 @@
             <div class="space-y-6">
                 <div class="rounded-2xl border border-slate-200 bg-white">
                     <div class="border-b border-slate-200 px-6 py-4">
-                        <h4 class="text-base font-semibold text-slate-900">Actions</h4>
+                        <h4 class="text-base font-semibold text-slate-900">Recommendations</h4>
+                        <p class="mt-1 text-sm text-slate-600">Quick tips to keep this reseller healthy.</p>
                     </div>
                     <div class="px-6 py-4">
-                        <button type="button" wire:click="edit({{ $reseller?->id }})" class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
-                            <x-icon.edit /> Edit reseller
-                        </button>
-                        @canImpersonate
-                            @if(!empty($reseller?->format()['mainUser']))
-                                <a href="{{ route('impersonate', $reseller->format()['mainUser']['id']) }}" class="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50">
-                                    <x-icon.impersonate /> Impersonate
-                                </a>
-                            @endif
-                        @endCanImpersonate
+                        <div class="rounded-2xl border border-slate-200 bg-slate-50/60 p-4">
+                            <div class="inline-flex items-center gap-2 rounded-lg bg-white px-2 py-1 text-xs font-semibold text-slate-700 ring-1 ring-slate-200">
+                                <span class="inline-flex h-4 w-4 items-center justify-center rounded bg-slate-200"></span>
+                                Recommendation
+                            </div>
+                            <div class="mt-3 text-lg font-semibold text-slate-900">Keep customer pricing consistent</div>
+                            <div class="mt-1 text-sm text-slate-600">Assign a default Price List for this reseller to avoid unexpected price changes.</div>
+                        </div>
+
+                        <div class="mt-4 rounded-2xl border border-slate-200 bg-slate-50/60 p-4">
+                            <div class="inline-flex items-center gap-2 rounded-lg bg-white px-2 py-1 text-xs font-semibold text-slate-700 ring-1 ring-slate-200">
+                                <span class="inline-flex h-4 w-4 items-center justify-center rounded bg-slate-200"></span>
+                                Recommendation
+                            </div>
+                            <div class="mt-3 text-lg font-semibold text-slate-900">Invite customer admins</div>
+                            <div class="mt-1 text-sm text-slate-600">Make sure each customer has at least one admin user to request products and manage subscriptions.</div>
+                        </div>
                     </div>
                 </div>
             </div>
