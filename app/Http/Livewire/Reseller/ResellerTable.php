@@ -253,12 +253,11 @@ class ResellerTable extends Component
         $countries  = Country::pluck( 'name','id');
         $roles      = Role::pluck( 'name','id');
         $statuses   = Status::pluck( 'name','id');
-        return view('livewire.reseller.reseller-table',
-        [
+        return view('livewire.reseller.reseller-table', [
             'resellers' => $this->rows,
             'countries' => $countries,
             'statuses'  => $statuses,
-            'roles'     => $roles
-        ])->extends('layouts.master');
+            'roles'     => $roles,
+        ]);
     }
 }

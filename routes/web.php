@@ -179,7 +179,7 @@ Route::group(['middleware' => 'auth'], function ()
 
             // Route::get('/reseller/{reseller}-{slug}', 'ResellerController@show')->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
             Route::get('/reseller/{reseller}-{slug}', [\App\Http\Livewire\Reseller\ShowReseller ::class, '__invoke'])->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
-            Route::get('/reseller', [\App\Http\Livewire\Reseller\ResellerTable::class, '__invoke'])->middleware('permission:' . config('app.reseller_index'))->name('reseller.index');
+            Route::get('/reseller', 'ResellerController@index')->middleware('permission:' . config('app.reseller_index'))->name('reseller.index');
 
             /*
             Inicio Confirmar nivel de acesso reseller->provider
