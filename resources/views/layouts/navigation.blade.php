@@ -16,6 +16,10 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
+                    <x-nav-link :href="route('store.index')" :active="request()->routeIs('store.*')">
+                        {{ __('Store') }}
+                    </x-nav-link>
+
                     @role('Super Admin|Admin')
                         <x-nav-link :href="route('provider.index')" :active="request()->routeIs('provider.*')">
                             {{ __('Providers') }}
