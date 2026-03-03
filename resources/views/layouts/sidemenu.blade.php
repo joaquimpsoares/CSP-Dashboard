@@ -248,18 +248,28 @@
                 <div class="flex flex-col flex-1 h-0">
                     <div class="flex items-center flex-shrink-0 h-16 px-4">
                         <a class="header-brand" href="/">
-                            @if(Auth::user()->userlevel->name == 'Reseller')
-                            <img src="{{URL::asset(Auth::user()->reseller->provider->logo)}}" class="w-auto h-14" alt="Tagydes logo">
-                            @endif
-                            @if(Auth::user()->userlevel->name == 'Provider')
-                            <img src="{{URL::asset(Auth::user()->provider->logo)}}" class="w-auto h-14" alt="Tagydes logo">
-                            @endif
-                            @if(Auth::user()->userlevel->name == 'Customer')
-                            <img src="{{URL::asset(Auth::user()->customer->resellers->first()->provider->logo)}}" class="w-auto h-14" alt="Tagydes logo">
-                            @endif
-                            @if(Auth::user()->userlevel->name == "Super Admin")
-                            <img src="{{URL::asset('/images/logos/tagydes.png')}}" class="w-auto h-14" alt="Covido logo">
-                            @endif
+                            @php
+                                $u = Auth::user();
+                                $logo = '/images/logos/tagydes.png';
+
+                                if ($u?->userlevel?->name === 'Reseller') {
+                                    $logo = $u->reseller?->provider?->logo ?? $logo;
+                                }
+
+                                if ($u?->userlevel?->name === 'Provider') {
+                                    $logo = $u->provider?->logo ?? $logo;
+                                }
+
+                                if ($u?->userlevel?->name === 'Customer') {
+                                    $customer = $u->customer;
+                                    if (! $customer && $u?->customer_id) {
+                                        $customer = \App\Customer::query()->with(['resellers.provider'])->find($u->customer_id);
+                                    }
+                                    $logo = $customer?->resellers?->first()?->provider?->logo ?? $logo;
+                                }
+                            @endphp
+
+                            <img src="{{ URL::asset($logo) }}" class="w-auto h-14" alt="Tagydes logo">
                         </a>
                     </div>
                     <div x-data="{ open: false }"   @keydown.escape.stop="open = false; focusButton()" class="relative inline-block px-3 mt-6 text-left">
