@@ -51,8 +51,9 @@
 
     </div>
 
-    <!-- Summary cards -->
-    <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="mt-6 rounded-2xl border border-slate-200 bg-white/80 shadow-sm">
+        <!-- Summary cards -->
+        <div class="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2 lg:grid-cols-4">
         <div class="rounded-2xl border border-slate-200 bg-white/80 px-6 py-5 shadow-sm">
             <div class="text-sm font-medium text-slate-600">Customers</div>
             <div class="mt-2 text-3xl font-semibold tracking-tight text-slate-900">{{ $customersCount }}</div>
@@ -70,6 +71,7 @@
             <div class="mt-2 text-sm font-semibold text-slate-900">Coming soon</div>
             <div class="mt-1 text-xs text-slate-500">Stripe-like billing view</div>
         </div>
+        </div>
     </div>
 
     <div class="mt-6" x-data="{ tab: 'details' }">
@@ -78,9 +80,6 @@
                 <button type="button" @click="tab='details'" class="border-b-2 px-1 pb-3 text-sm font-semibold" :class="tab==='details' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">Details</button>
                 <button type="button" @click="tab='customers'" class="border-b-2 px-1 pb-3 text-sm font-semibold" :class="tab==='customers' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">Customers</button>
                 <button type="button" @click="tab='users'" class="border-b-2 px-1 pb-3 text-sm font-semibold" :class="tab==='users' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">Users</button>
-                @if(! $isResellerUser)
-                    <button type="button" @click="tab='instances'" class="border-b-2 px-1 pb-3 text-sm font-semibold" :class="tab==='instances' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">Instances</button>
-                @endif
                 <button type="button" @click="tab='billing'" class="border-b-2 px-1 pb-3 text-sm font-semibold" :class="tab==='billing' ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">Billing</button>
             </nav>
         </div>
@@ -113,6 +112,10 @@
                             <div>
                                 <dt class="text-sm font-medium text-slate-500">Status</dt>
                                 <dd class="mt-1 text-sm font-semibold text-slate-900">{{ ucwords(trans_choice($reseller?->status?->name ?? 'messages.active', 1)) }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-slate-500">Price List</dt>
+                                <dd class="mt-1 text-sm font-semibold text-slate-900">{{ $reseller?->priceList?->name ?? '—' }}</dd>
                             </div>
                         </dl>
                     </div>
@@ -235,43 +238,6 @@
         </div>
 
         <!-- Instances -->
-        @if(! $isResellerUser)
-        <div x-show="tab==='instances'" x-cloak class="mt-6">
-            <div class="rounded-2xl border border-slate-200 bg-white">
-                <div class="border-b border-slate-200 px-6 py-4">
-                    <h4 class="text-base font-semibold text-slate-900">Instances</h4>
-                    <p class="mt-1 text-sm text-slate-600">Instances are managed at provider level.</p>
-                </div>
-                <div class="px-6 py-4">
-                    @if($instances->count() === 0)
-                        <div class="py-10 text-center text-sm text-slate-600">No instances found.</div>
-                    @else
-                        <div class="overflow-hidden rounded-xl border border-slate-200">
-                            <table class="min-w-full divide-y divide-slate-200">
-                                <thead class="bg-slate-50">
-                                    <tr>
-                                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Name</th>
-                                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Type</th>
-                                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Expires</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-200 bg-white">
-                                    @foreach($instances as $i)
-                                        <tr class="hover:bg-slate-50/60">
-                                            <td class="px-4 py-3 text-sm font-semibold text-slate-900">{{ $i->name }}</td>
-                                            <td class="px-4 py-3 text-sm text-slate-700">{{ $i->type ?? '—' }}</td>
-                                            <td class="px-4 py-3 text-sm text-slate-700">{{ optional($i->expires_at)->format('Y-m-d') ?? '—' }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-        @endif
-
         <!-- Billing -->
         <div x-show="tab==='billing'" x-cloak class="mt-6">
             <div class="rounded-2xl border border-slate-200 bg-white">
