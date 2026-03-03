@@ -72,7 +72,7 @@
                         </button>
 
                         <div x-cloak x-show="openConfig" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-1"
-                             class="absolute top-full right-0 z-[100] mt-2 min-w-[600px] max-w-[720px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+                             class="absolute top-full right-0 z-[9999] mt-2 min-w-[600px] max-w-[720px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
 
                             <div class="p-4">
                                 <div class="grid grid-cols-3 gap-4">
