@@ -68,7 +68,13 @@
             $usersCount = $provider->users->count();
             $instancesCount = $instances->count();
             $resellersCount = $rootResellers->count();
-            $customersCount = $isDirect ? $directCustomers->count() : $provider->getMyCustomersId() ? count($provider->getMyCustomersId()) : 0;
+            $customersCount = 0;
+            if ($isDirect) {
+                $customersCount = $directCustomers->count();
+            } else {
+                $ids = method_exists($provider, 'getMyCustomersId') ? $provider->getMyCustomersId() : [];
+                $customersCount = is_array($ids) ? count($ids) : 0;
+            }
         @endphp
 
         <!-- Summary cards -->
