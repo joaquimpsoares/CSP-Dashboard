@@ -6,15 +6,63 @@
         $customers = $reseller?->customers ?? collect();
         $users = $reseller?->users ?? collect();
         $instances = $provider ? \App\Instance::query()->where('provider_id', $provider->id)->get() : collect();
-        $isResellerUser = (\Illuminate\Support\Facades\Auth::user()->userLevel->name ?? null) === config('app.reseller');
+        $levelName = \Illuminate\Support\Facades\Auth::user()->userLevel->name ?? (\Illuminate\Support\Facades\Auth::user()->userlevel->name ?? null);
+        $isResellerUser = $levelName === config('app.reseller');
 
         $customersCount = $customers->count();
         $usersCount = $users->count();
         $subsCount = $customers->sum(fn($c) => $c->subscriptions?->count() ?? 0);
     @endphp
 
+    <!-- Header card (match Provider) -->
+    <div class="rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div class="flex flex-col gap-4 px-6 py-5 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+                <div class="flex items-center gap-3">
+                    <h2 class="text-xl font-semibold tracking-tight text-slate-900">{{ $reseller?->company_name ?? 'Reseller' }}</h2>
+                    <span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-200">
+                        {{ ucwords(trans_choice($reseller?->status?->name ?? 'messages.active', 1)) }}
+                    </span>
+                </div>
+                <div class="mt-1 text-sm text-slate-600">
+                    Reseller ID: <span class="font-semibold text-slate-900">{{ $reseller?->id ?? '—' }}</span>
+                    @if($provider)
+                        <span class="text-slate-400">•</span>
+                        Provider: <a class="font-semibold text-primary-700 hover:underline" href="{{ $provider->format()['path'] ?? '#' }}">{{ $provider->company_name }}</a>
+                    @endif
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+                @canImpersonate
+                    @if(!empty($reseller?->format()['mainUser']))
+                        <a href="{{ route('impersonate', $reseller->format()['mainUser']['id']) }}" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50">
+                            <x-icon.impersonate /> Impersonate
+                        </a>
+                    @endif
+                @endCanImpersonate
+
+                <button type="button" wire:click="edit({{ $reseller?->id }})" class="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
+                    <x-icon.edit /> Edit reseller
+                </button>
+            </div>
+        </div>
+
+        <!-- Recommendation (Stripe-like) -->
+        <div class="border-t border-slate-200 px-6 py-4">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50/60 p-4">
+                <div class="inline-flex items-center gap-2 rounded-lg bg-white px-2 py-1 text-xs font-semibold text-slate-700 ring-1 ring-slate-200">
+                    <span class="inline-flex h-4 w-4 items-center justify-center rounded bg-slate-200"></span>
+                    Recommendation
+                </div>
+                <div class="mt-3 text-lg font-semibold text-slate-900">Keep customer pricing consistent</div>
+                <div class="mt-1 text-sm text-slate-600">Assign a default Price List for this reseller to avoid unexpected price changes.</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Summary cards -->
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div class="rounded-2xl border border-slate-200 bg-white/80 px-6 py-5 shadow-sm">
             <div class="text-sm font-medium text-slate-600">Customers</div>
             <div class="mt-2 text-3xl font-semibold tracking-tight text-slate-900">{{ $customersCount }}</div>
