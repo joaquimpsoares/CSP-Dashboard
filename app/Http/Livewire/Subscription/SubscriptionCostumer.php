@@ -37,6 +37,11 @@ class SubscriptionCostumer extends Component
         'legacy' => null,
     ];
 
+    /**
+     * Days before expiration used by the "about to expire" filter.
+     */
+    public int $expirationdate = 30;
+
 
     public function rules(){
         return [
