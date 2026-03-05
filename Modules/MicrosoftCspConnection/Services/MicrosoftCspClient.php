@@ -238,15 +238,34 @@ class MicrosoftCspClient
             return null;
         }
 
-        $token = $this->environment === 'sandbox'
-            ? ($this->connection->sandbox_refresh_token ?? null)
-            : ($this->connection->refresh_token ?? null);
+        // Sandbox stays as-is (no Key Vault support yet)
+        if ($this->environment === 'sandbox') {
+            $raw = $this->connection->getRawOriginal('sandbox_refresh_token');
 
-        if (empty($token)) {
+            if (empty($raw)) {
+                throw new RuntimeException("Microsoft CSP connection missing refresh_token for environment '{$this->environment}'.");
+            }
+
+            return decrypt($raw);
+        }
+
+        return $this->getRefreshToken();
+    }
+
+    private function getRefreshToken(): string
+    {
+        if (! empty($this->connection->key_vault_secret_name)) {
+            return app(\App\Services\KeyVaultService::class)
+                ->getSecret($this->connection->key_vault_secret_name);
+        }
+
+        $raw = $this->connection->getRawOriginal('refresh_token');
+
+        if (empty($raw)) {
             throw new RuntimeException("Microsoft CSP connection missing refresh_token for environment '{$this->environment}'.");
         }
 
-        return $token;
+        return decrypt($raw);
     }
 
     // -------------------------------------------------------------------------
@@ -311,6 +330,22 @@ class MicrosoftCspClient
 
         if (empty($data['access_token'])) {
             throw new RuntimeException('Microsoft CSP token response did not contain an access_token.');
+        }
+
+        // Refresh token rotation (SAM only): Microsoft may return a new refresh_token alongside access_token.
+        if ($this->connection->token_mode === 'sam' && ! empty($data['refresh_token'])) {
+            $newRefreshToken = (string) $data['refresh_token'];
+
+            if (! empty($this->connection->key_vault_secret_name)) {
+                // Update the secret in Key Vault
+                app(\App\Services\KeyVaultService::class)
+                    ->setSecret($this->connection->key_vault_secret_name, $newRefreshToken);
+            } else {
+                // Update encrypted value in DB (model has encrypted cast, so store plaintext)
+                $this->connection->update([
+                    'refresh_token' => $newRefreshToken,
+                ]);
+            }
         }
 
         return $data['access_token'];

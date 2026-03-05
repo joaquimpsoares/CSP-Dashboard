@@ -38,6 +38,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('command:SyncMSFTInvoices')->monthlyOn('4', '20:00');
         // Report active CSP subscription counts to Stripe metered billing (daily at midnight UTC).
         $schedule->command('stripe:report-usage')->dailyAt('00:00');
+
+        // Weekly check for idle SAM refresh tokens stored directly in DB (warn at 75 days).
+        $schedule->job(new \App\Jobs\CheckRefreshTokenAge())->weekly();
     }
 
     /**

@@ -20,6 +20,7 @@ class MicrosoftCspConnection extends Model
         'client_secret',
         'sandbox_client_secret',
         'refresh_token',
+        'key_vault_secret_name',
         'sandbox_refresh_token',
         'partner_id',
         'api_url',
@@ -49,6 +50,7 @@ class MicrosoftCspConnection extends Model
     protected $hidden = [
         'client_secret',
         'refresh_token',
+        'key_vault_secret_name',
         'sandbox_client_secret',
         'sandbox_refresh_token',
     ];
