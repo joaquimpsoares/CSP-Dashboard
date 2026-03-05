@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class KeyVaultService
 {
@@ -21,7 +22,16 @@ class KeyVaultService
             );
 
             if ($response->failed()) {
-                throw new \RuntimeException('Failed to get Key Vault access token: ' . $response->body());
+                Log::error('KeyVault error', [
+                    'status' => $response->status(),
+                    'error'  => $response->json('error.code') ?? 'unknown',
+                    // body only in debug mode
+                    'detail' => config('app.debug') ? $response->body() : null,
+                ]);
+
+                throw new \RuntimeException(
+                    "Key Vault operation failed [{$response->status()}]: " . ($response->json('error.code') ?? 'unknown')
+                );
             }
 
             return (string) $response->json('access_token');
@@ -30,27 +40,46 @@ class KeyVaultService
 
     public function getSecret(string $secretName): string
     {
-        return Cache::remember("keyvault_secret_{$secretName}", 3300, function () use ($secretName) {
-            $token    = $this->getAccessToken();
-            $endpoint = rtrim((string) config('keyvault.endpoint'), '/');
+        if (! preg_match('/^[0-9a-zA-Z-]+$/', $secretName)) {
+            throw new \InvalidArgumentException(
+                'Invalid Key Vault secret name. Only alphanumeric characters and hyphens are allowed.'
+            );
+        }
 
-            $response = Http::withHeaders([
-                'Authorization' => "Bearer {$token}",
-            ])->get("{$endpoint}/secrets/{$secretName}", [
-                'api-version' => '7.4',
+        $token    = $this->getAccessToken(); // this one stays cached
+        $endpoint = rtrim((string) config('keyvault.endpoint'), '/');
+
+        $response = Http::withHeaders([
+            'Authorization' => "Bearer {$token}",
+        ])->get("{$endpoint}/secrets/" . rawurlencode($secretName), [
+            'api-version' => '7.4',
+        ]);
+
+        if ($response->failed()) {
+            Log::error('KeyVault error', [
+                'status' => $response->status(),
+                'error'  => $response->json('error.code') ?? 'unknown',
+                // body only in debug mode
+                'detail' => config('app.debug') ? $response->body() : null,
             ]);
 
-            if ($response->failed()) {
-                throw new \RuntimeException("Failed to get Key Vault secret '{$secretName}': " . $response->body());
-            }
+            throw new \RuntimeException(
+                "Key Vault operation failed [{$response->status()}]: " . ($response->json('error.code') ?? 'unknown')
+            );
+        }
 
-            return (string) $response->json('value');
-        });
+        return (string) $response->json('value');
     }
 
     public function setSecret(string $secretName, string $value): void
     {
-        Cache::forget("keyvault_secret_{$secretName}");
+        if (! preg_match('/^[0-9a-zA-Z-]+$/', $secretName)) {
+            throw new \InvalidArgumentException(
+                'Invalid Key Vault secret name. Only alphanumeric characters and hyphens are allowed.'
+            );
+        }
+
+        $secretName = rawurlencode($secretName);
 
         $token    = $this->getAccessToken();
         $endpoint = rtrim((string) config('keyvault.endpoint'), '/');
@@ -65,7 +94,16 @@ class KeyVaultService
         ]);
 
         if ($response->failed()) {
-            throw new \RuntimeException("Failed to update Key Vault secret '{$secretName}': " . $response->body());
+            Log::error('KeyVault error', [
+                'status' => $response->status(),
+                'error'  => $response->json('error.code') ?? 'unknown',
+                // body only in debug mode
+                'detail' => config('app.debug') ? $response->body() : null,
+            ]);
+
+            throw new \RuntimeException(
+                "Key Vault operation failed [{$response->status()}]: " . ($response->json('error.code') ?? 'unknown')
+            );
         }
     }
 }
