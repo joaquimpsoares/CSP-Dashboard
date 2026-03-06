@@ -13,7 +13,8 @@
 
 @include('partials.messages')
 
-{!! Form::open(['route' => 'permissions.save', 'class' => 'mb-4']) !!}
+<form method="POST" action="{{ route('permissions.save') }}" class="mb-4">
+    @csrf
 
 <div class="card">
     <div class="card-body">
@@ -49,17 +50,14 @@
                             @foreach ($roles as $role)
                                 <td class="text-center">
                                     <div class="custom-control custom-checkbox">
-                                        {!!
-                                            Form::checkbox(
-                                                "roles[{$role->id}][]",
-                                                $permission->id,
-                                                $role->hasPermissionTo($permission->name),
-                                                [
-                                                    'class' => 'custom-control-input',
-                                                    'id' => "cb-{$role->id}-{$permission->id}"
-                                                ]
-                                            )
-                                        !!}
+                                        <input
+                                            type="checkbox"
+                                            name="roles[{{ $role->id }}][]"
+                                            value="{{ $permission->id }}"
+                                            class="custom-control-input"
+                                            id="cb-{{ $role->id }}-{{ $permission->id }}"
+                                            @checked($role->hasPermissionTo($permission->name))
+                                        >
                                         <label class="custom-control-label d-inline"
                                                for="cb-{{ $role->id }}-{{ $permission->id }}"></label>
                                     </div>
@@ -106,6 +104,6 @@
     </div>
 @endif
 
-{!! Form::close() !!}
+</form>
 
 @stop
