@@ -259,6 +259,22 @@
                                             </div>
                                         </a>
 
+                                        @can('permissions.manage')
+                                        <a href="{{ route('permissions.index') }}" class="group flex gap-3 rounded-xl p-3 hover:bg-slate-50">
+                                            <div class="mt-0.5 text-slate-500 group-hover:text-slate-700">
+                                                <!-- Shield / key -->
+                                                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                                                    <path d="M9 12l2 2 4-4" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <div class="text-sm font-semibold text-slate-900">Permissions</div>
+                                                <div class="mt-0.5 text-xs text-slate-600">Roles & access control</div>
+                                            </div>
+                                        </a>
+                                        @endcan
+
                                         <a href="{{ route('userloginfo') }}" class="group flex gap-3 rounded-xl p-3 hover:bg-slate-50">
                                             <div class="mt-0.5 text-slate-500 group-hover:text-slate-700">
                                                 <!-- Clipboard -->
