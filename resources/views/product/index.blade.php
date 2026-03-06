@@ -9,7 +9,7 @@
     <div class="py-10">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div class="rounded-2xl border border-slate-200 bg-white/80 shadow-sm">
-                @livewire('product.product-table')
+                @livewire('product.product-table', [], key('product-table-'.request()->path()))
             </div>
         </div>
     </div>

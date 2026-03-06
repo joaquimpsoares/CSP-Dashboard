@@ -15,10 +15,13 @@ use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
 use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
 use Modules\MicrosoftCspConnection\Services\CustomerService;
 
+use App\Models\Traits\HasInstanceEnvironment;
+
 class Customer extends Model implements Searchable
 {
 
     use ActivityTrait;
+    use HasInstanceEnvironment;
 
     public function format(){
         return [
@@ -185,20 +188,40 @@ class Customer extends Model implements Searchable
     protected static function booted(){
         static::addGlobalScope('access_level', function (Builder $query) {
             $user = Auth::user();
-            if ($user && $user->userLevel->name === config('app.provider')) {
-                $query->whereHas('resellers', function (Builder $query) use ($user) {
-                    $query->whereHas('provider', function (Builder $query) use ($user) {
-                        $query->where('id', $user->provider->id);
+
+            if (! $user || ! $user->userLevel) {
+                return;
+            }
+
+            if ($user->userLevel->name === config('app.provider')) {
+                if (! $user->provider) {
+                    return;
+                }
+
+                $providerId = $user->provider->id;
+
+                $query->whereHas('resellers', function (Builder $query) use ($providerId) {
+                    $query->whereHas('provider', function (Builder $query) use ($providerId) {
+                        $query->where('id', $providerId);
                     });
                 });
             }
-            if ($user && $user->userLevel->name === config('app.reseller')) {
-                $query->whereHas('resellers', function (Builder $query) use ($user) {
-                    $query->where('id', $user->reseller->id);
+
+            if ($user->userLevel->name === config('app.reseller')) {
+                if (! $user->reseller) {
+                    return;
+                }
+
+                $resellerId = $user->reseller->id;
+
+                $query->whereHas('resellers', function (Builder $query) use ($resellerId) {
+                    $query->where('id', $resellerId);
                 });
             }
-            if ($user && $user->userLevel->name === config('app.customer')) {
-                return false;
+
+            if ($user->userLevel->name === config('app.customer')) {
+                // Customers should only see themselves; handled elsewhere.
+                return;
             }
         });
     }

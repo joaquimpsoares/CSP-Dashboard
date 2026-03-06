@@ -13,10 +13,15 @@ class MicrosoftCspConnection extends Model
     protected $fillable = [
         'provider_id',
         'tenant_id',
+        'sandbox_tenant_id',
         'token_mode',
         'client_id',
+        'sandbox_client_id',
         'client_secret',
+        'sandbox_client_secret',
         'refresh_token',
+        'key_vault_secret_name',
+        'sandbox_refresh_token',
         'partner_id',
         'api_url',
         'consented_at',
@@ -30,11 +35,13 @@ class MicrosoftCspConnection extends Model
      * "encrypted" cast (requires APP_KEY to be set).
      */
     protected $casts = [
-        'client_secret'  => 'encrypted',
-        'refresh_token'  => 'encrypted',
-        'consented_at'   => 'datetime',
-        'mfa_checked_at' => 'datetime',
-        'mfa_compliant'  => 'boolean',
+        'client_secret'          => 'encrypted',
+        'refresh_token'          => 'encrypted',
+        'sandbox_client_secret'  => 'encrypted',
+        'sandbox_refresh_token'  => 'encrypted',
+        'consented_at'           => 'datetime',
+        'mfa_checked_at'         => 'datetime',
+        'mfa_compliant'          => 'boolean',
     ];
 
     /**
@@ -43,6 +50,9 @@ class MicrosoftCspConnection extends Model
     protected $hidden = [
         'client_secret',
         'refresh_token',
+        'key_vault_secret_name',
+        'sandbox_client_secret',
+        'sandbox_refresh_token',
     ];
 
     /**

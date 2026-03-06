@@ -1,15 +1,17 @@
 /**
  * JS bootstrap for Blade + Breeze components.
  *
- * This repo has legacy Vue/Mix history, but the current auth/dashboard shell
- * relies on Alpine for dropdowns, toggles, etc.
+ * We need Alpine for Breeze dropdowns/menus (x-dropdown, nav mega menu, etc.).
+ * Some setups rely on Livewire bundling Alpine, but that is not guaranteed.
+ *
+ * So we only start Alpine if it isn't already present.
  */
 
 import './bootstrap'
-
 import Alpine from 'alpinejs'
 
-window.Alpine = Alpine
-Alpine.start()
-
-console.log('[CSP-Dashboard] Alpine started', !!window.Alpine)
+// Start Alpine only once.
+if (!window.Alpine) {
+    window.Alpine = Alpine
+    Alpine.start()
+}

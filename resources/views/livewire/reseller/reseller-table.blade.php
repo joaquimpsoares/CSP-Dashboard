@@ -1,12 +1,12 @@
 <div>
-    <div class="relative z-0 flex-col flex-1 overflow-y-auto">
-        <div class="p-4 overflow-hidden bg-white">
+    <div class="relative z-0 flex-col flex-1 overflow-visible">
+        <div class="p-6 bg-transparent">
             <div class="flex flex-col">
                 <div class="flex flex-col items-center justify-between lg:flex-row">
                     <div class="flex items-center">
-                        <h4>{{ ucwords(trans_choice('messages.reseller_table', 2)) }}</h4>
+                        <h4 class="text-base font-semibold text-slate-900">{{ ucwords(trans_choice('messages.reseller_table', 2)) }}</h4>
                     </div>
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-between gap-3">
                         <div>
                             <div class="flex justify-center flex-1 lg:justify-end">
                                 <!-- Search section -->
@@ -19,33 +19,32 @@
                                                 <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                                             </svg>
                                         </div>
-                                        <input wire:model="search" id="search" class="block w-full bg-white py-1.5 pl-10 pr-3 border border-gray-300 rounded-md leading-5 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 focus:placeholder-gray-500 sm:text-sm" placeholder="Search" type="search" name="search">
+                                        <input wire:model.live.debounce.300ms="search" id="search" class="block w-full bg-white py-2 pl-10 pr-3 border border-slate-300 rounded-lg leading-5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 sm:text-sm" placeholder="Search resellers" type="search" name="search">
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div>
-                            <a onclick="confirm('Are you sure you want to export these Records?') || event.stopImmediatePropagation()"wire:click="exportSelected()" href="#" class="px-2 py-2 ml-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
-
-                            {{-- <a href="#" class="px-2 py-2 ml-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"> --}}
+                            <a onclick="confirm('Are you sure you want to export these Records?') || event.stopImmediatePropagation()" wire:click="exportSelected()" href="#" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-primary-500/20">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd" />
                                 </svg>
                                 {{ ucwords(trans_choice('messages.export', 1)) }}
                             </a>
                         </div>
+
                         @if(Auth::user()->userLevel->name != 'Super Admin')
-                        @can(config('app.reseller_create'))
-                        <div>
-                            <a href="#" wire:click="create"class="px-2 py-2 ml-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-                                </svg>
-                                {{ ucwords(trans_choice('messages.create', 1)) }}
-                            </a>
-                        </div>
-                        @endcan
+                            @can(config('app.reseller_create'))
+                                <div>
+                                    <a href="#" wire:click="create" class="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-500/30">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                                        </svg>
+                                        {{ ucwords(trans_choice('messages.create', 1)) }}
+                                    </a>
+                                </div>
+                            @endcan
                         @endif
                     </div>
                 </div>
@@ -105,27 +104,68 @@
                                     </div>
                                 </a>
                             </x-table.cell>
-                            <x-table.cell>
-                                <div class="z-10">
-                                    <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                            <x-table.cell class="text-right">
+                                <!-- Match Customers table: fixed-position Alpine dropdown (no Bootstrap dropdowns) -->
+                                <div x-data="{
+                                        componentId: @js($this->getId()),
+                                        open: false,
+                                        top: 0,
+                                        left: 0,
+                                        width: 0,
+                                        place() {
+                                            const r = this.$refs.btn.getBoundingClientRect();
+                                            this.width = 192;
+                                            this.top = r.bottom + 8;
+                                            this.left = Math.max(8, r.right - this.width);
+                                        },
+                                        toggle() {
+                                            this.open = !this.open;
+                                            if (this.open) this.$nextTick(() => this.place());
+                                        },
+                                        callEdit(id) {
+                                            const lw = window.Livewire;
+                                            if (lw && lw.find) {
+                                                const c = lw.find(this.componentId);
+                                                if (!c) return;
+                                                c.set('showEditModal', false);
+                                                setTimeout(() => c.call('edit', id), 50);
+                                            }
+                                        }
+                                    }"
+                                    @keydown.escape.window="open = false"
+                                    class="inline-block">
+
+                                    <button type="button" x-ref="btn" @click="toggle()"
+                                        class="inline-flex items-center justify-center rounded-lg px-2 py-2 text-slate-600 hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus:ring-4 focus:ring-primary-500/20"
+                                        aria-haspopup="true">
+                                        <span class="sr-only">Open actions</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                             <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
                                         </svg>
                                     </button>
-                                    <div class="dropdown-menu">
-                                        <a wire:click="edit({{ $reseller->id }})" class="dropdown-item" href="#">
-                                            <x-icon.edit></x-icon.edit>
-                                            {{ ucwords(trans_choice('messages.edit', 1)) }}
-                                        </a>
-                                        @canImpersonate
-                                        @if(!empty($reseller->format()['mainUser']))
-                                        <a class="dropdown-item" href="{{ route('impersonate', $reseller->format()['mainUser']['id'])}}">
-                                            <x-icon.impersonate></x-icon.impersonate>
-                                            {{ ucwords(trans_choice('messages.impersonate', 1)) }}
-                                        </a>
-                                        @endif
-                                        @endCanImpersonate
-                                    </div>
+
+                                    <template x-teleport="body">
+                                        <div x-cloak x-show="open" @click.away="open = false" @scroll.window="open = false" @resize.window="open = false"
+                                            class="fixed z-[9999] w-48 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg"
+                                            :style="`top:${top}px; left:${left}px;`">
+
+                                            <button type="button" @click="callEdit({{ $reseller->id }}); open = false"
+                                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+                                                <x-icon.edit></x-icon.edit>
+                                                <span>{{ ucwords(trans_choice('messages.edit', 1)) }}</span>
+                                            </button>
+
+                                            @canImpersonate
+                                                @if(!empty($reseller->format()['mainUser']))
+                                                    <a class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                                                       href="{{ route('impersonate', $reseller->format()['mainUser']['id'])}}">
+                                                        <x-icon.impersonate></x-icon.impersonate>
+                                                        <span>{{ ucwords(trans_choice('messages.impersonate', 1)) }}</span>
+                                                    </a>
+                                                @endif
+                                            @endCanImpersonate
+                                        </div>
+                                    </template>
                                 </div>
                             </x-table.cell>
                         </x-table.row>

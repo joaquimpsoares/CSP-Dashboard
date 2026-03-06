@@ -13,18 +13,30 @@
                 </div>
                 <div class="flex items-center flex-shrink-0 px-4">
                     <a class="header-brand" href="/">
-                        @if(Auth::user()->userlevel->name == 'Reseller')
-                        <img src="{{URL::asset(Auth::user()->reseller->provider->logo)}}" class="w-auto h-14" alt="Tagydes logo">
-                        @endif
-                        @if(Auth::user()->userlevel->name == 'Provider')
-                        <img src="{{URL::asset(Auth::user()->provider->logo)}}" class="w-auto h-14" alt="Tagydes logo">
-                        @endif
-                        @if(Auth::user()->userlevel->name == 'Customer')
-                        <img src="{{URL::asset(Auth::user()->customer->resellers->first()->provider->logo)}}" class="w-auto h-14" alt="Tagydes logo">
-                        @endif
-                        @if(Auth::user()->userlevel->name == "Super Admin")
-                        <img src="{{URL::asset('/images/logos/tagydes.png')}}" class="w-auto h-14" alt="Tagydes logo">
-                        @endif
+                        @php
+                            $u = Auth::user();
+                            $logo = '/images/logos/tagydes.png';
+
+                            if ($u?->userlevel?->name === 'Reseller') {
+                                $logo = $u->reseller?->provider?->logo ?? $logo;
+                            }
+
+                            if ($u?->userlevel?->name === 'Provider') {
+                                $logo = $u->provider?->logo ?? $logo;
+                            }
+
+                            if ($u?->userlevel?->name === 'Customer') {
+                                // Customer relationship may be null; fall back to customer_id.
+                                $customer = $u->customer;
+                                if (! $customer && $u?->customer_id) {
+                                    $customer = \App\Customer::query()->with(['resellers.provider'])->find($u->customer_id);
+                                }
+
+                                $logo = $customer?->resellers?->first()?->provider?->logo ?? $logo;
+                            }
+                        @endphp
+
+                        <img src="{{ URL::asset($logo) }}" class="w-auto h-14" alt="Tagydes logo">
                     </a>
                 </div>
                 <div x-data="{ open: false }"   @keydown.escape.stop="open = false; focusButton()"class="relative inline-block px-3 mt-6 text-left">
@@ -86,7 +98,7 @@
                             </a>
                             @endrole
                             @can(config('app.reseller_index'))
-                            <a href="{{ route('reseller.index') }}" class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:bg-gray-50 hover:text-gray-900 group focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
+                            <a href="{{ route('reseller.index') }}" class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->routeIs('reseller.*')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
                                 <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-600" x-state-description="undefined: &quot;text-gray-600&quot;, undefined: &quot;text-gray-400 group-hover:text-gray-600&quot;" x-description="Heroicon name: outline/user-circle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                 </svg>
@@ -94,7 +106,7 @@
                             </a>
                             @endcan
                             @can(config('app.customer_index'))
-                            <a href="{{ route('customer.index') }}" class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:bg-gray-50 hover:text-gray-900 group focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
+                            <a href="{{ route('customer.index') }}" class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->routeIs('customer.*')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
                                 <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-600" x-state-description="undefined: &quot;text-gray-600&quot;, undefined: &quot;text-gray-400 group-hover:text-gray-600&quot;" x-description="Heroicon name: outline/archive" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                 </svg>
@@ -109,7 +121,7 @@
                                 {{ ucwords(trans_choice('messages.subscription', 2)) }}
                             </a>
                             @endcan
-                            <a href="{{ url('/' . $page='order') }}" class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:bg-gray-50 hover:text-gray-900 group focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
+                            <a href="{{ route('order.index') }}" class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->routeIs('order.*')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
                                 <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-600" x-state-description="undefined: &quot;text-gray-600&quot;, undefined: &quot;text-gray-400 group-hover:text-gray-600&quot;" x-description="Heroicon name: outline/clock" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                                 </svg>
@@ -203,7 +215,10 @@
                                 @endcan
                                 @can(config('app.reseller_index'))
                                 <a href="{{ route('product.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.product', 2)) }}</a>
-                                <a href="{{ route('instances.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.instance', 2)) }}</a>
+
+                                @hasanyrole('Super Admin|Admin|Provider')
+                                    <a href="{{ route('instances.index') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.instance', 2)) }}</a>
+                                @endhasanyrole
                                 @endcan
                                 @can(config('app.provider_index'))
                                 <a href="{{ route('jobs') }}" class="flex items-center w-full py-2 pl-16 pr-2 text-sm text-gray-600 rounded-md font-small group hover:text-gray-900 hover:bg-gray-50"> {{ ucwords(trans_choice('messages.job', 2)) }}</a>
@@ -233,18 +248,28 @@
                 <div class="flex flex-col flex-1 h-0">
                     <div class="flex items-center flex-shrink-0 h-16 px-4">
                         <a class="header-brand" href="/">
-                            @if(Auth::user()->userlevel->name == 'Reseller')
-                            <img src="{{URL::asset(Auth::user()->reseller->provider->logo)}}" class="w-auto h-14" alt="Tagydes logo">
-                            @endif
-                            @if(Auth::user()->userlevel->name == 'Provider')
-                            <img src="{{URL::asset(Auth::user()->provider->logo)}}" class="w-auto h-14" alt="Tagydes logo">
-                            @endif
-                            @if(Auth::user()->userlevel->name == 'Customer')
-                            <img src="{{URL::asset(Auth::user()->customer->resellers->first()->provider->logo)}}" class="w-auto h-14" alt="Tagydes logo">
-                            @endif
-                            @if(Auth::user()->userlevel->name == "Super Admin")
-                            <img src="{{URL::asset('/images/logos/tagydes.png')}}" class="w-auto h-14" alt="Covido logo">
-                            @endif
+                            @php
+                                $u = Auth::user();
+                                $logo = '/images/logos/tagydes.png';
+
+                                if ($u?->userlevel?->name === 'Reseller') {
+                                    $logo = $u->reseller?->provider?->logo ?? $logo;
+                                }
+
+                                if ($u?->userlevel?->name === 'Provider') {
+                                    $logo = $u->provider?->logo ?? $logo;
+                                }
+
+                                if ($u?->userlevel?->name === 'Customer') {
+                                    $customer = $u->customer;
+                                    if (! $customer && $u?->customer_id) {
+                                        $customer = \App\Customer::query()->with(['resellers.provider'])->find($u->customer_id);
+                                    }
+                                    $logo = $customer?->resellers?->first()?->provider?->logo ?? $logo;
+                                }
+                            @endphp
+
+                            <img src="{{ URL::asset($logo) }}" class="w-auto h-14" alt="Tagydes logo">
                         </a>
                     </div>
                     <div x-data="{ open: false }"   @keydown.escape.stop="open = false; focusButton()" class="relative inline-block px-3 mt-6 text-left">
@@ -311,7 +336,7 @@
                                 </a>
                                 @endrole
                                 @can(config('app.reseller_index'))
-                                <a href="{{ route('reseller.index') }}" class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->routeIs('reseller.index')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
+                                <a href="{{ route('reseller.index') }}" class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->routeIs('reseller.*')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
                                     <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-600" x-state-description="undefined: &quot;text-gray-600&quot;, undefined: &quot;text-gray-400 group-hover:text-gray-600&quot;" x-description="Heroicon name: outline/user-circle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                     </svg>
@@ -319,7 +344,7 @@
                                 </a>
                                 @endcan
                                 @can(config('app.customer_index'))
-                                <a href="{{ route('customer.index') }}" class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->routeIs('customer.index')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
+                                <a href="{{ route('customer.index') }}" class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->routeIs('customer.*')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
                                     <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-600" x-state-description="undefined: &quot;text-gray-600&quot;, undefined: &quot;text-gray-400 group-hover:text-gray-600&quot;" x-description="Heroicon name: outline/archive" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
@@ -334,7 +359,7 @@
                                     {{ ucwords(trans_choice('messages.subscription', 2)) }}
                                 </a>
                                 @endcan
-                                <a href="{{ url('/' . $page='order') }}" class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->routeIs('order.index')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
+                                <a href="{{ route('order.index') }}" class="flex items-center w-full py-2 pl-2 pr-1 text-sm font-medium text-gray-600 bg-white rounded-md hover:text-indigo-500 @if(request()->routeIs('order.*')) text-indigo-500 @endif focus:outline-none focus:ring-2 focus:ring-indigo-500" x-state:on="Current" x-state:off="Default" aria-controls="sub-menu-1" @click="open = !open" aria-expanded="true" x-bind:aria-expanded="open.toString()" x-state-description="Current: &quot;bg-gray-100 text-gray-900&quot;, Default: &quot;bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900&quot;">
                                     <svg class="w-6 h-6 mr-4 text-gray-400 group-hover:text-gray-600" x-state-description="undefined: &quot;text-gray-600&quot;, undefined: &quot;text-gray-400 group-hover:text-gray-600&quot;" x-description="Heroicon name: outline/clock" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                                     </svg>

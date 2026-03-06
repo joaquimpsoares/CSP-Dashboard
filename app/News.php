@@ -23,32 +23,69 @@ class News extends Model
         static::addGlobalScope('access_level', function (Builder $query){
             $user = Auth::user();
 
-            if ($user && $user->userLevel->name === config('app.provider')) {
-                $query->whereHas('provider', function (Builder $query) use ($user) {
-                    $query->where('provider_id', $user->provider->id);
-                    $query->orwhere('provider_id' , null);
-                });
+            if (! $user || ! $user->userLevel) {
+                return;
             }
-            if ($user && $user->userLevel->name === config('app.reseller')) {
-                $query->whereHas('reseller', function (Builder $query) use ($user) {
-                    $query->where('reseller_id', $user->reseller->id);
-                    $query->where('provider_id' , $user->reseller->provider->id);
-                    $query->orwhere('provider_id' , null);
-                    $query->orwhere('reseller_id' , null);
-                });
-                    // $query->where('reseller_id', $user->reseller->id);
-                    // $query->where('reseller', true);
 
-                // $query->where('reseller_id', $user->reseller->id);
-                // $query->orwhere('reseller', true);
-                // $query->where('expires_at', '>', date('Y-m-d') ?? null);
+            if ($user->userLevel->name === config('app.provider')) {
+                if (! $user->provider) {
+                    return;
+                }
+
+                $providerId = $user->provider->id;
+
+                $query->where(function (Builder $q) use ($providerId) {
+                    $q->where('provider_id', $providerId)
+                      ->orWhereNull('provider_id');
+                });
             }
-            if ($user && $user->userLevel->name === config('app.customer')) {
-                $query->where('provider_id', $user->customer->resellers->first()->provider->id);
-                $query->where('reseller_id', $user->customer->resellers->first()->id);
-                $query->orwhere('customer', true);
-                $query->where('expires_at', '>', date('Y-m-d'));
-                $query->orwhere('expires_at', null);
+
+            if ($user->userLevel->name === config('app.reseller')) {
+                if (! $user->reseller) {
+                    return;
+                }
+
+                $resellerId = $user->reseller->id;
+                $providerId = optional($user->reseller->provider)->id;
+
+                $query->where(function (Builder $q) use ($resellerId, $providerId) {
+                    $q->where(function (Builder $q2) use ($resellerId, $providerId) {
+                        $q2->where('reseller_id', $resellerId);
+                        if ($providerId) {
+                            $q2->where('provider_id', $providerId);
+                        }
+                    })
+                    ->orWhereNull('provider_id')
+                    ->orWhereNull('reseller_id');
+                });
+            }
+
+            if ($user->userLevel->name === config('app.customer')) {
+                // Relationship may not be loaded (or may be null). Use customer_id to resolve.
+                $customer = $user->customer;
+
+                if (! $customer && $user->customer_id) {
+                    $customer = Customer::query()->with(['resellers.provider'])->find($user->customer_id);
+                }
+
+                $reseller = $customer?->resellers?->first();
+                $providerId = $reseller?->provider?->id;
+
+                if (! $reseller || ! $providerId) {
+                    // If we cannot resolve the relationship, fall back to customer-only news.
+                    $query->where('customer', true);
+                } else {
+                    $query->where(function (Builder $q) use ($providerId, $reseller) {
+                        $q->where('provider_id', $providerId)
+                          ->where('reseller_id', $reseller->id)
+                          ->orWhere('customer', true);
+                    });
+                }
+
+                $query->where(function (Builder $q) {
+                    $q->where('expires_at', '>', date('Y-m-d'))
+                      ->orWhereNull('expires_at');
+                });
             }
         });
     }

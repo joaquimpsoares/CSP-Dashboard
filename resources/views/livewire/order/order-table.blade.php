@@ -1,7 +1,7 @@
 <div>
     <div>
-        <div class="relative z-0 flex-col flex-1 overflow-y-auto">
-            <div class="p-4 overflow-hidden bg-white">
+        <div class="relative z-0 flex-col flex-1 overflow-visible">
+            <div class="p-6 bg-transparent">
                 <div class="flex flex-col">
                     <div class="flex flex-col items-center justify-between lg:flex-row">
                         <div class="flex items-center">
@@ -20,13 +20,13 @@
                                                     <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                                                 </svg>
                                             </div>
-                                            <input wire:model="search" id="search" class="block w-full bg-white py-1.5 pl-10 pr-3 border border-gray-300 rounded-md leading-5 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 focus:placeholder-gray-500 sm:text-sm" placeholder="Search" type="search" name="search">
+                                            <input wire:model.live.debounce.300ms="search" id="search" class="block w-full bg-white py-2 pl-10 pr-3 border border-slate-300 rounded-lg leading-5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500 sm:text-sm" placeholder="Search orders" type="search" name="search">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div>
-                                <a onclick="confirm('Are you sure you want to export these Records?') || event.stopImmediatePropagation()"wire:click="exportSelected()" href="#" class="px-2 py-2 ml-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
+                                <a onclick="confirm('Are you sure you want to export these Records?') || event.stopImmediatePropagation()" wire:click="exportSelected()" href="#" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-primary-500/20">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5 lg:inline" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd" />
                                     </svg>
@@ -93,67 +93,99 @@
                                     </a>
                                 </x-table.cell>
                                 <x-table.cell>
-                                    <div class="z-10">
-                                        <div class="inline-flex rounded-md shadow-sm">
-                                            <button type="button" class="w-24 relative inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                                                {{ $value['status']['name'] }}
-                                            </button>
-                                            @if(Auth::user()->userlevel->name == "Super Admin" || Auth::user()->userlevel->name == "Provider")
-                                            <div class="relative block -ml-px">
-                                                <button type="button" class="relative inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <span class="sr-only">Open options</span>
-                                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                                    </svg>
-                                                </button>
-                                                @if ($value['status']['id']==3 || $value['status']['id']==2|| $value['status']['id']==1)
-                                                <div class="absolute right-0 z-10 w-56 mt-2 -mr-1 origin-top-right bg-white rounded-md shadow-lg dropdown-menu ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="option-menu-button" tabindex="-1">
-                                                    <div class="py-1" role="none">
-                                                        @if ($value['status']['id']==3)
-                                                        <a wire:click="markCompleted({{ $value['id'] }})" href="#" class="block px-4 py-2 text-xs text-gray-700" role="menuitem" tabindex="-1" id="option-menu-item-0">{{ ucwords(trans_choice('messages.change_status_complete', 1)) }}</a>
-                                                        @endif
-                                                        @if ($value['status']['id']==1)
-                                                        <a wire:click="markCompleted({{ $value['id'] }})" href="#" class="block px-4 py-2 text-xs text-gray-700" role="menuitem" tabindex="-1" id="option-menu-item-0">{{ ucwords(trans_choice('messages.change_status_complete', 1)) }}</a>
-                                                        <a wire:click="markFailed({{ $value['id'] }})" href="#" class="block px-4 py-2 text-xs text-gray-700" role="menuitem" tabindex="-1" id="option-menu-item-0">{{ ucwords(trans_choice('messages.change_status_failed', 1)) }}</a>
-                                                        @endif
-                                                        @if ($value['status']['id']==2)
-                                                        <a wire:click="markCompleted({{ $value['id'] }})" href="#" class="block px-4 py-2 text-xs text-gray-700" role="menuitem" tabindex="-1" id="option-menu-item-0">{{ ucwords(trans_choice('messages.change_status_complete', 1)) }}</a>
-                                                        <a wire:click="markFailed({{ $value['id'] }})" href="#" class="block px-4 py-2 text-xs text-gray-700" role="menuitem" tabindex="-1" id="option-menu-item-0">{{ ucwords(trans_choice('messages.change_status_failed', 1)) }}</a>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                                @endif
-                                            </div>
-                                            @endif
-                                        </div>
-                                    </x-table.cell>
-                                    <x-table.cell>
-                                        <div class="z-10">
-                                            <button type="button" class="px-1 py-1 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                                                </svg>
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <a wire:click="show({{ $value['id'] }})" class="dropdown-item" href="#">
+                                    <span class="inline-flex items-center rounded-full bg-slate-50 px-2.5 py-0.5 text-xs font-semibold text-slate-700 ring-1 ring-inset ring-slate-200">
+                                        {{ $value['status']['name'] }}
+                                    </span>
+                                </x-table.cell>
+
+                                <x-table.cell class="text-right">
+                                    <!-- Fixed-position actions dropdown (Customers-like) -->
+                                    <div x-data="{
+                                            componentId: @js($this->getId()),
+                                            open: false,
+                                            top: 0,
+                                            left: 0,
+                                            width: 0,
+                                            place() {
+                                                const r = this.$refs.btn.getBoundingClientRect();
+                                                this.width = 224;
+                                                this.top = r.bottom + 8;
+                                                this.left = Math.max(8, r.right - this.width);
+                                            },
+                                            toggle() {
+                                                this.open = !this.open;
+                                                if (this.open) this.$nextTick(() => this.place());
+                                            },
+                                            call(method, id) {
+                                                const lw = window.Livewire;
+                                                if (!lw || !lw.find) return;
+                                                const c = lw.find(this.componentId);
+                                                if (!c) return;
+                                                c.call(method, id);
+                                            }
+                                        }"
+                                        @keydown.escape.window="open = false"
+                                        class="inline-block">
+
+                                        <button type="button" x-ref="btn" @click="toggle()"
+                                            class="inline-flex items-center justify-center rounded-lg px-2 py-2 text-slate-600 hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus:ring-4 focus:ring-primary-500/20"
+                                            aria-haspopup="true">
+                                            <span class="sr-only">Open actions</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                                            </svg>
+                                        </button>
+
+                                        <template x-teleport="body">
+                                            <div x-cloak x-show="open" @click.away="open = false" @scroll.window="open = false" @resize.window="open = false"
+                                                class="fixed z-[9999] w-56 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg"
+                                                :style="`top:${top}px; left:${left}px;`">
+
+                                                <button type="button" @click="call('show', {{ $value->id }}); open = false"
+                                                    class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
                                                     <x-icon.show></x-icon.show>
-                                                    {{ ucwords(trans_choice('messages.show', 1)) }}
-                                                </a>
+                                                    <span>{{ ucwords(trans_choice('messages.show', 1)) }}</span>
+                                                </button>
+
                                                 @if($value->status->id == 3 || $value->status->id == 1)
-                                                <a wire:click="resendtoMicrosoft({{ $value['id'] }})" class="dropdown-item" href="#">
-                                                    <x-icon.refresh></x-icon.refresh>
-                                                    {{ ucwords(trans_choice('messages.resendtoMicrosoft', 1)) }}
-                                                </a>
+                                                    <button type="button" @click="call('resendtoMicrosoft', {{ $value->id }}); open = false"
+                                                        class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+                                                        <x-icon.refresh></x-icon.refresh>
+                                                        <span>{{ ucwords(trans_choice('messages.resendtoMicrosoft', 1)) }}</span>
+                                                    </button>
                                                 @endif
+
                                                 @if (! $value['verified_at'] && $value['asked_verification_by'] && Auth::user()->can('verify order '.$value['id']))
-                                                <a class="dropdown-item" href="{{ route('order.verify', ['order_id' => $value['id']]) }}">
-                                                    <x-icon.play></x-icon.play>
-                                                    {{ ucwords(__('Verify order')) }}
-                                                </a>
+                                                    <a class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                                                       href="{{ route('order.verify', ['order_id' => $value['id']]) }}">
+                                                        <x-icon.play></x-icon.play>
+                                                        <span>{{ ucwords(__('Verify order')) }}</span>
+                                                    </a>
+                                                @endif
+
+                                                @if(Auth::user()->userlevel->name == "Super Admin" || Auth::user()->userlevel->name == "Provider")
+                                                    <div class="border-t border-slate-100"></div>
+
+                                                    @if ($value['status']['id']==3 || $value['status']['id']==2 || $value['status']['id']==1)
+                                                        <button type="button" @click="call('markCompleted', {{ $value->id }}); open = false"
+                                                            class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+                                                            <span>✓</span>
+                                                            <span>{{ ucwords(trans_choice('messages.change_status_complete', 1)) }}</span>
+                                                        </button>
+
+                                                        @if ($value['status']['id']==1 || $value['status']['id']==2)
+                                                            <button type="button" @click="call('markFailed', {{ $value->id }}); open = false"
+                                                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+                                                                <span>✕</span>
+                                                                <span>{{ ucwords(trans_choice('messages.change_status_failed', 1)) }}</span>
+                                                            </button>
+                                                        @endif
+                                                    @endif
                                                 @endif
                                             </div>
-                                        </div>
-                                    </x-table.cell>
+                                        </template>
+                                    </div>
+                                </x-table.cell>
                                 </x-table.row>
                                 @empty
                                 <x-table.row>

@@ -38,7 +38,8 @@ $width = match ($width) {
             style="display: none;"
             @click="open = false">
         <div class="{{ $contentClasses }}">
-            {{ $slot ?? ($content ?? '') }}
+            {{-- Prefer named slot "content" when provided (navigation uses it). --}}
+            {{ $content ?? $slot }}
         </div>
     </div>
 </div>

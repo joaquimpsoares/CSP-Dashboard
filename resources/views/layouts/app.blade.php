@@ -32,6 +32,17 @@
                 </div>
             @endif
 
+            @if(session('environment', 'live') === 'sandbox')
+                <div class="border-b border-amber-200 bg-amber-50">
+                    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 text-sm sm:px-6 lg:px-8">
+                        <div class="text-amber-900">
+                            <span class="font-semibold">SANDBOX</span>
+                            <span class="text-amber-800">— You are viewing sandbox data.</span>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             @include('layouts.navigation')
 
             <!-- Page Heading -->

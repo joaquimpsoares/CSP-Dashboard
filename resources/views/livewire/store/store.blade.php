@@ -513,6 +513,18 @@
                                    class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20">
                         </div>
 
+                        @if(!empty($requestResellerOptions) && count($requestResellerOptions) > 1)
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Send request to reseller</label>
+                            <select wire:model="requestResellerId"
+                                    class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20">
+                                @foreach($requestResellerOptions as $opt)
+                                    <option value="{{ $opt['id'] }}">{{ $opt['name'] }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endif
+
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Notes <span class="text-slate-400 font-normal">(optional)</span></label>
                             <textarea wire:model="requestNotes" rows="3" placeholder="Any additional context…"

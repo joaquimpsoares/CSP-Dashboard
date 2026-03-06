@@ -233,7 +233,9 @@ class ResellerTable extends Component
             });
         })->
         with(['country', 'customers', 'status']);
-        $this->useCachedRows();
+
+        // NOTE: cached rows break live search because the cache key does not include
+        // the search term. Keep uncached to preserve pre-stash behavior.
         return $this->applySorting($resellers);
     }
 
@@ -253,12 +255,11 @@ class ResellerTable extends Component
         $countries  = Country::pluck( 'name','id');
         $roles      = Role::pluck( 'name','id');
         $statuses   = Status::pluck( 'name','id');
-        return view('livewire.reseller.reseller-table',
-        [
+        return view('livewire.reseller.reseller-table', [
             'resellers' => $this->rows,
             'countries' => $countries,
             'statuses'  => $statuses,
-            'roles'     => $roles
-        ])->extends('layouts.master');
+            'roles'     => $roles,
+        ]);
     }
 }

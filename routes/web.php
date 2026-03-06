@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\BillingController;
+use App\Http\Controllers\Web\EnvironmentController;
 
 // use App\Http\Controllers\TestController;
 
@@ -20,6 +21,9 @@ Início Rotas que necessitam ser verificadas e inseridas em seus devídos midlew
 
 // Stripe Webhook (no auth; excluded from CSRF in VerifyCsrfToken)
 Route::post('stripe/webhook', [StripeWebhookController::class, 'handle'])->name('stripe.webhook');
+
+// Environment switcher (auth required)
+Route::middleware('auth')->post('environment/switch', [EnvironmentController::class, 'switch'])->name('environment.switch');
 
 // Stripe Billing — Checkout, Customer Portal, and landing pages (auth required)
 Route::middleware('auth')->prefix('billing')->name('billing.')->group(function () {
@@ -173,9 +177,8 @@ Route::group(['middleware' => 'auth'], function ()
             Route::post('pricelist/storePriceList', 'PriceListController@storePriceList')->name('priceList.storePriceList');
 
 
-            // Route::get('/reseller/{reseller}-{slug}', 'ResellerController@show')->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
-            Route::get('/reseller/{reseller}-{slug}', [\App\Http\Livewire\Reseller\ShowReseller ::class, '__invoke'])->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
-            Route::get('/reseller', [\App\Http\Livewire\Reseller\ResellerTable::class, '__invoke'])->middleware('permission:' . config('app.reseller_index'))->name('reseller.index');
+            Route::get('/reseller/{reseller}-{slug}', 'ResellerController@show')->middleware('permission:' . config('app.reseller_show'))->name('reseller.show');
+            Route::get('/reseller', 'ResellerController@index')->middleware('permission:' . config('app.reseller_index'))->name('reseller.index');
 
             /*
             Inicio Confirmar nivel de acesso reseller->provider

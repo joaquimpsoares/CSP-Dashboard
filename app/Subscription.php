@@ -15,10 +15,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
 use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
 use Modules\MicrosoftCspConnection\Services\SubscriptionService;
+use App\Models\Traits\HasInstanceEnvironment;
 
 class Subscription extends Model
 {
     use ActivityTrait;
+    use HasInstanceEnvironment;
 
     public function format(){
         return [
@@ -435,25 +437,54 @@ class Subscription extends Model
     protected static function booted(){
         static::addGlobalScope('access_level', function(Builder $query){
             $user = \Illuminate\Support\Facades\Auth::user();
-            if($user && $user->userLevel->name === config('app.provider')){
-                $query->whereHas('customer', function(Builder $query) use($user){
-                    $query->whereHas('resellers', function(Builder $query) use($user){
-                        $query->whereHas('provider', function(Builder $query) use($user){
-                            $query->where('id', $user->provider->id);
+
+            if (! $user || ! $user->userLevel) {
+                return;
+            }
+
+            // Provider-level scoping
+            if ($user->userLevel->name === config('app.provider')) {
+                if (! $user->provider) {
+                    // Avoid fatal errors when provider relationship is missing.
+                    return;
+                }
+
+                $providerId = $user->provider->id;
+
+                $query->whereHas('customer', function(Builder $query) use($providerId){
+                    $query->whereHas('resellers', function(Builder $query) use($providerId){
+                        $query->whereHas('provider', function(Builder $query) use($providerId){
+                            $query->where('id', $providerId);
                         });
                     });
                 });
             }
-            if($user && $user->userLevel->name === config('app.reseller')){
-                $query->whereHas('customer', function(Builder $query) use($user){
-                    $query->whereHas('resellers', function(Builder $query) use($user){
-                        $query->where('id', $user->reseller->id);
+
+            // Reseller-level scoping
+            if ($user->userLevel->name === config('app.reseller')) {
+                if (! $user->reseller) {
+                    return;
+                }
+
+                $resellerId = $user->reseller->id;
+
+                $query->whereHas('customer', function(Builder $query) use($resellerId){
+                    $query->whereHas('resellers', function(Builder $query) use($resellerId){
+                        $query->where('id', $resellerId);
                     });
                 });
             }
-            if($user && $user->userLevel->name === config('app.customer')){
-                $query->whereHas('customer', function(Builder $query) use($user){
-                    $query->where('id', $user->customer->id);
+
+            // Customer-level scoping
+            if ($user->userLevel->name === config('app.customer')) {
+                if (! $user->customer) {
+                    return;
+                }
+
+                $customerId = $user->customer->id;
+
+                $query->whereHas('customer', function(Builder $query) use($customerId){
+                    $query->where('id', $customerId);
                 });
             }
         });

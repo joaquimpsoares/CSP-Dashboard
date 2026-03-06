@@ -1,114 +1,127 @@
-<div class="mx-auto md:max-w-5xl pt-14">
-    <div>
-        <dl class="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-3">
-            <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
-                <dt class="text-sm font-medium text-gray-500 truncate">{{ ucwords(trans_choice('messages.subscription', 2)) }}</dt>
-                <dd class="mt-1 text-3xl font-semibold text-gray-900">{{$subscriptions->count()}}</dd>
-            </div>
-
-            <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
-                <dt class="text-sm font-medium text-gray-500 truncate">{{ ucwords(trans_choice('messages.licenses', 2)) }}</dt>
-                <dd class="mt-1 text-3xl font-semibold text-gray-900">{{$subscriptions->sum('amount')}}</dd>
-            </div>
-
-            <div class="px-4 py-5 overflow-hidden bg-white rounded-lg shadow sm:p-6">
-                <dt class="text-sm font-medium text-gray-500 truncate">{{ ucwords(trans_choice('messages.subscription', 2)) }}</dt>
-                <dd class="mt-1 text-3xl font-semibold text-gray-900">58.16%</dd>
-            </div>
-        </dl>
-    </div>
-    <div class="mt-4">
-        <div class="sm:hidden" x-description="Dropdown menu on small screens">
-            <label for="current-tab" class="sr-only">Select a tab</label>
-            <select wire:model="filters" id="current-tab" name="current-tab" class="block w-full py-2 pl-3 pr-10 text-base border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                <option wire:click="legacy">{{ ucwords(trans_choice('messages.legacy', 1)) }}</option>
-                <option wire:click="perpetual">{{ ucwords(trans_choice('messages.perpetual_software', 1)) }}</option>
-                <option wire:click="expiration" selected="">{{ ucwords(trans_choice('messages.abouttoexpire', 1)) }}</option>
-                <option wire:click="nce" >{{ ucwords(trans_choice('messages.nce', 1)) }}</option>
-            </select>
+<div>
+    <!-- Top metrics (Stripe-like summary cards) -->
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="rounded-2xl border border-slate-200 bg-white/80 px-6 py-5 shadow-sm">
+            <div class="text-sm font-medium text-slate-600">All</div>
+            <div class="mt-2 text-3xl font-semibold tracking-tight text-slate-900">{{ $subscriptions->total() }}</div>
+            <div class="mt-1 text-xs text-slate-500">Total subscriptions (current filter)</div>
         </div>
-        <div class="hidden sm:block" x-description="Tabs at small breakpoint and up" >
-            <div class="border-b border-gray-200">
-                <nav class="flex -mb-px space-x-8" x-data="{tab: 1}">
-                    <a wire:click="resetFilters" class="px-1 pb-4 text-sm font-medium text-gray-500 whitespace-nowrap" :class="{'z-20 text-indigo-600 border-b-2 border-indigo-500': tab === 1}" href="#" @click.prevent="tab = 1">
-                        {{ ucwords(trans_choice('messages.all', 1)) }}
+        <div class="rounded-2xl border border-slate-200 bg-white/80 px-6 py-5 shadow-sm">
+            <div class="text-sm font-medium text-slate-600">Active</div>
+            <div class="mt-2 text-3xl font-semibold tracking-tight text-slate-900">{{ $subscriptions->where('status.name', 'messages.active')->count() }}</div>
+            <div class="mt-1 text-xs text-slate-500">Currently active</div>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white/80 px-6 py-5 shadow-sm">
+            <div class="text-sm font-medium text-slate-600">Inactive</div>
+            <div class="mt-2 text-3xl font-semibold tracking-tight text-slate-900">{{ $subscriptions->where('status.name', 'messages.inactive')->count() }}</div>
+            <div class="mt-1 text-xs text-slate-500">Paused / inactive</div>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white/80 px-6 py-5 shadow-sm">
+            <div class="text-sm font-medium text-slate-600">Canceled</div>
+            <div class="mt-2 text-3xl font-semibold tracking-tight text-slate-900">{{ $subscriptions->where('status.name', 'messages.canceled')->count() }}</div>
+            <div class="mt-1 text-xs text-slate-500">No longer renewing</div>
+        </div>
+    </div>
+
+    <!-- Tabs + search -->
+    <div class="mt-8 rounded-2xl border border-slate-200 bg-white/80 shadow-sm">
+        <div class="border-b border-slate-200 px-6 py-4">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                    <h3 class="text-base font-semibold text-slate-900">Subscriptions</h3>
+                    <p class="mt-1 text-sm text-slate-600">Filter and search your subscriptions.</p>
+                </div>
+
+                <div class="w-full max-w-lg">
+                    <label for="search" class="sr-only">Search</label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <input wire:model.live.debounce.300ms="search" id="search" class="block w-full rounded-lg border border-slate-300 bg-white py-2 pl-10 pr-3 text-sm text-slate-900 placeholder-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/20" placeholder="Search by name, id, billing period…" type="search" name="search">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 border-b border-slate-200">
+                <nav class="-mb-px flex flex-wrap gap-6" x-data="{ tab: 1 }">
+                    <a href="#" wire:click.prevent="resetFilters" @click.prevent="tab = 1" class="border-b-2 px-1 pb-3 text-sm font-semibold"
+                       :class="tab === 1 ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">
+                        All
                     </a>
-                    <a href="#" wire:click="legacy" class="px-1 pb-4 text-sm font-medium text-gray-500 whitespace-nowrap" :class="{'z-20 text-indigo-600 border-b-2 border-indigo-500': tab === 2}" href="#" @click.prevent="tab = 2" @click.prevent="tab = 2">
-                        {{ ucwords(trans_choice('messages.legacy', 1)) }}
+                    <a href="#" wire:click.prevent="legacy" @click.prevent="tab = 2" class="border-b-2 px-1 pb-3 text-sm font-semibold"
+                       :class="tab === 2 ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">
+                        Legacy
                     </a>
-                    <a href="#" wire:click="perpetual" class="px-1 pb-4 text-sm font-medium text-gray-500 whitespace-nowrap" :class="{'z-20 text-indigo-600 border-b-2 border-indigo-500': tab === 3}" href="#" @click.prevent="tab = 3" @click.prevent="tab = 3">
-                        {{ ucwords(trans_choice('messages.perpetual_software', 1)) }}
+                    <a href="#" wire:click.prevent="perpetual" @click.prevent="tab = 3" class="border-b-2 px-1 pb-3 text-sm font-semibold"
+                       :class="tab === 3 ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">
+                        Perpetual
                     </a>
-                    <a href="#" wire:click="expiration" class="px-1 pb-4 text-sm font-medium text-gray-500 whitespace-nowrap" :class="{'z-20 text-indigo-600 border-b-2 border-indigo-500': tab === 4}" href="#" @click.prevent="tab = 4" @click.prevent="tab = 4">
-                        {{ ucwords(trans_choice('messages.abouttoexpire', 1)) }}
+                    <a href="#" wire:click.prevent="expiration" @click.prevent="tab = 4" class="border-b-2 px-1 pb-3 text-sm font-semibold"
+                       :class="tab === 4 ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">
+                        Expiring soon
                     </a>
-                    <a href="#" wire:click="nce" class="px-1 pb-4 text-sm font-medium text-gray-500 whitespace-nowrap" :class="{'z-20 text-indigo-600 border-b-2 border-indigo-500': tab === 5}" href="#" @click.prevent="tab = 5" @click.prevent="tab = 5">
-                        {{ ucwords(trans_choice('messages.nce', 1)) }}
+                    <a href="#" wire:click.prevent="nce" @click.prevent="tab = 5" class="border-b-2 px-1 pb-3 text-sm font-semibold"
+                       :class="tab === 5 ? 'border-primary-600 text-primary-700' : 'border-transparent text-slate-600 hover:text-slate-900'">
+                        NCE
                     </a>
                 </nav>
             </div>
         </div>
 
-        <section class="flex flex-col px-6 py-6 mt-8 mb-16 overflow-hidden rounded-md shadow-lg ">
-            <div class="px-4 py-5 bg-white border-b border-gray-200 sm:px-6">
-                <h3 class="text-lg font-medium leading-6 text-gray-900">{{ ucwords(trans_choice('messages.subscription', 2)) }}</h3>
-            </div>
-            <div class="px-4 bg-white border-gray-200 sm:px-6">
-                <x-bladewind.table striped="true" has_shadow="true" divider="thin" class="rounded-md ">
-                    <x-slot name="header">
-                        <th>{{ ucwords(trans_choice('messages.name', 1)) }}</th>
-                        <th>{{ ucwords(trans_choice('messages.product_term', 1)) }}</th>
-                        <th>{{ ucwords(trans_choice('messages.billing', 1)) }}</th>
-                        <th>{{ ucwords(trans_choice('messages.amount', 1)) }}</th>
-                        <th>{{ ucwords(trans_choice('messages.status', 1)) }}</th>
-                    </x-slot>
-                    @foreach ($subscriptions as $subscription)
+        <!-- Table -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50">
                     <tr>
-                        <td class="text-left ">
-                            <a href="{{$subscription->format()['path']}}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
-                                {{$subscription->name}}
-                            </a>
-                        </td>
-                        <td class="text-left ">
-                            {{$subscription->term}}
-                        </td>
-                        <td class="text-left ">
-                            {{$subscription->billing_period}}
-                        </td>
-                        <td class="text-left ">
-                            {{$subscription->amount}}
-                        </td>
-                        <td class="text-left ">
-                            @if($subscription->status->name == "messages.canceled")
-                            <p class="text-sm text-red-500 ">
-                                <svg class="inline-block w-5 h-5 mr-1" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <span class="text-xs text-gray-500">{{ ucwords(trans_choice($subscription->status->name, 1)) }}</span>
-                            </p>
-                            @endif
-                            @if($subscription->status->name == "messages.inactive")
-                            <p class="text-sm text-gray-500 ">
-                                <svg class="inline-block w-5 h-5 mr-1" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <span class="text-xs text-gray-500">{{ ucwords(trans_choice($subscription->status->name, 1)) }}</span>
-                            </p>
-                            @endif
-                            @if($subscription->status->name == "messages.active")
-                            <p class="text-sm text-green-500 ">
-                                <svg class="inline-block w-5 h-5 mr-1" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <span class="text-xs text-gray-500">{{ ucwords(trans_choice($subscription->status->name, 1)) }}: Renews on {{$subscription->expiration_data}} </span>
-                            </p>
-                            @endif
-                        </td>
-
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Name</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Term</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Billing</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-600">Qty</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Status</th>
                     </tr>
-                    @endforeach
-                </x-bladewind.table>
-            </div>
-        </section>
+                </thead>
+                <tbody class="divide-y divide-slate-200 bg-white">
+                    @forelse ($subscriptions as $subscription)
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4 text-sm font-semibold text-slate-900">
+                                <a href="{{ $subscription->format()['path'] ?? '#' }}" class="hover:underline">
+                                    {{ $subscription->name }}
+                                </a>
+                                <div class="mt-0.5 text-xs text-slate-500">ID: {{ $subscription->id }}</div>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-slate-700">{{ $subscription->term }}</td>
+                            <td class="px-6 py-4 text-sm text-slate-700">{{ $subscription->billing_period }}</td>
+                            <td class="px-6 py-4 text-right text-sm font-semibold text-slate-900">{{ $subscription->amount }}</td>
+                            <td class="px-6 py-4">
+                                @php($statusKey = $subscription->status->name ?? '')
+                                @if($statusKey === 'messages.active')
+                                    <span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-200">Active</span>
+                                    @if(!empty($subscription->expiration_data))
+                                        <div class="mt-1 text-xs text-slate-500">Renews on {{ $subscription->expiration_data }}</div>
+                                    @endif
+                                @elseif($statusKey === 'messages.inactive')
+                                    <span class="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700 ring-1 ring-inset ring-slate-200">Inactive</span>
+                                @elseif($statusKey === 'messages.canceled')
+                                    <span class="inline-flex items-center rounded-full bg-rose-50 px-2 py-0.5 text-xs font-semibold text-rose-700 ring-1 ring-inset ring-rose-200">Canceled</span>
+                                @else
+                                    <span class="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700 ring-1 ring-inset ring-slate-200">Unknown</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center text-sm text-slate-600">No subscriptions found.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <div class="border-t border-slate-200 px-6 py-4">
+            {{ $subscriptions->links() }}
+        </div>
     </div>
 </div>

@@ -7,6 +7,10 @@ use App\Customer;
 use App\Http\Traits\UserTrait;
 use App\Models\Pricing\PriceListItem;
 use App\Models\ProductRequest;
+use App\Notifications\ProductRequestSubmitted;
+use App\Reseller;
+use App\User;
+use Illuminate\Support\Facades\Notification;
 use App\PriceList;
 use App\Product;
 use Livewire\Component;
@@ -74,6 +78,13 @@ class Store extends Component
     public ?string $requestProductSku   = null;
     public ?string $requestNotes        = null;
     public ?string $requestUrgency      = 'normal';
+
+    /**
+     * If the customer has multiple reseller relationships, they can choose
+     * which reseller receives the request.
+     */
+    public ?int $requestResellerId = null;
+    public array $requestResellerOptions = [];
 
     // ── Lifecycle hooks ───────────────────────────────────────────────────────
     public function updatingSearch()  { $this->resetPage(); }
@@ -172,6 +183,28 @@ class Store extends Component
         $this->requestProductSku   = null;
         $this->requestNotes        = null;
         $this->requestUrgency      = 'normal';
+
+        // Preload reseller options for customers with multiple relationships.
+        $this->requestResellerOptions = [];
+        $this->requestResellerId = null;
+
+        $user = Auth::user();
+        if (($user->userLevel->name ?? null) === 'Customer') {
+            $customer = $user->customer;
+            if (! $customer && $user->customer_id) {
+                $customer = Customer::query()->with('resellers')->find($user->customer_id);
+            }
+
+            if ($customer) {
+                $this->requestResellerOptions = $customer->resellers
+                    ->map(fn ($r) => ['id' => $r->id, 'name' => $r->company_name ?? ('Reseller #' . $r->id)])
+                    ->values()
+                    ->toArray();
+
+                $this->requestResellerId = $this->requestResellerOptions[0]['id'] ?? null;
+            }
+        }
+
         $this->showRequestModal    = true;
     }
 
@@ -187,22 +220,56 @@ class Store extends Component
             'requestProductSku'  => 'nullable|string|max:200',
             'requestNotes'       => 'nullable|string|max:2000',
             'requestUrgency'     => 'nullable|in:low,normal,high',
+            'requestResellerId'  => 'nullable|integer',
         ]);
 
         $user = Auth::user();
 
-        ProductRequest::create([
-            'provider_id'   => $user->reseller?->provider_id
-                             ?? $user->provider?->id
-                             ?? null,
-            'reseller_id'   => $user->reseller?->id ?? null,
-            'customer_id'   => $user->customer?->id ?? null,
+        $providerId = $user->reseller?->provider_id ?? $user->provider?->id ?? null;
+        $resellerId = $user->reseller?->id ?? null;
+        $customerId = $user->customer?->id ?? null;
+
+        // Customer flow: resolve reseller/provider from the customer's reseller relationship.
+        if (($user->userLevel->name ?? null) === 'Customer') {
+            $customer = $user->customer;
+            if (! $customer && $user->customer_id) {
+                $customer = Customer::query()->with(['resellers.provider', 'users'])->find($user->customer_id);
+            }
+
+            $customerId = $customer?->id;
+
+            if ($this->requestResellerId) {
+                $resellerId = (int) $this->requestResellerId;
+            } else {
+                $resellerId = $customer?->resellers?->first()?->id;
+            }
+
+            if ($resellerId) {
+                $providerId = Reseller::query()->whereKey($resellerId)->value('provider_id');
+            }
+        }
+
+        $productRequest = ProductRequest::create([
+            'provider_id'   => $providerId,
+            'reseller_id'   => $resellerId,
+            'customer_id'   => $customerId,
             'user_id'       => $user->id,
             'product_name'  => $this->requestProductName,
             'sku'           => $this->requestProductSku,
             'notes'         => $this->requestNotes,
             'urgency'       => $this->requestUrgency ?? 'normal',
         ]);
+
+        // Notify reseller users (badge in bell shows unread count).
+        if ($resellerId) {
+            $resellerUsers = User::query()->where('reseller_id', $resellerId)->get();
+            if ($resellerUsers->isNotEmpty()) {
+                Notification::send($resellerUsers, new ProductRequestSubmitted(
+                    request: $productRequest,
+                    customerName: $productRequest->customer?->company_name ?? $user->email
+                ));
+            }
+        }
 
         $this->showRequestModal   = false;
         $this->requestProductName = null;
@@ -363,9 +430,22 @@ class Store extends Component
 
         try {
             $resolver = app(PriceListResolver::class);
-            return ($level === 'Customer')
-                ? $resolver->resolveForPurchaseByUser($user, $user->customer)
-                : $resolver->resolveForReseller($user);
+
+            if ($level === 'Customer') {
+                // The relationship may not be loaded / may be null even when customer_id is set.
+                $customer = $user->customer;
+                if (! $customer && $user->customer_id) {
+                    $customer = \App\Customer::query()->with('resellers')->find($user->customer_id);
+                }
+
+                if (! $customer) {
+                    throw new \RuntimeException('Customer not found for store price-list resolution');
+                }
+
+                return $resolver->resolveForPurchaseByUser($user, $customer);
+            }
+
+            return $resolver->resolveForReseller($user);
         } catch (\RuntimeException) {
             return null;
         }

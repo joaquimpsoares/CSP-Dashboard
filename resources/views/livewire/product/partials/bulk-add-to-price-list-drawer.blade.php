@@ -10,7 +10,7 @@
     >
         <div class="absolute inset-0 bg-slate-900/30" @click="$wire.closeBulkAddToPriceList()" aria-hidden="true"></div>
 
-        <div class="absolute inset-y-0 right-0 flex w-full max-w-[520px]">
+        <div class="absolute inset-y-0 right-0 flex w-full sm:max-w-lg">
             <div class="flex h-full w-full flex-col bg-white shadow-xl">
                 <div class="sticky top-0 z-10 border-b border-slate-200 bg-white/90 backdrop-blur px-6 py-4">
                     <div class="flex items-start justify-between gap-4">

@@ -29,6 +29,13 @@ class ResellerController extends Controller
         return view('reseller.index');
     }
 
+    public function show(Reseller $reseller, string $slug)
+    {
+        return view('reseller.show', [
+            'reseller' => $reseller,
+        ]);
+    }
+
 
     // public function create() {
 

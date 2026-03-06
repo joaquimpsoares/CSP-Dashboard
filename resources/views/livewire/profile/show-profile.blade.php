@@ -118,11 +118,13 @@
                                             <x-input wire:model="postal_code" type="text" name="postal_code"   class="@error('postal_code') is-invalid @enderror" id='postal_code' ></x-input>
                                             @error('postal_code')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                         </div>
+                                        @if(Auth::user()->userLevel->name == config('app.reseller'))
                                         <div class="col-span-4 sm:col-span-2">
                                             <x-label for="mpnid">{{ucwords(trans_choice('messages.mpnid', 1))}}</x-label>
-                                            <x-input wire:model="mpnid" type="text" name="mpnid"   class="@error('mpnid') is-invalid @enderror" id='mpnid' ></x-input>
-                                                @error('mpnid')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                                            <x-input wire:model="mpnid" type="text" name="mpnid" class="@error('mpnid') is-invalid @enderror" id="mpnid"></x-input>
+                                            @error('mpnid')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                                         </div>
+                                        @endif
                                     </div>
                                     <div class="flex flex-col py-5 mt-3 mb-3 border-t border-gray-200">
                                         <div class="flex self-end">

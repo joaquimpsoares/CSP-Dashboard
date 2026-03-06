@@ -7,6 +7,9 @@
                     {{ $instance->name }}
                     <span class="text-slate-400">•</span>
                     <span class="font-medium text-slate-700">{{ $instance->type ?? '—' }}</span>
+                    @if(($instance->mode ?? 'live') === 'sandbox')
+                        <span class="ml-2 inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-800 ring-1 ring-inset ring-amber-200">Sandbox</span>
+                    @endif
                     @if(method_exists($instance, 'isExpired') && $instance->isExpired())
                         <span class="ml-2 inline-flex items-center rounded-full bg-rose-50 px-2 py-0.5 text-xs font-semibold text-rose-700 ring-1 ring-inset ring-rose-200">Expired</span>
                     @endif
@@ -159,6 +162,28 @@
                                 <span class="text-slate-500">Expires</span>
                                 <span class="font-medium text-slate-900">{{ optional($instance->expires_at)->format('Y-m-d') ?? '—' }}</span>
                             </div>
+
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-500">Mode</span>
+                                <span class="font-medium text-slate-900">{{ strtoupper($instance->mode ?? 'LIVE') }}</span>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-500">Trial ends</span>
+                                <span class="font-medium text-slate-900">{{ optional($instance->trial_ends_at)->format('Y-m-d') ?? '—' }}</span>
+                            </div>
+
+                            @if(($instance->mode ?? 'live') === 'sandbox')
+                                <div class="pt-2">
+                                    <form method="POST" action="{{ route('instances.switch_to_live', $instance->id) }}">
+                                        @csrf
+                                        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-amber-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-700 focus:outline-none focus:ring-4 focus:ring-amber-500/30">
+                                            Switch to Live Mode
+                                        </button>
+                                    </form>
+                                    <p class="mt-2 text-xs text-slate-500">You’ll be prompted to complete checkout. Live mode is activated only after Stripe confirms payment.</p>
+                                </div>
+                            @endif
 
                             @if(isset($expiration))
                                 <div class="flex items-center justify-between">
