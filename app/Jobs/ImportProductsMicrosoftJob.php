@@ -18,6 +18,10 @@ use Modules\MicrosoftCspConnection\Services\OfferService;
 
 class ImportProductsMicrosoftJob implements ShouldQueue
 {
+    public int $tries = 3;
+    public int $timeout = 120;
+    public array $backoff = [30, 120, 300];
+
     public $instance;
     public $country;
 
@@ -89,5 +93,14 @@ class ImportProductsMicrosoftJob implements ShouldQueue
         }
 
         $this->queueProgress(100);
+    }
+
+    public function failed(\Throwable $e): void
+    {
+        \Illuminate\Support\Facades\Log::error(static::class . ' failed permanently', [
+            'error'       => $e->getMessage(),
+            'environment' => property_exists($this, 'environment') ? $this->environment : 'unknown',
+            'instance_id' => property_exists($this, 'instanceId') ? $this->instanceId : null,
+        ]);
     }
 }
