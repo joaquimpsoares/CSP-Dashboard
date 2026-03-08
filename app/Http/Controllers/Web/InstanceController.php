@@ -125,6 +125,12 @@ class InstanceController extends Controller
     */
     public function edit(Instance $instance)
     {
+        // Persist current instance context in session so nav env toggle + scoped queries work.
+        session(['instance_id' => $instance->id]);
+        if (! session()->has('environment')) {
+            session(['environment' => 'live']);
+        }
+
         // Ensure provider relation is available for the sidebar.
         $instance->loadMissing('provider');
 
