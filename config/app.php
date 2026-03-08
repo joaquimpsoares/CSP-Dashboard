@@ -298,4 +298,11 @@ return [
     'subscription_create' => env('SUBSCRIPTION_CREATE'),
     'subscription_edit' => env('SUBSCRIPTION_EDIT'),
     'subscription_delete' => env('SUBSCRIPTION_DELETE'),
+
+    #INSTANCE PERMISSIONS
+    'instances_index'  => env('INSTANCES_INDEX',  'instances.index'),
+    'instances_show'   => env('INSTANCES_SHOW',   'instances.show'),
+    'instances_create' => env('INSTANCES_CREATE', 'instances.create'),
+    'instances_edit'   => env('INSTANCES_EDIT',   'instances.edit'),
+    'instances_delete' => env('INSTANCES_DELETE', 'instances.delete'),
 ];
