@@ -268,33 +268,41 @@ Route::group(['middleware' => 'auth'], function ()
                 return view('pricing.price-lists.show', compact('priceList'));
             })->name('pricing.price_lists.show');
 
-            //Novas rotas carrinho//
-            Route::post('/cart/customer/add', 'CartController@addCustomer')->name('cart.add_customer');
-            Route::post('/cart/customer/change', 'CartController@changeCustomer')->name('cart.change.customer');
-            Route::post('/cart/tenant/change', 'CartController@changeTenant')->name('cart.change.tenant');
-            Route::get('/cart/tenant', 'CartController@continueCheckout')->name('cart.tenant');
-            Route::get('/cart/review', 'CartController@continueCheckout')->name('cart.review');
-            // Route::post('/cart/checkout', 'CartController@checkout')->name('cart.checkout');
-            Route::post('/cart/customer', 'CartController@storeCustomerAndBuy')->middleware('permission:' . config('app.customer_create'))->name('cart.customer.store');
+            // Cart READ — Customer + Reseller
+            Route::middleware(['role:Customer|Reseller'])->group(function () {
+                Route::get('/cart', 'CartController@index')->name('cart.index');
+                Route::get('cart/pending', 'CartController@getPending')->name('cart.pending');
+            });
 
-            Route::get('/cart/checkout', [\App\Http\Livewire\Shop\Checkout ::class, '__invoke'])->name('cart.checkout');
+            // Cart WRITE — Customer only
+            Route::middleware(['role:Customer'])->group(function () {
+                Route::post('/cart/customer/add', 'CartController@addCustomer')->name('cart.add_customer');
+                Route::post('/cart/customer/change', 'CartController@changeCustomer')->name('cart.change.customer');
+                Route::post('/cart/tenant/change', 'CartController@changeTenant')->name('cart.change.tenant');
+                Route::get('/cart/tenant', 'CartController@continueCheckout')->name('cart.tenant');
+                Route::get('/cart/review', 'CartController@continueCheckout')->name('cart.review');
+                // Route::post('/cart/checkout', 'CartController@checkout')->name('cart.checkout');
+                Route::post('/cart/customer', 'CartController@storeCustomerAndBuy')->middleware('permission:' . config('app.customer_create'))->name('cart.customer.store');
+                Route::get('/cart/checkout', [\App\Http\Livewire\Shop\Checkout::class, '__invoke'])->name('cart.checkout');
+                Route::get('cart/item/changeBillingCycle', 'CartController@changeBillingCycle')->name('cart.main_user');
+                Route::get('/cart/customer/mainUser', 'CartController@getMainUser')->name('cart.main_user');
+                Route::post('/cart/product/add', 'CartController@addProductToCart')->name('cart.add_to_cart');
+                Route::get('/cart/item/{id}/quantity/{quantity}', 'CartController@changeProductQuantity');
+                Route::get('/cart/add/product/{product}', 'CartController@addProduct')->name('cart.add_product');
+                Route::get('/cart/remove/item/{item}', 'CartController@removeItem')->name('cart.remove_product');
+                Route::get('/cart/clear', 'CartController@destroy')->name('cart.clear');
+                Route::post('/cart/pending/checkout', 'CartController@pendingCheckout')->name('cart.pending_checkout');
+                Route::get('/cart/checkDomainAvailability', 'CartController@checkDomainAvailability')->name('cart.check_domain_availability');
+                Route::post('/cart/addMCAUser', 'CartController@addMCAUser')->name('cart.add_mca_user');
+                Route::resource('/cart', 'CartController')->except(['index']);
+            });
 
-            //Novas rotas carrinho//
-            Route::get('cart/pending', 'CartController@getPending')->name('cart.pending');
-            Route::get('cart/item/changeBillingCycle', 'CartController@changeBillingCycle')->name('cart.main_user');
-            Route::get('/cart/customer/mainUser', 'CartController@getMainUser')->name('cart.main_user');
-            Route::post('/cart/product/add', 'CartController@addProductToCart')->name('cart.add_to_cart');
-            Route::get('/cart/item/{id}/quantity/{quantity}', 'CartController@changeProductQuantity');
-            Route::get('/cart/add/product/{product}', 'CartController@addProduct')->name('cart.add_product');
-            Route::get('/cart/remove/item/{item}', 'CartController@removeItem')->name('cart.remove_product');
-            Route::get('/cart/clear', 'CartController@destroy')->name('cart.clear');
-            Route::post('/cart/pending/checkout', 'CartController@pendingCheckout')->name('cart.pending_checkout');
-            Route::get('/cart/checkDomainAvailability', 'CartController@checkDomainAvailability')->name('cart.check_domain_availability');
-            Route::post('/cart/addMCAUser', 'CartController@addMCAUser')->name('cart.add_mca_user');
-            Route::resource('/cart', 'CartController');
-            Route::get('/store/categories/{vendor}', 'StoreController@categories')->name('store.categories');
-            Route::get('/store/searchstore/{vendor}/{category}', 'StoreController@searchstore')->name('store.searchstore');
-            Route::resource('/store', 'StoreController');
+            // Store — Customer only
+            Route::middleware(['role:Customer'])->group(function () {
+                Route::get('/store/categories/{vendor}', 'StoreController@categories')->name('store.categories');
+                Route::get('/store/searchstore/{vendor}/{category}', 'StoreController@searchstore')->name('store.searchstore');
+                Route::resource('/store', 'StoreController');
+            });
 
             // Route::get('products/test', 'ProductController@index2');
             Route::get('products/{id}', 'ProductController@show');
