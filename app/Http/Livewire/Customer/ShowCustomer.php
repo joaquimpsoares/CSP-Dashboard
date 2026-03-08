@@ -70,15 +70,12 @@ class ShowCustomer extends Component
 
     public function importSelected(){
         $importCount = collect($this->selected)->count();
-        dd($importCount);
-
 
         try {
             foreach(collect($this->selected) as $row){
                 $subscription = $this->toImport->where('id', $row)->first();
 
                 if($subscription['billingCycle'] == 'one_time'){
-                    dd($subscription);
                     $product = explode(':', $subscription['offerId']);
                     $product = Product::where('sku', $product[0].':'.$product[1])->first();
                 }

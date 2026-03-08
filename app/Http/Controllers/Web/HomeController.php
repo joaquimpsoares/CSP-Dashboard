@@ -61,7 +61,6 @@ class HomeController extends Controller
 
     public function getSubscriptionInfo(Request $request)
     {
-        dd('0s');
         $chatResponse = $request->input('chat_response');
         $result = $this->chatGptService->handleChatGptResponse($chatResponse);
         return response()->json(['result' => $result]);
