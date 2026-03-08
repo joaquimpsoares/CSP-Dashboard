@@ -16,9 +16,11 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('store.index')" :active="request()->routeIs('store.*')">
-                        {{ __('Store') }}
-                    </x-nav-link>
+                    @hasanyrole('Customer')
+                        <x-nav-link :href="route('store.index')" :active="request()->routeIs('store.*')">
+                            {{ __('Store') }}
+                        </x-nav-link>
+                    @endhasanyrole
 
                     @role('Super Admin|Admin')
                         <x-nav-link :href="route('provider.index')" :active="request()->routeIs('provider.*')">
@@ -37,12 +39,6 @@
                             {{ __('Customers') }}
                         </x-nav-link>
                     @endcan
-
-                    @hasanyrole('Super Admin|Admin|Provider')
-                        <x-nav-link :href="route('instances.index')" :active="request()->routeIs('instances.*')">
-                            {{ __('Instances') }}
-                        </x-nav-link>
-                    @endhasanyrole
 
                     <x-nav-link :href="route('subscription.index')" :active="request()->routeIs('subscription.*')">
                         {{ __('Subscriptions') }}
@@ -194,6 +190,7 @@
                                 <div>
                                     <div class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Infrastructure</div>
                                     <div class="space-y-1">
+                                        @can(config('app.instances_index'))
                                         <a href="{{ route('instances.index') }}" class="group flex gap-3 rounded-xl p-3 hover:bg-slate-50">
                                             <div class="mt-0.5 text-slate-500 group-hover:text-slate-700">
                                                 <!-- Link -->
@@ -207,6 +204,7 @@
                                                 <div class="mt-0.5 text-xs text-slate-600">Partner Center connections</div>
                                             </div>
                                         </a>
+                                        @endcan
 
                                         <a href="{{ route('jobs.pending') }}" class="group flex gap-3 rounded-xl p-3 hover:bg-slate-50">
                                             <div class="mt-0.5 text-slate-500 group-hover:text-slate-700">
@@ -422,11 +420,11 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
-            @hasanyrole('Super Admin|Admin|Provider')
+            @can(config('app.instances_index'))
                 <x-responsive-nav-link :href="route('instances.index')" :active="request()->routeIs('instances.*')">
                     {{ __('Instances') }}
                 </x-responsive-nav-link>
-            @endhasanyrole
+            @endcan
         </div>
 
         <!-- Responsive Settings Options -->
