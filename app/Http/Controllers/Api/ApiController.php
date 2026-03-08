@@ -154,7 +154,6 @@ abstract class ApiController extends Controller
      */
     public function errorForbidden($message = 'Forbidden')
     {
-        var_dump("eerror");
         return $this->setStatusCode(403)
             ->respondWithError($message);
     }

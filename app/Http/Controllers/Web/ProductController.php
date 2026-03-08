@@ -203,7 +203,6 @@ class ProductController extends Controller
 
             // external_token refresh removed — credentials are DB-per-provider via MicrosoftCspConnection.
 
-            dd('l');
             ImportProductsMicrosoftJob::dispatch($instance, $order, $country->iso_3166_2)->onQueue('SyncProducts')
                 ->delay(now()->addSeconds(10));
             }
