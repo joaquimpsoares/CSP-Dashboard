@@ -21,6 +21,10 @@ use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
 
 class CreateMigrationJob implements ShouldQueue
 {
+    public int $tries = 3;
+    public int $timeout = 120;
+    public array $backoff = [30, 120, 300];
+
     public $subscription;
     public $amount;
     public $billing_period;

@@ -20,6 +20,10 @@ use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
 
 class ImportProductsNECMicrosoftJob implements ShouldQueue
 {
+    public int $tries = 3;
+    public int $timeout = 120;
+    public array $backoff = [30, 120, 300];
+
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IsMonitored;
 
     public $instance;
@@ -118,5 +122,14 @@ class ImportProductsNECMicrosoftJob implements ShouldQueue
         }
 
         $this->queueProgress(100);
+    }
+
+    public function failed(\Throwable $e): void
+    {
+        \Illuminate\Support\Facades\Log::error(static::class . ' failed permanently', [
+            'error'       => $e->getMessage(),
+            'environment' => property_exists($this, 'environment') ? $this->environment : 'unknown',
+            'instance_id' => property_exists($this, 'instanceId') ? $this->instanceId : null,
+        ]);
     }
 }
