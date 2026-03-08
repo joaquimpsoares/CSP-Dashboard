@@ -22,6 +22,7 @@ use Modules\MicrosoftCspConnection\Services\MicrosoftCspClient;
 use Modules\MicrosoftCspConnection\Services\CustomerService;
 use Modules\MicrosoftCspConnection\Services\OfferService;
 use Modules\MicrosoftCspConnection\Services\OrderService;
+use App\Services\McaAttestationService;
 
 class PlaceOrderMicrosoft implements ShouldQueue
 {
@@ -67,6 +68,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
         $customerSvc   = new CustomerService($client);
         $offerService  = new OfferService($client);
         $orderService  = new OrderService($client);
+        $mcaSvc        = new McaAttestationService($client);
 
         // Verify the customer exists in Partner Center
         try {
@@ -139,6 +141,13 @@ class PlaceOrderMicrosoft implements ShouldQueue
 
         // Create and checkout the cart
         try {
+            if (!$mcaSvc->isAccepted($customerId)) {
+                throw new \Exception(
+                    'MCA not accepted for this customer. The Microsoft Customer Agreement must be attested before placing orders.',
+                    600046
+                );
+            }
+
             $cart = $orderService->createCart($customerId, $lineItems);
             Log::info('Cart created: ' . json_encode($cart));
 
