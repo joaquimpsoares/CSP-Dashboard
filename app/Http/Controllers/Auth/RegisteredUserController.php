@@ -37,20 +37,17 @@ class RegisteredUserController extends Controller
             'terms_accepted' => ['required', 'accepted'],
         ]);
 
-        // Resolve Provider user level — avoids FK violation on users.user_level_id
+        // Resolve Provider user level — must be set in the INSERT itself to avoid FK violation
         $providerLevelId = \App\UserLevel::where('name', config('app.provider'))->value('id');
 
-        $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        // Set user_level_id separately (User model has no $fillable)
-        $user->forceFill([
+        $user = (new User())->forceFill([
+            'name'             => $request->name,
+            'email'            => $request->email,
+            'password'         => Hash::make($request->password),
             'user_level_id'    => $providerLevelId,
             'terms_accepted_at' => now(),
-        ])->save();
+        ]);
+        $user->save();
 
         // Create a Provider record (pending) and link it to this user
         $provider = \App\Provider::create([
