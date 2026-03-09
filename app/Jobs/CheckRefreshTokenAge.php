@@ -14,6 +14,10 @@ use Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection;
 
 class CheckRefreshTokenAge implements ShouldQueue
 {
+    public int $tries = 3;
+    public int $timeout = 120;
+    public array $backoff = [30, 120, 300];
+
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
@@ -52,5 +56,14 @@ class CheckRefreshTokenAge implements ShouldQueue
                 });
             }
         }
+    }
+
+    public function failed(\Throwable $e): void
+    {
+        \Illuminate\Support\Facades\Log::error(static::class . ' failed permanently', [
+            'error'       => $e->getMessage(),
+            'environment' => property_exists($this, 'environment') ? $this->environment : 'unknown',
+            'instance_id' => property_exists($this, 'instanceId') ? $this->instanceId : null,
+        ]);
     }
 }

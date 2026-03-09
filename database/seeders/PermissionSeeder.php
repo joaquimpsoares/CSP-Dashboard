@@ -48,6 +48,8 @@ class PermissionSeeder extends Seeder
         $providerPermissions = [];
         $priceListPermissions = [];
         $subscriptionPermissions = [];
+        $instancePermissions = [];
+        $instanceDeletePermissions = [];
 
         // Super-only permission(s)
         $superPermissions[] = $p(config('app.manage_roles'));
@@ -96,14 +98,25 @@ class PermissionSeeder extends Seeder
         $subscriptionPermissions[] = $p(config('app.subscription_edit'));
         $subscriptionPermissions[] = $p(config('app.subscription_delete'));
 
+        // Instance permissions (Super Admin, Admin, Provider only — not Reseller, Sub Reseller, Customer)
+        $instancePermissions[] = $p(config('app.instances_index'));
+        $instancePermissions[] = $p(config('app.instances_show'));
+        $instancePermissions[] = $p(config('app.instances_create'));
+        $instancePermissions[] = $p(config('app.instances_edit'));
+
+        // instances.delete — Super Admin (via Gate::before) and Provider only; Admin excluded
+        $instanceDeletePermissions[] = $p(config('app.instances_delete'));
+
         // Remove nulls in case some config keys are missing
-        $superPermissions        = array_values(array_filter($superPermissions));
-        $permissions             = array_values(array_filter($permissions));
-        $customerPermissions     = array_values(array_filter($customerPermissions));
-        $resellerPermissions     = array_values(array_filter($resellerPermissions));
-        $providerPermissions     = array_values(array_filter($providerPermissions));
-        $priceListPermissions    = array_values(array_filter($priceListPermissions));
-        $subscriptionPermissions = array_values(array_filter($subscriptionPermissions));
+        $superPermissions          = array_values(array_filter($superPermissions));
+        $permissions               = array_values(array_filter($permissions));
+        $customerPermissions       = array_values(array_filter($customerPermissions));
+        $resellerPermissions       = array_values(array_filter($resellerPermissions));
+        $providerPermissions       = array_values(array_filter($providerPermissions));
+        $priceListPermissions      = array_values(array_filter($priceListPermissions));
+        $subscriptionPermissions   = array_values(array_filter($subscriptionPermissions));
+        $instancePermissions       = array_values(array_filter($instancePermissions));
+        $instanceDeletePermissions = array_values(array_filter($instanceDeletePermissions));
 
         // Assign permissions to roles
         $superAdminRole->givePermissionTo(array_merge(
@@ -112,7 +125,9 @@ class PermissionSeeder extends Seeder
             $customerPermissions,
             $resellerPermissions,
             $providerPermissions,
-            $priceListPermissions
+            $priceListPermissions,
+            $instancePermissions,
+            $instanceDeletePermissions
         ));
 
         $adminRole->givePermissionTo(array_merge(
@@ -121,7 +136,8 @@ class PermissionSeeder extends Seeder
             $resellerPermissions,
             $providerPermissions,
             $priceListPermissions,
-            $subscriptionPermissions
+            $subscriptionPermissions,
+            $instancePermissions        // Admin: index/show/create/edit but NOT delete
         ));
 
         $providerRole->givePermissionTo(array_merge(
@@ -129,7 +145,9 @@ class PermissionSeeder extends Seeder
             $resellerPermissions,
             $providerPermissions,
             $priceListPermissions,
-            $subscriptionPermissions
+            $subscriptionPermissions,
+            $instancePermissions,       // Provider: index/show/create/edit
+            $instanceDeletePermissions  // Provider: also delete
         ));
 
         $resellerRole->givePermissionTo(array_merge(

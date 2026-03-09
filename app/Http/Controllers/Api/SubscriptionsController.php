@@ -44,7 +44,6 @@ class SubscriptionsController extends ApiController
     public function update(Request $request, Subscription $subscription)
     {
 
-        dd( $request->all());
         // $subscription = Subscription::find($id)->first();
 
 

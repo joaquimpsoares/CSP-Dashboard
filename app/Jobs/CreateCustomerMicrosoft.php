@@ -24,6 +24,10 @@ use Modules\MicrosoftCspConnection\Services\CustomerService;
 
 class CreateCustomerMicrosoft implements ShouldQueue
 {
+    public int $tries = 3;
+    public int $timeout = 120;
+    public array $backoff = [30, 120, 300];
+
     public $order;
 
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IsMonitored;
@@ -48,7 +52,7 @@ class CreateCustomerMicrosoft implements ShouldQueue
 
         // Resolve CSP connection for this provider
         $connection = MicrosoftCspConnection::where('provider_id', $instance->provider_id)->firstOrFail();
-        $client          = new MicrosoftCspClient($connection, config('microsoftcspconnection'));
+        $client          = new MicrosoftCspClient($connection, config('microsoftcspconnection'), $this->order->environment);
         $customerService = new CustomerService($client);
 
         try {
@@ -100,5 +104,14 @@ class CreateCustomerMicrosoft implements ShouldQueue
         $this->order->save();
 
         session()->flash('success', 'Customer created successfully in Partner Center');
+    }
+
+    public function failed(\Throwable $e): void
+    {
+        \Illuminate\Support\Facades\Log::error(static::class . ' failed permanently', [
+            'error'       => $e->getMessage(),
+            'environment' => property_exists($this, 'environment') ? $this->environment : 'unknown',
+            'instance_id' => property_exists($this, 'instanceId') ? $this->instanceId : null,
+        ]);
     }
 }
