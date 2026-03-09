@@ -76,23 +76,25 @@ class UserRepository implements UserRepositoryInterface
         if (!empty($user) && !empty($type) && !empty($model)) {
 
             $user = [
-                'email'             => $user['email'],
-                'name'              => $user['name'],
-                'last_name'         => $user['last_name'],
-                'address'           => $user['address'],
-                'phone'             => $user['phone'],
-                'country_id'        => $user['country_id'],
-                'socialite_id'      => $user['socialite_id'],
-                'password'          => Hash::make($user['password']),
-                'user_level_id'     => '6',
-                'notify'            => $user['sendInvitation'] ?? false,
-                'status_id'         => $user['status'],
+                'email'                     => $user['email'],
+                'name'                      => $user['name'],
+                'last_name'                 => $user['last_name'],
+                'address'                   => $user['address'],
+                'phone'                     => $user['phone'],
+                'country_id'                => $user['country_id'],
+                'socialite_id'              => $user['socialite_id'],
+                'password'                  => Hash::make($user['password']),
+                'user_level_id'             => '6',
+                'notify'                    => $user['sendInvitation'] ?? false,
+                'status_id'                 => $user['status'],
+                'notifications_preferences' => 1,
             ];
 
             switch ($type) {
                 case 'Super Admin':
 
-                    $newUser = User::create($user);
+                    $newUser = (new User())->forceFill($user);
+                    $newUser->save();
 
                     $newUser->assignRole($role->name);
 
@@ -101,10 +103,10 @@ class UserRepository implements UserRepositoryInterface
 
                     $user['provider_id'] = $model->id;
 
-                    $newUser = User::create($user);
+                    $newUser = (new User())->forceFill($user);
+                    $newUser->save();
 
                     $newUser->assignRole($role->name);
-
 
                     break;
 
@@ -113,10 +115,10 @@ class UserRepository implements UserRepositoryInterface
                     $resellerLevel = UserLevel::where('name', config('app.reseller'))->first();
 
                     $user['user_level_id'] = $resellerLevel->id;
+                    $user['reseller_id']   = $model->id;
 
-                    $user['reseller_id'] = $model->id;
-
-                    $newUser = User::create($user);
+                    $newUser = (new User())->forceFill($user);
+                    $newUser->save();
 
                     $newUser->assignRole($role->name);
 
@@ -126,10 +128,10 @@ class UserRepository implements UserRepositoryInterface
 
                     $customerLevel = UserLevel::where('name', config('app.customer'))->first();
                     $user['user_level_id'] = $customerLevel->id;
+                    $user['customer_id']   = $model->id;
 
-                    $user['customer_id'] = $model->id;
-
-                    $newUser = User::create($user);
+                    $newUser = (new User())->forceFill($user);
+                    $newUser->save();
 
                     $newUser->assignRole(config('app.customer'));
 
