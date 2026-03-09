@@ -81,8 +81,12 @@ class RegisteredUserController extends Controller
         ]);
         $user->forceFill(['provider_id' => $provider->id])->save();
 
-        // Assign Spatie Provider role so middleware/scopes work from first login
-        $user->assignRole('Provider');
+        // Assign Provider role — roles in this DB have guard_name = '', so we look up
+        // the model directly and attach it to avoid Spatie's guard mismatch check.
+        $role = \App\Role::where('name', config('app.provider'))->first();
+        if ($role) {
+            $user->roles()->attach($role->id);
+        }
 
         event(new Registered($user));
 
