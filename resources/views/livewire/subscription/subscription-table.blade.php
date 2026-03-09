@@ -3,10 +3,24 @@
         <div class="p-4 overflow-hidden bg-white">
             <div class="relative pb-0 border-b border-gray-200 sm:pb-0">
                 <div class="md:flex md:items-center md:justify-between">
-                    <h3 class="text-lg font-medium leading-6 text-gray-900">
-                        {{ ucwords(trans_choice('messages.subscription_table', 2)) }}
-                    </h3>
+                    <div>
+                        <h3 class="text-lg font-medium leading-6 text-gray-900">
+                            {{ ucwords(trans_choice('messages.subscription_table', 2)) }}
+                        </h3>
+                        @if(session('est_check_queued'))
+                            <div class="mt-1 text-xs text-green-700">{{ session('est_check_queued') }}</div>
+                        @endif
+                    </div>
                     <div class="flex mt-3 md:mt-0 md:absolute md:top-3 md:right-0">
+                        @can(config('app.subscription_index'))
+                        <form method="POST" action="{{ route('subscriptions.est-risk.check') }}" class="mr-2">
+                            @csrf
+                            <button type="submit"
+                                class="inline-flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100 transition">
+                                &#9888; Check EST Risk
+                            </button>
+                        </form>
+                        @endcan
                         <div class="flex justify-center flex-1 lg:justify-end">
                             <!-- Search section -->
                             <div class="w-full max-w-lg lg:max-w-xs">
