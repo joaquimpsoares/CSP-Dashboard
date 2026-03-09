@@ -41,11 +41,12 @@ class RegisteredUserController extends Controller
         $providerLevelId = \App\UserLevel::where('name', config('app.provider'))->value('id');
 
         $user = (new User())->forceFill([
-            'name'             => $request->name,
-            'email'            => $request->email,
-            'password'         => Hash::make($request->password),
-            'user_level_id'    => $providerLevelId,
-            'terms_accepted_at' => now(),
+            'name'                     => $request->name,
+            'email'                    => $request->email,
+            'password'                 => Hash::make($request->password),
+            'user_level_id'            => $providerLevelId,
+            'terms_accepted_at'        => now(),
+            'notifications_preferences' => 1,
         ]);
         $user->save();
 
