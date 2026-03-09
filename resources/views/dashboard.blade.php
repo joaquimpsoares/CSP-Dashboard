@@ -20,7 +20,9 @@
                     ::where('provider_id', $obProvider?->id)
                     ->whereNotNull('consented_at')
                     ->exists();
-                $hasCustomer = \App\Customer::where('provider_id', $obProvider?->id ?? 0)->exists();
+                $hasCustomer = \App\Customer::whereHas('resellers', function ($q) use ($obProvider) {
+                    $q->where('provider_id', $obProvider?->id ?? 0);
+                })->exists();
                 $hasTeamMember = \App\Models\User::where('provider_id', $obProvider?->id ?? 0)
                     ->where('id', '!=', $obUser?->id)->exists();
                 $allDone = $hasInstance && $hasCustomer && $hasTeamMember;
