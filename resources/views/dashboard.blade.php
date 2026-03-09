@@ -13,6 +13,54 @@
     <div class="py-10">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
 
+            @php
+                $obUser     = auth()->user();
+                $obProvider = $obUser?->provider;
+                $hasInstance = \Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection
+                    ::where('provider_id', $obProvider?->id)
+                    ->whereNotNull('consented_at')
+                    ->exists();
+                $hasCustomer = \App\Customer::where('provider_id', $obProvider?->id ?? 0)->exists();
+                $hasTeamMember = \App\Models\User::where('provider_id', $obProvider?->id ?? 0)
+                    ->where('id', '!=', $obUser?->id)->exists();
+                $allDone = $hasInstance && $hasCustomer && $hasTeamMember;
+            @endphp
+
+            @if(!$allDone && ($obUser->onboarding_step ?? 0) >= 3)
+            <div class="mb-6 rounded-2xl border border-blue-100 bg-blue-50 p-6">
+                <h3 class="text-sm font-semibold text-blue-900 mb-4">Getting started — complete your setup</h3>
+                <div class="space-y-3">
+                    @php
+                    $obSteps = [
+                        ['done' => true,         'label' => 'Create your account',               'link' => null],
+                        ['done' => true,         'label' => 'Verify your email',                 'link' => null],
+                        ['done' => true,         'label' => 'Select a plan',                     'link' => null],
+                        ['done' => $hasInstance, 'label' => 'Connect Microsoft Partner Center',  'link' => route('instances.index')],
+                        ['done' => $hasCustomer, 'label' => 'Add your first customer',           'link' => route('customer.index')],
+                        ['done' => $hasTeamMember,'label'=> 'Invite a team member',              'link' => null],
+                    ];
+                    @endphp
+                    @foreach($obSteps as $obStep)
+                    <div class="flex items-center gap-3">
+                        @if($obStep['done'])
+                            <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600 text-xs font-bold">✓</span>
+                            <span class="text-sm text-gray-400 line-through">{{ $obStep['label'] }}</span>
+                        @else
+                            <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-blue-300 text-blue-400 text-xs">○</span>
+                            @if($obStep['link'])
+                                <a href="{{ $obStep['link'] }}" class="text-sm text-blue-700 font-medium hover:text-blue-900">
+                                    {{ $obStep['label'] }} →
+                                </a>
+                            @else
+                                <span class="text-sm text-gray-700">{{ $obStep['label'] }}</span>
+                            @endif
+                        @endif
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
             <!-- Metric cards -->
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 @if(($userLevel ?? null) !== config('app.customer'))

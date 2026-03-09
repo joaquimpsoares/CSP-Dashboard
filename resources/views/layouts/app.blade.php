@@ -43,6 +43,26 @@
                 </div>
             @endif
 
+            @php
+                $showPcBanner = auth()->check()
+                    && auth()->user()->hasRole(['PROVIDER', 'Provider'])
+                    && auth()->user()->onboarding_step >= 3
+                    && !\Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection::where('provider_id', auth()->user()->provider?->id)
+                        ->whereNotNull('consented_at')
+                        ->exists();
+            @endphp
+            @if($showPcBanner ?? false)
+            <div class="border-b border-amber-200 bg-amber-50 px-4 py-2.5 flex items-center justify-between text-sm">
+                <span class="text-amber-800 font-medium">
+                    &#9888; Connect your Microsoft Partner Center account to start managing subscriptions.
+                </span>
+                <a href="{{ route('instances.index') }}"
+                   class="ml-4 rounded-md bg-amber-600 px-3 py-1 text-white text-xs font-semibold hover:bg-amber-700 transition">
+                    Connect now
+                </a>
+            </div>
+            @endif
+
             @include('layouts.navigation')
 
             <!-- Page Heading -->
