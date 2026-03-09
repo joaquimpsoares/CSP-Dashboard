@@ -68,7 +68,7 @@ class PlaceOrderMicrosoft implements ShouldQueue
 
         // Resolve CSP connection for this provider
         $connection    = MicrosoftCspConnection::where('provider_id', $instance->provider_id)->firstOrFail();
-        $client        = new MicrosoftCspClient($connection, config('microsoftcspconnection'));
+        $client        = new MicrosoftCspClient($connection, config('microsoftcspconnection'), $this->order->environment);
         $customerSvc   = new CustomerService($client);
         $offerService  = new OfferService($client);
         $orderService  = new OrderService($client);
