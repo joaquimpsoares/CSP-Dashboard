@@ -168,6 +168,18 @@ class MicrosoftCspClient
             }
         }
 
+        // Warn when the ms-mfa-validation header is absent — mandatory from April 1 2026.
+        if (empty($response->getHeaderLine('ms-mfa-validation'))) {
+            Log::warning(
+                '[PartnerCenter] MFA validation header absent — action required before April 1 2026',
+                [
+                    'path'   => $path,
+                    'method' => $method,
+                    'status' => $response->getStatusCode(),
+                ]
+            );
+        }
+
         $body = (string) $response->getBody();
 
         return $body !== '' ? (array) json_decode($body, true) : [];
