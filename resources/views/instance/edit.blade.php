@@ -196,6 +196,66 @@
                 </div>
             </div>
 
+            @if(($instance->type ?? '') === 'Microsoft' && isset($connection))
+                <div class="rounded-2xl border border-amber-200 bg-amber-50/60 shadow-sm">
+                    <div class="border-b border-amber-200 px-6 py-4">
+                        <h3 class="text-base font-semibold text-slate-900">Sandbox Credentials</h3>
+                        <p class="mt-1 text-sm text-slate-600">
+                            Microsoft Partner Center sandbox tenant credentials. These are used when the environment toggle is set to <span class="font-medium text-amber-700">Sandbox</span>.
+                        </p>
+                    </div>
+
+                    <form method="POST" action="{{ route('instances.sandbox.update', $instance->id) }}" class="px-6 py-6">
+                        @csrf
+                        @method('PATCH')
+
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700" for="sandbox_tenant_id">Sandbox Tenant ID</label>
+                                <input id="sandbox_tenant_id" name="sandbox_tenant_id" type="text"
+                                       value="{{ old('sandbox_tenant_id', $connection->sandbox_tenant_id ?? '') }}"
+                                       placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                                       class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700" for="sandbox_client_id">Sandbox Client ID</label>
+                                <input id="sandbox_client_id" name="sandbox_client_id" type="text"
+                                       value="{{ old('sandbox_client_id', $connection->sandbox_client_id ?? '') }}"
+                                       placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                                       class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700" for="sandbox_client_secret">Sandbox Client Secret</label>
+                                <input id="sandbox_client_secret" name="sandbox_client_secret" type="password"
+                                       value="{{ old('sandbox_client_secret') }}"
+                                       placeholder="{{ $connection->sandbox_client_secret ? '••••••••' : 'Enter secret' }}"
+                                       autocomplete="new-password"
+                                       class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20">
+                                <p class="mt-1 text-xs text-slate-500">Leave blank to keep the current secret. Stored encrypted.</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700" for="sandbox_refresh_token">Sandbox Refresh Token</label>
+                                <input id="sandbox_refresh_token" name="sandbox_refresh_token" type="password"
+                                       value="{{ old('sandbox_refresh_token') }}"
+                                       placeholder="{{ $connection->sandbox_refresh_token ? '••••••••' : 'Enter token' }}"
+                                       autocomplete="new-password"
+                                       class="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20">
+                                <p class="mt-1 text-xs text-slate-500">Leave blank to keep the current token. Stored encrypted.</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex items-center justify-end gap-2 border-t border-amber-200 pt-6">
+                            <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-700 focus:outline-none focus:ring-4 focus:ring-amber-500/30">
+                                Save sandbox credentials
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            @endif
+
         </div>
     </div>
 </x-app-layout>
