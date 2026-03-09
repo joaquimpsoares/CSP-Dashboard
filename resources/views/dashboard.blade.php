@@ -34,6 +34,30 @@
                     <div class="mt-2 text-3xl font-semibold tracking-tight text-slate-900">{{ number_format($metrics['orders'] ?? 0) }}</div>
                     <div class="mt-2 text-xs text-slate-500">{{ (($userLevel ?? null) === config('app.customer')) ? 'Your orders' : 'Total orders created' }}</div>
                 </div>
+
+                @php
+                    $estRiskCount = \App\Subscription::withoutGlobalScopes()
+                        ->where('est_risk', true)
+                        ->where('environment', session('environment', 'live'))
+                        ->count();
+                @endphp
+
+                @if($estRiskCount > 0)
+                <div class="rounded-2xl border border-red-200 bg-red-50 px-6 py-5 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-semibold text-red-700">EST Risk</span>
+                        <span class="flex h-2.5 w-2.5 rounded-full bg-red-500"></span>
+                    </div>
+                    <div class="text-3xl font-bold text-red-900">{{ $estRiskCount }}</div>
+                    <div class="mt-1 text-xs text-red-600">
+                        Subscription(s) at risk of EST auto-enrollment on Apr 1
+                    </div>
+                    <a href="{{ route('subscription.index') }}"
+                        class="mt-3 inline-flex items-center text-xs font-medium text-red-700 hover:text-red-900">
+                        Review now &rarr;
+                    </a>
+                </div>
+                @endif
             </div>
 
             <!-- Recent activity -->
