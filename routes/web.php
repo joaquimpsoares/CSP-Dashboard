@@ -111,6 +111,10 @@ Route::group(['middleware' => 'auth'], function ()
 
             Route::get('/instances/getMasterToken/{provider_id}', 'InstanceController@getMasterToken')->name('instances.getMasterToken');
 
+            Route::patch('/instances/{instance}/sandbox', 'InstanceSandboxController@update')
+                ->middleware('can:' . config('app.instances_edit'))
+                ->name('instances.sandbox.update');
+
             // Route::get('/reseller/create', 'ResellerController@create')
             // ->middleware('permission:' . config('app.reseller_create'))->name('reseller.create');
 
