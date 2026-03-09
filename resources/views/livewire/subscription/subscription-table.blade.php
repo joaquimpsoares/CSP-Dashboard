@@ -150,6 +150,9 @@
                                                         @if($subscription->autorenew == 0)
                                                         <span class="flex-shrink-0 inline-block ml-1 px-2 py-0.5 text-red-800 text-xs font-medium bg-red-100 rounded-full">{{ ucwords(trans_choice('messages.no_autorenew', 1)) }}</span>
                                                         @endif
+                                                        @if($subscription->est_risk)
+                                                        <span class="inline-flex items-center gap-1 rounded-full bg-red-100 border border-red-200 px-2 py-0.5 text-xs font-semibold text-red-700 ml-1">&#9888; EST Risk</span>
+                                                        @endif
                                                     </span>
                                                 </div>
                                             </a>
