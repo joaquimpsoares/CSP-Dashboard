@@ -41,6 +41,17 @@ class Kernel extends ConsoleKernel
 
         // Weekly check for idle SAM refresh tokens stored directly in DB (warn at 75 days).
         $schedule->job(new \App\Jobs\CheckRefreshTokenAge())->weekly();
+
+        // Daily EST risk check — flags NCE subscriptions at risk of auto-enrollment (April 1 2026 deadline).
+        $schedule->job(new \App\Jobs\CheckSubscriptionEstRiskJob('live'))
+                 ->dailyAt('06:00')
+                 ->name('est-guard-live')
+                 ->withoutOverlapping();
+
+        $schedule->job(new \App\Jobs\CheckSubscriptionEstRiskJob('sandbox'))
+                 ->dailyAt('06:05')
+                 ->name('est-guard-sandbox')
+                 ->withoutOverlapping();
     }
 
     /**

@@ -165,6 +165,11 @@ Route::group(['middleware' => 'auth'], function ()
             Route::post('/customer', 'CustomerController@store')->middleware('permission:' . config('app.customer_create'))->name('customer.store');
             Route::get('/customer', 'CustomerController@index')->middleware('permission:' . config('app.customer_index'))->name('customer.index');
 
+            // EST Guard — manual trigger for Provider users
+            Route::post('/subscriptions/check-est-risk', 'Web\EstGuardController@trigger')
+                ->name('subscriptions.est-risk.check')
+                ->middleware(['can:' . config('app.subscription_index')]);
+
             // Subscription guardrail endpoints (NCE policy + scheduling)
             Route::post('/subscriptions/{subscription}/validate-change', [\App\Http\Controllers\Web\SubscriptionChangeController::class, 'validateChange'])
                 ->middleware(['auth'])
