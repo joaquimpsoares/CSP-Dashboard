@@ -87,5 +87,6 @@ class Kernel extends HttpKernel
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         'check_customer' => \App\Http\Middleware\CheckCustomer::class,
         'check_provider' => \App\Http\Middleware\CheckProvider::class,
+        'onboarding'     => \App\Http\Middleware\EnsureOnboardingComplete::class,
     ];
 }
