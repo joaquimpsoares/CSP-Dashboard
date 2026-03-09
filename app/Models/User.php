@@ -2,6 +2,13 @@
 
 namespace App\Models;
 
+use App\Provider;
+use App\Reseller;
+use App\Customer;
+use App\UserLevel;
+use App\Order;
+use App\Status;
+use App\News;
 use Laravel\Sanctum\HasApiTokens;
 use Webpatser\Countries\Countries;
 use Spatie\Permission\Traits\HasRoles;
