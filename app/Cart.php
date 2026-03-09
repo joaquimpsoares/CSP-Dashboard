@@ -3,12 +3,14 @@
 namespace App;
 
 use App\Http\Traits\UserTrait;
+use App\Models\Traits\HasInstanceEnvironment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class Cart extends Model
 {
     use UserTrait;
+    use HasInstanceEnvironment;
 
     public function __construct($user_id = null)
     {

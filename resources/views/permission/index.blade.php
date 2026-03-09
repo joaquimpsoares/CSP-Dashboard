@@ -1,111 +1,98 @@
-@extends('layouts.master')
+<x-app-layout>
+    <x-slot name="header">
+        <div>
+            <h2 class="text-xl font-semibold tracking-tight text-slate-900">Permissions</h2>
+            <p class="mt-1 text-sm text-slate-600">Manage role → permission assignments.</p>
+        </div>
+    </x-slot>
 
-@section('page-title', __('Permissions'))
-@section('page-heading', __('Permissions'))
+    <div class="py-10">
+        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            @include('partials.messages')
 
-@section ('breadcrumbs')
-    <li class="breadcrumb-item active">
-        @lang('Permissions')
-    </li>
-@stop
+            <form method="POST" action="{{ route('permissions.save') }}" class="space-y-6">
+                @csrf
 
-@section('content')
+                <div class="rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    <div class="border-b border-slate-200 px-6 py-4 flex items-center justify-between gap-4">
+                        <div>
+                            <div class="text-sm font-semibold text-slate-900">Roles & Permissions</div>
+                            <div class="mt-0.5 text-xs text-slate-600">Tick permissions per role, then save.</div>
+                        </div>
 
-@include('partials.messages')
+                        <a href="{{ route('permissions.create') }}"
+                           class="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-500/30">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                            </svg>
+                            Add Permission
+                        </a>
+                    </div>
 
-{!! Form::open(['route' => 'permissions.save', 'class' => 'mb-4']) !!}
+                    <div class="p-6">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Name</th>
+                                        @foreach ($roles as $role)
+                                            <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-600">{{ $role->name }}</th>
+                                        @endforeach
+                                        <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-600">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 bg-white">
+                                    @if (count($permissions))
+                                        @foreach ($permissions as $permission)
+                                            <tr>
+                                                <td class="px-4 py-3 text-sm text-slate-900">
+                                                    <div class="font-medium">{{ $permission->display_name ?: $permission->name }}</div>
+                                                    <div class="mt-0.5 text-xs text-slate-500">{{ $permission->name }}</div>
+                                                </td>
 
-<div class="card">
-    <div class="card-body">
+                                                @foreach ($roles as $role)
+                                                    <td class="px-4 py-3 text-center">
+                                                        <div class="inline-flex items-center justify-center">
+                                                            <input
+                                                                type="checkbox"
+                                                                name="roles[{{ $role->id }}][]"
+                                                                value="{{ $permission->id }}"
+                                                                class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
+                                                                id="cb-{{ $role->id }}-{{ $permission->id }}"
+                                                                @checked($role->hasPermissionTo($permission->name))
+                                                            >
+                                                        </div>
+                                                    </td>
+                                                @endforeach
 
-        <div class="pb-3 mb-3 row border-bottom-light">
-            <div class="col-lg-12">
-                <div class="float-right">
-                    <a href="{{ route('permissions.create') }}" class="btn btn-primary btn-rounded">
-                        <i class="mr-2 fas fa-plus"></i>
-                        @lang('Add Permission')
-                    </a>
+                                                <td class="px-4 py-3 text-center">
+                                                    <a href="{{ route('permissions.edit', $permission) }}"
+                                                       class="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                                                        Edit
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="{{ 2 + count($roles) }}" class="px-4 py-8 text-center text-sm text-slate-600">No records found.</td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="table-responsive" id="users-table-wrapper">
-            <table class="table table-striped table-borderless">
-                <thead>
-                    <tr>
-                        <th class="min-width-200">@lang('Name')</th>
-                        @foreach ($roles as $role)
-                            <th class="text-center">{{ $role->name }}</th>
-                        @endforeach
-                        <th class="text-center min-width-100">@lang('Action')</th>
-                    </tr>
-                </thead>
-                <tbody>
                 @if (count($permissions))
-                    @foreach ($permissions as $permission)
-                        <tr>
-                            <td>{{ $permission->display_name ?: $permission->name }}</td>
-
-                            @foreach ($roles as $role)
-                                <td class="text-center">
-                                    <div class="custom-control custom-checkbox">
-                                        {!!
-                                            Form::checkbox(
-                                                "roles[{$role->id}][]",
-                                                $permission->id,
-                                                $role->hasPermissionTo($permission->name),
-                                                [
-                                                    'class' => 'custom-control-input',
-                                                    'id' => "cb-{$role->id}-{$permission->id}"
-                                                ]
-                                            )
-                                        !!}
-                                        <label class="custom-control-label d-inline"
-                                               for="cb-{{ $role->id }}-{{ $permission->id }}"></label>
-                                    </div>
-                                </td>
-                            @endforeach
-
-                            <td class="text-center">
-                                <a href="{{ route('permissions.edit', $permission) }}" class="btn btn-icon"
-                                   title="@lang('Edit Permission')" data-toggle="tooltip" data-placement="top">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-
-                                @if ($permission->removable)
-                                    <a href="{{ route('permissions.destroy', $permission) }}" class="btn btn-icon"
-                                       title="@lang('Delete Permission')"
-                                       data-toggle="tooltip"
-                                       data-placement="top"
-                                       data-method="DELETE"
-                                       data-confirm-title="@lang('Please Confirm')"
-                                       data-confirm-text="@lang('Are you sure that you want to delete this permission?')"
-                                       data-confirm-delete="@lang('Yes, delete it!')">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
-                @else
-                    <tr>
-                        <td colspan="4"><em>@lang('No records found.')</em></td>
-                    </tr>
+                    <div class="flex items-center justify-end">
+                        <button type="submit"
+                                class="inline-flex items-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-500/30">
+                            Save Permissions
+                        </button>
+                    </div>
                 @endif
-                </tbody>
-            </table>
+            </form>
         </div>
     </div>
-</div>
-
-@if (count($permissions))
-    <div class="row">
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary">@lang('Save Permissions')</button>
-        </div>
-    </div>
-@endif
-
-{!! Form::close() !!}
-
-@stop
+</x-app-layout>

@@ -37,15 +37,15 @@
                     <x-slot name="head">
                         <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('id')" :direction="$sorts['id'] ?? null">{{ ucwords(trans_choice('messages.id', 2)) }}</x-table.heading>
                         <x-table.heading sortable multi-column wire:click="sortBy('name')" :direction="$sorts['name'] ?? null">{{ ucwords(trans_choice('messages.name', 1)) }}</x-table.heading>
-                        <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('type')" :direction="$sorts['type'] ?? null">{{ ucwords(trans_choice('messages.type', 1)) }}</x-table.heading>
-                        <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell'>Provider</x-table.heading>
-                        <x-table.heading sortable multi-column visibility='hidden' tablecell='lg:table-cell' wire:click="sortBy('expires_at')" :direction="$sorts['expires_at'] ?? null">Expires</x-table.heading>
+                        <x-table.heading sortable multi-column wire:click="sortBy('type')" :direction="$sorts['type'] ?? null">{{ ucwords(trans_choice('messages.type', 1)) }}</x-table.heading>
+                        <x-table.heading sortable multi-column>Provider</x-table.heading>
+                        <x-table.heading sortable multi-column wire:click="sortBy('expires_at')" :direction="$sorts['expires_at'] ?? null">Expires</x-table.heading>
                     </x-slot>
 
                     <x-slot name="body">
                         @forelse ($instances as $instance)
                             <x-table.row wire:loading.class.delay="opacity-50" wire:key="row-instance-{{ $instance->id }}">
-                                <x-table.cell visibility='hidden' tablecell='lg:table-cell'>
+                                <x-table.cell>
                                     <a href="{{ route('instances.edit', $instance->id) }}" class="block w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-visible">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium leading-4 capitalize">
@@ -70,7 +70,7 @@
                                     </div>
                                 </x-table.cell>
 
-                                <x-table.cell visibility='hidden' tablecell='lg:table-cell'>
+                                <x-table.cell>
                                     <a href="{{ route('instances.edit', $instance->id) }}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-visible">
                                             <span class="text-sm font-medium text-slate-700">{{ $instance->type ?? '—' }}</span>
@@ -81,7 +81,7 @@
                                     </a>
                                 </x-table.cell>
 
-                                <x-table.cell visibility='hidden' tablecell='lg:table-cell'>
+                                <x-table.cell>
                                     <a href="{{ route('instances.edit', $instance->id) }}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-visible">
                                             <span class="text-sm font-medium text-slate-700">{{ $instance->provider->company_name ?? $instance->provider->name ?? '—' }}</span>
@@ -89,7 +89,7 @@
                                     </a>
                                 </x-table.cell>
 
-                                <x-table.cell visibility='hidden' tablecell='lg:table-cell'>
+                                <x-table.cell>
                                     <a href="{{ route('instances.edit', $instance->id) }}" class="w-full h-full p-0 m-0 no-underline bg-transparent border-0 cursor-pointer hover:text-gray-900 hover:no-underline">
                                         <div class="h-full py-2 pl-1 pr-2 m-0 overflow-visible">
                                             <span class="text-sm text-slate-700">{{ optional($instance->expires_at)->format('Y-m-d') ?? '—' }}</span>

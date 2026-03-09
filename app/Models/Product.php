@@ -7,10 +7,11 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-
+use App\Models\Traits\HasInstanceEnvironment;
 
 class Product extends Model
 {
+    use HasInstanceEnvironment;
     protected $casts = [
         'has_addons' => 'boolean',
         'addons' => 'collection',

@@ -10,10 +10,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Pricing\ProviderPriceListDefault;
 use App\Models\Pricing\ResellerPriceListAssignment;
 use App\Models\Pricing\CustomerPriceListAssignment;
+use App\Models\Traits\HasInstanceEnvironment;
 
 class PriceList extends Model
 {
     use SoftDeletes;
+    use HasInstanceEnvironment;
 
     protected $fillable = [
         'provider_id',

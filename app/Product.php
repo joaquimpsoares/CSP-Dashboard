@@ -15,11 +15,13 @@ use App\Jobs\ImportProductsMicrosoftJob;
 use Illuminate\Database\Eloquent\Builder;
 use App\Jobs\ImportProductsNECMicrosoftJob;
 use Illuminate\Foundation\Bus\Dispatchable;
+use App\Models\Traits\HasInstanceEnvironment;
 
 class Product extends Model
 {
     use Dispatchable;
     use SoftDeletes;
+    use HasInstanceEnvironment;
 
     protected $casts = [
         'has_addons'                => 'boolean',

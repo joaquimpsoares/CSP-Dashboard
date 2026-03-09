@@ -125,6 +125,12 @@ class InstanceController extends Controller
     */
     public function edit(Instance $instance)
     {
+        // Persist current instance context in session so nav env toggle + scoped queries work.
+        session(['instance_id' => $instance->id]);
+        if (! session()->has('environment')) {
+            session(['environment' => 'live']);
+        }
+
         // Ensure provider relation is available for the sidebar.
         $instance->loadMissing('provider');
 
@@ -144,7 +150,9 @@ class InstanceController extends Controller
             $expiration = $instance->external_token_updated_at->copy()->addDays(90);
         }
 
-        return view('instance.edit', compact('instance', 'certificate', 'expiration'));
+        $connection = \Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection::where('provider_id', $instance->provider_id)->first();
+
+        return view('instance.edit', compact('instance', 'certificate', 'expiration', 'connection'));
     }
 
             /**

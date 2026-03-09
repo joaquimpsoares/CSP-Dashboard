@@ -210,8 +210,6 @@ public function newFromCartToken($token)
     }
 
     public function UpdateMSSubscription($subscription, $request){
-        dd($subscription->verify);
-
         $amount = collect($request->amount)->diff(collect($subscription->amount));
         $billing_period = collect($request->billing_period)->diff(collect($subscription->billing_period));
         $status = collect($request->status)->diff(collect($subscription->status_id));
