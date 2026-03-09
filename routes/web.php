@@ -60,6 +60,18 @@ Fim Rotas que necessitam ser verificadas e inseridas em seus devídos midlewares
 // Microsoft/Social login routes were previously handled by legacy LoginController (laravel/ui era).
 // Re-implement with Laravel 12 + Breeze + Socialite later.
 
+// Onboarding flow — auth required, no onboarding gate applied here
+Route::middleware(['auth'])->prefix('onboarding')->name('onboarding.')->group(function () {
+    Route::get('/verify',        [\App\Http\Controllers\Web\OnboardingController::class, 'showVerify']) ->name('verify');
+    Route::post('/verify/send',  [\App\Http\Controllers\Web\OnboardingController::class, 'sendOtp'])   ->name('verify.send');
+    Route::post('/verify',       [\App\Http\Controllers\Web\OnboardingController::class, 'verifyOtp']) ->name('verify.submit');
+    Route::get('/type',          [\App\Http\Controllers\Web\OnboardingController::class, 'showType'])  ->name('type');
+    Route::post('/type',         [\App\Http\Controllers\Web\OnboardingController::class, 'saveType'])  ->name('type.save');
+    Route::get('/plan',          [\App\Http\Controllers\Web\OnboardingController::class, 'showPlan'])  ->name('plan');
+    Route::post('/plan/checkout',[\App\Http\Controllers\Web\OnboardingController::class, 'checkout'])  ->name('checkout');
+    Route::get('/complete',      [\App\Http\Controllers\Web\OnboardingController::class, 'complete'])  ->name('complete');
+});
+
 Route::group(['middleware' => 'auth'], function ()
 {
     /*****************************************************************************************************************/
@@ -166,7 +178,7 @@ Route::group(['middleware' => 'auth'], function ()
             Route::get('/customer', 'CustomerController@index')->middleware('permission:' . config('app.customer_index'))->name('customer.index');
 
             // EST Guard — manual trigger for Provider users
-            Route::post('/subscriptions/check-est-risk', 'Web\EstGuardController@trigger')
+            Route::post('/subscriptions/check-est-risk', [\App\Http\Controllers\Web\EstGuardController::class, 'trigger'])
                 ->name('subscriptions.est-risk.check')
                 ->middleware(['can:' . config('app.subscription_index')]);
 
