@@ -87,17 +87,13 @@ class CheckSubscriptionEstRiskJob implements ShouldQueue
             }
 
             try {
-                $provider = \App\Provider::find($providerId);
-                if (! $provider) {
+                $provider = \App\Provider::with('users')->find($providerId);
+                $providerEmail = $provider?->users()->first()?->email;
+                if (! $provider || ! $providerEmail) {
                     continue;
                 }
 
-                $user = $provider->users()->first();
-                if (! $user || ! $user->email) {
-                    continue;
-                }
-
-                Mail::to($user->email)
+                Mail::to($providerEmail)
                     ->send(new EstRiskAlertMail($provider, collect($subs), $this->environment));
             } catch (\Exception $e) {
                 Log::error('[ESTGuard] Failed to send alert email', [
