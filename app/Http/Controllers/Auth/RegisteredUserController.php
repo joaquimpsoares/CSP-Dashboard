@@ -37,13 +37,30 @@ class RegisteredUserController extends Controller
             'terms_accepted' => ['required', 'accepted'],
         ]);
 
+        // Resolve Provider user level — avoids FK violation on users.user_level_id
+        $providerLevelId = \App\UserLevel::where('name', config('app.provider'))->value('id');
+
         $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        $user->forceFill(['terms_accepted_at' => now()])->save();
+        // Set user_level_id separately (User model has no $fillable)
+        $user->forceFill([
+            'user_level_id'    => $providerLevelId,
+            'terms_accepted_at' => now(),
+        ])->save();
+
+        // Create a Provider record (pending) and link it to this user
+        $provider = \App\Provider::create([
+            'company_name' => $request->name,
+            'status_id'    => 4, // Pending — awaiting onboarding completion
+        ]);
+        $user->forceFill(['provider_id' => $provider->id])->save();
+
+        // Assign Spatie Provider role so middleware/scopes work from first login
+        $user->assignRole('Provider');
 
         event(new Registered($user));
 
