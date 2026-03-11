@@ -51,48 +51,45 @@
 
                 <!-- Environment toggle -->
                 @php
-                    $env = session('environment', 'live');
+                    $env     = session('environment', 'live');
+                    $isSandbox = $env === 'sandbox';
+                    $isTrial = false;
                     $instanceId = session('instance_id');
-                    $instance = $instanceId ? \App\Instance::find($instanceId) : null;
-                    $isTrial = $instance && (($instance->subscription_status ?? 'active') === 'trial');
-                    $hasSandboxCreds = false;
-                    if ($instance && ($instance->type ?? '') === 'Microsoft') {
-                        $conn = \Modules\MicrosoftCspConnection\Models\MicrosoftCspConnection::where('provider_id', $instance->provider_id)
-                            ->where('tenant_id', $instance->tenant_id)
-                            ->first();
-                        $hasSandboxCreds = $conn && !empty($conn->sandbox_tenant_id);
+                    if ($instanceId) {
+                        $instance = \App\Instance::find($instanceId);
+                        $isTrial  = $instance && (($instance->subscription_status ?? 'active') === 'trial');
                     }
                 @endphp
 
-                @if($hasSandboxCreds && !$isTrial)
+                @if($isTrial)
+                    {{-- Trial: locked to sandbox, show static badge --}}
+                    <span class="relative inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border bg-yellow-50 border-yellow-300 text-yellow-700"
+                          title="Trial accounts are locked to sandbox">
+                        <span class="relative flex h-2.5 w-2.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-yellow-400"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-yellow-500"></span>
+                        </span>
+                        SANDBOX (trial)
+                    </span>
+                @else
+                    {{-- Always-clickable toggle --}}
                     <form method="POST" action="{{ route('environment.switch') }}" class="flex items-center">
                         @csrf
-                        <input type="hidden" name="environment" value="{{ $env === 'live' ? 'sandbox' : 'live' }}">
+                        <input type="hidden" name="environment" value="{{ $isSandbox ? 'live' : 'sandbox' }}">
                         <button type="submit"
                             class="relative inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200 cursor-pointer select-none
-                                   {{ $env === 'sandbox' ? 'bg-yellow-50 border-yellow-300 text-yellow-700 hover:bg-yellow-100' : 'bg-green-50 border-green-300 text-green-700 hover:bg-green-100' }}"
-                            title="Switch to {{ $env === 'sandbox' ? 'Live' : 'Sandbox' }}"
+                                   {{ $isSandbox ? 'bg-yellow-50 border-yellow-300 text-yellow-700 hover:bg-yellow-100' : 'bg-green-50 border-green-300 text-green-700 hover:bg-green-100' }}"
+                            title="Switch to {{ $isSandbox ? 'Live' : 'Sandbox' }}"
                         >
                             <span class="relative flex h-2.5 w-2.5">
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75
-                                             {{ $env === 'sandbox' ? 'bg-yellow-400' : 'bg-green-400' }}"></span>
+                                             {{ $isSandbox ? 'bg-yellow-400' : 'bg-green-400' }}"></span>
                                 <span class="relative inline-flex rounded-full h-2.5 w-2.5
-                                             {{ $env === 'sandbox' ? 'bg-yellow-500' : 'bg-green-500' }}"></span>
+                                             {{ $isSandbox ? 'bg-yellow-500' : 'bg-green-500' }}"></span>
                             </span>
-                            {{ $env === 'sandbox' ? 'SANDBOX' : 'LIVE' }}
+                            {{ $isSandbox ? 'SANDBOX' : 'LIVE' }}
                         </button>
                     </form>
-                @else
-                    <span class="relative inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border
-                                 {{ $env === 'sandbox' ? 'bg-yellow-50 border-yellow-300 text-yellow-700' : 'bg-green-50 border-green-300 text-green-700' }}">
-                        <span class="relative flex h-2.5 w-2.5">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75
-                                         {{ $env === 'sandbox' ? 'bg-yellow-400' : 'bg-green-400' }}"></span>
-                            <span class="relative inline-flex rounded-full h-2.5 w-2.5
-                                         {{ $env === 'sandbox' ? 'bg-yellow-500' : 'bg-green-500' }}"></span>
-                        </span>
-                        {{ strtoupper($env) }}
-                    </span>
                 @endif
 
                 <!-- Global search -->
@@ -231,6 +228,21 @@
                                                 <div>
                                                     <div class="text-sm font-semibold text-slate-900">Products</div>
                                                     <div class="mt-0.5 text-xs text-slate-600">Product catalog</div>
+                                                </div>
+                                            </a>
+
+                                            <a href="{{ route('news.list') }}" class="group flex gap-3 rounded-xl p-3 hover:bg-slate-50">
+                                                <div class="mt-0.5 text-slate-500 group-hover:text-slate-700">
+                                                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M4 22h16a2 2 0 002-2V4a2 2 0 00-2-2H8a2 2 0 00-2 2v16a2 2 0 01-2 2Zm0 0a2 2 0 01-2-2v-9c0-1.1.9-2 2-2h2" />
+                                                        <path d="M18 14h-8" />
+                                                        <path d="M15 18h-5" />
+                                                        <path d="M10 6h8v4h-8V6Z" />
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <div class="text-sm font-semibold text-slate-900">Announcements</div>
+                                                    <div class="mt-0.5 text-xs text-slate-600">Manage news &amp; announcements</div>
                                                 </div>
                                             </a>
                                         </div>

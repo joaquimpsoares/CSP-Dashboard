@@ -547,42 +547,148 @@ class HomeController extends Controller
 
     public function dashboard()
     {
-        // New portal entrypoint (Breeze stack). Keep it role-aware.
-        // Operational dashboard: a few lightweight metrics + recent activity.
-
-        $user = \Illuminate\Support\Facades\Auth::user();
+        $user      = \Illuminate\Support\Facades\Auth::user();
         $userLevel = $user?->userLevel?->name;
+        $news      = News::orderBy('created_at', 'desc')->take(5)->get();
 
-        // Customer dashboard should only show their own data.
+        // ── Customer: show only their own data ──────────────────────────────
         if ($userLevel === config('app.customer')) {
             $customerId = $user?->customer_id;
 
             $metrics = [
-                'subscriptions' => \App\Subscription::query()->where('customer_id', $customerId)->count(),
-                'orders' => \App\Order::query()->where('customer_id', $customerId)->count(),
+                'subscriptions'        => Subscription::where('customer_id', $customerId)->count(),
+                'subscriptions_active' => Subscription::where('customer_id', $customerId)->where('status_id', 1)->count(),
+                'orders'               => Order::where('customer_id', $customerId)->count(),
+                'orders_month'         => Order::where('customer_id', $customerId)
+                                              ->whereMonth('created_at', now()->month)
+                                              ->whereYear('created_at', now()->year)->count(),
             ];
 
-            $recentOrders = \App\Order::query()
+            $recentOrders = Order::with('customer')
                 ->where('customer_id', $customerId)
-                ->latest()
-                ->limit(10)
-                ->get();
+                ->latest()->limit(10)->get();
 
-            return view('dashboard', compact('metrics', 'recentOrders', 'userLevel'));
+            $expiringSoon = Subscription::with(['customer', 'status'])
+                ->where('customer_id', $customerId)
+                ->where('status_id', 1)
+                ->where('expiration_data', '>=', now())
+                ->where('expiration_data', '<=', now()->addDays(90))
+                ->orderBy('expiration_data')->limit(5)->get();
+
+            $estRiskCount   = 0;
+            $orderChartDates = $orderChartData = $subChartLabels = $subChartData = [];
+            $top5Products   = $subsByStatus = [];
+
+            return view('dashboard', compact(
+                'metrics', 'recentOrders', 'userLevel', 'news',
+                'estRiskCount', 'expiringSoon',
+                'orderChartDates', 'orderChartData',
+                'subChartLabels', 'subChartData',
+                'top5Products', 'subsByStatus'
+            ));
         }
 
+        // ── Platform-wide metrics ────────────────────────────────────────────
+        $customersTotal = Customer::count();
+        $customersMonth = Customer::whereMonth('created_at', now()->month)
+                                  ->whereYear('created_at', now()->year)->count();
+        $customersPrev  = Customer::whereMonth('created_at', now()->subMonth()->month)
+                                  ->whereYear('created_at', now()->subMonth()->year)->count();
+
+        $subsTotal    = Subscription::count();
+        $subsActive   = Subscription::where('status_id', 1)->count();
+        $subsExpiring = Subscription::where('status_id', 1)
+                            ->where('expiration_data', '>=', now())
+                            ->where('expiration_data', '<=', now()->addDays(90))->count();
+
+        $ordersTotal = Order::count();
+        $ordersMonth = Order::whereMonth('created_at', now()->month)
+                            ->whereYear('created_at', now()->year)->count();
+        $ordersPrev  = Order::whereMonth('created_at', now()->subMonth()->month)
+                            ->whereYear('created_at', now()->subMonth()->year)->count();
+
+        $estRiskCount = Subscription::withoutGlobalScopes()
+            ->where('est_risk', true)
+            ->where('environment', session('environment', 'live'))
+            ->count();
+
         $metrics = [
-            'customers' => \App\Customer::query()->count(),
-            'subscriptions' => \App\Subscription::query()->count(),
-            'orders' => \App\Order::query()->count(),
+            'customers'              => $customersTotal,
+            'customers_month'        => $customersMonth,
+            'customers_prev'         => $customersPrev,
+            'subscriptions'          => $subsTotal,
+            'subscriptions_active'   => $subsActive,
+            'subscriptions_expiring' => $subsExpiring,
+            'orders'                 => $ordersTotal,
+            'orders_month'           => $ordersMonth,
+            'orders_prev'            => $ordersPrev,
         ];
 
-        $recentOrders = \App\Order::query()
-            ->latest()
-            ->limit(10)
-            ->get();
+        // ── Orders – last 30 days (chart) ────────────────────────────────────
+        $ordersRaw = Order::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->where('created_at', '>=', now()->subDays(29)->startOfDay())
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->orderBy(DB::raw('DATE(created_at)'))
+            ->pluck('count', 'date')->toArray();
 
-        return view('dashboard', compact('metrics', 'recentOrders', 'userLevel'));
+        $orderChartDates = $orderChartData = [];
+        for ($i = 29; $i >= 0; $i--) {
+            $d = now()->subDays($i);
+            $orderChartDates[] = $d->format('M d');
+            $orderChartData[]  = (int) ($ordersRaw[$d->format('Y-m-d')] ?? 0);
+        }
+
+        // ── Subscriptions created – last 6 months (chart) ───────────────────
+        $subStart = now()->subMonths(5)->startOfMonth();
+        if (config('database.default') === 'pgsql') {
+            $subsRaw = Subscription::selectRaw("TO_CHAR(created_at,'YYYY-MM') as month, COUNT(*) as count")
+                ->where('created_at', '>=', $subStart)
+                ->groupBy(DB::raw("TO_CHAR(created_at,'YYYY-MM')"))
+                ->orderBy(DB::raw("TO_CHAR(created_at,'YYYY-MM')"))
+                ->pluck('count', 'month')->toArray();
+        } else {
+            $subsRaw = Subscription::selectRaw("DATE_FORMAT(created_at,'%Y-%m') as month, COUNT(*) as count")
+                ->where('created_at', '>=', $subStart)
+                ->groupBy(DB::raw("DATE_FORMAT(created_at,'%Y-%m')"))
+                ->orderBy(DB::raw("DATE_FORMAT(created_at,'%Y-%m')"))
+                ->pluck('count', 'month')->toArray();
+        }
+
+        $subChartLabels = $subChartData = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $m = now()->subMonths($i);
+            $subChartLabels[] = $m->format('M Y');
+            $subChartData[]   = (int) ($subsRaw[$m->format('Y-m')] ?? 0);
+        }
+
+        // ── Top 5 products by subscription count ────────────────────────────
+        $top5Products = Subscription::selectRaw('name, COUNT(id) as count')
+            ->whereNotNull('name')->where('name', '!=', '')
+            ->groupBy('name')->orderByDesc('count')
+            ->limit(5)->pluck('count', 'name')->toArray();
+
+        // ── Subscriptions by status ──────────────────────────────────────────
+        $subsByStatus = Subscription::selectRaw('status_id, COUNT(id) as count')
+            ->groupBy('status_id')
+            ->pluck('count', 'status_id')->toArray();
+
+        // ── Expiring within 90 days ──────────────────────────────────────────
+        $expiringSoon = Subscription::with(['customer'])
+            ->where('status_id', 1)
+            ->where('expiration_data', '>=', now())
+            ->where('expiration_data', '<=', now()->addDays(90))
+            ->orderBy('expiration_data')->limit(8)->get();
+
+        // ── Recent orders ────────────────────────────────────────────────────
+        $recentOrders = Order::with('customer')->latest()->limit(10)->get();
+
+        return view('dashboard', compact(
+            'metrics', 'recentOrders', 'userLevel', 'news',
+            'estRiskCount', 'expiringSoon',
+            'orderChartDates', 'orderChartData',
+            'subChartLabels', 'subChartData',
+            'top5Products', 'subsByStatus'
+        ));
     }
 
     /**
